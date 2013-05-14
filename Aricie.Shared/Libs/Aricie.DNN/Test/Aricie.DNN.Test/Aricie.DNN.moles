@@ -1,0 +1,16 @@
+<Moles xmlns="http://schemas.microsoft.com/moles/2010/">
+  <Assembly Name="Aricie.DNN" />
+    <StubGeneration>
+        <Types>
+            <Clear />
+       </Types>
+    </StubGeneration>
+    <MoleGeneration>
+        <Types>
+            <Clear />
+            <Add Namespace="Aricie.DNN.Services" />
+            <Add Namespace="Aricie.DNN.Settings" />
+            <Remove Namespace="Aricie.DNN.Services.Caching" />
+        </Types>
+    </MoleGeneration>
+</Moles>

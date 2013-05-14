@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.ComponentModel.CData" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="0.75" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Aricie.ComponentModel.CData.CDataConverter" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Components\ComponentModel\CData.vb</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>ABIAAAIAAAAAAAEEAAAAQAAGAABAAAAgANggogYQAAI=</HashCode>
+      <FileName>Components\ComponentModel\CData.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.ComponentModel.DelegateInfo(Of T)">
+    <Position X="7.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAIAAAAwAAAQAAAAAAAABABAAACAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\DelegateInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.InvertComparer(Of T)" BaseTypeListCollapsed="true">
+    <Position X="19.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\InvertConverter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.ComponentModel.GenericEventArgs(Of T)">
+    <Position X="0.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\GenericEventArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.ChangedEventArgs">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAkAAAgAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\GenericEventArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.ChangedEventArgs(Of T)">
+    <Position X="0.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\GenericEventArgs.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.MainCategoryAttribute">
+    <Position X="5.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\MainCategoryAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.RegexMapping">
+    <Position X="24" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAgAAAAABQAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\RegexMapping.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.ComponentModel.VariableStrategy(Of T)">
+    <Position X="24" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAACABBAAAAAAAgAACgAAAAAAAAAAACBAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\VariableStrategy.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Business.Filters.CustomSorter(Of T)" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\CustomSorter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.FilterExpression" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAgAEAAAAAAQAAAAAAAAAAAACAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\FilterExpression.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.ListFilter(Of T)" BaseTypeListCollapsed="true">
+    <Position X="19.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAIAAAAACQAAAAAAAAgAAASAQAAAgAAAABEAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\ListFilter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.PredicateFilter(Of T)" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAYAEAAAAQAAAAAAAAAAAASAAAAAAAAAABGAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\PredicateFilter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.SimpleComparer(Of T)">
+    <Position X="12.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\SimpleComparer.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.SimpleComparer">
+    <Position X="12.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAAAAAAAAQAAAAAAASAAAAAABQAABAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\SimpleComparer.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.SimpleFilter(Of T)" BaseTypeListCollapsed="true">
+    <Position X="17.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAgAYAAAAABQAAAAAAAAAAAASAAAAAAAgAABEIAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\SimpleFilter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.Filters.SimpleSorter(Of T)" BaseTypeListCollapsed="true">
+    <Position X="21.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAASAAAAAABQAABAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\SimpleSorter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Struct Name="Aricie.Business.Filters.FilterInExpression">
+    <Position X="19.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\FilterInExpression.vb</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Aricie.ComponentModel.IChildEntity">
+    <Position X="10.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\IChildEntity.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.ComponentModel.IChildEntity(Of ParentType)">
+    <Position X="10.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\IChildEntity.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.ComponentModel.IMergeable(Of T, Y)">
+    <Position X="10.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\IMergeable.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Business.Filters.IDescriptor">
+    <Position X="15" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\IDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Business.Filters.IFilter" Collapsed="true">
+    <Position X="15" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\IFilter.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Aricie.Business.Filters.ScopeOperator">
+    <Position X="19.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\ListFilter.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.Business.Filters.OperatorFilterExp">
+    <Position X="19.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Components\ComponentModel\Filters\OperatorFilterExp.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

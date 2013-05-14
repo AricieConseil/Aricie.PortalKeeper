@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.Services.Caching.CachedOutput" Collapsed="true">
+    <Position X="8.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAECAAYAAAAIAEAIAQAAgAAAAAEAAAEAAAgIAEAA=</HashCode>
+      <FileName>Services\Caching\CachedOutput.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.CachedUrlsCollection" Collapsed="true">
+    <Position X="10" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAICAAAAAAAAAAAAAAAABAAAAAABAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Services\Caching\CachedUrlsCollection.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.CachedUrlsElement" Collapsed="true">
+    <Position X="11.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAIAAAAAAQAAAQAAAAACAAABAAIAAAA=</HashCode>
+      <FileName>Services\Caching\CachedUrlsElement.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.DiskOutputCacheSettingsSection" Collapsed="true">
+    <Position X="13.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAACQAAAACAAAgAIAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Caching\DiskOutputCacheSettingsSection.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.FileOutputSettings" Collapsed="true">
+    <Position X="8.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAAAAACAAAAAIAAAIAAAAAAAAAAACAEEAIAAAI=</HashCode>
+      <FileName>Services\Caching\FileOutputSettings.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.FileOutputTracker" Collapsed="true">
+    <Position X="5.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAIAIAAAAAAAggAAEIAAQACACBAAIAAAAgCAAAAAA=</HashCode>
+      <FileName>Services\Caching\FileOutputTracker.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.OutputCacheManager" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="10" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BIIBABIAACAACACBACYAKMAABEABIAAAICAAAERAECA=</HashCode>
+      <FileName>Services\Caching\OutputCacheManager.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.OutputCachingModule" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="11.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAACAAABAAAAEAAAAAAAAgAACAgAACIAAAAAA=</HashCode>
+      <FileName>Services\Caching\OutputCachingModule.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.OutputCachingSettings" Collapsed="true">
+    <Position X="13.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAAAAAAAIAAAAAAAAAAAAAAAAAACAAAIAAAAAA=</HashCode>
+      <FileName>Services\Caching\OutputCachingSettings.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.OutputCachingStrategy" Collapsed="true">
+    <Position X="8.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EBEAAQAAAKACAIAQBAAAAQAAASAACAESAAABgACAAoA=</HashCode>
+      <FileName>Services\Caching\OutputCachingStrategy.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.OutputTrackerBase" Collapsed="true">
+    <Position X="5.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAIAkAABBAIAAAAAAMWQCBAAAAIAAARAABAACgA=</HashCode>
+      <FileName>Services\Caching\OutputTracker.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.CaptureStream" Collapsed="true">
+    <Position X="2.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAKAAAAAQAAgGAAAAABgAAAAAAABAAAAAAEIECA=</HashCode>
+      <FileName>Services\Caching\ResponseFilter.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.FileCaptureFilter" Collapsed="true">
+    <Position X="2.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAABCAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Caching\ResponseFilter.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Caching.ScavangerEntry" Collapsed="true">
+    <Position X="10" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQAQAIAAAAAAAAAAAAAAAAIAAAAAAAAA=</HashCode>
+      <FileName>Services\Caching\ScavangerEntry.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="Aricie.DNN.Services.Caching.OutputCacheMode" Collapsed="true">
+    <Position X="8.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAA=</HashCode>
+      <FileName>Services\Caching\OutputCacheMode.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Services.Caching.VaryByMode" Collapsed="true">
+    <Position X="10" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAIAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Caching\VaryByMode.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,216 @@
+﻿.ItemOdd, .ItemEven
+{
+	padding: 2px 0 5px 0;
+	margin: 2px 0 5px 0;
+	/*clear:both;*/
+}
+
+/*.ItemOdd div, .ItemEven div
+{
+	clear:right
+}*/
+.ItemOdd div.ItemAction, .ItemEven div.ItemAction
+{
+clear:left;
+}
+.ItemAction
+{
+	padding-top: 0px;
+	float: left;
+	
+	width: 24px;
+}
+
+.SubDiv
+{
+    margin:15px 0 15px 7px;
+}
+
+.aricie_pe_sections a.sectionHeader
+{
+    display:block;
+    padding:5px 25px;
+    border:none;
+    border-bottom:1px solid black;
+    background:none;
+}
+
+.ui-accordion .ui-accordion-header .ui-icon {
+display: none;
+}
+
+
+.ui-accordion h3.ui-accordion-header .ItemAction
+{
+    float:right;
+	padding: 2px 2px 0 0;
+	width: auto;
+	text-align:right;
+	height:25px;
+}
+
+.ui-accordion h3.ui-accordion-header .ItemAction input
+{
+    float:none;
+}
+
+
+.ui-accordion .ui-state-default a
+{
+    color:inherit;
+}
+
+.ui-accordion h3.ui-accordion-header a
+{
+    /*margin-right:60px;*/
+    height:18px;
+    display: block;
+    font-size: 1em;
+    padding: 0.5em 0.5em 0.5em 0.7em;
+}
+
+.aricie_pe_tabs
+{
+    margin-top:0.5em;
+}
+
+.pkSettings
+{
+	margin: 10px 0 0 8px;
+}
+.HeaderPl
+{
+	clear: both;
+}
+.section
+{
+	margin-left: 10px; /*clear:both;*/
+}
+
+.clear
+{
+	clear: both;
+}
+
+.fieldC
+{
+	clear: both;
+}
+
+/*.fieldC .dnnTooltip label a span
+{
+    display: block;
+    padding-right: 20px;
+}*/
+
+.labelLeft
+{
+	float: left;
+}
+
+.labelRight
+{
+	float: right;
+}
+.ctRight
+{
+	float:right;
+}
+
+.ctLeft
+{
+	float:left;
+}
+
+
+
+.ui-accordion .ui-accordion-content {
+    border: 1px solid #DDDDDD;
+    padding: 0.5em 0 0.5em 0.8em;
+}
+
+.ui-state-default
+{
+    background:#ccc;
+}
+
+.dnnForm .dnnFormItem .aricieFullWidth,
+.dnnForm .dnnFormItem .aricieFullWidth label
+{
+    float:none;
+    width:100%;
+    text-align:left;
+}
+
+.dnnForm .dnnFormItem .aricieFullWidth label a.dnnFormHelp
+{
+    background-position:left;
+    padding-left:16px;
+    margin:2px;
+}
+.dnnForm .dnnFormItem .aricieFullWidth .dnnFormHelpContent
+{
+	left:5px;
+	top:15px;
+}
+.dnnForm .ui-tabs .ui-tabs-panel {
+   padding: 1em 0em 0.8em 0.7em;
+}
+
+
+.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a,
+.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:link,
+.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:visited,
+.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active,
+.dnnForm .ui-tabs .ui-tabs-nav .ui-widget-content .ui-state-active,
+.dnnForm .ui-tabs .ui-tabs-nav .ui-widget-header .ui-state-active 
+{
+    font-weight:bold;
+    color:#fff;
+    cursor:pointer;
+    background:#4E4E4E;
+    background:-moz-linear-gradient(top, #4E4E4E 0%, #282828 100%);
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
+	filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
+}
+
+.dnnForm .dnnFormItem span.CommandButton input
+{
+    display:inline !important;
+}
+
+.dnnForm .dnnFormItem .CommandsButtons span.CommandButton
+{
+    padding:0 5px;
+}
+
+.dnnForm .dnnFormItem span.CommandButton input
+{
+    float:none;
+    position:relative;
+    top:7px;
+}
+
+.dnnForm .dnnFormItem .ExportPanel .dnnTooltip,
+.dnnForm .dnnFormItem .ExportPanel .dnnTooltip *,
+.dnnForm .dnnFormItem .ExportPanel input
+{
+    float:none;
+    width:auto;
+    display:inline;
+}
+
+.dnnForm .ui-accordion .ui-accordion-header
+{
+    background: -moz-linear-gradient(center top , #818181 0%, #656565 100%) repeat scroll 0 0 transparent;
+    /* copier coller par Samy */
+    background:#4E4E4E;
+    background:-webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
+	filter:progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
+    color: #FFFFFF;
+}
+
+.dnnForm
+{
+	width:100%;
+}

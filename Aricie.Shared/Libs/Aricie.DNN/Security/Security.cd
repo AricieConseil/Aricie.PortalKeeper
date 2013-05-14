@@ -1,0 +1,104 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.EncryptionHelper">
+    <Position X="8.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\EncryptionHelper.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Security.Trial.TrialConfigInfo">
+    <Position X="1.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABCCAAAAAIACIAAAAAKAEAAAIAAAAIACAAAAACAAAAE=</HashCode>
+      <FileName>Security\TrialConfigInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Security.Trial.TrialController">
+    <Position X="4" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACABAAABAABAIgBBAAACIUEgQBgAAAAAYAAAAAAAAAI=</HashCode>
+      <FileName>Security\TrialController.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Security.Trial.TrialInfo">
+    <Position X="6.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QQAAAAADAAAAABQQAAAAAAABQAAAAAAAAAAhAAAAAAA=</HashCode>
+      <FileName>Security\TrialInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Security.PermissionEnumInfo" BaseTypeListCollapsed="true">
+    <Position X="11" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAgACAAARAAQBAAQgMAQAAAAAAAgAAAAAJACAQAA=</HashCode>
+      <FileName>Security\PermissionEnumInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Security.PermissionHelper(Of T)" BaseTypeListCollapsed="true">
+    <Position X="11" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAggAAgBAABAAACCAAgQAAAQQAIAAAAACAAABAAAA=</HashCode>
+      <FileName>Security\PermissionHelper.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Struct Name="Aricie.DNN.Security.Trial.TrialStatusInfo">
+    <Position X="6.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAgCAAAAAAAAAAAAAAAIAAAAQAAEAAAAAAAA=</HashCode>
+      <FileName>Security\TrialController.vb</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Aricie.DNN.Security.Trial.ITrialProvider">
+    <Position X="1.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAA=</HashCode>
+      <FileName>Security\ITrialProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.Security.IModulePermissionsProvider(Of T)">
+    <Position X="13.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Security\PermissionHelper.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Aricie.DNN.Security.Trial.TrialLimitation">
+    <Position X="4" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACAQAQAAAAAAAQAIAABAAAAAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Security\TrialLimitation.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Security.Trial.TrialMessage">
+    <Position X="4" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAIAAAEAAAAAAAABAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Security\TrialMessage.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Security.Trial.TrialPropertyMode">
+    <Position X="1.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAEAgAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Security\TrialPropertyMode.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Security.Trial.TrialStatus">
+    <Position X="1.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAIAAAEAAAAAAAAAAAAAAABAAAABAAAAAA=</HashCode>
+      <FileName>Security\TrialStatus.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Security.PermissionType">
+    <Position X="1.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAAAACAAAAAAAAAAAABAAAABAA=</HashCode>
+      <FileName>Security\PermissionType.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

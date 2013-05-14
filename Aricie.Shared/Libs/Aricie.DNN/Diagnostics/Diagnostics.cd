@@ -1,0 +1,98 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.Diagnostics.AsyncLogger" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIIAAAAGAIAIAACCAQAAAAAgAACAAARACECyYAAEA=</HashCode>
+      <FileName>Diagnostics\AsyncLogger.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.DebugInfo">
+    <Position X="10.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAEAkABCAAAQAAAQAgAAAIAAAAAAAAAACAAA=</HashCode>
+      <FileName>Diagnostics\DebugInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.DebugInfoScope" BaseTypeListCollapsed="true">
+    <Position X="13.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAQCAAAAAAAgAAAAAAAAAgAAAAAABAAgAAAgA=</HashCode>
+      <FileName>Diagnostics\DebugInfoScope.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.DebugLoggerBase(Of T)">
+    <Position X="4.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAgAACAAAIBAIAEAAAAECBAAABBAAEAAkgAICAg=</HashCode>
+      <FileName>Diagnostics\DebugLogger.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.ExternalFileAsyncLogger(Of T)">
+    <Position X="8" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAABACAAAAAAAAAAAAAAAAIAAAAARACEAAAEAAA=</HashCode>
+      <FileName>Diagnostics\ExternalFileAsyncLogger.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.ExternalFileLog(Of T)">
+    <Position X="13.5" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAIAAAAAAEAAACAAAAAAAAAAAAACAAAAAAAAQA=</HashCode>
+      <FileName>Diagnostics\ExternalFileLog.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.PerformanceLogger">
+    <Position X="2.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAEAAAAAACAAABAAQAAQgAAAAAA=</HashCode>
+      <FileName>Diagnostics\PerformanceLogger.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.SimpleDebugLogger">
+    <Position X="6" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Diagnostics\SimpleDebugLogger.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Diagnostics.StepInfo">
+    <Position X="10.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hASAoCQgAMgAFAAAABAgQEAAEBAAFAAAAEgAABAIAIA=</HashCode>
+      <FileName>Diagnostics\StepInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="Aricie.DNN.Diagnostics.CumulatedStepLog">
+    <Position X="13.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAAAAAAAAAAAQAAAAAgAAAAIAAAAAAAAAAA=</HashCode>
+      <FileName>Diagnostics\PerformanceLogger.vb</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Aricie.DNN.Diagnostics.TimingCounter">
+    <Position X="16" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAACAAAAAAAAAAAAAAAAAIAQAAAAAAAAgAAAAACA=</HashCode>
+      <FileName>Diagnostics\PerformanceLogger.vb</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="Aricie.DNN.Diagnostics.WorkingPhase">
+    <Position X="13.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAA=</HashCode>
+      <FileName>Diagnostics\StepInfo.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Module Name="Aricie.DNN.Diagnostics.Constants">
+    <Position X="18.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AGAAAAAAAAASQCBICACQAADACEEBCAGAAAEAAAAQAAA=</HashCode>
+      <FileName>Diagnostics\Constants.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

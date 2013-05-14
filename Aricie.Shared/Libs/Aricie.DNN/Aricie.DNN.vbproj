@@ -1,0 +1,593 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.21022</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{79F9C77D-3B12-4111-B3C3-F006C7026580}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Aricie.DNN</RootNamespace>
+    <AssemblyName>Aricie.DNN</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Aricie.DNN.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <CodeAnalysisRules>
+    </CodeAnalysisRules>
+    <CodeAnalysisRuleSet>Migrated rules for Aricie.DNN.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Aricie.DNN.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ciloci.Flee, Version=0.9.26.1, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Flee\Ciloci.Flee.dll</HintPath>
+    </Reference>
+    <Reference Include="CountryListBox, Version=1.0.2182.16696, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\CountryListBox.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DomainName.Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\DomainName.Library.dll</HintPath>
+    </Reference>
+    <Reference Include="DotNetNuke, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\dnn481\DotNetNuke.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="DotNetNuke.WebUtility, Version=3.2.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\dnn481\DotNetNuke.WebUtility.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.Services.Design" />
+    <Reference Include="System.Design" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="Telerik.Web.UI, Version=2011.2.915.35, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Telerik.Web.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ComponentModel\Config\LocationSettings.vb" />
+    <Compile Include="ComponentModel\IGenericizer.vb" />
+    <Compile Include="ComponentModel\Providers\AutoProvider.vb" />
+    <Compile Include="ComponentModel\CollectionGenre.vb" />
+    <Compile Include="ComponentModel\Config\AutoModuleConfig.vb" />
+    <Compile Include="ComponentModel\EntityDescriptor.vb" />
+    <Compile Include="ComponentModel\EntityGenre.vb" />
+    <Compile Include="ComponentModel\EntityRequirements.vb" />
+    <Compile Include="ComponentModel\EntityServices.vb" />
+    <Compile Include="ComponentModel\EntityViewGenre.vb" />
+    <Compile Include="ComponentModel\IActiveEntityController.vb" />
+    <Compile Include="ComponentModel\ICacheableEntityDescriptor.vb" />
+    <Compile Include="ComponentModel\IEntityController.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ComponentModel\IEntityView.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ComponentModel\IModuleIdentity.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ComponentModel\Config\ModuleConfig.vb" />
+    <Compile Include="ComponentModel\IModelDescriptor.vb" />
+    <Compile Include="ComponentModel\IModelView.vb" />
+    <Compile Include="ComponentModel\IModuleDescriptor.vb" />
+    <Compile Include="ComponentModel\ModuleDescriptionProvider.vb" />
+    <Compile Include="ComponentModel\ModuleDescriptor.vb" />
+    <Compile Include="ComponentModel\Providers\AutoProviderSettings.vb" />
+    <Compile Include="ComponentModel\DotNetType.vb" />
+    <Compile Include="ComponentModel\Providers\IAutoProvider.vb" />
+    <Compile Include="ComponentModel\Providers\IProvider.vb" />
+    <Compile Include="ComponentModel\Providers\IProviderConfig.vb" />
+    <Compile Include="ComponentModel\Providers\IProviderSettings.vb" />
+    <Compile Include="ComponentModel\ISelector.vb" />
+    <Compile Include="ComponentModel\Providers\ModuleProviderConfig.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="ComponentModel\Providers\NamedConfig.vb" />
+    <Compile Include="ComponentModel\Providers\ProviderHost.vb" />
+    <Compile Include="ComponentModel\Providers\ProviderSettings.vb" />
+    <Compile Include="ComponentModel\Providers\ProviderConfig.vb" />
+    <Compile Include="ComponentModel\Providers\ProviderConfigHelper.vb" />
+    <Compile Include="ComponentModel\Providers\ProviderList.vb" />
+    <Compile Include="ComponentModel\Providers\SimpleList.vb" />
+    <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
+    <Compile Include="ComponentModel\RelationCardinality.vb" />
+    <Compile Include="ComponentModel\RelationNature.vb" />
+    <Compile Include="Config\AddInfo.vb" />
+    <Compile Include="Config\AppSettingAddInfo.vb" />
+    <Compile Include="Config\ComplexNodeInfo.vb" />
+    <Compile Include="Config\ConfigActionType.vb" />
+    <Compile Include="Config\ConfigSchema.vb">
+      <DependentUpon>ConfigSchema.xsd</DependentUpon>
+    </Compile>
+    <Compile Include="Config\AuthenticationServiceInfo.vb" />
+    <Compile Include="Config\ConfigElementInfo.vb" />
+    <Compile Include="Config\AppSettingInfo.vb" />
+    <Compile Include="Config\CustomErrorAddInfo.vb" />
+    <Compile Include="Config\CustomErrorDynamicHandlerUpdater.vb" />
+    <Compile Include="Config\CustomErrorsAddInfo.vb" />
+    <Compile Include="Config\MultiUpdateProvider.vb" />
+    <Compile Include="Config\TrustAddInfo.vb" />
+    <Compile Include="Config\TrustInfo.vb" />
+    <Compile Include="Config\VirtualCustomErrorUpdater.vb" />
+    <Compile Include="Config\XmlNamedConfigElementInfo.vb" />
+    <Compile Include="Diagnostics\Constants.vb" />
+    <Compile Include="Diagnostics\DebugInfoScope.vb" />
+    <Compile Include="Entities\FileUpload.vb" />
+    <Compile Include="Entities\ParsedUri.vb" />
+    <Compile Include="Entities\PingUrlInfo.vb" />
+    <Compile Include="Entities\LoginInfo.vb" />
+    <Compile Include="Entities\SimpleControlUrlInfo.vb" />
+    <Compile Include="Images\Images.vb" />
+    <Compile Include="Modules\LinkModuleHelper.vb" />
+    <Compile Include="Modules\ModuleHelper.vb" />
+    <Compile Include="Providers\DotNetNukeServiceProvider.vb" />
+    <Compile Include="Security\EncryptionHelper.vb" />
+    <Compile Include="Security\TrialPropertyMode.vb" />
+    <Compile Include="Services\ContextBase.vb" />
+    <Compile Include="Services\Caching\CachedOutput.vb" />
+    <Compile Include="Services\Caching\FileOutputSettings.vb" />
+    <Compile Include="Services\Caching\FileOutputTracker.vb" />
+    <Compile Include="Services\Caching\OutputCacheMode.vb" />
+    <Compile Include="Services\Caching\OutputCachingStrategy.vb" />
+    <Compile Include="Services\Caching\ScavangerEntry.vb" />
+    <Compile Include="Services\Errors\CustomErrorsHandler.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Services\Errors\CustomErrorsInfo.vb" />
+    <Compile Include="Config\StandardComplexNodeInfo.vb" />
+    <Compile Include="Entities\ControlUrlInfo.vb" />
+    <Compile Include="Services\Errors\CustomErrorInfo.vb" />
+    <Compile Include="Config\CustomErrorConfigUpdater.vb" />
+    <Compile Include="Config\HttpHandlerAddInfo.vb" />
+    <Compile Include="Config\HttpModuleAddInfo.vb" />
+    <Compile Include="Config\NodeInfo.vb" />
+    <Compile Include="Config\NodesInfo.vb" />
+    <Compile Include="Config\ProviderAddInfo.vb" />
+    <Compile Include="Config\SchedulerTaskElementInfo.vb" />
+    <Compile Include="Config\SimpleNodeInfo.vb" />
+    <Compile Include="Config\TypedEntityElementInfo.vb" />
+    <Compile Include="Config\WebServerAddInfo.vb" />
+    <Compile Include="Config\XmlConfigElementInfo.vb" />
+    <Compile Include="Config\SkinControlInfo.vb" />
+    <Compile Include="Config\WebServerElementInfo.vb" />
+    <Compile Include="Config\HttpHandlerInfo.vb" />
+    <Compile Include="Config\TypedXmlConfigElementInfo.vb" />
+    <Compile Include="Config\HttpModuleInfo.vb" />
+    <Compile Include="Config\ProviderInfo.vb" />
+    <Compile Include="Config\IConfigUpdater.vb" />
+    <Compile Include="Diagnostics\DebugInfo.vb" />
+    <Compile Include="Diagnostics\DebugLogger.vb" />
+    <Compile Include="Diagnostics\ExternalFileAsyncLogger.vb" />
+    <Compile Include="Diagnostics\ExternalFileLog.vb" />
+    <Compile Include="Diagnostics\SimpleDebugLogger.vb" />
+    <Compile Include="Diagnostics\StepInfo.vb" />
+    <Compile Include="Entities\ConditionalEntity.vb" />
+    <Compile Include="Modules\HtmlModuleHelper.vb" />
+    <Compile Include="Security\ITrialProvider.vb" />
+    <Compile Include="Security\PermissionEnumInfo.vb" />
+    <Compile Include="Security\PermissionType.vb" />
+    <Compile Include="Security\TrialConfigInfo.vb" />
+    <Compile Include="Security\TrialInfo.vb" />
+    <Compile Include="Security\TrialLimitation.vb" />
+    <Compile Include="Security\TrialMessage.vb" />
+    <Compile Include="Security\TrialStatus.vb" />
+    <Compile Include="Services\Caching\OutputCacheManager.vb" />
+    <Compile Include="Services\Caching\CachedUrlsCollection.vb" />
+    <Compile Include="Services\Caching\CachedUrlsElement.vb" />
+    <Compile Include="Services\Caching\DiskOutputCacheSettingsSection.vb" />
+    <Compile Include="Services\Caching\OutputCachingModule.vb" />
+    <Compile Include="Services\Caching\OutputCachingSettings.vb" />
+    <Compile Include="Services\Caching\VaryByMode.vb" />
+    <Compile Include="Services\Caching\ResponseFilter.vb" />
+    <Compile Include="Services\Caching\OutputTracker.vb" />
+    <Compile Include="Services\Errors\ErrorsHelper.vb" />
+    <Compile Include="Services\Errors\MultipleCustomErrorsMode.vb" />
+    <Compile Include="Services\Errors\VirtualCustomErrorsInfo.vb" />
+    <Compile Include="Services\Filtering\FilterControlInfo.vb" />
+    <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
+    <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
+    <Compile Include="Services\Filtering\XPathInfo.vb" />
+    <Compile Include="Services\Flee\CtorVariableInfo.vb" />
+    <Compile Include="Services\Flee\ObjectAction.vb" />
+    <Compile Include="Services\Flee\ObjectActions.vb" />
+    <Compile Include="Services\Flee\ObjectActionsBase.vb" />
+    <Compile Include="Services\Flee\SimpleExpression.vb" />
+    <Compile Include="Services\Flee\VariablesBase.vb" />
+    <Compile Include="Services\Flee\CultureInfoMode.vb" />
+    <Compile Include="Services\Flee\ExpressionVariableInfo.vb" />
+    <Compile Include="Services\Flee\FleeExpressionInfo.vb" />
+    <Compile Include="Services\Flee\FleeImportInfo.vb" />
+    <Compile Include="Services\Flee\FleeVarEvaluationMode.vb" />
+    <Compile Include="Services\Flee\VariableInfo.vb" />
+    <Compile Include="Services\Flee\Variables.vb" />
+    <Compile Include="Services\Flee\InstanceVariableInfo.vb" />
+    <Compile Include="Services\Flee\VariableScope.vb" />
+    <Compile Include="Services\IContext.vb" />
+    <Compile Include="Services\IContextItems.vb" />
+    <Compile Include="Services\IModuleContext.vb" />
+    <Compile Include="Services\Tokens\ConditionalTokenInfo.vb" />
+    <Compile Include="Services\Tokens\ConditionalTokenSourceInfo.vb" />
+    <Compile Include="Services\Tokens\DelimiterType.vb" />
+    <Compile Include="Services\Tokens\IContextProvider.vb" />
+    <Compile Include="Services\Tokens\LoopTokenProcessor.vb" />
+    <Compile Include="Services\Tokens\SubToken.vb" />
+    <Compile Include="Services\Tokens\SubTokenType.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\AbstractUpgradeAction.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\ActionStep.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\GlobalUpgradeAction.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\ModuleUpgradeAction.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\PortalUpgradeAction.vb" />
+    <Compile Include="Services\UpgradeSystem\Actions\StepUpgradeAction.vb" />
+    <Compile Include="Services\UpgradeSystem\IUpgradeActionsProvider.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\ConfigurationRepository.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\IConfigurationRepository.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\IUpgradeSettingsAction.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\ScopeInformation.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\UpgradeHostSettingsAction.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\UpgradeModuleSettingsAction.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\UpgradePortalSettingsAction.vb" />
+    <Compile Include="Services\UpgradeSystem\SettingsActions\UpgradeSettingsAction.vb" />
+    <Compile Include="Services\UpgradeSystem\UpgradeActionsCollection.vb" />
+    <Compile Include="Services\UpgradeSystem\UpgradeEngine.vb" />
+    <Compile Include="Services\Workers\AsyncWorker.vb" />
+    <Compile Include="Diagnostics\PerformanceLogger.vb" />
+    <Compile Include="Services\Filtering\FilterInfo.vb" />
+    <Compile Include="Entities\MetaDataInfo.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Security\PermissionHelper.vb" />
+    <Compile Include="Security\TrialController.vb" />
+    <Compile Include="Services\Tokens\AdvancedTokenReplace.vb" />
+    <Compile Include="Config\ConfigHelper.vb" />
+    <Compile Include="Config\XmlConfigInfo.vb" />
+    <Compile Include="Services\DnnContext.vb" />
+    <Compile Include="Services\FileHelper.vb" />
+    <Compile Include="Services\Filtering\StringTransformInfo.vb" />
+    <Compile Include="Services\Filtering\ExpressionFilterInfo.vb" />
+    <Compile Include="Services\Tokens\PropertyExplorer.vb" />
+    <Compile Include="Services\Tokens\DeepObjectPropertyAccess.vb" />
+    <Compile Include="Services\NukeHelper.vb" />
+    <Compile Include="Services\Filtering\StringEscaper.vb" />
+    <Compile Include="Services\Tokens\TokenSourceInfo.vb" />
+    <Compile Include="Diagnostics\AsyncLogger.vb" />
+    <Compile Include="Services\Workers\TaskQueue.vb" />
+    <Compile Include="Services\Workers\TaskQueueInfo.vb" />
+    <Compile Include="Settings\GeneralSettings.vb" />
+    <Compile Include="Settings\PersonalSettings.vb" />
+    <Compile Include="Settings\SettingsController.vb" />
+    <Compile Include="Settings\SettingsScope.vb" />
+    <Compile Include="UI\AriciePopupBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\AriciePortalModuleBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\AricieUserControlBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\ControlHelper.vb" />
+    <Compile Include="UI\FormHelper.vb" />
+    <Compile Include="Handlers\ImageHandler.vb" />
+    <Compile Include="UI\IValidable.vb" />
+    <Compile Include="UI\Layout\TemplateProcessor.vb" />
+    <Compile Include="UI\PropertyEditor\Adapters\AricieStandardEditorInfoAdapter.vb" />
+    <Compile Include="UI\PropertyEditor\Adapters\CollectionEditorInfoAdapter.vb" />
+    <Compile Include="UI\PropertyEditor\Adapters\FieldEditorInfoAdapter.vb" />
+    <Compile Include="UI\PropertyEditor\Adapters\InnerEditorInfoAdapter.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\AriciePropertySortOrderComparer.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\AutoEraseAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\AutoPostBackAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\CategoryAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\CollectionEditorAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\OnDemandAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\DefaultCategoryAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\MultiSelectorTypeAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\OrderedAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\PasswordModeAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\TrialLimitedAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\UserControlAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\WidthAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\ConditionalVisibleAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\OrientationAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\InnerPropertyEditorAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\FieldStyleAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\AttributeContainerAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\DataSourceAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\FileExtensionsAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\IAttributesProvider.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\InnerEditorAttribute.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\Attributes\KeyEditorAttribute.vb">
+    </Compile>
+    <Compile Include="UI\PropertyEditor\Attributes\LineCountAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\PathAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\SelectorAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\SizeAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\TextFieldAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\ValueEditorAttribute.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\Attributes\ValueFieldAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\AriciePropertyEditorControl.vb" />
+    <Compile Include="UI\PropertyEditor\CollectionField.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieCalendarEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieCheckBoxListEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\RequiredNumberForAdminControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\RequiredTextBoxForAdminControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\SelectorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\UserControlEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\ExtendedPropertyEditorControl.vb" />
+    <Compile Include="UI\PropertyEditor\Field.vb" />
+    <Compile Include="UI\PropertyEditor\FieldControls\AricieFieldEditorControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieImageEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieRadioButtonListEditContrrol.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieTitleEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\CollectionEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieCheckBoxEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieUrlEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\DictionaryEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\DropDownListEditControl.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\EditControls\CustomTextEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\GraphEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\ILargeEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\DecimalEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\ITypedContainer.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\ListEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\MultiSelectorEditControl.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\EditControls\PropertyEditorEditControl.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="UI\PropertyEditor\EditControls\SelectorEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\UploadEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\AricieEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\CollectionEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\DataListEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\DropDownListEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\EnumEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\GridViewEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\LiteralEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\EditorsInfo\PropertyEditorInfo.vb" />
+    <Compile Include="UI\PropertyEditor\FieldControls\FieldEditorHtmlWriter.vb" />
+    <Compile Include="UI\PropertyEditor\FieldControls\IAricieFieldControl.vb" />
+    <Compile Include="UI\PropertyEditor\PropertyEditorUserControlBase.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="UI\Skins\SkinHelper.vb" />
+    <Compile Include="UI\TimeSpanControl.vb" />
+    <Compile Include="UI\WebControls\AssemblySelectorDropDownList.vb" />
+    <Compile Include="UI\WebControls\AutoCompleteTextBox.vb" />
+    <Compile Include="UI\WebControls\AutoSelectorControl.vb" />
+    <Compile Include="UI\WebControls\ContainerSelector.vb" />
+    <Compile Include="UI\WebControls\CustomPermissionsGrid.vb" />
+    <Compile Include="UI\WebControls\DesktopModuleMultiSelector.vb" />
+    <Compile Include="UI\WebControls\DropDownListMulti.vb" />
+    <Compile Include="UI\WebControls\FolderSelector.vb" />
+    <Compile Include="UI\WebControls\Grid.vb" />
+    <Compile Include="UI\WebControls\HtmlInputDate.vb" />
+    <Compile Include="UI\WebControls\HtmlJsSlider.vb" />
+    <Compile Include="UI\WebControls\IDateTimeControl.vb" />
+    <Compile Include="UI\WebControls\ISelectorControl.vb" />
+    <Compile Include="UI\WebControls\LocalizableSelectorControl.vb" />
+    <Compile Include="UI\WebControls\LogTypeSelector.vb" />
+    <Compile Include="UI\WebControls\MultiSelectorControl.vb" />
+    <Compile Include="UI\WebControls\MultiSelectorControlBase.vb" />
+    <Compile Include="UI\WebControls\PortalAliasSelector.vb" />
+    <Compile Include="UI\WebControls\ResourcesUtils.vb" />
+    <Compile Include="UI\WebControls\SelectorControl.vb" />
+    <Compile Include="UI\WebControls\TabSelector.vb" />
+    <Compile Include="UI\WebControls\DesktopModuleSelector.vb" />
+    <Compile Include="UI\WebControls\UploadControl.vb" />
+    <Compile Include="UI\WebControls\YesNoCtl.vb" />
+    <Compile Include="VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Diagnostics\Diagnostics.cd" />
+    <None Include="Entities\Entities.cd" />
+    <None Include="external\dnn481\CountryListBox.dll" />
+    <None Include="external\dnn481\DotNetNuke.dll" />
+    <None Include="external\dnn481\DotNetNuke.HttpModules.dll" />
+    <None Include="external\dnn481\DotNetNuke.Search.Index.dll" />
+    <None Include="external\dnn481\DotNetNuke.WebControls.dll" />
+    <None Include="external\dnn481\DotNetNuke.WebUtility.dll" />
+    <None Include="external\Flee\Ciloci.Flee.dll" />
+    <None Include="external\Flee\Ciloci.Flee.license.txt" />
+    <None Include="external\HtmlAgilityPack\HtmlAgilityPack.dll" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="Security\Security.cd" />
+    <None Include="Services\Caching\Caching.cd" />
+    <None Include="UI\UI.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ComponentModel\ComponentModel.cd" />
+    <None Include="Config\Config.cd" />
+    <None Include="Config\ConfigSchema.xsd" />
+    <None Include="Services\Services.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\next.gif" />
+    <EmbeddedResource Include="Images\prev.gif" />
+    <EmbeddedResource Include="StyleSheet\Aricie.Web.css" />
+    <EmbeddedResource Include="js\jquery-ui.js" />
+    <EmbeddedResource Include="js\jquery.tools.min.js" />
+    <EmbeddedResource Include="UI\WebControls\HtmlInputDate.js" />
+    <EmbeddedResource Include="js\jquery.cookie.js" />
+    <EmbeddedResource Include="UI\PropertyEditor\AriciePropertyEditorScripts.js" />
+    <EmbeddedResource Include="UI\PropertyEditor\AriciePropertyEditor.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ADA6635-4F81-4900-B392-DC0FD650FA52}</Project>
+      <Name>Aricie.Core - vs2010</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="UI\WebControls\HtmlJsSlider.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="external\AjaxControlToolKit\AjaxControlToolkit.dll" />
+    <Content Include="external\AjaxControlToolKit\ar\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\cs\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\de\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\es\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\fr\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\he\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\hi\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\it\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\ja\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\ko\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\nl\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\pt\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\ru\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\SanitizerProviders\AntiXSSLibrary.dll" />
+    <Content Include="external\AjaxControlToolKit\SanitizerProviders\HtmlSanitizationLibrary.dll" />
+    <Content Include="external\AjaxControlToolKit\SanitizerProviders\SanitizerProviders.dll" />
+    <Content Include="external\AjaxControlToolKit\tr-TR\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\zh-CHS\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\AjaxControlToolKit\zh-CHT\AjaxControlToolkit.resources.dll" />
+    <Content Include="external\DomainName.Library.dll" />
+    <Content Include="external\Telerik.Web.UI.dll" />
+    <EmbeddedResource Include="UI\WebControls\AutoCompleteTextBox.js" />
+    <EmbeddedResource Include="Images\dropdown.png" />
+    <EmbeddedResource Include="UI\WebControls\DropDownListMulti.js" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

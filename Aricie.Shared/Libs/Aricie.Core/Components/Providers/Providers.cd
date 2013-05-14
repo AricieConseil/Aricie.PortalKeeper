@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.Providers.SystemServiceProvider">
+    <Position X="1.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAACAIAAAAQAAAEACACAAIAQCAAAAAAAAA=</HashCode>
+      <FileName>Components\Providers\SystemServiceProvider.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Providers.DefaultServiceProvider">
+    <Position X="1.5" Y="5.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAQACAAACAAAAIAACAAAAAAAAA=</HashCode>
+      <FileName>Components\Providers\DefaultServiceProvider.vb</FileName>
+      <NewMemberFileName>Components\Providers\DotNetNukeServiceProvider.vb</NewMemberFileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Providers.ConverterProviderBase" BaseTypeListCollapsed="true">
+    <Position X="4.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIBQAEAAAAAAAAAAAEQAEIAAQAA=</HashCode>
+      <FileName>Components\Providers\ConverterProviderBase.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Business.SimpleTypeConverter(Of T, Y)">
+    <Position X="7" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAEAAAAAAAAAAAAAAAAAACAAAAIAAAAAAAA=</HashCode>
+      <FileName>Components\Providers\SimpleTypeConverter.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Aricie.Providers.IConverterProvider">
+    <Position X="4.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAEAAEAAAAAA=</HashCode>
+      <FileName>Components\Providers\IConverterProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

@@ -1,0 +1,879 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.UI.Controls.AriciePopupBase" Collapsed="true">
+    <Position X="39.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAQAAAAAQ=</HashCode>
+      <FileName>UI\AriciePopupBase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Controls.AriciePortalModuleBase" Collapsed="true">
+    <Position X="41.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAGAAAAAIkCBAAAAAgggAICAQAAAAJVAAkAIAAAYE=</HashCode>
+      <FileName>UI\AriciePortalModuleBase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Controls.AricieUserControlBase" Collapsed="true">
+    <Position X="0.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAQIAAQAAAQAAAAAAAIAgSAIwAIBAEAgAEAEAAAIE=</HashCode>
+      <FileName>UI\AricieUserControlBase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.CollectionField" Collapsed="true">
+    <Position X="3.5" Y="17.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAABAAAAAEAAAAAGAAAAAAAAAAABAAAQAA=</HashCode>
+      <FileName>UI\PropertyEditor\CollectionField.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Field" Collapsed="true">
+    <Position X="3.5" Y="16.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAIAAAEAAIQAAAAAgBAAAACAAAAUAQAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Field.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Layout.ProviderController" Collapsed="true">
+    <Position X="37.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEAAAAAAAAAAAgAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>UI\Layout\TemplateProcessor.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AricieStandardEditorInfoAdapter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="46.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAACgAEAAQBIAAAAAKEAAAAAACAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Adapters\AricieStandardEditorInfoAdapter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.CollectionEditorInfoAdapter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAgAAACAAAAEQAIAAEAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Adapters\CollectionEditorInfoAdapter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.FieldEditorInfoAdapter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="37.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAABAgAAACAAAAEQAIAAEAAAAAAAEAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Adapters\FieldEditorInfoAdapter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.InnerEditorInfoAdapter" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="36" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAABAAAAACBAAAAQAIAQAAAAAAAAACgAgAABAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Adapters\InnerEditorInfoAdapter.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AriciePropertyEditorControl" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="43" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>FjUIALBgESKEYQIMSAgRECwqECgAJhSWRBAUQIAicQQ=</HashCode>
+      <FileName>UI\PropertyEditor\AriciePropertyEditorControl.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AriciePropertySortOrderComparer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="44.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAAAAAAAAAAAAgAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\AriciePropertySortOrderComparer.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.ExtendedPropertyEditorControl" Collapsed="true">
+    <Position X="46.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAEAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\ExtendedPropertyEditorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.PropertyEditorUserControlBase" Collapsed="true">
+    <Position X="0.5" Y="17" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\PropertyEditorUserControlBase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AssemblySelectorDropDownList" Collapsed="true">
+    <Position X="12.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>UI\WebControls\AssemblySelectorDropDownList.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AutoCompleteTextBox" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="36" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAIAAABAAAAAAgAAIgAoAAAAAADRgCAAAEAA=</HashCode>
+      <FileName>UI\WebControls\AutoCompleteTextBox.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AutoSelectorControl" Collapsed="true">
+    <Position X="1.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAQAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\AutoSelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.AutoSelectorControl(Of T)" Collapsed="true">
+    <Position X="17.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\AutoSelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.HostContainerSelector" Collapsed="true">
+    <Position X="19.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>UI\WebControls\ContainerSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.PortalContainerSelector" Collapsed="true">
+    <Position X="24" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAIAAA=</HashCode>
+      <FileName>UI\WebControls\ContainerSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.CustomPermissionsGrid" Collapsed="true">
+    <Position X="46.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAACAAAAAAAAAAAAAAAAAAQAAAAAAMAAAJAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\CustomPermissionsGrid.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.DesktopModuleMultiSelector" Collapsed="true">
+    <Position X="4.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAQAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\DesktopModuleMultiSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.DesktopModuleSelector" Collapsed="true">
+    <Position X="8.25" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\DesktopModuleSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.DropDownListMulti" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="41.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AA0IAAACMAAABhAIAAEUDAAKAAAAACQACJJEDQgCEAA=</HashCode>
+      <FileName>UI\WebControls\DropDownListMulti.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.FolderSelector" Collapsed="true">
+    <Position X="6.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAQACAAAAAAIAAAAAABAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\FolderSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.Grid" Collapsed="true">
+    <Position X="43" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAEAAAAAAABAAAAACAAAEAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\Grid.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.HtmlInputDate" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="44.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>A4AiQAAACBAAEBAAFAAAAAgIAAgAgAAAEBBAAAAAkEA=</HashCode>
+      <FileName>UI\WebControls\HtmlInputDate.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.HtmlJsSlider" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="46.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAADAAEhAAEAAAAAAIIEAAiBCAABAAACAAEAA=</HashCode>
+      <FileName>UI\WebControls\HtmlJsSlider.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.LocalizableSelectorControl(Of T)" Collapsed="true">
+    <Position X="3.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\LocalizableSelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.LogTypeSelector" Collapsed="true">
+    <Position X="6" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\LogTypeSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.MultiSelectorControl(Of T)" Collapsed="true">
+    <Position X="5.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAIAAIAAAIQAAQAAAAAAAAAAAAAAAAAAIAAAQAAA=</HashCode>
+      <FileName>UI\WebControls\MultiSelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.MultiSelectorControlBase" Collapsed="true">
+    <Position X="5.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IQUAIChCJQEoIQIAQICgBAAAEJgAEAkBAEAwBAAgEJE=</HashCode>
+      <FileName>UI\WebControls\MultiSelectorControlBase.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.PortalAliasSelector" Collapsed="true">
+    <Position X="10.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\PortalAliasSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.CurrentPortalAliasSelector" Collapsed="true">
+    <Position X="10.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\PortalAliasSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.PortalSelector" Collapsed="true">
+    <Position X="15" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\PortalAliasSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.ResourcesUtils" Collapsed="true">
+    <Position X="39.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAg=</HashCode>
+      <FileName>UI\WebControls\ResourcesUtils.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.SelectorControl" Collapsed="true">
+    <Position X="12.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAICjIJQkgAQBERoggAAiIEIgABAgDAEAgBAgUMAA=</HashCode>
+      <FileName>UI\WebControls\SelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.SelectorControl(Of T)" Collapsed="true">
+    <Position X="14" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAEQAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\SelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.TabSelector" Collapsed="true">
+    <Position X="21.75" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\TabSelector.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.UploadControl" Collapsed="true">
+    <Position X="37.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCEEBQQgCQIioBIQABwYDAICBoAAAQAAAAoEKAoMgSA=</HashCode>
+      <FileName>UI\WebControls\UploadControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.YesNoCtl" Collapsed="true">
+    <Position X="46.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\YesNoCtl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.AttributeContainerAttribute" Collapsed="true">
+    <Position X="13.75" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAAAAAQBAAAAACAABAAAAAAQA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\AttributeContainerAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.AutoEraseAttribute" Collapsed="true">
+    <Position X="37.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\AutoEraseAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.AutoPostBackAttribute" Collapsed="true">
+    <Position X="39.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\AutoPostBackAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ActionButtonAttribute" Collapsed="true">
+    <Position X="36" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\AutoPostBackAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ExtendedCategoryAttribute" Collapsed="true">
+    <Position X="44.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACgAAAABAAAAAABAAAIAAAAAAAAAACAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\CategoryAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.CollectionEditorAttribute" Collapsed="true">
+    <Position X="41.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAEAAAAAAAoAAAAACUAAAAAAAAAAEAAQBAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\CollectionEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ConditionalVisibleAttribute" Collapsed="true">
+    <Position X="44.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YAAAAgAAAAAAABICAAAAAAAAAgAAAggEAAMAAQAgAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\ConditionalVisibleAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.DataSourceAttribute" Collapsed="true">
+    <Position X="37.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAEAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\DataSourceAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.DefaultCategoryAttribute" Collapsed="true">
+    <Position X="39.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\DefaultCategoryAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.FieldStyleAttribute" Collapsed="true">
+    <Position X="39.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAEAAAhAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\FieldStyleAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.FileExtensionsAttribute" Collapsed="true">
+    <Position X="41.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAgAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\FileExtensionsAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.InnerEditorAttribute" Collapsed="true">
+    <Position X="13.75" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\InnerEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.InnerPropertyEditorAttribute" Collapsed="true">
+    <Position X="13.75" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAABAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\InnerPropertyEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.KeyEditorAttribute" Collapsed="true">
+    <Position X="12.5" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\KeyEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.LineCountAttribute" Collapsed="true">
+    <Position X="37.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\LineCountAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.MultiSelectorTypeAttribute" Collapsed="true">
+    <Position X="39.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAACAAAAAAAAAAAAAABAAAAAEBAGAAAAAIAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\MultiSelectorTypeAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.OnDemandAttribute" Collapsed="true">
+    <Position X="41.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\OnDemandAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.OrderedAttribute" Collapsed="true">
+    <Position X="43" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\OrderedAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.OrientationAttribute" Collapsed="true">
+    <Position X="44.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\OrientationAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.PasswordModeAttribute" Collapsed="true">
+    <Position X="46.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\PasswordModeAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.PathAttribute" Collapsed="true">
+    <Position X="36" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\PathAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ProvidersSelectorAttribute" Collapsed="true">
+    <Position X="0.5" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\SelectorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.SelectorAttribute" Collapsed="true">
+    <Position X="0.5" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\SelectorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.SizeAttribute" Collapsed="true">
+    <Position X="43" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\SizeAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.TextFieldAttribute" Collapsed="true">
+    <Position X="44.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAACAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\TextFieldAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.TrialLimitedAttribute" Collapsed="true">
+    <Position X="36" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAQBAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\TrialLimitedAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.UserControlAttribute" Collapsed="true">
+    <Position X="41.25" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\UserControlAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ValueEditorAttribute" Collapsed="true">
+    <Position X="14.75" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\ValueEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.ValueFieldAttribute" Collapsed="true">
+    <Position X="43" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAgAAAIAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\ValueFieldAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.Attributes.WidthAttribute" Collapsed="true">
+    <Position X="44.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAABA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\WidthAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieCalendarEditControl" Collapsed="true">
+    <Position X="24.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAYAAAAAAAAAAQAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieCalendarEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieCheckBoxEditControl" Collapsed="true">
+    <Position X="31.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAYAAAAAAAAAAAAAAAAAKgAAAAAAACAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieCheckBoxEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieCheckBoxListEditControl" Collapsed="true">
+    <Position X="2" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACEAAEAYAAAQAAIAAAQAABAAAAAAAAIAAACABI=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieCheckBoxListEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieEditControl" Collapsed="true">
+    <Position X="17.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAGAIAABAAAAAFCAggACgIAAAAAAAgEgAAIABAAAI=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieImageEditControl" Collapsed="true">
+    <Position X="11" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAEAIAIAAAAABAAAAAAAAAIAIAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieImageEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieRadioButtonListEditContrrol" Collapsed="true">
+    <Position X="6.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIACEAAEAYAAAQAAAAAAQAABAAAAAAAAIAQAAAAI=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieRadioButtonListEditContrrol.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieTitleEditControl" Collapsed="true">
+    <Position X="8.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAEAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieTitleEditControl.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.AricieUrlEditControl" Collapsed="true">
+    <Position X="11" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIICIAYBAAAAAAAAAKAIAAAAwAAAAEAAAACAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\AricieUrlEditControl.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.CollectionEditControl" Collapsed="true">
+    <Position X="16.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BrkA0YwUAAEZbBQGCUCAkAkGioAUEASEYEANEAzQWMQ=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\CollectionEditControl.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.CustomTextEditControl" Collapsed="true">
+    <Position X="36" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAoAAACAAAAAQAAAAAAAQAAAAQAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\CustomTextEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.DecimalEditControl" Collapsed="true">
+    <Position X="22.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAYAAAAEAAAAAAAAAAgAAgAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\DecimalEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.DictionaryEditControl" Collapsed="true">
+    <Position X="17.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIACABAAAAAAQAAACQAAAYhACAkQAAQABAgADAQAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\DictionaryEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.DropDownListEditControl" Collapsed="true">
+    <Position X="26.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAEEAAAAZAAACAEAAAAAGEAIAAAAAAAABEAAQAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\DropDownListEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.FilesDownloadEditControl" Collapsed="true">
+    <Position X="33.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAEAAAAYBAAAAAAAAAAAAAAAAQgAgAAAAAABAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.GraphEditControl" Collapsed="true">
+    <Position X="11" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIEEAAAAIAAAAIAAAAAAAIAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\GraphEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.ListEditControl" Collapsed="true">
+    <Position X="15.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAQAABAQAAAAAgGAAQAAQABAgIAAQAABA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\ListEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.MultiSelectorEditControl" Collapsed="true">
+    <Position X="13.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAiACCAAQhAACAAAAIAABgAAAAUBAnAEAAAIAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\MultiSelectorEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.ProfileEditorEditControl" Collapsed="true">
+    <Position X="20" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\PropertyEditorEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.PropertyEditorEditControl" Collapsed="true">
+    <Position X="20" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAEAIAAQAAAAQBAACAAAAAACApBAAAAAABAEAAAAAgA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\PropertyEditorEditControl.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.RequiredNumberForAdminControl" Collapsed="true">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAQBAAAAAAAAAAAAAAAAAAgAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\RequiredNumberForAdminControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.RequiredTextBoxForAdminControl" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAEAAAAcBAAAAABAAACAIAAAAAgAAAEAIAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\RequiredTextBoxForAdminControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.SelectorEditControl" Collapsed="true">
+    <Position X="29" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAQBAACAAAAAAAAIAEAAQAABAEAAAAAAg=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\SelectorEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.SelectorInfo" Collapsed="true">
+    <Position X="41.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAhIAAACIABAAgkAAAAAAAQAEAgAAAAABABkAAg=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\SelectorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditControls.UploadEditControl" Collapsed="true">
+    <Position X="39.5" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QCEAAAAAAAIA4BAAABwKAAADAoAAAAAgAAAEAAAMAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\UploadEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UserControlEditControl" Collapsed="true">
+    <Position X="4.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAQBAASAAAAAAAAIAAAAQAABAEAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\UserControlEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.AricieFieldEditorControl" Collapsed="true">
+    <Position X="37.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAEAAABIAACUBAACQAwwIAAABFAAQAACAAgADQABEQA=</HashCode>
+      <FileName>UI\PropertyEditor\FieldControls\AricieFieldEditorControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.FieldEditorHtmlWriter" Collapsed="true">
+    <Position X="36" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAAAABAAEAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\FieldControls\FieldEditorHtmlWriter.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.TimeSpanControl" Collapsed="true">
+    <Position X="46.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAACAAAAAA=</HashCode>
+      <FileName>UI\TimeSpanControl.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.AricieEditorInfo" Collapsed="true">
+    <Position X="5.25" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAIAAAQAABAAAAAAAAABAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\AricieEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.CollectionEditorInfo" Collapsed="true">
+    <Position X="5.25" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAIAASEBAAAAAQAAwAAAAAAAAEAAAAAAJQAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\CollectionEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.DataListEditorInfo" Collapsed="true">
+    <Position X="3" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAQAAAAAAAAIAABAAAAAAAAAAAAAgACAAAAAAAAI=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\DataListEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.DropDownListEditorInfo" Collapsed="true">
+    <Position X="5.25" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\DropDownListEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.EnumEditorInfo" Collapsed="true">
+    <Position X="43" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\EnumEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.GridViewEditorInfo" Collapsed="true">
+    <Position X="7.5" Y="15.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAAEAACAAEAAAAAAAAAAAAAAAAQAAAAAAAAAEAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\GridViewEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.LiteralEditorInfo" Collapsed="true">
+    <Position X="9.75" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAEAAAAAACAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\LiteralEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.UI.WebControls.EditorInfos.PropertyEditorInfo" Collapsed="true">
+    <Position X="0.75" Y="14" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAACAAABAAAQAAQAAAAAAAAACAAAAIIAAI=</HashCode>
+      <FileName>UI\PropertyEditor\EditorsInfo\PropertyEditorInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="Aricie.DNN.UI.IValidable" Collapsed="true">
+    <Position X="41.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\IValidable.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.Layout.ITemplateProcessor" Collapsed="true">
+    <Position X="37.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\Layout\TemplateProcessor.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.IDateTimeControl" Collapsed="true">
+    <Position X="39.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAQAAAAAAAAAACAAAAAAAAAAAQA=</HashCode>
+      <FileName>UI\WebControls\IDateTimeControl.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.ISelectorControl" Collapsed="true">
+    <Position X="46.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAhAAAAAAQBAAAAAAAAAAAAAAAgBAEAAAAAEAAA=</HashCode>
+      <FileName>UI\WebControls\ISelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.ISelectorControl(Of T)" Collapsed="true">
+    <Position X="36" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\ISelectorControl.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.Attributes.IAttributesProvider" Collapsed="true">
+    <Position X="37.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\IAttributesProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.Attributes.IDynamicAttributesProvider" Collapsed="true">
+    <Position X="41.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\IAttributesProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.EditControls.ILargeEditControl" Collapsed="true">
+    <Position X="43" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\ILargeEditControl.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.EditControls.ITypedContainer" Collapsed="true">
+    <Position X="39.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\ITypedContainer.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.EditControls.IProviderContainer" Collapsed="true">
+    <Position X="44.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\EditControls\ITypedContainer.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.UI.WebControls.FieldControls.IAricieFieldControl" Collapsed="true">
+    <Position X="36" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\PropertyEditor\FieldControls\IAricieFieldControl.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Aricie.DNN.UI.Attributes.CollectionDisplayStyle" Collapsed="true">
+    <Position X="36" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAI=</HashCode>
+      <FileName>UI\PropertyEditor\Attributes\CollectionEditorAttribute.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Module Name="Aricie.DNN.UI.ControlHelper" Collapsed="true">
+    <Position X="36" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAgAAAAAAAAAABAAAAAAAAIEAAA=</HashCode>
+      <FileName>UI\ControlHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Aricie.DNN.UI.FormHelper" Collapsed="true">
+    <Position X="39.5" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>YIAAAAAAEAAAQAAQAAAAhAIAgAAARAAhAAAAAAAAAAA=</HashCode>
+      <FileName>UI\FormHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Aricie.DNN.UI.WebControls.DataControlFieldCollectionExtension" Collapsed="true">
+    <Position X="37.75" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UI\WebControls\DropDownListMulti.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Aricie.DNN.UI.Skin.SkinHelper" Collapsed="true">
+    <Position X="41.25" Y="7.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAQA=</HashCode>
+      <FileName>UI\Skins\SkinHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

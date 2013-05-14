@@ -1,0 +1,195 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.Collections.AutoInitHybridDictionary(Of Tkey, TValue)">
+    <Position X="3" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAQAAAEAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\AutoInitHybridDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.CastingEnumerable(Of TKey, TValue)">
+    <Position X="15.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\CastingEnumerable.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Collections.ConvertedCollection(Of TKey, TValue)">
+    <Position X="17.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAQAAAABAQAAAAAAAAAAAABAABQIAA=</HashCode>
+      <FileName>Components\Collections\ConvertedCollection.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.ConvertedEnumerable(Of TKey, TValue)">
+    <Position X="16.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAABAAAEAAAAAAAAACAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\ConvertedEnumerable.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.CastingEnumerator(Of Tkey, TValue)">
+    <Position X="19.75" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\ConvertedEnumerator.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Collections.ConvertedEnumerator(Of Tkey, TValue)">
+    <Position X="19.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACEABAAAABGAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\ConvertedEnumerator.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.DictionaryComparer(Of TKey, TValue, TInput)" BaseTypeListCollapsed="true">
+    <Position X="13.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAEAAAAAAAAAAAAAAAAGAAAAAABAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\DictionaryComparer.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Collections.DualDictionary(Of TKey, TValue)">
+    <Position X="5.25" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAABAAAAAAABBAAAEAAQAAAAAACAABAAAA=</HashCode>
+      <FileName>Components\Collections\DualDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.HybridDictionary(Of TKey, TValue)">
+    <Position X="5.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAICAhAAoAAEBRAQCQAABAQEAAACgAAAAAAgBABQIQA=</HashCode>
+      <FileName>Components\Collections\HybridDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.RadixTree(Of TKey, TList, TValue)">
+    <Position X="7.5" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAQAAAAABQQRAQAAACAAAAAAA=</HashCode>
+      <FileName>Components\Collections\RadixTree.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Collections.ReverseLookupHybridDictionary(Of TKey, TValue)">
+    <Position X="3" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAAABAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\ReverseLookupHybridDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.Collections.SerializationDictionaryHelper(Of TKey, TValue)">
+    <Position X="11.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Components\Collections\SerializableDictionary.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Collections.SerializableDictionary(Of TKey, TValue)" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAACAABAAAAAAIAAgAAAAAA=</HashCode>
+      <FileName>Components\Collections\SerializableDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Collections.SerializableSortedList(Of TKey, TValue)" BaseTypeListCollapsed="true">
+    <Position X="9.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAACAABAAAAAAIAAgAAAAAA=</HashCode>
+      <FileName>Components\Collections\SerializableDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Collections.SerializableSortedDictionary(Of TKey, TValue)" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAACAABAAAAAAIAAgAAAAAA=</HashCode>
+      <FileName>Components\Collections\SerializableDictionary.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Collections.SerializableList(Of T)" BaseTypeListCollapsed="true">
+    <Position X="11.5" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAACAABAABAAAAAAgAAAAAA=</HashCode>
+      <FileName>Components\Collections\SerializableList.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.Collections.Trie(Of TKey, TList, TValue)">
+    <Position X="7.5" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEADAAABhAAAAAARAAAAARIQBAAAQAgAAAwAAA=</HashCode>
+      <FileName>Components\Collections\Trie.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.UI.WebControls.EditControls.PagedCollection">
+    <Position X="22.25" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAgCAABAAAAAAEAQAAABAAAAAAABAFACAIAQ=</HashCode>
+      <FileName>Components\Collections\PagedCollection.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.UI.WebControls.EditControls.PagedList">
+    <Position X="22.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEIAAEAAAAAAAAAQAAAABAAkAAAAQAAACAAAAABQAAA=</HashCode>
+      <FileName>Components\Collections\PagedList.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Struct Name="Aricie.Collections.SafeKeyValuePair(Of TKey, TValue)" BaseTypeListCollapsed="true">
+    <Position X="0.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAAAUEgIAAAAQAAAAAAIAAAAAgAAAAAAA=</HashCode>
+      <FileName>Components\Collections\SafeKeyValuePair.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Struct>
+  <Interface Name="Aricie.Collections.IAutoInitDictionary(Of TKey, TValue)" Collapsed="true">
+    <Position X="0.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\IDualDictionary.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Collections.IReverseLookupDictionary(Of TKey, TValue)" Collapsed="true">
+    <Position X="0.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\IDualDictionary.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Collections.IDualDictionary(Of TKey, TValue)">
+    <Position X="5.25" Y="12.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Components\Collections\IDualDictionary.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Collections.ITrie(Of TList, TValue)">
+    <Position X="7.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAABAAAAAAABAAAAAAIAAAAAAAAAAAwAAA=</HashCode>
+      <FileName>Components\Collections\ITrie.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.Collections.IKeyedItem(Of TKey)">
+    <Position X="0.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Components\Collections\SafeKeyValuePair.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

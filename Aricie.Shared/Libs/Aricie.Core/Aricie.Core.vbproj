@@ -1,0 +1,238 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{6ADA6635-4F81-4900-B392-DC0FD650FA52}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Aricie</RootNamespace>
+    <AssemblyName>Aricie.Core</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <MyType>Windows</MyType>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>3.5</OldToolsVersion>
+    <UpgradeBackupLocation />
+    <PublishUrl>publish\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <DocumentationFile>Aricie.Core.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <OutputPath>bin\</OutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Aricie.Core.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
+    <DebugSymbols>true</DebugSymbols>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\Aricie.DNN\VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb">
+      <Link>VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb</Link>
+    </Compile>
+    <Compile Include="Components\Collections\AutoInitHybridDictionary.vb" />
+    <Compile Include="Components\Collections\CastingEnumerable.vb" />
+    <Compile Include="Components\Collections\ConvertedCollection.vb" />
+    <Compile Include="Components\Collections\ConvertedEnumerable.vb" />
+    <Compile Include="Components\Collections\ConvertedEnumerator.vb" />
+    <Compile Include="Components\Collections\DictionaryComparer.vb" />
+    <Compile Include="Components\Collections\DualDictionary.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Collections\HybridDictionary.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Collections\IDualDictionary.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Collections\ITrie.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Collections\PagedCollection.vb" />
+    <Compile Include="Components\Collections\PagedList.vb" />
+    <Compile Include="Components\Collections\RadixTree.vb" />
+    <Compile Include="Components\Collections\ReverseLookupHybridDictionary.vb" />
+    <Compile Include="Components\Collections\SafeKeyValuePair.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Collections\SerializableList.vb" />
+    <Compile Include="Components\Collections\Trie.vb" />
+    <Compile Include="Components\CompareIPs.vb" />
+    <Compile Include="Components\ComponentModel\CData.vb" />
+    <Compile Include="Components\ComponentModel\IChildEntity.vb" />
+    <Compile Include="Components\ComponentModel\IMergeable.vb" />
+    <Compile Include="Components\ComponentModel\ISimpleEntity.vb" />
+    <Compile Include="Components\ComponentModel\MainCategoryAttribute.vb" />
+    <Compile Include="Components\ComponentModel\DelegateInfo.vb" />
+    <Compile Include="Components\ComponentModel\Filters\CustomSorter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\FilterInExpression.vb" />
+    <Compile Include="Components\ComponentModel\Filters\InvertConverter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\OperatorFilterExp.vb" />
+    <Compile Include="Components\ComponentModel\Filters\SimpleComparer.vb" />
+    <Compile Include="Components\ComponentModel\Filters\SimpleSorter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\PredicateFilter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\IDescriptor.vb" />
+    <Compile Include="Components\ComponentModel\Filters\FilterExpression.vb" />
+    <Compile Include="Components\ComponentModel\Filters\IFilter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\ListFilter.vb" />
+    <Compile Include="Components\ComponentModel\Filters\SimpleFilter.vb" />
+    <Compile Include="Components\Common.vb" />
+    <Compile Include="Components\ComponentModel\RegexMapping.vb" />
+    <Compile Include="Components\ComponentModel\VariableStrategy.vb" />
+    <Compile Include="Components\CompressionMethod.vb" />
+    <Compile Include="Components\Constants.vb" />
+    <Compile Include="Components\ComponentModel\GenericEventArgs.vb" />
+    <Compile Include="Components\Providers\ConverterProviderBase.vb" />
+    <Compile Include="Components\Providers\DefaultServiceProvider.vb" />
+    <Compile Include="Components\Providers\IConverterProvider.vb" />
+    <Compile Include="Components\Providers\SimpleTypeConverter.vb" />
+    <Compile Include="Components\Providers\SystemServiceProvider.vb" />
+    <Compile Include="Components\Collections\SerializableDictionary.vb" />
+    <Compile Include="Components\Services\Caching\CacheHelper.vb" />
+    <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
+    <Compile Include="Components\Services\ExceptionHelper.vb" />
+    <Compile Include="Components\Services\FileHelper.vb" />
+    <Compile Include="Components\STimeSpan.vb" />
+    <Compile Include="Components\Text\SimpleEncoding.vb" />
+    <Compile Include="Components\TypeHandler.vb" />
+    <Compile Include="Components\Web\Proxy\PipeStream.vb" />
+    <Compile Include="Components\Web\Proxy\PipeStreamBlock.vb" />
+    <Compile Include="Components\Web\Proxy\ProxyHelpers.vb" />
+    <Compile Include="Components\Services\ReflectionHelper.vb" />
+    <Compile Include="Components\Web\Proxy\StreamingProxy.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\Fields\ForeignKeyBoundField.vb" />
+    <Compile Include="Components\Web\WebControls\Pager.vb" />
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\Application.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Application.myapp</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="My Project\Settings.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="Components\Web\ControlHelper.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\AdvancedGridView.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\CustomSummaryOperation.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\FooterEvent.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GridViewGroup.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GridViewGroupList.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GridViewHelper.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GridViewSummary.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GridViewSummaryList.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\GroupEvent.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\SummaryOperation.vb" />
+    <Compile Include="Components\Web\WebControls\GridView\SummaryResultMethod.vb" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Model.cd" />
+    <None Include="Components\Collections\Collections.cd" />
+    <None Include="Components\ComponentModel\ComponentModel.cd" />
+    <None Include="Components\Providers\Providers.cd" />
+    <None Include="My Project\Application.myapp">
+      <Generator>MyApplicationCodeGenerator</Generator>
+      <LastGenOutput>Application.Designer.vb</LastGenOutput>
+    </None>
+    <None Include="My Project\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <CustomToolNamespace>My</CustomToolNamespace>
+      <LastGenOutput>Settings.Designer.vb</LastGenOutput>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="External Assemblies\FileHelpers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Windows.Installer.3.1">
+      <Visible>False</Visible>
+      <ProductName>Windows Installer 3.1</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
