@@ -1,12 +1,58 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Aricie.PortalKeeper", "Aricie.PortalKeeper.vbproj", "{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Aricie.Core", "Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj", "{6ADA6635-4F81-4900-B392-DC0FD650FA52}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Aricie.DNN", "Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj", "{79F9C77D-3B12-4111-B3C3-F006C7026580}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 1
+		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs36
 		SccLocalPath0 = .
+		SccProjectUniqueName1 = Aricie.PortalKeeper.vbproj
+		SccLocalPath1 = .
+		SccProjectUniqueName2 = Aricie.Shared\\Libs\\Aricie.Core\\Aricie.Core.vbproj
+		SccProjectName2 = Aricie.Shared/Libs/Aricie.Core
+		SccLocalPath2 = Aricie.Shared\\Libs\\Aricie.Core
+		SccProjectUniqueName3 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN.vbproj
+		SccProjectName3 = Aricie.Shared/Libs/Aricie.DNN
+		SccLocalPath3 = Aricie.Shared\\Libs\\Aricie.DNN
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug Trial|Any CPU = Debug Trial|Any CPU
+		Debug|Any CPU = Debug|Any CPU
+		Release Trial|Any CPU = Release Trial|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Debug Trial|Any CPU.ActiveCfg = Debug Trial|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Debug Trial|Any CPU.Build.0 = Debug Trial|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Release Trial|Any CPU.ActiveCfg = Release Trial|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Release Trial|Any CPU.Build.0 = Release Trial|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6ADA6635-4F81-4900-B392-DC0FD650FA52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{79F9C77D-3B12-4111-B3C3-F006C7026580}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
