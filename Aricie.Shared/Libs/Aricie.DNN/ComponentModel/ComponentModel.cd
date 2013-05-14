@@ -1,0 +1,420 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.ComponentModel.ModuleDescriptor">
+    <Position X="13.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\ModuleDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.RelatedEntityDescriptor(Of T)">
+    <Position X="9.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\RelatedEntityDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.EntityDescriptor(Of T)">
+    <Position X="4" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\EntityDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.RelatedEntityDescriptor">
+    <Position X="9.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAgAAAAAAAAAAEBAAAAAAQAAAAAAoABAAiAAAAAAA=</HashCode>
+      <FileName>ComponentModel\RelatedEntityDescriptor.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Cardinality" />
+      <Property Name="Nature" />
+      <Property Name="SourceEntityRole" />
+      <Property Name="TargetEntityRole" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.EntityDescriptor">
+    <Position X="4" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>kAAABACAAAAAAAEIAAIAAAUAQAAABAAQAAAAIBAggAA=</HashCode>
+      <FileName>ComponentModel\EntityDescriptor.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Services" />
+      <Property Name="Genre" />
+      <Property Name="CollectionGenre" />
+      <Property Name="EntityRequirements" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="RelatedEntities" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.AutoModuleConfig(Of TConfigClass)">
+    <Position X="23.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Config\AutoModuleConfig.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.LocationSettings">
+    <Position X="20.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAABAAAAAAAAgAAAAAAAAAQAAAAAQAAAAgACAAA=</HashCode>
+      <FileName>ComponentModel\Config\LocationSettings.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleConfig">
+    <Position X="23.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAEBAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Config\ModuleConfig.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleConfig(Of TConfigClass)">
+    <Position X="23.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIAAAAAAAAAAAAAAIAAABAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Config\ModuleConfig.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleConfig(Of TConfigClass, TModuleIdentity)">
+    <Position X="23.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAABIAAAAAABAAAAAAAAAAAABAAAAAAQEBAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Config\ModuleConfig.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="LocationSettings" />
+      <Property Name="SharedLocationSettings(System.Boolean, System.Boolean)" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.AutoProvider(Of TConfig, TSettings, TProvider)">
+    <Position X="35" Y="15" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAEAAAQIAA=</HashCode>
+      <FileName>ComponentModel\Providers\AutoProvider.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.AutoProviderSettings">
+    <Position X="35" Y="9.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\AutoProviderSettings.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_ProviderConfig" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.AutoProviderSettings(Of TConfig, TSettings)">
+    <Position X="35" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\AutoProviderSettings.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleProviderConfig">
+    <Position X="28.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAACAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ModuleProviderConfig.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.NamedEntity">
+    <Position X="32.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAACAAAAAAAAAAAIAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\NamedConfig.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.NamedConfig">
+    <Position X="32.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAQAAAAAAAAAAAAAAAAAAAwAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\NamedConfig.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderConfig(Of T)">
+    <Position X="32.25" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderConfig.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderConfig">
+    <Position X="30.75" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABIAAAAAAAAAAACBABAAAEAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderConfig.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderConfigHelper(Of T)">
+    <Position X="41.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderConfigHelper.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderHost(Of TConfig, TSettings, TProvider)" BaseTypeListCollapsed="true">
+    <Position X="38.75" Y="14.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAEAAAoAAAAAAAAAQAAABAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderHost.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Instances" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderList(Of T)">
+    <Position X="38.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAABAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderList.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ProviderSettings">
+    <Position X="35" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>ComponentModel\Providers\ProviderSettings.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.SimpleList(Of TItem)">
+    <Position X="41.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAEAAAAAAAAAAAAAQAAAAEAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\SimpleList.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.DotNetType">
+    <Position X="28.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAEAABABAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\DotNetType.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.DotNetType(Of TVariable)">
+    <Position X="28.5" Y="5.25" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Aricie.DNN.ComponentModel.DotNetType(Of TVariable).GenericsProvider" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>ComponentModel\DotNetType.vb</NewMemberFileName>
+        </TypeIdentifier>
+        <Lollipop Position="0.2" />
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAgAABAAAAgAQAAAAEAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>ComponentModel\DotNetType.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="TargetTypes" />
+    </ShowAsCollectionAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleIdentity" BaseTypeListCollapsed="true">
+    <Position X="25.5" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IModuleIdentity.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.ComponentModel.ModuleDescriptionProvider" Collapsed="true">
+    <Position X="15.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\ModuleDescriptionProvider.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.Collections.SerializableList(Of T)" Collapsed="true">
+    <Position X="38.75" Y="12.75" Width="1.5" />
+    <TypeIdentifier />
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="Aricie.DNN.ComponentModel.IModelDescriptor">
+    <Position X="4.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>ComponentModel\IModelDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IModuleDescriptor">
+    <Position X="11" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>ComponentModel\IModuleDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IEntityController">
+    <Position X="13.75" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAQAAAAAAAAEAAAQAAAAAAgAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IEntityController.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IEntityView">
+    <Position X="18.25" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAABAAAAAAAAAAAAABACAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IEntityView.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IActiveEntityController">
+    <Position X="15.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAgAAAAIAAAAAAAAAAQAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IActiveEntityController.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.ICacheableEntityDescriptor">
+    <Position X="11.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\ICacheableEntityDescriptor.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IAutoProvider(Of TConfig, TProvider)" Collapsed="true">
+    <Position X="39.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IAutoProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProvider(Of TConfig, TSettings)">
+    <Position X="42.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>BAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProvider(Of TConfig)">
+    <Position X="42.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProvider">
+    <Position X="42.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProvider.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProviderConfig(Of T)">
+    <Position X="36.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProviderConfig.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProviderConfig">
+    <Position X="36.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProviderConfig.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProviderSettings">
+    <Position X="39.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProviderSettings.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IProviderSettings(Of TProvider)">
+    <Position X="39.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>ComponentModel\Providers\IProviderSettings.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IGenericizer(Of TVariable)" Collapsed="true">
+    <Position X="42.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IGenericizer.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.IModuleIdentity">
+    <Position X="25.5" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\IModuleIdentity.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.ISelector">
+    <Position X="45.75" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\ISelector.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.ComponentModel.ISelector(Of T)">
+    <Position X="45.75" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\ISelector.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Aricie.DNN.ComponentModel.EntityGenre">
+    <Position X="6.5" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IAIAAgCEAiAAQAAAAAEAAAAAABgIAEAAARIAAABBDCQ=</HashCode>
+      <FileName>ComponentModel\EntityGenre.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.CollectionGenre">
+    <Position X="6.75" Y="9.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAABAkAAAAAAAAAAAI=</HashCode>
+      <FileName>ComponentModel\CollectionGenre.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.EntityViewGenre">
+    <Position X="18.25" Y="6.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIABABAAAAAAAAAACAAAAAAAgDAI=</HashCode>
+      <FileName>ComponentModel\EntityViewGenre.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.EntityRequirements">
+    <Position X="1.75" Y="12.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAgAAAAAAAAAAAIAAIAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>ComponentModel\EntityRequirements.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.EntityServices">
+    <Position X="0.75" Y="8.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAJAAAEAAAAAAAAAAAAAAAAAAAAAAAlABAAICMAgAA=</HashCode>
+      <FileName>ComponentModel\EntityServices.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.RelationCardinality">
+    <Position X="12" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAACAAAQAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\RelationCardinality.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.ComponentModel.RelationNature">
+    <Position X="12" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ComponentModel\RelationNature.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

@@ -1,0 +1,27 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="configuration">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" name="nodes">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element maxOccurs="unbounded" name="node">
+                <xs:complexType>
+                  <xs:sequence minOccurs="0">
+                    <xs:any maxOccurs="unbounded"/>
+                  </xs:sequence>
+                  <xs:attribute name="path" type="xs:string" use="required" />
+                  <xs:attribute name="action" type="xs:string" use="required" />
+                  <xs:attribute name="key" type="xs:string" use="optional" />
+                  <xs:attribute name="collision" type="xs:string" use="optional" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+            <xs:attribute name="configfile" type="xs:string" use="optional" />
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

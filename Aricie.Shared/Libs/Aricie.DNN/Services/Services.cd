@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.Services.DnnContext" BaseTypeListCollapsed="true">
+    <Position X="3.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABEAAAEAAIAQAAAQCAIAAAAAAAAEYUAAAAACABAEE=</HashCode>
+      <FileName>Services\DnnContext.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Services.AdvancedTokenReplace">
+    <Position X="8.5" Y="0.5" Width="1.5" />
+    <NestedTypes>
+      <Class Name="Aricie.DNN.Services.AdvancedTokenReplace.LoopTokenProcessor">
+        <TypeIdentifier>
+          <NewMemberFileName>Services\Tokens\AdvancedTokenReplace.vb</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AABEEAAaAIAbAgAgABATgAIAAUAQAgCAAAECQYBAAAA=</HashCode>
+      <FileName>Services\Tokens\AdvancedTokenReplace.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.DeepObjectPropertyAccess" BaseTypeListCollapsed="true">
+    <Position X="10.25" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAEEAAIAADAAAAIAAAAAAAAIAAgAAAIAEAIAAAAEAAI=</HashCode>
+      <FileName>Services\Tokens\DeepObjectPropertyAccess.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.ExpressionFilterInfo">
+    <Position X="6" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAgAAKAAAARAAAAACIAACAAgACAAgEAghAEwgAAAAAA=</HashCode>
+      <FileName>Services\Filtering\ExpressionFilterInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="EncodePreProcessing" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="TransformList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.FilterInfo">
+    <Position X="6.25" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAACAAAAAAAAQAAAAAAAQAAAAgAAAAAA=</HashCode>
+      <FileName>Services\Filtering\FilterInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Expression" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Modules" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.FilterModuleInfo">
+    <Position X="6.25" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAAAAAAAAAACAAAAAAACAAAAAAAAAAQAAAAAAA=</HashCode>
+      <FileName>Services\Filtering\FilterInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Keys" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.FilterKeyInfo">
+    <Position X="6.25" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAQAAACAAAAAAAAAAAAAAAAAAEAAAAA=</HashCode>
+      <FileName>Services\Filtering\FilterInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="WebControls" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.FilterControlInfo">
+    <Position X="3.5" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAIAABAAAA=</HashCode>
+      <FileName>Services\Filtering\FilterInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.StringEscaper">
+    <Position X="6" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAABAAAAAAAAAAQAACAAA=</HashCode>
+      <FileName>Services\Filtering\StringEscaper.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Filter" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.StringTransformInfo">
+    <Position X="3.25" Y="8" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAABAAAgAAAAAAAAAAAAIQAAAEAAAAAAAA=</HashCode>
+      <FileName>Services\Filtering\StringTransformInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="FilterType" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.TokenSourceInfo">
+    <Position X="8.75" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAgACAAAAAAAAAAACBAAAAAAAAAACACAAAIAAEAAI=</HashCode>
+      <FileName>Services\Tokens\TokenSourceInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ConditionalTokens" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.ConditionalTokenInfo">
+    <Position X="11.5" Y="9.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAAAEAAQAAAAAAAAAAAAAAAAAAAAAAAAEAAA=</HashCode>
+      <FileName>Services\Tokens\TokenSourceInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ConditionalToken" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.ConditionalTokenSourceInfo">
+    <Position X="11.5" Y="12.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Tokens\TokenSourceInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="ConditionalSources" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.TokenKeyAttributes" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Tokens\TokenSourceInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Services.Filtering.TokenValueAttributes" BaseTypeListCollapsed="true">
+    <Position X="8.75" Y="14.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Tokens\TokenSourceInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Enum Name="Aricie.DNN.Services.Filtering.EncodeProcessing">
+    <Position X="3.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAAIAAAAAIQAAAAAAAAAAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Services\Filtering\ExpressionFilterInfo.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Services.Filtering.StringFilterType">
+    <Position X="3.5" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAACAAAAAAAAAgAAAAgAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\Filtering\StringTransformInfo.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Module Name="Aricie.DNN.Services.FileHelper" Collapsed="true">
+    <Position X="0.5" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AiAAAAAAAAAAAAAAAABAAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Services\FileHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Module Name="Aricie.DNN.Services.NukeHelper" Collapsed="true">
+    <Position X="0.5" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IADBAi5EMIQAkQShoAFAAAIAAQgKIAJAAAIBAAABAEA=</HashCode>
+      <FileName>Services\NukeHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
