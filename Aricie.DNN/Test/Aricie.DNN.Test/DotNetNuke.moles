@@ -1,0 +1,16 @@
+<Moles xmlns="http://schemas.microsoft.com/moles/2010/">
+    <Assembly Name="DotNetNuke" />
+        <StubGeneration>
+        <Types>
+            <Clear />
+       </Types>
+    </StubGeneration>
+    <MoleGeneration>
+        <Types>
+            <Clear />
+            <Add Namespace="DotNetNuke.Framework" />
+            <Add Namespace="DotNetNuke.Entities.Portals" />
+            <Add Namespace="DotNetNuke.Security.Roles" />
+        </Types>
+    </MoleGeneration>
+</Moles>

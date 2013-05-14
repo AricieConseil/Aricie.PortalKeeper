@@ -1,0 +1,386 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Aricie.DNN.Configuration.ProviderAddInfo">
+    <Position X="12.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\ProviderAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.XmlConfigInfo">
+    <Position X="15.25" Y="20" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\XmlConfigInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="NodesList" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.NodesInfo">
+    <Position X="15.25" Y="22" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAABAAAAAAAAQAAAgAAAAAAAA=</HashCode>
+      <FileName>Config\NodesInfo.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Nodes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.NodeInfo">
+    <Position X="15.25" Y="25" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Aricie.DNN.Configuration.NodeInfo.NodeAction" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\ConfigInfo.vb</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAIAAAAAgAAAAAAAAAAAAAAAAAIAAAQ=</HashCode>
+      <FileName>Config\NodeInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.SimpleNodeInfo">
+    <Position X="16.5" Y="30" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAABAAAAAAIAQAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Config\SimpleNodeInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.ComplexNodeInfo">
+    <Position X="14.25" Y="30" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Enum Name="Aricie.DNN.Configuration.ComplexNodeInfo.NodeCollision" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Config\ConfigInfo.vb</NewMemberFileName>
+        </TypeIdentifier>
+      </Enum>
+    </NestedTypes>
+    <InheritanceLine Type="Aricie.DNN.Configuration.NodeInfo" ManuallyRouted="true">
+      <Path>
+        <Point X="16" Y="28.373" />
+        <Point X="16" Y="29.618" />
+        <Point X="15" Y="29.618" />
+        <Point X="15" Y="30" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAACAIAAAAQAAAAEAEAAAAAAAAAAAAAAAABAAAA=</HashCode>
+      <FileName>Config\ComplexNodeInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.AddInfo">
+    <Position X="16.5" Y="10" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAASAABAAAACAAAAgAAAAAA=</HashCode>
+      <FileName>Config\AddInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.HttpModuleAddInfo">
+    <Position X="13.25" Y="18" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\HttpModuleAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.configuration">
+    <Position X="19" Y="18.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAIAA=</HashCode>
+      <FileName>Config\ConfigSchema.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="nodes" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.configurationNodes">
+    <Position X="19" Y="21.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAgABAAAAAA=</HashCode>
+      <FileName>Config\ConfigSchema.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="node" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.configurationNodesNode">
+    <Position X="19" Y="24.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>JAAQjAAAAAAAAAAAAAAGAAAAAAAAAAAAAEAAACAAAAA=</HashCode>
+      <FileName>Config\ConfigSchema.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.HttpModuleInfo">
+    <Position X="12" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\HttpModuleInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.ProviderInfo">
+    <Position X="7.5" Y="16.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAACAAAQAAEAAAAAAAAAAABAEAA=</HashCode>
+      <FileName>Config\ProviderInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.AppSettingInfo">
+    <Position X="10.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAABAAAAACAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Config\AppSettingInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.AppSettingAddInfo">
+    <Position X="16.5" Y="16.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\AppSettingAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.WebServerAddInfo">
+    <Position X="14.25" Y="15.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\WebServerAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.HttpHandlerAddInfo">
+    <Position X="15.5" Y="18" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\HttpHandlerAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.AuthenticationServiceInfo">
+    <Position X="25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgggAAAAEAAAAAAAAAAAAAAAAAAAIAAQAAgQQABAA=</HashCode>
+      <FileName>Config\AuthenticationServiceInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.HttpHandlerInfo">
+    <Position X="9.5" Y="22.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAAAAIAAAAAAAAAACAQAAQAAAAAAAIAAAA=</HashCode>
+      <FileName>Config\HttpHandlerInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.SchedulerTaskElementInfo">
+    <Position X="22.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACADggAAAAAAAAAAAAAAAAAAAAAAAAAAAAQQAAAAAAA=</HashCode>
+      <FileName>Config\SchedulerTaskElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.SkinControlConfigInfo">
+    <Position X="17.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAQAAAAQAAAgAAAAAAAEAAEAAAAAEAAAAA=</HashCode>
+      <FileName>Config\SkinControlInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.TypedEntityElementInfo">
+    <Position X="24" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAIA=</HashCode>
+      <FileName>Config\TypedEntityElementInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.TypedXmlConfigElementInfo">
+    <Position X="8.75" Y="11.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAAAAAAAAAAACAAAAAAAAAAAAAQAAAAAABAA=</HashCode>
+      <FileName>Config\TypedXmlConfigElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.WebServerElementInfo">
+    <Position X="10.5" Y="16.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAQAgAABBAQAAAAAIBDAECAAAAQAAwACAAAQAAAAAA=</HashCode>
+      <FileName>Config\WebServerElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.XmlConfigElementInfo">
+    <Position X="9.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\XmlConfigElementInfo.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Security.PermissionHelper(Of T)" BaseTypeListCollapsed="true">
+    <Position X="29" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAggAAgBAABAAACCAAgQAAAQQAIAAAAACAAABAAAA=</HashCode>
+      <FileName>Security\PermissionHelper.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="_PermissionController" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.CustomAddInfo">
+    <Position X="17.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAEAA=</HashCode>
+      <FileName>Config\AddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.CustomErrorAddInfo">
+    <Position X="15.5" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\CustomErrorAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.CustomErrorConfigUpdater">
+    <Position X="4" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAABAAAACAAAAIAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\CustomErrorConfigUpdater.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="CustomErrorsConfig" />
+    </ShowAsAssociation>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.CustomErrorDynamicHandlerUpdater">
+    <Position X="4" Y="14.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAA=</HashCode>
+      <FileName>Config\CustomErrorDynamicHandlerUpdater.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.CustomErrorsAddInfo">
+    <Position X="18.75" Y="16" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\CustomErrorsAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.MultiUpdateProvider" BaseTypeListCollapsed="true">
+    <Position X="0.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\MultiUpdateProvider.vb</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.StandardComplexNodeInfo">
+    <Position X="14.25" Y="34.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAUAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\StandardComplexNodeInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.TrustAddInfo">
+    <Position X="19.75" Y="13.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\TrustAddInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.TrustInfo">
+    <Position X="12.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAwAAAAAAAIAAAAACAAAAAAAAAAABAAAQAAAAAAA=</HashCode>
+      <FileName>Config\TrustInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.VirtualCustomErrorUpdater">
+    <Position X="4" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAMAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\VirtualCustomErrorUpdater.vb</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="VirtualCustomErrors" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Aricie.DNN.Configuration.XmlNamedConfigElementInfo">
+    <Position X="9.75" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAIAQAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\XmlNamedConfigElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Errors.CustomErrorsInfo">
+    <Position X="6.75" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgAAAIAAAAAAABACAAAAAAAABAAAAAAAAAAACAA=</HashCode>
+      <FileName>Services\Errors\CustomErrorsInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Aricie.DNN.Services.Errors.VirtualCustomErrorsInfo">
+    <Position X="6.75" Y="11.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAQAAAIABAAAAAIAEQAAAAAAAIAAACACSAAAAAAAEA=</HashCode>
+      <FileName>Services\Errors\VirtualCustomErrorsInfo.vb</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="DotNetNuke.Security.Permissions.PermissionController">
+    <Position X="29" Y="9.25" Width="1.5" />
+    <TypeIdentifier />
+  </Class>
+  <Struct Name="Aricie.DNN.Configuration.TimeLapse">
+    <Position X="22.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAIAAAAAAAAAEAAAAAAABgAAAAAAA=</HashCode>
+      <FileName>Config\SchedulerTaskElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Interface Name="Aricie.DNN.Configuration.IUpdateProvider">
+    <Position X="2.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\IConfigUpdater.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="Aricie.DNN.Configuration.IConfigElementInfo">
+    <Position X="18.75" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\ConfigElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Enum Name="Aricie.DNN.Configuration.ConfigActionType">
+    <Position X="2.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Config\ConfigActionType.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Configuration.TrustLevel">
+    <Position X="12.75" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAEAAA=</HashCode>
+      <FileName>Config\ConfigHelper.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="Aricie.DNN.Configuration.TimeUnit">
+    <Position X="22.75" Y="13.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEQoAAAAAAAAA=</HashCode>
+      <FileName>Config\SchedulerTaskElementInfo.vb</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Module Name="Aricie.DNN.Configuration.ConfigHelper">
+    <Position X="0.5" Y="0.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAggAAAAAgAAAABAAAAAAAAAAgAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Config\ConfigHelper.vb</FileName>
+    </TypeIdentifier>
+  </Module>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>
