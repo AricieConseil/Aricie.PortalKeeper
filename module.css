@@ -1,0 +1,19 @@
+﻿.divcenter 
+{
+	text-align: center; 
+}
+
+.ItemOdd
+{
+    background-color:#fff;
+}
+
+.ItemEven
+{
+    background-color:#e6e6fa;
+}
+
+.divPKP
+{
+    max-width:1100px;
+}

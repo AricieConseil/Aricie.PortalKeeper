@@ -13,14 +13,14 @@ Global
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs36
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Aricie.PortalKeeper.vbproj
-		SccLocalPath1 = .
-		SccProjectUniqueName2 = Aricie.Shared\\Libs\\Aricie.Core\\Aricie.Core.vbproj
-		SccProjectName2 = Aricie.Shared/Libs/Aricie.Core
-		SccLocalPath2 = Aricie.Shared\\Libs\\Aricie.Core
-		SccProjectUniqueName3 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN.vbproj
-		SccProjectName3 = Aricie.Shared/Libs/Aricie.DNN
-		SccLocalPath3 = Aricie.Shared\\Libs\\Aricie.DNN
+		SccProjectUniqueName1 = Aricie.Shared\\Libs\\Aricie.Core\\Aricie.Core.vbproj
+		SccProjectName1 = Aricie.Shared/Libs/Aricie.Core
+		SccLocalPath1 = Aricie.Shared\\Libs\\Aricie.Core
+		SccProjectUniqueName2 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN.vbproj
+		SccProjectName2 = Aricie.Shared/Libs/Aricie.DNN
+		SccLocalPath2 = Aricie.Shared\\Libs\\Aricie.DNN
+		SccProjectUniqueName3 = Aricie.PortalKeeper.vbproj
+		SccLocalPath3 = .
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Trial|Any CPU = Debug Trial|Any CPU

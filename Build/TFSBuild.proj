@@ -1,0 +1,46 @@
+﻿<Project DefaultTargets="DesktopBuild" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildExtensionsPath)\Microsoft\VisualStudio\TeamBuild\Microsoft.TeamFoundation.Build.targets" />
+	<Import Project="$(MSBuildProjectDirectory)\Aricie.Globals.Tasks.targets" />
+
+	<ProjectExtensions>
+		<BuildMachine>BuildServer</BuildMachine>
+	</ProjectExtensions>
+	<PropertyGroup>
+		<RunTest>false</RunTest>
+		<RunCodeAnalysis>Default</RunCodeAnalysis>
+		<SolutionRoot>$(MSBuildProjectDirectory)\..</SolutionRoot>
+	</PropertyGroup>
+	
+	<PropertyGroup>
+		<TargetsTriggeredByCompilation>
+			$(TargetsTriggeredByCompilation);PackageModule
+		</TargetsTriggeredByCompilation>
+	</PropertyGroup>
+		
+	
+	<ItemGroup>
+		<SolutionToBuild Include="$(SolutionRoot)\Aricie.PortalKeeper.sln" >
+			<Properties>OutDir=$(SolutionRoot)\Bin\</Properties>
+		</SolutionToBuild>
+	</ItemGroup>
+	<ItemGroup>
+		<ConfigurationToBuild Include="Release|Any CPU">
+			<FlavorToBuild>Release</FlavorToBuild>
+			<PlatformToBuild>Any CPU</PlatformToBuild>
+		</ConfigurationToBuild>
+	</ItemGroup>
+	<ItemGroup>
+		<MetaDataFile Include=" ">
+			<TestList></TestList>
+		</MetaDataFile>
+	</ItemGroup>
+
+
+	<ItemGroup>
+		<PrivateAssembly Include="$(SolutionRoot)">
+			<TargetName>PortalKeeper</TargetName>
+		</PrivateAssembly>
+	</ItemGroup>
+
+
+</Project>
