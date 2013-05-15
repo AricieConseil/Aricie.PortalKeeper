@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	<Import Project="$(MSBuildExtensionsPath)\MSBuildCommunityTasks\MSBuild.Community.Tasks.Targets" />
+	<Import Project="$(MSBuildProjectDirectory)\PrivateAssemblies.targets" />
+
+	<Target Name="CopyVariants">
+		<!-- Get variants -->
+		<CreateItem
+			  Exclude="**\.svn\**;
+				$(Path)\_*\**;
+				$(Path)\obj\**;
+				$(Path)\bin\**;
+				$(Path)\My Project\*.*;
+				$(Path)\Properties\*.*;
+				$(Path)\Dependencies\*.*; 
+				$(Path)\Installation\**;
+				$(Path)\*ReSharper*\**;
+				$(Path)\tmpCompressScript\**"
+			  Include="$(Path)\*.htm;
+				$(Path)\*.html;">
+		  <Output TaskParameter="Include" ItemName="variants" />
+		</CreateItem>
+
+		<Copy
+			SourceFiles="@(variants)"
+			DestinationFolder="$(MSBuildProjectDirectory)\tmp"></Copy>
+
+	</Target>
+
+	<Target Name="PackageModule" DependsOnTargets="$(TargetName)">
+
+		<PropertyGroup>
+			<Assemblies>@(Assemblies->'$(ProjectPath)\Bin\%(Identity)')</Assemblies>
+			<PrivateAssembly>$(ProjectPath)\PAs\%(Module.Name)_Install_%(Module.Version).zip</PrivateAssembly>
+		</PropertyGroup>
+   
+		<MakeDir Directories="$(ProjectPath)\tmp" />
+		
+		<MsBuild
+			Targets="ZipResources"
+			Projects="Aricie.Globals.Tasks.targets"
+			Properties="ProjectPath=$(ProjectPath);ModuleName=%(Module.Name)" />
+			
+		<!-- Recuperation des fichiers a mettre dans la PA -->
+		<CreateItem
+			  Include="$(ProjectPath)\%(Module.Name).dnn;
+					$(ProjectPath)\%(Module.Name).dnn5;
+					$(ProjectPath)\Provider\DataProviders\**\*.*DataProvider;
+					$(Assemblies);
+					$(ProjectPath)\tmp\%(Module.Name)_resources.zip;">
+		  <Output TaskParameter="Include" ItemName="PA" />
+		</CreateItem>
+		
+		<!-- Checkout de la PA -->
+		<Exec WorkingDirectory="$(ProjectPath)\PAs"
+			Command="$(TF) checkout $(PrivateAssembly)"
+			Condition="Exists($(PrivateAssembly))" />
+
+		<Zip Files="@(PA)" WorkingDirectory="$(ProjectPath)\tmp" ZipFileName="$(PrivateAssembly)" Flatten="True" />
+
+		<!-- Checkin de la PA -->
+		<Exec WorkingDirectory="$(ProjectPath)\PAs"
+			Command="$(TF) checkin $(PrivateAssembly)"/>
+	    
+		<RemoveDir ContinueOnError="true" Directories="$(ProjectPath)\tmp" />
+
+	</Target>
+	
+	<Target Name="PackageSkin">
+
+		<!-- Get files -->
+		<CreateItem
+			  Exclude="**\.svn\**;
+				$(SkinPath)\_*\**;
+				$(SkinPath)\obj\**;
+				$(SkinPath)\bin\**;
+				$(SkinPath)\My Project\*.*;
+				$(SkinPath)\Properties\*.*;
+				$(SkinPath)\Dependencies\*.*; 
+				$(SkinPath)\*ReSharper*\**;
+				$(SkinPath)\tmpCompressScript\**"
+			  Include="$(SkinPath)\**\*.css;
+				$(SkinPath)\**\*.htm;
+				$(SkinPath)\**\*.html;
+				$(SkinPath)\**\*.xml;
+				$(SkinPath)\**\*.xslt;
+				$(SkinPath)\**\*.xsl;
+				$(SkinPath)\**\*.filelist;
+				$(SkinPath)\**\*.resx;
+				$(SkinPath)\**\*.gif;
+				$(SkinPath)\**\*.jpg;
+				$(SkinPath)\**\*.png;
+				$(SkinPath)\**\*.js;
+				$(SkinPath)\**\*.txt;">
+		  <Output TaskParameter="Include" ItemName="resources" />
+		</CreateItem>
+
+		<MakeDir Directories="$(MSBuildProjectDirectory)\tmp" />
+
+		<Zip Files="@(resources)" WorkingDirectory="$(SkinPath)" ZipFileName="$(MSBuildProjectDirectory)\tmp\$(SkinName)_$(Type)_resources.zip" />
+		
+	</Target>
+	
+	<Target Name="ZipResources">
+    
+		<!-- Get files -->
+		<CreateItem
+			  Exclude="**\.svn\**;
+				$(ProjectPath)\_*\**;
+					$(ProjectPath)\obj\**;
+					$(ProjectPath)\bin\**;
+					$(ProjectPath)\tmp\**;
+					$(ProjectPath)\bin\**;
+					$(ProjectPath)\My Project\*.*;
+					$(ProjectPath)\Properties\*.*;
+					$(ProjectPath)\external\**; 
+					$(ProjectPath)\Build\**;
+					$(ProjectPath)\*ReSharper*\**;
+					$(ProjectPath)\tmpCompressScript\**"
+			  Include="$(ProjectPath)\**\*.ascx;
+					$(ProjectPath)\**\*.aspx;
+					$(ProjectPath)\**\*.ashx;
+					$(ProjectPath)\**\*.css;
+					$(ProjectPath)\**\*.xml;
+					$(ProjectPath)\**\*.xslt;
+					$(ProjectPath)\**\*.xsl;
+					$(ProjectPath)\**\*.resx;
+					$(ProjectPath)\**\*.rpt;
+					$(ProjectPath)\**\*.gif;
+					$(ProjectPath)\**\*.jpg;
+					$(ProjectPath)\**\*.png;
+					$(ProjectPath)\**\*.html;
+					$(ProjectPath)\**\*.htm;
+					$(ProjectPath)\**\*.js;">
+		  <Output TaskParameter="Include" ItemName="resources" />
+		</CreateItem>
+		
+
+		<!-- Create resources.zip -->
+		<Zip Files="@(resources)"
+			 WorkingDirectory="$(ProjectPath)\tmp"
+			 ZipFileName="$(ProjectPath)\tmp\$(ModuleName)_resources.zip" />
+    
+	</Target>
+
+	<Target Name="CopyResources">
+	
+
+		
+		<MakeDir Directories="$(MSBuildProjectDirectory)\tmp" />
+		
+		<Copy
+			Condition="Exists('$(ProjectPath)\Installation\$(ModuleName)_resources.zip')"
+			SourceFiles="$(ProjectPath)\Installation\$(ModuleName)_resources.zip"
+			DestinationFolder="$(MSBuildProjectDirectory)\tmp" />
+		
+		<Copy
+			Condition="'$(AlsoBuildSourcesZip)'=='true'"
+			SourceFiles="$(ProjectPath)\Installation\$(ModuleName)_sources.zip"
+			DestinationFolder="$(MSBuildProjectDirectory)\tmp" />
+			 
+	</Target>
+	
+	<Target Name="BuildModule">
+		<MSBuild Projects="$(ProjectPath)" Properties="ConfigurationName=Release;MSBuildRootProjectDirectory=$(MSBuildProjectDirectory)" />
+	</Target>
+	
+	<Target Name="CreateExtension">
+
+		<Copy SourceFiles="$(MSBuildProjectDirectory)\Manifests\$(ExtensionName).dnn" DestinationFolder="$(MSBuildProjectDirectory)\tmp"></Copy>
+
+		<ItemGroup>
+			<ZipInstallFiles Include="$(MSBuildProjectDirectory)\tmp\**\*.*" />
+		</ItemGroup>
+
+		<Zip Files="@(ZipInstallFiles)" WorkingDirectory="$(MSBuildProjectDirectory)\tmp" ZipFileName="$(MSBuildProjectDirectory)\PrivateAssemblies\$(ExtensionName).$(FileMajor).$(FileMinor).$(FileBuild).Install.zip" />
+		
+		<RemoveDir ContinueOnError="true" Directories="$(MSBuildProjectDirectory)\tmp" />
+
+	</Target>
+	
+	<Target Name="PackageBinaries">
+	
+		<CreateProperty Value="C:\Program Files\Microsoft Visual Studio 10.0\Common7\Tools\"
+			Condition="!Exists($(VS100COMNTOOLS))">
+			<Output TaskParameter="Value" PropertyName="VS100COMNTOOLS" />
+		</CreateProperty>
+		
+		<PropertyGroup>
+			<!-- TF.exe -->
+			<TF>&quot;$(VS100COMNTOOLS)..\IDE\tf.exe&quot;</TF>
+		</PropertyGroup>
+		
+		<MSBuild
+			Targets="PackageModule"
+			Projects="Aricie.Globals.Tasks.targets"
+			Properties="ProjectPath=%(PrivateAssembly.Identity);TargetName=%(PrivateAssembly.TargetName);TF=$(TF)" />
+		<!--<MSBuild
+			Targets="PackageSkin"
+			Projects="Aricie.Globals.Tasks.targets"
+			Properties="SkinPath=%(Variant.Path);SkinName=%(Variant.Name);Type=%(Variant.Type)"
+			Condition="Exists('$(Variant)')" />
+		<MSBuild
+			Projects="Aricie.Globals.Tasks.targets"
+			Targets="CopyVariants"
+			Properties="Path=%(Variant.Path)"
+			Condition="Exists('$(Variant)')" />
+		<MsBuild
+			Targets="CreateExtension"
+			Projects="Aricie.Globals.Tasks.targets"
+			Properties="ExtensionName=%(Extension.Name);FileMajor=%(Extension.FileMajor);FileMinor=%(Extension.FileMinor);FileBuild=%(Extension.FileBuild)" />-->
+	</Target>
+	
+	
+
+	
+</Project>

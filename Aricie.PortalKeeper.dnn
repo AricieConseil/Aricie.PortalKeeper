@@ -1,0 +1,63 @@
+<dotnetnuke version="3.0" type="Module">
+  <folders>
+    <folder>
+      <name>Aricie.PortalKeeper</name>
+      <friendlyname>Aricie - PortalKeeper</friendlyname>
+      <foldername>Aricie.PortalKeeper</foldername>
+      <modulename>Aricie.PortalKeeper</modulename>
+      <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
+      <version>03.00.00</version>
+      <businesscontrollerclass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businesscontrollerclass>
+      <resourcefile>Aricie.PortalKeeper_resources.zip</resourcefile>
+      <modules>
+        <module>
+          <friendlyname>Aricie.PortalKeeper</friendlyname>
+          <cachetime>0</cachetime>
+          <controls>
+            <control>
+              <src>DesktopModules/Aricie.PortalKeeper/KeeperConfig.ascx</src>
+              <type>View</type>
+              <supportspartialrendering>true</supportspartialrendering>
+            </control>
+            <control>
+              <key>Settings</key>
+              <src>DesktopModules/Aricie.PortalKeeper/Settings.ascx</src>
+              <type>Admin</type>
+              <supportspartialrendering>true</supportspartialrendering>
+            </control>
+          </controls>
+        </module>
+      </modules>
+      <files>
+        <!-- Assemblies PKP -->
+        <file>
+          <name>Aricie.PortalKeeper.dll</name>
+        </file>
+        <file>
+          <name>Aricie.PortalKeeper.Bitcoin.dll</name>
+        </file>
+        <file>
+          <name>Aricie.PortalKeeper.Bitcoin.Strategies.dll</name>
+        </file>
+        <file>
+          <name>Jayrock.dll</name>
+        </file>
+        <file>
+          <name>Jayrock.Json.dll</name>
+        </file>
+        <file>
+          <name>Jayrock.Sandbox.dll</name>
+        </file>
+        <file>
+          <name>OpenRasta.dll</name>
+        </file>
+        <file>
+          <name>OpenRasta.Hosting.AspNet.dll</name>
+        </file>
+        <file>
+          <name>FileHelpers.dll</name>
+        </file>
+      </files>
+    </folder>
+  </folders>
+</dotnetnuke>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+	
+	
+
+	
+	<Target Name="PortalKeeper">
+	
+		<ItemGroup>
+			<Module Remove="@(Module)" />
+			<Assemblies Remove="@(Assemblies)" />
+
+			<Module Include="Aricie.PortalKeeper - vs2010.vbproj">
+				<Name>Aricie.PortalKeeper</Name>
+				<Version>03.00.00</Version>
+			</Module>
+			<Assemblies Include="Aricie.PortalKeeper.dll" />
+			<Assemblies Include="Ciloci.Flee.dll" />
+			<Assemblies Include="Jayrock.dll" />
+			<Assemblies Include="Jayrock.Json.dll" />
+			<Assemblies Include="Jayrock.Sandbox.dll" />
+			<Assemblies Include="OpenRasta.dll" />
+			<Assemblies Include="OpenRasta.Hosting.AspNet.dll" />
+			<Assemblies Include="FileHelpers.dll" />
+		</ItemGroup>
+	</Target>
+	
+</Project>

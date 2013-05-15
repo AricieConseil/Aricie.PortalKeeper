@@ -1,0 +1,118 @@
+﻿<dotnetnuke type="Package" version="5.0">
+  <packages>
+    <package name="Aricie.PortalKeeper" type="Module" version="3.0.0">
+      <friendlyName>Aricie - PortalKeeper</friendlyName>
+      <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
+      <owner>
+        <name >Aricie</name>
+        <organization>Aricie</organization>
+        <url >www.aricie.com</url>
+        <email >support@aricie.fr</email>
+      </owner>
+      <iconFile>PKP-Logo.png</iconFile>
+      <license>You are granted a license to install the SOFTWARE PRODUCT on a single production web server, and use it for a SINGLE DotNetNuke installation (instance). You are also permitted to use the same license for non-production development or staging servers.  If you purchased a SOURCE LICENSE: You are further licensed to view the source code of the SOFTWARE PRODUCT and modify it for use as described above. Under no circumstances may the source code or products developed by using the source code be re-distributed in any form.</license>
+      <releaseNotes />
+      <components>
+        <component type="Module">
+          <desktopModule>
+            <moduleName>Aricie.PortalKeeper</moduleName>
+            <foldername>Aricie.PortalKeeper</foldername>
+            <businessControllerClass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businessControllerClass>
+            <supportedFeatures>
+              <supportedFeature type="Portable" />
+            </supportedFeatures>
+            <moduleDefinitions>
+              <moduleDefinition>
+                <friendlyName>Aricie.PortalKeeper</friendlyName>
+                <defaultCacheTime>0</defaultCacheTime>
+                <moduleControls>
+                  <moduleControl>
+                    <controlKey />
+                    <controlSrc>DesktopModules/Aricie.PortalKeeper/KeeperConfig.ascx</controlSrc>
+                    <supportsPartialRendering>True</supportsPartialRendering>
+                    <controlTitle />
+                    <controlType>View</controlType>
+                    <iconFile />
+                    <helpUrl />
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
+                </moduleControls>
+                <moduleControls>
+                  <moduleControl>
+                    <controlKey >Settings</controlKey>
+                    <controlSrc>DesktopModules/Aricie.PortalKeeper/Settings.ascx</controlSrc>
+                    <supportsPartialRendering>False</supportsPartialRendering>
+                    <controlTitle />
+                    <controlType>Admin</controlType>
+                    <iconFile />
+                    <helpUrl />
+                    <viewOrder>0</viewOrder>
+                  </moduleControl>
+                </moduleControls>
+              </moduleDefinition>
+            </moduleDefinitions>
+          </desktopModule>
+          <eventMessage>
+            <processorType>DotNetNuke.Entities.Modules.EventMessageProcessor, DotNetNuke</processorType>
+            <processorCommand>UpgradeModule</processorCommand>
+            <attributes>
+              <businessControllerClass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businessControllerClass>
+              <desktopModuleID>[DESKTOPMODULEID]</desktopModuleID>
+              <upgradeVersionsList />
+            </attributes>
+          </eventMessage>
+        </component>
+        <component type="Assembly">
+          <assemblies>
+            <basePath>bin</basePath>
+            <assembly>
+              <name>Aricie.PortalKeeper.Bitcoin.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.Bitcoin.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Aricie.PortalKeeper.Bitcoin.Strategies.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.Bitcoin.Strategies.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Aricie.PortalKeeper.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Jayrock.dll</name>
+              <sourceFileName>Jayrock.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Jayrock.Json.dll</name>
+              <sourceFileName>Jayrock.Json.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Jayrock.Sandbox.dll</name>
+              <sourceFileName>Jayrock.Sandbox.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>OpenRasta.dll</name>
+              <sourceFileName>OpenRasta.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>OpenRasta.Hosting.AspNet.dll</name>
+              <sourceFileName>OpenRasta.Hosting.AspNet.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>FileHelpers.dll</name>
+              <sourceFileName>FileHelpers.dll</sourceFileName>
+            </assembly>
+          </assemblies>
+        </component>
+        <component type="ResourceFile">
+          <resourceFiles>
+            <basePath>DesktopModules\Aricie.PortalKeeper</basePath>
+            <resourceFile>
+              <name>Aricie.PortalKeeper_resources.zip</name>
+              <sourceFileName>Aricie.PortalKeeper_resources.zip</sourceFileName>
+            </resourceFile>
+          </resourceFiles>
+        </component>
+      </components>
+    </package>
+  </packages>
+</dotnetnuke>

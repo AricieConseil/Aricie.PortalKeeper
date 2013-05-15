@@ -1,0 +1,390 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}</ProjectGuid>
+    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{F184B08F-C81C-45F6-A57F-5ABD9991F28F}</ProjectTypeGuids>
+    <OutputType>Library</OutputType>
+    <RootNamespace>
+    </RootNamespace>
+    <AssemblyName>Aricie.PortalKeeper</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <MyType>Custom</MyType>
+    <OptionExplicit>On</OptionExplicit>
+    <OptionCompare>Binary</OptionCompare>
+    <OptionStrict>On</OptionStrict>
+    <OptionInfer>On</OptionInfer>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <OldToolsVersion>4.0</OldToolsVersion>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>Aricie.PortalKeeper.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <DefineDebug>false</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\</OutputPath>
+    <DocumentationFile>Aricie.PortalKeeper.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <PackageAsSingleFile>false</PackageAsSingleFile>
+    <DeployIisAppPath />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Trial|AnyCPU'">
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>Aricie.PortalKeeper.xml</DocumentationFile>
+    <Optimize>true</Optimize>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <DefineConstants>TRIAL</DefineConstants>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug Trial|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <DefineDebug>true</DefineDebug>
+    <DefineTrace>true</DefineTrace>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DocumentationFile>Aricie.PortalKeeper.xml</DocumentationFile>
+    <NoWarn>42353,42354,42355</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
+    <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisIgnoreBuiltInRuleSets>true</CodeAnalysisIgnoreBuiltInRuleSets>
+    <CodeAnalysisIgnoreBuiltInRules>true</CodeAnalysisIgnoreBuiltInRules>
+    <CodeAnalysisFailOnMissingRules>true</CodeAnalysisFailOnMissingRules>
+    <DefineConstants>TRIAL</DefineConstants>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Ciloci.Flee, Version=0.9.26.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="DotNetNuke">
+      <HintPath>Aricie.Shared\Libs\Aricie.DNN\external\dnn481\DotNetNuke.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL" />
+    <Reference Include="Jayrock, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Jayrock.Json, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Jayrock.Sandbox, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="OpenRasta, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\OpenRasta\OpenRasta.dll</HintPath>
+    </Reference>
+    <Reference Include="OpenRasta.Hosting.AspNet, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\OpenRasta\OpenRasta.Hosting.AspNet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Web.Services" />
+    <Reference Include="System.EnterpriseServices" />
+    <Reference Include="System.Web.Mobile" />
+    <Reference Include="System.Xml.Linq" />
+  </ItemGroup>
+  <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Collections.Specialized" />
+    <Import Include="System.Configuration" />
+    <Import Include="System.Text" />
+    <Import Include="System.Text.RegularExpressions" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.Caching" />
+    <Import Include="System.Web.SessionState" />
+    <Import Include="System.Web.Security" />
+    <Import Include="System.Web.Profile" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+    <Import Include="System.Web.UI.WebControls.WebParts" />
+    <Import Include="System.Web.UI.HtmlControls" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Components\Entities\ActionTree.vb" />
+    <Compile Include="Components\Entities\CompressionEnabledWebClient.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\Entities\Firewall\DNNAuthenticationProvider.vb" />
+    <Compile Include="Components\Entities\Firewall\FileUploadHandler.vb" />
+    <Compile Include="Components\Entities\Firewall\OpenRastaLogger.vb" />
+    <Compile Include="Components\Entities\Firewall\RestService.vb" />
+    <Compile Include="Components\Entities\Firewall\RestServicesConfiguration.vb" />
+    <Compile Include="Components\Entities\Firewall\RestServicesSettings.vb" />
+    <Compile Include="Components\Entities\KeeperModuleSettings.vb" />
+    <Compile Include="Components\Entities\ParametersMode.vb" />
+    <Compile Include="Components\Entities\Scheduler\BotRunContext.vb" />
+    <Compile Include="Components\Entities\Scheduler\GeneralPropertyDefinition.vb">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Components\Entities\Scheduler\ProbeInstance.vb" />
+    <Compile Include="Components\Entities\Scheduler\ProbeRanking.vb" />
+    <Compile Include="Components\Entities\Scheduler\ProbeSettings.vb" />
+    <Compile Include="Components\Entities\Scheduler\UserBotInfo.vb" />
+    <Compile Include="Components\Entities\Scheduler\UserBotSettings.vb" />
+    <Compile Include="Components\Entities\Scheduler\UserParameterMode.vb" />
+    <Compile Include="Components\Entities\Scheduler\UserVariableInfo.vb" />
+    <Compile Include="Components\Entities\Scheduler\WebBotHistory.vb" />
+    <Compile Include="Components\Entities\UrlMode.vb" />
+    <Compile Include="Components\Entities\WebMethod.vb" />
+    <Compile Include="Components\Entities\WebProxyInfo.vb" />
+    <Compile Include="Components\Entities\WebProxyPool.vb" />
+    <Compile Include="Components\Entities\FileHelpersMode.vb" />
+    <Compile Include="Components\Entities\FileHelpersSettings.vb" />
+    <Compile Include="Components\Entities\RecordsMode.vb" />
+    <Compile Include="Components\Providers\Action\ExpressionActionProvider.vb" />
+    <Compile Include="Components\StaticInfo\KeyBucket.vb" />
+    <Compile Include="Components\PortalKeeperSchedule.vb" />
+    <Compile Include="Components\Entities\Scheduler\BotFarmInfo.vb" />
+    <Compile Include="Components\Entities\Firewall\ClientSourceCapLog.vb" />
+    <Compile Include="Components\Entities\Firewall\DenialOfServiceSettings.vb" />
+    <Compile Include="Components\Entities\WebRequestInfo.vb">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Components\Entities\Scheduler\BotInfo.vb" />
+    <Compile Include="Components\Entities\Scheduler\BotInfoEvent.vb" />
+    <Compile Include="Components\Providers\Action\CacheableAction.vb" />
+    <Compile Include="Components\Providers\Action\DefineVarsActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\DeserializeActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileAccessActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileReadActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileWriteActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\ObjectActionsProvider.vb" />
+    <Compile Include="Components\Providers\Action\OutputAction.vb" />
+    <Compile Include="Components\Providers\Action\LoopActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\SerializationBaseActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\SerializationType.vb" />
+    <Compile Include="Components\Providers\Action\SerializeActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\StringFilterProvider.vb" />
+    <Compile Include="Components\Providers\Action\WebAction.vb" />
+    <Compile Include="Components\Entities\PortalKeeperConfig.vb" />
+    <Compile Include="Components\Entities\RuleEngineSettings.vb" />
+    <Compile Include="Components\PortalKeeperModuleAfterDNN.vb" />
+    <Compile Include="Components\Entities\Firewall\AutoLoginInfo.vb" />
+    <Compile Include="Components\Entities\Firewall\RequestSource.vb" />
+    <Compile Include="Components\Providers\Action\ActionContext.vb" />
+    <Compile Include="Components\Providers\Action\ActionProviderConfig.vb" />
+    <Compile Include="Components\Providers\Action\ActionProviderSettings.vb" />
+    <Compile Include="Components\Providers\Action\AsyncEnabledActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\DisplayMessageAction.vb" />
+    <Compile Include="Components\Providers\Action\MessageBasedAction.vb" />
+    <Compile Include="Components\Entities\Firewall\RequestLifeCycleEvent.vb" />
+    <Compile Include="Components\Providers\Action\SendEmailAction.vb" />
+    <Compile Include="Components\Providers\Action\SubBotActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\WhileActionProvider.vb" />
+    <Compile Include="Components\Providers\Condition\DnnPageCondition.vb" />
+    <Compile Include="Components\Providers\Condition\SelectionSetCondition.vb" />
+    <Compile Include="Components\Providers\Condition\StaticConditionProvider.vb" />
+    <Compile Include="Components\Providers\KeeperProviderConfig.vb" />
+    <Compile Include="Components\Providers\Condition\ConditionProviderConfig.vb" />
+    <Compile Include="Components\Entities\Firewall\RequestScope.vb" />
+    <Compile Include="Components\Providers\Action\ActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\AutoLoginAction.vb" />
+    <Compile Include="Components\Providers\Action\CustomizeEnvironmentAction.vb" />
+    <Compile Include="Components\Providers\Action\KeeperAction.vb" />
+    <Compile Include="Components\Providers\Action\LogEventAction.vb" />
+    <Compile Include="Components\Providers\Action\LogOffAction.vb" />
+    <Compile Include="Components\Providers\Action\MultipleActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\RedirectAction.vb" />
+    <Compile Include="Components\Providers\Action\RequestDenialAction.vb" />
+    <Compile Include="Components\Providers\Condition\ClientSourceCondition.vb" />
+    <Compile Include="Components\Providers\Condition\ConditionProvider.vb" />
+    <Compile Include="Components\Providers\Action\IActionProvider.vb" />
+    <Compile Include="Components\Providers\Condition\ConditionProviderSettings.vb" />
+    <Compile Include="Components\Providers\Condition\DosEnabledConditionProvider.vb" />
+    <Compile Include="Components\Providers\Condition\FleeExpressionCondition.vb" />
+    <Compile Include="Components\Providers\Condition\IConditionProvider.vb" />
+    <Compile Include="Components\Entities\Firewall\RequestsCapInfo.vb" />
+    <Compile Include="Components\KeeperErrorsHandler.vb">
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Components\Entities\Firewall\FirewallConfig.vb" />
+    <Compile Include="Components\Providers\Condition\IDoSEnabledConditionProvider.vb" />
+    <Compile Include="Components\Providers\Condition\KeeperCondition.vb" />
+    <Compile Include="Components\Entities\KeeperRule.vb" />
+    <Compile Include="Components\Entities\PortalKeeperContext.vb" />
+    <Compile Include="Components\PortalKeeperModule.vb" />
+    <Compile Include="Components\PortalKeeperConfigUpdate.vb" />
+    <Compile Include="Components\BusinessController.vb" />
+    <Compile Include="Components\Entities\Firewall\FirewallSettings.vb" />
+    <Compile Include="Components\Providers\Condition\MembershipCondition.vb" />
+    <Compile Include="Components\Providers\Condition\MultipleConnectionsCondition.vb" />
+    <Compile Include="Components\Providers\Condition\PortalAliasCondition.vb" />
+    <Compile Include="Components\Providers\Condition\RequestsCapsCondition.vb" />
+    <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
+    <Compile Include="Components\Entities\Scheduler\ScheduleEvent.vb" />
+    <Compile Include="Components\TrialProvider.vb" />
+    <Compile Include="KeeperConfig.ascx.designer.vb">
+      <DependentUpon>KeeperConfig.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="KeeperConfig.ascx.vb">
+      <DependentUpon>KeeperConfig.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="My Project\AssemblyInfo.vb" />
+    <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
+      <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
+      <VBMyExtensionTemplateVersion>1.0.0.0</VBMyExtensionTemplateVersion>
+    </Compile>
+    <Compile Include="My Project\Resources.Designer.vb">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Error.ashx.vb">
+      <DependentUpon>Error.ashx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Settings.ascx.designer.vb">
+      <DependentUpon>Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.ascx.vb">
+      <DependentUpon>Settings.ascx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll" />
+    <Content Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.Strategies.dll" />
+    <Content Include="external\FileHelpers\FileHelpers.DataLink.dll" />
+    <Content Include="external\FileHelpers\FileHelpers.DataLink.xml" />
+    <Content Include="external\FileHelpers\FileHelpers.dll" />
+    <Content Include="external\FileHelpers\FileHelpers.ExcelStorage.dll" />
+    <Content Include="external\FileHelpers\FileHelpers.ExcelStorage.xml" />
+    <Content Include="external\FileHelpers\FileHelpers.xml" />
+    <Content Include="external\FileHelpers\Interop.Excel.dll" />
+    <Content Include="external\FileHelpers\Interop.Office.dll" />
+    <Content Include="external\FileHelpers\Microsoft.Vbe.Interop.dll" />
+    <Content Include="external\FileHelpers\office.dll" />
+    <Content Include="external\FileHelpers\office.xml" />
+    <Content Include="external\OpenRasta\ICSharpCode.SharpZipLib.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.Client.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.Codecs.SharpView.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.Codecs.WebForms.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.Hosting.AspNet.dll" />
+    <Content Include="external\OpenRasta\OpenRasta.Testing.dll" />
+    <Content Include="external\OpenRasta\OpenWrap.dll" />
+    <Content Include="external\OpenRasta\OpenWrap.Testing.dll" />
+    <Content Include="PKP-Logo.png" />
+    <Content Include="Settings.ascx" />
+    <None Include="App_LocalResources\SharedResources.resx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Build\Aricie.Globals.Tasks.targets" />
+    <None Include="Build\PrivateAssemblies.targets" />
+    <None Include="Build\TFSBuild.proj" />
+    <None Include="Documentation\PortalKeeper Documentation EN.docx" />
+    <None Include="external\Ciloci.Flee.dll" />
+    <None Include="external\Ciloci.Flee.license.txt" />
+    <Content Include="KeeperConfig.ascx" />
+    <None Include="App_LocalResources\KeeperConfig.ascx.resx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="module.css" />
+    <None Include="App_LocalResources\KeeperConfig.ascx.fr-FR.resx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App_LocalResources\SharedResources.fr-FR.resx">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App_LocalResources\Settings.ascx.resx" />
+    <EmbeddedResource Include="My Project\Resources.resx">
+      <Generator>VbMyResourcesResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.vb</LastGenOutput>
+      <CustomToolNamespace>My.Resources</CustomToolNamespace>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <Content Include="PAs\Aricie.PortalKeeper_Install_01.01.00.zip" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Aricie.PortalKeeper.Default.config" />
+    <None Include="Aricie.PortalKeeper.dnn">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Aricie.PortalKeeper.dnn.Merge.Xml" />
+    <None Include="Aricie.PortalKeeper.dnn5">
+      <SubType>Designer</SubType>
+    </None>
+    <Content Include="Error.ashx" />
+    <Content Include="external\JayRock\Jayrock.dll" />
+    <Content Include="external\JayRock\Jayrock.Json.dll" />
+    <Content Include="external\JayRock\Jayrock.Sandbox.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="App_Data\" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
+      <Name>Aricie.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
+      <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
+      <Name>Aricie.DNN</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup>
+    <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
+    <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
+  </PropertyGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
+  <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{349c5851-65df-11da-9384-00065b846f21}">
+        <WebProjectProperties>
+          <SaveServerSettingsInUserFile>True</SaveServerSettingsInUserFile>
+        </WebProjectProperties>
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+</Project>
