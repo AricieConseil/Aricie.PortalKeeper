@@ -4,9 +4,6 @@ Namespace Configuration
 
 
     
-    '<XmlInclude(GetType(CustomErrorAddInfo))> _
-    '<XmlInclude(GetType(CustomErrorsAddInfo))> _
-    '<XmlInclude(GetType(TrustAddInfo))> _
     <XmlInclude(GetType(SimpleNodeInfo))> _
     <XmlInclude(GetType(ComplexNodeInfo))> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
@@ -28,41 +25,19 @@ Namespace Configuration
             updateattribute
         End Enum
 
-        Private _Path As String = ""
-        Private _Action As NodeAction = NodeAction.add
-
         Public Sub New()
         End Sub
-
 
         Public Sub New(ByVal path As String, ByVal action As NodeAction)
             Me._Path = path
             Me._Action = action
         End Sub
 
-
-
         <XmlAttribute("path")> _
-        Public Property Path() As String
-            Get
-                Return _Path
-            End Get
-            Set(ByVal value As String)
-                _Path = value
-            End Set
-        End Property
-
+        Public Property Path() As String = ""
 
         <XmlAttribute("action")> _
-        Public Property Action() As NodeAction
-            Get
-                Return _Action
-            End Get
-            Set(ByVal value As NodeAction)
-                _Action = value
-            End Set
-        End Property
-
+        Public Property Action() As NodeAction = NodeAction.add
 
     End Class
 End Namespace
