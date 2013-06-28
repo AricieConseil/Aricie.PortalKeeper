@@ -56,15 +56,15 @@ Aricie.DNN.HtmlInputDate.prototype = {
             });
         }
         );
-//        if (typeof jQuery.tools == 'undefined') {
-//            //chargement de jquery.tools
-//            var urlScript = this._urljQueryTools;
-//            jQuery.getScript(urlScript, function () {
+        //        if (typeof jQuery.tools == 'undefined') {
+        //            //chargement de jquery.tools
+        //            var urlScript = this._urljQueryTools;
+        //            jQuery.getScript(urlScript, function () {
 
-//                myDateInput.initComponent();
-//            });
-//        }
-//        else { myDateInput.initComponent() }
+        //                myDateInput.initComponent();
+        //            });
+        //        }
+        //        else { myDateInput.initComponent() }
 
 
 
@@ -86,6 +86,7 @@ Aricie.DNN.HtmlInputDate.prototype = {
         //jQuery.tools.dateinput.conf.lang = myDateInput.get_language();
         // Add custom initialization here
         //  jQuery(document).ready(function() {
+
         jQuery('#' + myDateInput.get_clientId()).dateinput({
             format: myDateInput.get_format(),
             selectors: myDateInput.get_selectors(),
@@ -93,9 +94,18 @@ Aricie.DNN.HtmlInputDate.prototype = {
             min: myDateInput.get_min(),
             max: myDateInput.get_max(),
             lang: myDateInput.get_language(),
-            yearRange: eval(myDateInput.get_yearRange())
+            yearRange: eval(myDateInput.get_yearRange()),
+            css: { root: 'calroot' + myDateInput.get_clientId() }
         });
 
+        //var currentDateInputCt = jQuery('#' + myDateInput.get_clientId());
+        jQuery('#' + 'calroot' + myDateInput.get_clientId()).addClass("calroot");
+
+        jQuery('#' + myDateInput.get_clientId()).change(function (event) {
+            event.target = event.currentTarget;
+            event.srcElement = event.currentTarget;
+            return false;
+        });
         if (myDateInput.get_currentDate() != null && myDateInput.get_currentDate().getFullYear() > 1) {
             jQuery('#' + myDateInput.get_clientId()).data('dateinput').setValue(myDateInput.get_currentDate().getFullYear(), myDateInput.get_currentDate().getMonth(), myDateInput.get_currentDate().getDate());
         }

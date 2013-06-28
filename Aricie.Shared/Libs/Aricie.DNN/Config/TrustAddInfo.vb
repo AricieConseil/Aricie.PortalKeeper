@@ -19,8 +19,6 @@ Namespace Configuration
 
             If Not String.IsNullOrEmpty(objTrust.OriginUrl) Then
                 Me.Attributes("originUrl") = objTrust.OriginUrl
-                'Else
-                '    Me.Attributes("originUrl") = ".*"
             End If
         End Sub
 

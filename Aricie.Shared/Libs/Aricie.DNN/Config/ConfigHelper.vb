@@ -119,11 +119,6 @@ Namespace Configuration
                         If addElement Then
                             xmlConfig.AddConfigNodes(nodes, action)
                         End If
-
-                        'ElseIf TypeOf configElement Is TypedEntityElementInfo Then
-                        '    DirectCast(configElement, TypedEntityElementInfo).ProcessConfig(action)
-                        'ElseIf TypeOf configElement Is IConfigElementInfo Then
-                        '    DirectCast(configElement, IConfigElementInfo).ProcessConfig(action)
                     Else
                         configElement.ProcessConfig(action)
                     End If
@@ -204,22 +199,7 @@ Namespace Configuration
             Dim merger As Object = Activator.CreateInstance(xmlMergeType, strConfig, "", GetType(ConfigHelper).FullName)
             Dim updateConfigMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(xmlMergeType, "UpdateConfigs"), MethodInfo)
             updateConfigMethod.Invoke(merger, Nothing)
-
-            'Dim merger As New XmlMerge(strConfig, "", GetType(ConfigHelper).FullName)
-            'merger.UpdateConfigs()
-
         End Sub
-
-        'Public Function GetEmptyWebConfigMerger() As ConfigInfo
-        '    Dim toReturn As New ConfigInfo()
-        '    toReturn.Add(New NodesInfo())
-        '    Return toReturn
-        'End Function
-
-
-
-
-
 
 #End Region
 
