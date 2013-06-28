@@ -15,7 +15,7 @@
 }
 
 /* calendar root element */
-#calroot {
+#calroot,.calroot {
 	/* place on top of other elements. set a higher value if nessessary */
 	z-index:1005;
 	

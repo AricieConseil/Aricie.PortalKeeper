@@ -74,11 +74,11 @@
     <Compile Include="TestFramework\Services\Mocks\SettingsControllerMocks.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Aricie.Core\Aricie.Core - vs2010.vbproj">
+    <ProjectReference Include="..\..\..\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ADA6635-4F81-4900-B392-DC0FD650FA52}</Project>
       <Name>Aricie.Core - vs2010</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\Aricie.DNN - vs2010.vbproj">
+    <ProjectReference Include="..\..\Aricie.DNN.vbproj">
       <Project>{79F9C77D-3B12-4111-B3C3-F006C7026580}</Project>
       <Name>Aricie.DNN - vs2010</Name>
     </ProjectReference>
