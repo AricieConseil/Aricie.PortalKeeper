@@ -6,8 +6,6 @@ Namespace Configuration
     ''' <summary>
     ''' Providers Add merge node
     ''' </summary>
-    ''' <XmlInclude(GetType(CustomErrorAddInfo))> _
-    '''    <XmlInclude(GetType(CustomErrorsAddInfo))> _
     <XmlRoot("add")> _
     <Serializable()> _
     Public Class ProviderAddInfo

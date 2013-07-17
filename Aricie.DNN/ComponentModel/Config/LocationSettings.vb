@@ -58,7 +58,7 @@ Namespace ComponentModel
         Public Shared CoreFile As New LocationSettings(False, "")
 
 
-        Public Function Equals(other As LocationSettings) As Boolean Implements System.IEquatable(Of LocationSettings).Equals
+        Public Overloads Function Equals(other As LocationSettings) As Boolean Implements System.IEquatable(Of LocationSettings).Equals
             Return Me._UserFile = other._UserFile AndAlso Me._UserFileName = other._UserFileName AndAlso Me._BackupsNb = other._BackupsNb
         End Function
     End Class

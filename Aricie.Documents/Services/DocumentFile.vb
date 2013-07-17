@@ -129,29 +129,6 @@ Namespace Services
 
             ' modification pour éviter le replace à répétition
             Return DocumentTextCleanerRegex.Replace(content, " ").Trim()
-
-
-            'PDFs CLEAN
-            toReturn = toReturn.Replace(" ", " ") 'Espace Insécable
-            toReturn = toReturn.Replace("/r", " ").Replace("\r", " ")
-            toReturn = toReturn.Replace("/n", " ").Replace("\n", " ")
-            toReturn = toReturn.Replace(";", " ")
-            toReturn = toReturn.Replace("&#", " ")
-
-            toReturn = toReturn.Replace("---", " ")
-
-            'OFFICEs CLEAN
-            toReturn = toReturn.Replace("\o", " ")
-            toReturn = toReturn.Replace("\z", " ")
-            toReturn = toReturn.Replace("\u", " ")
-            toReturn = toReturn.Replace("\h", " ")
-
-            'Blanks CLEAN
-            Dim reg As New Regex("\s{2,}", RegexOptions.IgnoreCase)
-            toReturn = reg.Replace(toReturn, " ")
-            toReturn = toReturn.Trim()
-
-            Return toReturn
         End Function
 
         Public Function getPageNumber() As Integer

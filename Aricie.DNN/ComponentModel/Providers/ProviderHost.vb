@@ -45,6 +45,15 @@ Namespace ComponentModel
         Public MustOverride Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, TConfig)
 
 
+        Private _AvailableProviders As IDictionary(Of String, TConfig)
+        Public ReadOnly Property AvailableProviders As IDictionary(Of String, TConfig)
+            Get
+                If _AvailableProviders Is Nothing Then
+                    _AvailableProviders = GetAvailableProviders()
+                End If
+                Return _AvailableProviders
+            End Get
+        End Property
 
 
 
@@ -56,7 +65,7 @@ Namespace ComponentModel
         Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of TConfig) Implements ISelector(Of TConfig).GetSelectorG
             Select Case propertyName
                 Case "Instances"
-                    Return New List(Of TConfig)(Me.GetAvailableProviders.Values)
+                    Return New List(Of TConfig)(Me.AvailableProviders.Values)
                 Case Else
                     Return Nothing
             End Select
@@ -66,7 +75,7 @@ Namespace ComponentModel
             Select Case collectionPropertyName
                 Case "Instances"
                     Dim toReturn As TSettings
-                    Dim objProvider As TProvider = Me.GetAvailableProviders(providerName).GetTypedProvider
+                    Dim objProvider As TProvider = Me.AvailableProviders(providerName).GetTypedProvider
                     If TypeOf objProvider Is IProvider(Of TConfig, TSettings) Then
                         toReturn = DirectCast(objProvider, IProvider(Of TConfig, TSettings)).GetNewProviderSettings
                     Else
