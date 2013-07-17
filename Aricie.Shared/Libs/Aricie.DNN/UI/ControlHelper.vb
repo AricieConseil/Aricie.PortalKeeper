@@ -42,7 +42,8 @@ Namespace UI
 
 		Public Sub RebindDualList(ByRef duallist As DualListControl, available As ArrayList, assigned As ArrayList)
 
-			Dim lstAvailable, lstAssigned As ListBox
+            Dim lstAvailable As ListBox = Nothing
+            Dim lstAssigned As ListBox = Nothing
 
 			If duallist.FindControl("lstAvailable") IsNot Nothing Then
 				lstAvailable = CType(duallist.FindControl("lstAvailable"), ListBox)

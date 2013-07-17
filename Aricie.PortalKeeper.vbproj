@@ -304,6 +304,7 @@
     <Content Include="external\OpenRasta\OpenWrap.dll" />
     <Content Include="external\OpenRasta\OpenWrap.Testing.dll" />
     <Content Include="PKP-Logo.png" />
+    <Content Include="ReleaseNotes.html" />
     <Content Include="Settings.ascx" />
     <None Include="App_LocalResources\SharedResources.resx">
       <SubType>Designer</SubType>
@@ -350,6 +351,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Providers\BotProviders\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

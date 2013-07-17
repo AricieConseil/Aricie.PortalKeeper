@@ -6,12 +6,16 @@
       <owner>
         <name >Aricie</name>
         <organization>Aricie</organization>
-        <url >www.aricie.com</url>
-        <email >support@aricie.fr</email>
+        <url><![CDATA[<a href="http://www.aricie.com" target="_new">www.aricie.com</a>]]></url>
+        <email><![CDATA[<a href="mailto:support@aricie.fr">support@aricie.fr</a>]]></email>
       </owner>
       <iconFile>PKP-Logo.png</iconFile>
       <license>You are granted a license to install the SOFTWARE PRODUCT on a single production web server, and use it for a SINGLE DotNetNuke installation (instance). You are also permitted to use the same license for non-production development or staging servers.  If you purchased a SOURCE LICENSE: You are further licensed to view the source code of the SOFTWARE PRODUCT and modify it for use as described above. Under no circumstances may the source code or products developed by using the source code be re-distributed in any form.</license>
-      <releaseNotes />
+      <releaseNotes src="ReleaseNotes.html" />
+      <dependencies>
+        <dependency type="Package">Aricie.Shared</dependency>
+        <dependency type="Type">Aricie.DNN.VersionManagement.AricieSharedMustBeAtLeastVersion1_7_1, Aricie.DNN;Aricie.VersionManagement.AricieSharedMustBeAtLeastVersion1_7_1, Aricie.Core</dependency>
+      </dependencies>
       <components>
         <component type="Module">
           <desktopModule>

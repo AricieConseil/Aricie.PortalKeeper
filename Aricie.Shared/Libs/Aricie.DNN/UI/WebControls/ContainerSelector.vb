@@ -70,7 +70,7 @@ Namespace UI.WebControls
             Dim arrFolders As String()
             Dim strFile As String
             Dim arrFiles As String()
-            Dim strLastFolder As String
+            Dim strLastFolder As String = String.Empty
             Dim strSeparator As String = "----------------------------------------"
             strRoot = NukeHelper.PortalSettings.HomeDirectoryMapPath & "Containers"
             If Directory.Exists(strRoot) Then
