@@ -488,6 +488,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram1.cd" />
     <None Include="Diagnostics\Diagnostics.cd" />
     <None Include="Entities\Entities.cd" />
     <None Include="external\dnn481\CountryListBox.dll" />
@@ -547,12 +548,6 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aricie.Core\Aricie.Core.vbproj">
-      <Project>{6ADA6635-4F81-4900-B392-DC0FD650FA52}</Project>
-      <Name>Aricie.Core - vs2010</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <EmbeddedResource Include="UI\WebControls\HtmlJsSlider.js" />
   </ItemGroup>
   <ItemGroup>
@@ -581,6 +576,12 @@
     <EmbeddedResource Include="UI\WebControls\AutoCompleteTextBox.js" />
     <EmbeddedResource Include="Images\dropdown.png" />
     <EmbeddedResource Include="UI\WebControls\DropDownListMulti.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
+      <Name>Aricie.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
