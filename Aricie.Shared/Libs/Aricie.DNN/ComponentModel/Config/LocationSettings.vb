@@ -24,6 +24,7 @@ Namespace ComponentModel
             Me._UserFileName = userFileName
         End Sub
 
+        <AutoPostBack> _
         Public Property UserFile() As Boolean
             Get
                 Return _UserFile
@@ -33,6 +34,7 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <ConditionalVisible("UserFile", False, True)> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <Width(300)> _
         Public Property UserFileName() As String
