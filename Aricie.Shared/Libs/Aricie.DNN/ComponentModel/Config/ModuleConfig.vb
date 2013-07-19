@@ -118,10 +118,10 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <LabelMode(LabelMode.Top)> _
         <Category("LocationSettings")> _
               <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-              <LabelMode(LabelMode.Top)> _
-              <XmlIgnore()> _
+        <XmlIgnore()> _
         Public Property LocationSettings() As LocationSettings
             Get
                 Return SharedLocationSettings(True, False)

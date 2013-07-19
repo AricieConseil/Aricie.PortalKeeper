@@ -46,6 +46,8 @@ Namespace ComponentModel
 
 
         Private _AvailableProviders As IDictionary(Of String, TConfig)
+
+        <Browsable(False)> _
         Public ReadOnly Property AvailableProviders As IDictionary(Of String, TConfig)
             Get
                 If _AvailableProviders Is Nothing Then
