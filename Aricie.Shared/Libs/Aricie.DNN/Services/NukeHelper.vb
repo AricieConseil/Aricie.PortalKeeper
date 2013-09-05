@@ -211,6 +211,9 @@ Namespace Services
             Return toReturn
         End Function
 
+        Public Sub Restart()
+            DotNetNuke.Common.Utilities.Config.Touch()
+        End Sub
 
 #End Region
 
@@ -250,11 +253,6 @@ Namespace Services
         End Property
 
 #End Region
-
-
-
-
-
 
 
 #Region "Portal members"

@@ -54,6 +54,10 @@ Namespace Services.Filtering
 
         End Sub
 
+        Public Sub New(ByVal buildDefaultTransforms As DefaultTransforms)
+            Me.BuildDefault(buildDefaultTransforms)
+        End Sub
+
         Public Sub New(ByVal maxLength As Integer, ByVal forceToLower As Boolean, ByVal encodePreProcessing As EncodeProcessing, ByVal buildDefaultTransforms As DefaultTransforms)
             Me.New()
             Me._MaxLength = maxLength
@@ -185,10 +189,12 @@ Namespace Services.Filtering
             Me._TransformList.Clear()
             Select Case defaultTrans
                 Case DefaultTransforms.UrlFull
+                    Me.ForceToLower = True
                     Dim fromString As String = "יטךכ€ןלמעפץצûüשגאהדחסÿ"
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, fromString, totoString))
                 Case DefaultTransforms.UrlPart
+                    Me.ForceToLower = True
                     Dim fromString As String = "יטךכ€ןלמעפץצûüשגאהדחסÿ"
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Dim reservedChars As String = "$&+,/:;=?@'#."
