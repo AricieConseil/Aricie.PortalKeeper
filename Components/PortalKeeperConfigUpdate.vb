@@ -18,6 +18,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             toAdd = New HttpModuleInfo("Aricie.PortalKeeperAfterDNN", GetType(PortalKeeperModuleAfterDNN), "managedHandler")
             toAdd.InsertAfterKey = "UrlRewrite"
             toReturn.Add(toAdd)
+
+            'Jesse:      OpenRasta()
+            toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
+            toReturn.Add(toAdd)
+            toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
+            toReturn.Add(toAdd)
+
             toReturn.Add(New TrustInfo("Full"))
 
           
@@ -27,26 +34,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     End Class
 
-    Public Class PortalKeeperRastaConfigUpdate
-        Implements IUpdateProvider
+    'Public Class PortalKeeperRastaConfigUpdate
+    '    Implements IUpdateProvider
 
 
 
-        Public Function GetConfigElements() As System.Collections.Generic.List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
-            Dim toReturn As New List(Of IConfigElementInfo)
+    '    Public Function GetConfigElements() As System.Collections.Generic.List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
+    '        Dim toReturn As New List(Of IConfigElementInfo)
 
-            Dim toAdd As WebServerElementInfo 
-            'Jesse:      OpenRasta()
-            toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
-            toReturn.Add(toAdd)
-            toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
-            toReturn.Add(toAdd)
+    '        Dim toAdd As WebServerElementInfo 
+    '        'Jesse:      OpenRasta()
+    '        toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
+    '        toReturn.Add(toAdd)
+    '        toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
+    '        toReturn.Add(toAdd)
 
-            Return toReturn
-        End Function
+    '        Return toReturn
+    '    End Function
 
 
-    End Class
+    'End Class
 
 
 End Namespace

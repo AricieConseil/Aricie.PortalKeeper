@@ -233,38 +233,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             End Try
         End Sub
 
-        'Private Sub cmdInstallCustomErrors_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdInstallCustomErrors.Click
-        '    Try
-
-        '        Dim customErrorsUpdater As IUpdateProvider = KeeperConfig.GetUpdateProvider
-        '        Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
-        '        Skin.AddModuleMessage(Me, Localization.GetString("CustomErrorsSaved.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-        '    Catch ex As Exception
-        '        ProcessModuleLoadException(Me, ex)
-        '    End Try
-        'End Sub
-        Private Sub cmdInstallRasta_click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdInstallRasta.Click
-            Try
-                Configuration.ConfigHelper.ProcessModuleUpdate(ConfigActionType.Install, New PortalKeeperRastaConfigUpdate)
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
-        Private Sub cmdUninstallRasta_click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUninstallRasta.Click
-            Try
-                Dim uninstallProcedure As IUpdateProvider
-                Dim errorupdate As IUpdateProvider = KeeperConfig.GetUpdateProvider
-                If ConfigHelper.IsInstalled(errorupdate, True) Then
-                    uninstallProcedure = New MultiUpdateProvider(errorupdate, New PortalKeeperRastaConfigUpdate)
-                Else
-                    uninstallProcedure = New PortalKeeperRastaConfigUpdate
-                End If
-                ConfigHelper.ProcessModuleUpdate(ConfigActionType.Uninstall, uninstallProcedure)
-                Response.Redirect(Me.Request.Url.AbsoluteUri)
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
         Protected Sub cmdDebug_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDebug.Click
             Me.DebugTest()
         End Sub
@@ -410,9 +378,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             If Me.UserInfo.IsSuperUser Then
                 Me.divInstall.Visible = True
                 Configuration.ConfigHelper.AssertIsInstalled(Me, New PortalKeeperConfigUpdate, Me.cmdInstall, New Control() {Me.cmdUninstall, Me.divConfig})
-                If Me.pnlRasta.Visible Then
-                    Configuration.ConfigHelper.AssertIsInstalled(Me, New PortalKeeperRastaConfigUpdate, Me.cmdInstallRasta, Me.cmdUninstallRasta)
-                End If
             Else
                 Me.divInstall.Visible = False
             End If

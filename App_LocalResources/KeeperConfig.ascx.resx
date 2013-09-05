@@ -118,10 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="cmdInstall.Text" xml:space="preserve">
-    <value>Register Components</value>
+    <value>Register firewall, bot farm and web services components</value>
   </data>
   <data name="ComponentsNotInstalled.Message" xml:space="preserve">
-    <value>PortalKeeper Component not registered. Registration will update your web.config file with a new HttpModule and enforce Full Trust.</value>
+    <value>PortalKeeper Components not registered. Registration will update your web.config file with the firewall HttpModule, Open Rasta components for web services, enforce full trust, and create the bot farm scheduled task.  </value>
   </data>
   <data name="cmdUninstall.Text" xml:space="preserve">
     <value>Unregister Components</value>
@@ -196,7 +196,7 @@
     <value>Location</value>
   </data>
   <data name="cmdInstallRasta.Text" xml:space="preserve">
-    <value>Register Rasta Components</value>
+    <value>Register Open Rasta web services components</value>
   </data>
   <data name="cmdUninstallRasta.Text" xml:space="preserve">
     <value>Unregister Rasta Components</value>
