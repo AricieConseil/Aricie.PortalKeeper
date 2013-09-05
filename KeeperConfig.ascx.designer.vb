@@ -42,33 +42,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected WithEvents cmdUninstall As Global.DotNetNuke.UI.WebControls.CommandButton
 
         '''<summary>
-        '''pnlRasta control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents pnlRasta As Global.System.Web.UI.WebControls.Panel
-
-        '''<summary>
-        '''cmdInstallRasta control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdInstallRasta As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
-        '''cmdUninstallRasta control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdUninstallRasta As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
         '''divConfig control.
         '''</summary>
         '''<remarks>

@@ -8,12 +8,6 @@
             ResourceKey="cmdInstall" />
         <dnn:CommandButton ID="cmdUninstall" runat="server" ImageUrl="~/images/delete.gif"
             ResourceKey="cmdUninstall" />
-        <asp:Panel runat="server" ID="pnlRasta" Visible="true">
-            <dnn:CommandButton ID="cmdInstallRasta" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
-                ResourceKey="cmdInstallRasta" />
-            <dnn:CommandButton ID="cmdUninstallRasta" runat="server" ImageUrl="~/images/delete.gif"
-                ResourceKey="cmdUninstallRasta" />
-        </asp:Panel>
     </div>
     <div id="divConfig" runat="server">
         <div id="divHostConfig" runat="server">
@@ -28,11 +22,8 @@
                     ResourceKey="cmdSaveConfig" />
                 <dnn:CommandButton ID="cmdCancelConfig" runat="server" ImageUrl="~/images/cancel.gif"
                     ResourceKey="cmdCancel" />
-                <%--<dnn:CommandButton ID="cmdRunBots" runat="server" ImageUrl="~/images/fwd.gif" ResourceKey="cmdRunBots" />--%>
                 <dnn:CommandButton ID="cmdClearProbes" runat="server" visible="false" ImageUrl="~/images/fwd.gif"
                     ResourceKey="cmdClearProbes" />
-                <%-- <dnn:CommandButton ID="cmdInstallCustomErrors" runat="server" ImageUrl="~/images/synchronize.gif"
-                    ResourceKey="cmdInstallCustomErrors" />--%>
                 <dnn:CommandButton ID="cmdDebug" Visible="False" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
                     ResourceKey="cmdDebug" />
             </div>

@@ -281,28 +281,32 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll" />
-    <Content Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.Strategies.dll" />
-    <Content Include="external\FileHelpers\FileHelpers.DataLink.dll" />
-    <Content Include="external\FileHelpers\FileHelpers.DataLink.xml" />
-    <Content Include="external\FileHelpers\FileHelpers.dll" />
-    <Content Include="external\FileHelpers\FileHelpers.ExcelStorage.dll" />
-    <Content Include="external\FileHelpers\FileHelpers.ExcelStorage.xml" />
-    <Content Include="external\FileHelpers\FileHelpers.xml" />
-    <Content Include="external\FileHelpers\Interop.Excel.dll" />
-    <Content Include="external\FileHelpers\Interop.Office.dll" />
-    <Content Include="external\FileHelpers\Microsoft.Vbe.Interop.dll" />
-    <Content Include="external\FileHelpers\office.dll" />
-    <Content Include="external\FileHelpers\office.xml" />
-    <Content Include="external\OpenRasta\ICSharpCode.SharpZipLib.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.Client.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.Codecs.SharpView.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.Codecs.WebForms.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.Hosting.AspNet.dll" />
-    <Content Include="external\OpenRasta\OpenRasta.Testing.dll" />
-    <Content Include="external\OpenRasta\OpenWrap.dll" />
-    <Content Include="external\OpenRasta\OpenWrap.Testing.dll" />
+    <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.Strategies.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="external\FileHelpers\FileHelpers.DataLink.dll" />
+    <None Include="external\FileHelpers\FileHelpers.DataLink.xml" />
+    <None Include="external\FileHelpers\FileHelpers.dll" />
+    <None Include="external\FileHelpers\FileHelpers.ExcelStorage.dll" />
+    <None Include="external\FileHelpers\FileHelpers.ExcelStorage.xml" />
+    <None Include="external\FileHelpers\FileHelpers.xml" />
+    <None Include="external\FileHelpers\Interop.Excel.dll" />
+    <None Include="external\FileHelpers\Interop.Office.dll" />
+    <None Include="external\FileHelpers\Microsoft.Vbe.Interop.dll" />
+    <None Include="external\FileHelpers\office.dll" />
+    <None Include="external\FileHelpers\office.xml" />
+    <None Include="external\OpenRasta\ICSharpCode.SharpZipLib.dll" />
+    <None Include="external\OpenRasta\OpenRasta.Client.dll" />
+    <None Include="external\OpenRasta\OpenRasta.Codecs.SharpView.dll" />
+    <None Include="external\OpenRasta\OpenRasta.Codecs.WebForms.dll" />
+    <None Include="external\OpenRasta\OpenRasta.dll" />
+    <None Include="external\OpenRasta\OpenRasta.Hosting.AspNet.dll" />
+    <None Include="external\OpenRasta\OpenRasta.Testing.dll" />
+    <None Include="external\OpenRasta\OpenWrap.dll" />
+    <None Include="external\OpenRasta\OpenWrap.Testing.dll" />
     <Content Include="PKP-Logo.png" />
     <Content Include="ReleaseNotes.html" />
     <Content Include="Settings.ascx" />
@@ -345,9 +349,9 @@
       <SubType>Designer</SubType>
     </None>
     <Content Include="Error.ashx" />
-    <Content Include="external\JayRock\Jayrock.dll" />
-    <Content Include="external\JayRock\Jayrock.Json.dll" />
-    <Content Include="external\JayRock\Jayrock.Sandbox.dll" />
+    <None Include="external\JayRock\Jayrock.dll" />
+    <None Include="external\JayRock\Jayrock.Json.dll" />
+    <None Include="external\JayRock\Jayrock.Sandbox.dll" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
