@@ -49,6 +49,7 @@ Namespace Web.UI.Controls
                     End If
 
                     Me.gvFooterRow = Me.CreateRow(-1, -1, DataControlRowType.Footer, DataControlRowState.Insert)
+                    Me.gvFooterRow.MergeStyle(Me.RowStyle)
                     Me.InitializeRow(Me.gvFooterRow, flds)
                     t.Rows.Add(Me.gvFooterRow)
                 Else

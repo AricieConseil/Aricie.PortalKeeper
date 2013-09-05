@@ -89,7 +89,7 @@ function initialisePropertyEditorsScripts() {
 
 
     jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
-        jQuery.each(jQuery(h3).data("events"), function (j, event) {
+        jQuery.each(jQuery(h3).data("events") || jQuery._data(h3,"events"), function (j, event) {
             jQuery.each(event, function (k, h) {
                 if (h.type == 'click') {
                     jQuery(h3).unbind(h.type, h.handler);
