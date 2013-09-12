@@ -138,7 +138,8 @@ display: none;
 .dnnForm .dnnFormItem .aricieFullWidth label
 {
     float:none;
-    width:100%;
+    /*width:100%;*/
+    width:auto;
     text-align:left;
 }
 
@@ -196,8 +197,8 @@ display: none;
 .dnnForm .dnnFormItem .ExportPanel input
 {
     float:none;
-    width:auto;
-    display:inline;
+   /* width:auto;
+    display:inline;*/
 }
 
 .dnnForm .ui-accordion .ui-accordion-header
