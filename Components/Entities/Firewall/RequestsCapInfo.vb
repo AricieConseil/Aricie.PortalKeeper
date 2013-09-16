@@ -3,10 +3,16 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Threading
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
+Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.Services.Flee
+Imports DotNetNuke.Framework
+Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class RequestsCapInfo
+        Inherits NamedEntity
+
 
         'Private _CountStartTime As DateTime = Now
         'Private _RecordLock As New Object
@@ -17,6 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Enabled As Boolean = True
         Private _CappedRequestScope As RequestScope
         Private _RequestSource As New RequestSource(RequestSourceType.IPAddress)
+
         Private _Duration As New STimeSpan(TimeSpan.FromSeconds(60))
         Private _RateSpan As TimeSpan = TimeSpan.Zero
         Private _MaxNbRequest As Integer = 100
@@ -61,6 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
            <LabelMode(LabelMode.Top)> _
         Public Property RequestSource() As RequestSource
@@ -80,6 +88,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _CappedRequestScope = value
             End Set
         End Property
+
+        <ConditionalVisible("CappedRequestScope", False, True, RequestScope.CustomCondition)> _
+        Public Property RequestScopeCondition As New SimpleExpression(Of Boolean)("DnnContext.Request.Url.AbsoluteUri.Contains(""pagename.aspx"")")
+
 
         Public ReadOnly Property Rate() As Decimal
             Get
@@ -137,8 +149,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _CurrentWindowCount As Integer
         Private _BannedWindows As New Dictionary(Of DateTime, Boolean)
 
+        Private Function IsInScope(context As PortalKeeperContext(Of RequestEvent)) As Boolean
+            Select Case Me._CappedRequestScope
+                Case RequestScope.Any
+                    Return True
+                Case RequestScope.PagesOnly
+                    Return TypeOf context.DnnContext.HttpContext.CurrentHandler Is Page
+                Case RequestScope.DNNPageOnly
+                    Return TypeOf context.DnnContext.HttpContext.CurrentHandler Is CDefault
+                Case RequestScope.CustomCondition
+                    Return Me.RequestScopeCondition.Evaluate(context, context)
+            End Select
+        End Function
+
+
         Public Function IsValid(ByVal context As PortalKeeperContext(Of RequestEvent), ByRef clue As Object, ByRef key As String) As Boolean
-            If Not Me._Enabled Then
+            If Not Me._Enabled OrElse Not Me.IsInScope(context) Then
                 Return True
             End If
             Dim dateNow As DateTime = Now

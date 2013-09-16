@@ -4737,4 +4737,13 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ActionTree`1_SubTrees.Header" xml:space="preserve">
     <value>Child Nodes</value>
   </data>
+  <data name="Send418.Text" xml:space="preserve">
+    <value>Http Status 418 - I'm a teapot</value>
+  </data>
+  <data name="Send429.Text" xml:space="preserve">
+    <value>Http Status 429 - Too Many Requests</value>
+  </data>
+  <data name="Send503.Text" xml:space="preserve">
+    <value>Http Status 503 - Service Unavailable</value>
+  </data>
 </root>
