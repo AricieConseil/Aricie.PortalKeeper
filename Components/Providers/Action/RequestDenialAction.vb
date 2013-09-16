@@ -11,6 +11,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Send401 = 401
         Send403 = 403
         Send404 = 404
+        Send418 = 418
+        Send429 = 429
+        Send503 = 503
     End Enum
 
     Public Enum RequestAbortType

@@ -3,5 +3,6 @@
         Any
         PagesOnly
         DNNPageOnly
+        CustomCondition
     End Enum
 End Namespace
