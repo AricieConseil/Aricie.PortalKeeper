@@ -2,6 +2,7 @@
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.ComponentModel
 
 Namespace Entities
 
@@ -10,6 +11,8 @@ Namespace Entities
     ''' </summary>
     <Serializable()> _
     Public Class ConditionalEntity(Of T As {New})
+        Inherits NamedEntity
+
 
 
 #Region "Private members"

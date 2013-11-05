@@ -321,7 +321,7 @@ Public Class AricieFieldEditorControl
 
         Dim ctlEditControl As DotNetNuke.UI.WebControls.EditControl = Me.BuildEditor(editInfo)
 
-        If editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top Then
+        If editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top OrElse editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Bottom OrElse editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.None Then
             Me._FullWidth = True
         End If
 
@@ -339,7 +339,7 @@ Public Class AricieFieldEditorControl
 
 
             '  Dim str2 As String = ("float: " & editInfo.LabelMode.ToString.ToLower)
-            If ((editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Left) Or (editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Right)) Then
+            If ((editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Left) Or (editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
                 'str2 = (str2 & "; width: " & Me.LabelWidth.ToString)
                 child.Attributes.Add("style", String.Format("width:{0}", Me.LabelWidth.ToString))
             End If

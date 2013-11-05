@@ -30,7 +30,7 @@ Public Class UserControlEditControl
 
         If Not String.IsNullOrEmpty(_userControlPath) Then
             Dim uc As PropertyEditorUserControlBase = DirectCast(Me.Page.LoadControl(_userControlPath), PropertyEditorUserControlBase)
-
+            uc.EditControl = Me
             uc.ID = "uc"
             uc.EnableViewState = True
             uc.Value = Me.Value

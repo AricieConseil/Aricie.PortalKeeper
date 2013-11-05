@@ -23,7 +23,7 @@ Namespace ComponentModel
         <ExtendedCategory("")> _
         <MainCategory()> _
         <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(False, False, True, True, 11, CollectionDisplayStyle.Accordion, False)> _
+            <CollectionEditor(False, False, True, True, 11, CollectionDisplayStyle.Accordion, True)> _
             <ProvidersSelector()> _
             <LabelMode(LabelMode.Top)> _
             <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _

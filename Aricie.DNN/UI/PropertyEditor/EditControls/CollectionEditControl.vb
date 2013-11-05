@@ -2,6 +2,7 @@
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Collections
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Collections.Specialized
 Imports System.Web.UI.HtmlControls
@@ -20,6 +21,8 @@ Imports System.Web
 Imports Aricie.DNN.UI.WebControls.AriciePropertyEditorControl
 Imports Aricie.DNN.Services
 Imports System.IO
+Imports Aricie.DNN.Security.Trial
+Imports System.Linq
 
 Namespace UI.WebControls.EditControls
 
@@ -43,19 +46,19 @@ Namespace UI.WebControls.EditControls
         Protected WithEvents rpContentList As Repeater
         Protected WithEvents addSelector As SelectorControl
 
-        Public WithEvents cmdAddButton As CommandButton
+        Protected WithEvents cmdAddButton As CommandButton
 
-        Public WithEvents ctImportFile As System.Web.UI.HtmlControls.HtmlInputFile
-        Public WithEvents txtExportPath As TextBox
-        Public WithEvents cmdExportButton As CommandButton
-        Public WithEvents cmdCopyButton As CommandButton
-        Public WithEvents cmdImportButton As CommandButton
+        Protected WithEvents ctImportFile As System.Web.UI.HtmlControls.HtmlInputFile
+        'Public WithEvents txtExportPath As TextBox
+        Protected WithEvents cmdExportButton As CommandButton
+        Protected WithEvents cmdCopyButton As CommandButton
+        Protected WithEvents cmdImportButton As CommandButton
 
         Protected WithEvents ctlAddContainer As Control
         Protected WithEvents pnPager As Panel
 
-        Public WithEvents ctlPager As Pager
-        Public DeleteControls As New List(Of WebControl)
+        Protected WithEvents ctlPager As Pager
+        Private _DeleteControls As New List(Of WebControl)
 
 
 
@@ -75,10 +78,10 @@ Namespace UI.WebControls.EditControls
         Private _DisplayStyle As CollectionDisplayStyle = CollectionDisplayStyle.Accordion
         Private _PageIndex As Integer = -1
 
-        Private _IsPageRequest As Boolean
+        'Private _IsPageRequest As Boolean
 
-        Private _ImageSections As List(Of Image)
-        Private _SectionHeads As List(Of SectionHeadControl)
+        'Private _ImageSections As List(Of Image)
+        'Private _SectionHeads As List(Of SectionHeadControl)
 
         Private _PagedCollection As PagedCollection
         Private _ItemsDictionary As List(Of Element)
@@ -107,17 +110,6 @@ Namespace UI.WebControls.EditControls
 
         Public ReadOnly Property CollectionValue() As ICollection
             Get
-                'If Me._SortFieldName = String.Empty Then
-
-                'Else
-                '    If _SortedCollection Is Nothing OrElse _tempOriginal IsNot Me.Value Then
-                '        Dim tempSortedCollection As New ArrayList(DirectCast(Me.Value, ICollection))
-                '        tempSortedCollection.Sort(New Aricie.Business.Filters.SimpleComparer(Me._SortFieldName, System.ComponentModel.ListSortDirection.Ascending))
-                '        _SortedCollection = tempSortedCollection
-                '        _tempOriginal = Me.Value
-                '    End If
-                '    Return _SortedCollection
-                'End If
                 Return DirectCast(Me.Value, ICollection)
             End Get
         End Property
@@ -166,14 +158,14 @@ Namespace UI.WebControls.EditControls
             Set(ByVal value As Integer)
                 Me._PageIndex = value
                 Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
-                Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
+                Dim cookie As HttpCookie = HttpContext.Current.Response.Cookies(cookieName)
                 If cookie IsNot Nothing Then
-                    HttpContext.Current.Request.Cookies.Remove(cookieName) 'cookie.Name)
+                    HttpContext.Current.Response.Cookies.Remove(cookieName)
                 End If
                 cookie = New HttpCookie(cookieName)
                 cookie.Value = value.ToString(CultureInfo.InvariantCulture)
                 cookie.Expires = Now.AddHours(1)
-                Me.Page.Request.Cookies.Add(cookie)
+                Me.Page.Response.Cookies.Add(cookie)
                 Me.PagedCollection.PageIndex = value
             End Set
         End Property
@@ -188,27 +180,27 @@ Namespace UI.WebControls.EditControls
             End Get
         End Property
 
-        Public ReadOnly Property ImageSections() As List(Of Image)
-            Get
-                If _ImageSections Is Nothing Then
-                    Me._ImageSections = New List(Of Image)
-                    Me._SectionHeads = New List(Of SectionHeadControl)
-                    FormHelper.FindSectionsUpRecursive(Me, _SectionHeads, _ImageSections)
-                End If
-                Return _ImageSections
-            End Get
-        End Property
+        'Public ReadOnly Property ImageSections() As List(Of Image)
+        '    Get
+        '        If _ImageSections Is Nothing Then
+        '            Me._ImageSections = New List(Of Image)
+        '            Me._SectionHeads = New List(Of SectionHeadControl)
+        '            FormHelper.FindSectionsUpRecursive(Me, _SectionHeads, _ImageSections)
+        '        End If
+        '        Return _ImageSections
+        '    End Get
+        'End Property
 
-        Public ReadOnly Property SectionHeads() As List(Of SectionHeadControl)
-            Get
-                If _SectionHeads Is Nothing Then
-                    Me._ImageSections = New List(Of Image)
-                    Me._SectionHeads = New List(Of SectionHeadControl)
-                    FormHelper.FindSectionsUpRecursive(Me, _SectionHeads, _ImageSections)
-                End If
-                Return _SectionHeads
-            End Get
-        End Property
+        'Public ReadOnly Property SectionHeads() As List(Of SectionHeadControl)
+        '    Get
+        '        If _SectionHeads Is Nothing Then
+        '            Me._ImageSections = New List(Of Image)
+        '            Me._SectionHeads = New List(Of SectionHeadControl)
+        '            FormHelper.FindSectionsUpRecursive(Me, _SectionHeads, _ImageSections)
+        '        End If
+        '        Return _SectionHeads
+        '    End Get
+        'End Property
 
         Public Property PageSize() As Integer
             Get
@@ -238,15 +230,22 @@ Namespace UI.WebControls.EditControls
 
 #Region "overrides"
 
+        Public Overrides Sub EnforceTrialMode(ByVal mode As TrialPropertyMode)
+            MyBase.EnforceTrialMode(mode)
+            If (mode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd Then
+                Me.cmdAddButton.Enabled = False
+            End If
+            If (mode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
+                For Each deleteControl As WebControl In Me._DeleteControls
+                    deleteControl.Enabled = False
+                Next
+            End If
+        End Sub
 
         Protected Overrides Sub OnInit(ByVal e As EventArgs)
             MyBase.OnInit(e)
+            EnsureChildControls()
             Page.RegisterRequiresControlState(Me)
-        End Sub
-
-        Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
-            Me.EnsureChildControls()
-            MyBase.OnLoad(e)
         End Sub
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) As Boolean
@@ -283,12 +282,18 @@ Namespace UI.WebControls.EditControls
             Dim args As New PropertyEditorEventArgs(Me.Name)
             args.Value = Me.CollectionValue
             args.OldValue = Me.OldCollectionValue
-            'args.Changed = (Not args.Value Is args.OldValue)
             args.StringValue = Me.StringValue
             MyBase.OnValueChanged(args)
         End Sub
 
-
+        Private Sub RegisterControlForPostbackManagement(ctrl As Control)
+            For Each c As Control In ctrl.Controls
+                If TypeOf (c) Is INamingContainer OrElse TypeOf (c) Is IPostBackDataHandler OrElse TypeOf (c) Is IPostBackEventHandler Then
+                    DotNetNuke.Framework.AJAX.RegisterPostBackControl(c)
+                End If
+            Next
+            DotNetNuke.Framework.AJAX.RegisterPostBackControl(ctrl)
+        End Sub
 
         Protected Overrides Sub CreateChildControls()
 
@@ -329,91 +334,66 @@ Namespace UI.WebControls.EditControls
                     If Me._EnableExport AndAlso (Me.ParentAricieEditor Is Nothing OrElse Not Me.ParentAricieEditor.DisableExports) Then
 
                         Dim pnExport As New Panel()
-
                         pnExport.EnableViewState = False
                         pnExport.CssClass = "ExportPanel"
+                        Me.Controls.Add(pnExport)
 
-                        Controls.Add(pnExport)
-
-                        Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
-
+                        Dim divExport As New HtmlGenericControl("div")
+                        pnExport.Controls.Add(divExport)
 
                         cmdExportButton = New CommandButton
                         cmdExportButton.ID = "cmdExport"
-                        pnExport.Controls.Add(cmdExportButton)
+                        divExport.Controls.Add(cmdExportButton)
                         cmdExportButton.DisplayLink = True
                         cmdExportButton.DisplayIcon = True
                         cmdExportButton.ImageUrl = "~/images/action_export.gif"
                         cmdExportButton.Text = Localization.GetString(Me.Name + "_Export", Me.LocalResourceFile)
-
                         AddHandler cmdExportButton.Click, AddressOf ExportClick
-                        If sm IsNot Nothing Then
-                            sm.RegisterPostBackControl(cmdExportButton)
-                        End If
+
+                        RegisterControlForPostbackManagement(cmdExportButton)
 
 
-                        pnExport.Controls.Add(New LiteralControl("&nbsp;|&nbsp;"))
+                        Dim divImport As New HtmlGenericControl("div")
+                        pnExport.Controls.Add(divImport)
 
-                        Dim spanExport As New HtmlGenericControl("span")
-                        spanExport.Style.Add("display", "inline")
-                        pnExport.Controls.Add(spanExport)
-                        Dim spanLabel As New HtmlGenericControl("span")
-                        spanExport.Controls.Add(spanLabel)
-
-                        Dim labelPath As LabelControl = DirectCast(Me.ParentModule.LoadControl("~/controls/labelcontrol.ascx"), LabelControl)
-                        labelPath.CssClass = "SubHead"
-                        labelPath.ResourceKey = "ImportFile"
-
-                        spanLabel.Controls.Add(labelPath)
-
-                        txtExportPath = New TextBox
-                        txtExportPath.Width = Unit.Pixel(280)
-                        txtExportPath.MaxLength = 256
-                        txtExportPath.Visible = False
-
-                        spanExport.Controls.Add(txtExportPath)
+                        Dim lblImport As LabelControl = DirectCast(Me.ParentModule.LoadControl("~/controls/labelcontrol.ascx"), LabelControl)
+                        lblImport.CssClass = "SubHead"
+                        lblImport.ResourceKey = "ImportFile"
+                        divImport.Controls.Add(lblImport)
 
                         ctImportFile = New HtmlInputFile
                         ctImportFile.ID = "ctImportFile"
-                        spanExport.Controls.Add(ctImportFile)
+                        divImport.Controls.Add(ctImportFile)
 
                         cmdImportButton = New CommandButton
                         cmdImportButton.ID = "cmdImport"
-                        pnExport.Controls.Add(cmdImportButton)
+                        divImport.Controls.Add(cmdImportButton)
                         cmdImportButton.DisplayLink = True
                         cmdImportButton.DisplayIcon = True
                         cmdImportButton.ImageUrl = "~/images/action_import.gif"
                         cmdImportButton.Text = Localization.GetString(Me.Name + "_Import", Me.LocalResourceFile)
-
                         AddHandler cmdImportButton.Click, AddressOf ImportClick
-                        If sm IsNot Nothing Then
-                            sm.RegisterPostBackControl(cmdImportButton)
-                        End If
 
+                        RegisterControlForPostbackManagement(cmdImportButton)
                     End If
 
                     If (Not Me._NoAddition) AndAlso (Me._MaxItemNb = 0 OrElse Me.CollectionValue.Count <= Me._MaxItemNb) Then
 
-                        Dim pnAdd As New Table()
-                        Dim rAdd As New TableRow()
-                        Dim cAdd As New TableCell()
+                        Dim pnAdd As New Panel
 
-
+                        pnAdd.CssClass = "AddPanel"
                         pnAdd.EnableViewState = False
-                        pnAdd.Rows.Add(rAdd)
-                        rAdd.Cells.Add(cAdd)
-
                         Controls.Add(pnAdd)
 
                         If TypeOf Me.ParentField.DataSource Is IProviderContainer AndAlso Me._SelectorInfo IsNot Nothing Then
                             Me.addSelector = Me._SelectorInfo.BuildSelector(Me.ParentField)
-                            cAdd.Controls.Add(Me.addSelector)
+                            pnAdd.Controls.Add(Me.addSelector)
                             Me.addSelector.DataBind()
                         End If
 
                         cmdAddButton = New CommandButton()
                         cmdAddButton.ID = "cmdAdd"
-                        cAdd.Controls.Add(cmdAddButton)
+                        pnAdd.Controls.Add(cmdAddButton)
                         cmdAddButton.DisplayLink = True
                         cmdAddButton.DisplayIcon = True
                         cmdAddButton.ImageUrl = "~/images/add.gif"
@@ -424,54 +404,30 @@ Namespace UI.WebControls.EditControls
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
                         If Me._AddNewEntry Then
-                            Dim cAddNew As New TableCell()
-                            rAdd.Cells.Add(cAddNew)
-                            Me.ctlAddContainer = cAddNew
-                            Me.CreateAddRow(cAddNew)
+                            Me.ctlAddContainer = pnAdd
+                            Me.CreateAddRow(pnAdd)
                         End If
                     End If
 
 
                 End If
             End If
-            MyBase.CreateChildControls()
         End Sub
 
 
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             MyBase.OnPreRender(e)
-            Me.SetExportFileName()
             If Not Page Is Nothing And Me.EditMode = PropertyEditorMode.Edit Then
                 Me.Page.RegisterRequiresPostBack(Me)
             End If
         End Sub
 
 
-        Private Sub SetExportFileName()
-            If Me.txtExportPath IsNot Nothing AndAlso Me.txtExportPath.Text = "" Then
-                If Me.CollectionValue IsNot Nothing Then
-                    Dim suffix As String = ".xml"
-                    If Me.CollectionValue.GetType.IsGenericType Then
-                        suffix = Me.CollectionValue.GetType.GetGenericArguments(0).Name.Replace("`", "") & suffix
-                    Else
-                        If Me.CollectionValue.Count > 0 Then
-                            Dim collecEnum As IEnumerator = Me.CollectionValue.GetEnumerator
-                            If collecEnum.MoveNext Then
-                                Dim itemType As Type = collecEnum.Current.GetType
-                                If itemType.IsGenericType Then
-                                    Dim subType As Type = itemType.GetGenericArguments(0)
-                                    suffix = subType.Name.Replace("`", "") & suffix
-                                End If
-                                suffix = itemType.Name.Replace("`", "") & suffix
-
-                            End If
-                        End If
-                    End If
-                    Me.txtExportPath.Text = Me.CollectionValue.GetType.Name.Replace("`"c, "") & "_" & suffix
-                End If
-            End If
-        End Sub
+        Private Function GetExportFileName() As String
+            Dim prefix As String = ReflectionHelper.GetCollectionFileName(Me.CollectionValue)
+            Return prefix & ".xml"
+        End Function
 
         Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)
             RenderChildren(writer)
@@ -522,19 +478,19 @@ Namespace UI.WebControls.EditControls
 
                         If Me.EditMode = PropertyEditorMode.Edit Then
                             Dim commandIndex As String = Me.ItemIndex(e.Item.ItemIndex).ToString
-                            Dim delete As New ImageButton
-                            delete.ID = "cmdDelete"
-                            plAction.Controls.Add(delete)
-                            With delete
+                            Dim cmdDelete As New ImageButton
+                            cmdDelete.ID = "cmdDelete"
+                            plAction.Controls.Add(cmdDelete)
+                            With cmdDelete
                                 .ImageUrl = "~/images/delete.gif"
-                                .AlternateText = Localization.GetString(Me.Name + "_Delete", Me.LocalResourceFile)
+                                .AlternateText = Localization.GetString("Delete.Text", Localization.SharedResourceFile)
                                 .ToolTip = .AlternateText
                                 .CommandName = "Delete"
                                 .CommandArgument = commandIndex
                             End With
 
-                            DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(delete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
-                            Me.DeleteControls.Add(delete)
+                            DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
+                            Me._DeleteControls.Add(cmdDelete)
 
                             If _Ordered Then
 
@@ -554,7 +510,7 @@ Namespace UI.WebControls.EditControls
                                     plAction.Controls.Add(up)
                                     With up
                                         .ImageUrl = "~/images/up.gif"
-                                        .AlternateText = Localization.GetString(Me.Name + "_Up", Me.LocalResourceFile)
+                                        .AlternateText = Localization.GetString("MoveUp.Action", Localization.GlobalResourceFile)
                                         .ToolTip = up.AlternateText
                                         .CommandName = "Up"
                                         .CommandArgument = commandIndex
@@ -567,7 +523,7 @@ Namespace UI.WebControls.EditControls
                                     plAction.Controls.Add(down)
                                     With down
                                         .ImageUrl = "~/images/dn.gif"
-                                        .AlternateText = Localization.GetString(Me.Name + "_Down", Me.LocalResourceFile)
+                                        .AlternateText = Localization.GetString("MoveDown.Action", Localization.GlobalResourceFile)
                                         .ToolTip = down.AlternateText
                                         .CommandName = "Down"
                                         .CommandArgument = commandIndex
@@ -691,10 +647,10 @@ Namespace UI.WebControls.EditControls
 
 
 
-                            Dim delete As New ImageButton
-                            delete.ID = "cmdDelete"
-                            plAction.Controls.Add(delete)
-                            With delete
+                            Dim cmdDelete As New ImageButton
+                            cmdDelete.ID = "cmdDelete"
+                            plAction.Controls.Add(cmdDelete)
+                            With cmdDelete
 
 
                                 .ImageUrl = "~/images/delete.gif"
@@ -703,8 +659,8 @@ Namespace UI.WebControls.EditControls
                                 .CommandName = "Delete"
                                 .CommandArgument = commandIndex
                             End With
-                            DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(delete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
-                            Me.DeleteControls.Add(delete)
+                            DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
+                            Me._DeleteControls.Add(cmdDelete)
 
                         End If
 
@@ -748,61 +704,54 @@ Namespace UI.WebControls.EditControls
 
 
         Private Sub RepeaterItemCommand(ByVal sender As Object, ByVal e As RepeaterCommandEventArgs)
-            If e.CommandArgument.ToString <> "" Then
-                Dim commandIndex As Integer = Integer.Parse(e.CommandArgument.ToString())
-                Select Case e.CommandName
-                    Case "Delete"
+            Try
+                If e.CommandArgument.ToString <> "" Then
+                    Dim commandIndex As Integer = Integer.Parse(e.CommandArgument.ToString())
+                    Select Case e.CommandName
+                        Case "Delete"
 
-                        Dim delEvent As New PropertyEditorEventArgs(Me.Name)
-                        'todo: should try with ReflectionHelper.CloneObject()
-                        delEvent.OldValue = New ArrayList(Me.CollectionValue)
+                            Dim delEvent As New PropertyEditorEventArgs(Me.Name)
+                            'todo: should try with ReflectionHelper.CloneObject()
+                            delEvent.OldValue = New ArrayList(Me.CollectionValue)
 
-                        Me.DeleteItem(commandIndex)
+                            Me.DeleteItem(commandIndex)
 
-                        'If Me._Paged AndAlso Me.CollectionValue.Count > Me._PageSize Then
-                        '    Me.ctlPager.ItemCount = Me.CollectionValue.Count
-                        '    Me.PageIndex = Math.Min(Me.PageIndex, CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize)))
-                        'End If
+                            'If Me._Paged AndAlso Me.CollectionValue.Count > Me._PageSize Then
+                            '    Me.ctlPager.ItemCount = Me.CollectionValue.Count
+                            '    Me.PageIndex = Math.Min(Me.PageIndex, CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize)))
+                            'End If
 
-                        'Me.BindData()
+                            'Me.BindData()
 
-                        delEvent.Value = Me.CollectionValue
-                        delEvent.Changed = True
-                        Me.OnValueChanged(delEvent)
-                    Case "Up"
-                        RaiseEvent MoveUp(commandIndex)
-                        Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-                        addEvent.OldValue = Me.CollectionValue
-                        addEvent.Value = Me.CollectionValue
-                        addEvent.Changed = True
-                        Me.OnValueChanged(addEvent)
-                        'Me.BindData()
+                            delEvent.Value = Me.CollectionValue
+                            delEvent.Changed = True
+                            Me.OnValueChanged(delEvent)
+                        Case "Up"
+                            RaiseEvent MoveUp(commandIndex)
+                            Dim addEvent As New PropertyEditorEventArgs(Me.Name)
+                            addEvent.OldValue = Me.CollectionValue
+                            addEvent.Value = Me.CollectionValue
+                            addEvent.Changed = True
+                            Me.OnValueChanged(addEvent)
+                            'Me.BindData()
 
-                    Case "Down"
-                        RaiseEvent MoveDown(commandIndex)
-                        Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-                        addEvent.OldValue = Me.CollectionValue
-                        addEvent.Value = Me.CollectionValue
-                        addEvent.Changed = True
-                        Me.OnValueChanged(addEvent)
-                        'Me.BindData()
-                    Case "Export"
-                        Dim singleList As ICollection = Me.ExportItem(commandIndex)
-                        SetExportFileName()
-                        Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(Me.txtExportPath.Text, False)
-                        Aricie.DNN.Settings.SettingsController.SaveFileSettings(path, singleList, False)
-                        DotNetNuke.Common.Utilities.FileSystemUtils.DownloadFile(path)
-                    Case "Copy"
-                        Dim singleList As ICollection = Me.ExportItem(commandIndex)
-                        SetExportFileName()
-                        Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(Me.txtExportPath.Text, False)
-                        Aricie.DNN.Settings.SettingsController.SaveFileSettings(path, singleList, False)
+                        Case "Down"
+                            RaiseEvent MoveDown(commandIndex)
+                            Dim addEvent As New PropertyEditorEventArgs(Me.Name)
+                            addEvent.OldValue = Me.CollectionValue
+                            addEvent.Value = Me.CollectionValue
+                            addEvent.Changed = True
+                            Me.OnValueChanged(addEvent)
+                        Case "Export"
+                            Dim singleList As ICollection = Me.ExportItem(commandIndex)
+                            Me.Download(singleList)
+                        Case Else
 
-                    Case Else
-
-                End Select
-            End If
-
+                    End Select
+                End If
+            Catch ex As Exception
+                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+            End Try
 
         End Sub
 
@@ -846,7 +795,7 @@ Namespace UI.WebControls.EditControls
             Try
                 If Me.Page.IsValid Then
 
-                    Me.Copy()
+                    Me.Download(Me.CollectionValue)
                 End If
 
             Catch ex As Exception
@@ -854,19 +803,24 @@ Namespace UI.WebControls.EditControls
             End Try
         End Sub
 
-        Private Function Copy() As String
-            SetExportFileName()
-            Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(Me.txtExportPath.Text, False)
-            Aricie.DNN.Settings.SettingsController.SaveFileSettings(path, Me.CollectionValue, False)
-            Return path
-        End Function
+
+
+
+        Private Sub Download(value As ICollection)
+
+            Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(GetExportFileName(), False)
+            Aricie.DNN.Settings.SettingsController.SaveFileSettings(path, value, False)
+            Aricie.Services.FileHelper.DownloadFile(path, Me.Page.Response, Me.Page.Server)
+        End Sub
+
+
+
 
         Private Sub ExportClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
                 If Me.Page.IsValid Then
 
-                    Dim path As String = Me.Copy
-                    DotNetNuke.Common.Utilities.FileSystemUtils.DownloadFile(path)
+                    Me.Download(CollectionValue)
                 End If
 
             Catch ex As Exception
@@ -881,35 +835,33 @@ Namespace UI.WebControls.EditControls
 
 
                 Dim importCollect As ICollection
-                If ctImportFile.PostedFile IsNot Nothing AndAlso ctImportFile.PostedFile.InputStream IsNot Nothing Then
+                If ctImportFile.PostedFile IsNot Nothing AndAlso ctImportFile.PostedFile.InputStream IsNot Nothing AndAlso ctImportFile.PostedFile.InputStream.Length > 0 Then
                     'DotNetNuke.Common.Utilities.FileSystemUtils.UploadFile(System.IO.Path.GetDirectoryName(path), ctImportFile.PostedFile, System.IO.Path.GetFileName(path))
                     Using objReader As New StreamReader(ctImportFile.PostedFile.InputStream)
                         importCollect = DirectCast(ReflectionHelper.Deserialize(Me.CollectionValue.GetType, objReader), ICollection)
                     End Using
+                    Dim addEvent As New PropertyEditorEventArgs(Me.Name)
+                    addEvent.OldValue = New ArrayList(Me.CollectionValue)
+
+                    For Each newItem As Object In importCollect
+                        Me.AddNewItem(newItem)
+                    Next
+
+                    'If Me._PageSize > 0 Then
+                    '    Me.PageIndex = CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize))
+                    'End If
+
+                    'Me.BindData()
+
+                    addEvent.Value = Me.CollectionValue
+                    addEvent.Changed = True
+                    Me.OnValueChanged(addEvent)
                 Else
-                    SetExportFileName()
-                    Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(Me.txtExportPath.Text, False)
-                    importCollect = DirectCast(Aricie.DNN.Settings.SettingsController.LoadFileSettings(path, Me.CollectionValue.GetType, False, False), ICollection)
+                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me.ParentModule, Localization.GetString("MissingFile.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
+                    '    Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(GetExportFileName(), False)
+                    '    importCollect = DirectCast(Aricie.DNN.Settings.SettingsController.LoadFileSettings(path, Me.CollectionValue.GetType, False, False), ICollection)
                 End If
 
-
-
-                Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-                addEvent.OldValue = New ArrayList(Me.CollectionValue)
-
-                For Each newItem As Object In importCollect
-                    Me.AddNewItem(newItem)
-                Next
-
-                'If Me._PageSize > 0 Then
-                '    Me.PageIndex = CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize))
-                'End If
-
-                'Me.BindData()
-
-                addEvent.Value = Me.CollectionValue
-                addEvent.Changed = True
-                Me.OnValueChanged(addEvent)
 
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
@@ -931,27 +883,27 @@ Namespace UI.WebControls.EditControls
         End Sub
 
 
-        Private Sub CollectionEditControl_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
-            If Me._Paged AndAlso Not Me.Page.IsPostBack Then
-                If Me._IsPageRequest Then
-                    For Each sh As SectionHeadControl In Me.SectionHeads
-                        sh.IsExpanded = True
-                    Next
-                    For Each img As Image In Me.ImageSections
-                        Dim sectionName As String = img.ID.Substring(3)
-                        Dim propEdit As AriciePropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AriciePropertyEditorControl)(img)
-                        If propEdit IsNot Nothing Then
-                            propEdit.VisibleCats.Add(sectionName)
-                        End If
-                    Next
-                    'todo: find out what's wrong in here (does not work)
-                    'Me.ctlPager.Focus()
-                    'Aricie.DNN.Services.DnnContext.Current.DnnPage.ScrollToControl(Me)
-                    'Me.Focus()
+        'Private Sub CollectionEditControl_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load
+        '    If Me._Paged AndAlso Not Me.Page.IsPostBack Then
+        '        If Me._IsPageRequest Then
+        '            For Each sh As SectionHeadControl In Me.SectionHeads
+        '                sh.IsExpanded = True
+        '            Next
+        '            For Each img As Image In Me.ImageSections
+        '                Dim sectionName As String = img.ID.Substring(3)
+        '                Dim propEdit As AriciePropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AriciePropertyEditorControl)(img)
+        '                If propEdit IsNot Nothing Then
+        '                    propEdit.VisibleCats.Add(sectionName)
+        '                End If
+        '            Next
+        '            'todo: find out what's wrong in here (does not work)
+        '            'Me.ctlPager.Focus()
+        '            'Aricie.DNN.Services.DnnContext.Current.DnnPage.ScrollToControl(Me)
+        '            'Me.Focus()
 
-                End If
-            End If
-        End Sub
+        '        End If
+        '    End If
+        'End Sub
 
 
 #End Region
@@ -1068,19 +1020,19 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
-        Protected Overrides Sub LoadControlState(ByVal savedState As Object)
+        'Protected Overrides Sub LoadControlState(ByVal savedState As Object)
 
-            Dim state As Pair = CType(savedState, Pair)
+        '    Dim state As Pair = CType(savedState, Pair)
 
-            Me._PageIndex = CInt(state.Second)
+        '    Me._PageIndex = CInt(state.Second)
 
-            MyBase.LoadControlState(state.First)
-        End Sub
+        '    MyBase.LoadControlState(state.First)
+        'End Sub
 
-        Protected Overrides Function SaveControlState() As Object
-            Dim state As Pair = New Pair(MyBase.SaveControlState(), Me._PageIndex)
-            Return state
-        End Function
+        'Protected Overrides Function SaveControlState() As Object
+        '    Dim state As Pair = New Pair(MyBase.SaveControlState(), Me._PageIndex)
+        '    Return state
+        'End Function
 
     End Class
 End Namespace
