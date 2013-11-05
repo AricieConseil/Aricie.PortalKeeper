@@ -122,6 +122,7 @@
     <Import Include="System.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ComponentModel\ActionButtonInfo.vb" />
     <Compile Include="ComponentModel\Config\LocationSettings.vb" />
     <Compile Include="ComponentModel\IGenericizer.vb" />
     <Compile Include="ComponentModel\Providers\AutoProvider.vb" />
@@ -367,10 +368,12 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="UI\PropertyEditor\AriciePropertySortOrderComparer.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\ActionButtonAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\AutoEraseAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\AutoPostBackAttribute.vb" />
-    <Compile Include="UI\PropertyEditor\Attributes\CategoryAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\ExtendedCategoryAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\CollectionEditorAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\EnableExportsAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\OnDemandAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\DefaultCategoryAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\MultiSelectorTypeAttribute.vb" />
@@ -411,6 +414,7 @@
     <Compile Include="UI\PropertyEditor\EditControls\RequiredTextBoxForAdminControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\SelectorInfo.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\UserControlEditControl.vb" />
+    <Compile Include="ComponentModel\ExtendedCategory.vb" />
     <Compile Include="UI\PropertyEditor\ExtendedPropertyEditorControl.vb" />
     <Compile Include="UI\PropertyEditor\Field.vb" />
     <Compile Include="UI\PropertyEditor\FieldControls\AricieFieldEditorControl.vb" />

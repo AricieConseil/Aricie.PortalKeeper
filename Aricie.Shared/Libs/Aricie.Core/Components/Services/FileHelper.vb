@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Text
 Imports System.Web
+Imports System.Globalization
 
 Namespace Services
 
@@ -75,94 +76,108 @@ Namespace Services
             Return toReturn
         End Function
 
+
         ''' <summary>
         ''' Propose to download file to the user 
         ''' </summary>
-        ''' <param name="filePath"></param>
-        ''' <param name="response"></param>
+        ''' <param name="filePath">absolute path of file to download</param>
+        ''' <param name="response">http response to write the file to</param>
         ''' <remarks></remarks>
-        Public Sub DownloadFile(ByVal filePath As String, ByRef response As HttpResponse)
+        <Obsolete("user the overload with httpserverutility")> _
+        Public Sub DownloadFile(ByVal filePath As String, ByVal response As HttpResponse)
+            DownloadFile(filePath, response, Nothing)
+        End Sub
+
+
+
+        ''' <summary>
+        ''' Propose to download file to the user 
+        ''' </summary>
+        ''' <param name="filePath">absolute path of file to download</param>
+        ''' <param name="response">http response to write the file to</param>
+        ''' <param name="server">http server to control the timeout if needed</param>
+        ''' <remarks></remarks>
+        Public Sub DownloadFile(ByVal filePath As String, ByRef response As HttpResponse, ByVal server As HttpServerUtility)
             Dim myFile As New FileInfo(filePath)
-            If myFile IsNot Nothing Then
-                response.Clear()
+            If myFile.Exists Then
+                response.ClearContent()
                 response.ClearHeaders()
                 response.Charset = String.Empty
                 response.CacheControl = "Private"
                 response.AppendHeader("Expires", "0")
                 response.AppendHeader("Pragma", "cache")
                 response.AppendHeader("Cache-Control", "private")
-                response.AppendHeader("Content-Disposition", "attachment; filename=" + myFile.Name.TrimEnd.Replace(" ", "_"))
+                response.AppendHeader("Content-Disposition", "attachment; filename=" + myFile.Name.TrimEnd().Replace(" ", "_"))
+                response.AppendHeader("Content-Length", myFile.Length.ToString(CultureInfo.InvariantCulture))
                 response.ContentType = GetMimeTypeFromExtention(myFile.Extension)
 
-                response.WriteFile(myFile.FullName)
-
+                'response.WriteFile(myFile.FullName)
+                WriteFile(filePath, response, server)
+                response.Flush()
                 response.End()
             End If
         End Sub
 
-        ''' <summary>
-        ''' Propose to download file to the user 
-        ''' </summary>
-        ''' <param name="filePath"></param>
-        ''' <param name="response"></param>
-        ''' <param name="server"></param>
-        ''' <remarks></remarks>
-        Public Sub DownloadFile(ByVal filePath As String, ByVal response As HttpResponse, ByVal server As HttpServerUtility)
-            Dim myFile As New FileInfo(filePath)
 
-            Dim myFileStream As New System.IO.FileStream(myFile.FullName, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read)
-            Try
+
+
+
+
+        Public Sub WriteFile(filePath As String, objResponse As HttpResponse, ByVal objServer As HttpServerUtility)
+
+
+            Using myFileStream As New System.IO.FileStream(filePath, System.IO.FileMode.Open, System.IO.FileAccess.Read, System.IO.FileShare.Read)
                 If myFileStream.CanRead Then
-                    response.Clear()
-                    response.ContentType = GetMimeTypeFromExtention(myFile.Extension)
-
-                    response.AddHeader("Content-Disposition", "attachment; filename=" + myFile.Name)
-
-                    ' Set the buffer that will receive the data from the file
-                    Dim myBuffer As Byte() = New Byte(4096) {}
-
+                    Dim minBytesPerSec As Integer = 5000
+                    Dim bigTimeOut As Integer = 3600
+                    Dim bufferSize As Integer = 8192
+                    Dim myBuffer As Byte() = New Byte(bufferSize) {}
+                    Dim lngDataToRead = myFileStream.Length
                     ' Setup the Time out in seconds according to file size
-                    server.ScriptTimeout = 3600
+                    Dim tempScriptTimeout As Integer = -1
+                    If objServer IsNot Nothing AndAlso objServer.ScriptTimeout < bigTimeOut AndAlso objServer.ScriptTimeout < lngDataToRead / minBytesPerSec Then
+                        tempScriptTimeout = objServer.ScriptTimeout
+                        objServer.ScriptTimeout = bigTimeOut
+                    End If
 
-                    While True
-                        ' Check if the client is still connected
-                        If Not response.IsClientConnected Then
-                            ' TODO: might not be correct. Was : Exit While
-                            Exit While
+                    Try
+
+                        While lngDataToRead > 0
+                            ' Check if the client is still connected
+                            If Not objResponse.IsClientConnected Then
+                                lngDataToRead = -1
+                            Else
+                                ' read data from the file
+                                Dim myNumberOfBytesRead As Integer = myFileStream.Read(myBuffer, 0, bufferSize)
+                                If myNumberOfBytesRead > 0 Then
+                                    ' Write the data to the current output stream.
+                                    objResponse.OutputStream.Write(myBuffer, 0, myNumberOfBytesRead)
+
+                                    ' Flush the data to the HTML output.
+
+                                    objResponse.Flush()
+                                    lngDataToRead -= myNumberOfBytesRead
+                                End If
+                            End If
+                        End While
+                    Catch ex As Exception
+                        ExceptionHelper.LogException(ex)
+                        objResponse.Write(String.Concat("Error : ", ex.Message))
+                    Finally
+                        If tempScriptTimeout > 0 Then
+                            objServer.ScriptTimeout = tempScriptTimeout
                         End If
-
-                        ' read data from the file
-                        Dim myNumberOfBytesRead As Integer = myFileStream.Read(myBuffer, 0, 4096)
-                        If myNumberOfBytesRead = 0 Then
-                            ' TODO: might not be correct. Was : Exit While
-                            Exit While
-                        End If
-
-                        ' Write the data to the current output stream.
-                        response.OutputStream.Write(myBuffer, 0, myNumberOfBytesRead)
-
-                        ' Flush the data to the HTML output.
-
-                        response.Flush()
-                    End While
-
+                    End Try
                 End If
-            Catch ex As Exception
-                Throw ex
-            Finally
-                myFileStream.Close()
-                myFileStream.Dispose()
-                response.End()
-            End Try
+            End Using
         End Sub
 
 
         Public Function GetMimeTypeFromExtention(ByVal extension As String) As String
 
-            extension = extension.Trim("."c)
+            extension = extension.ToLowerInvariant().Trim("."c)
 
-            Dim contentType As String = "application/octet-stream"
-
+            Dim contentType As String
             Select Case extension
                 Case "pdf"
                     contentType = "application/pdf"
@@ -170,6 +185,44 @@ Namespace Services
                     contentType = "text/html"
                 Case "txt"
                     contentType = "text/plain"
+                Case "rtf"
+                    contentType = "text/richtext"
+                Case "jpg", "jpeg"
+                    contentType = "image/jpeg"
+                Case "gif"
+                    contentType = "image/gif"
+                Case "bmp"
+                    contentType = "image/bmp"
+                Case "png"
+                    contentType = "image/png"
+                Case "ico"
+                    contentType = "image/x-icon"
+                Case "mp3"
+                    contentType = "audio/mpeg"
+                Case "wma"
+                    contentType = "audio/x-ms-wma"
+                Case "mpg", "mpeg"
+                    contentType = "video/mpeg"
+                Case "avi"
+                    contentType = "video/avi"
+                Case "mp4"
+                    contentType = "video/mp4"
+                Case "wmv"
+                    contentType = "video/x-ms-wmv"
+                Case "doc", "dot"
+                    contentType = "application/msword"
+                Case "docx", "dotx"
+                    contentType = "application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                Case "csv"
+                    contentType = "text/csv"
+                Case "xls", "xlt"
+                    contentType = "application/x-msexcel"
+                Case "xlsx", "xltx"
+                    contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.template"
+                Case "ppt", "pps"
+                    contentType = "application/vnd.ms-powerpoint"
+                Case "pptx", "ppsx"
+                    contentType = "application/vnd.openxmlformats-officedocument.presentationml.presentation"
                 Case Else
                     contentType = "application/octet-stream"
             End Select

@@ -137,8 +137,10 @@ Namespace UI.Controls
         End Property
 
         Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
-            Dim dnnclientVar As String = ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
-            ClientAPI.RegisterClientVariable(Me.Page, AdvancedVarKey, dnnclientVar, True)
+            If Me.AdvancedClientVars.Count > 0 Then
+                Dim dnnclientVar As String = ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
+                ClientAPI.RegisterClientVariable(Me.Page, AdvancedVarKey, dnnclientVar, True)
+            End If
         End Sub
 
         Public Property AdvancedClientVariable(ByVal objControl As Control, ByVal localKey As String) As String

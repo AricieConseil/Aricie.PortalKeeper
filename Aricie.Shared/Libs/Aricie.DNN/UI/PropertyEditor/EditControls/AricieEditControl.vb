@@ -5,6 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Web.UI
 Imports DotNetNuke.Entities.Modules
 Imports System.Web.UI
+Imports Aricie.DNN.Security.Trial
 
 
 Namespace UI.WebControls.EditControls
@@ -188,6 +189,12 @@ Namespace UI.WebControls.EditControls
 
         Protected Sub OnItemChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
             RaiseEvent ItemChanged(sender, e)
+        End Sub
+
+
+        Public Overridable Sub EnforceTrialMode(mode As TrialPropertyMode)
+
+
         End Sub
 
 

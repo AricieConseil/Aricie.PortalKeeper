@@ -8,18 +8,15 @@ Imports System.Web.UI.WebControls
 Imports System.Reflection
 Imports Aricie.Services
 Imports Aricie.DNN.Services
-Imports Aricie.Web.UI
 Imports DotNetNuke.UI.Utilities
 Imports DotNetNuke.Services.Exceptions
 Imports System.Web
 Imports System.Web.UI
-Imports DotNetNuke.UI.UserControls
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.Services.Localization
-Imports System.Globalization
 Imports DotNetNuke.Framework
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
@@ -49,7 +46,6 @@ Namespace UI.WebControls
         Private _EnabledOnDemandSections As Boolean = True
         Private _RestrictedFields As New Dictionary(Of AricieFieldEditorControl, TrialLimitedAttribute)
         Private _FieldsDictionary As FieldsHierarchy
-        Private _currentSectionName As String = ""
         Private _Validated As Boolean = False
         Private _IsValid As Boolean = True
 
@@ -66,25 +62,10 @@ Namespace UI.WebControls
 
         Private _OnDemandSections As List(Of String)
 
-        Private currentTab As Tab
+        Private _CurrentTab As Tab
 
         Private Const LOAD_COUNTER As String = "LoadCounter"
         Private Const PRERENDER_COUNTER As String = "PreRenderCounter"
-        Private Shared _RegisterScriptControlMethod As MethodInfo
-
-
-        Private Shared ReadOnly Property RegisterScriptControlMethod As MethodInfo
-            Get
-                If _RegisterScriptControlMethod Is Nothing Then
-                    Dim method As MethodInfo = ReflectionHelper.CreateType("System.Web.UI.ScriptManager").GetMethod("RegisterScriptControl")
-                    _RegisterScriptControlMethod = method.MakeGenericMethod(GetType(AriciePropertyEditorControl))
-                End If
-                Return _RegisterScriptControlMethod
-            End Get
-        End Property
-
-
-
 
         Private ReadOnly Property SessionVisibleCatsDico() As SerializableDictionary(Of String, Boolean)
             Get
@@ -96,10 +77,6 @@ Namespace UI.WebControls
                 Return toReturn
             End Get
         End Property
-
-
-
-
 
 #End Region
 
@@ -116,25 +93,22 @@ Namespace UI.WebControls
             End Get
         End Property
 
-        Public Property GroupedControls() As Dictionary(Of String, KeyValuePair(Of Control, Control))
-            Get
-                Return _Groups
-            End Get
-            Set(ByVal value As Dictionary(Of String, KeyValuePair(Of Control, Control)))
-                _Groups = value
-            End Set
-        End Property
-
-
         Public ReadOnly Property FieldsDictionary As FieldsHierarchy
             Get
                 If _FieldsDictionary Is Nothing Then
-                    _FieldsDictionary = New FieldsHierarchy(Me.UnderlyingDataSource, Me)
+                    Dim objButtons As IEnumerable(Of ActionButtonInfo) = Me.GetCommandButtons()
+                    _FieldsDictionary = New FieldsHierarchy(Me.UnderlyingDataSource, objButtons, Me)
                 End If
-
                 Return _FieldsDictionary
             End Get
         End Property
+
+
+        Private _ExceptionToProcess As Exception
+
+        Public Sub ProcessException(ex As Exception)
+            _ExceptionToProcess = ex
+        End Sub
 
 
         Public Property PropertyDepth() As Integer
@@ -189,10 +163,6 @@ Namespace UI.WebControls
             End Get
         End Property
 
-
-
-
-
         Public Property SectionsCollapsedByDefault() As Boolean
             Get
                 Return _SectionsCollapsedByDefault
@@ -200,37 +170,6 @@ Namespace UI.WebControls
             Set(ByVal value As Boolean)
                 _SectionsCollapsedByDefault = value
             End Set
-        End Property
-
-
-
-        Public ReadOnly Property VisibleCats() As List(Of String)
-            Get
-                If Me._VisibleCats Is Nothing Then
-                    If Me.DataSource Is Nothing Then
-                        _VisibleCats = New List(Of String)
-                    Else
-                        Dim dsType As Type = Me.DataSource.GetType
-                        If Not _VisibleCatsByType.TryGetValue(dsType, _VisibleCats) Then
-                            _VisibleCats = New List(Of String)
-                            Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(dsType)
-                            For Each propPair As KeyValuePair(Of String, PropertyInfo) In props
-                                If propPair.Value.GetCustomAttributes(GetType(MainCategoryAttribute), False).Length > 0 Then
-                                    Dim catAttr As CategoryAttribute = DirectCast(Attribute.GetCustomAttribute(propPair.Value, GetType(CategoryAttribute)), CategoryAttribute)
-                                    If catAttr IsNot Nothing Then
-                                        If (Not _VisibleCats.Contains(catAttr.Category)) Then
-                                            _VisibleCats.Add(catAttr.Category)
-                                        End If
-                                    End If
-                                End If
-                            Next
-                            _VisibleCatsByType(dsType) = _VisibleCats
-                        End If
-                    End If
-                End If
-
-                Return _VisibleCats
-            End Get
         End Property
 
         Public Property TrialStatus() As TrialStatusInfo
@@ -351,36 +290,45 @@ Namespace UI.WebControls
                 If args.Length = 2 AndAlso args(0) = "expand" Then
                     Dim sectionName As String = args(1)
 
-                    Dim s As Section = Me.FieldsDictionary.GetSectionByName(sectionName)
+                    Dim s As Section
+                    If Not Me.FieldsDictionary.Sections.TryGetValue(sectionName, s) Then
+                        If _CurrentTab IsNot Nothing Then
+                            _CurrentTab.Sections.TryGetValue(sectionName, s)
+                        End If
+                    End If
 
-                    _currentSectionName = s.Name
-                    AddColumns(s, Me.FieldsDictionary.Sections(s), s.Container, False)
+                    If s IsNot Nothing Then
+                        Me.DisplayElement(s, False)
+                    End If
 
                 ElseIf args.Length = 2 AndAlso args(0) = "tabChange" Then
                     Dim tabName As String = args(1)
 
 
-                    Dim t As Tab = Me.FieldsDictionary.GetTabByName(tabName)
-                    If t IsNot Nothing Then
-                        If currentTab IsNot Nothing Then
-                            If currentTab Is t Then
+                    Dim t As Tab = Nothing
+                    If Me.FieldsDictionary.Tabs.TryGetValue(tabName, t) Then
+                        If _CurrentTab IsNot Nothing Then
+                            If _CurrentTab Is t Then
                                 Exit Sub
                             End If
-                            currentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & currentTab.Name))
+                            _CurrentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & _CurrentTab.Name))
                         End If
+
+                        'SB: we set the value of the tab index in the cookie because further databindings may use this value from the 
                         Dim cookieName As String = "cookieTab" & Me.ClientID.GetHashCode()
                         Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
                         If cookie IsNot Nothing Then
-                            HttpContext.Current.Request.Cookies.Remove(cookieName)
+                            HttpContext.Current.Response.Cookies.Remove(cookieName)
                         End If
-                        currentTab = t
+                        _CurrentTab = t
                         cookie = New HttpCookie(cookieName)
-                        cookie.Value = Me.FieldsDictionary.Tabs.IndexOf(t).ToString()
-                        HttpContext.Current.Request.Cookies.Add(cookie)
+                        cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
+                        HttpContext.Current.Response.Cookies.Add(cookie)
 
-                        Me.FieldsDictionary.Tabs.HideAll()
+                        Me.FieldsDictionary.HideAllTabs()
 
-                        AddSections(Me.FieldsDictionary.Tabs(t), t.Container, False)
+                        Me.DisplayElement(t, False)
+
                         t.HeaderLink.Attributes.Remove("onclick")
                         t.Loaded = True
                     End If
@@ -417,63 +365,15 @@ Namespace UI.WebControls
                     Next
                 End If
                 EnforceTrialMode()
-                If Me._SectionsCollapsedByDefault Then
-                    Dim isFirstPass As Boolean = True
-                    If Me.ParentModule IsNot Nothing Then
-                        Me.ParentModule.AdvancedCounter(Me, PRERENDER_COUNTER) += 1
-                        If Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) > Me.ParentModule.AdvancedCounter(Me, PRERENDER_COUNTER) Then
-                            Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) = 1
-                            Me.ParentModule.AdvancedCounter(Me, PRERENDER_COUNTER) = 1
-                        End If
-                        isFirstPass = Me.ParentModule.AdvancedCounter(Me, PRERENDER_COUNTER) = 1
-                    End If
 
 
-                    For Each objSection As KeyValuePair(Of Section, Columns) In Me.FieldsDictionary.Sections
-                        Dim section As Section = objSection.Key
-
-                        If Not VisibleCats.Contains(section.Name) Then
-                            If isFirstPass Then
-                                Select Case NukeHelper.DnnVersion.Major
-                                    Case Is > 5
-                                        For Each method As MethodInfo In ReflectionHelper.GetFullMembersDictionary(GetType(DNNClientAPI))("MinMaxContentVisibile")
-                                            Dim paramList() As ParameterInfo = method.GetParameters
-                                            If paramList.Length = 5 Then
-                                                Dim param() As Object = {section.Image, -1, True, DNNClientAPI.MinMaxPersistanceType.Page, False}
-                                                method.Invoke(Nothing, param)
-                                                Exit For
-                                            End If
-                                        Next
-                                    Case Else
-                                        Dim clientApiProperty As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(GetType(DNNClientAPI))("MinMaxContentVisibile")
-                                        Dim param() As Object = {section.Image, True, DNNClientAPI.MinMaxPersistanceType.Page}
-                                        clientApiProperty.SetValue(Nothing, False, param)
-                                End Select
-                            End If
-                        End If
-                    Next
-                End If
-
-                For Each t As Tab In Me.FieldsDictionary.Tabs.Keys
+                For Each t As Tab In Me.FieldsDictionary.Tabs.Values
                     For Each c As Control In t.Container.Controls
                         c.Visible = t.Loaded
                     Next
                 Next
 
-
-                For Each objSection As KeyValuePair(Of Section, Columns) In Me.FieldsDictionary.Sections
-                    DNNClientAPI.EnableMinMax(objSection.Key.Image, objSection.Key.Container, False, Me.Page.ResolveUrl("~/images/minus.gif"), Me.Page.ResolveUrl("~/images/plus.gif"), DNNClientAPI.MinMaxPersistanceType.Page)
-                Next
-
-
-                If Me._EnabledOnDemandSections Then
-                    For Each sectionName As String In OnDemandSections
-                        Dim objSection As KeyValuePair(Of Control, Control) = Me.GroupedControls(sectionName)
-                        objSection.Value.Visible = False
-                        'needed only on asp.net ajax 1.0 otherwise see aricieportalmodulebase
-                        Globals.SetAttribute(objSection.Key, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "expand" & ClientAPI.COLUMN_DELIMITER & sectionName))
-                    Next
-                End If
+                'Me.PreparePreRenderSections()
 
 
                 Const resourceName As String = "Aricie.DNN.AriciePropertyEditor.css"
@@ -498,22 +398,28 @@ Namespace UI.WebControls
             If Not Me.DesignMode Then
 
                 'SB: modification pour fonctionner sous DNN 4.9.3 (version eshop.aricie.info)
-                Dim sm As Control = ScriptManager.GetCurrent(Page)
+                Dim sm As ScriptManager = ScriptManager.GetCurrent(Page)
                 If (sm Is Nothing AndAlso NukeHelper.DnnVersion.Major < 5) Then
-                    sm = AJAX.ScriptManagerControl(Page)
+                    sm = DirectCast(AJAX.ScriptManagerControl(Page), ScriptManager)
                 End If
 
                 If sm Is Nothing Then
                     Throw New HttpException("A ScriptManager control must exist on the page.")
                 End If
 
-                RegisterScriptControlMethod.Invoke(sm, New Object() {Me})
+                sm.RegisterScriptControl(Of AriciePropertyEditorControl)(Me)
+
+                'RegisterScriptControlMethod.Invoke(sm, New Object() {Me})
 
             End If
 
-            If NukeHelper.DnnVersion.Major > 6 And Me Is ParentAricieEditor Then
-                Me.CssClass += " dnnForm"
+            If Me._ExceptionToProcess IsNot Nothing Then
+                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, Me._ExceptionToProcess)
             End If
+
+            'If NukeHelper.DnnVersion.Major > 6 And Me Is ParentAricieEditor Then
+            '    Me.CssClass += " dnnForm"
+            'End If
         End Sub
 
         Protected Overrides Sub Render(ByVal output As System.Web.UI.HtmlTextWriter)
@@ -540,24 +446,26 @@ Namespace UI.WebControls
 
         Public Overrides Sub DataBind()
 
-            'Invoke OnDataBinding so DataBinding Event is raised
-            MyBase.OnDataBinding(EventArgs.Empty)
+            Try
+                'Invoke OnDataBinding so DataBinding Event is raised
+                MyBase.OnDataBinding(EventArgs.Empty)
 
-            'Clear Existing Controls
-            Controls.Clear()
+                'Clear Existing Controls
+                Controls.Clear()
 
-            'Start Tracking ViewState
-            TrackViewState()
+                'Start Tracking ViewState
+                TrackViewState()
 
-            'Create the Editor
-            CreateEditor()
-
-            'Add the commands buttons
-            Me.AddCommandButtons()
+                'Create the Editor
+                CreateEditor()
 
 
-            'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
-            ChildControlsCreated = True
+
+                'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
+                ChildControlsCreated = True
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            End Try
         End Sub
 
 #End Region
@@ -567,18 +475,25 @@ Namespace UI.WebControls
 
         Protected Overrides ReadOnly Property UnderlyingDataSource() As System.Collections.IEnumerable
             Get
-                If _SortedUnderLyingDataSource Is Nothing Then
-                    _SortedUnderLyingDataSource = DirectCast(MyBase.UnderlyingDataSource, PropertyInfo())
-                    If _SortedUnderLyingDataSource IsNot Nothing Then
-                        _SortedUnderLyingDataSource = Array.FindAll(Of PropertyInfo)(_SortedUnderLyingDataSource, Function(objProp As PropertyInfo) As Boolean
-                                                                                                                      Return objProp.GetIndexParameters().Length = 0
-                                                                                                                  End Function)
-                        Array.Sort(_SortedUnderLyingDataSource, New AriciePropertySortOrderComparer(_SortedUnderLyingDataSource))
+                Dim toReturn As PropertyInfo()
+                If Me.DataSource IsNot Nothing Then
+                    toReturn = CacheHelper.GetGlobal(Of PropertyInfo())(Me.DataSource.GetType.Name, Me.SortMode.ToString())
+                    If toReturn Is Nothing Then
+                        toReturn = Me.GetProperties()
+                        Array.FindAll(Of PropertyInfo)(toReturn, Function(objProp As PropertyInfo) As Boolean
+                                                                     Return objProp.GetIndexParameters().Length = 0
+                                                                 End Function)
+                        Array.Sort(toReturn, New AriciePropertySortOrderComparer(toReturn))
                     End If
+                    CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, Me.DataSource.GetType().Name, Me.SortMode.ToString())
                 End If
-                Return _SortedUnderLyingDataSource
+                Return toReturn
             End Get
         End Property
+
+
+
+
 
         ''' <summary>
         ''' This override set the empty group at the first index of the array.
@@ -603,6 +518,7 @@ Namespace UI.WebControls
             Dim toReturn As Boolean = MyBase.GetRowVisibility(obj)
             If toReturn Then
                 Dim info As PropertyInfo = DirectCast(obj, PropertyInfo)
+                'todo: Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
                 'If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
                 If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
                     Return False
@@ -619,11 +535,11 @@ Namespace UI.WebControls
                                     toReturn = False
                                 Else
                                     Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
-                                    toReturn = condAttribute.MatchValue(value)
+                                    toReturn = toReturn AndAlso condAttribute.MatchValue(value)
                                     If toReturn AndAlso condAttribute.SecondaryPropertyName <> "" Then
                                         If props.TryGetValue(condAttribute.SecondaryPropertyName, objPropInfo) Then
                                             value = objPropInfo.GetValue(Me.DataSource, Nothing)
-                                            toReturn = condAttribute.MatchSecondary(value)
+                                            toReturn = toReturn AndAlso condAttribute.MatchSecondary(value)
                                         End If
                                     End If
                                 End If
@@ -655,43 +571,105 @@ Namespace UI.WebControls
                 Me.LoadJQuery()
 
                 If (Page IsNot Nothing) AndAlso (Page.Header IsNot Nothing) AndAlso NukeHelper.DnnVersion.Major > 6 OrElse NukeHelper.DnnVersion.Major < 6 Then
-                        Dim cssId As String = "JqueryUiCss"
+                    Dim cssId As String = "JqueryUiCss"
 
-                        If Page.Header.FindControl(cssId) Is Nothing Then
-                            Dim lnk As New HtmlControls.HtmlLink
-                            lnk.ID = cssId
+                    If Page.Header.FindControl(cssId) Is Nothing Then
+                        Dim lnk As New HtmlControls.HtmlLink
+                        lnk.ID = cssId
                         lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
-                            lnk.Attributes.Add("type", "text/css")
-                            lnk.Attributes.Add("rel", "stylesheet")
-                            Page.Header.Controls.Add(lnk)
-                        End If
+                        lnk.Attributes.Add("type", "text/css")
+                        lnk.Attributes.Add("rel", "stylesheet")
+                        Page.Header.Controls.Add(lnk)
+                    End If
 
                 End If
-                AddTabs()
+                DisplayHierarchy()
 
                 'Me.AddCommandButtons()
             End If
 
-
-
-
             Validate()
         End Sub
 
-       
+
 
 #End Region
 
 #Region "Inner methods"
 
 
-        Protected Sub AddTabs()
+        Private Function GetCommandButtons() As IEnumerable(Of ActionButtonInfo)
+            Dim toReturn As List(Of ActionButtonInfo)
+            If Me.DataSource IsNot Nothing Then
+                toReturn = CacheHelper.GetGlobal(Of List(Of ActionButtonInfo))(Me.DataSource.GetType.FullName)
+                If toReturn Is Nothing Then
+                    toReturn = New List(Of ActionButtonInfo)
 
-            Dim propertyContainer As Control = Me
-            AddSections(Me.FieldsDictionary.Tabs.NotInTab, propertyContainer, False)
-            Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieTab" & Me.ClientID.GetHashCode())
+                    Dim members As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(Me.DataSource.GetType())
 
-            If Me.FieldsDictionary.Tabs.Count > 0 Then
+                    For Each member As KeyValuePair(Of String, MemberInfo) In members
+                        If TypeOf member.Value Is MethodInfo Then
+                            Dim method As MethodInfo = DirectCast(member.Value, MethodInfo)
+                            If method IsNot Nothing Then
+                                Dim attrs As Attribute() = DirectCast(method.GetCustomAttributes(GetType(ActionButtonAttribute), True), Attribute())
+                                If attrs.Length > 0 Then
+                                    Dim toAdd As New ActionButtonInfo
+                                    toAdd.Method = method
+                                    Dim attr As ActionButtonAttribute = DirectCast(attrs(0), ActionButtonAttribute)
+                                    toAdd.IconPath = attr.IconPath
+                                    toAdd.ExtendedCategory = ExtendedCategory.FromMember(method)
+                                    toReturn.Add(toAdd)
+                                End If
+                            End If
+                        End If
+                    Next
+                    CacheHelper.SetGlobal(Of List(Of ActionButtonInfo))(toReturn, Me.DataSource.GetType.FullName)
+                End If
+            Else
+                toReturn = New List(Of ActionButtonInfo)
+            End If
+            Return toReturn
+        End Function
+
+
+        Protected Sub DisplayHierarchy()
+            If Me.DataSource IsNot Nothing Then
+                Me.DisplayElement(Me.FieldsDictionary, False)
+            End If
+        End Sub
+
+
+        Protected Function DisplayElement(objElement As Element, keepHidden As Boolean) As Integer
+
+
+            Dim nbControls As Integer
+            nbControls += AddColumns(objElement, objElement.Container, keepHidden)
+            nbControls += AddSections(objElement, objElement.Container, keepHidden)
+            nbControls += AddTabs(objElement, keepHidden)
+            nbControls += AddActionButtons(objElement, keepHidden)
+
+            Return nbControls
+        End Function
+
+        ''' <summary>
+        ''' Retrieves the value of a cookie from the response or the request. Tries the response first to see if we already set the value server-side
+        ''' </summary>
+        ''' <param name="cookieName">Name of the cookie</param>
+        ''' <returns></returns>
+        ''' <remarks>If no cookie with this name exists in the response, cookies from the request are used</remarks>
+        Private Function RetrieveCookieValue(cookieName As String) As HttpCookie
+            Dim cookie As HttpCookie = HttpContext.Current.Response.Cookies(cookieName)
+            If (cookie Is Nothing OrElse String.IsNullOrEmpty(cookie.Value)) Then
+                cookie = HttpContext.Current.Request.Cookies(cookieName)
+            End If
+            Return cookie
+        End Function
+
+
+        Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
+            Dim nbControls As Integer
+            If objElement.Tabs.Count > 0 Then
+                Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
                 If cookie IsNot Nothing Then
@@ -706,29 +684,21 @@ Namespace UI.WebControls
                 tabsContainer.Attributes.Add("class", "aricie_pe_tabs-" & Me.ClientID)
                 tabsContainer.Attributes.Add("hash", Me.ClientID.GetHashCode().ToString())
 
-                Me.Controls.Add(tabsContainer)
+                objElement.Container.Controls.Add(tabsContainer)
                 tabsContainer.Controls.Add(tabsHeader)
                 Dim tabIshidden As Boolean
-                Dim isFirstPass As Boolean = FormHelper.IsFirstPass(Me, Me.ParentModule)
+                'Dim isFirstPass As Boolean = FormHelper.IsFirstPass(Me, Me.ParentModule)
 
-                For Each tabSectionsPair As KeyValuePair(Of Tab, Sections) In Me.FieldsDictionary.Tabs
+                For Each objTab As Tab In objElement.Tabs.Values
 
-                    Dim tabContainer As New HtmlGenericControl("div")
+                    objTab.Container = New HtmlGenericControl("div")
                     'tabContainer.EnableViewState = False
-                    tabContainer.ID = String.Format("{0}_{1}", Me.FriendlyName, tabSectionsPair.Key.Name.Replace(" ", ""))
-                    tabsContainer.Controls.Add(tabContainer)
-                    tabContainer.ID = tabContainer.ClientID.GetHashCode.ToString
+                    objTab.Container.ID = String.Format("{0}_{1}", Me.FriendlyName, objTab.Name.Replace(" ", ""))
+                    tabsContainer.Controls.Add(objTab.Container)
+                    objTab.Container.ID = objTab.Container.ClientID.GetHashCode.ToString
                     'Dim tabId As String = String.Format("{0}_{1}", Me.FriendlyName, tabSectionsPair.Key.Name.Replace(" ", ""))
                     'tabContainer.Attributes.Add("id", tabId)
 
-
-
-                    tabSectionsPair.Key.Container = tabContainer
-
-
-                    Dim headerLink As New System.Web.UI.HtmlControls.HtmlGenericControl("a")
-                    headerLink.EnableViewState = False
-                    headerLink.Attributes.Add("href", "#" & tabContainer.ClientID)
 
                     Dim loadTab As Boolean = False
                     Dim displayTab As Boolean = False
@@ -736,181 +706,118 @@ Namespace UI.WebControls
                         tabIshidden = Me._isHidden
                         displayTab = True
                         loadTab = True
-                        currentTab = tabSectionsPair.Key
+                        _CurrentTab = objTab
                     Else
                         tabIshidden = True
                         loadTab = False ' (Not _EnabledOnDemandSections) OrElse (Not _isHidden AndAlso isFirstPass)
                         ' désactivation du chargement transversal des onglets
-                        displayTab = Me.HasVisibleContent(tabSectionsPair.Value)
+                        displayTab = Me.HasVisibleContent(objTab)
                     End If
 
-                    If displayTab Then
-                        If loadTab Then
-                            tabSectionsPair.Key.Loaded = True
-                            propertyContainer = tabContainer
-                            AddSections(tabSectionsPair.Value, propertyContainer, tabIshidden)
-                        Else
-                            headerLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & tabSectionsPair.Key.Name))
-                        End If
-                    End If
+                    Dim li = New HtmlGenericControl("li")
+                    tabsHeader.Controls.Add(li)
 
-                    'quoi qu'il arrive, on ajoute l'onglet à la collection et on le passe en caché (mais dans le html) si nécessaire
+                    Dim headerLink As New HtmlGenericControl("a")
+                    objTab.HeaderLink = headerLink
+                    headerLink.EnableViewState = False
+                    headerLink.Attributes.Add("href", "#" & objTab.Container.ClientID)
 
-                    Dim resKey As String = tabSectionsPair.Key.ResourceKey
+
+                    Dim resKey As String = objTab.ResourceKey
                     If String.IsNullOrEmpty(resKey) Then
-                        resKey = Me.FriendlyName & "_" & tabSectionsPair.Key.Name & ".Header"
+                        resKey = Me.FriendlyName & "_" & objTab.Name & ".Header"
                     End If
 
                     headerLink.InnerText = Localization.GetString(resKey, Me.LocalResourceFile)
+                    li.Controls.Add(headerLink)
 
-                    Dim li = New HtmlGenericControl("li")
+                    If displayTab Then
+                        If loadTab Then
+                            objTab.Loaded = True
+                            nbControls += Me.DisplayElement(objTab, tabIshidden)
+                        Else
+                            headerLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & objTab.Name))
+                        End If
+                    End If
+
                     If Not displayTab Then
-                        tabContainer.Visible = False
+                        objTab.Container.Visible = False
                         li.Style("display") = "none"
                     End If
-                    tabsHeader.Controls.Add(li)
-                    li.Controls.Add(headerLink)
-                    tabSectionsPair.Key.HeaderLink = headerLink
 
                     loopTabIndex += 1
                 Next
             End If
 
+            Return nbControls
+
+        End Function
 
 
-        End Sub
-
-        Protected Sub AddCommandButtons()
-            If Me.DataSource IsNot Nothing Then
-                Dim buttonMethods As Dictionary(Of MethodInfo, ActionButtonAttribute) = CacheHelper.GetGlobal(Of Dictionary(Of MethodInfo, ActionButtonAttribute))(Me.DataSource.GetType.FullName)
-                If buttonMethods Is Nothing Then
-                    buttonMethods = New Dictionary(Of MethodInfo, ActionButtonAttribute)
-                    Dim members As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(Me.DataSource.GetType())
-
-                    For Each member As KeyValuePair(Of String, MemberInfo) In members
-                        If TypeOf member.Value Is MethodInfo Then
-                            Dim method As MethodInfo = DirectCast(member.Value, MethodInfo)
-                            If method IsNot Nothing AndAlso method.IsPublic Then
-                                Dim attrs As Attribute() = CType(method.GetCustomAttributes(GetType(ActionButtonAttribute), True), Attribute())
-                                If attrs.Length > 0 Then
-                                    Dim attr As ActionButtonAttribute = DirectCast(attrs(0), ActionButtonAttribute)
-                                    buttonMethods(method) = attr
-                                End If
-                            End If
-                        End If
-                    Next
-                    CacheHelper.SetGlobal(Of Dictionary(Of MethodInfo, ActionButtonAttribute))(buttonMethods, Me.DataSource.GetType.FullName)
-                End If
-                Dim buttonC As Panel = Nothing
-                For Each buttonMethod As KeyValuePair(Of MethodInfo, ActionButtonAttribute) In buttonMethods
-                    Dim method As MethodInfo = buttonMethod.Key
-                    If buttonC Is Nothing Then
-                        buttonC = New Panel
-                        buttonC.EnableViewState = False
-                        buttonC.ID = "divCmdButtons"
-                        buttonC.CssClass = "CommandsButtons DNNAligncenter"
-                        Me.Controls.Add(buttonC)
-                    End If
-                    Dim btn As New CommandButton()
-                    btn.ID = "cmd" & method.Name
-
-                    btn.ResourceKey = Me.DataSource.GetType().Name & "_" & method.Name & ".Text"
-                    If buttonMethod.Value.IconPath <> "" Then
-                        btn.ImageUrl = buttonMethod.Value.IconPath
-                    End If
-                    buttonC.Controls.Add(btn)
-
-                    Dim params As ParameterInfo() = method.GetParameters()
-                    Dim paramInstance As Object = Nothing
-                    If params.Length = 1 Then
-                        Dim objParam As ParameterInfo = params(0)
-                        If objParam.ParameterType Is GetType(AriciePortalModuleBase) Then
-                            paramInstance = Me.ParentModule
-                        ElseIf objParam.ParameterType Is GetType(AriciePropertyEditorControl) Then
-                            paramInstance = Me
-                        End If
-                    End If
-
-                    AddHandler btn.Click, Sub(s As Object, e As EventArgs)
-                                              If paramInstance Is Nothing Then
-                                                  method.Invoke(Me.DataSource, Nothing)
-                                              Else
-                                                  method.Invoke(Me.DataSource, New Object() {paramInstance})
-                                              End If
-                                          End Sub
-
-
-                Next
-            End If
-
-
-        End Sub
-
-        Protected Function AddSections(ByVal sections As Sections, ByVal container As Control, ByVal isHidden As Boolean) As Integer
+        Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
             Dim nbControls As Integer
-            nbControls += AddColumns(Nothing, sections.NotInSection, container, isHidden)
 
-            If sections.Count > 0 Then
-                Dim sectionContainer As New HtmlGenericControl("div")
-                'sectionContainer.EnableViewState = False
-                'sectionContainer.Attributes.Add("class", "aricie_pe_sections")
-                container.Controls.Add(sectionContainer)
-                container = sectionContainer
-            End If
+            For Each s As Section In element.Sections.Values
 
-            For Each s As KeyValuePair(Of Section, Columns) In sections
-
-
-                nbControls += AddColumns(s.Key, s.Value, container, isHidden)
+                Dim sectionContainer As Control = Nothing
+                Dim sectionControl As Control = FormHelper.AddSection(container, s.ResourceKey, False, sectionContainer)
+                s.Container = sectionContainer
+                Dim nbSectionControls As Integer = DisplayElement(s, keepHidden)
+                If nbSectionControls = 0 Then
+                    container.Controls.Remove(sectionControl)
+                End If
+                nbControls += nbSectionControls
 
             Next
             Return nbControls
         End Function
 
 
-        Protected Function AddColumns(ByVal section As Section, ByVal columns As Columns, ByVal container As Control, ByVal isHidden As Boolean) As Integer
+        Protected Function AddColumns(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
             ' on va sauvegarder l'élément racine pour pouvoir insérer le header si nécessaire
             Dim rootContainer As Control = container
             ' et le header pour pouvoir l'effacer si nécessaire
-            Dim headerControl As Control = Nothing
+            'Dim headerControl As Control = Nothing
 
             ' ajout de colonnes multiples
-            Dim multipleColumnsExist As Boolean = columns.Count > 1
-            If section IsNot Nothing Then
+            Dim multipleColumnsExist As Boolean = element.Columns.Count > 1
+            'Dim objSection As Section = TryCast(element, Section)
+            'If (objSection IsNot Nothing) Then
 
-                ' commençons avant toute chose par rajouter le header control, on le retirera plus tard si nécessaire
-                AddHeaderCt(rootContainer, section.Name)
-                headerControl = rootContainer.Controls(rootContainer.Controls.Count - 1)
+            '    ' commençons avant toute chose par rajouter le header control, on le retirera plus tard si nécessaire
+            '    AddSectionHeader(rootContainer, objSection.Name)
+            '    headerControl = rootContainer.Controls(rootContainer.Controls.Count - 1)
 
-                Dim div As New HtmlGenericControl("div")
-                'div.EnableViewState = False
-                container.Controls.Add(div)
-                section.Container = div
-                section.Image = CType(container.FindControl("ico" & section.Name), Image)
+            '    Dim sectionContainer As New HtmlGenericControl("fieldset")
+            '    'div.EnableViewState = False
+            '    container.Controls.Add(sectionContainer)
+            '    objSection.Container = sectionContainer
+            '    objSection.Image = CType(container.FindControl("ico" & objSection.Name), Image)
 
-                container = div
-            End If
+            '    container = sectionContainer
+            'End If
 
             Dim counter As Integer = 0
-            Dim columnMaxWidth As Integer = CInt(Math.Floor(100 / Math.Max(columns.Count, 1)))
+            Dim columnMaxWidth As Integer = CInt(Math.Floor(100 / Math.Max(element.Columns.Count, 1)))
 
-            For Each c As Integer In columns.Keys
+            For Each c As Integer In element.Columns.Keys
                 Dim currentContainer As Control = container
                 ' si on a plusieurs colonnes, le container doit être modifié pour prendre un div de la taille de la colonne (width / nb de colonnes)
                 If (multipleColumnsExist) Then
 
                     Dim col As New HtmlGenericControl("div")
+                    col.Attributes.Add("class", String.Format("peCol{0} peCol", element.Columns.Count))
                     'col.EnableViewState = False
-                    col.Style.Add("float", "left")
-                    col.Style.Add("Width", String.Format("{0}%", columnMaxWidth.ToString))
+                    'col.Style.Add("float", "left")
+                    'col.Style.Add("Width", String.Format("{0}%", columnMaxWidth.ToString))
 
                     currentContainer = DirectCast(col, Control)
                 End If
 
-                For Each p As PropertyInfo In columns(c)
+                For Each p As PropertyInfo In element.Columns(c)
                     If Me.GetRowVisibility(p) Then
-                        Me.AddEditorCtl(currentContainer, p, isHidden)
+                        Me.AddEditorCtl(currentContainer, p, keepHidden)
                         counter += 1
                     End If
                 Next
@@ -922,51 +829,68 @@ Namespace UI.WebControls
             Next
 
             ' on a x contrôles rajoutés, mais si il n'y a eu qu'un header rajouté, on le retire, il n'a aucun enfant.
-            If (counter = 0 AndAlso headerControl IsNot Nothing) Then
-                rootContainer.Controls.Remove(headerControl)
-            End If
+            'If (counter = 0 AndAlso headerControl IsNot Nothing) Then
+            '    rootContainer.Controls.Remove(headerControl)
+            'End If
 
             Return counter
         End Function
 
 
-
-
-
-
-        Protected Sub AddHeaderCt(ByVal container As Control, ByVal header As String)
-
-            If header <> "" Then
-                Dim child As New Panel
-                child.CssClass = "HeaderPl"
-                child.EnableViewState = False
-                Dim image As New Image
-                image.ID = ("ico" & header)
-                image.EnableViewState = False
-                Dim literal As New Literal
-                literal.Text = " "
-                literal.EnableViewState = False
-                Dim label As New Label
-                label.ID = ("lbl" & header)
-                label.Attributes.Item("resourcekey") = (Me.FriendlyName & "_" & header & ".Header")
-                label.Text = header
-                label.EnableViewState = False
-                label.ControlStyle.CopyFrom(Me.GroupHeaderStyle)
-                child.Controls.Add(image)
-                child.Controls.Add(literal)
-                child.Controls.Add(label)
-                If Me.GroupHeaderIncludeRule Then
-                    child.Controls.Add(New LiteralControl("<hr noshade=""noshade"" size=""1""/>"))
+        Protected Function AddActionButtons(ByVal element As Element, ByVal keepHidden As Boolean) As Integer
+            Dim nbControls As Integer
+            Dim buttonContainer As Panel = Nothing
+            For Each objActionButton As ActionButtonInfo In element.ActionButtons
+                If buttonContainer Is Nothing Then
+                    buttonContainer = New Panel()
+                    buttonContainer.EnableViewState = False
+                    buttonContainer.ID = "divCmdButtons" & element.Name
+                    buttonContainer.CssClass = "CommandsButtons DNNAligncenter"
+                    element.Container.Controls.Add(buttonContainer)
                 End If
-                container.Controls.Add(child)
+                Me.AddActionButton(objActionButton, buttonContainer)
+                nbControls += 1
+            Next
+            Return nbControls
+        End Function
+
+        Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
+
+            Dim btn As New CommandButton()
+            btn.ID = "cmd" & objButtonInfo.Method.Name
+
+            btn.ResourceKey = Me.DataSource.GetType().Name & "_" & objButtonInfo.Method.Name & ".Text"
+            If objButtonInfo.IconPath <> "" Then
+                btn.ImageUrl = objButtonInfo.IconPath
             End If
+            container.Controls.Add(btn)
+
+            Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
+            Dim paramInstance As Object = Nothing
+            If params.Length = 1 Then
+                Dim objParam As ParameterInfo = params(0)
+                If objParam.ParameterType Is GetType(AriciePortalModuleBase) Then
+                    paramInstance = Me.ParentModule
+                ElseIf objParam.ParameterType Is GetType(AriciePropertyEditorControl) Then
+                    paramInstance = Me
+                End If
+            End If
+
+            AddHandler btn.Click, Sub(s As Object, e As EventArgs)
+                                      If paramInstance Is Nothing Then
+                                          objButtonInfo.Method.Invoke(Me.DataSource, Nothing)
+                                      Else
+                                          objButtonInfo.Method.Invoke(Me.DataSource, New Object() {paramInstance})
+                                      End If
+                                  End Sub
+
         End Sub
 
-        Protected Sub AddEditorCtl(ByRef container As Control, ByVal obj As Object, ByVal isHidden As Boolean)
+        Protected Sub AddEditorCtl(ByRef container As Control, ByVal obj As Object, ByVal keepHidden As Boolean)
             Dim objPropertyInfo As PropertyInfo = DirectCast(obj, PropertyInfo)
             Try
 
-                Me.AddEditorCtl(container, objPropertyInfo.Name, New AricieStandardEditorInfoAdapter(Me.DataSource, objPropertyInfo.Name), isHidden)
+                Me.AddEditorCtl(container, objPropertyInfo.Name, New AricieStandardEditorInfoAdapter(Me.DataSource, objPropertyInfo.Name), keepHidden)
                 Dim customAttributes As Object()
                 If Me._TrialStatus.IsLimited Then
                     customAttributes = objPropertyInfo.GetCustomAttributes(GetType(TrialLimitedAttribute), True)
@@ -1016,7 +940,7 @@ Namespace UI.WebControls
 
         End Sub
 
-        Protected Sub AddEditorCtl(ByRef container As Control, ByVal name As String, ByVal editorAdapter As IEditorInfoAdapter, ByVal isHidden As Boolean)
+        Protected Sub AddEditorCtl(ByRef container As Control, ByVal name As String, ByVal editorAdapter As IEditorInfoAdapter, ByVal keepHidden As Boolean)
             Dim myCtDiv As New HtmlControls.HtmlGenericControl("div")
             'myCtDiv.EnableViewState = False
             myCtDiv.Attributes.Add("class", "fieldC")
@@ -1025,7 +949,7 @@ Namespace UI.WebControls
             'control.ID = "field" + name
             'control.ID = name.Substring(0, 3) & name.Substring(name.Length - 2)
             control.ID = name ' la méthode au dessus ne marche pas, EnableTheseSettings et EnableTheseOtherSettings provoque une collision
-            control.IsHidden = isHidden
+            control.IsHidden = keepHidden
             control.DataSource = Me.DataSource
             control.EditorInfoAdapter = editorAdapter
             control.DataField = name
@@ -1078,31 +1002,6 @@ Namespace UI.WebControls
             Next
         End Sub
 
-        Public Shared Function GetParentSection(ByVal childControl As Control) As KeyValuePair(Of Control, Control)
-            Dim parentPH As AriciePropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AriciePropertyEditorControl)(childControl)
-            If parentPH Is Nothing Then
-                Return Nothing
-            End If
-            Dim tbl As HtmlGenericControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of HtmlGenericControl)(childControl)
-            If tbl Is Nothing Then
-                Return Nothing
-            End If
-            While tbl.Parent IsNot parentPH
-                tbl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of HtmlGenericControl)(tbl)
-                If tbl Is Nothing Then
-                    Return Nothing
-                End If
-            End While
-            If tbl.ID Is Nothing Then
-                Return Nothing
-            End If
-            If tbl.ID.StartsWith("pl") AndAlso tbl.ID.Length > 2 Then
-                Dim parentSectionName As String = tbl.ID.Substring(2)
-                Return parentPH.GroupedControls(parentSectionName)
-            End If
-            Return GetParentSection(parentPH)
-
-        End Function
 
         Public Sub LoadJQuery()
             If Me._JQueryVersion <> "" AndAlso Me._JQueryUIVersion <> "" Then
@@ -1113,9 +1012,9 @@ Namespace UI.WebControls
         End Sub
 
         Private Sub EnforceTrialMode()
-            Dim WarningMessage As String = Localization.GetString(TrialLimitedAttribute.TrialModeLimitedKey, LocalResourceFile)
-            If String.IsNullOrEmpty(WarningMessage) Then
-                WarningMessage = TrialLimitedAttribute.TrialModeLimitedKey
+            Dim warningMessage As String = Localization.GetString(TrialLimitedAttribute.TrialModeLimitedKey, LocalResourceFile)
+            If String.IsNullOrEmpty(warningMessage) Then
+                warningMessage = TrialLimitedAttribute.TrialModeLimitedKey
             End If
 
             For Each restrictedField As KeyValuePair(Of AricieFieldEditorControl, TrialLimitedAttribute) In Me._RestrictedFields
@@ -1124,10 +1023,10 @@ Namespace UI.WebControls
 
                 If TypeOf objField.Editor Is UserControlEditControl Then
                     ' si c'est un contrôle utilisateur dans le propety editor, on lui passe juste l'information nécessaire
-                    DirectCast(objField.Editor, UserControlEditControl).TrialMode = New UserControlEditControl.TrialModeInformation() With {.CurrentTrialMode = objAttr.TrialPropertyMode, .Message = WarningMessage}
+                    DirectCast(objField.Editor, UserControlEditControl).TrialMode = New UserControlEditControl.TrialModeInformation() With {.CurrentTrialMode = objAttr.TrialPropertyMode, .Message = warningMessage}
                 Else
                     'sinon on effectue le traitement classique
-                    objField.ToolTip = WarningMessage ' on fixe le tooltip sur toute la ligne
+                    objField.ToolTip = warningMessage ' on fixe le tooltip sur toute la ligne
                     objField.CssClass = objField.CssClass & " PETrialDisabled" ' on rajoute une classe
 
                     objField.Editor.CssClass = objField.Editor.CssClass & " PETrialEditorDisabled" ' on rajoute une classe sur l'éditeur uniquement
@@ -1146,25 +1045,9 @@ Namespace UI.WebControls
                     Else
                         If (objAttr.TrialPropertyMode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd _
                                 OrElse (objAttr.TrialPropertyMode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
-                            Dim collectEditCtl As CollectionEditControl = Nothing
-                            If TypeOf objField.Editor Is Aricie.DNN.UI.WebControls.EditControls.CollectionEditControl Then
-                                collectEditCtl = DirectCast(objField.Editor, CollectionEditControl)
-                            ElseIf TypeOf objField.Editor Is Aricie.DNN.UI.WebControls.EditControls.PropertyEditorEditControl Then
-                                For Each subField As AricieFieldEditorControl In DirectCast(objField.Editor, PropertyEditorEditControl).InnerEditor.Fields
-                                    If TypeOf subField.Editor Is Aricie.DNN.UI.WebControls.EditControls.CollectionEditControl Then
-                                        collectEditCtl = DirectCast(subField.Editor, CollectionEditControl)
-                                    End If
-                                Next
-                            End If
-                            If collectEditCtl IsNot Nothing Then
-                                If (objAttr.TrialPropertyMode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd Then
-                                    collectEditCtl.cmdAddButton.Enabled = False
-                                End If
-                                If (objAttr.TrialPropertyMode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
-                                    For Each deleteControl As WebControl In collectEditCtl.DeleteControls
-                                        deleteControl.Enabled = False
-                                    Next
-                                End If
+
+                            If TypeOf objField.Editor Is AricieEditControl Then
+                                DirectCast(objField.Editor, AricieEditControl).EnforceTrialMode(objAttr.TrialPropertyMode)
                             End If
                         End If
                     End If
@@ -1172,26 +1055,56 @@ Namespace UI.WebControls
             Next
         End Sub
 
-        Private Function HasVisibleContent(ByVal objSections As Sections) As Boolean
-            For Each objProps As IList(Of PropertyInfo) In objSections.NotInSection.Values
+        Private Function HasVisibleContent(ByVal objElement As Element) As Boolean
+            For Each objProps As IList(Of PropertyInfo) In objElement.Columns.Values
                 For Each objProp As PropertyInfo In objProps
                     If Me.GetRowVisibility(objProp) Then
                         Return True
                     End If
                 Next
-
             Next
 
-            For Each objSection As Columns In objSections.Values
-                For Each objProps As IList(Of PropertyInfo) In objSection.Values
-                    For Each objProp As PropertyInfo In objProps
-                        If Me.GetRowVisibility(objProp) Then
-                            Return True
-                        End If
-                    Next
-                Next
+            For Each objSection As Section In objElement.Sections.Values
+                If HasVisibleContent(objSection) Then
+                    Return True
+                End If
             Next
+
+            For Each objTab As Tab In objElement.Tabs.Values
+                If HasVisibleContent(objTab) Then
+                    Return True
+                End If
+            Next
+
         End Function
+
+        Private Function GetProperties() As PropertyInfo()
+
+            If Not DataSource Is Nothing Then
+                'TODO:  We need to add code to support using the cache in the future
+
+                Dim Bindings As BindingFlags = BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.Static
+
+                Dim objProps As PropertyInfo() = DataSource.GetType().GetProperties(Bindings)
+
+                'Apply sort method
+                Select Case SortMode
+                    Case PropertySortType.Alphabetical
+                        Array.Sort(objProps, New PropertyNameComparer)
+                    Case PropertySortType.Category
+                        Array.Sort(objProps, New PropertyCategoryComparer)
+                    Case PropertySortType.SortOrderAttribute
+                        Array.Sort(objProps, New PropertySortOrderComparer)
+                End Select
+
+                Return objProps
+            Else
+                Return Nothing
+            End If
+
+        End Function
+
+
 #End Region
 
 #Region "IScriptControl"
@@ -1230,18 +1143,24 @@ Namespace UI.WebControls
             Private _Name As String
             Private _Container As Control
             Private _Loaded As Boolean = False
+            Private _Prefix As String
+
+
             Private _ResourceKey As String
+
+            Public Sub New()
+
+            End Sub
 
             Public Sub New(ByVal name As String, ByVal container As Control)
                 _Name = name
                 _Container = container
             End Sub
 
-            Public Sub New(ByVal name As String, ByVal prop As PropertyInfo)
+            Public Sub New(ByVal name As String, ByVal prefix As String)
                 _Name = name
-                If prop IsNot Nothing Then
-                    Me._ResourceKey = String.Format("{0}_{1}.Header", prop.DeclaringType.Name, name)
-                End If
+                Me.Prefix = prefix
+                'Me._ResourceKey = String.Format("{0}_{1}.Header", prefix, name)
             End Sub
 
             Public Property Name() As String
@@ -1252,6 +1171,29 @@ Namespace UI.WebControls
                     _Name = value
                 End Set
             End Property
+
+
+            Public Property Prefix As String
+                Get
+                    Return _Prefix
+                End Get
+                Set(value As String)
+                    _Prefix = value
+                End Set
+            End Property
+
+            Public Property ResourceKey() As String
+                Get
+                    If String.IsNullOrEmpty(Me._ResourceKey) Then
+                        Me._ResourceKey = String.Format("{0}_{1}.Header", Me.Prefix, Name)
+                    End If
+                    Return _ResourceKey
+                End Get
+                Set(ByVal value As String)
+                    _ResourceKey = value
+                End Set
+            End Property
+
 
             Public Property Container() As Control
                 Get
@@ -1272,16 +1214,19 @@ Namespace UI.WebControls
             End Property
 
 
+            Public Property Columns As New Dictionary(Of Integer, List(Of PropertyInfo))
 
-            Public Property ResourceKey() As String
-                Get
-                    Return _ResourceKey
-                End Get
-                Set(ByVal value As String)
-                    _ResourceKey = value
-                End Set
-            End Property
+            Public Property Sections As New Dictionary(Of String, Section)
 
+            Public Property Tabs As New Dictionary(Of String, Tab)
+
+            Public Property ActionButtons As New List(Of ActionButtonInfo)
+
+            Public Sub HideAllTabs()
+                For Each t As Tab In Me.Tabs.Values
+                    t.Loaded = False
+                Next
+            End Sub
 
             Public Overrides Function GetHashCode() As Integer
                 Return Me.Name.GetHashCode()
@@ -1296,15 +1241,15 @@ Namespace UI.WebControls
         Public Class Tab
             Inherits Element
 
-            Sub New(ByVal name As String, ByVal prop As PropertyInfo)
-                MyBase.New(name, prop)
+            Sub New(ByVal name As String, ByVal prefix As String)
+                MyBase.New(name, prefix)
             End Sub
 
 
             Public Shared ReadOnly Empty As New Tab("", Nothing)
 
-            Public Shared Function FromName(ByVal name As String, ByVal prop As PropertyInfo) As Tab
-                Return New Tab(name, prop)
+            Public Shared Function FromName(ByVal name As String, ByVal prefix As String) As Tab
+                Return New Tab(name, prefix)
             End Function
 
             Private _HeaderLink As HtmlGenericControl
@@ -1324,210 +1269,174 @@ Namespace UI.WebControls
         Public Class Section
             Inherits Element
 
-            Private _Image As Image
+            'Private _Image As Image
 
-            Public Sub New(ByVal name As String, ByVal prop As PropertyInfo)
-                MyBase.New(name, prop)
+            Public Sub New(ByVal name As String, ByVal prefix As String)
+                MyBase.New(name, prefix)
             End Sub
 
-            Public Property Image() As Image
-                Get
-                    Return _Image
-                End Get
-                Set(ByVal value As Image)
-                    _Image = value
-                End Set
-            End Property
+            'Public Property Image() As Image
+            '    Get
+            '        Return _Image
+            '    End Get
+            '    Set(ByVal value As Image)
+            '        _Image = value
+            '    End Set
+            'End Property
 
             Public Shared ReadOnly Empty As New Section("", Nothing)
 
-            Public Shared Function FromName(ByVal name As String, ByVal prop As PropertyInfo) As Section
-                Return New Section(name, prop)
+            Public Shared Function FromName(ByVal name As String, ByVal prefix As String) As Section
+                Return New Section(name, prefix)
             End Function
 
         End Class
-
-        Public Class Tabs
-            Inherits Dictionary(Of Tab, Sections)
-
-            Private _NotInTab As New Sections
-
-            Public ReadOnly Property NotInTab() As Sections
-                Get
-                    Return _NotInTab
-                End Get
-            End Property
-
-            Public Sub HideAll()
-                For Each t As Tab In Me.Keys
-                    t.Loaded = False
-                Next
-            End Sub
-
-            Public Function IndexOf(ByVal t As Tab) As Integer
-
-                Dim list As New List(Of Tab)(Me.Keys)
-
-                Return list.IndexOf(t)
-
-            End Function
-
-        End Class
-
-
-        Public Class Sections
-            Inherits Dictionary(Of Section, Columns)
-
-            Private _NotInSection As New Columns
-
-            Public ReadOnly Property NotInSection() As Columns
-                Get
-                    Return _NotInSection
-                End Get
-            End Property
-        End Class
-
-        Public Class Columns
-            Inherits Dictionary(Of Integer, List(Of PropertyInfo))
-        End Class
-
 
         Public Class FieldsHierarchy
-
-            Private _Tabs As New Tabs
-            Private _Sections As New Sections
-            Private _Editor As AriciePropertyEditorControl
+            Inherits Element
 
 
-            Public Sub New(ByVal underlyingDatasource As IEnumerable, ByVal editor As AriciePropertyEditorControl)
-                Me._Editor = editor
-                If underlyingDatasource IsNot Nothing Then
-                    For Each p As PropertyInfo In underlyingDatasource
+            Public Sub New(ByVal underlyingDatasource As IEnumerable, objButtons As IEnumerable(Of ActionButtonInfo), ByVal editor As AriciePropertyEditorControl)
+                MyBase.New(editor.FriendlyName, editor)
+                Me.ParseProperties(underlyingDatasource)
+                Me.ParseActionButtons(objButtons)
+            End Sub
+
+
+
+            Private Sub ParseProperties(ByVal underlyingDataSource As IEnumerable)
+                If underlyingDataSource IsNot Nothing Then
+                    For Each p As PropertyInfo In underlyingDataSource
                         'If _Editor.IsPropertyVisible(p) Then
-                        Dim added As Boolean = False
+                        'Dim added As Boolean = False
 
-                        Dim customAttributes As Object() = p.GetCustomAttributes(GetType(CategoryAttribute), True)
-                        If customAttributes.Length > 0 Then
-                            Dim categoryAttr As CategoryAttribute = CType(customAttributes(0), CategoryAttribute)
-
-                            Dim columns As Columns = _Tabs.NotInTab.NotInSection
+                        Dim extCategory As ExtendedCategory = ExtendedCategory.FromMember(p)
+                        Dim target As Element = Me.ProcessExtendedCategory(extCategory)
+                        target.Columns(extCategory.Column).Add(p)
 
 
+                        'Dim customAttributes As Object() = p.GetCustomAttributes(GetType(CategoryAttribute), True)
+                        'If customAttributes.Length > 0 Then
+                        '    Dim categoryAttr As CategoryAttribute = CType(customAttributes(0), CategoryAttribute)
 
-                            If Not _Tabs.NotInTab.ContainsKey(Section.FromName(categoryAttr.Category, p)) And Not String.IsNullOrEmpty(categoryAttr.Category) Then
-
-                                Dim s As Section = Section.FromName(categoryAttr.Category, p)
-                                _Tabs.NotInTab.Add(s, New Columns)
-                                _Sections.Add(s, _Tabs.NotInTab(s))
-                            End If
-
-                            If Not String.IsNullOrEmpty(categoryAttr.Category) Then
-                                columns = _Tabs.NotInTab(Section.FromName(categoryAttr.Category, p))
-                            End If
-
-                            If Not columns.ContainsKey(0) Then
-                                columns.Add(0, New List(Of PropertyInfo))
-                            End If
-
-                            columns(0).Add(p)
-
-                            added = True
-                        End If
-
-
-                        customAttributes = p.GetCustomAttributes(GetType(ExtendedCategoryAttribute), True)
-                        If customAttributes.Length > 0 Then
-                            Dim categoryAttr As ExtendedCategoryAttribute = CType(customAttributes(0), ExtendedCategoryAttribute)
-
-                            Dim sections As Sections = _Tabs.NotInTab
-                            Dim columns As Columns = Nothing
-
-                            If Not Me.Tabs.ContainsKey(Tab.FromName(categoryAttr.TabName, p)) And Not Tab.FromName(categoryAttr.TabName, p).Equals(Tab.Empty) Then
-                                Me.Tabs.Add(Tab.FromName(categoryAttr.TabName, p), New Sections)
-                            End If
-
-                            If Not Tab.FromName(categoryAttr.TabName, p).Equals(Tab.Empty) Then
-                                sections = Me.Tabs(Tab.FromName(categoryAttr.TabName, p))
-                            End If
-
-                            If Not String.IsNullOrEmpty(categoryAttr.SectionName) Then
-                                Dim s As Section = Section.FromName(categoryAttr.SectionName, p)
-
-                                If Not sections.ContainsKey(Section.FromName(categoryAttr.SectionName, p)) Then
-                                    sections.Add(s, New Columns)
-                                    _Sections.Add(s, sections(s))
-                                End If
-
-                                columns = sections(s)
-                            Else
-                                columns = sections.NotInSection
-                            End If
+                        '    Dim columns As Columns = _Tabs.NotInTab.NotInSection
 
 
 
-                            If Not columns.ContainsKey(categoryAttr.Column) Then
-                                columns.Add(categoryAttr.Column, New List(Of PropertyInfo))
-                            End If
+                        '    If Not _Tabs.NotInTab.ContainsKey(Section.FromName(categoryAttr.Category, p)) And Not String.IsNullOrEmpty(categoryAttr.Category) Then
 
-                            columns(categoryAttr.Column).Add(p)
+                        '        Dim s As Section = Section.FromName(categoryAttr.Category, p)
+                        '        _Tabs.NotInTab.Add(s, New Columns)
+                        '        _Sections.Add(s, _Tabs.NotInTab(s))
+                        '    End If
 
-                            added = True
-                        End If
+                        '    If Not String.IsNullOrEmpty(categoryAttr.Category) Then
+                        '        columns = _Tabs.NotInTab(Section.FromName(categoryAttr.Category, p))
+                        '    End If
 
-                        If Not added Then
-                            If Not _Tabs.NotInTab.NotInSection.ContainsKey(0) Then
-                                _Tabs.NotInTab.NotInSection.Add(0, New List(Of PropertyInfo))
-                            End If
+                        '    If Not columns.ContainsKey(0) Then
+                        '        columns.Add(0, New List(Of PropertyInfo))
+                        '    End If
 
-                            _Tabs.NotInTab.NotInSection(0).Add(p)
+                        '    columns(0).Add(p)
 
-                        End If
+                        '    added = True
+                        'End If
 
+
+                        'customAttributes = p.GetCustomAttributes(GetType(ExtendedCategoryAttribute), True)
+                        'If customAttributes.Length > 0 Then
+                        '    Dim categoryAttr As ExtendedCategoryAttribute = CType(customAttributes(0), ExtendedCategoryAttribute)
+
+                        '    Dim sections As Sections = _Tabs.NotInTab
+                        '    Dim columns As Columns = Nothing
+
+                        '    If Not Me.Tabs.ContainsKey(Tab.FromName(categoryAttr.ExtendedCategory.TabName, p)) And Not Tab.FromName(categoryAttr.ExtendedCategory.TabName, p).Equals(Tab.Empty) Then
+                        '        Me.Tabs.Add(Tab.FromName(categoryAttr.ExtendedCategory.TabName, p), New Sections)
+                        '    End If
+
+                        '    If Not Tab.FromName(categoryAttr.ExtendedCategory.TabName, p).Equals(Tab.Empty) Then
+                        '        sections = Me.Tabs(Tab.FromName(categoryAttr.ExtendedCategory.TabName, p))
+                        '    End If
+
+                        '    If Not String.IsNullOrEmpty(categoryAttr.ExtendedCategory.SectionName) Then
+                        '        Dim s As Section = Section.FromName(categoryAttr.ExtendedCategory.SectionName, p)
+
+                        '        If Not sections.ContainsKey(Section.FromName(categoryAttr.ExtendedCategory.SectionName, p)) Then
+                        '            sections.Add(s, New Columns)
+                        '            _Sections.Add(s, sections(s))
+                        '        End If
+
+                        '        columns = sections(s)
+                        '    Else
+                        '        columns = sections.NotInSection
+                        '    End If
+
+
+
+                        '    If Not columns.ContainsKey(categoryAttr.ExtendedCategory.Column) Then
+                        '        columns.Add(categoryAttr.ExtendedCategory.Column, New List(Of PropertyInfo))
+                        '    End If
+
+                        '    columns(categoryAttr.ExtendedCategory.Column).Add(p)
+
+                        '    added = True
+                        'End If
+
+                        'If Not added Then
+                        '    If Not _Tabs.NotInTab.NotInSection.ContainsKey(0) Then
+                        '        _Tabs.NotInTab.NotInSection.Add(0, New List(Of PropertyInfo))
+                        '    End If
+
+                        '    _Tabs.NotInTab.NotInSection(0).Add(p)
 
                         'End If
 
 
+                        ''End If
+
+
                     Next
                 End If
-
-
             End Sub
 
-            Public ReadOnly Property Tabs() As Tabs
-                Get
-                    Return _Tabs
-                End Get
-            End Property
 
-            Public ReadOnly Property Sections() As Sections
-                Get
-                    Return _Sections
-                End Get
-            End Property
+            Private Function ProcessExtendedCategory(exCat As ExtendedCategory) As Element
+                Dim toReturnElt As Element = Me
 
-            Public Function GetTabByName(ByVal name As String) As Tab
+                If Not String.IsNullOrEmpty(exCat.TabName) Then
 
-                For Each t As Tab In Me._Tabs.Keys
-                    If t.Name = name Then
-                        Return t
+                    Dim objTab As Tab = Nothing
+                    If Not Me.Tabs.TryGetValue(exCat.TabName, objTab) Then
+                        objTab = New Tab(exCat.TabName, exCat.Prefix)
+                        toReturnElt.Tabs.Add(exCat.TabName, objTab)
                     End If
-                Next
+                    toReturnElt = objTab
+                End If
+                If Not String.IsNullOrEmpty(exCat.SectionName) Then
+                    Dim objSection As Section = Nothing
+                    If Not toReturnElt.Sections.TryGetValue(exCat.SectionName, objSection) Then
+                        'toReturnColumns = New Columns
+                        'objSections.Add(objSection, toReturnColumns)
+                        objSection = New Section(exCat.SectionName, exCat.Prefix)
+                        toReturnElt.Sections.Add(exCat.SectionName, objSection)
+                    End If
+                    toReturnElt = objSection
 
-                Return Nothing
-
+                End If
+                If Not toReturnElt.Columns.ContainsKey(exCat.Column) Then
+                    toReturnElt.Columns.Add(exCat.Column, New List(Of PropertyInfo))
+                End If
+                Return toReturnElt
             End Function
 
-            Public Function GetSectionByName(ByVal name As String) As Section
-
-                For Each s As Section In Me._Sections.Keys
-                    If s.Name = name Then
-                        Return s
-                    End If
+            Private Sub ParseActionButtons(ByVal objActionButtons As IEnumerable(Of ActionButtonInfo))
+                For Each actionButton As ActionButtonInfo In objActionButtons
+                    Dim target As Element = Me.ProcessExtendedCategory(actionButton.ExtendedCategory)
+                    target.ActionButtons.Add(actionButton)
                 Next
+            End Sub
 
-                Return Nothing
-
-            End Function
 
         End Class
 

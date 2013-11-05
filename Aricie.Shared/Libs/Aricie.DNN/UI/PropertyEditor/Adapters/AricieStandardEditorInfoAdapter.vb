@@ -182,7 +182,8 @@ Namespace UI.WebControls
             editInfo.ControlStyle = New Style
             editInfo.LabelMode = LabelMode.Left
 
-            Dim declaringType As Type = objProperty.DeclaringType
+            Dim declaringType As Type = objProperty.GetAccessors().First.GetBaseDefinition.DeclaringType
+
             editInfo.ResourceKey = String.Format("{0}_{1}", declaringType.Name, objProperty.Name)
             editInfo.ValidationExpression = String.Empty
 

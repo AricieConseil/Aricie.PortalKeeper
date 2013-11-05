@@ -17,6 +17,7 @@ Imports System.Text.RegularExpressions
 Imports System.Web.Caching
 Imports System.Runtime.CompilerServices
 Imports System.ComponentModel
+Imports Microsoft.VisualBasic.CompilerServices
 
 Namespace Services
 
@@ -69,9 +70,9 @@ Namespace Services
         End Function
 
         Public Sub DisposeAll()
-            For Each objSingleton As Object In Me._Singletons.Values
-                If objSingleton IsNot Nothing AndAlso TypeOf objSingleton Is IDisposable Then
-                    DirectCast(objSingleton, IDisposable).Dispose()
+            For Each objSingletonPair As KeyValuePair(Of Type, Object) In New List(Of KeyValuePair(Of Type, Object))(Me._Singletons)
+                If objSingletonPair.Value IsNot Nothing AndAlso TypeOf objSingletonPair.Value Is IDisposable Then
+                    DirectCast(objSingletonPair.Value, IDisposable).Dispose()
                 End If
             Next
             Me._Singletons.Clear()
@@ -158,8 +159,9 @@ Namespace Services
         Public Shared Function GetSimpleTypeName(objType As Type) As String
             If objType IsNot Nothing Then
                 If objType.IsGenericType Then
+                    Dim toReturn As String = objType.Name
+                    toReturn = toReturn.Substring(0, toReturn.IndexOf("`"c)) & "["c
                     Dim genTypes As Type() = objType.GetGenericArguments
-                    Dim toReturn As String = objType.Name & "["
                     For Each genType As Type In genTypes
                         toReturn &= "["c & GetSimpleTypeName(genType) & "],"
                     Next
@@ -171,6 +173,30 @@ Namespace Services
             End If
             Return String.Empty
         End Function
+
+        Public Shared Function GetSimpleTypeFileName(objtype As Type) As String
+            Return GetSimpleTypeName(objtype).Replace("[[", "_"c).Replace("["c, "").Replace("]"c, "").Replace(","c, "_")
+        End Function
+
+
+        Public Shared Function GetCollectionFileName(ByVal objCollection As ICollection) As String
+            Dim toReturn As String = "Collection"
+            If objCollection IsNot Nothing Then
+                Dim collecType As Type = objCollection.GetType()
+                toReturn = ReflectionHelper.GetSimpleTypeFileName(collecType)
+                If Not collecType.IsGenericType Then
+                    If objCollection.Count > 0 Then
+                        Dim collecEnum As IEnumerator = objCollection.GetEnumerator
+                        If collecEnum.MoveNext Then
+                            Dim itemType As Type = collecEnum.Current.GetType
+                            toReturn &= "_" & ReflectionHelper.GetSimpleTypeFileName(itemType)
+                        End If
+                    End If
+                End If
+            End If
+            Return toReturn
+        End Function
+
 
         Public Shared Function GetCollectionElementType(ByVal collection As ICollection) As Type
 

@@ -4,8 +4,19 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.Web
+Imports System.Text
+Imports Aricie.DNN.ComponentModel
 
 Namespace Services.Filtering
+
+    Public Enum TrimType
+        None
+        Trim
+        TrimStart
+        TrimEnd
+    End Enum
+
 
     ''' <summary>
     ''' Enumeration of the possible encodings for the filter
@@ -36,9 +47,7 @@ Namespace Services.Filtering
     <Serializable()> _
     Public Class ExpressionFilterInfo
 
-        'Private _MaxLength As Integer = -1
-        'Private _ForceToLower As Boolean = False
-        'Private _EncodePreProcessing As EncodeProcessing
+        Private _DefaultCharReplacement As String = Nothing
         Private _TransformList As New List(Of StringTransformInfo)
 
         'confort members
@@ -63,22 +72,12 @@ Namespace Services.Filtering
             Me._MaxLength = maxLength
             Me._ForceToLower = forceToLower
             Me._EncodePreProcessing = encodePreProcessing
-
             Me.BuildDefault(buildDefaultTransforms)
         End Sub
 
-
-
 #End Region
 
-        ''' <summary>
-        ''' Maximum length for the output
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks>-1 to disable</remarks>
-        <Required(True), SortOrder(1)> _
-        Public Property MaxLength() As Integer = -1
+
 
         ''' <summary>
         ''' Forces input to lowercase output
@@ -86,8 +85,7 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <SortOrder(2)> _
-        Public Property ForceToLower() As Boolean = false
+        Public Property ForceToLower() As Boolean = False
 
         ''' <summary>
         ''' Encoding preprocessing
@@ -95,7 +93,6 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <SortOrder(0)> _
         Public Property EncodePreProcessing() As EncodeProcessing = EncodeProcessing.None
 
         ''' <summary>
@@ -105,7 +102,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Editor(GetType(ListEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top), SortOrder(3)> _
+        <LabelMode(LabelMode.Top)> _
         <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.Accordion, True)> _
         Public Property TransformList() As List(Of StringTransformInfo)
             Get
@@ -116,6 +113,85 @@ Namespace Services.Filtering
                 Me.ClearMap()
             End Set
         End Property
+
+        ''' <summary>
+        ''' returns default char replacement
+        ''' </summary>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public ReadOnly Property DefaultCharReplacement() As String
+            Get
+                If _DefaultCharReplacement Is Nothing Then
+                    If Me.CharsMap.ContainsKey(" "c) Then
+                        _DefaultCharReplacement = Me.CharsMap(" "c).ToString
+                    ElseIf Not Me.StringMap.TryGetValue(" ", _DefaultCharReplacement) Then
+                        _DefaultCharReplacement = "-"
+                    End If
+                End If
+                Return _DefaultCharReplacement
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Prevent char replacements to output multiple separation chars
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property PreventDoubleDefaults As Boolean = True
+
+
+
+        ''' <summary>
+        ''' Is the output Trimmed the output
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property Trim As TrimType
+
+        ''' <summary>
+        ''' The char to be trimmed
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ConditionalVisible("Trim", True, True, TrimType.None)> _
+        Public Property TrimChar As String = "-"
+         
+
+
+
+        ''' <summary>
+        ''' Encoding postprocessing
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property EncodePostProcessing() As EncodeProcessing = EncodeProcessing.None
+
+
+        ''' <summary>
+        ''' Maximum length for the output
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks>-1 to disable</remarks>
+        <Required(True)> _
+        Public Property MaxLength() As Integer = -1
+
+
+        ''' <summary>
+        ''' Complete sub filters to be executed in order for fine tuning of transformations, just after the parent filter.
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property AdditionalFilters As New List(Of ExpressionFilterInfo)
+
+
+
+
 
         ''' <summary>
         ''' Char-based transformation map
@@ -194,18 +270,151 @@ Namespace Services.Filtering
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, fromString, totoString))
                 Case DefaultTransforms.UrlPart
+                    Me.EncodePreProcessing = EncodeProcessing.HtmlDecode
                     Me.ForceToLower = True
                     Dim fromString As String = "éèêë€ïìîòôõöûüùâàäãçñÿ"
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Dim reservedChars As String = "$&+,/:;=?@'#."
-                    Dim unsafeChars As String = " <>%{}|\^~[]`*"
+                    Dim unsafeChars As String = "  <>%{}|\^~[]`*–!‘’""«»()"
                     Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, fromString, totoString))
-                    Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, reservedChars & unsafeChars, "-"))
+                    Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, unsafeChars & reservedChars, "-"))
             End Select
 
 
 
         End Sub
+
+
+
+       
+            
+
+        ''' <summary>
+        ''' Escapes the string passed as the parameter according to the rules defined in the ExpressionFilterInfo
+        ''' </summary>
+        ''' <param name="originalString"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function Process(ByVal originalString As String) As String
+
+            Dim toReturn As String
+            Dim maxLength As Integer = Me._MaxLength
+            Dim noMaxLentgth As Boolean = (maxLength = -1)
+
+            'encode preprocessing
+            Select Case Me._EncodePreProcessing
+                Case EncodeProcessing.HtmlEncode
+                    toReturn = HttpUtility.HtmlEncode(originalString)
+                Case EncodeProcessing.HtmlDecode
+                    toReturn = HttpUtility.HtmlDecode(originalString)
+                Case EncodeProcessing.UrlEncode
+                    toReturn = HttpUtility.UrlEncode(originalString)
+                Case EncodeProcessing.UrlDecode
+                    toReturn = HttpUtility.UrlDecode(originalString)
+                Case Else
+                    toReturn = originalString
+            End Select
+
+            'forceLower
+            If Me._ForceToLower Then
+                toReturn = toReturn.ToLowerInvariant()
+            End If
+
+            'dealing with regexs
+            For Each objRegexReplace As KeyValuePair(Of Regex, String) In Me.RegexMap
+                If String.IsNullOrEmpty(objRegexReplace.Value) Then
+                    toReturn = objRegexReplace.Key.Replace(toReturn, String.Empty)
+                Else
+                    toReturn = objRegexReplace.Key.Replace(toReturn, objRegexReplace.Value)
+                End If
+
+            Next
+
+            'dealing with string replaces
+            For Each objStringReplace As KeyValuePair(Of String, String) In Me.StringMap
+                If String.IsNullOrEmpty(objStringReplace.Value) Then
+                    toReturn = toReturn.Replace(objStringReplace.Key, String.Empty)
+                Else
+                    toReturn = toReturn.Replace(objStringReplace.Key, objStringReplace.Value)
+                End If
+
+            Next
+
+            'dealing with char replaces
+            If Me.CharsMap.Count > 0 Then
+
+                Dim toReturnBuilder As New StringBuilder()
+
+                Dim sourceChar, replaceChar As Char
+                Dim i As Integer = 0
+                Dim previousChar As Char = Char.MinValue
+                Dim previousCharIsReplace As Boolean = False
+                While i < toReturn.Length AndAlso (noMaxLentgth OrElse toReturnBuilder.Length <= maxLength)
+                    sourceChar = toReturn(i)
+                    If Me._CharsMap.TryGetValue(sourceChar, replaceChar) Then
+                        If replaceChar <> Char.MinValue Then
+                            If replaceChar <> previousChar OrElse replaceChar <> DefaultCharReplacement() OrElse Not PreventDoubleDefaults Then
+                                previousChar = replaceChar
+                                toReturnBuilder.Append(replaceChar)
+                            End If
+                        End If
+                    Else
+                        previousChar = sourceChar
+                        toReturnBuilder.Append(sourceChar)
+                    End If
+
+                    i += 1
+                End While
+
+                toReturn = toReturnBuilder.ToString()
+
+            End If
+
+            If Me.Trim <> TrimType.None Then
+                If Not String.IsNullOrEmpty(TrimChar) Then
+                    Select Case Me.Trim
+                        Case TrimType.Trim
+                            toReturn = toReturn.Trim(TrimChar(0))
+                        Case TrimType.TrimStart
+                            toReturn = toReturn.Trim(TrimChar(0))
+                        Case TrimType.TrimEnd
+                            toReturn = toReturn.Trim(TrimChar(0))
+                    End Select
+                End If
+            End If
+
+            'encode postprocessing
+            Select Case Me._EncodePostProcessing
+                Case EncodeProcessing.HtmlEncode
+                    toReturn = HttpUtility.HtmlEncode(toReturn)
+                Case EncodeProcessing.HtmlDecode
+                    toReturn = HttpUtility.HtmlDecode(toReturn)
+                Case EncodeProcessing.UrlEncode
+                    toReturn = HttpUtility.UrlEncode(toReturn)
+                Case EncodeProcessing.UrlDecode
+                    toReturn = HttpUtility.UrlDecode(toReturn)
+            End Select
+
+            'limited Length
+            If Not noMaxLentgth AndAlso toReturn.Length > maxLength Then
+                toReturn = toReturn.Substring(0, maxLength)
+            End If
+
+            'recursive call to process additional filters sequentially
+            For Each subExpression As ExpressionFilterInfo In Me.AdditionalFilters
+
+                toReturn = subExpression.Process(toReturn)
+
+            Next
+
+            Return toReturn
+
+        End Function
+
+
+
+
+
 
 #End Region
 
@@ -240,8 +449,12 @@ Namespace Services.Filtering
                         Case StringFilterType.StringReplace
                             tempStringMap(transform.SourceValue) = transform.ReplaceValue
                         Case StringFilterType.RegexReplace
-                            Dim objRegex As New Regex(transform.SourceValue)
-                            tempRegexMap(objRegex) = transform.ReplaceValue
+                            Try
+                                Dim objRegex As New Regex(transform.SourceValue, RegexOptions.Compiled)
+                                tempRegexMap(objRegex) = transform.ReplaceValue
+                            Catch ex As Exception
+                                Aricie.Services.ExceptionHelper.LogException(ex)
+                            End Try
                     End Select
                 Next
             End SyncLock

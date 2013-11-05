@@ -341,41 +341,42 @@ Namespace UI.WebControls.EditControls
 
         Protected Function InjectEditors(ByVal keyEditControl As Control, ByVal valueEditControl As Control) As HtmlContainerControl
 
-            Dim toReturn As HtmlContainerControl = Nothing
+            Dim toReturn As New HtmlGenericControl("div")
+            Dim c1 As HtmlContainerControl = Nothing
             Dim c2 As HtmlContainerControl = Nothing
-            Dim c3 As HtmlContainerControl = Nothing
 
             Select Case Me.KeyValueOrientation
 
                 Case Orientation.Horizontal
-                    toReturn = New HtmlTable
-                    Dim table As HtmlTable = CType(toReturn, HtmlTable)
+                    'toReturn = New HtmlTable
+                    'Dim table As HtmlTable = CType(toReturn, HtmlTable)
 
-                    table.CellPadding = 2
-                    c2 = New HtmlTableCell
-                    c3 = New HtmlTableCell
+                    'table.CellPadding = 2
+                    'c2 = New HtmlTableCell
+                    'c3 = New HtmlTableCell
 
-                    Dim row As New HtmlTableRow()
-                    table.Rows.Add(row)
-                    row.Cells.Add(CType(c2, HtmlTableCell))
-                    row.Cells.Add(CType(c3, HtmlTableCell))
-
+                    'Dim row As New HtmlTableRow()
+                    'table.Rows.Add(row)
+                    'row.Cells.Add(CType(c2, HtmlTableCell))
+                    'row.Cells.Add(CType(c3, HtmlTableCell))
+                    c1 = toReturn
+                    c2 = toReturn
                 Case Orientation.Vertical
-                    toReturn = New HtmlGenericControl("div")
+                    'toReturn = New HtmlGenericControl("div")
 
-                    c2 = New HtmlGenericControl("p")
-                    c3 = New HtmlGenericControl("div")
+                    c1 = New HtmlGenericControl("div")
+                    c2 = New HtmlGenericControl("div")
 
+                    toReturn.Controls.Add(c1)
                     toReturn.Controls.Add(c2)
-                    toReturn.Controls.Add(c3)
 
             End Select
 
 
 
 
-            c2.Controls.Add(keyEditControl)
-            c3.Controls.Add(valueEditControl)
+            c1.Controls.Add(keyEditControl)
+            c2.Controls.Add(valueEditControl)
 
             Return toReturn
         End Function

@@ -56,10 +56,20 @@ Namespace ComponentModel
 
     End Class
 
+    Public Interface IEnabled
+
+        Property Enabled() As Boolean
+
+
+    End Interface
+
+
     <Serializable()> _
     <DefaultProperty("FriendlyName")> _
     Public Class NamedConfig
         Inherits NamedEntity
+        Implements IEnabled
+
 
         Private _Enabled As Boolean = True
 
@@ -86,7 +96,7 @@ Namespace ComponentModel
 
 
         <ExtendedCategory("")> _
-        Public Overridable Property Enabled() As Boolean
+        Public Overridable Property Enabled() As Boolean Implements IEnabled.Enabled
             Get
                 Return _Enabled
             End Get
@@ -98,8 +108,6 @@ Namespace ComponentModel
         Public Sub Disable()
             Me._Enabled = False
         End Sub
-
-
 
     End Class
 End Namespace

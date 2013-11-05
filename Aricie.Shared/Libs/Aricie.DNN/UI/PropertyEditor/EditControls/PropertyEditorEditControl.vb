@@ -4,6 +4,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.Globalization
 Imports System.ComponentModel
+Imports Aricie.DNN.Security.Trial
 
 Namespace UI.WebControls.EditControls
 
@@ -24,6 +25,7 @@ Namespace UI.WebControls.EditControls
         Private _width As Unit
         Private _labelWidth As Unit
         Private _editControlWidth As Unit
+        Private _EnableExports As Nullable(Of Boolean)
 
         Public ReadOnly Property InnerEditor() As PropertyEditorControl
             Get
@@ -54,6 +56,8 @@ Namespace UI.WebControls.EditControls
                         _width = DirectCast(attribute, FieldStyleAttribute).Width
                         _labelWidth = DirectCast(attribute, FieldStyleAttribute).LabelWidth
                         _editControlWidth = DirectCast(attribute, FieldStyleAttribute).EditControlWidth
+                    ElseIf TypeOf attribute Is EnableExportsAttribute Then
+                        Me._EnableExports = DirectCast(attribute, EnableExportsAttribute).Enabled
                     End If
                 Next
             End If
@@ -82,6 +86,9 @@ Namespace UI.WebControls.EditControls
                         aEditor.TrialStatus = ParentAricieEditor.TrialStatus
                     Else
                         aEditor.PropertyDepth = 0
+                    End If
+                    If Me._EnableExports.HasValue Then
+                        aEditor.DisableExports = Not Me._EnableExports.Value
                     End If
                 End If
 
@@ -143,6 +150,7 @@ Namespace UI.WebControls.EditControls
                 Me._InnerEditor.SortMode = Me.ParentEditor.SortMode
 
 
+
                 AddHandler Me._InnerEditor.ItemCreated, AddressOf Me.InnerEditor_ItemCreatedEventHandler
 
 
@@ -196,8 +204,14 @@ Namespace UI.WebControls.EditControls
             RenderChildren(writer)
         End Sub
 
-
-
+        Public Overrides Sub EnforceTrialMode(ByVal mode As TrialPropertyMode)
+            MyBase.EnforceTrialMode(mode)
+            For Each subField As AricieFieldEditorControl In Me.InnerEditor.Fields
+                If TypeOf subField.Editor Is Aricie.DNN.UI.WebControls.EditControls.CollectionEditControl Then
+                    DirectCast(subField.Editor, CollectionEditControl).EnforceTrialMode(mode)
+                End If
+            Next
+        End Sub
     End Class
 
 End Namespace

@@ -33,7 +33,7 @@ Aricie.DNN.AriciePropertyEditorScripts.prototype = {
             this.raisePropertyChanged('clientId');
         }
     },
-    
+
     // Hash
     get_hash: function () {
         return this._hash;
@@ -68,6 +68,8 @@ function initialisePropertyEditorsScripts() {
     selectedNode.accordion(
     {
         active: cookieVal,
+        heightStyle: "content",
+        clearStyle: true,
         autoHeight: false,
         collapsible: true
     });
@@ -82,10 +84,6 @@ function initialisePropertyEditorsScripts() {
             jQuery.cookie(cookieAccName, index);
         }
     });
-
-    /*jQuery('> h3.ui-accordion-header .ItemAction input', selectedNode).click(function (event) {
-        event.stopPropagation();
-    });*/
 
 
     jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
@@ -106,11 +104,21 @@ function initialisePropertyEditorsScripts() {
     // tabs
     selector = ".aricie_pe_tabs" + "-" + AriciePropertyEditorScripts.get_clientId();
     cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_hash();
-    jQuery(selector).tabs({ cookie: { name: cookieTabName, expires: 1 }, select: function (event, ui) {
+    var lis = jQuery(selector).find('ul').eq(0).find('li');
+    jQuery(selector).tabs({
+        cookie: { name: cookieTabName, expires: 1 }, select: function (event, ui) {
+        jQuery.cookie(cookieTabName, lis.index(ui.newTab));
         var resultat = performASPNetValidation();
         return resultat;
-    }
+    },
+        activate: function (e, ui) { 
+            jQuery.cookie(cookieTabName, lis.index(ui.newTab));
+            var resultat = performASPNetValidation();
+            return resultat;
+    }, 
+        active: (jQuery.cookie(cookieTabName) || 0)
     });
+
 
 }
 
@@ -129,8 +137,8 @@ function resetUnusedCookies() {
         if (cookieName.toString().indexOf('cookieAccordion') === 0 || cookieName.toString().indexOf('cookieTab') === 0) {
             var hash = cookieName.replace('cookieAccordion', '').replace('cookieTab', '');
 
-            if (jQuery('[hash="' + hash + '"]').length == 0) { //|| (cookieName.toString().indexOf('cookieTab') === 0 && jQuery.cookie(cookieName) == "0")
-                jQuery.cookie(cookieName, "dumb", { expires: -1 });
+            if (jQuery('[hash="' + hash + '"]').length == 0) { 
+                jQuery.removeCookie(cookieName);
             }
         }
     }
@@ -159,3 +167,4 @@ function get_cookies_array() {
 Aricie.DNN.AriciePropertyEditorScripts.registerClass('Aricie.DNN.AriciePropertyEditorScripts', Sys.UI.Control);
 
 if (typeof (Sys) !== 'undefined') Sys.Application.notifyScriptLoaded();
+
