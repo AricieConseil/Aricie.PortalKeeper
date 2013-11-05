@@ -678,8 +678,11 @@ Namespace Services
         ''' <remarks></remarks>
         Public Sub InsertTokenHelp(ByVal parentControl As Control)
 
+            Dim sectionContainer As Control = Nothing
+            FormHelper.AddSection(parentControl, "TokenHelp", False, sectionContainer)
             Dim lit As New LiteralControl(GetTokenHelp)
-            AddSection(parentControl, lit, "TokenHelp")
+            sectionContainer.Controls.Add(lit)
+            'AddSection(parentControl, lit, "TokenHelp")
 
         End Sub
 

@@ -112,7 +112,7 @@ Namespace UI.WebControls.EditControls
 #Region "Protected Methods"
         Protected Sub CmdDownloadFile_Click(ByVal sender As Object, ByVal e As EventArgs)
             Dim link As LinkButton = DirectCast(sender, LinkButton)
-			Dim pg As Page = Web.UI.ControlHelper.FindControlRecursive(Of Page)(Me)
+            Dim pg As Page = Me.Page
             FileHelper.DownloadFile(link.CommandArgument, pg.Response, pg.Server)
         End Sub
 #End Region

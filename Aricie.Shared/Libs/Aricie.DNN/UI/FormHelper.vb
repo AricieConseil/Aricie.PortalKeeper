@@ -11,6 +11,8 @@ Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.UI.Utilities
 Imports System.Globalization
 Imports Aricie.Services
+Imports System.Reflection
+Imports System.Text
 
 Namespace UI
     Public Module FormHelper
@@ -62,7 +64,7 @@ Namespace UI
 
 
         Public Function GetParentModuleBase(ByVal objControl As Control) As PortalModuleBase
-			Return Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(objControl)
+            Return Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(objControl)
         End Function
 
 
@@ -116,12 +118,14 @@ Namespace UI
                    Or objControl.Parent.GetType.IsSubclassOf(parentType) Then
                     Return objControl.Parent
                 Else
-					Return Web.UI.ControlHelper.FindControlRecursive(objControl.Parent, parentType)
+                    Return Web.UI.ControlHelper.FindControlRecursive(objControl.Parent, parentType)
                 End If
             End If
         End Function
 
+        <Obsolete("User the new override")> _
         Public Sub AddSection(ByVal parentControl As Control, ByVal childControl As Control, ByVal resxKey As String)
+
             Dim sh As SectionHeadControl = DirectCast(parentControl.Page.LoadControl("~/controls/sectionheadcontrol.ascx"), SectionHeadControl)
             sh.ResourceKey = resxKey
 
@@ -134,7 +138,59 @@ Namespace UI
             Dim objDiv As Control = AddSubDiv(childControl)
             parentControl.Controls.Add(objDiv)
             sh.Section = objDiv.ID
+
         End Sub
+
+        Public Function AddSection(ByVal parentControl As Control, ByVal resxKey As String, isExpandedOnFirstLoad As Boolean, ByRef sectionContainer As Control) As Control
+            Dim toReturn As Control
+            If NukeHelper.DnnVersion.Major < 7 Then
+                Dim sh As SectionHeadControl = DirectCast(parentControl.Page.LoadControl("~/controls/sectionheadcontrol.ascx"), SectionHeadControl)
+                toReturn = sh
+                sh.ResourceKey = resxKey
+
+                sh.CssClass = "Head"
+
+                If Not parentControl.Page.IsPostBack Then
+                    sh.IsExpanded = isExpandedOnFirstLoad
+                End If
+                parentControl.Controls.Add(sh)
+                sectionContainer = New HtmlGenericControl("div")
+                sectionContainer.ID = "sh" & resxKey.GetHashCode().ToString()
+                parentControl.Controls.Add(sectionContainer)
+                sh.Section = sectionContainer.ID
+            Else
+                RegisterDnnJQueryPlugins(parentControl.Page)
+                Dim scriptId As String = "loadPanels" & parentControl.ClientID
+
+
+                Dim scriptBlock As New StringBuilder()
+                scriptBlock.AppendLine(String.Format("function setupSections{0}() {{jQuery('#{0}').dnnPanels();}}", parentControl.ClientID))
+                scriptBlock.AppendLine(" jQuery(document).ready( function () {")
+                scriptBlock.AppendLine(String.Format("setupSections{0}();}});", parentControl.ClientID))
+                'Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {{setupSections{0}();}});
+
+                ScriptManager.RegisterClientScriptBlock(parentControl.Page, parentControl.Page.GetType(), scriptId, scriptBlock.ToString(), True)
+
+                Dim ctlHeader As New HtmlGenericControl("h2")
+                toReturn = ctlHeader
+                ctlHeader.Attributes.Add("class", "dnnFormSectionHead")
+                'ctlHeader.ID = "sh-" & header
+                Dim ctlA As New HyperLink
+                ctlA.Attributes.Add("href", "")
+                If isExpandedOnFirstLoad Then
+                    ctlA.Attributes.Add("class", "dnnSectionExpanded")
+                Else
+                    ctlA.Attributes.Add("class", "")
+                End If
+                ctlA.Attributes.Add("resourcekey", resxKey)
+                ctlHeader.Controls.Add(ctlA)
+                parentControl.Controls.Add(ctlHeader)
+                sectionContainer = New HtmlGenericControl("fieldset")
+                parentControl.Controls.Add(sectionContainer)
+            End If
+            Return toReturn
+        End Function
+
 
         Public Function AddSubDiv(ByVal childControl As Control) As Control
             Dim objDiv As New HtmlGenericControl("div")
@@ -159,21 +215,7 @@ Namespace UI
             Return False
         End Function
 
-       
-        
-
-
-
-        
-
-
-
-        
-
-
-
-
-
+        <Obsolete("method related to former sections, see FormHelper.AddSection")> _
         Public Sub FindSectionsUpRecursive(ByVal objControl As Control, ByRef sectionHeads As List(Of SectionHeadControl), ByRef sectionImagesList As List(Of Image))
             If Not objControl.Parent Is Nothing Then
                 Dim shToAdd As SectionHeadControl = Nothing
@@ -236,6 +278,47 @@ Namespace UI
 
 
         End Sub
+
+        Public Sub RegisterDnnJQueryPlugins(objPage As Page)
+            FormHelper.RegisterDnnJQueryPluginsMethod.Invoke(Nothing, New Object() {objPage})
+        End Sub
+
+
+
+
+
+#Region "Private members"
+
+        Private _DnnJqueryType As Type
+
+        Private ReadOnly Property DnnJqueryType As Type
+            Get
+                If _DnnJqueryType Is Nothing Then
+                    _DnnJqueryType = ReflectionHelper.CreateType("DotNetNuke.Framework.jQuery, DotNetNuke")
+                End If
+                Return _DnnJqueryType
+            End Get
+        End Property
+
+        Private _RegisterDnnJQueryPluginsMethod As MethodInfo
+
+        Private ReadOnly Property RegisterDnnJQueryPluginsMethod As MethodInfo
+            Get
+                If _RegisterDnnJQueryPluginsMethod Is Nothing Then
+                    _RegisterDnnJQueryPluginsMethod = DnnJqueryType.GetMethod("RegisterDnnJQueryPlugins")
+                End If
+                Return _RegisterDnnJQueryPluginsMethod
+            End Get
+        End Property
+
+
+
+#End Region
+
+
+
+
+      
 
     End Module
 End Namespace

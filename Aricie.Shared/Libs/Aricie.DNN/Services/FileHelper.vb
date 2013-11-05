@@ -6,6 +6,8 @@ Imports DotNetNuke.Services.Log.EventLog
 Imports DotNetNuke.Services.FileSystem
 Imports System.Drawing
 Imports System.Globalization
+Imports Aricie.Services
+Imports System.Reflection
 
 Namespace Services
 
@@ -125,7 +127,7 @@ Namespace Services
         Public Function GetContentType(ByVal extension As String) As String
             Dim contentType As String = String.Empty
 
-            Select extension.TrimStart("."c).ToLower()
+            Select Case extension.TrimStart("."c).ToLower()
                 Case "txt"
                     contentType = "text/plain"
                 Case "htm"
@@ -396,6 +398,35 @@ Namespace Services
 
             Return toReturn
         End Function
+
+
+        'Public Sub DownloadFile(path As String)
+
+        '    If NukeHelper.DnnVersion.Major < 6 Then
+        '        DotNetNuke.Common.Utilities.FileSystemUtils.DownloadFile(path)
+        '    Else
+
+        '    End If
+        'End Sub
+
+
+        'Private _FileManagerDNN6 As Object
+        'Private ReadOnly Property FileManagerDNN6 As Object
+        '    Get
+        '        If _FileManagerDNN6 Is Nothing Then
+        '            Dim fileManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FileManager, DotNetNuke")
+        '            _FileManagerDNN6 = fileManagerType.GetProperty("Instance").GetValue(Nothing, Nothing)
+        '        End If
+        '        Return _FileManagerDNN6
+        '    End Get
+        'End Property
+
+        'Private _FileManagerDNN6WriteFileMethod As MethodInfo
+
+
+
+
+
     End Module
 
 End Namespace

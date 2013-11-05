@@ -1,5 +1,5 @@
 Namespace UI.Attributes
-    <AttributeUsage(AttributeTargets.Property)> _
+    <AttributeUsage(AttributeTargets.Property, AllowMultiple:=True)> _
     Public Class ConditionalVisibleAttribute
         Inherits Attribute
 

@@ -282,7 +282,7 @@ Namespace Services.Flee
             ''' <remarks></remarks>
             Public Sub ResolveVariableType(ByVal sender As Object, ByVal e As ResolveVariableTypeEventArgs)
                 Dim obj As Object = Nothing
-                If _Context.Items.TryGetValue(e.VariableName, obj) Then
+                If _Context IsNot Nothing AndAlso _Context.Items.TryGetValue(e.VariableName, obj) Then
                     If obj IsNot Nothing Then
                         e.VariableType = obj.GetType
                     Else
@@ -302,7 +302,7 @@ Namespace Services.Flee
             ''' <remarks></remarks>
             Public Sub ResolveVariableValue(ByVal sender As Object, ByVal e As ResolveVariableValueEventArgs)
                 Dim obj As Object = Nothing
-                If _Context.Items.TryGetValue(e.VariableName, obj) Then
+                If _Context IsNot Nothing AndAlso _Context.Items.TryGetValue(e.VariableName, obj) Then
                     If obj IsNot Nothing Then
                         e.VariableValue = obj
                     Else
