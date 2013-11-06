@@ -70,7 +70,11 @@ Namespace ComponentModel
             Else
                 toReturn = member.DeclaringType.Name
             End If
-            Return toReturn.Replace("`"c, "")
+            'Dim genericsSuffixIndex As Integer = toReturn.LastIndexOf("`"c)
+            'If genericsSuffixIndex > 0 Then
+            '    toReturn = toReturn.Substring(0, genericsSuffixIndex)
+            'End If
+            Return toReturn
         End Function
 
 

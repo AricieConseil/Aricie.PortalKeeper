@@ -92,7 +92,7 @@ Namespace UI.WebControls.EditControls
                     End If
                 End If
 
-                Me._InnerEditor.ID = "pe" ' Me.Value.GetType.Name.Replace("`"c, "")
+                Me._InnerEditor.ID = "pe"
                 If Me.ParentAricieField IsNot Nothing _
                         AndAlso TypeOf (Me.ParentAricieField.Editor) Is CollectionEditControl _
                         AndAlso CType(Me.ParentAricieField.Editor, CollectionEditControl).DisplayStyle = CollectionDisplayStyle.Accordion Then
