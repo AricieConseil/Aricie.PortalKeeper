@@ -87,7 +87,7 @@ Namespace UI.WebControls
         Public ReadOnly Property FriendlyName() As String
             Get
                 If _FriendlyName = "" Then
-                    _FriendlyName = Me.DataSource.GetType.Name.Replace("`"c, "")
+                    _FriendlyName = Me.DataSource.GetType.Name
                 End If
                 Return _FriendlyName
             End Get
