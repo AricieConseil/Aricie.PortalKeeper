@@ -210,7 +210,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected Sub cmdUninstall_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdUninstall.Click
             Try
                 Dim uninstallProcedure As IUpdateProvider
-                Dim errorsUpdater As IUpdateProvider = KeeperConfig.GetUpdateProvider
+                Dim errorsUpdater As IUpdateProvider = KeeperConfig.FirewallConfig.CustomErrorsConfig.GetUpdateProvider
                 If ConfigHelper.IsInstalled(errorsUpdater, True) Then
                     uninstallProcedure = New MultiUpdateProvider(errorsUpdater, New PortalKeeperConfigUpdate)
                 Else
@@ -386,8 +386,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Private Sub ManageVisibility()
             If Me.UserInfo.IsSuperUser Then
                 Me.divHostConfig.Visible = True
-                Dim customErrorsUpdater As IUpdateProvider = Me.KeeperConfig.GetUpdateProvider
-                'Me.cmdInstallCustomErrors.Visible = Not ConfigHelper.IsInstalled(customErrorsUpdater, False)
                 Me.divPortalSettings.Visible = Me.KeeperConfig.FirewallConfig.EnablePortalLevelSettings
             Else
                 Me.divHostConfig.Visible = False

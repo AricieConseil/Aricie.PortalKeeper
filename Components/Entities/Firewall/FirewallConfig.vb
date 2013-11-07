@@ -64,12 +64,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
-
-        <ActionButton("~/images/fwd.gif")> _
-        Public Sub SetCustomErrors(pmb As AriciePortalModuleBase)
-            Dim customErrorsUpdater As IUpdateProvider = PortalKeeperConfig.Instance.GetUpdateProvider
-            Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
-            Skin.AddModuleMessage(pmb, Localization.GetString("CustomErrorsSaved.Message", pmb.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-        End Sub
+        '<ExtendedCategory("CustomErrorPage")> _
+        '<ActionButton("~/images/fwd.gif")> _
+        'Public Sub SetCustomErrors(pmb As AriciePortalModuleBase)
+        '    Dim customErrorsUpdater As IUpdateProvider = PortalKeeperConfig.Instance.GetUpdateProvider
+        '    Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
+        '    Skin.AddModuleMessage(pmb, Localization.GetString("CustomErrorsSaved.Message", pmb.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+        'End Sub
     End Class
 End Namespace

@@ -7,6 +7,7 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
 
@@ -63,7 +64,7 @@ Namespace Services.Flee
 
         <Category("")> _
         Public Property ShowAvailableTypes() As Boolean
-           
+
 
         ''' <summary>
         ''' Gets or sets expression types
@@ -97,6 +98,17 @@ Namespace Services.Flee
             toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(Boolean))))
             Return toReturn
         End Function
+
+        <ConditionalVisible("ShowAvailableTypes", False, True)> _
+        <ActionButton("~/images/action_refresh.gif")> _
+        Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)
+            Me.ClearAvailableProviders()
+            If pe IsNot Nothing Then
+                pe.ItemChanged = True
+                Me.ShowAvailableTypes = False
+            End If
+        End Sub
+
 
     End Class
 End Namespace

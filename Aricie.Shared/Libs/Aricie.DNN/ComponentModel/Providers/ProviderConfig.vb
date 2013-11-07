@@ -85,6 +85,8 @@ Namespace ComponentModel
             Return Nothing
         End Function
 
+
+        'todo: move to reflection helper
         Public Shared Function GetDisplayName(ByVal objType As Type) As String
             Dim attributes As Object()
             attributes = objType.GetCustomAttributes(GetType(DisplayNameAttribute), False)

@@ -165,7 +165,7 @@ Namespace UI.WebControls
         End Function
 
         Public Function UpdateVisibility(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateVisibility
-            Return False
+            Return e.Changed
         End Function
     End Class
 

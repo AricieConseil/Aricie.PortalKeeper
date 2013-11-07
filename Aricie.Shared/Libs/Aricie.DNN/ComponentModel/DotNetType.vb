@@ -3,11 +3,19 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.Xml.Serialization
+Imports Aricie.DNN.UI.WebControls
 
 Namespace ComponentModel
 
+    Public Enum TypeSelector
+        CommonTypes
+        NewType
+    End Enum
+
     <Serializable()> _
     Public Class DotNetType
+        Implements ISelector(Of DotNetType)
 
         Private _TypeName As String = ""
 
@@ -17,6 +25,14 @@ Namespace ComponentModel
 
         End Sub
 
+        Private Shared _CommonTypes As New HashSet(Of String)
+
+
+        Private Sub AddCommonType(strType As String)
+            SyncLock _CommonTypes
+                    _CommonTypes.Add(strType)
+            End SyncLock
+        End Sub
 
 
         Public Sub New(ByVal typeName As String)
@@ -27,8 +43,8 @@ Namespace ComponentModel
             Me.New(ReflectionHelper.GetSafeTypeName(objType))
         End Sub
 
+
         <Browsable(False)> _
-        <ExtendedCategory("")> _
         Public Overridable ReadOnly Property Name() As String
             Get
                 Dim objType As Type = Me.GetDotNetType
@@ -37,28 +53,110 @@ Namespace ComponentModel
         End Property
 
 
-        <ExtendedCategory("")> _
-            <Required(True)> _
-            <Width(350)> _
-            <LineCount(2)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <AutoPostBack()> _
+
+        Public Property TypeSelector As TypeSelector
+
+
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
+        <Selector("Name", "TypeName", False, False, "", "", False, False)> _
+        <AutoPostBack> _
+        <XmlIgnore()> _
+        Public Property CommonType() As String
+            Get
+                Return _TypeName
+            End Get
+            Set(value As String)
+                If Me._TypeName <> value Then
+                    Me._TypeName = value
+                End If
+            End Set
+        End Property
+
+
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
+        <IsReadOnly(True)> _
         Public Property TypeName() As String
             Get
                 Return _TypeName
             End Get
             Set(ByVal value As String)
                 _TypeName = value
+                If Not String.IsNullOrEmpty(value) Then
+                    AddCommonType(value)
+                End If
             End Set
         End Property
 
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
+        <Required(True)> _
+        <Width(400)> _
+        <LineCount(2)> _
+        <AutoPostBack()> _
+        <XmlIgnore> _
+        Public Property EditableTypeName As String
+         
+
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
+        <ActionButton("~/images/action_import.gif")> _
+        Public Sub ValidateNewType(ByVal pe As AriciePropertyEditorControl)
+            Try
+                Dim objType As Type = Me.GetDotNetType(EditableTypeName, True)
+                If objType IsNot Nothing Then
+                    Me.TypeName = ReflectionHelper.GetSafeTypeName(objType)
+                    Me.TypeSelector = ComponentModel.TypeSelector.CommonTypes
+                    Me.EditableTypeName = ""
+                End If
+            Catch ex As Exception
+                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
+                Throw newEx
+            End Try
+        End Sub
+
         Public Function GetDotNetType() As Type
-            If Not String.IsNullOrEmpty(Me._TypeName) Then
-                Return ReflectionHelper.CreateType(Me._TypeName, False)
+            Return Me.GetDotNetType(Me._TypeName, False)
+        End Function
+
+        Public Function GetDotNetType(typeName As String, throwException As Boolean) As Type
+            If Not String.IsNullOrEmpty(typeName) Then
+                Return ReflectionHelper.CreateType(typeName, throwException)
             End If
             Return Nothing
         End Function
 
+        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
+            Dim toReturn As List(Of DotNetType) = DirectCast(GetSelectorG(propertyName), List(Of DotNetType))
+            Return toReturn
+        End Function
+
+        Public Function GetSelectorG(propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
+            Dim toReturn As New List(Of DotNetType)
+            Dim tmpTypes As New HashSet(Of Type)
+            If _CommonTypes.Count = 0 Then
+                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Object)))
+                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
+                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
+            End If
+            For Each strType As String In _CommonTypes
+                Dim tmpType As Type = ReflectionHelper.CreateType(strType, False)
+                If tmpType IsNot Nothing AndAlso Not tmpTypes.Contains(tmpType) Then
+                    tmpTypes.Add(tmpType)
+                    toReturn.Add(New DotNetType(tmpType))
+                End If
+            Next
+            Return toReturn
+        End Function
+
+        'Public Overrides Function Equals(ByVal obj As Object) As Boolean
+        '    If TypeOf (obj) Is DotNetType Then
+        '        Return Me.TypeName.Equals(DirectCast(obj, DotNetType).TypeName)
+        '    End If
+        '    Return False
+        'End Function
+
+        'Public Overrides Function GetHashCode() As Integer
+        '    Return Me.TypeName.GetHashCode()
+        'End Function
     End Class
 
     'Public Class DotNetType(Of TVariable As {IProviderSettings})
@@ -84,7 +182,7 @@ Namespace ComponentModel
         Public Overrides ReadOnly Property Name() As String
             Get
                 If Me._GenericVariableType IsNot Nothing Then
-                    Return GenericVariableType.Name & "[" & MyBase.Name & "]"
+                    Return ProviderConfig.GetDisplayName(GenericVariableType) & " of [" & MyBase.Name & "]"
                     'Return ReflectionHelper.GetSafeTypeName(Me.GetTypedProvider.GetNewProviderSettings.GetType)
                 End If
                 Return MyBase.Name

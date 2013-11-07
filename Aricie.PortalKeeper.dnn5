@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="Aricie.PortalKeeper" type="Module" version="3.0.0">
+    <package name="Aricie.PortalKeeper" type="Module" version="3.1.0">
       <friendlyName>Aricie - PortalKeeper</friendlyName>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
       <owner>

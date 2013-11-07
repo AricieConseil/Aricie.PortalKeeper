@@ -67,12 +67,13 @@ Namespace UI.WebControls.EditControls
             'Dim ids As String() = ParentField.UniqueID.Split("$"c)
 
             Me._selector = Me._SelectorInfo.BuildSelector(Me.ParentField)
+            Me.Controls.Add(_selector)
             _selector.DataBind()
 
 
 
             If Me.EditMode = PropertyEditorMode.Edit Then
-                Me.Controls.Add(_selector)
+
 
 
                 If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
@@ -95,6 +96,7 @@ Namespace UI.WebControls.EditControls
                 AddHandler _selector.SelectedIndexChanged, AddressOf Me.SelectorSelectedIndexChanged
                 _selector.Enabled = True
             Else
+                _selector.Visible = False
                 Dim label As New Label
 
                 If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
@@ -109,7 +111,7 @@ Namespace UI.WebControls.EditControls
 
                 label.CssClass = "SubHead"
                 label.EnableViewState = False
-                AddHandler label.Unload, AddressOf _selector.OnSelectorUnload
+                'AddHandler label.Unload, AddressOf _selector.OnSelectorUnload
                 Me.Controls.Add(label)
 
             End If
