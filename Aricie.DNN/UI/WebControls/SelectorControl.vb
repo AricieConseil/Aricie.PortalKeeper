@@ -379,23 +379,31 @@ Namespace UI.WebControls
 
 
         Public Overrides Sub DataBind()
-            Me.InitSelector()
-            Me.Items.Clear()
+            Try
+                Me.InitSelector()
+                Me.Items.Clear()
 
-            Dim objDataSource As IList = Me.AvailableItems
-            Me.DataSource = objDataSource
+                Dim objDataSource As IList = Me.AvailableItems
+                Me.DataSource = objDataSource
 
-            If Me.ExclusiveSelector Then
-                Me.SelectorsInScope.Add( Me)
-                Me.BoundItems = objDataSource
-            End If
-            MyBase.DataBind()
-            If Me.LocalizeItems Then
-                Me.DoLocalizeItems()
-            End If
-            ManageInsertNull()
+                If Me.ExclusiveSelector Then
+                    Me.SelectorsInScope.Add(Me)
+                    Me.BoundItems = objDataSource
+                End If
+                MyBase.DataBind()
+                If Me.LocalizeItems Then
+                    Me.DoLocalizeItems()
+                End If
+                ManageInsertNull()
+            Catch ex As Exception
+                If Me.Parent IsNot Nothing Then
+                    DotNetNuke.Services.Exceptions.ProcessModuleLoadException(Me.Parent, ex)
+                Else
+                    Throw
+                End If
+            End Try
+            
         End Sub
-
 
 
 #End Region

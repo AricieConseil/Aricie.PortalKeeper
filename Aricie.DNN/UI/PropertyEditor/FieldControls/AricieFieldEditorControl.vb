@@ -270,7 +270,6 @@ Public Class AricieFieldEditorControl
     End Function
 
 
-
     Public Overrides Sub Validate()
         Me._IsValid = Me.Editor.IsValid
         If Me._IsValid Then

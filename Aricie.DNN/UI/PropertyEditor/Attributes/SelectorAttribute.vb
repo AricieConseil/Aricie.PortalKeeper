@@ -57,6 +57,7 @@ Namespace UI.Attributes
         Public Sub New(ByVal selectorTypeName As String, ByVal dataTextField As String, ByVal dataValueField As String, _
                        ByVal exclusive As Boolean, ByVal addNullItem As Boolean, ByVal nullItemName As String, ByVal nullItemValue As String, ByVal localizeItems As Boolean, ByVal localizeNull As Boolean)
             Me.New(selectorTypeName, dataTextField, dataValueField, exclusive, addNullItem)
+            Me._SelectorInfo.NullItemText = nullItemName
             Me._SelectorInfo.NullItemValue = nullItemValue
             Me._SelectorInfo.LocalizeItems = localizeItems
             Me._SelectorInfo.LocalizeNull = localizeNull

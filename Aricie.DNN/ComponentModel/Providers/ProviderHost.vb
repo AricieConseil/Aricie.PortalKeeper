@@ -57,6 +57,11 @@ Namespace ComponentModel
             End Get
         End Property
 
+        Protected Sub ClearAvailableProviders()
+            Me._AvailableProviders = Nothing
+        End Sub
+
+
 
 
         Public Function GetSelector(ByVal propertyName As String) As System.Collections.IList Implements ISelector.GetSelector

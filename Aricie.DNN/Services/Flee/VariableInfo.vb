@@ -101,6 +101,7 @@ Namespace Services.Flee
     ''' Generics variable information
     ''' </summary>
     ''' <remarks></remarks>
+    <DisplayName("Instance")> _
     <Serializable()> _
     Public Class VariableInfo(Of TResult)
         Inherits VariableInfo

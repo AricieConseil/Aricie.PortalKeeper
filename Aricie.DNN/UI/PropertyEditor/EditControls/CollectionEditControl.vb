@@ -331,6 +331,39 @@ Namespace UI.WebControls.EditControls
 
                 If Not Me._NoAddition OrElse Me._EnableExport Then
 
+                    If (Not Me._NoAddition) AndAlso (Me._MaxItemNb = 0 OrElse Me.CollectionValue.Count <= Me._MaxItemNb) Then
+
+                        Dim pnAdd As New Panel
+
+                        pnAdd.CssClass = "AddPanel"
+                        pnAdd.EnableViewState = False
+                        Controls.Add(pnAdd)
+
+                        If TypeOf Me.ParentField.DataSource Is IProviderContainer AndAlso Me._SelectorInfo IsNot Nothing Then
+                            Me.addSelector = Me._SelectorInfo.BuildSelector(Me.ParentField)
+                            pnAdd.Controls.Add(Me.addSelector)
+                            Me.addSelector.DataBind()
+                        End If
+
+                        cmdAddButton = New CommandButton()
+                        cmdAddButton.ID = "cmdAdd"
+                        pnAdd.Controls.Add(cmdAddButton)
+                        cmdAddButton.DisplayLink = True
+                        cmdAddButton.DisplayIcon = True
+                        cmdAddButton.ImageUrl = "~/images/add.gif"
+                        cmdAddButton.Text = Localization.GetString(Me.Name + "_AddNew", Me.LocalResourceFile)
+                        cmdAddButton.Visible = Not HideAddButton
+
+
+                        AddHandler cmdAddButton.Click, AddressOf AddClick
+
+                        If Me._AddNewEntry Then
+                            Me.ctlAddContainer = pnAdd
+                            Me.CreateAddRow(pnAdd)
+                        End If
+                    End If
+
+
                     If Me._EnableExport AndAlso (Me.ParentAricieEditor Is Nothing OrElse Not Me.ParentAricieEditor.DisableExports) Then
 
                         Dim pnExport As New Panel()
@@ -377,37 +410,7 @@ Namespace UI.WebControls.EditControls
                         RegisterControlForPostbackManagement(cmdImportButton)
                     End If
 
-                    If (Not Me._NoAddition) AndAlso (Me._MaxItemNb = 0 OrElse Me.CollectionValue.Count <= Me._MaxItemNb) Then
-
-                        Dim pnAdd As New Panel
-
-                        pnAdd.CssClass = "AddPanel"
-                        pnAdd.EnableViewState = False
-                        Controls.Add(pnAdd)
-
-                        If TypeOf Me.ParentField.DataSource Is IProviderContainer AndAlso Me._SelectorInfo IsNot Nothing Then
-                            Me.addSelector = Me._SelectorInfo.BuildSelector(Me.ParentField)
-                            pnAdd.Controls.Add(Me.addSelector)
-                            Me.addSelector.DataBind()
-                        End If
-
-                        cmdAddButton = New CommandButton()
-                        cmdAddButton.ID = "cmdAdd"
-                        pnAdd.Controls.Add(cmdAddButton)
-                        cmdAddButton.DisplayLink = True
-                        cmdAddButton.DisplayIcon = True
-                        cmdAddButton.ImageUrl = "~/images/add.gif"
-                        cmdAddButton.Text = Localization.GetString(Me.Name + "_AddNew", Me.LocalResourceFile)
-                        cmdAddButton.Visible = Not HideAddButton
-
-
-                        AddHandler cmdAddButton.Click, AddressOf AddClick
-
-                        If Me._AddNewEntry Then
-                            Me.ctlAddContainer = pnAdd
-                            Me.CreateAddRow(pnAdd)
-                        End If
-                    End If
+                  
 
 
                 End If

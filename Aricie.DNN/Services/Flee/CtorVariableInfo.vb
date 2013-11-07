@@ -11,6 +11,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
+    <DisplayName("Constructor")> _
     <Serializable()> _
     Public Class CtorVariableInfo(Of TResult)
         Inherits InstanceVariableInfo(Of TResult)

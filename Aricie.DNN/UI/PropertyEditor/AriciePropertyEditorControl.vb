@@ -59,6 +59,7 @@ Namespace UI.WebControls
         Private _PostBackFields As New List(Of String)
 
         Private _ParentModule As AriciePortalModuleBase
+        Private _ParentField As AricieFieldEditorControl
 
         Private _OnDemandSections As List(Of String)
 
@@ -151,7 +152,46 @@ Namespace UI.WebControls
             End Get
         End Property
 
+        Public ReadOnly Property ParentEditor() As PropertyEditorControl
+            Get
+                If Me._ParentEditor Is Nothing Then
+                    Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of PropertyEditorControl)(Me)
+                    If Not parentControl Is Nothing Then
+                        Me._ParentEditor = parentControl
+                    End If
+                End If
+                Return Me._ParentEditor
+            End Get
+        End Property
 
+        Public ReadOnly Property ParentAricieEditor() As AriciePropertyEditorControl
+            Get
+                If TypeOf Me.ParentEditor Is AriciePropertyEditorControl Then
+                    Return DirectCast(ParentEditor, AriciePropertyEditorControl)
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+        Public ReadOnly Property ParentAricieField As AricieFieldEditorControl
+            Get
+                If _ParentField Is Nothing Then
+                    _ParentField = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AricieFieldEditorControl)(Me)
+                End If
+                Return _ParentField
+            End Get
+        End Property
+
+        Private _ParentEditControl As EditControl
+
+        Public ReadOnly Property ParentEditControl As EditControl
+            Get
+                If _ParentEditControl Is Nothing Then
+                    _ParentEditControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of EditControl)(Me)
+                End If
+                Return _ParentEditControl
+            End Get
+        End Property
 
 
         Public ReadOnly Property OnDemandSections() As List(Of String)
@@ -202,26 +242,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        Public ReadOnly Property ParentEditor() As PropertyEditorControl
-            Get
-                If Me._ParentEditor Is Nothing Then
-                    Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of PropertyEditorControl)(Me)
-                    If Not parentControl Is Nothing Then
-                        Me._ParentEditor = parentControl
-                    End If
-                End If
-                Return Me._ParentEditor
-            End Get
-        End Property
 
-        Public ReadOnly Property ParentAricieEditor() As AriciePropertyEditorControl
-            Get
-                If TypeOf Me.ParentEditor Is AriciePropertyEditorControl Then
-                    Return DirectCast(ParentEditor, AriciePropertyEditorControl)
-                End If
-                Return Nothing
-            End Get
-        End Property
 
         Public Property ItemChanged() As Boolean
             Get
@@ -276,12 +297,12 @@ Namespace UI.WebControls
             MyBase.OnInit(e)
         End Sub
 
-        Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
-            MyBase.OnLoad(e)
-            If Me.ParentModule IsNot Nothing Then
-                Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) += 1
-            End If
-        End Sub
+        'Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
+        '    MyBase.OnLoad(e)
+        '    If Me.ParentModule IsNot Nothing Then
+        '        Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) += 1
+        '    End If
+        'End Sub
 
 
         Public Sub RaisePostBackEvent(ByVal eventArgument As String) Implements System.Web.UI.IPostBackEventHandler.RaisePostBackEvent
@@ -290,7 +311,7 @@ Namespace UI.WebControls
                 If args.Length = 2 AndAlso args(0) = "expand" Then
                     Dim sectionName As String = args(1)
 
-                    Dim s As Section
+                    Dim s As Section = Nothing
                     If Not Me.FieldsDictionary.Sections.TryGetValue(sectionName, s) Then
                         If _CurrentTab IsNot Nothing Then
                             _CurrentTab.Sections.TryGetValue(sectionName, s)
@@ -335,7 +356,7 @@ Namespace UI.WebControls
 
                 End If
             Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
+                ProcessException(ex)
             End Try
         End Sub
 
@@ -346,6 +367,7 @@ Namespace UI.WebControls
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             Try
+
                 If ItemChanged Or Me.IsDirty Then
                     'quelle utilité ?
                     'Jesse: nécessaire pour prendre en compte les modifications postérieures aux event handlers
@@ -475,7 +497,7 @@ Namespace UI.WebControls
 
         Protected Overrides ReadOnly Property UnderlyingDataSource() As System.Collections.IEnumerable
             Get
-                Dim toReturn As PropertyInfo()
+                Dim toReturn As PropertyInfo() = Nothing
                 If Me.DataSource IsNot Nothing Then
                     toReturn = CacheHelper.GetGlobal(Of PropertyInfo())(Me.DataSource.GetType.Name, Me.SortMode.ToString())
                     If toReturn Is Nothing Then
@@ -518,44 +540,50 @@ Namespace UI.WebControls
             Dim toReturn As Boolean = MyBase.GetRowVisibility(obj)
             If toReturn Then
                 Dim info As PropertyInfo = DirectCast(obj, PropertyInfo)
-                'todo: Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
-                'If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
+                'Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
+                'Jesse: reapplying the original full test
+                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
+                    'If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
                     Return False
                 Else
-                    Dim flag2 As Boolean = True
-                    Dim customAttributes As Object() = info.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
-                    If (customAttributes.Length > 0) Then
-                        For Each condAttribute As ConditionalVisibleAttribute In customAttributes
-                            Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
-                            Dim objPropInfo As PropertyInfo = Nothing
-                            If props.TryGetValue(condAttribute.MasterPropertyName, objPropInfo) Then
-                                customAttributes = objPropInfo.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
-                                If (customAttributes.Length > 0) AndAlso Not Me.GetRowVisibility(objPropInfo) Then
-                                    toReturn = False
-                                Else
-                                    Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
-                                    toReturn = toReturn AndAlso condAttribute.MatchValue(value)
-                                    If toReturn AndAlso condAttribute.SecondaryPropertyName <> "" Then
-                                        If props.TryGetValue(condAttribute.SecondaryPropertyName, objPropInfo) Then
-                                            value = objPropInfo.GetValue(Me.DataSource, Nothing)
-                                            toReturn = toReturn AndAlso condAttribute.MatchSecondary(value)
-                                        End If
-                                    End If
-                                End If
-                                If condAttribute.EnforceAutoPostBack Then
-                                    _PostBackFields.Add(condAttribute.MasterPropertyName)
-                                    If condAttribute.SecondaryPropertyName <> "" Then
-                                        _PostBackFields.Add(condAttribute.SecondaryPropertyName)
-                                    End If
-                                End If
-                            End If
-                        Next
-                    End If
+                    Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(info)
+                    toReturn = ComputeVisibility(condVisibles)
+                    'Dim customAttributes As Object() = info.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
+                    'If (customAttributes.Length > 0) Then
+                    '    For Each condAttribute As ConditionalVisibleAttribute In customAttributes
+                    '        Dim condVisibility As ConditionalVisibleInfo = condAttribute.Value
+                    '        Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
+                    '        Dim objPropInfo As PropertyInfo = Nothing
+                    '        If props.TryGetValue(condVisibility.MasterPropertyName, objPropInfo) Then
+                    '            customAttributes = objPropInfo.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
+                    '            If (customAttributes.Length > 0) AndAlso Not Me.GetRowVisibility(objPropInfo) Then
+                    '                toReturn = False
+                    '            Else
+                    '                Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
+                    '                toReturn = toReturn AndAlso condVisibility.MatchValue(value)
+                    '                If toReturn AndAlso condVisibility.SecondaryPropertyName <> "" Then
+                    '                    If props.TryGetValue(condVisibility.SecondaryPropertyName, objPropInfo) Then
+                    '                        value = objPropInfo.GetValue(Me.DataSource, Nothing)
+                    '                        toReturn = toReturn AndAlso condVisibility.MatchSecondary(value)
+                    '                    End If
+                    '                End If
+                    '            End If
+                    '            If condVisibility.EnforceAutoPostBack Then
+                    '                _PostBackFields.Add(condVisibility.MasterPropertyName)
+                    '                If condVisibility.SecondaryPropertyName <> "" Then
+                    '                    _PostBackFields.Add(condVisibility.SecondaryPropertyName)
+                    '                End If
+                    '            End If
+                    '        End If
+                    '    Next
+                    'End If
                 End If
             End If
             Return toReturn
         End Function
+
+
+
 
 
         Protected Overrides Sub CreateEditor()
@@ -604,20 +632,13 @@ Namespace UI.WebControls
                 toReturn = CacheHelper.GetGlobal(Of List(Of ActionButtonInfo))(Me.DataSource.GetType.FullName)
                 If toReturn Is Nothing Then
                     toReturn = New List(Of ActionButtonInfo)
-
-                    Dim members As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(Me.DataSource.GetType())
-
-                    For Each member As KeyValuePair(Of String, MemberInfo) In members
-                        If TypeOf member.Value Is MethodInfo Then
-                            Dim method As MethodInfo = DirectCast(member.Value, MethodInfo)
-                            If method IsNot Nothing Then
-                                Dim attrs As Attribute() = DirectCast(method.GetCustomAttributes(GetType(ActionButtonAttribute), True), Attribute())
-                                If attrs.Length > 0 Then
-                                    Dim toAdd As New ActionButtonInfo
-                                    toAdd.Method = method
-                                    Dim attr As ActionButtonAttribute = DirectCast(attrs(0), ActionButtonAttribute)
-                                    toAdd.IconPath = attr.IconPath
-                                    toAdd.ExtendedCategory = ExtendedCategory.FromMember(method)
+                    Dim membersDico As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(Me.DataSource.GetType())
+                    For Each memberPair As KeyValuePair(Of String, MemberInfo) In membersDico
+                        If TypeOf memberPair.Value Is MethodInfo Then
+                            Dim objMethod As MethodInfo = DirectCast(memberPair.Value, MethodInfo)
+                            If objMethod IsNot Nothing Then
+                                Dim toAdd As ActionButtonInfo = ActionButtonInfo.FromMethod(objMethod)
+                                If toAdd IsNot Nothing Then
                                     toReturn.Add(toAdd)
                                 End If
                             End If
@@ -841,15 +862,17 @@ Namespace UI.WebControls
             Dim nbControls As Integer
             Dim buttonContainer As Panel = Nothing
             For Each objActionButton As ActionButtonInfo In element.ActionButtons
-                If buttonContainer Is Nothing Then
-                    buttonContainer = New Panel()
-                    buttonContainer.EnableViewState = False
-                    buttonContainer.ID = "divCmdButtons" & element.Name
-                    buttonContainer.CssClass = "CommandsButtons DNNAligncenter"
-                    element.Container.Controls.Add(buttonContainer)
+                If Me.ComputeVisibility(objActionButton.ConditionalVisibles) Then
+                    If buttonContainer Is Nothing Then
+                        buttonContainer = New Panel()
+                        buttonContainer.EnableViewState = False
+                        buttonContainer.ID = "divCmdButtons" & element.Name
+                        buttonContainer.CssClass = "CommandsButtons DNNAligncenter"
+                        element.Container.Controls.Add(buttonContainer)
+                    End If
+                    Me.AddActionButton(objActionButton, buttonContainer)
+                    nbControls += 1
                 End If
-                Me.AddActionButton(objActionButton, buttonContainer)
-                nbControls += 1
             Next
             Return nbControls
         End Function
@@ -866,24 +889,26 @@ Namespace UI.WebControls
             container.Controls.Add(btn)
 
             Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
-            Dim paramInstance As Object = Nothing
-            If params.Length = 1 Then
-                Dim objParam As ParameterInfo = params(0)
+            Dim paramInstances As New List(Of Object)
+            For Each objParam As ParameterInfo In params
                 If objParam.ParameterType Is GetType(AriciePortalModuleBase) Then
-                    paramInstance = Me.ParentModule
+                    paramInstances.Add(Me.ParentModule)
                 ElseIf objParam.ParameterType Is GetType(AriciePropertyEditorControl) Then
-                    paramInstance = Me
+                    paramInstances.Add(Me)
+                ElseIf objParam.ParameterType Is GetType(AricieFieldEditorControl) Then
+                    paramInstances.Add(Me.ParentAricieField)
+                Else
+                    paramInstances.Add(Nothing)
                 End If
-            End If
+            Next
 
             AddHandler btn.Click, Sub(s As Object, e As EventArgs)
-                                      If paramInstance Is Nothing Then
-                                          objButtonInfo.Method.Invoke(Me.DataSource, Nothing)
-                                      Else
-                                          objButtonInfo.Method.Invoke(Me.DataSource, New Object() {paramInstance})
-                                      End If
+                                      Try
+                                          objButtonInfo.Method.Invoke(Me.DataSource, paramInstances.ToArray)
+                                      Catch ex As Exception
+                                          Me.ProcessException(ex)
+                                      End Try
                                   End Sub
-
         End Sub
 
         Protected Sub AddEditorCtl(ByRef container As Control, ByVal obj As Object, ByVal keepHidden As Boolean)
@@ -1104,6 +1129,40 @@ Namespace UI.WebControls
 
         End Function
 
+
+        Private Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo)) As Boolean
+            Dim toReturn As Boolean = True
+            Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
+            Dim objPropInfo As PropertyInfo = Nothing
+            For Each condVisibility As ConditionalVisibleInfo In conditionalVisibles
+                If props.TryGetValue(condVisibility.MasterPropertyName, objPropInfo) Then
+                    Dim subVis As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(objPropInfo)
+                    If subVis.Count > 0 AndAlso Not Me.GetRowVisibility(objPropInfo) Then
+                        toReturn = False
+                    Else
+                        Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
+                        toReturn = toReturn AndAlso condVisibility.MatchValue(value)
+                        If toReturn AndAlso condVisibility.SecondaryPropertyName <> "" Then
+                            If props.TryGetValue(condVisibility.SecondaryPropertyName, objPropInfo) Then
+                                value = objPropInfo.GetValue(Me.DataSource, Nothing)
+                                toReturn = toReturn AndAlso condVisibility.MatchSecondary(value)
+                            End If
+                        End If
+                    End If
+                    If condVisibility.EnforceAutoPostBack Then
+                        If Not _PostBackFields.Contains(condVisibility.MasterPropertyName) Then
+                            _PostBackFields.Add(condVisibility.MasterPropertyName)
+                        End If
+                        If condVisibility.SecondaryPropertyName <> "" Then
+                            If Not _PostBackFields.Contains(condVisibility.SecondaryPropertyName) Then
+                                _PostBackFields.Add(condVisibility.SecondaryPropertyName)
+                            End If
+                        End If
+                    End If
+                End If
+            Next
+            Return toReturn
+        End Function
 
 #End Region
 

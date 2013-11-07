@@ -73,6 +73,8 @@ Namespace UI.WebControls.EditControls
             End Set
         End Property
 
+        Public Property NullItemText As String = "---"
+
         Public Property NullItemValue() As String
             Get
                 Return _NullItemValue
@@ -131,7 +133,7 @@ Namespace UI.WebControls.EditControls
             toReturn.ExclusiveScopeControl = parentField.NamingContainer
             If Me._InsertNullItem Then
                 toReturn.InsertNullItem = True
-                toReturn.NullItemText = "---"
+                toReturn.NullItemText = Me.NullItemText
                 toReturn.NullItemValue = Me._NullItemValue
             Else
                 toReturn.InsertNullItem = False
