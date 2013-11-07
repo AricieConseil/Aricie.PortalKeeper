@@ -95,14 +95,6 @@
     <Reference Include="Jayrock, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Jayrock.Json, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
     <Reference Include="Jayrock.Sandbox, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="OpenRasta, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\OpenRasta\OpenRasta.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenRasta.Hosting.AspNet, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\OpenRasta\OpenRasta.Hosting.AspNet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -361,6 +353,14 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\..\openrasta\src\openrasta-aspnet\src\OpenRasta.Hosting.AspNet\OpenRasta.Hosting.AspNet.csproj">
+      <Project>{fe290bb8-9cb4-454e-89be-e047674bb34f}</Project>
+      <Name>OpenRasta.Hosting.AspNet</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\..\openrasta\src\openrasta-core\src\OpenRasta\OpenRasta.csproj">
+      <Project>{c3ed9cce-a140-4d0f-ae00-fbbf4cd27647}</Project>
+      <Name>OpenRasta</Name>
+    </ProjectReference>
     <ProjectReference Include="Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
