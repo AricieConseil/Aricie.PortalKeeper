@@ -105,7 +105,7 @@ Namespace UI.WebControls
 
 
         Public Function UpdateVisibility(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateVisibility
-            Return False
+            Return e.Changed
         End Function
 
         Public Function GetCloneEditor(ByVal previousEditor As EditorInfo, ByVal objProperty As PropertyInfo) As EditorInfo

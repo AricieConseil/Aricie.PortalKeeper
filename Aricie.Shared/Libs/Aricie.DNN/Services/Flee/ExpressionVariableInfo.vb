@@ -11,6 +11,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
+    <DisplayName("Dynamic expression")> _
     <Serializable()> _
     Public Class ExpressionVariableInfo(Of TResult)
         Inherits InstanceVariableInfo(Of TResult)
@@ -37,7 +38,7 @@ Namespace Services.Flee
         <ExtendedCategory("Definition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
-        Public Property FleeExpression() As new FleeExpressionInfo(Of TResult)
+        Public Property FleeExpression() As New FleeExpressionInfo(Of TResult)
 
         ''' <summary>
         ''' Retrieve the simple expression that will be evaluated
@@ -72,7 +73,7 @@ Namespace Services.Flee
         <ExtendedCategory("Evaluation")> _
         <SortOrder(104)> _
         Public Property AsCompiledExpression() As Boolean
-        
+
         ''' <summary>
         ''' Evaluates the variable value
         ''' </summary>

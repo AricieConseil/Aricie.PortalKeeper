@@ -73,14 +73,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
-        Public Function GetUpdateProvider() As IUpdateProvider
-            If Me.FirewallConfig.CustomErrorsConfig.UseAshx Then
-                Me.FirewallConfig.CustomErrorsConfig.VirtualHandlerPath = NukeHelper.GetModuleDirectoryPath(PortalKeeperConfig.Instance.GetModuleName) & "Error.ashx"
-                Return New VirtualCustomErrorUpdater(Me.FirewallConfig.CustomErrorsConfig)
-            Else
-                Return New CustomErrorDynamicHandlerUpdater(GetType(KeeperErrorsHandler), Me.FirewallConfig.CustomErrorsConfig)
-            End If
-        End Function
+        'Public Function GetUpdateProvider() As IUpdateProvider
+        '    If Me.FirewallConfig.CustomErrorsConfig.UseAshx Then
+        '        Me.FirewallConfig.CustomErrorsConfig.VirtualHandlerPath = NukeHelper.GetModuleDirectoryPath(PortalKeeperConfig.Instance.GetModuleName) & "Error.ashx"
+        '        Return New VirtualCustomErrorUpdater(Me.FirewallConfig.CustomErrorsConfig)
+        '    Else
+        '        Return New CustomErrorDynamicHandlerUpdater(GetType(KeeperErrorsHandler), Me.FirewallConfig.CustomErrorsConfig)
+        '    End If
+        'End Function
 
       
 

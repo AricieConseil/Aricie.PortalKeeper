@@ -133,15 +133,11 @@ Namespace Services.Errors
         ''' </summary>
         ''' <param name="pmb"></param>
         ''' <remarks></remarks>
-        <ActionButton()> _
+        <ActionButton("~/images/fwd.gif")> _
         Public Sub Apply(pmb As AriciePortalModuleBase)
-            Try
-                Dim customErrorsUpdater As IUpdateProvider = Me.GetUpdateProvider
-                Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
-                Skin.AddModuleMessage(pmb, Localization.GetString("CustomErrorsSaved.Message", pmb.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-            Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(pmb, ex)
-            End Try
+            Dim customErrorsUpdater As IUpdateProvider = Me.GetUpdateProvider
+            Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
+            Skin.AddModuleMessage(pmb, Localization.GetString("CustomErrorsSaved.Message", pmb.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
         ''' <summary>

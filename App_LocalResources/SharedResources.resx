@@ -654,7 +654,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="DenialOfServiceSettings_DoSAction.Text" xml:space="preserve">
     <value>Ban Action</value>
   </data>
-  <data name="PortalKeeperConfig_LocationSettings.Header" xml:space="preserve">
+  <data name="ModuleConfig`2_LocationSettings.Header" xml:space="preserve">
     <value>Config Location</value>
   </data>
   <data name="LocationSettings_UserFile.Help" xml:space="preserve">
@@ -1354,7 +1354,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Custom</value>
   </data>
   <data name="DotNetType_TypeName.Help" xml:space="preserve">
-    <value>Enter here a .Net type with full syntax. Depending on the underlying engine, you may omit the version part, and the assembly</value>
+    <value>Here is a simplified assembly name for the .Net type. When possible, the version part is ommited.</value>
   </data>
   <data name="DotNetType_TypeName.Text" xml:space="preserve">
     <value>.Net Type</value>
@@ -1587,8 +1587,8 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="UrlEncode.Text" xml:space="preserve">
     <value>Url Encode</value>
   </data>
-  <data name="DotNetType_TypeName.Required" xml:space="preserve">
-    <value>Type Name Required</value>
+  <data name="DotNetType_EditableTypeName.Required" xml:space="preserve">
+    <value>Enter a valid .Net type assembly name</value>
   </data>
   <data name="ExpressionFilterInfo_MaxLength.Required" xml:space="preserve">
     <value>Max Length required</value>
@@ -4745,5 +4745,38 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="Send503.Text" xml:space="preserve">
     <value>Http Status 503 - Service Unavailable</value>
+  </data>
+  <data name="CommonTypes.Text" xml:space="preserve">
+    <value>Select Common Type</value>
+  </data>
+  <data name="DotNetType_CommonType.Help" xml:space="preserve">
+    <value>Here is a list of common types used in other places and available for selection</value>
+  </data>
+  <data name="DotNetType_CommonType.Text" xml:space="preserve">
+    <value>Common Types</value>
+  </data>
+  <data name="DotNetType_EditableTypeName.Help" xml:space="preserve">
+    <value>Enter here a .Net type with full syntax. Depending on the underlying engine, you may omit the version part, and the assembly</value>
+  </data>
+  <data name="DotNetType_EditableTypeName.Text" xml:space="preserve">
+    <value>.Net Type</value>
+  </data>
+  <data name="DotNetType_TypeSelector.Help" xml:space="preserve">
+    <value>You can either choose amongst a list of types already used, or enter a new type</value>
+  </data>
+  <data name="DotNetType_TypeSelector.Text" xml:space="preserve">
+    <value>Type Selection</value>
+  </data>
+  <data name="DotNetType_ValidateNewType.Text" xml:space="preserve">
+    <value>Validate new type</value>
+  </data>
+  <data name="NewType.Text" xml:space="preserve">
+    <value>Enter New Type</value>
+  </data>
+  <data name="VirtualCustomErrorsInfo_Apply.Text" xml:space="preserve">
+    <value>Update web.config file with custom errors</value>
+  </data>
+  <data name="Variables_ApplyUpdates.Text" xml:space="preserve">
+    <value>Apply updates and close type list</value>
   </data>
 </root>

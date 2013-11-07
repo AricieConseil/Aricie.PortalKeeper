@@ -122,6 +122,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim engine As FileHelperEngine = Nothing
             Select Case Me.FileHelpersMode
                 Case FileHelpersMode.Delimiter
+                    'todo, cf plus haut: gérer le cas dynamique
                     Dim delimiterEngine As New DelimitedFileEngine(objRecordType)
                     delimiterEngine.Options.Delimiter = Me.Delimiter
                     If Me.IncludeHeaders Then
