@@ -499,7 +499,8 @@ Namespace UI.WebControls
             Get
                 Dim toReturn As PropertyInfo() = Nothing
                 If Me.DataSource IsNot Nothing Then
-                    toReturn = CacheHelper.GetGlobal(Of PropertyInfo())(Me.DataSource.GetType.Name, Me.SortMode.ToString())
+                    Dim key As String = Me.DataSource.GetType.AssemblyQualifiedName
+                    toReturn = CacheHelper.GetGlobal(Of PropertyInfo())(key, Me.SortMode.ToString())
                     If toReturn Is Nothing Then
                         toReturn = Me.GetProperties()
                         Array.FindAll(Of PropertyInfo)(toReturn, Function(objProp As PropertyInfo) As Boolean
@@ -507,7 +508,7 @@ Namespace UI.WebControls
                                                                  End Function)
                         Array.Sort(toReturn, New AriciePropertySortOrderComparer(toReturn))
                     End If
-                    CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, Me.DataSource.GetType().Name, Me.SortMode.ToString())
+                    CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, key, Me.SortMode.ToString())
                 End If
                 Return toReturn
             End Get
