@@ -174,7 +174,7 @@ Namespace UI
                 Dim ctlHeader As New HtmlGenericControl("h2")
                 toReturn = ctlHeader
                 ctlHeader.Attributes.Add("class", "dnnFormSectionHead")
-                'ctlHeader.ID = "sh-" & header
+                ctlHeader.ID = "sh-" & resxKey.GetHashCode().ToString()
                 Dim ctlA As New HyperLink
                 ctlA.Attributes.Add("href", "")
                 If isExpandedOnFirstLoad Then
