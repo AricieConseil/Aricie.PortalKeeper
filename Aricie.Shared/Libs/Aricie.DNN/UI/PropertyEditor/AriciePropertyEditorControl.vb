@@ -343,6 +343,7 @@ Namespace UI.WebControls
                         End If
                         _CurrentTab = t
                         cookie = New HttpCookie(cookieName)
+                        cookie.HttpOnly = False
                         cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
                         HttpContext.Current.Response.Cookies.Add(cookie)
 
