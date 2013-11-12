@@ -5,6 +5,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
+Imports System.Runtime.Remoting.Messaging
 
 Namespace ComponentModel
 
@@ -25,18 +26,28 @@ Namespace ComponentModel
 
         End Sub
 
-        Private Shared _CommonTypes As New HashSet(Of String)
+        Private Shared _CommonTypes As New Dictionary(Of String, Type)
 
 
-        Private Sub AddCommonType(strType As String)
-            SyncLock _CommonTypes
-                    _CommonTypes.Add(strType)
-            End SyncLock
-        End Sub
+        Private Function AddCommonType(strType As String) As String
+            Dim tmpType As Type = Nothing
+            If Not _CommonTypes.TryGetValue(strType, tmpType) Then
+                If Not String.IsNullOrEmpty(strType) Then
+                    tmpType = ReflectionHelper.CreateType(strType, False)
+                    If tmpType IsNot Nothing Then
+                        strType = ReflectionHelper.GetSafeTypeName(tmpType)
+                    End If
+                End If
+                SyncLock _CommonTypes
+                    _CommonTypes(strType) = tmpType
+                End SyncLock
+            End If
+            Return strType
+        End Function
 
 
         Public Sub New(ByVal typeName As String)
-            Me._TypeName = typeName
+            Me.TypeName = typeName
         End Sub
 
         Public Sub New(ByVal objType As Type)
@@ -52,9 +63,21 @@ Namespace ComponentModel
             End Get
         End Property
 
+        Private _TypeSelector As TypeSelector
 
-
+        <XmlIgnore()> _
         Public Property TypeSelector As TypeSelector
+            Get
+                Dim targetType As Type = Nothing
+                If Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing Then
+                    Return TypeSelector.NewType
+                End If
+                Return _TypeSelector
+            End Get
+            Set(value As TypeSelector)
+                _TypeSelector = value
+            End Set
+        End Property
 
 
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
@@ -68,7 +91,7 @@ Namespace ComponentModel
             End Get
             Set(value As String)
                 If Me._TypeName <> value Then
-                    Me._TypeName = value
+                    Me.TypeName = value
                 End If
             End Set
         End Property
@@ -81,9 +104,9 @@ Namespace ComponentModel
                 Return _TypeName
             End Get
             Set(ByVal value As String)
-                _TypeName = value
-                If Not String.IsNullOrEmpty(value) Then
-                    AddCommonType(value)
+                If _TypeName <> value Then
+                    Me._TypeName = AddCommonType(value)
+                    Me._EditableTypeName = Me._TypeName
                 End If
             End Set
         End Property
@@ -95,7 +118,7 @@ Namespace ComponentModel
         <AutoPostBack()> _
         <XmlIgnore> _
         Public Property EditableTypeName As String
-         
+
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
         <ActionButton("~/images/action_import.gif")> _
@@ -113,13 +136,18 @@ Namespace ComponentModel
             End Try
         End Sub
 
+        Private _Type As Type
+
         Public Function GetDotNetType() As Type
-            Return Me.GetDotNetType(Me._TypeName, False)
+            If _Type Is Nothing Then
+                _Type = Me.GetDotNetType(Me._TypeName, False)
+            End If
+            Return _Type
         End Function
 
-        Public Function GetDotNetType(typeName As String, throwException As Boolean) As Type
-            If Not String.IsNullOrEmpty(typeName) Then
-                Return ReflectionHelper.CreateType(typeName, throwException)
+        Public Function GetDotNetType(strTypeName As String, throwException As Boolean) As Type
+            If Not String.IsNullOrEmpty(strTypeName) Then
+                Return ReflectionHelper.CreateType(strTypeName, throwException)
             End If
             Return Nothing
         End Function
@@ -130,21 +158,12 @@ Namespace ComponentModel
         End Function
 
         Public Function GetSelectorG(propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
-            Dim toReturn As New List(Of DotNetType)
-            Dim tmpTypes As New HashSet(Of Type)
             If _CommonTypes.Count = 0 Then
                 AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Object)))
                 AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
                 AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
             End If
-            For Each strType As String In _CommonTypes
-                Dim tmpType As Type = ReflectionHelper.CreateType(strType, False)
-                If tmpType IsNot Nothing AndAlso Not tmpTypes.Contains(tmpType) Then
-                    tmpTypes.Add(tmpType)
-                    toReturn.Add(New DotNetType(tmpType))
-                End If
-            Next
-            Return toReturn
+            Return (From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)).OrderBy(Function(objDotNetType) objDotNetType.TypeName).ToList()
         End Function
 
         'Public Overrides Function Equals(ByVal obj As Object) As Boolean
