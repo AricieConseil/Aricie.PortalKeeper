@@ -13,6 +13,8 @@ Imports System.Globalization
 Imports Aricie.Services
 Imports System.Reflection
 Imports System.Text
+Imports System.Text.RegularExpressions
+Imports System.Web
 
 Namespace UI
     Public Module FormHelper
@@ -159,22 +161,15 @@ Namespace UI
                 parentControl.Controls.Add(sectionContainer)
                 sh.Section = sectionContainer.ID
             Else
-                RegisterDnnJQueryPlugins(parentControl.Page)
-                Dim scriptId As String = "loadPanels" & parentControl.ClientID
-
-
-                Dim scriptBlock As New StringBuilder()
-                scriptBlock.AppendLine(String.Format("function setupSections{0}() {{jQuery('#{0}').dnnPanels();}}", parentControl.ClientID))
-                scriptBlock.AppendLine(" jQuery(document).ready( function () {")
-                scriptBlock.AppendLine(String.Format("setupSections{0}();}});", parentControl.ClientID))
-                'Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {{setupSections{0}();}});
-
-                ScriptManager.RegisterClientScriptBlock(parentControl.Page, parentControl.Page.GetType(), scriptId, scriptBlock.ToString(), True)
+              
 
                 Dim ctlHeader As New HtmlGenericControl("h2")
                 toReturn = ctlHeader
                 ctlHeader.Attributes.Add("class", "dnnFormSectionHead")
-                ctlHeader.ID = "sh-" & resxKey.GetHashCode().ToString()
+                'ctlHeader.ID = "sh" & resxKey.GetHashCode().ToString().Trim("-"c)
+                Dim ctlheaderId As String = "sh" & (parentControl.ClientID & resxKey).GetHashCode().ToString().Trim("-"c)
+                ctlHeader.Attributes.Add("id", ctlheaderId)
+
                 Dim ctlA As New HyperLink
                 ctlA.Attributes.Add("href", "")
                 If isExpandedOnFirstLoad Then
@@ -185,11 +180,48 @@ Namespace UI
                 ctlA.Attributes.Add("resourcekey", resxKey)
                 ctlHeader.Controls.Add(ctlA)
                 parentControl.Controls.Add(ctlHeader)
+
+                Dim cookieId As String = ctlheaderId
+                ' _SectionHeaderCookieRegex.Replace(ctlHeader.ClientID, "")
+                Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieId)
+
+                If cookie Is Nothing Then
+                    Dim newCookie = New HttpCookie(cookieId)
+                    newCookie.Value = isExpandedOnFirstLoad.ToString(CultureInfo.InvariantCulture).ToLower()
+                    newCookie.Expires = Now.AddMinutes(2)
+                    newCookie.HttpOnly = False
+                    parentControl.Page.Response.Cookies.Add(newCookie)
+                End If
+
+              
+                ''registerCookejs = String.Format("dnn.dom.setCookie({0}, {1}, 0, '/', '', false, 1200000);", cookieId, cookie.Value)
+
+
+
+                RegisterDnnJQueryPlugins(parentControl.Page)
+                Dim scriptId As String = "loadPanels" & parentControl.ClientID
+
+                Dim scriptLoaded As Object = HttpContext.Current.Items("scriptLoaded" & scriptId)
+                If scriptLoaded Is Nothing Then
+                    Dim scriptBlock As New StringBuilder()
+                    scriptBlock.AppendLine(String.Format("function setupSections{0}() {{jQuery('#{0}').dnnPanels();}}", parentControl.ClientID)) ', registerCookejs))
+                    scriptBlock.AppendLine(" jQuery(document).ready( function () {")
+                    scriptBlock.AppendLine(String.Format("setupSections{0}();}});", parentControl.ClientID))
+                    'Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function () {{setupSections{0}();}});
+
+                    ScriptManager.RegisterClientScriptBlock(parentControl.Page, parentControl.Page.GetType(), scriptId, scriptBlock.ToString(), True)
+                    HttpContext.Current.Items("scriptLoaded" & scriptId) = True
+                End If
+
+
+
                 sectionContainer = New HtmlGenericControl("fieldset")
                 parentControl.Controls.Add(sectionContainer)
             End If
             Return toReturn
         End Function
+
+        Private _SectionHeaderCookieRegex As New Regex("[^a-zA-Z0-9\-]+", RegexOptions.Compiled)
 
 
         Public Function AddSubDiv(ByVal childControl As Control) As Control
@@ -318,7 +350,7 @@ Namespace UI
 
 
 
-      
+
 
     End Module
 End Namespace
