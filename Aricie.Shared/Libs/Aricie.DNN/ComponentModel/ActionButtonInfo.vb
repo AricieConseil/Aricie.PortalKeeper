@@ -13,6 +13,7 @@ Namespace ComponentModel
         Public Property Method As MethodInfo
         Public Property ExtendedCategory As ExtendedCategory
         Public Property IconPath As String = ""
+        Public Property AlertKey As String = ""
         Public Property ConditionalVisibles As List(Of ConditionalVisibleInfo)
 
         Public Shared Function FromMethod(objMethod As MethodInfo) As ActionButtonInfo
@@ -24,6 +25,7 @@ Namespace ComponentModel
                 toReturn.Method = objMethod
                 Dim attr As ActionButtonAttribute = DirectCast(attrs(0), ActionButtonAttribute)
                 toReturn.IconPath = attr.IconPath
+                toReturn.AlertKey = attr.AlertKey
                 toReturn.ExtendedCategory = ExtendedCategory.FromMember(objMethod)
                 toReturn.ConditionalVisibles = ConditionalVisibleInfo.FromMember(objMethod)
             End If
