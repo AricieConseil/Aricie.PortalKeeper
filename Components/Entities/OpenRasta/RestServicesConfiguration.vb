@@ -1,4 +1,5 @@
-﻿Imports OpenRasta.Pipeline.Contributors
+﻿Imports DotNetNuke.Services.Exceptions
+Imports OpenRasta.Pipeline.Contributors
 Imports OpenRasta.DI
 Imports OpenRasta.Configuration.Fluent
 Imports OpenRasta.Diagnostics
@@ -12,7 +13,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Sub Configure() Implements OpenRasta.Configuration.IConfigurationSource.Configure
             Try
-                Dim restSettings As RestServicesSettings = PortalKeeperConfig.Instance.FirewallConfig.RestServices
+                Dim restSettings As RestServicesSettings = PortalKeeperConfig.Instance.RestServices
                 If restSettings.Enabled Then
                     Using (OpenRastaConfiguration.Manual)
                         If restSettings.EnableDigestAuthentication Then
@@ -29,7 +30,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 For Each alternateUri As String In objService.AlternateUris
                                     serviceDef.And.AtUri(alternateUri)
                                 Next
-                                Dim handlerDef As IHandlerForResourceWithUriDefinition = serviceDef.HandledBy(objService.HandlerType.GetDotNetType)
+                                Dim handlerType As Type
+                                If objService.RestHandlerType = RestHandlerType.CustomHandler Then
+                                    handlerType = objService.HandlerType.GetDotNetType
+                                Else
+                                    handlerType = GetType(DynamicRestHandler)
+                                End If
+
+                                Dim handlerDef As IHandlerForResourceWithUriDefinition = serviceDef.HandledBy(handlerType)
+
                                 If objService.AsJsonDataContract Then
                                     handlerDef.AsJsonDataContract()
                                 End If
@@ -45,7 +54,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
 
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.LogException(ex)
+                Aricie.Services.ExceptionHelper.LogException(ex)
             End Try
         End Sub
 

@@ -16,39 +16,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return PortalKeeperContext(Of RequestEvent).MODULE_NAME
         End Function
 
+        Private _RestServices As New RestServicesSettings
 
-        Private _FirewallConfig As New FirewallConfig
-
-        Private _SchedulerFarm As New BotFarmInfo(Of ScheduleEvent)
+        <ExtendedCategory("RestServices")> _
+        Public Property RestServices() As RestServicesSettings
+            Get
+                If Me.FirewallConfig.RestServices IsNot Nothing Then
+                    _RestServices = Me.FirewallConfig.RestServices
+                    Me.FirewallConfig.RestServices = Nothing
+                End If
+                Return _RestServices
+            End Get
+            Set(value As RestServicesSettings)
+                _RestServices = value
+            End Set
+        End Property
 
         <ExtendedCategory("Firewall")> _
-        <MainCategory()> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ConditionalVisible("ShowFirewall", False, True, True)> _
-        Public Property FirewallConfig() As FirewallConfig
-            Get
-                Return _FirewallConfig
-            End Get
-            Set(ByVal value As FirewallConfig)
-                _FirewallConfig = value
-            End Set
-        End Property
-
+        Public Property FirewallConfig() As New FirewallConfig
 
         <ExtendedCategory("Scheduler")> _
-        <MainCategory()> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ConditionalVisible("ShowSchedulerFarm", False, True, True)> _
-        Public Property SchedulerFarm() As BotFarmInfo(Of ScheduleEvent)
-            Get
-                Return _SchedulerFarm
-            End Get
-            Set(ByVal value As BotFarmInfo(Of ScheduleEvent))
-                _SchedulerFarm = value
-            End Set
-        End Property
+        Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
+
+
+          
 
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
             Dim toReturn As New List(Of RuleEngineSettings(Of TEngineEvents))

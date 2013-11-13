@@ -1449,10 +1449,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="FleeImportInfo_CustomNamespace.Text" xml:space="preserve">
     <value>Custom Namespace</value>
   </data>
-  <data name="InstanceVariableInfo`1_EvaluationMode.Help" xml:space="preserve">
+  <data name="VariableInfo_EvaluationMode.Help" xml:space="preserve">
     <value>There are 2 modes of evaluation, Constant, which means the variable is only computed on the first evaluation and then Dynamic, which means the variable is computed on each evaluation and may depend on the context. Flee engine can deal with chaining comiled sub-expression to keep performances optimal. </value>
   </data>
-  <data name="InstanceVariableInfo`1_EvaluationMode.Text" xml:space="preserve">
+  <data name="VariableInfo_EvaluationMode.Text" xml:space="preserve">
     <value>Evaluation Mode</value>
   </data>
   <data name="Variables_ExpressionTypes.Help" xml:space="preserve">
@@ -1524,10 +1524,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="CtorVariableInfo`1_Parameters.Text" xml:space="preserve">
     <value>Constructor Parameters</value>
   </data>
-  <data name="InstanceVariableInfo`1_Scope.Help" xml:space="preserve">
+  <data name="VariableInfo_Scope.Help" xml:space="preserve">
     <value>Define here if you want the variable to be available for the parent expression only, the following sub expressions as well, or to be available globally in the "Items" dictionary.</value>
   </data>
-  <data name="InstanceVariableInfo`1_Scope.Text" xml:space="preserve">
+  <data name="VariableInfo_Scope.Text" xml:space="preserve">
     <value>Variable Scope</value>
   </data>
   <data name="Global.Text" xml:space="preserve">
@@ -2430,10 +2430,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="VariableInfo`1_Instance.Text" xml:space="preserve">
     <value>Value</value>
   </data>
-  <data name="InstanceVariableInfo`1_InstanceMode.Help" xml:space="preserve">
+  <data name="VariableInfo`1_InstanceMode.Help" xml:space="preserve">
     <value>Instance mode lets your save and edit a version of the expression result obtained by evaluating the expression once. You can either choose to immediately evaluate the current variable with a default context, or to leave to evaluate in context, refresh the form to display the saved entity and save the form together with the new entity.</value>
   </data>
-  <data name="InstanceVariableInfo`1_InstanceMode.Text" xml:space="preserve">
+  <data name="VariableInfo`1_InstanceMode.Text" xml:space="preserve">
     <value>Instance Mode</value>
   </data>
   <data name="BuyBTC.Text" xml:space="preserve">
@@ -2478,7 +2478,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ExchangeInfo_Urls.Header" xml:space="preserve">
     <value>Urls</value>
   </data>
-  <data name="InstanceVariableInfo`1_Evaluation.Header" xml:space="preserve">
+  <data name="VariableInfo`1_Evaluation.Header" xml:space="preserve">
     <value>Evaluation</value>
   </data>
   <data name="GetBalance.Text" xml:space="preserve">
@@ -4242,10 +4242,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="UserBotSettings`1_ResourceFile.Text" xml:space="preserve">
     <value>Resource File</value>
   </data>
-  <data name="FirewallConfig_RestServices.Header" xml:space="preserve">
-    <value>REST Web Services</value>
-  </data>
-  <data name="FirewallConfig_RestServices.Text" xml:space="preserve">
+  <data name="PortalKeeperConfig_RestServices.Text" xml:space="preserve">
     <value>Here, you can define a series of custom REST web services to be hosted through the OpenRasta engine.</value>
   </data>
   <data name="Delete.Text" xml:space="preserve">
@@ -4296,7 +4293,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="AlternateUris_AddNew.Text" xml:space="preserve">
     <value>Add Alternate Uri</value>
   </data>
-  <data name="FirewallConfig_RestServices.Help" xml:space="preserve">
+  <data name="PortalKeeperConfig_RestServices.Help" xml:space="preserve">
     <value>Note that you need to restart the website for any change to be applied</value>
   </data>
   <data name="RestServicesSettings_Enabled.Help" xml:space="preserve">
@@ -4333,7 +4330,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>At Uri</value>
   </data>
   <data name="RestService_HandlerType.Text" xml:space="preserve">
-    <value>Handler Type</value>
+    <value>Custom Handler Type</value>
   </data>
   <data name="RestService_ResourceType.Text" xml:space="preserve">
     <value>Resource Type</value>
@@ -4778,5 +4775,83 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="Variables_ApplyUpdates.Text" xml:space="preserve">
     <value>Apply updates and close type list</value>
+  </data>
+  <data name="CustomHandler.Text" xml:space="preserve">
+    <value>Custom Handler</value>
+  </data>
+  <data name="DynamicHandler.Text" xml:space="preserve">
+    <value>Dynamic Handler</value>
+  </data>
+  <data name="DynamicMethods_AddNew.Text" xml:space="preserve">
+    <value>Add new Dynamic method</value>
+  </data>
+  <data name="DynamicMethods_Export.Text" xml:space="preserve">
+    <value>Export Dynamic Methods</value>
+  </data>
+  <data name="DynamicMethods_Import.Text" xml:space="preserve">
+    <value>Import Dynamic Methods</value>
+  </data>
+  <data name="PortalKeeperConfig_RestServices.Header" xml:space="preserve">
+    <value>Web services</value>
+  </data>
+  <data name="RestService_DynamicMethods.Help" xml:space="preserve">
+    <value>Here you can define individual methods for your web service. Each method is associated to one or several http verbs, and runs a dedicated rule engine with dedicated actions to deal with operation results.</value>
+  </data>
+  <data name="RestService_DynamicMethods.Text" xml:space="preserve">
+    <value>Dynamic Methods</value>
+  </data>
+  <data name="RestService_HandlerType.Help" xml:space="preserve">
+    <value>This is the .Net type for your OpenRasta handler. See &lt;a href="https://github.com/openrasta/openrasta/wiki/Implementing-a-Handler"&gt;the documentation&lt;/a&gt; for instructions on how to develop a custom handler.</value>
+  </data>
+  <data name="RestService_RestHandlerType.Help" xml:space="preserve">
+    <value>You can choose amongst 2 types of OpenRasta handlers. If you have a custom handler available, just enter the corresponding .Net type. Otherwise, you can use a dynamic handler, and define each method individually with a dedicated rule engine.</value>
+  </data>
+  <data name="RestService_RestHandlerType.Text" xml:space="preserve">
+    <value>Rest Handler Type</value>
+  </data>
+  <data name="KeeperProviderConfig`2_RequestEvents.Header" xml:space="preserve">
+    <value>Request events scope</value>
+  </data>
+  <data name="ProviderSettings_ProviderName.Help" xml:space="preserve">
+    <value>This is the name of the action provider used here and configured by the following settings</value>
+  </data>
+  <data name="ProviderSettings_ProviderName.Text" xml:space="preserve">
+    <value>Provider Name</value>
+  </data>
+  <data name="ModuleConfig`2_BackupToRestore.Help" xml:space="preserve">
+    <value>Here is a list of existing backup files to restore. Select one and click the command button to restore.</value>
+  </data>
+  <data name="ModuleConfig`2_BackupToRestore.Text" xml:space="preserve">
+    <value>Backup file to restore</value>
+  </data>
+  <data name="PortalKeeperConfig_Cancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="PortalKeeperConfig_Reset.Text" xml:space="preserve">
+    <value>Reset Config to default</value>
+  </data>
+  <data name="PortalKeeperConfig_RestoreBackup.Text" xml:space="preserve">
+    <value>Restore selected backup</value>
+  </data>
+  <data name="PortalKeeperConfig_Save.Text" xml:space="preserve">
+    <value>Save Configuration</value>
+  </data>
+  <data name="Reset.Warning" xml:space="preserve">
+    <value>You are about to restore the default configuration. All customizations will be lost.</value>
+  </data>
+  <data name="BackupNotRestored.Message" xml:space="preserve">
+    <value>Backup could not be restored. Check the event log</value>
+  </data>
+  <data name="BackupRestored.Message" xml:space="preserve">
+    <value>Backup successfully restored</value>
+  </data>
+  <data name="ModuleConfigInvalid.Message" xml:space="preserve">
+    <value>Invalid Config - Check the validators</value>
+  </data>
+  <data name="ModuleConfigReset.Message" xml:space="preserve">
+    <value>Module Configuration succesfully restored to default value</value>
+  </data>
+  <data name="ModuleConfigSaved.Message" xml:space="preserve">
+    <value>Module Configuration succesfully saved according to your location settings</value>
   </data>
 </root>

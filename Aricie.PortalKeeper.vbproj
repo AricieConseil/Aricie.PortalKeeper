@@ -130,16 +130,17 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Entities\ActionCommand.vb" />
     <Compile Include="Components\Entities\ActionTree.vb" />
     <Compile Include="Components\Entities\CompressionEnabledWebClient.vb">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Components\Entities\Firewall\DNNAuthenticationProvider.vb" />
     <Compile Include="Components\Entities\Firewall\FileUploadHandler.vb" />
-    <Compile Include="Components\Entities\Firewall\OpenRastaLogger.vb" />
-    <Compile Include="Components\Entities\Firewall\RestService.vb" />
-    <Compile Include="Components\Entities\Firewall\RestServicesConfiguration.vb" />
-    <Compile Include="Components\Entities\Firewall\RestServicesSettings.vb" />
+    <Compile Include="Components\Entities\OpenRasta\OpenRastaLogger.vb" />
+    <Compile Include="Components\Entities\OpenRasta\RestService.vb" />
+    <Compile Include="Components\Entities\OpenRasta\RestServicesConfiguration.vb" />
+    <Compile Include="Components\Entities\OpenRasta\RestServicesSettings.vb" />
     <Compile Include="Components\Entities\KeeperModuleSettings.vb" />
     <Compile Include="Components\Entities\ParametersMode.vb" />
     <Compile Include="Components\Entities\Scheduler\BotRunContext.vb" />
@@ -149,6 +150,7 @@
     <Compile Include="Components\Entities\Scheduler\ProbeInstance.vb" />
     <Compile Include="Components\Entities\Scheduler\ProbeRanking.vb" />
     <Compile Include="Components\Entities\Scheduler\ProbeSettings.vb" />
+    <Compile Include="Components\Entities\OpenRasta\RestEngineEvent.vb" />
     <Compile Include="Components\Entities\Scheduler\UserBotInfo.vb" />
     <Compile Include="Components\Entities\Scheduler\UserBotSettings.vb" />
     <Compile Include="Components\Entities\Scheduler\UserParameterMode.vb" />

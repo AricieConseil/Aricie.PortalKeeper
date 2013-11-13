@@ -62,7 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Sub New()
-            Dim restSettings As RestServicesSettings = PortalKeeperConfig.Instance.FirewallConfig.RestServices
+            Dim restSettings As RestServicesSettings = PortalKeeperConfig.Instance.RestServices
             Me._Enabled = restSettings.Enabled AndAlso restSettings.EnableOpenRastaLogger
         End Sub
 

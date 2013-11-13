@@ -20,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _
-        Public Property ExitAction() As Boolean
+        Public Overridable Property ExitAction() As Boolean
 
 
         <ExtendedCategory("TechnicalSettings")> _

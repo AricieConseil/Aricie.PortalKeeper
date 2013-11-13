@@ -27,6 +27,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("")> _
         <MainCategory()> _
+        <AutoPostBack()> _
         Public Property SourceType() As RequestSourceType
             Get
                 Return _SourceType
