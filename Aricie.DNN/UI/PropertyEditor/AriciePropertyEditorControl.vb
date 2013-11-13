@@ -142,7 +142,6 @@ Namespace UI.WebControls
         End Property
 
 
-
         Public ReadOnly Property ParentModule() As AriciePortalModuleBase
             Get
                 If _ParentModule Is Nothing Then
@@ -889,6 +888,10 @@ Namespace UI.WebControls
                 btn.ImageUrl = objButtonInfo.IconPath
             End If
             container.Controls.Add(btn)
+            If objButtonInfo.AlertKey <> "" Then
+                Dim message As String = Localization.GetString(objButtonInfo.AlertKey, Me.LocalResourceFile)
+                ClientAPI.AddButtonConfirm(btn, message)
+            End If
 
             Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
             Dim paramInstances As New List(Of Object)
