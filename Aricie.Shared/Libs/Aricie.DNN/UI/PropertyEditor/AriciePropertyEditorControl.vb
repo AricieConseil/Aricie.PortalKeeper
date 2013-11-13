@@ -750,8 +750,11 @@ Namespace UI.WebControls
                     If String.IsNullOrEmpty(resKey) Then
                         resKey = Me.FriendlyName & "_" & objTab.Name & ".Header"
                     End If
-
-                    headerLink.InnerText = Localization.GetString(resKey, Me.LocalResourceFile)
+                    Dim headerText As String = Localization.GetString(resKey, Me.LocalResourceFile)
+                    If headerText = "" Then
+                        headerText = resKey
+                    End If
+                    headerLink.InnerText = headerText
                     li.Controls.Add(headerLink)
 
                     If displayTab Then
@@ -883,7 +886,7 @@ Namespace UI.WebControls
 
             Dim btn As New CommandButton()
             btn.ID = "cmd" & objButtonInfo.Method.Name
-
+            btn.Text = objButtonInfo.Method.Name
             btn.ResourceKey = Me.DataSource.GetType().Name & "_" & objButtonInfo.Method.Name & ".Text"
             If objButtonInfo.IconPath <> "" Then
                 btn.ImageUrl = objButtonInfo.IconPath
@@ -891,6 +894,9 @@ Namespace UI.WebControls
             container.Controls.Add(btn)
             If objButtonInfo.AlertKey <> "" Then
                 Dim message As String = Localization.GetString(objButtonInfo.AlertKey, Me.LocalResourceFile)
+                If message = "" Then
+                    message = objButtonInfo.AlertKey
+                End If
                 ClientAPI.AddButtonConfirm(btn, message)
             End If
 

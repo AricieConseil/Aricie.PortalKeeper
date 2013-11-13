@@ -338,7 +338,7 @@ Namespace Settings
         ''' <param name="createBinarySnapShot"></param>
         ''' <remarks></remarks>
         Public Sub SaveFileSettings(Of T)(ByVal fileName As String, ByVal settings As T, ByVal createBinarySnapShot As Boolean)
-            SaveFileSettings(fileName, settings, createBinarySnapShot, True, 0)
+            SaveFileSettings(fileName, settings, createBinarySnapShot, 0)
         End Sub
 
         ''' <summary>
@@ -351,7 +351,60 @@ Namespace Settings
         ''' <param name="backupsNb"></param>
         ''' <remarks></remarks>
         Public Sub SaveFileSettings(Of T)(ByVal fileName As String, ByVal settings As T, ByVal createBinarySnapShot As Boolean, ByVal backupsNb As Integer)
-            SaveFileSettings(fileName, settings, createBinarySnapShot, True, backupsNb)
+            Dim objDir As New DirectoryInfo(Path.GetDirectoryName(fileName))
+            If Not objDir.Exists Then
+                objDir.Create()
+            End If
+            Dim saveFile As New FileInfo(fileName)
+
+            If saveFile.Exists AndAlso backupsNb > 0 Then
+                Dim backupRootDir As New DirectoryInfo(objDir.FullName.TrimEnd("\"c) & "\ConfigBackups")
+                If Not backupRootDir.Exists Then
+                    backupRootDir.Create()
+                End If
+                Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & saveFile.LastWriteTime.ToString("yyyy-MM-dd_HH-mm-ss_") & Path.GetFileName(fileName)
+                System.IO.File.Copy(fileName, newBackupFileName, True)
+                Dim existingBackupFiles As FileInfo() = backupRootDir.GetFiles()
+                If existingBackupFiles.Length >= backupsNb Then
+                    Array.Sort(Of FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
+                    For i As Integer = 1 To existingBackupFiles.Length - backupsNb
+                        If existingBackupFiles(i - 1).IsReadOnly Then
+                            existingBackupFiles(i - 1).IsReadOnly = False
+                        End If
+                        System.IO.File.Delete(existingBackupFiles(i - 1).FullName)
+                    Next
+                End If
+            End If
+
+            SyncLock loaderLock
+                If saveFile.Exists Then
+                    If saveFile.IsReadOnly Then
+                        saveFile.IsReadOnly = False
+                    End If
+                    saveFile.Delete()
+                End If
+                If settings IsNot Nothing Then
+                    Using writer As New StreamWriter(fileName, False, New UTF8Encoding)
+                        ReflectionHelper.Serialize(settings, True, DirectCast(writer, TextWriter))
+                    End Using
+                End If
+            End SyncLock
+
+            CacheHelper.RemoveCache(fileName)
+            Dim snapShotName As String = GetSnapShotName(fileName)
+
+            If System.IO.File.Exists(snapShotName) Then
+                Dim objFileInfo As New FileInfo(snapShotName)
+                If objFileInfo.IsReadOnly Then
+                    objFileInfo.IsReadOnly = False
+                End If
+                System.IO.File.Delete(snapShotName)
+            End If
+            If createBinarySnapShot Then
+                Using writer As FileStream = System.IO.File.OpenWrite(snapShotName)
+                    ReflectionHelper.Instance.BinaryFormatter.Serialize(writer, settings)
+                End Using
+            End If
         End Sub
 
         ''' <summary>
@@ -362,8 +415,9 @@ Namespace Settings
         ''' <param name="createBinarySnapShot"></param>
         ''' <param name="logException"></param>
         ''' <remarks></remarks>
+        <Obsolete("user overloads without exception handling")> _
         Public Sub SaveFileSettings(ByVal fileName As String, ByVal settings As Object, ByVal createBinarySnapShot As Boolean, ByVal logException As Boolean)
-            SaveFileSettings(fileName, settings, createBinarySnapShot, logException, 0)
+            SaveFileSettings(fileName, settings, createBinarySnapShot, 0)
         End Sub
 
         ''' <summary>
@@ -375,80 +429,9 @@ Namespace Settings
         ''' <param name="logException"></param>
         ''' <param name="backupsNb"></param>
         ''' <remarks></remarks>
+        <Obsolete("user overloads without exception handling")> _
         Public Sub SaveFileSettings(ByVal fileName As String, ByVal settings As Object, ByVal createBinarySnapShot As Boolean, ByVal logException As Boolean, ByVal backupsNb As Integer)
-
-            Try
-                Dim objDir As New DirectoryInfo(Path.GetDirectoryName(fileName))
-                If Not objDir.Exists Then
-                    objDir.Create()
-                End If
-                If System.IO.File.Exists(fileName) AndAlso backupsNb > 0 Then
-                    Try
-                        Dim backupRootDir As New DirectoryInfo(objDir.FullName.TrimEnd("\"c) & "\ConfigBackups")
-                        If Not backupRootDir.Exists Then
-                            backupRootDir.Create()
-                        End If
-                        Dim existingBackupFiles As FileInfo() = backupRootDir.GetFiles()
-                        If existingBackupFiles.Length >= backupsNb Then
-                            Array.Sort(Of FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
-                            For i As Integer = 1 To existingBackupFiles.Length - backupsNb
-                                If existingBackupFiles(i - 1).IsReadOnly Then
-                                    existingBackupFiles(i - 1).IsReadOnly = False
-                                End If
-                                System.IO.File.Delete(existingBackupFiles(i - 1).FullName)
-                            Next
-                        End If
-
-                        Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & DateAndTime.Now.ToString("yyyyMMdd_HHmmss_") & Path.GetFileName(fileName)
-                        System.IO.File.Copy(fileName, newBackupFileName, True)
-                    Catch ex As Exception
-                        Aricie.Providers.SystemServiceProvider.Instance().LogException(ex)
-                    End Try
-                End If
-                SyncLock loaderLock
-                    If System.IO.File.Exists(fileName) Then
-                        Dim objFileInfo As New FileInfo(fileName)
-                        If objFileInfo.IsReadOnly Then
-                            objFileInfo.IsReadOnly = False
-                        End If
-                        objFileInfo.Delete()
-                    End If
-                    If settings IsNot Nothing Then
-                        Using writer As New StreamWriter(fileName, False, New UTF8Encoding)
-                            ReflectionHelper.Serialize(settings, True, DirectCast(writer, TextWriter))
-                        End Using
-                    End If
-                End SyncLock
-                CacheHelper.RemoveCache(fileName)
-                Dim snapShotName As String = GetSnapShotName(fileName)
-
-                If System.IO.File.Exists(snapShotName) Then
-                    Dim objFileInfo As New FileInfo(snapShotName)
-                    If objFileInfo.IsReadOnly Then
-                        objFileInfo.IsReadOnly = False
-                    End If
-                    System.IO.File.Delete(snapShotName)
-                End If
-                If createBinarySnapShot Then
-                    Using writer As FileStream = System.IO.File.OpenWrite(snapShotName)
-                        Try
-                            ReflectionHelper.Instance.BinaryFormatter.Serialize(writer, settings)
-                        Catch ex As Exception
-                            If logException Then
-                                AsyncLogger.Instance.AddException(ex)
-                            End If
-                        Finally
-                            writer.Close()
-                        End Try
-                    End Using
-                End If
-            Catch ex As Exception
-                If logException Then
-                    AsyncLogger.Instance.AddException(ex)
-                End If
-            End Try
-
-
+            SaveFileSettings(fileName, settings, createBinarySnapShot, backupsNb)
         End Sub
 
         Public Function GetBackups(filename As String) As IList(Of FileInfo)
@@ -470,13 +453,14 @@ Namespace Settings
                 For Each existingBackupFile As FileInfo In existingBackupFiles
                     If existingBackupFile.Name = backupname Then
                         System.IO.File.Copy(existingBackupFile.FullName, filename, True)
-                        existingBackupFile.Delete()
                         Return True
                     End If
                 Next
             End If
             Return False
         End Function
+
+
 
 
 #End Region

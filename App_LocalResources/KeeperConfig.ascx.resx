@@ -201,4 +201,7 @@
   <data name="cmdUninstallRasta.Text" xml:space="preserve">
     <value>Unregister Rasta Components</value>
   </data>
+  <data name="cmdUninstall.Confirm" xml:space="preserve">
+    <value>You are about to unregister Portal Keeper components including the firewall and web services httpmodules, and the farm bot scheduler task. Proceed?</value>
+  </data>
 </root>

@@ -950,7 +950,21 @@ Namespace Services
 
         End Function
 
+        Public Shared Sub MergeObjects(sourceObject As Object, targetObject As Object)
+            If sourceObject IsNot Nothing AndAlso targetObject IsNot Nothing Then
+                Dim objType As Type = sourceObject.GetType()
+                Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
 
+                For Each propName As String In props.Keys
+                    Dim p As PropertyInfo = props(propName)
+
+                    If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
+                        Dim pSourceValue As Object = p.GetValue(sourceObject, Nothing)
+                        p.SetValue(targetObject, pSourceValue, Nothing)
+                    End If
+                Next
+            End If
+        End Sub
 
         Public Shared Function CloneObject(Of T)(ByVal objectToClone As T) As T
             Return CloneObject(Of T)(objectToClone, False)

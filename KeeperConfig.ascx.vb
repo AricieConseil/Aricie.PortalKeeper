@@ -14,6 +14,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Entities
 Imports DotNetNuke.UI.WebControls
+Imports DotNetNuke.UI.Utilities
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
@@ -99,7 +100,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                     Session.Remove(key)
                     _UserBot = Nothing
                 End If
-               
+
             End Set
         End Property
 
@@ -369,6 +370,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             If Me.UserInfo.IsSuperUser Then
                 Me.divInstall.Visible = True
                 Configuration.ConfigHelper.AssertIsInstalled(Me, New PortalKeeperConfigUpdate, Me.cmdInstall, New Control() {Me.cmdUninstall, Me.divConfig})
+                Me.AddConfirm(Me.cmdUninstall)
             Else
                 Me.divInstall.Visible = False
             End If
