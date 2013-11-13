@@ -6,7 +6,7 @@ Imports Aricie.Services
 Namespace UI.WebControls.EditControls
     Public Class SelectorInfo
 
-        Private _IsIselector As Boolean
+        Private _IsIselector As Boolean = True
         Private _SelectorTypeName As String
         Private _DataTextField As String
         Private _DataValueField As String
@@ -126,9 +126,12 @@ Namespace UI.WebControls.EditControls
 
 
 
-
-            toReturn.DataTextField = Me._DataTextField
-            toReturn.DataValueField = Me._DataValueField
+            If Not String.IsNullOrEmpty(Me._DataTextField) Then
+                toReturn.DataTextField = Me._DataTextField
+            End If
+            If Not String.IsNullOrEmpty(Me._DataValueField) Then
+                toReturn.DataValueField = Me._DataValueField
+            End If
             toReturn.ExclusiveSelector = Me._IsExclusive
             toReturn.ExclusiveScopeControl = parentField.NamingContainer
             If Me._InsertNullItem Then

@@ -18,7 +18,7 @@ Namespace UI.WebControls.EditControls
         'Private _exclusive As Boolean
         'Private _insertNullItem As Boolean
         'Private _nullItemValue As String
-        Private _SelectorInfo As SelectorInfo
+        Private _SelectorInfo As New SelectorInfo
 
         Protected Overrides Sub OnInit(ByVal e As EventArgs)
             MyBase.OnInit(e)

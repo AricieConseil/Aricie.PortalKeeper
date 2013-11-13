@@ -12,7 +12,14 @@
             Me.IconPath = strIconPath
         End Sub
 
+        Public Sub New(strIconPath As String, strAlertKey As String)
+            Me.IconPath = strIconPath
+            Me.AlertKey = strAlertKey
+        End Sub
+
         Public Property IconPath As String = ""
+
+        Public Property AlertKey As String = ""
 
     End Class
 

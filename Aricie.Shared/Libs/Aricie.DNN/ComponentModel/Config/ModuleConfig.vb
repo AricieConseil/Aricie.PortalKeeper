@@ -5,6 +5,7 @@ Imports Aricie.Services
 Imports System.Globalization
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -13,6 +14,10 @@ Imports Aricie.DNN.Settings
 '-------------------------------------------------------------------------------
 ' 28/03/2011 - [JBB] - Modification du path.combine pour gérer le cas des chemins UNC
 '-------------------------------------------------------------------------------
+Imports System.Web.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Services.Localization
+
 Namespace ComponentModel
 
 
@@ -58,7 +63,12 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
+        Public Sub Save(ByVal moduleName As String, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
 
+            Dim fileName As String = GetFilePath(moduleName, locSettings, False)
+            Aricie.DNN.Settings.SettingsController.SaveFileSettings(fileName, Me, useBinarySnapShot, locSettings.BackupsNb)
+
+        End Sub
 
 
     End Class
@@ -86,7 +96,7 @@ Namespace ComponentModel
         End Function
 
 
-        Public Shared Sub Save(ByVal moduleName As String, ByVal instance As TConfigClass, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
+        Public Overloads Shared Sub Save(ByVal moduleName As String, ByVal instance As TConfigClass, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
 
             Dim fileName As String = GetFilePath(moduleName, locSettings, False)
             Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of TConfigClass)(fileName, instance, useBinarySnapShot, locSettings.BackupsNb)
@@ -106,6 +116,8 @@ Namespace ComponentModel
     <Serializable()> _
     Public Class ModuleConfig(Of TConfigClass As {New, ModuleConfig(Of TConfigClass)}, TModuleIdentity As {IModuleIdentity, New})
         Inherits ModuleConfig(Of TConfigClass)
+        Implements ISelector
+
 
         <Browsable(False)> _
         <XmlIgnore()> _
@@ -114,25 +126,43 @@ Namespace ComponentModel
                 Return SettingsController.LoadFileSettings(Of LocationSettings)(GetLocationFileName(useCache), useCache, useBinarySnapShot)
             End Get
             Set(ByVal value As LocationSettings)
-                SettingsController.SaveFileSettings(Of LocationSettings)(GetLocationFileName(useCache), value, useBinarySnapShot)
+                If Not value.Equals(SharedLocationSettings(useCache, useBinarySnapShot)) Then
+                    SettingsController.SaveFileSettings(Of LocationSettings)(GetLocationFileName(useCache), value, useBinarySnapShot)
+                End If
             End Set
         End Property
 
-        <LabelMode(LabelMode.Top)> _
-        <Category("LocationSettings")> _
-              <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
+        <ExtendedCategory("", "LocationSettings")> _
         <XmlIgnore()> _
         Public Property LocationSettings() As LocationSettings
             Get
                 Return SharedLocationSettings(True, False)
             End Get
             Set(ByVal value As LocationSettings)
-                If Not value.Equals(SharedLocationSettings(True, False)) Then
-                    SharedLocationSettings(True, False) = value
-                End If
+                SharedLocationSettings(True, False) = value
             End Set
         End Property
 
+        <ExtendedCategory("", "LocationSettings")> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <Selector("Text", "Value", False, True, "---", "", False, False)> _
+        <XmlIgnore()> _
+        Public Property BackupToRestore() As String = ""
+
+
+        <ConditionalVisible("BackupToRestore", True, True, "")> _
+        <ExtendedCategory("", "LocationSettings")> _
+        <ActionButton("~/images/reset.gif")> _
+        Public Sub RestoreBackup(pe As AriciePropertyEditorControl)
+            If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
+                pe.ItemChanged = True
+                pe.DataSource = Instance
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            Else
+                pe.ItemChanged = True
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupNotRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.RedError)
+            End If
+        End Sub
 
 
         Private Shared Function GetLocationFileName(ByVal useCache As Boolean) As String
@@ -166,13 +196,30 @@ Namespace ComponentModel
             End Get
         End Property
 
+        '<ActionButton("~/images/save.gif")> _
+        Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
+            Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
+            SharedLocationSettings(True, False) = Me.LocationSettings
+            pe.DataSource = Instance
+            pe.ItemChanged = True
+        End Sub
 
-        'Public Overloads Sub Save()
+        '<ActionButton("~/images/cancel.gif")> _
+        Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
+            pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
+        End Sub
 
-        '    Save(Identity.GetModuleName, Instance, SharedLocationSettings)
+        '<ActionButton("~/images/reset.gif", "Reset.Warning")> _
+        Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
+            Reset(SharedLocationSettings(True, False))
+            pe.DataSource = Instance
+            pe.ItemChanged = True
+        End Sub
 
+        Public Overloads Shared Sub Reset()
+            Reset(SharedLocationSettings(True, False))
+        End Sub
 
-        'End Sub
 
         Public Overloads Shared Sub Save(ByVal objInstance As TConfigClass)
 
@@ -204,11 +251,7 @@ Namespace ComponentModel
         End Sub
 
 
-
-
-        Public Overloads Shared Sub Reset()
-            Reset(SharedLocationSettings(True, False))
-        End Sub
+        
 
         Public Overloads Shared Sub Reset(ByVal locSettings As LocationSettings)
             Save(Instance(locSettings).GetDefaultConfig, locSettings)
@@ -229,6 +272,22 @@ Namespace ComponentModel
             End Get
         End Property
 
+        Private Function GetBackupFiles() As IList(Of FileInfo)
+            Return SettingsController.GetBackups(GetFilePath(True))
+        End Function
+
+        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
+            Select Case propertyName
+                Case "BackupToRestore"
+                    Return (From backupfile In Me.GetBackupFiles().OrderBy(Function(objFile As FileInfo) objFile.LastAccessTime) _
+                    Select New ListItem(String.Format("{0} : {1}", backupfile.Name, backupfile.LastWriteTime.ToString()), backupfile.Name)).ToList()
+            End Select
+            Return Nothing
+        End Function
+
+        Public Overrides Function GetDefaultConfig() As TConfigClass
+            Return SettingsController.LoadFileSettings(Of TConfigClass)(SettingsController.GetDefaultFileName(GetFilePath(True)), False)
+        End Function
 
     End Class
 End Namespace

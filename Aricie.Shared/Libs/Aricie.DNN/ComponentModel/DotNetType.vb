@@ -63,16 +63,21 @@ Namespace ComponentModel
             End Get
         End Property
 
-        Private _TypeSelector As TypeSelector
+        Private _TypeSelector As Nullable(Of TypeSelector)
+
 
         <XmlIgnore()> _
         Public Property TypeSelector As TypeSelector
             Get
-                Dim targetType As Type = Nothing
-                If Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing Then
-                    Return TypeSelector.NewType
+                If Not _TypeSelector.HasValue Then
+                    Dim targetType As Type = Nothing
+                    If Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing Then
+                        Return TypeSelector.NewType
+                    Else
+                        Return TypeSelector.CommonTypes
+                    End If
                 End If
-                Return _TypeSelector
+                Return _TypeSelector.Value
             End Get
             Set(value As TypeSelector)
                 _TypeSelector = value
@@ -113,8 +118,8 @@ Namespace ComponentModel
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
         <Required(True)> _
-        <Width(400)> _
-        <LineCount(2)> _
+        <Width(500)> _
+        <LineCount(3)> _
         <AutoPostBack()> _
         <XmlIgnore> _
         Public Property EditableTypeName As String
@@ -163,7 +168,7 @@ Namespace ComponentModel
                 AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
                 AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
             End If
-            Return (From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)).OrderBy(Function(objDotNetType) objDotNetType.TypeName).ToList()
+            Return (From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)).OrderBy(Function(objDotNetType) objDotNetType.GetDotNetType().Name).ToList()
         End Function
 
         'Public Overrides Function Equals(ByVal obj As Object) As Boolean
