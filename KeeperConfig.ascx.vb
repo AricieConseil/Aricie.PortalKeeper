@@ -143,20 +143,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             End Try
         End Sub
 
-        Private Sub cmdSaveConfig_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSaveConfig.Click
-            Try
-                If Me.UserInfo.IsSuperUser AndAlso Me.KC.IsValid Then
-                    Dim objSettings As PortalKeeperConfig = DirectCast(Me.KC.DataSource, PortalKeeperConfig)
-                    PortalKeeperConfig.Save(objSettings)
-                    Skin.AddModuleMessage(Me, Localization.GetString("HostConfigSaved.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-                    CacheHelper.RemoveCache(StaticInfo.KeyBucket.PKPCachingUserBotsDependency)
-                Else
-                    Skin.AddModuleMessage(Me, Localization.GetString("HostConfigInvalid.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
-                End If
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
+        'Private Sub cmdSaveConfig_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSaveConfig.Click
+        '    Try
+        '        If Me.UserInfo.IsSuperUser AndAlso Me.KC.IsValid Then
+        '            Dim objSettings As PortalKeeperConfig = DirectCast(Me.KC.DataSource, PortalKeeperConfig)
+        '            PortalKeeperConfig.Save(objSettings)
+        '            Skin.AddModuleMessage(Me, Localization.GetString("HostConfigSaved.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+        '        Else
+        '            Skin.AddModuleMessage(Me, Localization.GetString("HostConfigInvalid.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
+        '        End If
+        '    Catch ex As Exception
+        '        ProcessModuleLoadException(Me, ex)
+        '    End Try
+        'End Sub
 
         Protected Sub cmdSave_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdSave.Click
             Try
@@ -235,14 +234,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected Sub cmdDebug_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDebug.Click
             Me.DebugTest()
-        End Sub
-
-        Private Sub cmdCancelConfig_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelConfig.Click
-            Try
-                Me.Response.Redirect(NavigateURL)
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
         End Sub
 
         Private Sub cmdCancelSettings_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelSettings.Click

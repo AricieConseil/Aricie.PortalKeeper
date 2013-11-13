@@ -78,24 +78,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected WithEvents KC As Global.Aricie.DNN.UI.WebControls.AriciePropertyEditorControl
 
         '''<summary>
-        '''cmdSaveConfig control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdSaveConfig As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
-        '''cmdCancelConfig control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdCancelConfig As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
         '''cmdClearProbes control.
         '''</summary>
         '''<remarks>

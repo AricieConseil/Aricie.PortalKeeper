@@ -58,16 +58,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #Region "Public properties"
 
 
-
-
-
-
-
-
-
-
-
-
         <MainCategory()> _
         <ExtendedCategory("Bots")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _

@@ -196,24 +196,30 @@ Namespace ComponentModel
             End Get
         End Property
 
-        '<ActionButton("~/images/save.gif")> _
+        <ActionButton("~/images/save.gif")> _
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
-            Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
-            SharedLocationSettings(True, False) = Me.LocationSettings
-            pe.DataSource = Instance
-            pe.ItemChanged = True
+            If pe.IsValid Then
+                Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
+                SharedLocationSettings(True, False) = Me.LocationSettings
+                pe.DataSource = Instance
+                pe.ItemChanged = True
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            Else
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            End If
         End Sub
 
-        '<ActionButton("~/images/cancel.gif")> _
+        <ActionButton("~/images/cancel.gif")> _
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
 
-        '<ActionButton("~/images/reset.gif", "Reset.Warning")> _
+        <ActionButton("~/images/reset.gif", "Reset.Warning")> _
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
             Reset(SharedLocationSettings(True, False))
             pe.DataSource = Instance
             pe.ItemChanged = True
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
         Public Overloads Shared Sub Reset()

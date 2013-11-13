@@ -28,10 +28,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property DosSettings() As New DenialOfServiceSettings
 
-        '<Browsable(False)> _
-        <ExtendedCategory("RestServices")> _
-        <SortOrder(350)> _
-        Public Property RestServices() As New RestServicesSettings
+        'todo: make obsolete
+        <Browsable(False)> _
+        Public Property RestServices() As RestServicesSettings
 
         <ExtendedCategory("CustomErrorPage")> _
         <SortOrder(400)> _

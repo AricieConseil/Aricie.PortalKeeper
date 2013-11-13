@@ -18,10 +18,6 @@
                 GroupByMode="Section" DisplayMode="Div" EnabledOnDemandSections="True" runat="server"
                 CssClass="pkSettings" LabelWidth="200px" />
             <div class="divcenter">
-                <dnn:CommandButton ID="cmdSaveConfig" runat="server" ImageUrl="~/images/save.gif"
-                    ResourceKey="cmdSaveConfig" />
-                <dnn:CommandButton ID="cmdCancelConfig" runat="server" ImageUrl="~/images/cancel.gif"
-                    ResourceKey="cmdCancel" />
                 <dnn:CommandButton ID="cmdClearProbes" runat="server" visible="false" ImageUrl="~/images/fwd.gif"
                     ResourceKey="cmdClearProbes" />
                 <dnn:CommandButton ID="cmdDebug" Visible="False" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
