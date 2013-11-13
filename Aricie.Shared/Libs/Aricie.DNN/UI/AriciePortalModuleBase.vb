@@ -13,6 +13,7 @@ Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
 Imports Aricie.Services
 Imports System.Globalization
+Imports System.Web.UI.WebControls
 
 
 Namespace UI.Controls
@@ -228,6 +229,15 @@ Namespace UI.Controls
 
         Public Sub SavePersonalSettings()
             SetPersonalSettings(Me.PortalId, Me.PersonalSettings, True)
+        End Sub
+
+        Public Sub AddConfirm(ctl As WebControl)
+            Dim key As String = ctl.ID & ".Confirm"
+            Dim message As String = Localization.GetString(key, Me.LocalResourceFile)
+            If message = "" Then
+                message = key
+            End If
+            ClientAPI.AddButtonConfirm(ctl, message)
         End Sub
 
 #End Region

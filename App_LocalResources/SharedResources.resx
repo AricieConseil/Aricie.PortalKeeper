@@ -4854,4 +4854,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ModuleConfigSaved.Message" xml:space="preserve">
     <value>Module Configuration succesfully saved according to your location settings</value>
   </data>
+  <data name="RestoreBackup.Warning" xml:space="preserve">
+    <value>You are about to restore a backup. This will overwrite the current configuration. </value>
+  </data>
+  <data name="LocationSettingsSaved.Message" xml:space="preserve">
+    <value>The location of your config file was successfully changed.</value>
+  </data>
+  <data name="ModuleConfig`2_Backup.Header" xml:space="preserve">
+    <value>Backup Restoration</value>
+  </data>
+  <data name="PortalKeeperConfig_SaveLocationSettings.Text" xml:space="preserve">
+    <value>Save New Location</value>
+  </data>
 </root>

@@ -43,7 +43,6 @@ Namespace ComponentModel
                 SyncLock _FilePaths
                     If Not _FilePaths.TryGetValue(key, toReturn) Then
                         Dim root As String
-
                         If locSettings.UserFile Then
                             If String.IsNullOrEmpty(locSettings.UserFileName) Then
                                 locSettings.UserFileName = moduleName
@@ -53,8 +52,6 @@ Namespace ComponentModel
                         Else
                             root = NukeHelper.GetModuleDirectoryMapPath(moduleName, useCache)
                         End If
-                        'toReturn = Path.Combine(root, GetFileName(moduleName))
-
                         toReturn = String.Format("{0}\{1}", root.TrimEnd("\"c), GetFileName(moduleName).TrimStart("\"c))
                         _FilePaths(key) = toReturn
                     End If
@@ -107,6 +104,7 @@ Namespace ComponentModel
             Return New TConfigClass
         End Function
 
+       
     End Class
 
     ''' <summary>
@@ -126,20 +124,27 @@ Namespace ComponentModel
                 Return SettingsController.LoadFileSettings(Of LocationSettings)(GetLocationFileName(useCache), useCache, useBinarySnapShot)
             End Get
             Set(ByVal value As LocationSettings)
-                If Not value.Equals(SharedLocationSettings(useCache, useBinarySnapShot)) Then
+                If value IsNot Nothing AndAlso Not value.Equals(SharedLocationSettings(useCache, useBinarySnapShot)) Then
                     SettingsController.SaveFileSettings(Of LocationSettings)(GetLocationFileName(useCache), value, useBinarySnapShot)
                 End If
             End Set
         End Property
 
+
+        Private _LocationSettings As LocationSettings
+
+
         <ExtendedCategory("", "LocationSettings")> _
         <XmlIgnore()> _
         Public Property LocationSettings() As LocationSettings
             Get
-                Return SharedLocationSettings(True, False)
+                If _LocationSettings Is Nothing Then
+                    _LocationSettings = ReflectionHelper.CloneObject(Of LocationSettings)(SharedLocationSettings(True, False))
+                End If
+                Return _LocationSettings
             End Get
             Set(ByVal value As LocationSettings)
-                SharedLocationSettings(True, False) = value
+                Me._LocationSettings = value
             End Set
         End Property
 
@@ -152,7 +157,7 @@ Namespace ComponentModel
 
         <ConditionalVisible("BackupToRestore", True, True, "")> _
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton("~/images/reset.gif")> _
+        <ActionButton("~/images/reset.gif", "RestoreBackup.Warning")> _
         Public Sub RestoreBackup(pe As AriciePropertyEditorControl)
             If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
                 pe.ItemChanged = True
@@ -164,12 +169,23 @@ Namespace ComponentModel
             End If
         End Sub
 
+        <ExtendedCategory("", "LocationSettings")> _
+        <ActionButton("~/images/save.gif")> _
+        Public Sub SaveLocationSettings(pe As AriciePropertyEditorControl)
+            If pe.IsValid Then
+                SharedLocationSettings(True, False) = Me.LocationSettings
+                Me._LocationSettings = Nothing
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("LocationSettingsSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                Me.Save(pe)
+            End If
+        End Sub
 
-        Private Shared Function GetLocationFileName(ByVal useCache As Boolean) As String
-            Dim configFileName As String = GetFilePath(Identity.GetModuleName, LocationSettings.CoreFile, useCache)
-            configFileName = configFileName & ".Loc.config"
-            Return configFileName
-        End Function
+        
+
+        
+
+
+       
 
         Public Shared ReadOnly Property Instance() As TConfigClass
             Get
@@ -200,9 +216,6 @@ Namespace ComponentModel
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
-                SharedLocationSettings(True, False) = Me.LocationSettings
-                pe.DataSource = Instance
-                pe.ItemChanged = True
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Else
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -217,9 +230,14 @@ Namespace ComponentModel
         <ActionButton("~/images/reset.gif", "Reset.Warning")> _
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
             Reset(SharedLocationSettings(True, False))
-            pe.DataSource = Instance
-            pe.ItemChanged = True
-            DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            Try
+                ReflectionHelper.MergeObjects(Instance, pe.DataSource)
+                pe.ItemChanged = True
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+                pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
+            End Try
         End Sub
 
         Public Overloads Shared Sub Reset()
@@ -236,7 +254,7 @@ Namespace ComponentModel
 
         Public Overloads Shared Sub Save(ByVal objInstance As TConfigClass, ByVal useBinarySnapShot As Boolean)
 
-            Save(objInstance, SharedLocationSettings(True, useBinarySnapShot), useBinarySnapShot)
+            Save(objInstance, SharedLocationSettings(True, False), useBinarySnapShot)
             'SharedLocationSettings = locSettings
 
         End Sub
@@ -252,7 +270,7 @@ Namespace ComponentModel
         Public Overloads Shared Sub Save(ByVal objInstance As TConfigClass, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
 
             Save(Identity.GetModuleName, objInstance, locSettings, useBinarySnapShot)
-            SharedLocationSettings(True, False) = locSettings
+
 
         End Sub
 
@@ -262,6 +280,15 @@ Namespace ComponentModel
         Public Overloads Shared Sub Reset(ByVal locSettings As LocationSettings)
             Save(Instance(locSettings).GetDefaultConfig, locSettings)
         End Sub
+
+
+
+        Private Shared Function GetLocationFileName(ByVal useCache As Boolean) As String
+            Dim configFileName As String = GetFilePath(Identity.GetModuleName, LocationSettings.CoreFile, useCache)
+            configFileName = configFileName & ".Loc.config"
+            Return configFileName
+        End Function
+
 
         Public Overloads Shared Function GetFilePath(ByVal useCache As Boolean) As String
             Return GetFilePath(SharedLocationSettings(useCache, False), useCache)
@@ -286,7 +313,7 @@ Namespace ComponentModel
             Select Case propertyName
                 Case "BackupToRestore"
                     Return (From backupfile In Me.GetBackupFiles().OrderBy(Function(objFile As FileInfo) objFile.LastAccessTime) _
-                    Select New ListItem(String.Format("{0} : {1}", backupfile.Name, backupfile.LastWriteTime.ToString()), backupfile.Name)).ToList()
+                    Select New ListItem(backupfile.Name, backupfile.Name)).ToList()
             End Select
             Return Nothing
         End Function

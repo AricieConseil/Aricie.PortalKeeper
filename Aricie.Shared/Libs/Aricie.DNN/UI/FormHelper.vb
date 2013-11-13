@@ -148,6 +148,7 @@ Namespace UI
             If NukeHelper.DnnVersion.Major < 7 Then
                 Dim sh As SectionHeadControl = DirectCast(parentControl.Page.LoadControl("~/controls/sectionheadcontrol.ascx"), SectionHeadControl)
                 toReturn = sh
+                sh.Text = resxKey
                 sh.ResourceKey = resxKey
 
                 sh.CssClass = "Head"
@@ -178,6 +179,7 @@ Namespace UI
                     ctlA.Attributes.Add("class", "")
                 End If
                 ctlA.Attributes.Add("resourcekey", resxKey)
+                ctlA.Text = resxKey
                 ctlHeader.Controls.Add(ctlA)
                 parentControl.Controls.Add(ctlHeader)
 
