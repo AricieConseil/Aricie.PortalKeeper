@@ -18,6 +18,7 @@ Imports Aricie.DNN.ComponentModel
 Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
+Imports DotNetNuke.Entities.Modules
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -58,7 +59,7 @@ Namespace UI.WebControls
 
         Private _PostBackFields As New List(Of String)
 
-        Private _ParentModule As AriciePortalModuleBase
+        Private _ParentModule As PortalModuleBase
         Private _ParentField As AricieFieldEditorControl
 
         Private _OnDemandSections As List(Of String)
@@ -142,10 +143,10 @@ Namespace UI.WebControls
         End Property
 
 
-        Public ReadOnly Property ParentModule() As AriciePortalModuleBase
+        Public ReadOnly Property ParentModule() As PortalModuleBase
             Get
                 If _ParentModule Is Nothing Then
-                    _ParentModule = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AriciePortalModuleBase)(Me)
+                    _ParentModule = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(Me)
                 End If
                 Return _ParentModule
             End Get
