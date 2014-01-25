@@ -30,7 +30,8 @@ Namespace Services.Filtering
             <KeyEditor(GetType(CustomTextEditControl), GetType(TokenKeyAttributes))> _
             <ValueEditor(GetType(CustomTextEditControl), GetType(TokenValueAttributes))> _
             <LabelMode(LabelMode.Top), SortOrder(0)> _
-        Public Property StaticTokens() As new SerializableDictionary(Of String, String)
+            <CollectionEditor(False, True, True, True, 10)> _
+        Public Property StaticTokens() As New SerializableDictionary(Of String, String)
 
         ''' <summary>
         ''' List of tokens providers
@@ -42,7 +43,8 @@ Namespace Services.Filtering
             KeyEditor(GetType(CustomTextEditControl), GetType(TokenKeyAttributes)), _
             ValueEditor(GetType(CustomTextEditControl), GetType(TokenValueAttributes)), _
             LabelMode(LabelMode.Top), SortOrder(1)> _
-        Public Property TokenProviders() As  New SerializableDictionary(Of String, String)
+            <CollectionEditor(False, True, True, True, 10)> _
+        Public Property TokenProviders() As New SerializableDictionary(Of String, String)
             
         ''' <summary>
         ''' List of conditional tokens
@@ -51,8 +53,8 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Editor(GetType(ListEditControl), GetType(EditControl)), _
-            LabelMode(LabelMode.Top), CollectionEditor(False, False, True, True, 10), SortOrder(2), Orientation(Orientation.Vertical)> _
-        Public Property ConditionalTokens() As new List(Of ConditionalTokenInfo)
+            LabelMode(LabelMode.Top), CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, False), SortOrder(2), Orientation(Orientation.Vertical)> _
+        Public Property ConditionalTokens() As New List(Of ConditionalTokenInfo)
 
         ''' <summary>
         ''' List of reflected tokens

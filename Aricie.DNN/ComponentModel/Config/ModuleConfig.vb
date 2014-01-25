@@ -60,7 +60,7 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
-        Public Sub Save(ByVal moduleName As String, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
+        Public Overridable Sub Save(ByVal moduleName As String, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
 
             Dim fileName As String = GetFilePath(moduleName, locSettings, False)
             Aricie.DNN.Settings.SettingsController.SaveFileSettings(fileName, Me, useBinarySnapShot, locSettings.BackupsNb)
@@ -95,8 +95,9 @@ Namespace ComponentModel
 
         Public Overloads Shared Sub Save(ByVal moduleName As String, ByVal instance As TConfigClass, ByVal locSettings As LocationSettings, ByVal useBinarySnapShot As Boolean)
 
-            Dim fileName As String = GetFilePath(moduleName, locSettings, False)
-            Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of TConfigClass)(fileName, instance, useBinarySnapShot, locSettings.BackupsNb)
+            'Dim fileName As String = GetFilePath(moduleName, locSettings, False)
+            'Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of TConfigClass)(fileName, instance, useBinarySnapShot, locSettings.BackupsNb)
+            instance.Save(moduleName, locSettings, useBinarySnapShot)
 
         End Sub
 
@@ -180,16 +181,21 @@ Namespace ComponentModel
             End If
         End Sub
 
-        
+        Public Overloads Overrides Sub Save(moduleName As String, locSettings As LocationSettings, useBinarySnapShot As Boolean)
+            MyBase.Save(moduleName, locSettings, useBinarySnapShot)
+            _Instance = Nothing
+        End Sub
 
-        
+        Private Shared _Instance As TConfigClass
 
 
-       
 
         Public Shared ReadOnly Property Instance() As TConfigClass
             Get
-                Return Instance(SharedLocationSettings(True, False))
+                If _Instance Is Nothing Then
+                    _Instance = Instance(SharedLocationSettings(True, False), False, False)
+                End If
+                Return _Instance
             End Get
         End Property
 
@@ -220,6 +226,11 @@ Namespace ComponentModel
             Else
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             End If
+        End Sub
+
+
+        Public Overridable Overloads Sub Save()
+            Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
         End Sub
 
         <ActionButton("~/images/cancel.gif")> _
