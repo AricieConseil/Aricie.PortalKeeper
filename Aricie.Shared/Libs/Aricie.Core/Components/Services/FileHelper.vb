@@ -84,7 +84,7 @@ Namespace Services
         ''' <param name="response">http response to write the file to</param>
         ''' <remarks></remarks>
         <Obsolete("user the overload with httpserverutility")> _
-        Public Sub DownloadFile(ByVal filePath As String, ByVal response As HttpResponse)
+        Public Sub DownloadFile(ByVal filePath As String, ByRef response As HttpResponse)
             DownloadFile(filePath, response, Nothing)
         End Sub
 
