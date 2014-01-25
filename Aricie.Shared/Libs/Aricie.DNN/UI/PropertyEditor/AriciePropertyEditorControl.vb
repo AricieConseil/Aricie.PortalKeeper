@@ -375,26 +375,28 @@ Namespace UI.WebControls
                     DataBind()
                 End If
 
-                For Each field As AricieFieldEditorControl In Me.Fields
-                    If Me._PostBackFields.Contains(field.DataField) Then
-                        field.AutoPostBack = True
-                    End If
-                Next
+            
 
-                If Not String.IsNullOrEmpty(Me._ValidationGroup) Then
-                    Dim vals As List(Of BaseValidator) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of BaseValidator)(Me)
-                    For Each objVal As BaseValidator In vals
-                        objVal.ValidationGroup = Me._ValidationGroup
+                If Me.DataSource IsNot Nothing Then
+                    For Each field As AricieFieldEditorControl In Me.Fields
+                        If Me._PostBackFields.Contains(field.DataField) Then
+                            field.AutoPostBack = True
+                        End If
+                    Next
+
+                    If Not String.IsNullOrEmpty(Me._ValidationGroup) Then
+                        Dim vals As List(Of BaseValidator) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of BaseValidator)(Me)
+                        For Each objVal As BaseValidator In vals
+                            objVal.ValidationGroup = Me._ValidationGroup
+                        Next
+                    End If
+                    EnforceTrialMode()
+                    For Each t As Tab In Me.FieldsDictionary.Tabs.Values
+                        For Each c As Control In t.Container.Controls
+                            c.Visible = t.Loaded
+                        Next
                     Next
                 End If
-                EnforceTrialMode()
-
-
-                For Each t As Tab In Me.FieldsDictionary.Tabs.Values
-                    For Each c As Control In t.Container.Controls
-                        c.Visible = t.Loaded
-                    Next
-                Next
 
                 'Me.PreparePreRenderSections()
 
@@ -633,19 +635,8 @@ Namespace UI.WebControls
             If Me.DataSource IsNot Nothing Then
                 toReturn = CacheHelper.GetGlobal(Of List(Of ActionButtonInfo))(Me.DataSource.GetType.FullName)
                 If toReturn Is Nothing Then
-                    toReturn = New List(Of ActionButtonInfo)
-                    Dim membersDico As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(Me.DataSource.GetType())
-                    For Each memberPair As KeyValuePair(Of String, MemberInfo) In membersDico
-                        If TypeOf memberPair.Value Is MethodInfo Then
-                            Dim objMethod As MethodInfo = DirectCast(memberPair.Value, MethodInfo)
-                            If objMethod IsNot Nothing Then
-                                Dim toAdd As ActionButtonInfo = ActionButtonInfo.FromMethod(objMethod)
-                                If toAdd IsNot Nothing Then
-                                    toReturn.Add(toAdd)
-                                End If
-                            End If
-                        End If
-                    Next
+                    Dim membersDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(Me.DataSource.GetType())
+                    toReturn = (From objMethod In (From memberPair In membersDico From objMember In memberPair.Value Select objMember).OfType(Of MethodInfo)() Where objMethod IsNot Nothing Select toAdd = ActionButtonInfo.FromMethod(objMethod) Where toAdd IsNot Nothing).ToList()
                     CacheHelper.SetGlobal(Of List(Of ActionButtonInfo))(toReturn, Me.DataSource.GetType.FullName)
                 End If
             Else

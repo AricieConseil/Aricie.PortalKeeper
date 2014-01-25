@@ -405,6 +405,7 @@ Namespace Settings
                     ReflectionHelper.Instance.BinaryFormatter.Serialize(writer, settings)
                 End Using
             End If
+
         End Sub
 
         ''' <summary>
