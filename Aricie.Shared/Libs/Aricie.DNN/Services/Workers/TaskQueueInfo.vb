@@ -27,13 +27,20 @@ Namespace Services.Workers
         End Sub
 
         ''' <summary>
+        ''' Number of threads that will run the task
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Property NbThreads() As Integer = 1
+
+
+        ''' <summary>
         ''' Time to wait for task
         ''' </summary>
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Category("")> _
-        <MainCategory()> _
         Public Property TaksWaitTime() As New STimeSpan
 
         ''' <summary>
@@ -54,14 +61,7 @@ Namespace Services.Workers
         <Category("AdvancedSettings")> _
         Public Property WakeUpWaitTime() As New STimeSpan
 
-        ''' <summary>
-        ''' Number of threads that will run the task
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <Category("AdvancedSettings")> _
-        Public Property NbThreads() As Integer = 1
+
 
         ''' <summary>
         ''' Task in the background
