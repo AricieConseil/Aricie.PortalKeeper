@@ -110,6 +110,8 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Components\Collections\SerializableList.vb" />
+    <Compile Include="Components\Collections\SerializableSortedList.vb" />
+    <Compile Include="Components\Collections\SerializationDictionaryHelper.vb" />
     <Compile Include="Components\Collections\Trie.vb" />
     <Compile Include="Components\CompareIPs.vb" />
     <Compile Include="Components\ComponentModel\CData.vb" />

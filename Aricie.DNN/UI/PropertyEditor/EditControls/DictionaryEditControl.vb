@@ -132,7 +132,9 @@ Namespace UI.WebControls.EditControls
 
             Dim keyEditorInfo As EditorInfo = Me.BuildEditInfo(newEntry, "Key", PropertyEditorMode.Edit)
             Dim valueEditorInfo As EditorInfo = Me.BuildEditInfo(newEntry, "Value", PropertyEditorMode.Edit)
-
+            If valueEditorInfo.Required Then
+                valueEditorInfo.Required = False
+            End If
 
             Me.ctlNewItemKeyEditControl = BuildEditor(keyEditorInfo, container)
             If TypeOf Me.ctlNewItemKeyEditControl Is CustomTextEditControl Then

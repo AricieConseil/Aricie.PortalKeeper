@@ -222,6 +222,8 @@ Namespace ComponentModel
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
+                ReflectionHelper.MergeObjects(Instance, pe.DataSource)
+                pe.ItemChanged = True
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Else
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
