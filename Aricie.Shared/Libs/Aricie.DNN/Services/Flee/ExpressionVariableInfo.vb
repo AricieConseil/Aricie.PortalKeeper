@@ -17,6 +17,7 @@ Namespace Services.Flee
         Inherits InstanceVariableInfo(Of TResult)
 
         Private _SimpleExpression As SimpleExpression(Of TResult)
+        Private _FleeExpression As New FleeExpressionInfo(Of TResult)
 
 
         ''' <summary>
@@ -35,10 +36,16 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ConditionalVisible("AdvancedExpression", False, True)> _
-        <ExtendedCategory("Definition")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-        Public Property FleeExpression() As New FleeExpressionInfo(Of TResult)
+        <ExtendedCategory("Definition")>
+        Public Property FleeExpression() As FleeExpressionInfo(Of TResult)
+            Get
+                Return _FleeExpression
+            End Get
+            Set(value As FleeExpressionInfo(Of TResult))
+                _FleeExpression = value
+                _SimpleExpression = Nothing
+            End Set
+        End Property
 
         ''' <summary>
         ''' Retrieve the simple expression that will be evaluated
@@ -49,18 +56,17 @@ Namespace Services.Flee
         <XmlIgnore()> _
         <ConditionalVisible("AdvancedExpression", True, True)> _
        <ExtendedCategory("Definition")> _
-       <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
         Public Property SimpleExpression() As SimpleExpression(Of TResult)
             Get
                 If _SimpleExpression Is Nothing Then
-                    _SimpleExpression = New SimpleExpression(Of TResult)(Me._FleeExpression)
+                    _SimpleExpression = New SimpleExpression(Of TResult)(Me.FleeExpression)
                 End If
                 Return _SimpleExpression
             End Get
             Set(ByVal value As SimpleExpression(Of TResult))
                 _SimpleExpression = value
-                _SimpleExpression.MasterExpression = _FleeExpression
+                _SimpleExpression.SlaveExpression = FleeExpression
+                Me.FleeExpression.Expression = _SimpleExpression.Expression
             End Set
         End Property
 

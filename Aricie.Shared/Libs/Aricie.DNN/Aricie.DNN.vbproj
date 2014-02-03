@@ -468,6 +468,8 @@
     <Compile Include="UI\WebControls\Grid.vb" />
     <Compile Include="UI\WebControls\HtmlInputDate.vb" />
     <Compile Include="UI\WebControls\HtmlJsSlider.vb" />
+    <Compile Include="UI\WebControls\IconActionControl.vb" />
+    <Compile Include="UI\WebControls\IconActionEntity.vb" />
     <Compile Include="UI\WebControls\IDateTimeControl.vb" />
     <Compile Include="UI\WebControls\ISelectorControl.vb" />
     <Compile Include="UI\WebControls\LocalizableSelectorControl.vb" />

@@ -45,9 +45,9 @@ Namespace Services.Flee
             Me._Expression = expression
         End Sub
 
-        Public Sub New(masterExpression As FleeExpressionInfo(Of TResult))
-            Me.New(masterExpression.Expression)
-            Me._MasterExpression = masterExpression
+        Public Sub New(slaveExpression As FleeExpressionInfo(Of TResult))
+            Me.New(slaveExpression.Expression)
+            Me.SlaveExpression = slaveExpression
         End Sub
 
         ''' <summary>
@@ -64,24 +64,14 @@ Namespace Services.Flee
         End Property
 
 
-        Private _MasterExpression As FleeExpressionInfo(Of TResult)
-
         ''' <summary>
         ''' Gets or sets the Flee expression
         ''' </summary>
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public Property MasterExpression() As FleeExpressionInfo(Of TResult)
-            Get
-                Return _MasterExpression
-            End Get
-            Set(ByVal value As FleeExpressionInfo(Of TResult))
-                _MasterExpression = value
-            End Set
-        End Property
+        <Browsable(False), XmlIgnore()>
+        Public Property SlaveExpression As SimpleExpression(Of TResult)
 
         ''' <summary>
         ''' Gets or sets the expression as string
@@ -101,8 +91,8 @@ Namespace Services.Flee
                 If value IsNot Nothing AndAlso value <> _Expression Then
                     SyncLock Me
                         _Expression = value
-                        If _MasterExpression IsNot Nothing Then
-                            Me._MasterExpression.Expression = value
+                        If SlaveExpression IsNot Nothing Then
+                            Me.SlaveExpression.Expression = value
                         End If
                     End SyncLock
                 End If
