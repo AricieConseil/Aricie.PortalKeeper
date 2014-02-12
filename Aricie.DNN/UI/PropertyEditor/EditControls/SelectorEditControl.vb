@@ -119,7 +119,7 @@ Namespace UI.WebControls.EditControls
 
 
 
-            MyBase.CreateChildControls()
+            'MyBase.CreateChildControls()
         End Sub
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) As Boolean

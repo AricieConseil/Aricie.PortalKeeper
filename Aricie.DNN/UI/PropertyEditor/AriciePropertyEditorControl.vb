@@ -1,5 +1,4 @@
 ﻿Imports Aricie.DNN.UI.Attributes
-Imports System.ComponentModel
 Imports Aricie.Collections
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Controls
@@ -19,12 +18,12 @@ Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
+Imports System.Globalization
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
 
 Namespace UI.WebControls
-
     Public Class AriciePropertyEditorControl
         Inherits PropertyEditorControl
         Implements System.Web.UI.IPostBackEventHandler, System.Web.UI.IScriptControl
@@ -173,6 +172,18 @@ Namespace UI.WebControls
             End Get
         End Property
 
+        Public ReadOnly Property RootEditor As AriciePropertyEditorControl
+            Get
+                Dim objParentEditor As AriciePropertyEditorControl = Me
+                If objParentEditor IsNot Nothing Then
+                    While objParentEditor.ParentAricieEditor IsNot Nothing
+                        objParentEditor = objParentEditor.ParentAricieEditor
+                    End While
+                End If
+                Return objParentEditor
+            End Get
+        End Property
+
         Public ReadOnly Property ParentAricieField As AricieFieldEditorControl
             Get
                 If _ParentField Is Nothing Then
@@ -280,6 +291,32 @@ Namespace UI.WebControls
             End Set
         End Property
 
+
+        Public Property SubEditorPath As String
+            Get
+                Return CStr(DnnContext.Current.Session("SubEditorPath"))
+            End Get
+            Set(value As String)
+                DnnContext.Current.Session("SubEditorPath") = value
+            End Set
+        End Property
+
+
+        Public Property SubEditorFullPath As String
+            Get
+                Return CStr(DnnContext.Current.Session("SubEditorFullPath"))
+            End Get
+            Set(value As String)
+                DnnContext.Current.Session("SubEditorFullPath") = value
+                SubEditorPath = value
+                Dim subPathContainer = TryCast(DataSource, SubPathContainer)
+                If (subPathContainer IsNot Nothing) Then
+                    subPathContainer.OriginalPath = value
+                    subPathContainer.Path = value
+                End If
+            End Set
+        End Property
+
 #End Region
 
 #Region "Event Handlers"
@@ -337,9 +374,9 @@ Namespace UI.WebControls
 
                         'SB: we set the value of the tab index in the cookie because further databindings may use this value from the 
                         Dim cookieName As String = "cookieTab" & Me.ClientID.GetHashCode()
-                        Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
+                        Dim cookie As HttpCookie = Me.RetrieveCookieValue(cookieName)
                         If cookie IsNot Nothing Then
-                            HttpContext.Current.Response.Cookies.Remove(cookieName)
+                            Me.Page.Response.Cookies.Remove(cookieName)
                         End If
                         _CurrentTab = t
                         cookie = New HttpCookie(cookieName)
@@ -375,7 +412,7 @@ Namespace UI.WebControls
                     DataBind()
                 End If
 
-            
+
 
                 If Me.DataSource IsNot Nothing Then
                     For Each field As AricieFieldEditorControl In Me.Fields
@@ -478,14 +515,14 @@ Namespace UI.WebControls
                 'Clear Existing Controls
                 Controls.Clear()
 
+
                 'Start Tracking ViewState
                 TrackViewState()
 
                 'Create the Editor
                 CreateEditor()
 
-
-
+                
                 'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
                 ChildControlsCreated = True
             Catch ex As Exception
@@ -510,8 +547,8 @@ Namespace UI.WebControls
                                                                      Return objProp.GetIndexParameters().Length = 0
                                                                  End Function)
                         Array.Sort(toReturn, New AriciePropertySortOrderComparer(toReturn))
+                        CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, key, Me.SortMode.ToString())
                     End If
-                    CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, key, Me.SortMode.ToString())
                 End If
                 Return toReturn
             End Get
@@ -552,35 +589,6 @@ Namespace UI.WebControls
                 Else
                     Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(info)
                     toReturn = ComputeVisibility(condVisibles)
-                    'Dim customAttributes As Object() = info.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
-                    'If (customAttributes.Length > 0) Then
-                    '    For Each condAttribute As ConditionalVisibleAttribute In customAttributes
-                    '        Dim condVisibility As ConditionalVisibleInfo = condAttribute.Value
-                    '        Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
-                    '        Dim objPropInfo As PropertyInfo = Nothing
-                    '        If props.TryGetValue(condVisibility.MasterPropertyName, objPropInfo) Then
-                    '            customAttributes = objPropInfo.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
-                    '            If (customAttributes.Length > 0) AndAlso Not Me.GetRowVisibility(objPropInfo) Then
-                    '                toReturn = False
-                    '            Else
-                    '                Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
-                    '                toReturn = toReturn AndAlso condVisibility.MatchValue(value)
-                    '                If toReturn AndAlso condVisibility.SecondaryPropertyName <> "" Then
-                    '                    If props.TryGetValue(condVisibility.SecondaryPropertyName, objPropInfo) Then
-                    '                        value = objPropInfo.GetValue(Me.DataSource, Nothing)
-                    '                        toReturn = toReturn AndAlso condVisibility.MatchSecondary(value)
-                    '                    End If
-                    '                End If
-                    '            End If
-                    '            If condVisibility.EnforceAutoPostBack Then
-                    '                _PostBackFields.Add(condVisibility.MasterPropertyName)
-                    '                If condVisibility.SecondaryPropertyName <> "" Then
-                    '                    _PostBackFields.Add(condVisibility.SecondaryPropertyName)
-                    '                End If
-                    '            End If
-                    '        End If
-                    '    Next
-                    'End If
                 End If
             End If
             Return toReturn
@@ -592,6 +600,7 @@ Namespace UI.WebControls
 
         Protected Overrides Sub CreateEditor()
             Me.CssClass = "dnnForm"
+            'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
             If Not Me.AutoGenerate Then
                 Dim mainC As New HtmlControls.HtmlGenericControl("div")
                 mainC.ID = "main"
@@ -615,13 +624,16 @@ Namespace UI.WebControls
                     End If
 
                 End If
+
+                ProcessSubPath()
                 DisplayHierarchy()
 
-                'Me.AddCommandButtons()
             End If
 
             Validate()
         End Sub
+
+      
 
 
 
@@ -629,21 +641,77 @@ Namespace UI.WebControls
 
 #Region "Inner methods"
 
+        Private Sub ProcessSubPath()
+            If Me.DataSource IsNot Nothing AndAlso Me.PropertyDepth = 0 Then
+                If Not String.IsNullOrEmpty(Me.SubEditorFullPath) Then
+                    If Me.Page.IsPostBack Then
+                        If Not Me.DataSource.GetType() Is GetType(SubPathContainer) Then
+                                Dim newContainerEntity As New SubPathContainer()
+                                newContainerEntity.OriginalEntity = Me.DataSource
+                                newContainerEntity.OriginalPath = SubEditorFullPath
+                                If Not String.IsNullOrEmpty(SubEditorPath) Then
+                                    newContainerEntity.Path = SubEditorPath
+                                Else
+                                    newContainerEntity.Path = newContainerEntity.OriginalPath
+                                End If
+                                Me.DataSource = newContainerEntity
+                                Me._FieldsDictionary = Nothing
+                        Else
+                            Dim newPath As String = DirectCast(Me.DataSource, SubPathContainer).Path
+                            If newPath <> Me.SubEditorPath Then
+                                If Not String.IsNullOrEmpty(SubEditorPath) Then
+                                    Me._FieldsDictionary = Nothing
+                                End If
+                                Me.SubEditorPath = newPath
+                            End If
+                        End If
+                    Else
+                        Me.SubEditorFullPath = ""
+                        Me.SubEditorPath = ""
+                    End If
+                Else
+                    CloseSubEditor()
+                End If
+            End If
+        End Sub
+
+        Friend Sub CloseSubEditor()
+            If Me.DataSource.GetType() Is GetType(SubPathContainer) Then
+                Me.DataSource = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+                Me._FieldsDictionary = Nothing
+                Me.SubEditorFullPath = ""
+                Me.SubEditorPath = ""
+                Me.ItemChanged = True
+                Me.DataBind()
+            End If
+        End Sub
 
         Private Function GetCommandButtons() As IEnumerable(Of ActionButtonInfo)
             Dim toReturn As List(Of ActionButtonInfo)
             If Me.DataSource IsNot Nothing Then
-                toReturn = CacheHelper.GetGlobal(Of List(Of ActionButtonInfo))(Me.DataSource.GetType.FullName)
-                If toReturn Is Nothing Then
-                    Dim membersDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(Me.DataSource.GetType())
-                    toReturn = (From objMethod In (From memberPair In membersDico From objMember In memberPair.Value Select objMember).OfType(Of MethodInfo)() Where objMethod IsNot Nothing Select toAdd = ActionButtonInfo.FromMethod(objMethod) Where toAdd IsNot Nothing).ToList()
-                    CacheHelper.SetGlobal(Of List(Of ActionButtonInfo))(toReturn, Me.DataSource.GetType.FullName)
+                toReturn = GetCommandButtons(Me.DataSource.GetType())
+                Dim subPathContainer = TryCast(Me.DataSource, SubPathContainer)
+                If (subPathContainer IsNot Nothing) Then
+                    toReturn = New List(Of ActionButtonInfo)(toReturn)
+                    Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(subPathContainer.OriginalEntity.GetType())
+                    toReturn.AddRange(From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName))
                 End If
             Else
                 toReturn = New List(Of ActionButtonInfo)
             End If
             Return toReturn
         End Function
+
+        Private Shared Function GetCommandButtons(objType As Type) As List(Of ActionButtonInfo)
+            Dim toReturn As List(Of ActionButtonInfo) = CacheHelper.GetGlobal(Of List(Of ActionButtonInfo))(objType.FullName)
+            If toReturn Is Nothing Then
+                Dim membersDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(objType)
+                toReturn = (From objMethod In (From memberPair In membersDico From objMember In memberPair.Value Select objMember).OfType(Of MethodInfo)() Where objMethod IsNot Nothing Select toAdd = ActionButtonInfo.FromMethod(objMethod) Where toAdd IsNot Nothing).ToList()
+                CacheHelper.SetGlobal(Of List(Of ActionButtonInfo))(toReturn, objType.FullName)
+            End If
+            Return toReturn
+        End Function
+
 
 
         Protected Sub DisplayHierarchy()
@@ -673,7 +741,7 @@ Namespace UI.WebControls
         ''' <remarks>If no cookie with this name exists in the response, cookies from the request are used</remarks>
         Private Function RetrieveCookieValue(cookieName As String) As HttpCookie
             Dim cookie As HttpCookie = HttpContext.Current.Response.Cookies(cookieName)
-            If (cookie Is Nothing OrElse String.IsNullOrEmpty(cookie.Value)) Then
+            If (cookie Is Nothing OrElse cookie.Value Is Nothing) Then
                 cookie = HttpContext.Current.Request.Cookies(cookieName)
             End If
             Return cookie
@@ -689,7 +757,9 @@ Namespace UI.WebControls
                 If cookie IsNot Nothing Then
                     Integer.TryParse(cookie.Value, currentTabIndex)
                 End If
-
+                If currentTabIndex > objElement.Tabs.Count - 1 Then
+                    currentTabIndex = 0
+                End If
                 Dim tabsContainer As New HtmlGenericControl("div")
                 'tabsContainer.EnableViewState = False
                 Dim tabsHeader As New HtmlGenericControl("ul")
@@ -878,7 +948,7 @@ Namespace UI.WebControls
             Dim btn As New CommandButton()
             btn.ID = "cmd" & objButtonInfo.Method.Name
             btn.Text = objButtonInfo.Method.Name
-            btn.ResourceKey = Me.DataSource.GetType().Name & "_" & objButtonInfo.Method.Name & ".Text"
+            btn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
             If objButtonInfo.IconPath <> "" Then
                 btn.ImageUrl = objButtonInfo.IconPath
             End If
@@ -904,10 +974,13 @@ Namespace UI.WebControls
                     paramInstances.Add(Nothing)
                 End If
             Next
-
+            Dim targetEntity As Object = Me.DataSource
+            If TypeOf Me.DataSource Is SubPathContainer AndAlso Not objButtonInfo.Method.GetBaseDefinition().DeclaringType Is GetType(SubPathContainer) Then
+                targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+            End If
             AddHandler btn.Click, Sub(s As Object, e As EventArgs)
                                       Try
-                                          objButtonInfo.Method.Invoke(Me.DataSource, paramInstances.ToArray)
+                                          objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
                                       Catch ex As Exception
                                           Me.ProcessException(ex)
                                       End Try

@@ -222,7 +222,7 @@ Namespace ComponentModel
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
-                ReflectionHelper.MergeObjects(Instance, pe.DataSource)
+                ReflectionHelper.MergeObjects(Instance, Me)
                 pe.ItemChanged = True
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Else
@@ -244,7 +244,7 @@ Namespace ComponentModel
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
             Reset(SharedLocationSettings(True, False))
             Try
-                ReflectionHelper.MergeObjects(Instance, pe.DataSource)
+                ReflectionHelper.MergeObjects(Instance, Me)
                 pe.ItemChanged = True
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Catch ex As Exception

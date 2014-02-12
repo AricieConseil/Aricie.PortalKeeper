@@ -455,6 +455,7 @@
     <Compile Include="UI\PropertyEditor\PropertyEditorUserControlBase.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="UI\PropertyEditor\SubPathContainer.vb" />
     <Compile Include="UI\Skins\SkinHelper.vb" />
     <Compile Include="UI\TimeSpanControl.vb" />
     <Compile Include="UI\WebControls\AssemblySelectorDropDownList.vb" />

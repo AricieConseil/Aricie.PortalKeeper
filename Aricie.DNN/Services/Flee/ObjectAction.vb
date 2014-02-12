@@ -70,7 +70,6 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <LabelMode(LabelMode.Top)> _
         <ExtendedCategory("Instance")> _
         Public Property Instance() As New SimpleExpression(Of TObjectType)
 
@@ -80,7 +79,6 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <LabelMode(LabelMode.Top)> _
         <ExtendedCategory("Parameters")> _
         Public Property Parameters() As New Variables
 
