@@ -33,7 +33,9 @@ Namespace UI.WebControls
             Me.DataSource = dataSource
             Me.FieldName = fieldName
             If Not ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType).TryGetValue(Me.FieldName, _CurrentProperty) Then
-                Throw New ArgumentException("fieldName must be a property of current type", "fieldName")
+                Throw New ArgumentException("fieldName must be a property of type " & Me.DataSource.GetType.Name, "fieldName")
+            ElseIf _CurrentProperty.GetIndexParameters().Length > 0 Then
+                Throw New ArgumentException("Displayed Property " & _CurrentProperty.Name & " from type " & _CurrentProperty.DeclaringType.Name & " can't have indexing parameters", "fieldName")
             End If
             Me._AdditionalAttributes = additionalAttributes
         End Sub

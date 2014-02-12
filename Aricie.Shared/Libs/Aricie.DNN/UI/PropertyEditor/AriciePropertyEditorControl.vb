@@ -294,20 +294,24 @@ Namespace UI.WebControls
 
         Public Property SubEditorPath As String
             Get
-                Return CStr(DnnContext.Current.Session("SubEditorPath"))
+                Dim name As String = "SubEditorPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                Return CStr(DnnContext.Current.Session(name))
             End Get
             Set(value As String)
-                DnnContext.Current.Session("SubEditorPath") = value
+                Dim name As String = "SubEditorPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                DnnContext.Current.Session(name) = value
             End Set
         End Property
 
 
         Public Property SubEditorFullPath As String
             Get
-                Return CStr(DnnContext.Current.Session("SubEditorFullPath"))
+                Dim name As String = "SubEditorFullPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                Return CStr(DnnContext.Current.Session(name))
             End Get
             Set(value As String)
-                DnnContext.Current.Session("SubEditorFullPath") = value
+                Dim name As String = "SubEditorFullPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
+                DnnContext.Current.Session(name) = value
                 SubEditorPath = value
                 Dim subPathContainer = TryCast(DataSource, SubPathContainer)
                 If (subPathContainer IsNot Nothing) Then
@@ -522,7 +526,7 @@ Namespace UI.WebControls
                 'Create the Editor
                 CreateEditor()
 
-                
+
                 'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
                 ChildControlsCreated = True
             Catch ex As Exception
@@ -543,9 +547,6 @@ Namespace UI.WebControls
                     toReturn = CacheHelper.GetGlobal(Of PropertyInfo())(key, Me.SortMode.ToString())
                     If toReturn Is Nothing Then
                         toReturn = Me.GetProperties()
-                        Array.FindAll(Of PropertyInfo)(toReturn, Function(objProp As PropertyInfo) As Boolean
-                                                                     Return objProp.GetIndexParameters().Length = 0
-                                                                 End Function)
                         Array.Sort(toReturn, New AriciePropertySortOrderComparer(toReturn))
                         CacheHelper.SetGlobal(Of PropertyInfo())(toReturn, key, Me.SortMode.ToString())
                     End If
@@ -633,7 +634,7 @@ Namespace UI.WebControls
             Validate()
         End Sub
 
-      
+
 
 
 
@@ -646,16 +647,17 @@ Namespace UI.WebControls
                 If Not String.IsNullOrEmpty(Me.SubEditorFullPath) Then
                     If Me.Page.IsPostBack Then
                         If Not Me.DataSource.GetType() Is GetType(SubPathContainer) Then
-                                Dim newContainerEntity As New SubPathContainer()
-                                newContainerEntity.OriginalEntity = Me.DataSource
-                                newContainerEntity.OriginalPath = SubEditorFullPath
-                                If Not String.IsNullOrEmpty(SubEditorPath) Then
-                                    newContainerEntity.Path = SubEditorPath
-                                Else
-                                    newContainerEntity.Path = newContainerEntity.OriginalPath
-                                End If
-                                Me.DataSource = newContainerEntity
-                                Me._FieldsDictionary = Nothing
+                            Dim newContainerEntity As New SubPathContainer()
+                            newContainerEntity.OriginalEntity = Me.DataSource
+                            newContainerEntity.OriginalPath = SubEditorFullPath
+                            newContainerEntity.Path = SubEditorPath
+                            'If Not String.IsNullOrEmpty(SubEditorPath) Then
+                            '    newContainerEntity.Path = SubEditorPath
+                            'Else
+                            '    newContainerEntity.Path = newContainerEntity.OriginalPath
+                            'End If
+                            Me.DataSource = newContainerEntity
+                            Me._FieldsDictionary = Nothing
                         Else
                             Dim newPath As String = DirectCast(Me.DataSource, SubPathContainer).Path
                             If newPath <> Me.SubEditorPath Then
@@ -691,10 +693,15 @@ Namespace UI.WebControls
             If Me.DataSource IsNot Nothing Then
                 toReturn = GetCommandButtons(Me.DataSource.GetType())
                 Dim subPathContainer = TryCast(Me.DataSource, SubPathContainer)
-                If (subPathContainer IsNot Nothing) Then
+                If (subPathContainer IsNot Nothing AndAlso Not subPathContainer.OriginalEntity Is subPathContainer.SubEntity) Then
                     toReturn = New List(Of ActionButtonInfo)(toReturn)
-                    Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(subPathContainer.OriginalEntity.GetType())
-                    toReturn.AddRange(From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName))
+                    Dim dico = subPathContainer.GetParentEntities()
+                    For Each objEntityPair As KeyValuePair(Of String, Object) In dico
+                        If objEntityPair.Value IsNot Nothing Then
+                            Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(objEntityPair.Value.GetType)
+                            toReturn.AddRange(From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName) AndAlso actionButton.ConditionalVisibles.Count = 0)
+                        End If
+                    Next
                 End If
             Else
                 toReturn = New List(Of ActionButtonInfo)
@@ -946,7 +953,8 @@ Namespace UI.WebControls
         Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
 
             Dim btn As New CommandButton()
-            btn.ID = "cmd" & objButtonInfo.Method.Name
+            'btn.ID = "cmd" & objButtonInfo.Method.Name
+            btn.CssClass = "dnnTertiaryAction"
             btn.Text = objButtonInfo.Method.Name
             btn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
             If objButtonInfo.IconPath <> "" Then
@@ -975,8 +983,19 @@ Namespace UI.WebControls
                 End If
             Next
             Dim targetEntity As Object = Me.DataSource
-            If TypeOf Me.DataSource Is SubPathContainer AndAlso Not objButtonInfo.Method.GetBaseDefinition().DeclaringType Is GetType(SubPathContainer) Then
-                targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+
+            If TypeOf Me.DataSource Is SubPathContainer Then
+                Dim objContainer As SubPathContainer = DirectCast(Me.DataSource, SubPathContainer)
+                Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
+                If Not targetType Is GetType(SubPathContainer) Then
+                    targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+                    For Each objEntity As Object In objContainer.GetParentEntities()
+                        If objEntity.GetType.IsAssignableFrom(targetType) Then
+                            targetEntity = objEntity
+                            Exit For
+                        End If
+                    Next
+                End If
             End If
             AddHandler btn.Click, Sub(s As Object, e As EventArgs)
                                       Try
@@ -1186,9 +1205,9 @@ Namespace UI.WebControls
 
                 Dim Bindings As BindingFlags = BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.Static
 
-                Dim objProps As PropertyInfo() = DataSource.GetType().GetProperties(Bindings)
+                Dim objProps As PropertyInfo() = DataSource.GetType().GetProperties(Bindings).Where(Function(objProp As PropertyInfo) objProp.GetIndexParameters().Length = 0).ToArray()
 
-                'Apply sort method
+        'Apply sort method
                 Select Case SortMode
                     Case PropertySortType.Alphabetical
                         Array.Sort(objProps, New PropertyNameComparer)

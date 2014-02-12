@@ -4950,20 +4950,23 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RuleEngineSettings`1_LogDump.Text" xml:space="preserve">
     <value>Log Dump</value>
   </data>
+  <data name="BotInfo`1_AddDumpToHistory.Help" xml:space="preserve">
+    <value>You can choose the dump generated should be added to user history</value>
+  </data>
+  <data name="BotInfo`1_AddDumpToHistory.Text" xml:space="preserve">
+    <value>Add Dump to history</value>
+  </data>
   <data name="Item_Delete.Text" xml:space="preserve">
     <value>Delete Item</value>
   </data>
   <data name="Item_Down.Text" xml:space="preserve">
     <value>Move Item Down</value>
   </data>
-  <data name="Item_Edit.Text" xml:space="preserve">
-    <value>Edit Sub Item</value>
+  <data name="Item_Focus.Text" xml:space="preserve">
+    <value>Open Sub Item</value>
   </data>
   <data name="Item_Up.Text" xml:space="preserve">
     <value>Move Item Up</value>
-  </data>
-  <data name="String1" xml:space="preserve">
-    <value />
   </data>
   <data name="SubPathContainer_CloseSubEditor.Text" xml:space="preserve">
     <value>Back to Full Editor</value>

@@ -402,7 +402,6 @@ Namespace Services
             ' Use the cache because the reflection used later is expensive
             Dim objProperties As Dictionary(Of String, PropertyInfo) = Nothing
 
-            'objProperties = GetGlobal(Of Dictionary(Of String, PropertyInfo))(objType.FullName)
             If Not ReflectionHelper.Instance._PropertiesByType.TryGetValue(objType, objProperties) Then
                 objProperties = New Dictionary(Of String, PropertyInfo)(StringComparer.OrdinalIgnoreCase)
                 Dim objProperty As PropertyInfo
@@ -412,9 +411,10 @@ Namespace Services
                     End If
 
                 Next
-                ReflectionHelper.Instance._PropertiesByType(objType) = objProperties
-                'SetCacheDependant(Of Dictionary(Of String, PropertyInfo))(objProperties, glbDependency, TimeSpan.FromMinutes(20), _
-                'objType.FullName)
+                SyncLock ReflectionHelper.Instance._PropertiesByType
+                    ReflectionHelper.Instance._PropertiesByType(objType) = objProperties
+                End SyncLock
+                
             End If
 
 

@@ -126,7 +126,7 @@ Namespace UI.WebControls.EditControls
             If Me.Value Is Nothing Then
                 Throw New ApplicationException(String.Format("value of property {0} can't be null", Me.ParentField.DataField))
             End If
-            Dim oldValue As Object = Me.Value
+            Dim objOldValue As Object = Me.Value
             'Dim toReturn As Boolean = MyBase.LoadPostData(postDataKey, postCollection)
             'If Not String.IsNullOrEmpty(_selector.SelectedValue) Then
             Dim vaueType As Type = Me.Value.GetType()
@@ -139,7 +139,7 @@ Namespace UI.WebControls.EditControls
             '    Me.Value = _selector.NullItemValue
             'End If
 
-            Return Not oldValue.Equals(Me.Value)
+            Return Not objOldValue.Equals(Me.Value)
         End Function
 
         Private Sub SelectorSelectedIndexChanged(ByVal sender As Object, ByVal e As EventArgs)
