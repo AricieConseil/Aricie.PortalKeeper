@@ -284,8 +284,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 matchedRule.RunActions(Me)
             Next
             If enableStopWatch Then
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - End", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                            WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId)
+
+                Dim objStep As StepInfo
+                If endSequence AndAlso Me._CurrentEngine.LogDump Then
+
+                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
+                    Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
+                    For Each objItem As KeyValuePair(Of String, Object) In dump
+                        If objItem.Value IsNot Nothing Then
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
+                        Else
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
+                        End If
+                    Next
+
+                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
+                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                Else
+                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
+                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId)
+                End If
+
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub
@@ -302,6 +321,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return Me.GetDump(dumpAllVars, dumpaVarList, Nothing)
         End Function
 
+        Public Function GetDump() As SerializableDictionary(Of String, Object)
+
+
+            Return Me.GetDump(Me._CurrentEngine.DumpAllVars, Me._CurrentEngine.DumpVarList, Nothing)
+        End Function
 
         Public Function GetDump(dumpAllVars As Boolean, dumpaVarList As ICollection(Of String), defaultValue As Object) As SerializableDictionary(Of String, Object)
             Dim toReturn As SerializableDictionary(Of String, Object)

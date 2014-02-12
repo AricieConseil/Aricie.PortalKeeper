@@ -1,6 +1,10 @@
 ﻿Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class BotRunContext(Of TEngineEvent As IConvertible)
 
+        Public Sub New(objBot As BotInfo(Of TEngineEvent))
+            Me._AsyncLockId = objBot.Name.GetHashCode()
+        End Sub
+
         Private _Id As String
 
         Public ReadOnly Property Id As String

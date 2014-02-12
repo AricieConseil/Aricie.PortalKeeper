@@ -272,8 +272,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(encryptionKey, initVector, objUser, objUser.PortalID, False)
                 If userBotInfo IsNot Nothing Then
                     If userBotInfo.Enabled Then
-                        Dim runContext As New BotRunContext(Of TEngineEvent)
-                        runContext.AsyncLockId = objUser.UserID
+                        Dim runContext As New BotRunContext(Of TEngineEvent)(Me.Bot)
+                        runContext.AsyncLockId -= objUser.UserID
                         runContext.Events = events
                         runContext.History = userBotInfo.BotHistory
                         runContext.UserParams = userBotInfo.GetParameterValues(objUser)

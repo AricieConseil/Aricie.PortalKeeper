@@ -10,8 +10,8 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.Services.Exceptions
 Imports Aricie.DNN.Services.Flee
 Imports System.Globalization
-Imports Jayrock.Json
-Imports Jayrock.JsonRpc
+'Imports Jayrock.Json
+'Imports Jayrock.JsonRpc
 Imports System.Net
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.Attributes

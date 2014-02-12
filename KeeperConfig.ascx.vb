@@ -392,14 +392,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Me.KeeperModuleSettings.AssignUserBot Then
                     If Me.KeeperModuleSettings.UserBot IsNot Nothing Then
                         Me.divUserBot.Visible = True
-                        If Not Me.IsEditable Then
+                        If Not DotNetNuke.Security.Permissions.ModulePermissionController.HasModulePermission(Me.ModuleConfiguration.ModulePermissions, "EDIT") Then
                             Me.ctUserBotEntities.EditMode = DotNetNuke.UI.WebControls.PropertyEditorMode.View
                             Me.divUserBotCmds.Visible = False
                         Else
                             Me.ctUserBotEntities.EditMode = DotNetNuke.UI.WebControls.PropertyEditorMode.Edit
                             Me.divUserBotCmds.Visible = True
                         End If
-
                     Else
                         DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me, Localization.GetString("NoUserBot.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
                     End If

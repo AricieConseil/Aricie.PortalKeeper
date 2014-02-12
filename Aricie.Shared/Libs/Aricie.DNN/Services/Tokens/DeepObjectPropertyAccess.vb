@@ -73,6 +73,29 @@ Namespace Services
 
 
 #Region "Public methods"
+
+        Public Overloads Function GetValue(ByVal strPropertyName As String) As Object
+
+            Return GetValue(strPropertyName, False)
+
+        End Function
+
+
+        Private Overloads Function GetValue(ByVal strPropertyName As String, ByRef isLocalized As Boolean) As Object
+
+            Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
+
+            propExplorer.GetDeepPropertyValue(Me)
+
+            'If propExplorer.CurrentValue Is Nothing Then
+            '    Throw New ArgumentException(String.Format("Target Property {0} not found", strPropertyName))
+            'End If
+            isLocalized = propExplorer.IsLocalized
+            Return propExplorer.CurrentValue
+
+        End Function
+
+
         ''' <summary>
         ''' Returns property value of the object as IEnumerable
         ''' </summary>
@@ -82,26 +105,28 @@ Namespace Services
         Public Function GetEnumerable(ByVal strPropertyName As String) As IEnumerable
 
             Dim toReturn As IEnumerable = Nothing
-            Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
+            'Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
 
-            propExplorer.GetDeepPropertyValue(Me)
+            'propExplorer.GetDeepPropertyValue(Me)
+
+            Dim objValue As Object = Me.GetValue(strPropertyName)
 
 
-            If propExplorer.CurrentValue Is Nothing Then
+            If objValue Is Nothing Then
                 Throw New ArgumentException(String.Format("Target Property {0} not found", strPropertyName))
             End If
 
-            If TypeOf propExplorer.CurrentValue Is String Then
-                Dim strValue As String = DirectCast(propExplorer.CurrentValue, String)
+            If TypeOf objValue Is String Then
+                Dim strValue As String = DirectCast(objValue, String)
                 toReturn = New List(Of String)
                 If Not String.IsNullOrEmpty(strValue) AndAlso strValue.ToUpperInvariant <> "FALSE" Then
                     DirectCast(toReturn, List(Of String)).Add(strValue)
                 End If
-            ElseIf TypeOf propExplorer.CurrentValue Is IEnumerable Then
-                toReturn = DirectCast(propExplorer.CurrentValue, IEnumerable)
-            ElseIf TypeOf propExplorer.CurrentValue Is IConvertible Then
+            ElseIf TypeOf objValue Is IEnumerable Then
+                toReturn = DirectCast(objValue, IEnumerable)
+            ElseIf TypeOf objValue Is IConvertible Then
                 toReturn = New List(Of Boolean)
-                If DirectCast(propExplorer.CurrentValue, IConvertible).ToBoolean(CultureInfo.InvariantCulture) Then
+                If DirectCast(objValue, IConvertible).ToBoolean(CultureInfo.InvariantCulture) Then
                     DirectCast(toReturn, List(Of Boolean)).Add(True)
                 End If
             Else
@@ -132,33 +157,36 @@ Namespace Services
 
                 propertyNotFound = True
                 If strPropertyName <> "" Then
-                    Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
+                    'Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
 
-                    propExplorer.GetDeepPropertyValue(Me)
+                    'propExplorer.GetDeepPropertyValue(Me)
 
-                    If Not propExplorer.CurrentValue Is Nothing Then
+                    Dim isLocalized As Boolean
+                    Dim objValue As Object = Me.GetValue(strPropertyName, isLocalized)
+
+                    If Not objValue Is Nothing Then
 
                         propertyNotFound = False
 
-                        Dim propType As Type = propExplorer.CurrentValue.GetType
+                        Dim propType As Type = objValue.GetType
 
                         Select Case propType.Name
                             Case "String"
-                                toReturn = PropertyAccess.FormatString(CStr(propExplorer.CurrentValue), strFormat)
+                                toReturn = PropertyAccess.FormatString(CStr(objValue), strFormat)
                             Case "Boolean"
                                 toReturn = _
-                                    (PropertyAccess.Boolean2LocalizedYesNo(CBool(propExplorer.CurrentValue), formatProvider))
+                                    (PropertyAccess.Boolean2LocalizedYesNo(CBool(objValue), formatProvider))
                             Case Else
-                                If TypeOf propExplorer.CurrentValue Is IFormattable Then
+                                If TypeOf objValue Is IFormattable Then
                                     If strFormat = String.Empty Then strFormat = "g"
-                                    toReturn = CType(propExplorer.CurrentValue, IFormattable).ToString(strFormat, formatProvider)
+                                    toReturn = CType(objValue, IFormattable).ToString(strFormat, formatProvider)
                                 Else
-                                    toReturn = propExplorer.CurrentValue.ToString()
+                                    toReturn = objValue.ToString()
                                 End If
                         End Select
 
                         'localization
-                        If propExplorer.IsLocalized AndAlso toReturn <> "" Then
+                        If isLocalized AndAlso toReturn <> "" Then
                             toReturn = Localization.GetString(toReturn, Me._ResourceFile)
 
                         End If

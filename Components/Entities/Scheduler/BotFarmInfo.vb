@@ -29,19 +29,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Private members"
 
-
-
-        Private _Bots As New SimpleList(Of BotInfo(Of TEngineEvent))
-
-        Private _EnableUserBots As Boolean
-
         Private _InitVector As String = String.Empty
 
         Private _EncryptionKey As String = String.Empty
 
         Private _DnnDecryptionKey As String = String.Empty
-
-        Private _UserBots As New SimpleList(Of UserBotSettings(Of TEngineEvent))
 
         Private _Schedule As New STimeSpan(TimeSpan.FromSeconds(15))
 
@@ -58,59 +50,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #Region "Public properties"
 
 
-        <MainCategory()> _
-        <ExtendedCategory("Bots")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
-        Public Property Bots() As SimpleList(Of BotInfo(Of TEngineEvent))
-            Get
-                Return _Bots
-            End Get
-            Set(ByVal value As SimpleList(Of BotInfo(Of TEngineEvent)))
-                _Bots = value
-            End Set
-        End Property
+        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ExtendedCategory("Bots"), MainCategory()>
+        Public Property Bots As New SimpleList(Of BotInfo(Of TEngineEvent))
 
 
-        <ExtendedCategory("UserBots")> _
-        Public Property EnableUserBots() As Boolean
-            Get
-                Return _EnableUserBots
-            End Get
-            Set(ByVal value As Boolean)
-                _EnableUserBots = value
-            End Set
-        End Property
+        <ExtendedCategory("UserBots")>
+        Public Property EnableUserBots As Boolean
 
 
-        <ExtendedCategory("UserBots")> _
-        <ConditionalVisible("EnableUserBots", False, True)> _
-       <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
-           <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
-        Public Property UserBots() As SimpleList(Of UserBotSettings(Of TEngineEvent))
-            Get
-                Return _UserBots
-            End Get
-            Set(ByVal value As SimpleList(Of UserBotSettings(Of TEngineEvent)))
-                _UserBots = value
-            End Set
-        End Property
+        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ConditionalVisible("EnableUserBots", False, True), ExtendedCategory("UserBots")>
+        Public Property UserBots As New SimpleList(Of UserBotSettings(Of TEngineEvent))
 
 
         <XmlIgnore()> _
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property AvailableUserBots() As IDictionary(Of String, UserBotSettings(Of TEngineEvent))
             Get
-                Return ProviderList(Of UserBotSettings(Of TEngineEvent)).GetAvailable(Me._UserBots.Instances)
+                Return ProviderList(Of UserBotSettings(Of TEngineEvent)).GetAvailable(Me.UserBots.Instances)
             End Get
         End Property
 
 
         <IsReadOnly(True)> _
         <ExtendedCategory("UserBots")> _
-        <ConditionalVisible("EnableUserBots", False, True)> _
+        <ConditionalVisible("EnableUserBots", False, True)>
         Public Property InitVector() As String
             Get
                 If String.IsNullOrEmpty(_InitVector) Then
@@ -124,7 +87,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Property EncryptedKey() As String
             Get
                 Try
@@ -151,8 +114,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <XmlIgnore()> _
         <ExtendedCategory("UserBots")> _
         <ConditionalVisible("EnableUserBots", False, True)> _
-          <Width(450)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        <Width(450)> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
         Public Property EncryptionKey() As String
             Get
                 Return _EncryptionKey
@@ -171,7 +134,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")>
         Public Property Schedule() As STimeSpan
             Get
                 Return _Schedule
@@ -181,7 +144,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")>
         Public Property EnableLogs() As Boolean
             Get
                 Return _EnableLogs
@@ -192,9 +155,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-
-
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")>
         Public Property Synchronization() As SynchronizationMode
             Get
                 Return _Synchronization
@@ -205,8 +166,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <Required(True)> _
-      <ConditionalVisible("Synchronization", False, True, SynchronizationMode.Mutex)> _
-      <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("Synchronization", False, True, SynchronizationMode.Mutex)> _
+        <ExtendedCategory("TechnicalSettings")>
         Public Property MutexName() As String
             Get
                 Return _MutexName
@@ -217,7 +178,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")>
         Public Property SynchronisationTimeout() As STimeSpan
             Get
                 Return _SynchronisationTimeout
@@ -226,10 +187,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _SynchronisationTimeout = value
             End Set
         End Property
-
-
-
-
 
 
 #End Region
@@ -251,21 +208,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '        Return _FarmMutex
         '    End Get
         'End Property
-        <ActionButton("~/images/fwd.gif")> _
+        <ActionButton("~/images/fwd.gif")>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
             Dim flowid As String = Guid.NewGuid.ToString
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then
 
-                Dim objStep As New StepInfo(Debug.PKPDebugType, "Manual Run Start", _
-                                            WorkingPhase.InProgress, False, False, -1, flowid)
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Manual Run Start", WorkingPhase.InProgress, False, False, -1, flowid)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
             Dim nbRuns As Integer = Me.RunBots(CType(PortalKeeperSchedule.ScheduleEventList, Global.System.Collections.Generic.IList(Of TEngineEvent)), True, Guid.NewGuid.ToString)
 
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then
 
-                Dim objStep As New StepInfo(Debug.PKPDebugType, "Manual Run End", _
-                                            WorkingPhase.InProgress, True, False, -1, flowid)
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Manual Run End", WorkingPhase.InProgress, True, False, -1, flowid)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
 
@@ -323,11 +278,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 '    flowId = Guid.NewGuid.ToString
                 'End If
                 'flowId = Guid.NewGuid.ToString
-                Dim objStep As New StepInfo(Debug.PKPDebugType, "Farm Run Start", _
-                                            WorkingPhase.InProgress, False, False, -1, flowId)
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Farm Run Start", WorkingPhase.InProgress, False, False, -1, flowId)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
-            For Each webBot As BotInfo(Of TEngineEvent) In Me._Bots.Instances
+            For Each webBot As BotInfo(Of TEngineEvent) In Me.Bots.Instances
                 'Dim unused As Boolean = True
                 'For Each objUserBotSettings As UserBotSettings(Of TEngineEvent) In Me.AvailableUserBots.Values
                 '    If objUserBotSettings.BotName = webBot.Name AndAlso objUserBotSettings.DisableTemplateBot Then
@@ -336,7 +290,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 'Next
                 If Not webBot.MasterBotDisabled AndAlso Not webBot.AsyncLockBot.ContainsKey(-1) Then
                     'Dim botHistory = Aricie.DNN.Settings.SettingsController.LoadFileSettings(Of WebBotHistory)(GetLogMapPath(), True)
-                    Dim runContext As New BotRunContext(Of TEngineEvent)
+                    Dim runContext As New BotRunContext(Of TEngineEvent)(webBot)
                     runContext.Events = events
                     runContext.History = webBot.BotHistory
                     runContext.RunEndDelegate = AddressOf webBot.SaveHistory
@@ -347,10 +301,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     'Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of WebBotHistory)(GetLogMapPath(), webBot.BotHistory)
                 End If
             Next
-            If Me._EnableUserBots Then
+            If Me.EnableUserBots Then
                 If Me._EnableLogs Then
-                    Dim objStep As New StepInfo(Debug.PKPDebugType, "User Bots Start", _
-                                                WorkingPhase.InProgress, False, False, -1, flowId)
+                    Dim objStep As New StepInfo(Debug.PKPDebugType, "User Bots Start", WorkingPhase.InProgress, False, False, -1, flowId)
                     PerformanceLogger.Instance.AddDebugInfo(objStep)
                 End If
                 For Each userSettings As UserBotSettings(Of TEngineEvent) In Me.AvailableUserBots.Values
@@ -360,8 +313,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             If Me._EnableLogs Then
                 Dim nbRuns As New KeyValuePair(Of String, String)("Nb of Bots run", toreturn.ToString(CultureInfo.InvariantCulture))
-                Dim objStep As New StepInfo(Debug.PKPDebugType, "Farm Run End", _
-                                            WorkingPhase.InProgress, False, False, -1, flowId, nbRuns)
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Farm Run End", WorkingPhase.InProgress, False, False, -1, flowId, nbRuns)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
             Return toreturn
@@ -369,6 +321,5 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 #End Region
-
     End Class
 End Namespace

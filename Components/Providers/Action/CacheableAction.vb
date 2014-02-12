@@ -52,7 +52,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("Specifics")> _
             <ConditionalVisible("EnableCache", False, True, True)> _
-            <LabelMode(LabelMode.Top)> _
         Public Property CacheDuration() As STimeSpan
             Get
                 Return _CacheDuration
@@ -61,6 +60,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _CacheDuration = value
             End Set
         End Property
+
+        '<ExtendedCategory("Specifics")> _
+        '    <ConditionalVisible("EnableCache", False, True, True)> _
+        'Public Property EnableFileCaching As Boolean
+
+        '<ExtendedCategory("Specifics")> _
+        '    <ConditionalVisible("EnableFileCaching", False, True, True)> _
+        'Public Property EnableSerialization As Boolean
+
 
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean

@@ -11,29 +11,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
+        Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), isAsync As Boolean) As Object
 
-            Dim toReturn As String
-            Dim mapPath As String = Me.GetFileMapPath(actionContext)
-            'Select Case Me.AccessMode
-            '    Case FileAccessMode.StringReadWrite
-            Try
-                RWLock.AcquireReaderLock(LockTimeSpan)
-                If System.IO.File.Exists(mapPath) Then
-                    toReturn = System.IO.File.ReadAllText(mapPath, EncodingHelper.GetEncoding(Me.Encoding))
-                Else
-                    toReturn = ""
-                End If
-            Catch ex As Exception
-                Throw ex
-            Finally
-                RWLock.ReleaseReaderLock()
-            End Try
-            If Me.UseCompression AndAlso Not String.IsNullOrEmpty(toReturn) Then
-                toReturn = Common.DoDeCompress(toReturn, CompressionMethod.Deflate)
-            End If
-            'End Select
-            Return toReturn
+            Return Me.ReadResult(actionContext, isAsync)
 
         End Function
     End Class
