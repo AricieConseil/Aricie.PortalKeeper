@@ -1,5 +1,6 @@
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
+Imports System.Linq
 
 Namespace Web.UI
 
@@ -48,6 +49,18 @@ Namespace Web.UI
                     Return FindControlRecursive(objControl.Parent, parentType)
                 End If
             End If
+        End Function
+
+
+        Public Function FindControlRecursive(ByVal objControl As Control, ByVal ParamArray parentTypes() As Type) As Control
+            If objControl.Parent Is Nothing Then
+                Return Nothing
+            Else
+                If parentTypes.Any(Function(candidateParentType) candidateParentType.IsInstanceOfType(objControl.Parent)) Then
+                    Return objControl.Parent
+                End If
+            End If
+            Return FindControlRecursive(objControl.Parent, parentTypes)
         End Function
 
         ''' <summary>

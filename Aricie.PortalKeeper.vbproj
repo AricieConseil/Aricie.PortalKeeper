@@ -92,9 +92,10 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL" />
-    <Reference Include="Jayrock, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Jayrock.Json, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
-    <Reference Include="Jayrock.Sandbox, Version=0.9.12915.0, Culture=neutral, processorArchitecture=MSIL" />
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Newtonsoft.Json.5.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -164,6 +165,13 @@
     <Compile Include="Components\Entities\FileHelpersSettings.vb" />
     <Compile Include="Components\Entities\RecordsMode.vb" />
     <Compile Include="Components\Providers\Action\ExpressionActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileAccessMode.vb" />
+    <Compile Include="Components\Providers\Action\FileManagerActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileManagerMode.vb" />
+    <Compile Include="Components\Providers\Action\FilePathMode.vb" />
+    <Compile Include="Components\Providers\Action\FileReadWriteActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\FileWriteActionProviderBase.vb" />
+    <Compile Include="Components\Providers\Action\SerializeActionProviderBase.vb" />
     <Compile Include="Components\StaticInfo\KeyBucket.vb" />
     <Compile Include="Components\PortalKeeperSchedule.vb" />
     <Compile Include="Components\Entities\Scheduler\BotFarmInfo.vb" />
@@ -275,6 +283,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Aricie.PortalKeeper.Default.config" />
     <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -332,9 +341,9 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="PAs\Aricie.PortalKeeper_Install_01.01.00.zip" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Aricie.PortalKeeper.Default.config" />
     <None Include="Aricie.PortalKeeper.dnn">
       <SubType>Designer</SubType>
     </None>

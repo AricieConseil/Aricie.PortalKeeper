@@ -101,7 +101,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class DynamicRestMethod
         Inherits RuleEngineSettings(Of RestEngineEvent)
 
-        Public Property HttpVerbs() As New List(Of HttpMethod)
+        <CollectionEditor(False, True, False, False, 0, CollectionDisplayStyle.List, False, 5, "", True)> _
+        Public Property HttpVerbs() As New List(Of WebMethod)
 
 
     End Class
@@ -109,7 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     <Serializable()> _
-      <System.ComponentModel.DisplayName("Return Rest Operation Action")> _
+     <System.ComponentModel.DisplayName("Return Rest Operation Action")> _
       <Description("Ends a rest web service dynamic method with a status and an optional result resource")> _
     Public Class ReturnRestOperationAction
         Inherits CacheableAction(Of RestEngineEvent)

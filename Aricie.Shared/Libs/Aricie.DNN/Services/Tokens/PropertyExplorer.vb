@@ -21,6 +21,9 @@ Namespace Services
 
         Public Sub New(ByVal expression As String, ByVal initialValue As Object, ByVal separator As Char)
             Me._Separator = separator
+            If expression Is Nothing Then
+                expression = ""
+            End If
             Me._Params = New List(Of String)(expression.Split(_Separator))
             Me._CurrentValue = initialValue
         End Sub
@@ -151,57 +154,60 @@ Namespace Services
                     Me.IsLocalized = True
                     Me.CurrentIndex += 1
                 Else
-                    Dim objType As Type = Me.CurrentValue.GetType
-                    _CurrentMember = ReflectionHelper.GetMember(objType, Me.CurrentParam)
-                    If Not _CurrentMember Is Nothing Then
-                        Me.CurrentIndex += 1
-                    Else
+                    If Me.CurrentValue IsNot Nothing Then
+                        Dim objType As Type = Me.CurrentValue.GetType
+                        _CurrentMember = ReflectionHelper.GetMember(objType, Me.CurrentParam)
+                        If Not _CurrentMember Is Nothing Then
+                            Me.CurrentIndex += 1
+                        Else
 
-                        Dim defaultMembers() As MemberInfo = objType.GetDefaultMembers
-                        For Each tempMember As MemberInfo In defaultMembers
+                            Dim defaultMembers() As MemberInfo = objType.GetDefaultMembers
+                            For Each tempMember As MemberInfo In defaultMembers
 
-                            Select Case tempMember.MemberType
-                                Case MemberTypes.Field, MemberTypes.Property, MemberTypes.Method
-                                    _CurrentMember = tempMember
-                                    Exit For
-                            End Select
-                        Next
-                        If _CurrentMember Is Nothing And TypeOf Me.CurrentValue Is Array Then
-                            _CurrentMember = ArrayGetMethod
+                                Select Case tempMember.MemberType
+                                    Case MemberTypes.Field, MemberTypes.Property, MemberTypes.Method
+                                        _CurrentMember = tempMember
+                                        Exit For
+                                End Select
+                            Next
+                            If _CurrentMember Is Nothing And TypeOf Me.CurrentValue Is Array Then
+                                _CurrentMember = ArrayGetMethod
+                            End If
                         End If
-                    End If
+                        If _CurrentMember IsNot Nothing Then
 
-                    If _CurrentMember IsNot Nothing Then
+                            Select Case _CurrentMember.MemberType
+                                Case MemberTypes.Property
+                                    Dim propInfo As PropertyInfo = DirectCast(_CurrentMember, PropertyInfo)
 
-                        Select Case _CurrentMember.MemberType
-                            Case MemberTypes.Property
-                                Dim propInfo As PropertyInfo = DirectCast(_CurrentMember, PropertyInfo)
+                                    Dim objIndexParameters() As ParameterInfo = propInfo.GetIndexParameters()
+                                    Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
+                                                            Me.Params.GetRange(Me.CurrentIndex, Me.Params.Count - Me.CurrentIndex))
+                                    If paramvalues IsNot Nothing Then
+                                        Me.CurrentIndex += paramvalues.Length
+                                    End If
+                                    Me._CurrentValue = propInfo.GetValue(Me.CurrentValue, paramvalues)
+                                Case MemberTypes.Field
+                                    Dim fInfo As FieldInfo = DirectCast(_CurrentMember, FieldInfo)
+                                    Me._CurrentValue = fInfo.GetValue(Me.CurrentValue)
+                                Case MemberTypes.Method
+                                    Dim mInfo As MethodInfo = DirectCast(_CurrentMember, MethodInfo)
+                                    Dim objIndexParameters() As ParameterInfo = mInfo.GetParameters()
+                                    Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
+                                                            Me.Params.GetRange(Me.CurrentIndex, Me.Params.Count - Me.CurrentIndex))
+                                    If paramvalues IsNot Nothing Then
+                                        Me.CurrentIndex += paramvalues.Length
+                                    End If
 
-                                Dim objIndexParameters() As ParameterInfo = propInfo.GetIndexParameters()
-                                Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
-                                                        Me.Params.GetRange(Me.CurrentIndex, Me.Params.Count - Me.CurrentIndex))
-                                If paramvalues IsNot Nothing Then
-                                    Me.CurrentIndex += paramvalues.Length
-                                End If
-                                Me._CurrentValue = propInfo.GetValue(Me.CurrentValue, paramvalues)
-                            Case MemberTypes.Field
-                                Dim fInfo As FieldInfo = DirectCast(_CurrentMember, FieldInfo)
-                                Me._CurrentValue = fInfo.GetValue(Me.CurrentValue)
-                            Case MemberTypes.Method
-                                Dim mInfo As MethodInfo = DirectCast(_CurrentMember, MethodInfo)
-                                Dim objIndexParameters() As ParameterInfo = mInfo.GetParameters()
-                                Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
-                                                        Me.Params.GetRange(Me.CurrentIndex, Me.Params.Count - Me.CurrentIndex))
-                                If paramvalues IsNot Nothing Then
-                                    Me.CurrentIndex += paramvalues.Length
-                                End If
-
-                                Me._CurrentValue = mInfo.Invoke(Me.CurrentValue, paramvalues)
-                            Case Else
-                                Throw New ArgumentException(String.Format("wrong member type in token replace, {0} is not allowed", _CurrentMember.Name))
-                        End Select
+                                    Me._CurrentValue = mInfo.Invoke(Me.CurrentValue, paramvalues)
+                                Case Else
+                                    Throw New ArgumentException(String.Format("wrong member type in token replace, {0} is not allowed", _CurrentMember.Name))
+                            End Select
+                        Else
+                            Me.CurrentValue = Nothing
+                        End If
                     Else
-                        Me.CurrentValue = Nothing
+                        Me.CurrentIndex += 1
                     End If
 
                     If Me.CurrentParam = LocalizedKey Then
@@ -210,7 +216,15 @@ Namespace Services
                     End If
                 End If
             Catch ex As Exception
-                Dim message As String = String.Format("Token Replace exception with current member {0}.{1}, and current value {2} ", Me.CurrentMember.DeclaringType.Name, Me.CurrentMember.Name.ToString(), Me.CurrentValue.ToString())
+                Dim strMemberName As String = ""
+                If Me.CurrentMember IsNot Nothing Then
+                    strMemberName = String.Format("{0}.{1}", Me.CurrentMember.DeclaringType.Name, Me.CurrentMember.Name.ToString())
+                End If
+                Dim strValue As String = ""
+                If Me.CurrentValue IsNot Nothing Then
+                    strValue = Me.CurrentValue.ToString
+                End If
+                Dim message As String = String.Format("Token Replace exception with current member {0}, and current value {1} ", strMemberName, strValue)
                 Throw New ApplicationException(message, ex)
             End Try
 

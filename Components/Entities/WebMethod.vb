@@ -1,9 +1,10 @@
 ﻿Namespace Aricie.DNN.Modules.PortalKeeper
     Public Enum WebMethod
+        Head
         [Get]
         Post
         Put
         Delete
-        'Rpc
+        Options
     End Enum
 End Namespace

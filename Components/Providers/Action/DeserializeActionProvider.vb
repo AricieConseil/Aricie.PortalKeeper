@@ -4,13 +4,16 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
-Imports Jayrock.Json.Conversion
+'Imports Jayrock.Json.Conversion
+'Imports Jayrock.Json
 Imports DotNetNuke.UI.WebControls
 Imports System.IO
 Imports System.Xml
 Imports Aricie.Services
-Imports Jayrock.Json
 Imports System.Xml.Serialization
+Imports Newtonsoft.Json
+Imports System.Runtime.Serialization
+Imports System.Reflection
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -88,23 +91,28 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Using memStream As New MemoryStream(bytes)
                 Select Case Me.SerializationType
                     Case PortalKeeper.SerializationType.Xml
-                        Using reader As New XmlTextReader(memStream)
-                            Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType, additionalTypes.ToArray, True)
-                            toReturn = serializer.Deserialize(reader)
+                        Using reader As New StreamReader(memStream, Encoding.UTF8)
+                            Using xmlReader As New XmlTextReader(memStream)
+                                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType, additionalTypes.ToArray, True)
+                                toReturn = serializer.Deserialize(xmlReader)
+                            End Using
                         End Using
                     Case PortalKeeper.SerializationType.Binary
                         toReturn = ReflectionHelper.Instance.BinaryFormatter.Deserialize(memStream)
                     Case PortalKeeper.SerializationType.Json
-                        Dim impContext As New Jayrock.Json.Conversion.ImportContext
-                        For Each addType As Type In additionalTypes
-                            'impContext.Register(New Jayrock.Json.Conversion.Converters.ComponentImporter(addType))
-                            impContext.Register(impContext.FindImporter(addType))
-                        Next
-                        Using reader As New StreamReader(memStream)
-                            toReturn = impContext.Import(Me._OutputType.GetDotNetType, JsonText.CreateReader(reader))
+                        Dim jsonSettings As New JsonSerializerSettings()
+                        'For Each addType As Type In additionalTypes
+                        '    jsonSettings.ContractResolver.ResolveContract(addType)
+                        'Next
+                        Using reader As New StreamReader(memStream, Encoding.UTF8)
+                            Using jsonR As New JsonTextReader(reader)
+                                Dim serializer As JsonSerializer = JsonSerializer.CreateDefault(jsonSettings)
+                                toReturn = serializer.Deserialize(jsonR, Me._OutputType.GetDotNetType)
+                            End Using
                         End Using
+
                     Case PortalKeeper.SerializationType.IConvertible
-                        toReturn = TypeDescriptor.GetConverter(Me._OutputType.GetDotNetType).ConvertFromInvariantString(Encoding.UTF8.GetString(bytes))
+                        toReturn = TypeDescriptor.GetConverter(Me._OutputType.GetDotNetType).ConvertFromInvariantString(serializedValue)
                     Case SerializationType.FileHelpers
                         Dim sR As New StreamReader(memStream)
                         Dim inputString As String = sR.ReadToEnd()

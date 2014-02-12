@@ -22,6 +22,7 @@
 
 
 /* Form */
+/*todo: property editor needs some love... Clear blocks would be a start with layers of semi-transparent background */
 
 .dnnForm {
     width: 100%;
@@ -58,6 +59,7 @@
     border-bottom: 1px solid black;
     background: none;
 }
+
 
 /* Tabs */
 

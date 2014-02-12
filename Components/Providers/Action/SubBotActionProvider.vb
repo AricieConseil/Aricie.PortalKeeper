@@ -6,7 +6,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Sub Bot Action Provider")> _
+        <DisplayName("Sub Bot Action Provider")> _
         <Description("This provider allows to run a sub-bot as a dedicated action. Because of the sequential nature of the engine, the subbot triggers each previous step up to the current step, the rules and action should be configured accordingly")> _
     Public Class SubBotActionProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
@@ -64,7 +64,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Next
             End If
             listEvents.Add(actionContext.CurrentEventStep)
-            Dim runContext As New BotRunContext(Of TEngineEvents)
+            Dim runContext As New BotRunContext(Of TEngineEvents)(Me.SubBot)
             runContext.Events = listEvents
             runContext.EngineContext = actionContext
             Dim mainEngine As RuleEngineSettings(Of TEngineEvents) = actionContext.CurrentEngine

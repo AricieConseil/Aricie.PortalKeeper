@@ -273,7 +273,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             If enableStopWatch Then
                 Dim responseLengthPair As New KeyValuePair(Of String, String)("Response Length", toReturn.Length.ToString(CultureInfo.InvariantCulture))
-                Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - End: " & targetUrl, WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, responseLengthPair)
+                Dim responseBeginning As New KeyValuePair(Of String, String)("Response First 10000 chars", toReturn.ToString(CultureInfo.InvariantCulture).Substring(0, Math.Min(toReturn.Length, 10000)))
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - End: " & targetUrl, WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, responseLengthPair, responseBeginning)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
 

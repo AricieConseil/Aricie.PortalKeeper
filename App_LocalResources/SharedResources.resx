@@ -1056,30 +1056,6 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="CharsReplace.Text" xml:space="preserve">
     <value>Chars Replace</value>
   </data>
-  <data name="ExpressionFilterInfo_EncodePreProcessing.Help" xml:space="preserve">
-    <value>This allows you to apply html or url encoding/decoding to pre process the string passed to the filter</value>
-  </data>
-  <data name="ExpressionFilterInfo_EncodePreProcessing.Text" xml:space="preserve">
-    <value>Encoding preprocessing</value>
-  </data>
-  <data name="ExpressionFilterInfo_ForceToLower.Help" xml:space="preserve">
-    <value>Check to force lowercase on all chars</value>
-  </data>
-  <data name="ExpressionFilterInfo_ForceToLower.Text" xml:space="preserve">
-    <value>Force lower case</value>
-  </data>
-  <data name="ExpressionFilterInfo_MaxLength.Help" xml:space="preserve">
-    <value>Enter here the max length allowed for the filter's output strings. Extra chars will be removed.</value>
-  </data>
-  <data name="ExpressionFilterInfo_MaxLength.Text" xml:space="preserve">
-    <value>Max Group Length</value>
-  </data>
-  <data name="ExpressionFilterInfo_TransformList.Help" xml:space="preserve">
-    <value>Add here any number of transformations applied by the filter. Transformations are applied sequentially by genre. Regex are applied first, then string transforms and finally chars transforms.</value>
-  </data>
-  <data name="ExpressionFilterInfo_TransformList.Text" xml:space="preserve">
-    <value>Transformation list</value>
-  </data>
   <data name="RegexReplace.Text" xml:space="preserve">
     <value>RegexReplace</value>
   </data>
@@ -1589,9 +1565,6 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="DotNetType_EditableTypeName.Required" xml:space="preserve">
     <value>Enter a valid .Net type assembly name</value>
-  </data>
-  <data name="ExpressionFilterInfo_MaxLength.Required" xml:space="preserve">
-    <value>Max Length required</value>
   </data>
   <data name="ExpressionTypes_Delete.Text" xml:space="preserve">
     <value>Delete Type</value>
@@ -2613,10 +2586,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="TradingStrategy_LimitOrderMarginRate.Text" xml:space="preserve">
     <value>Min Order Margin (%)</value>
   </data>
-  <data name="BotInfo`1_EnableSimpleLogs.Help" xml:space="preserve">
-    <value>The regular Debug logger generates a lot of dnn events for each bot (~50). The simple logger only logs bot start/end together with all variables serialized</value>
+  <data name="RuleEngineSettings`1_EnableSimpleLogs.Help" xml:space="preserve">
+    <value>The Debug Timer generates a lot of dnn events for each. The simple logger only logs run start/end together with dumped variables serialized if enabled</value>
   </data>
-  <data name="BotInfo`1_EnableSimpleLogs.Text" xml:space="preserve">
+  <data name="RuleEngineSettings`1_EnableSimpleLogs.Text" xml:space="preserve">
     <value>Enable Simple Logger</value>
   </data>
   <data name="VariableInfo`1_Value.Header" xml:space="preserve">
@@ -2868,19 +2841,19 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="BotInfo`1_UseTaskQueue.Text" xml:space="preserve">
     <value>Asynchronous Queue</value>
   </data>
-  <data name="BotInfo`1_DumpAllVars.Help" xml:space="preserve">
+  <data name="RuleEngineSettings`1_DumpAllVars.Help" xml:space="preserve">
     <value>When checked, all the variables computed during the bot's execution are dumped.</value>
   </data>
-  <data name="BotInfo`1_DumpAllVars.Text" xml:space="preserve">
+  <data name="RuleEngineSettings`1_DumpAllVars.Text" xml:space="preserve">
     <value>Dump all variables</value>
   </data>
   <data name="WebBotHistory_CallHistory.Header" xml:space="preserve">
     <value>Recent Runs</value>
   </data>
-  <data name="BotInfo`1_DumpVariables.Help" xml:space="preserve">
+  <data name="RuleEngineSettings`1_DumpVariables.Help" xml:space="preserve">
     <value>Enter here a comma separated list of variable names, to be included in the run dumps</value>
   </data>
-  <data name="BotInfo`1_DumpVariables.Text" xml:space="preserve">
+  <data name="RuleEngineSettings`1_DumpVariables.Text" xml:space="preserve">
     <value>Dump Variables</value>
   </data>
   <data name="WebBotHistory_LastRun.Help" xml:space="preserve">
@@ -2931,10 +2904,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ObjectAction`1_Instance.Text" xml:space="preserve">
     <value>This is an expression for the object on which you wish to perform an action</value>
   </data>
-  <data name="ObjectAction`1_ObjectType.Help" xml:space="preserve">
+  <data name="ObjectAction_ObjectType.Help" xml:space="preserve">
     <value>This is the .Net type of the object you wish to act on</value>
   </data>
-  <data name="ObjectAction`1_ObjectType.Text" xml:space="preserve">
+  <data name="ObjectAction_ObjectType.Text" xml:space="preserve">
     <value>Object Type</value>
   </data>
   <data name="ObjectAction`1_Parameters.Header" xml:space="preserve">
@@ -4824,16 +4797,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ModuleConfig`2_BackupToRestore.Text" xml:space="preserve">
     <value>Backup file to restore</value>
   </data>
-  <data name="PortalKeeperConfig_Cancel.Text" xml:space="preserve">
+  <data name="ModuleConfig`2_Cancel.Text" xml:space="preserve">
     <value>Cancel</value>
   </data>
-  <data name="PortalKeeperConfig_Reset.Text" xml:space="preserve">
+  <data name="ModuleConfig`2_Reset.Text" xml:space="preserve">
     <value>Reset Config to default</value>
   </data>
   <data name="PortalKeeperConfig_RestoreBackup.Text" xml:space="preserve">
     <value>Restore selected backup</value>
   </data>
-  <data name="PortalKeeperConfig_Save.Text" xml:space="preserve">
+  <data name="ModuleConfig`2_Save.Text" xml:space="preserve">
     <value>Save Configuration</value>
   </data>
   <data name="Reset.Warning" xml:space="preserve">
@@ -4863,7 +4836,154 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ModuleConfig`2_Backup.Header" xml:space="preserve">
     <value>Backup Restoration</value>
   </data>
-  <data name="PortalKeeperConfig_SaveLocationSettings.Text" xml:space="preserve">
+  <data name="ModuleConfig`2_SaveLocationSettings.Text" xml:space="preserve">
     <value>Save New Location</value>
+  </data>
+  <data name="DynamicRestMethod_HttpVerbs.Help" xml:space="preserve">
+    <value>Select the Rest Http Verb(s) that this method respond to.</value>
+  </data>
+  <data name="DynamicRestMethod_HttpVerbs.Text" xml:space="preserve">
+    <value>Http Verbs</value>
+  </data>
+  <data name="Head.Text" xml:space="preserve">
+    <value>Head</value>
+  </data>
+  <data name="HttpVerbs_AddNew.Text" xml:space="preserve">
+    <value>Add Http Verb</value>
+  </data>
+  <data name="Options.Text" xml:space="preserve">
+    <value>Options</value>
+  </data>
+  <data name="Put.Text" xml:space="preserve">
+    <value>Put</value>
+  </data>
+  <data name="AdditionalFilters_AddNew.Text" xml:space="preserve">
+    <value>Add additional filter</value>
+  </data>
+  <data name="AdditionalFilters_Export.Text" xml:space="preserve">
+    <value>Export additional filters</value>
+  </data>
+  <data name="AdditionalFilters_Import.Text" xml:space="preserve">
+    <value>Import additional filters</value>
+  </data>
+  <data name="DictionaryEntry_Value.Required" xml:space="preserve">
+    <value>Value is Required</value>
+  </data>
+  <data name="ExpressionFilterInfo_AdditionalFilters.Help" xml:space="preserve">
+    <value>Add new filters if you want to fine tune the ordering of several rounds of encoding and transformations. By design, regex transforms are processed before string replaces and char replaces, which are merged for better performances.</value>
+  </data>
+  <data name="ExpressionFilterInfo_AdditionalFilters.Text" xml:space="preserve">
+    <value>Additional Filters</value>
+  </data>
+  <data name="ExpressionFilterInfo_DefaultCharReplacement.Help" xml:space="preserve">
+    <value>Whitespace replacement if any, '-' otherwise</value>
+  </data>
+  <data name="ExpressionFilterInfo_DefaultCharReplacement.Text" xml:space="preserve">
+    <value>Default Char Replacement</value>
+  </data>
+  <data name="ExpressionFilterInfo_EncodePostProcessing.Help" xml:space="preserve">
+    <value>This allows you to apply html or url encoding/decoding to postprocess the string passed to the filter after prior transformations were applied</value>
+  </data>
+  <data name="ExpressionFilterInfo_EncodePostProcessing.Text" xml:space="preserve">
+    <value>Encoding postprocessing</value>
+  </data>
+  <data name="ExpressionFilterInfo_EncodePreProcessing.Help" xml:space="preserve">
+    <value>This allows you to apply html or url encoding/decoding to pre process the string passed to the filter</value>
+  </data>
+  <data name="ExpressionFilterInfo_EncodePreProcessing.Text" xml:space="preserve">
+    <value>Encoding preprocessing</value>
+  </data>
+  <data name="ExpressionFilterInfo_ForceToLower.Help" xml:space="preserve">
+    <value>Check to force lowercase on all chars</value>
+  </data>
+  <data name="ExpressionFilterInfo_ForceToLower.Text" xml:space="preserve">
+    <value>Force lower case</value>
+  </data>
+  <data name="ExpressionFilterInfo_MaxLength.Help" xml:space="preserve">
+    <value>Enter here the max length allowed for the filter's output strings. Extra chars will be removed.</value>
+  </data>
+  <data name="ExpressionFilterInfo_MaxLength.Required" xml:space="preserve">
+    <value>Max length is required</value>
+  </data>
+  <data name="ExpressionFilterInfo_MaxLength.Text" xml:space="preserve">
+    <value>Max Group Length</value>
+  </data>
+  <data name="ExpressionFilterInfo_PreventDoubleDefaults.Help" xml:space="preserve">
+    <value>Prevents the engine to output 2 consecutive default characters as a result of char replaces</value>
+  </data>
+  <data name="ExpressionFilterInfo_PreventDoubleDefaults.Text" xml:space="preserve">
+    <value>Prevent Double defaults</value>
+  </data>
+  <data name="ExpressionFilterInfo_TransformList.Help" xml:space="preserve">
+    <value>Add here any number of transformations applied by the filter. Transformations are applied sequentially by genre. Regex are applied first, then string transforms and finally chars transforms.</value>
+  </data>
+  <data name="ExpressionFilterInfo_TransformList.Text" xml:space="preserve">
+    <value>Transformation list</value>
+  </data>
+  <data name="ExpressionFilterInfo_Trim.Help" xml:space="preserve">
+    <value>Optionally Trim the result after transformations </value>
+  </data>
+  <data name="ExpressionFilterInfo_Trim.Text" xml:space="preserve">
+    <value>Trim</value>
+  </data>
+  <data name="ExpressionFilterInfo_TrimChar.Help" xml:space="preserve">
+    <value>Enter the character to be trimmed</value>
+  </data>
+  <data name="ExpressionFilterInfo_TrimChar.Text" xml:space="preserve">
+    <value>Trim Char</value>
+  </data>
+  <data name="BotInfo`1_SynchronisationTimeout.Help" xml:space="preserve">
+    <value>This is the duration the thread waits for an existing lock to be released before giving up.</value>
+  </data>
+  <data name="BotInfo`1_SynchronisationTimeout.Text" xml:space="preserve">
+    <value>Synchro Timeout</value>
+  </data>
+  <data name="BotInfo`1_UseMutex.Help" xml:space="preserve">
+    <value>You can ensure cross processus safety by preventing concurrent execution of 2 same bots at the same time with a dedicated Mutex</value>
+  </data>
+  <data name="BotInfo`1_UseMutex.Text" xml:space="preserve">
+    <value>Use Mutex</value>
+  </data>
+  <data name="RuleEngineSettings`1_LogDump.Help" xml:space="preserve">
+    <value>If enabled a dump of the specifiied variables will be included in the last log</value>
+  </data>
+  <data name="RuleEngineSettings`1_LogDump.Text" xml:space="preserve">
+    <value>Log Dump</value>
+  </data>
+  <data name="Item_Delete.Text" xml:space="preserve">
+    <value>Delete Item</value>
+  </data>
+  <data name="Item_Down.Text" xml:space="preserve">
+    <value>Move Item Down</value>
+  </data>
+  <data name="Item_Edit.Text" xml:space="preserve">
+    <value>Edit Sub Item</value>
+  </data>
+  <data name="Item_Up.Text" xml:space="preserve">
+    <value>Move Item Up</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SubPathContainer_CloseSubEditor.Text" xml:space="preserve">
+    <value>Back to Full Editor</value>
+  </data>
+  <data name="SubPathContainer_OriginalPath.Help" xml:space="preserve">
+    <value>When switching to child entities editing, this is the original subpath selected.</value>
+  </data>
+  <data name="SubPathContainer_OriginalPath.Text" xml:space="preserve">
+    <value>Sub Editor Original Path</value>
+  </data>
+  <data name="SubPathContainer_Path.Help" xml:space="preserve">
+    <value>This is the current selected sub path for the child entity. The syntax is identical to the Advanced Token Replace used in message based actions.</value>
+  </data>
+  <data name="SubPathContainer_Path.Text" xml:space="preserve">
+    <value>Child Editor Path</value>
+  </data>
+  <data name="SubPathContainer_SubEntity.Help" xml:space="preserve">
+    <value>Here is a subeditor generated for a child entity of the original main one. Use the extra dropdownlist and command button to broader back the scope.</value>
+  </data>
+  <data name="SubPathContainer_SubEntity.Text" xml:space="preserve">
+    <value>Child Editor</value>
   </data>
 </root>

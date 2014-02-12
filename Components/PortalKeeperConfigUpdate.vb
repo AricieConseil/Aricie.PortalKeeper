@@ -19,11 +19,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             toAdd.InsertAfterKey = "UrlRewrite"
             toReturn.Add(toAdd)
 
-            'Jesse:      OpenRasta()
-            toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
-            toReturn.Add(toAdd)
-            toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
-            toReturn.Add(toAdd)
+            ''Jesse:      OpenRasta()
+            'todo: gérer les services web
+            'toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
+            'toReturn.Add(toAdd)
+            'toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
+            'toReturn.Add(toAdd)
 
             toReturn.Add(New TrustInfo("Full"))
 

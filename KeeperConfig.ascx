@@ -46,7 +46,7 @@
                     GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"
                     LabelWidth="200px" DisableExports="True" />
             </div>
-            <div class="SubDiv" id="divUserBotCmds" runat="server">
+            <div class="CommandsButtons DNNAligncenter" id="divUserBotCmds" runat="server">
                 <div class="SubDiv" id="divActionCommands" Visible="False" runat="server"/>
                 <div class="SubDiv">
                     <dnn:CommandButton ID="cmdSaveUserBot" runat="server" ImageUrl="~/images/save.gif"

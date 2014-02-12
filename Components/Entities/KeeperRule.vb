@@ -31,11 +31,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ExtendedCategory("RuleSettings")> _
-        Public Property MatchingLifeCycleEvent() As TEngineEvents
-
-        <ExtendedCategory("RuleSettings")> _
-        Public Property StopRule() As Boolean
+        <ExtendedCategory("Policy")> _
+       <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
+       <LabelMode(LabelMode.Top)> _
+        Public Property Action() As KeeperAction(Of TEngineEvents) = New KeeperAction(Of TEngineEvents)
 
         <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
@@ -43,10 +42,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
         Public Property Condition() As KeeperCondition(Of TEngineEvents) = New KeeperCondition(Of TEngineEvents)
 
-        <ExtendedCategory("Policy")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
-        Public Property Action() As KeeperAction(Of TEngineEvents) = New KeeperAction(Of TEngineEvents)
+        <ExtendedCategory("RuleSettings")> _
+        Public Property MatchingLifeCycleEvent() As TEngineEvents
+
+        <ExtendedCategory("RuleSettings")> _
+        Public Property StopRule() As Boolean
 
         Public Function RunActions(ByVal keeperContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             keeperContext.CurrentRule = Me
