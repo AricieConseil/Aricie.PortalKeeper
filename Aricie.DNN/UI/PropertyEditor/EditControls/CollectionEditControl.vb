@@ -355,6 +355,7 @@ Namespace UI.WebControls.EditControls
 
                         cmdAddButton = New CommandButton()
                         cmdAddButton.ID = "cmdAdd"
+                        'cmdAddButton.CssClass = "dnnTertiaryAction"
                         pnAdd.Controls.Add(cmdAddButton)
                         cmdAddButton.DisplayLink = True
                         cmdAddButton.DisplayIcon = True
@@ -384,6 +385,7 @@ Namespace UI.WebControls.EditControls
 
                         cmdExportButton = New CommandButton
                         cmdExportButton.ID = "cmdExport"
+                        'cmdExportButton.CssClass = "dnnTertiaryAction"
                         divExport.Controls.Add(cmdExportButton)
                         cmdExportButton.DisplayLink = True
                         cmdExportButton.DisplayIcon = True
@@ -408,6 +410,7 @@ Namespace UI.WebControls.EditControls
 
                         cmdImportButton = New CommandButton
                         cmdImportButton.ID = "cmdImport"
+                        'cmdImportButton.CssClass = "dnnTertiaryAction"
                         divImport.Controls.Add(cmdImportButton)
                         cmdImportButton.DisplayLink = True
                         cmdImportButton.DisplayIcon = True
@@ -480,12 +483,12 @@ Namespace UI.WebControls.EditControls
                 If e.CommandArgument.ToString <> "" Then
                     Dim commandIndex As Integer = Integer.Parse(e.CommandArgument.ToString())
                     Select Case e.CommandName
-                        Case "Edit"
+                        Case "Focus"
                             Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                             If toEditor IsNot Nothing Then
-                                Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex))
+                                Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex)).Replace("SubEntity.", "").Replace("SubEntity", "")
                                 If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
-                                    path = toEditor.SubEditorPath & "."c & path.Replace("SubEntity.", "")
+                                    path = toEditor.SubEditorPath & "."c & path
                                 End If
                                 toEditor.SubEditorFullPath = path
                             End If
@@ -822,13 +825,13 @@ Namespace UI.WebControls.EditControls
                 'SubPropertyEditor button
 
                 Dim cmdEdit As New ImageButton
-                cmdEdit.ID = "cmdEdit"
+                cmdEdit.ID = "cmdFocus"
                 plAction.Controls.Add(cmdEdit)
                 With cmdEdit
-                    .ImageUrl = "~/images/edit.gif"
-                    .AlternateText = Localization.GetString("Item_Edit", Me.LocalResourceFile)
+                    .ImageUrl = "~/images/view.gif"
+                    .AlternateText = Localization.GetString("Item_Focus", Me.LocalResourceFile)
                     .ToolTip = .AlternateText
-                    .CommandName = "Edit"
+                    .CommandName = "Focus"
                     .CommandArgument = commandIndex.ToString()
                 End With
 

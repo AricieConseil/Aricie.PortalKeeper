@@ -10,12 +10,21 @@ Namespace Services.Flee
     ''' Flee import class
     ''' </summary>
     ''' <remarks></remarks>
+    <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class FleeImportInfo
 
         Public Sub New()
 
         End Sub
+
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName As String
+            Get
+                Return Me.DotNetType.Name
+            End Get
+        End Property
+
 
         Public Sub New(ByVal objType As Type, ByVal customNamespace As String)
             Me._DotNetType.TypeName = ReflectionHelper.GetSafeTypeName(objType)
