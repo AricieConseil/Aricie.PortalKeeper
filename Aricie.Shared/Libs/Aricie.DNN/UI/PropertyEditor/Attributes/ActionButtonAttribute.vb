@@ -11,6 +11,14 @@ Namespace UI.Attributes
     Public Class ActionButtonAttribute
         Inherits Attribute
 
+        Public Property Mode As ActionButtonMode = ActionButtonMode.CommandButton
+
+        Public Property IconAction As New IconActionInfo
+
+        Public Property IconPath As String = ""
+
+        Public Property AlertKey As String = ""
+
         Public Sub New()
 
         End Sub
@@ -24,35 +32,28 @@ Namespace UI.Attributes
             Me.AlertKey = strAlertKey
         End Sub
 
-        Public Sub New(enumIconName As IconName)
-            Me.New(enumIconName, "")
+        Public Sub New(mainIconName As IconName, mainIconOptions As IconOptions)
+            Me.New(mainIconName, mainIconOptions, IconName.None, IconOptions.Normal, IconOptions.Normal, "")
         End Sub
 
-        Public Sub New(enumIconName As IconName, strAlertKey As String)
+        Public Sub New(mainIconName As IconName, mainIconOptions As IconOptions, strAlertKey As String)
+            Me.New(mainIconName, mainIconOptions, IconName.None, IconOptions.Normal, IconOptions.Normal, strAlertKey)
+        End Sub
+
+        Public Sub New(mainIconName As IconName, mainIconOptions As IconOptions, stackedIconName As IconName, stackedIconOptions As IconOptions, stackContainerOptions As IconOptions)
+            Me.New(mainIconName, mainIconOptions, stackedIconName, stackedIconOptions, stackContainerOptions, "")
+        End Sub
+
+        Public Sub New(mainIconName As IconName, mainIconOptions As IconOptions, stackedIconName As IconName, stackedIconOptions As IconOptions, stackContainerOptions As IconOptions, strAlertKey As String)
             Me.Mode = ActionButtonMode.IconButton
-            Me.IconAction.IconName = enumIconName
+            Me.IconAction.IconName = mainIconName
+            Me.IconAction.IconOptions = mainIconOptions
+            Me.IconAction.StackedIconName = stackedIconName
+            Me.IconAction.StackedIconOptions = stackedIconOptions
+            Me.IconAction.StackContainerOptions = stackContainerOptions
             Me.AlertKey = strAlertKey
         End Sub
 
-        Public Sub New(enumIconName As IconName, stackIconName As IconName)
-            Me.New(enumIconName, stackIconName, "")
-        End Sub
-
-        Public Sub New(enumIconName As IconName, stackIconName As IconName, strAlertKey As String)
-            Me.Mode = ActionButtonMode.IconButton
-            Me.IconAction.IconName = enumIconName
-            Me.IconAction.StackedIconName = stackIconName
-            Me.AlertKey = strAlertKey
-        End Sub
-
-
-        Public Property Mode As ActionButtonMode = ActionButtonMode.CommandButton
-
-        Public Property IconAction As New IconActionInfo
-
-        Public Property IconPath As String = ""
-
-        Public Property AlertKey As String = ""
 
     End Class
 

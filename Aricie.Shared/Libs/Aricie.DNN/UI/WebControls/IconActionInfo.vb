@@ -6,39 +6,48 @@
 
 
         Public Property IconName() As IconName = IconName.None
+
+        Public Property IconOptions As IconOptions = IconOptions.Normal
+
         Public Property StackedIconName() As IconName = IconName.None
 
-        Public Property ZoomLevel() As IconActionInfo.Zoom = IconActionInfo.Zoom.Large
+        Public Property StackedIconOptions As IconOptions = IconOptions.Normal
 
-        Public Property FixWidth As Boolean = False
+        Public Property StackContainerOptions As IconOptions = IconOptions.Normal
 
-        Public Property Border As Boolean = False
 
-        Public Property Spinning As Boolean = False
 
-        Public Property FlipAndRotate As Rotate = Rotate.Normal
+        'Public Property ZoomLevel() As IconActionInfo.Zoom = IconActionInfo.Zoom.Large
+
+        'Public Property FixWidth As Boolean = False
+
+        'Public Property Border As Boolean = False
+
+        'Public Property Spinning As Boolean = False
+
+        'Public Property FlipAndRotate As Rotate = Rotate.Normal
 
         '  Public Property StackStatus As Stack = Stack.Normal
 
         'fa-pencil-square-o
 
-        Enum Zoom
-            Normal
-            Large
-            x2
-            x3
-            x4
-            x5
-        End Enum
+        'Enum Zoom
+        '    Normal
+        '    Large
+        '    x2
+        '    x3
+        '    x4
+        '    x5
+        'End Enum
 
-        Enum Rotate
-            Normal = 1
-            Rotate90 = 2
-            Rotate180 = 4
-            Rotate270 = 8
-            FlipHorizontal = 16
-            FlipVertical = 32
-        End Enum
+        'Enum Rotate
+        '    Normal = 1
+        '    Rotate90 = 2
+        '    Rotate180 = 4
+        '    Rotate270 = 8
+        '    FlipHorizontal = 16
+        '    FlipVertical = 32
+        'End Enum
 
         'Enum Stack
         '    Normal = 1
