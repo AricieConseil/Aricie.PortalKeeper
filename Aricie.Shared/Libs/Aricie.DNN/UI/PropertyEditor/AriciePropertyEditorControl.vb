@@ -957,11 +957,11 @@ Namespace UI.WebControls
                 Case ActionButtonMode.CommandButton
                     Dim cmdbtn As New CommandButton()
                     btn = cmdbtn
-                    If NukeHelper.DnnVersion.Major > 6 Then
-                        cmdbtn.CssClass = "dnnTertiaryAction"
-                    Else
-                        cmdbtn.CssClass = "aricieActions"
-                    End If
+                    'If NukeHelper.DnnVersion.Major > 6 Then
+                    '    cmdbtn.CssClass = "dnnTertiaryAction aricieActions"
+                    'Else
+                    cmdbtn.CssClass = "aricieActions"
+                    'End If
 
                     cmdbtn.Text = objButtonInfo.Method.Name
                     cmdbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"

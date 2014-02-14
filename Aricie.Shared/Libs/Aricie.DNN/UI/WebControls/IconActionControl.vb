@@ -16,7 +16,9 @@ Namespace UI.WebControls
         <PersistenceMode(PersistenceMode.InnerProperty)> _
         Public Property ActionItem() As New IconActionInfo
 
-
+        'Public Property TextCssClass As String = ""
+        'Public Property MainIconCssClass As String = ""
+        'Public Property StakedIconCssClass As String = ""
 
         Protected Overrides Sub OnPreRender(e As System.EventArgs)
             MyBase.OnPreRender(e)
@@ -35,7 +37,7 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(hl)
                     currentControl = hl
                     hl.NavigateUrl = Me.Url
-                    hl.CssClass = Me.CssClass
+                    hl.CssClass = "aricieActions " & Me.CssClass
                 End If
 
                 If (ActionItem.StackedIconName <> IconName.None) Then
@@ -43,6 +45,9 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(stackP)
                     currentControl = stackP
                     Dim containerCssClass As String = "fa-stack" & GetCssClass(IconName.None, ActionItem.StackContainerOptions, False)
+                    If Not String.IsNullOrEmpty(CssClass) Then
+                        containerCssClass &= " " & CssClass
+                    End If
                     stackP.Attributes.Add("class", containerCssClass)
                 End If
 
@@ -50,6 +55,10 @@ Namespace UI.WebControls
                     Dim iconLabel As New Label
                     currentControl.Controls.Add(iconLabel)
                     iconLabel.CssClass = Me.GetCssClass(ActionItem.IconName, ActionItem.IconOptions, ActionItem.StackedIconName <> IconName.None)
+                    If Not String.IsNullOrEmpty(CssClass) Then
+                        iconLabel.CssClass &= " " & CssClass
+                    End If
+
                 End If
 
 
@@ -58,6 +67,9 @@ Namespace UI.WebControls
 
                     currentControl.Controls.Add(stackIcon)
                     stackIcon.CssClass = Me.GetCssClass(ActionItem.StackedIconName, ActionItem.StackedIconOptions, True)
+                    If Not String.IsNullOrEmpty(CssClass) Then
+                        stackIcon.CssClass &= " " & CssClass
+                    End If
                     currentControl = currentControl.Parent
                 End If
 
@@ -66,7 +78,7 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(objTextLabel)
                     objTextLabel.Text = Me.Text
                     'objTextLabel.CssClass = Me.CssClass
-                    objTextLabel.CssClass = "actionText"
+                    objTextLabel.CssClass = "actionText " & CssClass
                     objTextLabel.Attributes.Add("resourcekey", Me.ResourceKey)
                 End If
 
