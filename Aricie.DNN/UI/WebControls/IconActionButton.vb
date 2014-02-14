@@ -9,21 +9,6 @@ Namespace UI.WebControls
         Implements IPostBackEventHandler
         Implements IButtonControl
 
-        Public Overrides Property CssClass As String
-            Get
-                If String.IsNullOrEmpty(MyBase.CssClass) Then
-                    If NukeHelper.DnnVersion.Major > 6 Then
-                        MyBase.CssClass = "dnnTertiaryAction"
-                    Else
-                        MyBase.CssClass = "aricieActions"
-                    End If
-                End If
-                Return MyBase.CssClass
-            End Get
-            Set(value As String)
-                MyBase.CssClass = value
-            End Set
-        End Property
 
         Public Sub RaisePostBackEvent(eventArgument As String) Implements IPostBackEventHandler.RaisePostBackEvent
             If CausesValidation Then
