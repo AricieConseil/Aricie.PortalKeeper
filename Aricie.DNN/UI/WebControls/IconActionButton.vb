@@ -1,5 +1,6 @@
 ﻿Imports System.Web.UI
 Imports System.Web.UI.WebControls
+Imports Aricie.DNN.Services
 
 Namespace UI.WebControls
     <ParseChildren(True)> _
@@ -11,7 +12,11 @@ Namespace UI.WebControls
         Public Overrides Property CssClass As String
             Get
                 If String.IsNullOrEmpty(MyBase.CssClass) Then
-                    MyBase.CssClass = "aricieActions"
+                    If NukeHelper.DnnVersion.Major > 6 Then
+                        MyBase.CssClass = "dnnTertiaryAction"
+                    Else
+                        MyBase.CssClass = "aricieActions"
+                    End If
                 End If
                 Return MyBase.CssClass
             End Get
