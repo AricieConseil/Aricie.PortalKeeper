@@ -136,9 +136,7 @@
         float: left;
     }
 
- .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction .fa {
-        padding-right: 2em;
-    }
+
 
 
  .dnnForm .ui-accordion .ui-accordion-content {
@@ -237,7 +235,7 @@
     padding: 0 5px;
 }
 
-.dnnForm .dnnFormItem .aricieActions {
+.dnnForm  .aricieActions {
     display: inline-block;
     padding: 9px 9px;
     margin: 0 5px 9px;
@@ -262,7 +260,7 @@
     color: #eee;
 }
 
-* + html .dnnForm .dnnFormItem .aricieActions{
+* + html .dnnForm .aricieActions{
     display: inline;
     zoom: 1;
 }
@@ -270,6 +268,11 @@
 .dnnForm .aricieActions p {
 margin: 0;
 }
+
+ .dnnForm .fa {
+        padding-right: 1em;
+    }
+
 
 /* Add Panel*/
 
