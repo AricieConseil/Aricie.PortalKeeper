@@ -19,7 +19,30 @@
 .SubDiv {
     margin: 15px 0 15px 7px;
 }
-
+.dnnForm
+{
+	border:2px solid #ccc;
+	border-radius:3px;
+	background-color:rgba(222,222,222,10);
+	padding:2px;
+	}
+	.dnnForm .dnnForm
+	{
+		background-color:#fff;
+		}
+		.dnnForm .dnnForm .dnnForm
+		{
+			background-color:rgba(222,222,222,10);
+			}
+			.dnnForm .dnnForm .dnnForm .dnnForm
+			{
+				background-color:#fff;
+				}
+.SubDiv > .fa
+{
+	float:right;
+	padding:5px;
+	}
 
 /* Form */
 /*todo: property editor needs some love... Clear blocks would be a start with layers of semi-transparent background */
