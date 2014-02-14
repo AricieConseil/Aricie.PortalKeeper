@@ -215,7 +215,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-        <ActionButton(IconName.Play, IconOptions.Normal)>
+        <ActionButton(IconName.Rocket, IconOptions.Normal)>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
             Dim flowid As String = Guid.NewGuid.ToString
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then

@@ -47,13 +47,13 @@ Namespace UI.WebControls.EditControls
         Protected WithEvents rpContentList As Repeater
         Protected WithEvents addSelector As SelectorControl
 
-        Protected WithEvents cmdAddButton As CommandButton
+        Protected WithEvents cmdAddButton As IconActionButton
 
         Protected WithEvents ctImportFile As System.Web.UI.HtmlControls.HtmlInputFile
         'Public WithEvents txtExportPath As TextBox
-        Protected WithEvents cmdExportButton As CommandButton
-        Protected WithEvents cmdCopyButton As CommandButton
-        Protected WithEvents cmdImportButton As CommandButton
+        Protected WithEvents cmdExportButton As IconActionButton
+        Protected WithEvents cmdCopyButton As IconActionButton
+        Protected WithEvents cmdImportButton As IconActionButton
 
         Protected WithEvents ctlAddContainer As Control
         Protected WithEvents pnPager As Panel
@@ -353,14 +353,17 @@ Namespace UI.WebControls.EditControls
                             Me.addSelector.DataBind()
                         End If
 
-                        cmdAddButton = New CommandButton()
-                        cmdAddButton.ID = "cmdAdd"
+                        cmdAddButton = New IconActionButton()
+                        'cmdAddButton.ID = "cmdAdd"
                         'cmdAddButton.CssClass = "dnnTertiaryAction"
                         pnAdd.Controls.Add(cmdAddButton)
-                        cmdAddButton.DisplayLink = True
-                        cmdAddButton.DisplayIcon = True
-                        cmdAddButton.ImageUrl = "~/images/add.gif"
-                        cmdAddButton.Text = Localization.GetString(Me.Name + "_AddNew", Me.LocalResourceFile)
+                        'cmdAddButton.DisplayLink = True
+                        'cmdAddButton.DisplayIcon = True
+                        'cmdAddButton.ImageUrl = "~/images/add.gif"
+                        cmdAddButton.ActionItem.IconName = IconName.Plus
+                        cmdAddButton.Text = "Add " & Name
+                        cmdAddButton.ResourceKey = Me.Name + "_AddNew"
+                        'cmdAddButton.Text = Localization.GetString(Me.Name + "_AddNew", Me.LocalResourceFile)
                         cmdAddButton.Visible = Not HideAddButton
 
 
@@ -383,14 +386,19 @@ Namespace UI.WebControls.EditControls
                         Dim divExport As New HtmlGenericControl("div")
                         pnExport.Controls.Add(divExport)
 
-                        cmdExportButton = New CommandButton
-                        cmdExportButton.ID = "cmdExport"
+                        cmdExportButton = New IconActionButton
+                        'cmdExportButton.ID = "cmdExport"
                         'cmdExportButton.CssClass = "dnnTertiaryAction"
                         divExport.Controls.Add(cmdExportButton)
-                        cmdExportButton.DisplayLink = True
-                        cmdExportButton.DisplayIcon = True
-                        cmdExportButton.ImageUrl = "~/images/action_export.gif"
-                        cmdExportButton.Text = Localization.GetString(Me.Name + "_Export", Me.LocalResourceFile)
+                        'cmdExportButton.DisplayLink = True
+                        'cmdExportButton.DisplayIcon = True
+                        'cmdExportButton.ImageUrl = "~/images/action_export.gif"
+                        'cmdExportButton.Text = Localization.GetString(Me.Name + "_Export", Me.LocalResourceFile)
+
+                        cmdExportButton.ActionItem.IconName = IconName.Download
+                        cmdExportButton.Text = "Export " & Name
+                        cmdExportButton.ResourceKey = Me.Name + "_Export"
+
                         AddHandler cmdExportButton.Click, AddressOf ExportClick
 
                         RegisterControlForPostbackManagement(cmdExportButton)
@@ -408,14 +416,18 @@ Namespace UI.WebControls.EditControls
                         ctImportFile.ID = "ctImportFile"
                         divImport.Controls.Add(ctImportFile)
 
-                        cmdImportButton = New CommandButton
-                        cmdImportButton.ID = "cmdImport"
+                        cmdImportButton = New IconActionButton
+                        'cmdImportButton.ID = "cmdImport"
                         'cmdImportButton.CssClass = "dnnTertiaryAction"
                         divImport.Controls.Add(cmdImportButton)
-                        cmdImportButton.DisplayLink = True
-                        cmdImportButton.DisplayIcon = True
-                        cmdImportButton.ImageUrl = "~/images/action_import.gif"
-                        cmdImportButton.Text = Localization.GetString(Me.Name + "_Import", Me.LocalResourceFile)
+                        'cmdImportButton.DisplayLink = True
+                        'cmdImportButton.DisplayIcon = True
+                        'cmdImportButton.ImageUrl = "~/images/action_import.gif"
+                        'cmdImportButton.Text = Localization.GetString(Me.Name + "_Import", Me.LocalResourceFile)
+
+                        cmdImportButton.ActionItem.IconName = IconName.Upload
+                        cmdImportButton.Text = "Import " & Name
+                        cmdImportButton.ResourceKey = Me.Name + "_Import"
                         AddHandler cmdImportButton.Click, AddressOf ImportClick
 
                         RegisterControlForPostbackManagement(cmdImportButton)
