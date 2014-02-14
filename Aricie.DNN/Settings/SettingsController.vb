@@ -858,7 +858,7 @@ Namespace Settings
         ''' <remarks></remarks>
         Public Sub SaveToModuleSettings(ByVal scope As SettingsScope, ByVal scopeId As Integer, ByVal key As String, _
                                          ByVal strXmlToSave As String)
-            Using dbt As Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
+            Using dbt As System.Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
 
                 Dim nbMaxChars As Integer
                 Select Case scope
@@ -906,7 +906,7 @@ Namespace Settings
         Public Sub DeleteFromModuleSettings(ByVal scope As SettingsScope, ByVal scopeId As Integer, ByVal key As String, _
                                              Optional ByRef settings As Hashtable = Nothing)
 
-            Using dbt As Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
+            Using dbt As System.Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
 
                 If settings Is Nothing Then
                     settings = FetchSettings(scope, scopeId)
