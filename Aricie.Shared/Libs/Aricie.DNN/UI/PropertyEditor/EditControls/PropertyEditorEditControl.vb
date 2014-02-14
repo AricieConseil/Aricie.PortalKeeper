@@ -98,7 +98,12 @@ Namespace UI.WebControls.EditControls
                         AndAlso CType(Me.ParentAricieField.Editor, CollectionEditControl).DisplayStyle = CollectionDisplayStyle.Accordion Then
                     Me.Controls.Add(Me._InnerEditor)
                 Else
-                    Me.Controls.Add(AddSubDiv(Me._InnerEditor))
+                    Dim subPE As Control = AddSubDiv(Me._InnerEditor)
+                    Dim myPeIco As IconActionControl = New IconActionControl()
+                    myPeIco.ActionItem = New IconActionInfo() With {.IconName = IconName.Btc, .IconOptions = IconOptions.x3}
+
+                    subPE.Controls.AddAt(0, myPeIco)
+                    Me.Controls.Add(subPE)
                 End If
 
 
