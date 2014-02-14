@@ -109,7 +109,7 @@
     color: #FFFFFF;
 }
 
-.dnnForm .ui-accordion h3.ui-accordion-header a {
+.dnnForm .ui-accordion h3.ui-accordion-header > a {
     /*margin-right:60px;*/
     color: #fff;
     height: 18px;
@@ -128,15 +128,22 @@
     padding: 2px 2px 0 0;
     width: auto;
     text-align: right;
-    height: 25px;
+  min-height: 25px;
 }
-
+.dnnForm .ui-accordion h3.ui-accordion-header:after
+{
+	display:block;
+	clear:both;
+	content:" ";
+	}
  .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input,
  .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction span {
         float: left;
     }
 
-
+ .dnnForm .aricieActions .actionText{
+        padding-left: 1em;
+    }
 
 
  .dnnForm .ui-accordion .ui-accordion-content {
@@ -235,16 +242,16 @@
     padding: 0 5px;
 }
 
-.dnnForm  .aricieActions {
+.dnnForm .dnnFormItem .aricieActions {
     display: inline-block;
     padding: 9px 9px;
-    margin: 0 5px 9px;
+    margin:  4px;
     cursor: pointer;
-    -moz-min-width: 75px;
+    /*-moz-min-width: 75px;
     -ms-min-width: 75px;
     -o-min-width: 75px;
     -webkit-min-width: 75px;
-    min-width: 75px;
+    min-width: 75px;*/
     border: 1px solid #c2c2c2;
     -webkit-border-radius: 3px;
     -ms-border-radius: 3px;
@@ -260,19 +267,15 @@
     color: #eee;
 }
 
-* + html .dnnForm .aricieActions{
+* + html .dnnForm .dnnFormItem .aricieActions{
     display: inline;
     zoom: 1;
 }
 
 .dnnForm .aricieActions p {
 margin: 0;
+padding:0;
 }
-
- .dnnForm .fa {
-        padding-right: 1em;
-    }
-
 
 /* Add Panel*/
 

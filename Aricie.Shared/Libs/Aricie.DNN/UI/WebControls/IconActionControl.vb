@@ -81,6 +81,7 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(objTextLabel)
                     objTextLabel.Text = Me.Text
                     'objTextLabel.CssClass = Me.CssClass
+                    objTextLabel.CssClass = "actionText"
                     objTextLabel.Attributes.Add("resourcekey", Me.ResourceKey)
                 End If
 
