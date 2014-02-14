@@ -190,6 +190,7 @@
     <Compile Include="Config\XmlNamedConfigElementInfo.vb" />
     <Compile Include="Diagnostics\Constants.vb" />
     <Compile Include="Diagnostics\DebugInfoScope.vb" />
+    <Compile Include="Entities\APICredentials.vb" />
     <Compile Include="Entities\FileUpload.vb" />
     <Compile Include="Entities\ParsedUri.vb" />
     <Compile Include="Entities\PingUrlInfo.vb" />
@@ -208,6 +209,11 @@
     <Compile Include="Services\Caching\OutputCacheMode.vb" />
     <Compile Include="Services\Caching\OutputCachingStrategy.vb" />
     <Compile Include="Services\Caching\ScavangerEntry.vb" />
+    <Compile Include="Services\Data\CallStoredProcedureInfo.vb" />
+    <Compile Include="Services\Data\SqlActionMode.vb" />
+    <Compile Include="Services\Data\SqlStatementInfo.vb" />
+    <Compile Include="Services\Data\SqlStatementType.vb" />
+    <Compile Include="Services\Data\StoredProcedureType.vb" />
     <Compile Include="Services\Errors\CustomErrorsHandler.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -261,6 +267,8 @@
     <Compile Include="Services\Errors\ErrorsHelper.vb" />
     <Compile Include="Services\Errors\MultipleCustomErrorsMode.vb" />
     <Compile Include="Services\Errors\VirtualCustomErrorsInfo.vb" />
+    <Compile Include="Services\Files\FilePathInfo.vb" />
+    <Compile Include="Services\Files\FilePathMode.vb" />
     <Compile Include="Services\Filtering\FilterControlInfo.vb" />
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
@@ -270,6 +278,8 @@
     <Compile Include="Services\Flee\ObjectActions.vb" />
     <Compile Include="Services\Flee\ObjectActionsBase.vb" />
     <Compile Include="Services\Flee\SimpleExpression.vb" />
+    <Compile Include="Services\Flee\SimpleOrExpression.vb" />
+    <Compile Include="Services\Flee\SimpleOrExpressionMode.vb" />
     <Compile Include="Services\Flee\VariablesBase.vb" />
     <Compile Include="Services\Flee\CultureInfoMode.vb" />
     <Compile Include="Services\Flee\ExpressionVariableInfo.vb" />
@@ -290,6 +300,7 @@
     <Compile Include="Services\Tokens\LoopTokenProcessor.vb" />
     <Compile Include="Services\Tokens\SubToken.vb" />
     <Compile Include="Services\Tokens\SubTokenType.vb" />
+    <Compile Include="Services\Tokens\TokenizedTextInfo.vb" />
     <Compile Include="Services\UpgradeSystem\Actions\AbstractUpgradeAction.vb" />
     <Compile Include="Services\UpgradeSystem\Actions\ActionStep.vb" />
     <Compile Include="Services\UpgradeSystem\Actions\GlobalUpgradeAction.vb" />
@@ -332,7 +343,7 @@
     <Compile Include="Config\ConfigHelper.vb" />
     <Compile Include="Config\XmlConfigInfo.vb" />
     <Compile Include="Services\DnnContext.vb" />
-    <Compile Include="Services\FileHelper.vb" />
+    <Compile Include="Services\Files\FileHelper.vb" />
     <Compile Include="Services\Filtering\StringTransformInfo.vb" />
     <Compile Include="Services\Filtering\ExpressionFilterInfo.vb" />
     <Compile Include="Services\Tokens\PropertyExplorer.vb" />
@@ -341,6 +352,7 @@
     <Compile Include="Services\Filtering\StringEscaper.vb" />
     <Compile Include="Services\Tokens\TokenSourceInfo.vb" />
     <Compile Include="Diagnostics\AsyncLogger.vb" />
+    <Compile Include="Services\Workers\SimpleProcessStartInfo.vb" />
     <Compile Include="Services\Workers\TaskQueue.vb" />
     <Compile Include="Services\Workers\TaskQueueInfo.vb" />
     <Compile Include="Settings\GeneralSettings.vb" />
@@ -470,8 +482,10 @@
     <Compile Include="UI\WebControls\Grid.vb" />
     <Compile Include="UI\WebControls\HtmlInputDate.vb" />
     <Compile Include="UI\WebControls\HtmlJsSlider.vb" />
+    <Compile Include="UI\WebControls\IconActionButton.vb" />
     <Compile Include="UI\WebControls\IconActionControl.vb" />
-    <Compile Include="UI\WebControls\IconActionEntity.vb" />
+    <Compile Include="UI\WebControls\IconActionInfo.vb" />
+    <Compile Include="UI\WebControls\IconName.vb" />
     <Compile Include="UI\WebControls\IDateTimeControl.vb" />
     <Compile Include="UI\WebControls\ISelectorControl.vb" />
     <Compile Include="UI\WebControls\LocalizableSelectorControl.vb" />

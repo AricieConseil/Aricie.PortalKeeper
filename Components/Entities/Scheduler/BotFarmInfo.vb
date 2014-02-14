@@ -13,6 +13,7 @@ Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.UI.Skins.Controls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -208,7 +209,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '        Return _FarmMutex
         '    End Get
         'End Property
-        <ActionButton("~/images/fwd.gif")>
+        <ActionButton(IconName.Play)>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
             Dim flowid As String = Guid.NewGuid.ToString
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then

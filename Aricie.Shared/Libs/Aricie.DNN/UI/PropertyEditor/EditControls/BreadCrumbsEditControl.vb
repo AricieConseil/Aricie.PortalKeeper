@@ -12,7 +12,7 @@ Namespace UI.WebControls.EditControls
 
         Private _SelectorInfo As New SelectorInfo() With {.DataTextField = "Key", .DataValueField = "Value"}
 
-        Private _Buttons As New Dictionary(Of String, LinkButton)
+        Private _Buttons As New Dictionary(Of String, WebControl)
         Public Property Separator As String = " / "
 
 
@@ -52,11 +52,11 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Private Sub SetCurrentLevel()
-            For Each objButton As LinkButton In _Buttons.Values
+            For Each objButton As WebControl In _Buttons.Values
                 objButton.Enabled = True
             Next
             If Value IsNot Nothing Then
-                Dim objButton As LinkButton = Nothing
+                Dim objButton As WebControl = Nothing
                 If _Buttons.TryGetValue(Value.ToString, objButton) Then
                     objButton.Enabled = False
                 End If
@@ -128,7 +128,7 @@ Namespace UI.WebControls.EditControls
                         Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(rawObj.GetType())
                         Dim key As String = rawObj.ToString()
                         Dim objValue As String = rawObj.ToString()
-                        Dim prop As PropertyInfo
+                        Dim prop As PropertyInfo = Nothing
                         If Not String.IsNullOrEmpty(Me._SelectorInfo.DataTextField) Then
                             If props.TryGetValue(_SelectorInfo.DataTextField, prop) Then
                                 key = prop.GetValue(rawObj, Nothing).ToString()
@@ -157,7 +157,12 @@ Namespace UI.WebControls.EditControls
             Dim items As Dictionary(Of String, String) = Me.GetValueKeys()
             Dim counter As Integer = 0
             For Each objItem In items
-                Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
+                'Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
+                
+                Dim objButton As New IconActionButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
+                If String.IsNullOrEmpty(objItem.Key) Then
+                    objButton.ActionItem.IconName = IconName.Sitemap
+                End If
                 AddHandler objButton.Command, AddressOf ButtonClick
                 Me.Controls.Add(objButton)
                 Me._Buttons(objItem.Key) = objButton

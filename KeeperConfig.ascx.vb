@@ -419,36 +419,47 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
             'DirectCast(Me.KeeperConfig.SchedulerFarm.Bots.Instances(1).Rules(1).Action.Instances(0), DeserializeActionProvider(Of ScheduleEvent, PortalKeeperContext(Of ScheduleEvent))).AdditionalTypes(0) = New dotnettype(GetType(List(Of BitCoin.Order)))
 
-            'Dim newProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
-            'newProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExpressionActionProvider(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
+            Dim newScheduleProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
+            newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExecuteSqlAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
+            newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(RunProgramAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
 
 
-            'For Each prov As ActionProviderConfig(Of ScheduleEvent) In newProviders
+            For Each prov As ActionProviderConfig(Of ScheduleEvent) In newScheduleProviders
 
-            '    'Dim found As Boolean
-            '    'For Each existing As ActionProviderConfig(Of RequestEvent) In Me.KeeperConfig.FirewallConfig.ActionProviders
-            '    '    If existing.Name = prov.Name Then
-            '    '        found = True
-            '    '    End If
-            '    'Next
-            '    'If Not found Then
-            '    '    Me.KeeperConfig.FirewallConfig.ActionProviders.Add(prov)
-            '    'End If
+               
 
-            '    For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
-            '        Dim found As Boolean
-            '        For Each existing As ActionProviderConfig(Of ScheduleEvent) In objBot.ActionProviders
-            '            If existing.Name = prov.Name Then
-            '                found = True
-            '            End If
-            '        Next
-            '        If Not found Then
-            '            objBot.ActionProviders.Add(prov)
-            '        End If
-            '    Next
-            'Next
+                For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
+                    Dim found As Boolean
+                    For Each existing As ActionProviderConfig(Of ScheduleEvent) In objBot.ActionProviders
+                        If existing.Name = prov.Name Then
+                            found = True
+                        End If
+                    Next
+                    If Not found Then
+                        objBot.ActionProviders.Add(prov)
+                    End If
+                Next
+            Next
 
-            'Me.BindSettings()
+            Dim newRequestProviders As New List(Of ActionProviderConfig(Of RequestEvent))
+            newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(ExecuteSqlAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
+            newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(RunProgramAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
+
+            For Each prov As ActionProviderConfig(Of RequestEvent) In newRequestProviders
+                Dim found As Boolean
+                For Each existing As ActionProviderConfig(Of RequestEvent) In Me.KeeperConfig.FirewallConfig.ActionProviders
+                    If existing.Name = prov.Name Then
+                        found = True
+                    End If
+                Next
+                If Not found Then
+                    Me.KeeperConfig.FirewallConfig.ActionProviders.Add(prov)
+                End If
+            Next
+
+            
+
+            Me.BindSettings()
 
         End Sub
 

@@ -3,12 +3,6 @@
 <%@ Register Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
 <div class="divPKP">
-    <div id="divInstall" runat="server" class="divcenter">
-        <dnn:CommandButton ID="cmdInstall" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
-            ResourceKey="cmdInstall" />
-        <dnn:CommandButton ID="cmdUninstall" runat="server" ImageUrl="~/images/delete.gif"
-            ResourceKey="cmdUninstall" />
-    </div>
     <div id="divConfig" runat="server">
         <div id="divHostConfig" runat="server">
             <asp:Label ID="lblConfig" CssClass="Head" runat="server" ResourceKey="lblConfig" /><br />
@@ -20,7 +14,7 @@
             <div class="divcenter">
                 <dnn:CommandButton ID="cmdClearProbes" runat="server" visible="false" ImageUrl="~/images/fwd.gif"
                     ResourceKey="cmdClearProbes" />
-                <dnn:CommandButton ID="cmdDebug" Visible="False" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
+                <dnn:CommandButton ID="cmdDebug" Visible="true" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
                     ResourceKey="cmdDebug" />
             </div>
         </div>
@@ -66,5 +60,11 @@
                     LabelWidth="200px" />
             </div>
         </div>
+    </div>
+     <div id="divInstall" runat="server" class="divcenter">
+        <dnn:CommandButton ID="cmdInstall" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
+            ResourceKey="cmdInstall" />
+        <dnn:CommandButton ID="cmdUninstall" runat="server" ImageUrl="~/images/delete.gif"
+            ResourceKey="cmdUninstall" />
     </div>
 </div>

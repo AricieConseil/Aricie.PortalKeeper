@@ -3,97 +3,9 @@ Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
+Imports System.Security
 
 Namespace Entities
-
-    ''' <summary>
-    ''' Entity class for common secure API credentials authentication systems
-    ''' </summary>
-    ''' <remarks>The last authentication date helps managing locks.</remarks>
-    <Serializable()> _
-    <DefaultProperty("Key")> _
-    Public Class APICredentials
-
-        Private _Key As String = ""
-        Private _Secret As String = ""
-        Private _LastAuthenticationFailure As DateTime = DateTime.MinValue
-        Private _Disabled As Boolean
-
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        <Required(True)> _
-        <Width(500)> _
-        <DotNetNuke.UI.WebControls.MaxLength(256)> _
-        Public Property Key() As String
-            Get
-                Return _Key
-            End Get
-            Set(ByVal value As String)
-                If Me._Disabled AndAlso Not String.IsNullOrEmpty(_Key) AndAlso value <> _Key Then
-                    Me._Disabled = False
-                End If
-                _Key = value.Trim
-            End Set
-        End Property
-
-
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        <Required(True)> _
-         <LineCount(2)> _
-        <Width(500)> _
-        <DotNetNuke.UI.WebControls.MaxLength(256)> _
-        Public Property Secret() As String
-            Get
-                Return _Secret
-            End Get
-            Set(ByVal value As String)
-                If Me._Disabled AndAlso Not String.IsNullOrEmpty(_Secret) AndAlso value <> _Secret Then
-                    Me._Disabled = False
-                End If
-                _Secret = value.Trim
-            End Set
-        End Property
-
-
-
-        <IsReadOnly(True)> _
-        Public Property LastAuthenticationFailure() As DateTime
-            Get
-                Return _LastAuthenticationFailure
-            End Get
-            Set(ByVal value As DateTime)
-                _LastAuthenticationFailure = value
-            End Set
-        End Property
-
-
-
-        <IsReadOnly(True)> _
-        Public Property Disabled() As Boolean
-            Get
-                Return _Disabled
-            End Get
-            Set(ByVal value As Boolean)
-                If value Then
-                    If Now.Subtract(_LastAuthenticationFailure) < TimeSpan.FromHours(1) Then
-                        _Disabled = True
-                    End If
-                    _LastAuthenticationFailure = Now
-                Else
-                    _Disabled = False
-                End If
-            End Set
-        End Property
-
-        <Browsable(False)> _
-        <XmlIgnore()> _
-        Public ReadOnly Property Enabled() As Boolean
-            Get
-                Return Not _Disabled AndAlso Not String.IsNullOrEmpty(Me._Key) AndAlso Not String.IsNullOrEmpty(Me._Secret) AndAlso Not Me._Secret.Contains(" "c)
-            End Get
-        End Property
-
-    End Class
-
     <Serializable()> _
     <DefaultProperty("UserName")> _
     Public Class LoginInfo
@@ -101,9 +13,6 @@ Namespace Entities
 
         Private _UserName As String = ""
         Private _Password As String = ""
-        'Private _DisplayPasswordChars As Boolean
-        Private _Disabled As Boolean
-
 
         Public Sub New()
 
@@ -113,8 +22,6 @@ Namespace Entities
             Me._UserName = username
             Me._Password = password
         End Sub
-
-
 
 
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
@@ -130,14 +37,8 @@ Namespace Entities
             End Set
         End Property
 
-        'Public Property DisplayPasswordChars() As Boolean
-        '    Get
-        '        Return _DisplayPasswordChars
-        '    End Get
-        '    Set(ByVal value As Boolean)
-        '        _DisplayPasswordChars = value
-        '    End Set
-        'End Property
+
+        Public Property DisplayPasswordChars As Boolean
 
         <Browsable(False)> _
         Public Property XmlPassword() As String
@@ -158,27 +59,32 @@ Namespace Entities
             End Set
         End Property
 
-        <XmlIgnore()> _
-        <Browsable(False)> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        <MaxLength(256)> _
+        <ConditionalVisible("DisplayPasswordChars", False, True)> _
+         <Required(True)> _
+       <Width(500)> _
+          <XmlIgnore()> _
         Public Property Password() As String
             Get
                 Return _Password
             End Get
             Set(ByVal value As String)
                 If value <> _Password Then
-                    _Disabled = False
+                    Disabled = False
                     _Password = value
                 End If
             End Set
         End Property
 
+
+        <ConditionalVisible("DisplayPasswordChars", True, True)> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        <Required(True)> _
+        <Width(500)> _
+        <MaxLength(256)> _
+        <PasswordMode()> _
         <XmlIgnore()> _
-       <ConditionalVisible("DisplayPasswordChars", True, True)> _
-       <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-       <Required(True)> _
-       <Width(500)> _
-       <DotNetNuke.UI.WebControls.MaxLength(256)> _
-       <PasswordMode()> _
         Public Property HiddenPassword() As String
             Get
                 Return New String("x"c, _Password.Length)
@@ -191,45 +97,26 @@ Namespace Entities
         End Property
 
 
+        <IsReadOnly(True)>
+        Public Property Disabled As Boolean
 
-
-        ' <XmlIgnore()> _
-        '<ConditionalVisible("DisplayPasswordChars", False, True)> _
-        '<Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        '<Required(True)> _
-        '<Width(500)> _
-        '<DotNetNuke.UI.WebControls.MaxLength(256)> _
-        'Public Property ClearPassword() As String
-        '     Get
-        '         Return _Password
-        '     End Get
-        '     Set(ByVal value As String)
-        '         If Not String.IsNullOrEmpty(value) Then
-        '             Me.Password = value
-        '         End If
-        '     End Set
-        ' End Property
-
-
-
-
-        <IsReadOnly(True)> _
-        Public Property Disabled() As Boolean
-            Get
-                Return _Disabled
-            End Get
-            Set(ByVal value As Boolean)
-                _Disabled = value
-            End Set
-        End Property
 
         <Browsable(False)> _
         <XmlIgnore()> _
         Public ReadOnly Property Enabled() As Boolean
             Get
-                Return Not _Disabled AndAlso Not String.IsNullOrEmpty(Me._UserName) AndAlso Not String.IsNullOrEmpty(Me._Password)
+                Return Not Disabled AndAlso Not String.IsNullOrEmpty(Me._UserName) AndAlso Not String.IsNullOrEmpty(Me._Password)
             End Get
         End Property
+
+        Public Function GetPasswordAsSecureString() As SecureString
+            Dim toReturn As New SecureString
+            For Each objChar As Char In _Password
+                toReturn.AppendChar(objChar)
+            Next
+            Return toReturn
+        End Function
+
 
     End Class
 

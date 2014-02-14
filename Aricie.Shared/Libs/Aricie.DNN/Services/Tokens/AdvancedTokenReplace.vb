@@ -2,6 +2,7 @@ Imports Aricie.DNN.UI
 Imports Aricie.Services
 Imports Aricie.DNN.Settings
 
+Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.Entities.Host
 Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Entities.Profile
@@ -16,10 +17,13 @@ Imports System.Reflection
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Web.UI
-
+Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.Services.Filtering
 
 
 Namespace Services
+
+   
 
     ''' <summary>
     ''' Extended DotnetNuke Token replace system
@@ -79,7 +83,7 @@ Namespace Services
 
 #Region "cTors"
 
-        
+
 
         Public Sub New()
             MyBase.New(Scope.NoSettings, "", NukeHelper.PortalSettings, Nothing)
@@ -389,6 +393,19 @@ Namespace Services
 #End Region
 
 #Region "Public methods"
+
+        Private _ObjectSet As New HashSet(Of Object)
+
+
+        Public Function IsSet(obj As Object) As Boolean
+            Return _ObjectSet.Contains(obj)
+        End Function
+
+        Public Sub SetIsSet(obj As Object)
+            _ObjectSet.Add(obj)
+        End Sub
+
+
         ''' <summary>
         ''' Adds an object to the collection of source data for the ATR
         ''' </summary>
@@ -404,6 +421,8 @@ Namespace Services
             Else
                 Me.PropertySource(strCaption) = New DeepObjectPropertyAccess(customObject, Me.ResourceFile)
             End If
+
+            _ObjectSet.Add(customObject)
 
         End Sub
 
@@ -540,7 +559,7 @@ Namespace Services
                                     Dim collec As IEnumerable = propAccess.GetEnumerable(strPropertyName)
                                     'Create LoopProcessor
                                     outerLoopProcessor = New LoopTokenProcessor(listToken, collec)
-                                    
+
                                     'Invalid loop token
                                 Else
                                     Dim strMessage As String = String.Format("bad use of loop token {0} , No corresponding PropertyAccess found ", current.Value)
