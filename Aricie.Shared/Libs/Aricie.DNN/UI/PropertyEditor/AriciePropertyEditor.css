@@ -140,7 +140,10 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
 	color: #FFFFFF;
 }
-
+.dnnForm .ui-accordion h3.ui-accordion-header  a
+{
+	color:#70b1c7;
+	}
 .dnnForm .ui-accordion h3.ui-accordion-header > a
 {
 	/*margin-right:60px;*/
