@@ -131,9 +131,15 @@
     height: 25px;
 }
 
- .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input {
-        float: none;
+ .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input,
+ .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction span {
+        float: left;
     }
+
+ .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction .fa {
+        padding-right: 2em;
+    }
+
 
  .dnnForm .ui-accordion .ui-accordion-content {
     border: 1px solid #DDDDDD;
@@ -222,16 +228,47 @@
 
 .dnnForm .dnnFormItem span.CommandButton input {
     display: inline !important;
+        float: none;
+    position: relative;
+    top: 7px;
 }
 
 .dnnForm .dnnFormItem .CommandsButtons span.CommandButton {
     padding: 0 5px;
 }
 
-.dnnForm .dnnFormItem span.CommandButton input {
-    float: none;
-    position: relative;
-    top: 7px;
+.dnnForm .dnnFormItem .aricieActions {
+    display: inline-block;
+    padding: 9px 9px;
+    margin: 0 5px 9px;
+    cursor: pointer;
+    -moz-min-width: 75px;
+    -ms-min-width: 75px;
+    -o-min-width: 75px;
+    -webkit-min-width: 75px;
+    min-width: 75px;
+    border: 1px solid #c2c2c2;
+    -webkit-border-radius: 3px;
+    -ms-border-radius: 3px;
+    border-radius: 3px;
+    text-decoration: none;
+    text-align: center;
+    color: #70b1c7;
+    background-color: transparent;
+}
+
+.dnnForm .aricieActions:hover{
+    background-color: #70b1c7;
+    color: #eee;
+}
+
+* + html .dnnForm .dnnFormItem .aricieActions{
+    display: inline;
+    zoom: 1;
+}
+
+.dnnForm .aricieActions p {
+margin: 0;
 }
 
 /* Add Panel*/

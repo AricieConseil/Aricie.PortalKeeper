@@ -466,14 +466,17 @@ Namespace UI.WebControls.EditControls
 
             If args.Length = 2 AndAlso Integer.TryParse(args(1), index) Then
 
-                Dim header As HtmlGenericControl = Nothing
-                If _headers.TryGetValue(index, header) Then
-                    header.Attributes.Remove("onClick")
-                    Dim el As Element = Me.ItemsDictionary(index)
-                    Dim dataItem As Object = Me.PagedCollection.CurrentItems(index)
-                    Me.DisplayItem(Me.ItemIndex(index), el.Container, dataItem)
-
+                Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
+                If toEditor IsNot Nothing Then
+                    Dim path As String = Me.GetSubPath(index, Me.PagedCollection(index)).Replace("SubEntity.", "").Replace("SubEntity", "")
+                    If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
+                        path = toEditor.SubEditorPath & "."c & path
+                    End If
+                    toEditor.SubEditorFullPath = path
                 End If
+                toEditor.ItemChanged = True
+
+              
 
             End If
         End Sub
@@ -484,15 +487,14 @@ Namespace UI.WebControls.EditControls
                     Dim commandIndex As Integer = Integer.Parse(e.CommandArgument.ToString())
                     Select Case e.CommandName
                         Case "Focus"
-                            Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
-                            If toEditor IsNot Nothing Then
-                                Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex)).Replace("SubEntity.", "").Replace("SubEntity", "")
-                                If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
-                                    path = toEditor.SubEditorPath & "."c & path
-                                End If
-                                toEditor.SubEditorFullPath = path
+                            Dim header As HtmlGenericControl = Nothing
+                            If _headers.TryGetValue(commandIndex, header) Then
+                                header.Attributes.Remove("onClick")
+                                Dim el As Element = Me.ItemsDictionary(commandIndex)
+                                Dim dataItem As Object = Me.PagedCollection.CurrentItems(commandIndex)
+                                Me.DisplayItem(Me.ItemIndex(commandIndex), el.Container, dataItem)
+
                             End If
-                            toEditor.ItemChanged = True
                         Case "Delete"
 
                             Dim delEvent As New PropertyEditorEventArgs(Me.Name)
@@ -813,47 +815,164 @@ Namespace UI.WebControls.EditControls
         End Function
 
 
-        Private Sub AddButtons(actionContainer As Control, commandIndex As Integer)
+
+        Private Sub DisplayListItem(item As RepeaterItem)
+
+            Dim plItemContainer As New HtmlGenericControl("div")
+            Dim oddCss, evenCSS As String
+            If Me.ParentAricieEditor IsNot Nothing AndAlso Me.ParentAricieEditor.PropertyDepth Mod 2 = 0 Then
+                oddCss = "ItemEven"
+                evenCSS = "ItemOdd"
+            Else
+                oddCss = "ItemOdd"
+                evenCSS = "ItemEven"
+            End If
+            plItemContainer.Attributes.Add("class", "ItemContainer " & IIf((item.ItemIndex Mod 2) = 0, oddCss, evenCSS).ToString())
+            item.Controls.Add(plItemContainer)
+
+            Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
+            Me.AddButtons(plItemContainer, Nothing, commandIndex)
+
+            Me.DisplayItem(commandIndex, plItemContainer, item.DataItem)
+
+        End Sub
+
+        Private Sub DisplayAccordionItem(item As RepeaterItem)
+
+            Dim h3 As New HtmlGenericControl("h3")
+            Dim plItemContainer As New HtmlGenericControl("div")
+            item.Controls.Add(h3)
+
+            item.Controls.Add(plItemContainer)
+
+
+
+            Dim accordionHeaderText As String = ReflectionHelper.GetFriendlyName(item.DataItem)
+
+            Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
+
+            accordionHeaderText = String.Format("{0}  -  {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText)
+
+
+
+
+
+            Dim headerLink As New HtmlGenericControl("a")
+
+            h3.Controls.Add(headerLink)
+
+
+
+            headerLink.InnerText = accordionHeaderText.Replace(" "c, ChrW(160))
+
+            headerLink.Attributes.Add("href", String.Format("#{0}_{1}", Me.ID, commandIndex))
+
+            Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieAccordion" & Me.ParentEditor.ClientID.GetHashCode())
+            Dim cookieValue As Integer = -1
+
+            If cookie IsNot Nothing Then
+                Integer.TryParse(cookie.Value, cookieValue)
+            End If
+
+            If cookieValue <> item.ItemIndex Then
+
+                Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "expand" & ClientAPI.COLUMN_DELIMITER & item.ItemIndex))
+                _headers(item.ItemIndex) = headerLink
+            Else
+
+                Me.DisplayItem(commandIndex, plItemContainer, item.DataItem)
+
+
+            End If
+
+            Me.AddButtons(h3, headerLink, commandIndex)
+
+            Me.ItemsDictionary.Add(New Element(accordionHeaderText, plItemContainer))
+
+
+
+        End Sub
+
+        Private Sub DisplayItem(index As Integer, plItemContainer As Control, item As Object)
+            Me._ItemIndex = index
+            Me._DataItem = item
+            Me.CreateRow(plItemContainer, item)
+            Dim emptyDiv As New HtmlGenericControl("div")
+            emptyDiv.Attributes.Add("class", "clear")
+            plItemContainer.Controls.Add(emptyDiv)
+        End Sub
+
+
+        Private Sub AddButtons(actionContainer As Control, headerLink As Control, commandIndex As Integer)
 
             If Me.EditMode = PropertyEditorMode.Edit Then
                 Dim plAction As New HtmlGenericControl("div")
                 plAction.Attributes.Add("class", "ItemAction")
 
-                actionContainer.Controls.Add(plAction)
+                actionContainer.Controls.AddAt(0, plAction)
 
-
+                Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
                 'SubPropertyEditor button
+                If headerLink IsNot Nothing Then
+                    'Dim cmdFocus As New ImageButton
+                    'cmdFocus.ID = "cmdFocus"
+                    'plAction.Controls.Add(cmdFocus)
+                    'With cmdFocus
+                    '    .ImageUrl = "~/images/plus.gif"
+                    '    .AlternateText = Localization.GetString("Item_Focus", Me.LocalResourceFile)
+                    '    .ToolTip = .AlternateText
+                    '    .CommandName = "Focus"
+                    '    .CommandArgument = commandIndex.ToString()
+                    '    .OnClientClick = String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID)
+                    '    '.OnClientClick = String.Format("jQuery('#{0}').click();", headerLink.ClientID)
+                    '    '.OnClientClick = "#" & headerLink.ClientID
+                    'End With
 
-                Dim cmdEdit As New ImageButton
-                cmdEdit.ID = "cmdFocus"
-                plAction.Controls.Add(cmdEdit)
-                With cmdEdit
-                    .ImageUrl = "~/images/view.gif"
-                    .AlternateText = Localization.GetString("Item_Focus", Me.LocalResourceFile)
-                    .ToolTip = .AlternateText
-                    .CommandName = "Focus"
-                    .CommandArgument = commandIndex.ToString()
-                End With
+                    Dim cmdFocus As New IconActionButton
+                    plAction.Controls.Add(cmdFocus)
+                    With cmdFocus
+                        .ActionItem.IconName = IconName.SearchPlus
+                        .CommandName = "Focus"
+                        .CommandArgument = commandIndex.ToString()
+                        '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
+                        .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}};jQuery('#{0}').click();", headerLink.ClientID))
+                    End With
+
+                    sm.RegisterPostBackControl(cmdFocus)
+
+                End If
+
+                
 
 
 
                 If Me._EnableExport Then
 
-                    Dim export As New ImageButton
-                    export.ID = "cmdExport"
-                    plAction.Controls.Add(export)
-                    With export
 
-
-                        .ImageUrl = "~/images/action_export.gif"
-                        .AlternateText = Localization.GetString("Item_Export", Me.LocalResourceFile)
-                        .ToolTip = .AlternateText
+                    Dim cmdExport As New IconActionButton
+                    plAction.Controls.Add(cmdExport)
+                    With cmdExport
+                        .ActionItem.IconName = IconName.Download
                         .CommandName = "Export"
                         .CommandArgument = commandIndex.ToString()
                     End With
+                    sm.RegisterPostBackControl(cmdExport)
 
-                    Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
-                    sm.RegisterPostBackControl(export)
+                    'Dim export As New ImageButton
+                    'export.ID = "cmdExport"
+                    'plAction.Controls.Add(export)
+                    'With export
+
+
+                    '    .ImageUrl = "~/images/action_export.gif"
+                    '    .AlternateText = Localization.GetString("Item_Export", Me.LocalResourceFile)
+                    '    .ToolTip = .AlternateText
+                    '    .CommandName = "Export"
+                    '    .CommandArgument = commandIndex.ToString()
+                    'End With
+
+                    'Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
+                    'sm.RegisterPostBackControl(export)
 
                     'Dim copy As New ImageButton
                     'copy.ID = "cmdCopy"
@@ -882,31 +1001,48 @@ Namespace UI.WebControls.EditControls
                     '    lastItem = item.ItemIndex = CollectionValue.Count - 1
                     'End If
                     If Not firstItem Then
-                        Dim up As New ImageButton
-                        up.ID = "cmdUp"
-                        plAction.Controls.Add(up)
-                        With up
-                            .ImageUrl = "~/images/up.gif"
-                            .AlternateText = Localization.GetString("Item_Up", Me.LocalResourceFile)
-                            .ToolTip = .AlternateText
+                        'Dim up As New ImageButton
+                        'up.ID = "cmdUp"
+                        'plAction.Controls.Add(up)
+                        'With up
+                        '    .ImageUrl = "~/images/up.gif"
+                        '    .AlternateText = Localization.GetString("Item_Up", Me.LocalResourceFile)
+                        '    .ToolTip = .AlternateText
+                        '    .CommandName = "Up"
+                        '    .CommandArgument = commandIndex.ToString()
+                        'End With
+
+                        Dim cmdUp As New IconActionButton
+                        plAction.Controls.Add(cmdUp)
+                        With cmdUp
+                            .ActionItem.IconName = IconName.CaretSquareOUp
                             .CommandName = "Up"
                             .CommandArgument = commandIndex.ToString()
                         End With
-
+                        sm.RegisterPostBackControl(cmdUp)
 
                     End If
 
                     If Not lastItem Then
-                        Dim down As New ImageButton
-                        down.ID = "cmdDown"
-                        plAction.Controls.Add(down)
-                        With down
-                            .ImageUrl = "~/images/dn.gif"
-                            .AlternateText = Localization.GetString("Item_Down", Me.LocalResourceFile)
-                            .ToolTip = .AlternateText
+                        'Dim down As New ImageButton
+                        'down.ID = "cmdDown"
+                        'plAction.Controls.Add(down)
+                        'With down
+                        '    .ImageUrl = "~/images/dn.gif"
+                        '    .AlternateText = Localization.GetString("Item_Down", Me.LocalResourceFile)
+                        '    .ToolTip = .AlternateText
+                        '    .CommandName = "Down"
+                        '    .CommandArgument = commandIndex.ToString()
+                        'End With
+
+                        Dim cmdDown As New IconActionButton
+                        plAction.Controls.Add(cmdDown)
+                        With cmdDown
+                            .ActionItem.IconName = IconName.CaretSquareODown
                             .CommandName = "Down"
                             .CommandArgument = commandIndex.ToString()
                         End With
+                        sm.RegisterPostBackControl(cmdDown)
 
                     End If
 
@@ -914,18 +1050,29 @@ Namespace UI.WebControls.EditControls
 
 
 
-                Dim cmdDelete As New ImageButton
-                cmdDelete.ID = "cmdDelete"
+                'Dim cmdDelete As New ImageButton
+                'cmdDelete.ID = "cmdDelete"
+                'plAction.Controls.Add(cmdDelete)
+                'With cmdDelete
+
+
+                '    .ImageUrl = "~/images/delete.gif"
+                '    .AlternateText = Localization.GetString(Me.Name + "_Delete", Me.LocalResourceFile)
+                '    .ToolTip = .AlternateText
+                '    .CommandName = "Delete"
+                '    .CommandArgument = commandIndex.ToString()
+                'End With
+                'DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
+                'Me._DeleteControls.Add(cmdDelete)
+
+                Dim cmdDelete As New IconActionButton
                 plAction.Controls.Add(cmdDelete)
                 With cmdDelete
-
-
-                    .ImageUrl = "~/images/delete.gif"
-                    .AlternateText = Localization.GetString(Me.Name + "_Delete", Me.LocalResourceFile)
-                    .ToolTip = .AlternateText
+                    .ActionItem.IconName = IconName.TrashO
                     .CommandName = "Delete"
                     .CommandArgument = commandIndex.ToString()
                 End With
+                sm.RegisterPostBackControl(cmdDelete)
                 DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
                 Me._DeleteControls.Add(cmdDelete)
 
@@ -934,86 +1081,6 @@ Namespace UI.WebControls.EditControls
 
         End Sub
 
-
-        Private Sub DisplayListItem(item As RepeaterItem)
-
-            Dim plItemContainer As New HtmlGenericControl("div")
-            Dim oddCss, evenCSS As String
-            If Me.ParentAricieEditor IsNot Nothing AndAlso Me.ParentAricieEditor.PropertyDepth Mod 2 = 0 Then
-                oddCss = "ItemEven"
-                evenCSS = "ItemOdd"
-            Else
-                oddCss = "ItemOdd"
-                evenCSS = "ItemEven"
-            End If
-            plItemContainer.Attributes.Add("class", "ItemContainer " & IIf((item.ItemIndex Mod 2) = 0, oddCss, evenCSS).ToString())
-            item.Controls.Add(plItemContainer)
-
-            Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
-            Me.AddButtons(plItemContainer, commandIndex)
-
-            Me.DisplayItem(commandIndex, plItemContainer, item.DataItem)
-
-        End Sub
-
-        Private Sub DisplayAccordionItem(item As RepeaterItem)
-
-            Dim h3 As New HtmlGenericControl("h3")
-            Dim plItemContainer As New HtmlGenericControl("div")
-            item.Controls.Add(h3)
-
-            item.Controls.Add(plItemContainer)
-
-
-
-            Dim accordionHeaderText As String = ReflectionHelper.GetFriendlyName(item.DataItem)
-
-            accordionHeaderText = String.Format("{0}  -  {1}", (item.ItemIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText)
-
-            Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
-
-            Me.AddButtons(h3, commandIndex)
-
-            Dim headerLink As New HtmlGenericControl("a")
-
-            h3.Controls.Add(headerLink)
-
-            headerLink.InnerText = accordionHeaderText.Replace(" "c, ChrW(160))
-
-            headerLink.Attributes.Add("href", String.Format("#{0}_{1}", Me.ID, commandIndex))
-
-            Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieAccordion" & Me.ParentEditor.ClientID.GetHashCode())
-            Dim cookieValue As Integer = -1
-
-            If cookie IsNot Nothing Then
-                Integer.TryParse(cookie.Value, cookieValue)
-            End If
-
-            If cookieValue <> item.ItemIndex Then
-
-                Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "expand" & ClientAPI.COLUMN_DELIMITER & item.ItemIndex))
-                _headers(item.ItemIndex) = headerLink
-            Else
-
-                Me.DisplayItem(commandIndex, plItemContainer, item.DataItem)
-
-
-            End If
-
-            Me.ItemsDictionary.Add(New Element(accordionHeaderText, plItemContainer))
-
-
-
-        End Sub
-
-        Private Sub DisplayItem(index As Integer, plItemContainer As Control, item As Object)
-            Me._ItemIndex = index
-            Me._DataItem = item
-            Me.CreateRow(plItemContainer, item)
-            Dim emptyDiv As New HtmlGenericControl("div")
-            emptyDiv.Attributes.Add("class", "clear")
-            plItemContainer.Controls.Add(emptyDiv)
-        End Sub
 
         Private Sub Download(value As ICollection)
 

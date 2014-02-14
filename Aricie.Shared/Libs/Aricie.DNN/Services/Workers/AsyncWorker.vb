@@ -3,7 +3,6 @@ Imports Aricie.Services
 Imports DotNetNuke.Services.Exceptions
 
 Namespace Services.Workers
-
     ''' <summary>
     ''' Class to run threads operation safely
     ''' </summary>
@@ -116,7 +115,7 @@ Namespace Services.Workers
                     _CustomPool(key) = tempThreadList
                 End If
             End SyncLock
-            
+
 
             'todo: voir ce qu'il en est
             'Else

@@ -7,6 +7,8 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services
 Imports Aricie.Text
+Imports Aricie.DNN.Services.Filtering
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -25,89 +27,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             MyBase.New(enableTokenReplace)
         End Sub
 
-        Private _FromAddress As String = ""
 
-        Private _ToAddresses As String = ""
 
-        Private _EmailObject As String = ""
+        <ExtendedCategory("Specifics")>
+        Public Property FromAddress As String = ""
 
-        Private _EmailPriority As MailPriority = MailPriority.Normal
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl)), LineCount(4), Width(500), ExtendedCategory("Specifics")>
+        Public Property ToAddresses As String = ""
 
-        Private _BodyFormat As MailFormat = MailFormat.Html
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl)), Width(500), ExtendedCategory("Specifics")>
+        Public Property EmailObject As String = ""
 
-        Private _Encoding As SimpleEncoding
+        <ExtendedCategory("Specifics")>
+        Public Property EmailPriority As MailPriority = MailPriority.Normal
 
-        <ExtendedCategory("Specifics")> _
-        Public Property FromAddress() As String
-            Get
-                Return _FromAddress
-            End Get
-            Set(ByVal value As String)
-                _FromAddress = value
-            End Set
-        End Property
+        <ExtendedCategory("Specifics")>
+        Public Property BodyFormat As MailFormat = MailFormat.Html
 
-        <ExtendedCategory("Specifics")> _
-        <Width(500)> _
-            <LineCount(4)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        Public Property ToAddresses() As String
-            Get
-                Return _ToAddresses
-            End Get
-            Set(ByVal value As String)
-                _ToAddresses = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Specifics")> _
-        <Width(500)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        Public Property EmailObject() As String
-            Get
-                Return _EmailObject
-            End Get
-            Set(ByVal value As String)
-                _EmailObject = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Specifics")> _
-        Public Property EmailPriority() As MailPriority
-            Get
-                Return _EmailPriority
-            End Get
-            Set(ByVal value As MailPriority)
-                _EmailPriority = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Specifics")> _
-        Public Property BodyFormat() As MailFormat
-            Get
-                Return _BodyFormat
-            End Get
-            Set(ByVal value As MailFormat)
-                _BodyFormat = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Specifics")> _
-        Public Property Encoding() As SimpleEncoding
-            Get
-                Return _Encoding
-            End Get
-            Set(ByVal value As SimpleEncoding)
-                _Encoding = value
-            End Set
-        End Property
+        <ExtendedCategory("Specifics")>
+        Public Property Encoding As SimpleEncoding = SimpleEncoding.UTF8
 
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvent), ByVal aSync As Boolean) As Boolean
             Dim message As String = GetMessage(actionContext)
-            Dim mailObject As String = GetMessage(actionContext, Me._EmailObject)
-            Dim targetAddresses As String = GetMessage(actionContext, Me._ToAddresses)
-            Dim fromAddress As String = Me._FromAddress
+            Dim mailObject As String = GetMessage(actionContext, Me.EmailObject)
+            Dim targetAddresses As String = GetMessage(actionContext, Me.ToAddresses)
+            Dim fromAddress As String = Me.FromAddress
             If fromAddress = "" Then
                 fromAddress = NukeHelper.PortalSettings.Email
                 If String.IsNullOrEmpty(fromAddress) Then
@@ -115,9 +60,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 'fromAddress = DotNetNuke.Entities.Users.UserController.GetUser(NukeHelper.PortalSettings.PortalId, NukeHelper.PortalSettings.AdministratorId, True).Email
             End If
-            DotNetNuke.Services.Mail.Mail.SendMail(fromAddress, targetAddresses, "", "", Me._EmailPriority, mailObject, Me._BodyFormat, EncodingHelper.GetEncoding(Me._Encoding), message, _
+            DotNetNuke.Services.Mail.Mail.SendMail(fromAddress, targetAddresses, "", "", Me.EmailPriority, mailObject, Me.BodyFormat, EncodingHelper.GetEncoding(Me.Encoding), message, _
                                                    "", "", "", "", "")
             Return True
         End Function
     End Class
 End Namespace
+

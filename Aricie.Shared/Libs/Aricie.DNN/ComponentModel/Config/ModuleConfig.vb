@@ -105,7 +105,7 @@ Namespace ComponentModel
             Return New TConfigClass
         End Function
 
-       
+
     End Class
 
     ''' <summary>
@@ -158,7 +158,7 @@ Namespace ComponentModel
 
         <ConditionalVisible("BackupToRestore", True, True, "")> _
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton("~/images/reset.gif", "RestoreBackup.Warning")> _
+        <ActionButton(IconName.Refresh, "RestoreBackup.Warning")> _
         Public Sub RestoreBackup(pe As AriciePropertyEditorControl)
             If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
                 pe.ItemChanged = True
@@ -171,7 +171,7 @@ Namespace ComponentModel
         End Sub
 
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton("~/images/save.gif")> _
+        <ActionButton(IconName.FloppyO, "Save Current Form?")> _
         Public Sub SaveLocationSettings(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 SharedLocationSettings(True, False) = Me.LocationSettings
@@ -187,7 +187,6 @@ Namespace ComponentModel
         End Sub
 
         Private Shared _Instance As TConfigClass
-
 
 
         Public Shared ReadOnly Property Instance() As TConfigClass
@@ -218,7 +217,7 @@ Namespace ComponentModel
             End Get
         End Property
 
-        <ActionButton("~/images/save.gif")> _
+        <ActionButton(IconName.FloppyO)> _
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
@@ -235,12 +234,12 @@ Namespace ComponentModel
             Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
         End Sub
 
-        <ActionButton("~/images/cancel.gif")> _
+        <ActionButton(IconName.FloppyO, IconName.Ban)> _
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
 
-        <ActionButton("~/images/reset.gif", "Reset.Warning")> _
+        <ActionButton(IconName.TrashO, "Reset.Warning")> _
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
             Reset(SharedLocationSettings(True, False))
             Try
@@ -288,7 +287,7 @@ Namespace ComponentModel
         End Sub
 
 
-        
+
 
         Public Overloads Shared Sub Reset(ByVal locSettings As LocationSettings)
             Save(Instance(locSettings).GetDefaultConfig, locSettings)

@@ -864,8 +864,8 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="LogEventAction`1_MessageSettings.Header" xml:space="preserve">
     <value>Message Settings</value>
   </data>
-  <data name="MessageBasedAction`1_Message.Text" xml:space="preserve">
-    <value>Message</value>
+  <data name="TokenizedTextInfo_Text.Text" xml:space="preserve">
+    <value>Text</value>
   </data>
   <data name="TaskQueueInfo_AdvancedSettings.Header" xml:space="preserve">
     <value>AdvancedSettings</value>
@@ -951,16 +951,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="KeeperRule`1_MatchingLifeCycleEvent.Text" xml:space="preserve">
     <value>Life Cycle Event Step</value>
   </data>
-  <data name="MessageBasedAction`1_AdditionalTokenSource.Help" xml:space="preserve">
-    <value>You can define here a set of custom token sources to be added to the token replace. </value>
+  <data name="TokenizedTextInfo_AdditionalTokenSource.Help" xml:space="preserve">
+    <value>You can define here a set of custom token sources to be added to the token replace. You can add all caps static tokens, load object based tokens, and define conditional tokens (depending on other tokens value)</value>
   </data>
-  <data name="MessageBasedAction`1_AdditionalTokenSource.Text" xml:space="preserve">
+  <data name="TokenizedTextInfo_AdditionalTokenSource.Text" xml:space="preserve">
     <value>Additional Token Sources</value>
   </data>
-  <data name="MessageBasedAction`1_EnableTokenReplace.Help" xml:space="preserve">
-    <value>You can optionally activate token replace on your message. Native contextual tokens are available, in addition to the default token sources, and you can define additional token sources specific to that action below.</value>
+  <data name="TokenizedTextInfo_EnableTokenReplace.Help" xml:space="preserve">
+    <value>You can optionally activate token replace on your Textual content. Native contextual tokens are available, in addition to the default token sources, and you can define additional token sources specific to that action below.</value>
   </data>
-  <data name="MessageBasedAction`1_EnableTokenReplace.Text" xml:space="preserve">
+  <data name="TokenizedTextInfo_EnableTokenReplace.Text" xml:space="preserve">
     <value>Enable Token Replace</value>
   </data>
   <data name="RuleEngineSettings`1_DefaultTokenSource.Help" xml:space="preserve">
@@ -1590,8 +1590,8 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Instances_Up.Text" xml:space="preserve">
     <value>Move Item Up</value>
   </data>
-  <data name="MessageBasedAction`1_Message.Help" xml:space="preserve">
-    <value>Enter here the message to be associated with the action. If enabled, you can use dynamic Tokens; an advanced token engine allows you to form complex expressions, leveraging object hierarchies, methods, arrays, indexed properties, conditional and loop tokens.  </value>
+  <data name="TokenizedTextInfo_Text.Help" xml:space="preserve">
+    <value>Enter here the text to be associated with the action. If enabled, you can use dynamic Tokens; an advanced token engine allows you to form complex expressions, leveraging object hierarchies, methods, arrays, indexed properties, conditional and loop tokens.  </value>
   </data>
   <data name="RequestsCaps_Delete.Text" xml:space="preserve">
     <value>Delete Cap</value>
@@ -4967,6 +4967,12 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="Item_Up.Text" xml:space="preserve">
     <value>Move Item Up</value>
+  </data>
+  <data name="MessageBasedAction`1_TokenizedText.Help" xml:space="preserve">
+    <value>Enter here the textual content of you message based action. You can optionally use tokens to get access to contextual data</value>
+  </data>
+  <data name="MessageBasedAction`1_TokenizedText.Text" xml:space="preserve">
+    <value>Message Content</value>
   </data>
   <data name="SubPathContainer_CloseSubEditor.Text" xml:space="preserve">
     <value>Back to Full Editor</value>

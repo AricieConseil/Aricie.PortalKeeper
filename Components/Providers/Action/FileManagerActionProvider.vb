@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 Case FileManagerMode.Copy
                     Dim targetPath As String = Me.TargetPathExpression.Evaluate(actionContext, actionContext)
-                    Dim targetMapPath As String = Me.GetFileMapPath(actionContext, targetPath)
+                    Dim targetMapPath As String = Me.FilePath.GetFileMapPath(targetPath)
                     If Directory.Exists(sourceMapPath) Then
                         If Not Directory.Exists(targetMapPath) Then
                             Directory.CreateDirectory(targetMapPath)
@@ -66,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 Case FileManagerMode.Move
                     Dim targetPath As String = Me.TargetPathExpression.Evaluate(actionContext, actionContext)
-                    Dim targetMapPath As String = Me.GetFileMapPath(actionContext, targetPath)
+                    Dim targetMapPath As String = Me.FilePath.GetFileMapPath(targetPath)
                     If Directory.Exists(sourceMapPath) OrElse File.Exists(sourceMapPath) Then
                         System.IO.Directory.Move(sourceMapPath, targetMapPath)
                     Else

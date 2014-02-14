@@ -1,5 +1,6 @@
 ﻿Imports System.Reflection
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace ComponentModel
 
@@ -12,6 +13,8 @@ Namespace ComponentModel
 
         Public Property Method As MethodInfo
         Public Property ExtendedCategory As ExtendedCategory
+        Public Property Mode As ActionButtonMode = ActionButtonMode.CommandButton
+        Public Property IconAction As New IconActionInfo
         Public Property IconPath As String = ""
         Public Property AlertKey As String = ""
         Public Property ConditionalVisibles As List(Of ConditionalVisibleInfo)
@@ -24,6 +27,8 @@ Namespace ComponentModel
                 toReturn = New ActionButtonInfo
                 toReturn.Method = objMethod
                 Dim attr As ActionButtonAttribute = DirectCast(attrs(0), ActionButtonAttribute)
+                toReturn.Mode = attr.Mode
+                toReturn.IconAction = attr.IconAction
                 toReturn.IconPath = attr.IconPath
                 toReturn.AlertKey = attr.AlertKey
                 toReturn.ExtendedCategory = ExtendedCategory.FromMember(objMethod)

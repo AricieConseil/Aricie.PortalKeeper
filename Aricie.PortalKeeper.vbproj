@@ -164,13 +164,14 @@
     <Compile Include="Components\Entities\FileHelpersMode.vb" />
     <Compile Include="Components\Entities\FileHelpersSettings.vb" />
     <Compile Include="Components\Entities\RecordsMode.vb" />
+    <Compile Include="Components\Providers\Action\ExecuteSqlAction.vb" />
     <Compile Include="Components\Providers\Action\ExpressionActionProvider.vb" />
     <Compile Include="Components\Providers\Action\FileAccessMode.vb" />
     <Compile Include="Components\Providers\Action\FileManagerActionProvider.vb" />
     <Compile Include="Components\Providers\Action\FileManagerMode.vb" />
-    <Compile Include="Components\Providers\Action\FilePathMode.vb" />
     <Compile Include="Components\Providers\Action\FileReadWriteActionProvider.vb" />
     <Compile Include="Components\Providers\Action\FileWriteActionProviderBase.vb" />
+    <Compile Include="Components\Providers\Action\RunProgramAction.vb" />
     <Compile Include="Components\Providers\Action\SerializeActionProviderBase.vb" />
     <Compile Include="Components\StaticInfo\KeyBucket.vb" />
     <Compile Include="Components\PortalKeeperSchedule.vb" />

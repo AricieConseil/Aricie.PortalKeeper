@@ -9,7 +9,6 @@ Imports DotNetNuke.Services.Exceptions
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Filtering
-
     ''' <summary>
     ''' Class holder for token data source information
     ''' </summary>
@@ -45,7 +44,7 @@ Namespace Services.Filtering
             LabelMode(LabelMode.Top), SortOrder(1)> _
             <CollectionEditor(False, True, True, True, 10)> _
         Public Property TokenProviders() As New SerializableDictionary(Of String, String)
-            
+
         ''' <summary>
         ''' List of conditional tokens
         ''' </summary>
@@ -106,11 +105,13 @@ Namespace Services.Filtering
                 formattedToken = FormatToken(token.Key)
                 tempValue = atr.ReplaceAllTokens(formattedToken)
 
-                If conditional.ConditionalSources.ContainsKey(tempValue) Then
-                    conditional.ConditionalSources(tempValue).SetTokens(atr)
+                Dim subTokenSource As TokenSourceInfo = Nothing
+                If conditional.ConditionalSources.TryGetValue(tempValue, subTokenSource) Then
+                    subTokenSource.SetTokens(atr)
                 End If
 
             Next
+            atr.SetIsSet(Me)
 
 
         End Sub

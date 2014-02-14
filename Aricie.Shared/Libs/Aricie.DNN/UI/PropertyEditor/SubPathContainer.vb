@@ -37,7 +37,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        <ActionButton("~/images/folderup.gif")> _
+        <ActionButton(IconName.Undo)> _
         Public Sub CloseSubEditor(pe As AriciePropertyEditorControl)
             pe.RootEditor.CloseSubEditor()
         End Sub

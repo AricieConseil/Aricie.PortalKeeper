@@ -11,75 +11,73 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
-        'Private _EnventMessage As String = "Alert from PortalKeeper generated with condition [Condition:Name] matching request [Context:CurrentIpAddress] and user [Context:DnnContext:User:Username]"
-        Private _Message As String = ""
-        Private _EnableTokenReplace As Boolean
-        Private _AdditionalTokenSource As New TokenSourceInfo
 
         Public Sub New()
-
         End Sub
 
         Public Sub New(ByVal enableTokenReplace As Boolean)
-
+            Me.TokenizedText.EnableTokenReplace = enableTokenReplace
         End Sub
 
         <ExtendedCategory("MessageSettings")> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(10)> _
-            <Width(400)> _
+        Public Overridable Property TokenizedText As New TokenizedTextInfo()
+
+
+
+
+        'todo, make obsolete after migration of old parameters
+        '<Obsolete("use Tokenized sub entity instead")> _
+        <Browsable(False)>
         Public Property Message() As String
             Get
-                Return _Message
+                Return Me.TokenizedText.Text
             End Get
-            Set(ByVal value As String)
-                _Message = value
+            Set(value As String)
+                Me.TokenizedText.Text = value
             End Set
         End Property
 
-        <ExtendedCategory("MessageSettings")> _
+
+
+        <Browsable(False)>
         Public Property EnableTokenReplace() As Boolean
             Get
-                Return _EnableTokenReplace
+                Return Me.TokenizedText.EnableTokenReplace
             End Get
-            Set(ByVal value As Boolean)
-                _EnableTokenReplace = value
+            Set(value As Boolean)
+                Me.TokenizedText.EnableTokenReplace = value
             End Set
         End Property
 
-        <ExtendedCategory("MessageSettings")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <Browsable(False)>
         Public Property AdditionalTokenSource() As TokenSourceInfo
             Get
-                Return _AdditionalTokenSource
+                Return Me.TokenizedText.AdditionalTokenSource
             End Get
-            Set(ByVal value As TokenSourceInfo)
-                _AdditionalTokenSource = value
+            Set(value As TokenSourceInfo)
+                Me.TokenizedText.AdditionalTokenSource = value
             End Set
         End Property
+           
 
         Protected Overrides Function GetAdvancedTokenReplace(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Services.AdvancedTokenReplace
             Dim toReturn As AdvancedTokenReplace = MyBase.GetAdvancedTokenReplace(actionContext)
-            Me._AdditionalTokenSource.SetTokens(toReturn)
+            Me.TokenizedText.AdditionalTokenSource.SetTokens(toReturn)
             Return toReturn
         End Function
 
         Protected Function GetMessage(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As String
 
-            Return Me.GetMessage(actionContext, Me._Message)
+            Return Me.GetMessage(actionContext, Me.TokenizedText.Text)
 
         End Function
 
         Protected Function GetMessage(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal template As String) As String
-
-            If Me._EnableTokenReplace Then
-                Return Me.GetAdvancedTokenReplace(actionContext).ReplaceAllTokens(template)
+            If Me.TokenizedText.EnableTokenReplace Then
+                Return Me.TokenizedText.GetText(Me.GetAdvancedTokenReplace(actionContext), template)
             Else
                 Return template
             End If
-
-
         End Function
 
 

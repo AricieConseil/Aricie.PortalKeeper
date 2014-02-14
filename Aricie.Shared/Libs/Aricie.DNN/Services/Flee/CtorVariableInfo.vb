@@ -5,7 +5,6 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Flee
-
     ''' <summary>
     ''' Class to use flee constructors
     ''' </summary>

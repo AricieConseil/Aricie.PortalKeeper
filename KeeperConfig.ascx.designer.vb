@@ -15,33 +15,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Public Class KeeperConfig
 
         '''<summary>
-        '''divInstall control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents divInstall As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-
-        '''<summary>
-        '''cmdInstall control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdInstall As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
-        '''cmdUninstall control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdUninstall As Global.DotNetNuke.UI.WebControls.CommandButton
-
-        '''<summary>
         '''divConfig control.
         '''</summary>
         '''<remarks>
@@ -229,5 +202,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents ctlUserBot As Global.Aricie.DNN.UI.WebControls.AriciePropertyEditorControl
+
+        '''<summary>
+        '''divInstall control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents divInstall As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+        '''<summary>
+        '''cmdInstall control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents cmdInstall As Global.DotNetNuke.UI.WebControls.CommandButton
+
+        '''<summary>
+        '''cmdUninstall control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents cmdUninstall As Global.DotNetNuke.UI.WebControls.CommandButton
     End Class
 End Namespace

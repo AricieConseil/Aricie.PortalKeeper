@@ -940,7 +940,7 @@ Namespace UI.WebControls
                         buttonContainer = New Panel()
                         buttonContainer.EnableViewState = False
                         buttonContainer.ID = "divCmdButtons" & element.Name
-                        buttonContainer.CssClass = "CommandsButtons DNNAligncenter"
+                        buttonContainer.CssClass = "dnnFormItem DNNAligncenter"
                         element.Container.Controls.Add(buttonContainer)
                     End If
                     Me.AddActionButton(objActionButton, buttonContainer)
@@ -952,14 +952,27 @@ Namespace UI.WebControls
 
         Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
 
-            Dim btn As New CommandButton()
-            'btn.ID = "cmd" & objButtonInfo.Method.Name
-            btn.CssClass = "dnnTertiaryAction"
-            btn.Text = objButtonInfo.Method.Name
-            btn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
-            If objButtonInfo.IconPath <> "" Then
-                btn.ImageUrl = objButtonInfo.IconPath
-            End If
+            Dim btn As WebControl
+            Select Case objButtonInfo.Mode
+                Case ActionButtonMode.CommandButton
+                    Dim cmdbtn As New CommandButton()
+                    btn = cmdbtn
+                    cmdbtn.CssClass = "aricieActions"
+                    cmdbtn.Text = objButtonInfo.Method.Name
+                    cmdbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
+                    If objButtonInfo.IconPath <> "" Then
+                        cmdbtn.ImageUrl = objButtonInfo.IconPath
+                    End If
+
+                Case ActionButtonMode.IconButton
+                    Dim iconbtn As New IconActionButton()
+                    btn = iconbtn
+                    'iconbtn.CssClass = "dnnTertiaryAction"
+                    iconbtn.ActionItem = objButtonInfo.IconAction
+                    iconbtn.Text = objButtonInfo.Method.Name
+                    iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
+            End Select
+           
             container.Controls.Add(btn)
             If objButtonInfo.AlertKey <> "" Then
                 Dim message As String = Localization.GetString(objButtonInfo.AlertKey, Me.LocalResourceFile)
@@ -997,13 +1010,27 @@ Namespace UI.WebControls
                     Next
                 End If
             End If
-            AddHandler btn.Click, Sub(s As Object, e As EventArgs)
-                                      Try
-                                          objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
-                                      Catch ex As Exception
-                                          Me.ProcessException(ex)
-                                      End Try
-                                  End Sub
+
+            If TypeOf btn Is IconActionButton Then
+                AddHandler DirectCast(btn, IconActionButton).Click, Sub(s As Object, e As EventArgs)
+                                                                        Try
+                                                                            objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
+                                                                        Catch ex As Exception
+                                                                            Me.ProcessException(ex)
+                                                                        End Try
+                                                                    End Sub
+            ElseIf TypeOf btn Is CommandButton Then
+                AddHandler DirectCast(btn, CommandButton).Click, Sub(s As Object, e As EventArgs)
+                                                                     Try
+                                                                         objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
+                                                                     Catch ex As Exception
+                                                                         Me.ProcessException(ex)
+                                                                     End Try
+                                                                 End Sub
+
+            End If
+
+            
         End Sub
 
         Protected Sub AddEditorCtl(ByRef container As Control, ByVal obj As Object, ByVal keepHidden As Boolean)

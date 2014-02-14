@@ -1,8 +1,11 @@
-﻿Namespace Aricie.DNN.Modules.PortalKeeper
+﻿
+
+Namespace Services.Files
+
     Public Enum FilePathMode
         AbsoluteMapPath
         RootPath
         HostPath
         AdminPath
     End Enum
-End NameSpace
+End Namespace
