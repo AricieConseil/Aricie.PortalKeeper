@@ -159,7 +159,7 @@ Namespace UI.WebControls.EditControls
             For Each objItem In items
                 'Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
                 
-                Dim objButton As New IconActionButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
+                Dim objButton As New IconActionButton With {.Text = objItem.Value, .CommandArgument = objItem.Key}
                 If String.IsNullOrEmpty(objItem.Key) Then
                     objButton.ActionItem.IconName = IconName.Sitemap
                 End If
