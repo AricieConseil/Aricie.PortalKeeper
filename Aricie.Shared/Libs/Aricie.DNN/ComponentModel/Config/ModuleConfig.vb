@@ -158,7 +158,7 @@ Namespace ComponentModel
 
         <ConditionalVisible("BackupToRestore", True, True, "")> _
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton(IconName.Refresh, "RestoreBackup.Warning")> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal, "RestoreBackup.Warning")> _
         Public Sub RestoreBackup(pe As AriciePropertyEditorControl)
             If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
                 pe.ItemChanged = True
@@ -171,7 +171,7 @@ Namespace ComponentModel
         End Sub
 
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton(IconName.FloppyO, "Save Current Form?")> _
+        <ActionButton(IconName.FloppyO, IconOptions.Normal, "Save Current Form?")> _
         Public Sub SaveLocationSettings(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 SharedLocationSettings(True, False) = Me.LocationSettings
@@ -217,7 +217,7 @@ Namespace ComponentModel
             End Get
         End Property
 
-        <ActionButton(IconName.FloppyO)> _
+        <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
         Public Overridable Overloads Sub Save(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
@@ -234,12 +234,12 @@ Namespace ComponentModel
             Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
         End Sub
 
-        <ActionButton(IconName.FloppyO, IconName.Ban)> _
+        <ActionButton(IconName.FloppyO, IconOptions.Stack1X, IconName.Ban, IconOptions.Stack2X, IconOptions.Large, "")> _
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
 
-        <ActionButton(IconName.TrashO, "Reset.Warning")> _
+        <ActionButton(IconName.TrashO, IconOptions.Normal, "Reset.Warning")> _
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
             Reset(SharedLocationSettings(True, False))
             Try

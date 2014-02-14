@@ -37,7 +37,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        <ActionButton(IconName.Undo)> _
+        <ActionButton(IconName.Undo, IconOptions.Normal)> _
         Public Sub CloseSubEditor(pe As AriciePropertyEditorControl)
             pe.RootEditor.CloseSubEditor()
         End Sub

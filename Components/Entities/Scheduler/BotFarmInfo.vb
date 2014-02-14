@@ -209,7 +209,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '        Return _FarmMutex
         '    End Get
         'End Property
-        <ActionButton(IconName.Play)>
+
+        <ActionButton(IconName.Key, IconOptions.Normal)>
+        Public Sub ResetEncryptionKey(pmb As AriciePortalModuleBase)
+
+        End Sub
+
+        <ActionButton(IconName.Play, IconOptions.Normal)>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
             Dim flowid As String = Guid.NewGuid.ToString
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then
