@@ -84,7 +84,7 @@ Namespace UI.WebControls
             Dim toReturn As New StringBuilder()
 
             If objIconName <> IconName.None Then
-                toReturn.AppendFormat("fa {0}", objIconName)
+                toReturn.AppendFormat("fa {0}", IconActionInfo.Icons(objIconName))
             End If
 
             If (objOptions And IconOptions.Rotate90) = IconOptions.Rotate90 Then
