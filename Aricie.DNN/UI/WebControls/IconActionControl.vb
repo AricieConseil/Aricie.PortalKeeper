@@ -27,7 +27,7 @@ Namespace UI.WebControls
             If (Not Me.ActionItem Is Nothing) Then
                 Dim currentControl As Control = Me
 
-              
+
 
                 'Dim htmlToAdd As New System.Text.StringBuilder()
                 If Me.Enabled AndAlso (Not String.IsNullOrEmpty(Me.Url)) Then
@@ -36,45 +36,30 @@ Namespace UI.WebControls
                     currentControl = hl
                     hl.NavigateUrl = Me.Url
                     hl.CssClass = Me.CssClass
-
-                    'htmlToAdd.AppendFormat("<a href='{0}'>", ActionItem.Url)
                 End If
 
                 If (ActionItem.StackedIconName <> IconName.None) Then
                     Dim stackP As New HtmlControls.HtmlGenericControl("p")
                     currentControl.Controls.Add(stackP)
                     currentControl = stackP
-                    stackP.Attributes.Add("class", "fa-stack")
-                    'htmlToAdd.AppendFormat("<p class='fa-stack fa-lg'>")
+                    Dim containerCssClass As String = "fa-stack" & GetCssClass(IconName.None, ActionItem.StackContainerOptions, False)
+                    stackP.Attributes.Add("class", containerCssClass)
                 End If
 
                 If (ActionItem.IconName <> IconName.None) Then
                     Dim iconLabel As New Label
                     currentControl.Controls.Add(iconLabel)
-                    iconLabel.CssClass = Me.GetCssClass()
+                    iconLabel.CssClass = Me.GetCssClass(ActionItem.IconName, ActionItem.IconOptions, ActionItem.StackedIconName <> IconName.None)
                 End If
 
-                
-                'If Not String.IsNullOrEmpty(Me.CssClass) Then
-                '    iconLabel.CssClass = Me.CssClass & " " & iconLabel.CssClass
-                'End If
 
                 If (ActionItem.StackedIconName <> IconName.None) Then
                     Dim stackIcon As New Label
 
                     currentControl.Controls.Add(stackIcon)
-                    stackIcon.CssClass = String.Format("fa fa-stack-2x {0}", IconActionInfo.Icons(ActionItem.StackedIconName))
+                    stackIcon.CssClass = Me.GetCssClass(ActionItem.StackedIconName, ActionItem.StackedIconOptions, True)
                     currentControl = currentControl.Parent
                 End If
-
-                'If (Not String.IsNullOrEmpty(Me.Url)) Then
-                '    currentControl = currentControl.Parent
-                '    Dim hl As New HyperLink
-                '    currentControl.Controls.Add(hl)
-                '    currentControl = hl
-                '    hl.NavigateUrl = Me.Url
-                '    hl.CssClass = Me.CssClass
-                'End If
 
                 If (Not String.IsNullOrEmpty(Me.Text)) Then
                     Dim objTextLabel As New Label()
@@ -87,90 +72,70 @@ Namespace UI.WebControls
 
 
 
-                'If (ActionItem.StackedIconName <> IconName.None) Then
-                '    htmlToAdd.AppendFormat("<span class='fa fa-stack-2x {0}'></span></p>", IconActionInfo.Icons(ActionItem.StackedIconName))
-                'End If
 
-
-                'If (Not String.IsNullOrEmpty(ActionItem.Url)) Then
-                '    htmlToAdd.Append("</a>")
-                'End If
-
-                'myLiteral.Text = htmlToAdd.ToString()
-                'Else
-                '    myLit.Text = String.Format("<a href='{0}'><span class='fa {1}'></span>{2}</a>", Url, IconName, Text)
+                ResourcesUtils.registerStylesheet(Me.Page, "font-awesome", "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", False)
             End If
-            ResourcesUtils.registerStylesheet(Me.Page, "font-awesome", "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", False)
+
 
 
         End Sub
 
-        Public Function GetCssClass() As String
+        Public Function GetCssClass(objIconName As IconName, objOptions As IconOptions, stacked As Boolean) As String
             Dim toReturn As New StringBuilder()
-            toReturn.AppendFormat("fa {0}", IconActionInfo.Icons(ActionItem.IconName))
-            If (ActionItem.StackedIconName <> IconName.None) Then
-                toReturn.Append(" fa-stack-1x")
+
+            If objIconName <> IconName.None Then
+                toReturn.AppendFormat("fa {0}", objIconName)
             End If
 
-            If ActionItem.Border Then
+            If (objOptions And IconOptions.Rotate90) = IconOptions.Rotate90 Then
+                toReturn.Append(" fa-rotate-90")
+            ElseIf (objOptions And IconOptions.Rotate180) = IconOptions.Rotate180 Then
+                toReturn.Append(" fa-rotate-180")
+            ElseIf (objOptions And IconOptions.Rotate270) = IconOptions.Rotate180 Then
+                toReturn.Append(" fa-rotate-270")
+            ElseIf (objOptions And IconOptions.FlipHorizontal) = IconOptions.FlipHorizontal Then
+                toReturn.Append(" fa-flip-horizontal")
+            ElseIf (objOptions And IconOptions.FlipVertical) = IconOptions.FlipVertical Then
+                toReturn.Append(" fa-flip-vertical")
+            End If
+
+            If (objOptions And IconOptions.Border) = IconOptions.Border Then
                 toReturn.Append("  fa-border")
             End If
-            If ActionItem.FixWidth Then
-                toReturn.Append(" fa-fw")
-            End If
-            If ActionItem.FlipAndRotate <> IconActionInfo.Rotate.Normal Then
-                If (ActionItem.FlipAndRotate And IconActionInfo.Rotate.Rotate90) = IconActionInfo.Rotate.Rotate90 Then
-                    toReturn.Append(" fa-rotate-90")
-                End If
-                If (ActionItem.FlipAndRotate And IconActionInfo.Rotate.Rotate180) = IconActionInfo.Rotate.Rotate180 Then
-                    toReturn.Append(" fa-rotate-180")
-                End If
-                If (ActionItem.FlipAndRotate And IconActionInfo.Rotate.Rotate270) = IconActionInfo.Rotate.Rotate270 Then
-                    toReturn.Append(" fa-rotate-270")
-                End If
-                If (ActionItem.FlipAndRotate And IconActionInfo.Rotate.FlipHorizontal) = IconActionInfo.Rotate.FlipHorizontal Then
-                    toReturn.Append(" fa-flip-horizontal")
-                End If
-                If (ActionItem.FlipAndRotate And IconActionInfo.Rotate.FlipVertical) = IconActionInfo.Rotate.FlipVertical Then
-                    toReturn.Append(" fa-flip-vertical")
-                End If
 
+            If (objOptions And IconOptions.FixedWidth) = IconOptions.FixedWidth Then
+                toReturn.Append("  fa-fw")
             End If
-            If ActionItem.ZoomLevel <> IconActionInfo.Zoom.Normal Then
-                If ActionItem.ZoomLevel = IconActionInfo.Zoom.Large Then
+
+            If (objOptions And IconOptions.Spin) = IconOptions.Spin Then
+                toReturn.Append("  fa-spin")
+            End If
+
+            If stacked Then
+                If (objOptions And IconOptions.Stack2X) = IconOptions.Stack2X Then
+                    toReturn.Append(" fa-stack-2x")
+                Else
+                    toReturn.Append(" fa-stack-1x")
+                End If
+            Else
+                If (objOptions And IconOptions.Large) = IconOptions.Large Then
                     toReturn.Append(" fa-lg")
-                End If
-                If ActionItem.ZoomLevel = IconActionInfo.Zoom.x2 Then
+                ElseIf (objOptions And IconOptions.x2) = IconOptions.x2 Then
                     toReturn.Append(" fa-2x")
-                End If
-                If ActionItem.ZoomLevel = IconActionInfo.Zoom.x3 Then
+                ElseIf (objOptions And IconOptions.x3) = IconOptions.x3 Then
                     toReturn.Append(" fa-3x")
-                End If
-                If ActionItem.ZoomLevel = IconActionInfo.Zoom.x4 Then
+                ElseIf (objOptions And IconOptions.x4) = IconOptions.x4 Then
                     toReturn.Append(" fa-4x")
-                End If
-                If ActionItem.ZoomLevel = IconActionInfo.Zoom.x5 Then
+                ElseIf (objOptions And IconOptions.x5) = IconOptions.x5 Then
                     toReturn.Append(" fa-5x")
                 End If
             End If
-            If ActionItem.Spinning Then
-                toReturn.Append(" fa-spin")
-            End If
 
-            'If ActionItem.StackStatus <> IconActionEntity.Stack.Normal Then
-            '    If (ActionItem.StackStatus And IconActionEntity.Stack.Stack1x) = IconActionEntity.Stack.Stack1x Then
-            '        htmlToAdd.Append(" fa-stack-1x ")
-            '    End If
-            '    If (ActionItem.StackStatus And IconActionEntity.Stack.Stack2x) = IconActionEntity.Stack.Stack2x Then
-            '        htmlToAdd.Append(" fa-stack-2x ")
-            '    End If
-            '    If (ActionItem.StackStatus And IconActionEntity.Stack.InverseColor) = IconActionEntity.Stack.InverseColor Then
-            '        htmlToAdd.Append(" fa-inverse ")
-            '    End If
-            '   End If
 
             Return toReturn.ToString()
         End Function
+
+
 
         Protected Overrides Sub Render(writer As HtmlTextWriter)
             MyBase.RenderChildren(writer)
