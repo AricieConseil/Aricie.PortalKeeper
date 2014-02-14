@@ -98,10 +98,17 @@ Namespace UI.WebControls.EditControls
                         AndAlso CType(Me.ParentAricieField.Editor, CollectionEditControl).DisplayStyle = CollectionDisplayStyle.Accordion Then
                     Me.Controls.Add(Me._InnerEditor)
                 Else
-                    Dim subPE As Control = AddSubDiv(Me._InnerEditor)
+
                     Dim myPeIco As IconActionControl = New IconActionControl()
                     myPeIco.ActionItem = New IconActionInfo() With {.IconName = IconName.Btc, .IconOptions = IconOptions.x3}
-
+                    Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
+                    Dim cssClass As String = "odd"
+                    If (Not ariciePropCt Is Nothing) Then
+                        If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
+                            cssClass = "even"
+                        End If
+                    End If
+                    Dim subPE As Control = AddSubDiv(Me._InnerEditor, cssClass)
                     subPE.Controls.AddAt(0, myPeIco)
                     Me.Controls.Add(subPE)
                 End If
