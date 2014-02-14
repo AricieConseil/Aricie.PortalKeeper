@@ -226,10 +226,10 @@ Namespace UI
         Private _SectionHeaderCookieRegex As New Regex("[^a-zA-Z0-9\-]+", RegexOptions.Compiled)
 
 
-        Public Function AddSubDiv(ByVal childControl As Control) As Control
+        Public Function AddSubDiv(ByVal childControl As Control, Optional ByVal additionnalCSS As String = "") As Control
             Dim objDiv As New HtmlGenericControl("div")
             objDiv.ID = "div" & childControl.ID
-            objDiv.Attributes.Add("class", "SubDiv")
+            objDiv.Attributes.Add("class", String.Format("SubDiv {0}", additionnalCSS))
             'objDiv.Attributes.CssStyle.Add(HtmlTextWriterStyle.MarginLeft, "20px")
             'objDiv.Attributes.CssStyle.Add(HtmlTextWriterStyle.MarginTop, "20px")
             'objDiv.Attributes.CssStyle.Add(HtmlTextWriterStyle.MarginBottom, "20px")
