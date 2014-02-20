@@ -20,6 +20,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
         Inherits AriciePortalModuleBase
 
+        Public Sub New()
+            MyBase.New()
+            AddHandler DnnContext.Current.Debug, AddressOf Me.OnDebug
+        End Sub
+
+
         Private _KeeperConfig As PortalKeeperConfig
         Private _KeeperSettings As FirewallSettings
 
@@ -75,13 +81,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                         Dim key As String = "UserBot" & Me.UserBotSettings.Name
                         If Not Me.IsPostBack OrElse Session(key) Is Nothing Then
 
-                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm.EncryptionKey, _
-                                                        Me.KeeperConfig.SchedulerFarm.InitVector, Me.UserInfo, Me.PortalId, True)
+                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, True)
                         End If
                         _UserBot = DirectCast(Session(key), UserBotInfo)
                         If Me.KeeperModuleSettings.DisplayRankings Then
-                            Dim objRankings As List(Of ProbeRanking) = Me.UserBotSettings.GetRankings(Me.KeeperConfig.SchedulerFarm.EncryptionKey, _
-                                                        Me.KeeperConfig.SchedulerFarm.InitVector)
+                            Dim objRankings As List(Of ProbeRanking) = Me.UserBotSettings.GetRankings(Me.KeeperConfig.SchedulerFarm)
                             If objRankings IsNot Nothing Then
                                 _UserBot.Rankings = objRankings
                             End If
@@ -94,8 +98,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             Set(value As UserBotInfo)
                 Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                 If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
-                    userSettings.SetUserBotInfo(Me.KeeperConfig.SchedulerFarm.EncryptionKey, _
-                                           Me.KeeperConfig.SchedulerFarm.InitVector, Me.UserInfo, Me.PortalId, value)
+                    userSettings.SetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, value)
                     Dim key As String = "UserBot" & userSettings.Name
                     Session.Remove(key)
                     _UserBot = Nothing
@@ -115,6 +118,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
             Try
+                AddHandler Me.KC.Debug, AddressOf Me.OnDebug
                 If Not Me.IsPostBack Then
                     AssertInstalled()
                 End If
@@ -234,7 +238,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
         Protected Sub cmdDebug_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDebug.Click
-            Me.DebugTest()
+            Me.OnCmdDebug()
         End Sub
 
         Private Sub cmdCancelSettings_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelSettings.Click
@@ -259,8 +263,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                     Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                     If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
                         Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
-                        Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm.EncryptionKey, _
-                                                    Me.KeeperConfig.SchedulerFarm.InitVector, Me.UserInfo, Me.PortalId, True)
+                        Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, True)
                         userBotEntity.RevertReadonlyParameters(readOnlyUserBot)
                         Me.UserBot = userBotEntity
                         Me.BindSettings()
@@ -408,7 +411,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
-        Private Sub DebugTest()
+       
+
+        Private Sub OnCmdDebug()
 
 
             'Dim atr As New AdvancedTokenReplace
@@ -426,7 +431,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
             For Each prov As ActionProviderConfig(Of ScheduleEvent) In newScheduleProviders
 
-               
+
 
                 For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
                     Dim found As Boolean
@@ -457,17 +462,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 End If
             Next
 
-            
+
 
             Me.BindSettings()
 
         End Sub
 
 
+        Private Sub OnDebug(sender As Object, e As DebugEventArgs)
+
+        End Sub
+
 #End Region
 
 
 
+        
     End Class
 End Namespace
 

@@ -7,8 +7,11 @@ Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports DotNetNuke.Entities.Users
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
     <Serializable()> _
     Public Class ProbeSettings(Of TEngineEvent As IConvertible)
         Inherits NamedConfig
@@ -69,7 +72,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _ProbeFilterExpression = value
             End Set
         End Property
-        
+
 
         <ExtendedCategory("Display")> _
         Public Property RankingsSize() As Integer
@@ -81,7 +84,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        
+
 
         <ExtendedCategory("Display")> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
@@ -134,7 +137,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        
+
 
 
         'Public Property UserDisplay() As Boolean

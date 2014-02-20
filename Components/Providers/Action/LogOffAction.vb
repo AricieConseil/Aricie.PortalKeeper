@@ -1,7 +1,10 @@
 ﻿Imports System.ComponentModel
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
+    <ActionButton(IconName.SignOut, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Log Off Action")> _
         <Description("Signs the user out of his current session")> _

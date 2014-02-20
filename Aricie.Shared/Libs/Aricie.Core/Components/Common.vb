@@ -9,6 +9,14 @@ Imports System.IO
 Imports System.Globalization
 Imports System.IO.Compression
 Imports System.Net
+Imports System.Web.Configuration
+Imports System.Xml
+Imports System.Security.Cryptography.X509Certificates
+Imports System.Security.Cryptography.Xml
+Imports Aricie.Cryptography
+
+
+
 
 ''' <summary>
 ''' Collection of general purpose helper functions
@@ -69,8 +77,47 @@ Public Module Common
         Return True
     End Function
 
+
+#Region "Crypto"
+
+
+    Public Sub AddRandomDelay()
+
+        Thread.Sleep(GetNewSalt(0)(0))
+
+    End Sub
+
+    Public Function GetNewSalt(ByVal length As Integer) As Byte()
+        ' Create a buffer
+        Dim randBytes() As Byte
+
+        If length >= 1 Then
+            randBytes = New Byte(length) {}
+        Else
+            randBytes = New Byte(0) {}
+        End If
+
+        ' Create a new RNGCryptoServiceProvider.
+        Dim rand As New RNGCryptoServiceProvider()
+
+        ' Fill the buffer with random bytes.
+        rand.GetBytes(randBytes)
+
+        Dim disposable As IDisposable = TryCast(rand, IDisposable)
+        If Not disposable Is Nothing Then
+            disposable.Dispose()
+        End If
+
+
+        Return randBytes
+
+    End Function
+
+
+
+    <Obsolete("Use version with byref byte array salt")>
     Public Function Encrypt(ByVal plainText As String, _
-                        Optional ByVal key As String = defaultKey, _
+                         ByVal key As String, _
                                Optional ByVal initVector As String = defaultInitVector, _
                               Optional ByVal salt As String = defaultSalt) _
                        As String
@@ -79,7 +126,18 @@ Public Module Common
         Dim saltValueBytes As Byte()
         saltValueBytes = Encoding.Unicode.GetBytes(salt)
 
-        Dim password As New Rfc2898DeriveBytes(initVector, saltValueBytes, 10)
+        Return Encrypt(plainText, key, initVector, saltValueBytes)
+
+    End Function
+
+
+    Public Function Encrypt(ByVal plainText As String, ByVal key As String, ByVal initVector As String, ByRef salt As Byte()) As String
+
+        If salt.Length = 0 Then
+            salt = GetNewSalt(30)
+        End If
+
+        Dim password As New Rfc2898DeriveBytes(initVector, salt, 10)
         Dim initVectorBytes As Byte() = password.GetBytes(16)
         'initVectorBytes = Encoding.ASCII.GetBytes(initVector)
 
@@ -92,7 +150,7 @@ Public Module Common
         ' This password will be generated from the specified passphrase and 
         ' salt value. The password will be created using the specified hash 
         ' algorithm. Password creation can be done in several iterations.
-        password = New Rfc2898DeriveBytes(key, saltValueBytes, 10)
+        password = New Rfc2898DeriveBytes(key, salt, 10)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
@@ -144,26 +202,151 @@ Public Module Common
         Return cipherText
     End Function
 
+    'Public Sub SignDocument(doc As XmlDocument, cert As RSACryptoServiceProvider, referencePath As String)
+    '    Dim objSignedXml As New SignedXml(doc)
+    '    objSignedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl
+    '    objSignedXml.SigningKey = cert
 
+    '    ' Retrieve the value of the "ID" attribute on the root assertion element.
+    '    Dim reference As New Reference(referencePath)
+
+    '    reference.AddTransform(New XmlDsigEnvelopedSignatureTransform())
+    '    reference.AddTransform(New XmlDsigExcC14NTransform())
+
+    '    objSignedXml.AddReference(reference)
+
+    '    ' Include the public key of the certificate in the assertion.
+    '    objSignedXml.KeyInfo = New KeyInfo()
+    '    objSignedXml.KeyInfo.AddClause(New RSAKeyValue(cert))
+
+    '    objSignedXml.ComputeSignature()
+    '    ' Append the computed signature. The signature must be placed as the sibling of the Issuer element.
+    '    Dim nodes As XmlNodeList = doc.DocumentElement.GetElementsByTagName("Issuer", Saml20Constants.ASSERTION)
+    '    ' doc.DocumentElement.InsertAfter(doc.ImportNode(signedXml.GetXml(), true), nodes[0]);            
+    '    nodes(0).ParentNode.InsertAfter(doc.ImportNode(objSignedXml.GetXml(), True), nodes(0))
+    'End Sub
+
+
+
+
+    Public Function GetRSAProvider(privateKey As String) As RSACryptoServiceProvider
+        Dim toReturn As New RSACryptoServiceProvider()
+        toReturn.ImportCspBlob(Convert.FromBase64String(privateKey))
+        Return toReturn
+    End Function
+
+
+    ''' <summary>
+    ''' SIGN AN XML DOCUMENT USING THE PRIVATE KEY
+    ''' </summary>
+    ''' <param name="Doc">XML DOCUMENT TO BE SHOULD SIGNED</param>
+    ''' <param name="PrivateKey">PRIVATE RSA KEY USED TO SIGN XML</param>
+    Public Sub SignXml(doc As XmlDocument, privateKey As AsymmetricAlgorithm, ParamArray paths As String())
+
+        'VERIFY ALL ARGUMENTS HAVE BEEN PASSED IN
+        If doc Is Nothing Then
+            Throw New ArgumentException("Doc")
+        End If
+        If privateKey Is Nothing Then
+            Throw New ArgumentException("privateKey")
+        End If
+
+        'CREATE A SIGNED XML DOCUMENT
+        Dim signedXml As New SignedXml(doc)
+
+        'ADD THE RSA KEY TO THE SIGNED DOCUMENT
+        signedXml.SigningKey = privateKey
+
+        'CREATE A REFERENCE TO BE SIGNED
+        For Each objPath As String In paths
+            Dim reference As New Reference()
+            reference.Uri = objPath
+
+            'CREATE AN ENVELOPED SIGNATURE WHICH
+            Dim env As New XmlDsigEnvelopedSignatureTransform(True)
+            reference.AddTransform(env)
+
+            'ADD THE REFERENCE TO THE SIGNED DOCUMENT
+            signedXml.AddReference(reference)
+        Next
+
+        'COMPUTE THE DOCUMENTS SIGNATURE
+        signedXml.ComputeSignature()
+
+        'RETRIEVE THE XML SIGNATURE FROM THE DOCUMENT
+        Dim xmlDigitalSignature As XmlElement = signedXml.GetXml()
+
+        'APPEND THE SIGNATURE TO THE END OF THE DOCUMENT
+        'Doc.DocumentElement.AppendChild(Doc.ImportNode(xmlDigitalSignature, true));
+        doc.DocumentElement.AppendChild(xmlDigitalSignature)
+    End Sub
+
+    ''' <summary>
+    ''' VERIFY A SIGNED XML DOCUMENT
+    ''' </summary>
+    ''' <param name="Doc">SIGNED XML DOCUMENT</param>
+    ''' <param name="PublicKey">PUBLIC KEY TO VERIFY SIGNATURE AGAINST</param>
+    ''' <returns></returns>
+    Public Function VerifyXml(doc As XmlDocument, publicKey As AsymmetricAlgorithm) As Boolean
+
+        'VERIFY ALL ARGUMENTS HAVE BEEN PASSED IN
+        If doc Is Nothing Then
+            Throw New ArgumentException("Doc")
+        End If
+        If publicKey Is Nothing Then
+            Throw New ArgumentException("Key")
+        End If
+
+        'HOLD THE SIGNED DOCUMENT
+        Dim signedXml As New SignedXml(doc)
+
+        'LOCATE THE SIGNATURE NODE IN THE DOCUMENT
+        Dim nodeList As XmlNodeList = doc.GetElementsByTagName("Signature")
+
+        'IF WE CANT FIND THE NODE THEN THIS DOCUMENT IS NOT SIGNED
+        If nodeList.Count <= 0 Then
+            Throw New CryptographicException("Verification failed: No Signature was found in the document.")
+        End If
+
+        'IF THERE ARE MORE THEN ONE SIGNATURES THEN FAIL
+        If nodeList.Count >= 2 Then
+            Throw New CryptographicException("Verification failed: More that one signature was found for the document.")
+        End If
+
+        'LOAD THE SIGNATURE NODE INTO THE SIGNEDXML DOCUMENT
+        signedXml.LoadXml(DirectCast(nodeList(0), XmlElement))
+
+        'CHECK THE SIGNATURE AND SEND THE RESULT
+        Return signedXml.CheckSignature(publicKey)
+    End Function
+
+
+
+
+
+    <Obsolete("Use version with byte array salt")>
     Public Function Decrypt(ByVal encryptedText As String, _
                                 Optional ByVal key As String = defaultKey, _
                                 Optional ByVal initVector As String = defaultInitVector, _
                                 Optional ByVal salt As String = defaultSalt) As String
 
-        ' Convert strings defining encryption key characteristics into byte
-        ' arrays. Let us assume that strings only contain ASCII codes.
-        ' If strings include Unicode characters, use Unicode, UTF7, or UTF8
-        ' encoding.
-        'Dim initVectorBytes As Byte()
-        'initVectorBytes = Encoding.ASCII.GetBytes(initVector)
-
-        'Dim saltValueBytes As Byte()
-        'saltValueBytes = Encoding.ASCII.GetBytes(salt)
 
         Dim saltValueBytes As Byte()
         saltValueBytes = Encoding.Unicode.GetBytes(salt)
 
-        Dim password As New Rfc2898DeriveBytes(initVector, saltValueBytes, 10)
+        Return Decrypt(encryptedText, key, initVector, saltValueBytes)
+
+    End Function
+
+    Public Function Decrypt(ByVal encryptedText As String, ByVal key As String, ByVal initVector As String, ByVal salt As Byte()) As String
+
+        ' Convert strings defining encryption key characteristics into byte
+        ' arrays. Let us assume that strings only contain ASCII codes.
+        ' If strings include Unicode characters, use Unicode, UTF7, or UTF8
+        ' encoding.
+
+
+        Dim password As New Rfc2898DeriveBytes(initVector, salt, 10)
         Dim initVectorBytes As Byte() = password.GetBytes(16)
 
         ' Convert our ciphertext into a byte array.
@@ -175,7 +358,7 @@ Public Module Common
         ' passphrase and salt value. The password will be created using
         ' the specified hash algorithm. Password creation can be done in
         ' several iterations.
-        password = New Rfc2898DeriveBytes(key, saltValueBytes, 10)
+        password = New Rfc2898DeriveBytes(key, salt, 10)
 
         ' Use the password to generate pseudo-random bytes for the encryption
         ' key. Specify the size of the key in bytes (instead of bits).
@@ -232,6 +415,29 @@ Public Module Common
         ' Return decrypted string.
         Return plainText
     End Function
+
+
+
+
+    Public Function Hash(s As [String], hashProvider As HashProvider) As String
+        Dim objBuffer As Byte() = Encoding.UTF8.GetBytes(s)
+        Select Case hashProvider
+            Case hashProvider.MD5
+                Using hasher As MD5 = MD5.Create()
+                    Dim strHash As Byte() = hasher.ComputeHash(objBuffer)
+                    Return BitConverter.ToString(strHash).Replace("-", "").ToLowerInvariant().Trim()
+                End Using
+            Case hashProvider.SHA256
+                Using hasher As New SHA256CryptoServiceProvider()
+                    Dim strHash As Byte() = hasher.ComputeHash(objBuffer)
+                    Return BitConverter.ToString(strHash).Replace("-", "").ToLowerInvariant().Trim()
+                End Using
+        End Select
+    End Function
+
+#End Region
+
+
 
     Public Function DoCompress(ByVal source As String, ByVal method As CompressionMethod) As String
         Dim sourceBytes As Byte() = System.Text.Encoding.UTF8.GetBytes(source)
@@ -408,6 +614,19 @@ Public Module Common
     End Sub
 
 
+    Public Function ReadStream(input As Stream) As Byte()
+        Dim buffer As Byte() = New Byte(16 * 1024 - 1) {}
+        Using ms As New MemoryStream()
+            Dim read As Integer = input.Read(buffer, 0, buffer.Length)
+            While (read > 0)
+                ms.Write(buffer, 0, read)
+                read = input.Read(buffer, 0, buffer.Length)
+            End While
+            Return ms.ToArray()
+        End Using
+    End Function
+
+
 #Region "Collection methods"
 
 
@@ -540,37 +759,6 @@ Public Module Common
 
 #End Region
 
-    Public Sub AddRandomDelay()
-
-        Thread.Sleep(GetNewSalt(0)(0))
-
-    End Sub
-
-    Public Function GetNewSalt(ByVal length As Integer) As Byte()
-        ' Create a buffer
-        Dim randBytes() As Byte
-
-        If length >= 1 Then
-            randBytes = New Byte(length) {}
-        Else
-            randBytes = New Byte(0) {}
-        End If
-
-        ' Create a new RNGCryptoServiceProvider.
-        Dim rand As New RNGCryptoServiceProvider()
-
-        ' Fill the buffer with random bytes.
-        rand.GetBytes(randBytes)
-
-        Dim disposable As IDisposable = TryCast(rand, IDisposable)
-        If Not disposable Is Nothing Then
-            disposable.Dispose()
-        End If
-
-
-        Return randBytes
-
-    End Function
 
 
     Public Sub ClearBytes(ByVal buffer() As Byte)

@@ -4,10 +4,11 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-
+    <ActionButton(IconName.Repeat, IconOptions.Normal)> _
     <Serializable()> _
     <System.ComponentModel.DisplayName("Loop Action Provider")> _
         <Description("This provider allows to loop running a sub bot over a custom collection. On each run, the current item of the collection is affected to a custom variable.")> _
@@ -99,7 +100,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        
+
 
         ' <ExtendedCategory("LoopAction")> _
         ' <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _

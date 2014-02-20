@@ -13,8 +13,11 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins.Controls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Shield, IconOptions.Normal)> _
     <Serializable()> _
     Public Class FirewallConfig
         Inherits FirewallSettings

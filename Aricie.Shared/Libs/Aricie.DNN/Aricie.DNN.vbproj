@@ -123,8 +123,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ComponentModel\ActionButtonInfo.vb" />
+    <Compile Include="ComponentModel\ConditionalVisibleInfo.vb" />
     <Compile Include="ComponentModel\Config\LocationSettings.vb" />
+    <Compile Include="ComponentModel\EntityKey.vb" />
     <Compile Include="ComponentModel\IGenericizer.vb" />
+    <Compile Include="ComponentModel\IKeyPathFormatter.vb" />
     <Compile Include="ComponentModel\Providers\AutoProvider.vb" />
     <Compile Include="ComponentModel\CollectionGenre.vb" />
     <Compile Include="ComponentModel\Config\AutoModuleConfig.vb" />
@@ -269,6 +272,8 @@
     <Compile Include="Services\Errors\VirtualCustomErrorsInfo.vb" />
     <Compile Include="Services\Files\FilePathInfo.vb" />
     <Compile Include="Services\Files\FilePathMode.vb" />
+    <Compile Include="Services\Files\SmartFile.vb" />
+    <Compile Include="Services\Files\SmartFileInfo.vb" />
     <Compile Include="Services\Filtering\FilterControlInfo.vb" />
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
@@ -293,6 +298,7 @@
     <Compile Include="Services\IContext.vb" />
     <Compile Include="Services\IContextItems.vb" />
     <Compile Include="Services\IModuleContext.vb" />
+    <Compile Include="Services\ObsoleteDNNProvider.vb" />
     <Compile Include="Services\Tokens\ConditionalTokenInfo.vb" />
     <Compile Include="Services\Tokens\ConditionalTokenSourceInfo.vb" />
     <Compile Include="Services\Tokens\DelimiterType.vb" />
@@ -423,6 +429,7 @@
     <Compile Include="UI\PropertyEditor\EditControls\AricieEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\BreadCrumbsEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\ProfileEditorEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\RequiredNumberForAdminControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\RequiredTextBoxForAdminControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\SelectorInfo.vb" />
@@ -574,6 +581,8 @@
     <EmbeddedResource Include="UI\WebControls\HtmlJsSlider.js" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Aricie.DNN7\bin\Release\Aricie.DNN7.dll" />
+    <EmbeddedResource Include="Aricie.DNN7\bin\Release\Aricie.DNN7.pdb" />
     <Content Include="external\AjaxControlToolKit\AjaxControlToolkit.dll" />
     <Content Include="external\AjaxControlToolKit\ar\AjaxControlToolkit.resources.dll" />
     <Content Include="external\AjaxControlToolKit\cs\AjaxControlToolkit.resources.dll" />

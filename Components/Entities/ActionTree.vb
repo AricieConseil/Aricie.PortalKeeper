@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -14,6 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         SynonymBranch
     End Enum
 
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
     Public Class ActionTree(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
@@ -21,7 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("SubTrees")> _
-         Public Property Mode As ActionTreeMode
+        Public Property Mode As ActionTreeMode
 
 
         <ConditionalVisible("Mode", False, True, ActionTreeMode.ListSubTrees)> _

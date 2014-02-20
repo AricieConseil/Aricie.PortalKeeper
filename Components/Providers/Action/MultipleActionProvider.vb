@@ -4,6 +4,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -13,6 +14,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         ActionTreeExpression
     End Enum
 
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Multiple Action Provider")> _
         <Description("Runs sub sequences of Actions")> _

@@ -2,8 +2,10 @@
 Imports Aricie.ComponentModel
 Imports DotNetNuke.Services.Personalization
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+    <ActionButton(IconName.Desktop, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Customize Environment Action")> _
         <Description("Tweaks various parameters from the dnn environment")> _

@@ -14,8 +14,11 @@ Imports System.Xml.Serialization
 Imports Newtonsoft.Json
 Imports System.Runtime.Serialization
 Imports System.Reflection
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Eye, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Deserialize Action Provider")> _
         <Description("This provider allows to deserialize a given string, result of dynamic expression, into a typed object")> _

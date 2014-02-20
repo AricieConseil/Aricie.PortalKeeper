@@ -171,6 +171,8 @@ Namespace UI.WebControls
             If Me._AdditionalAttributes IsNot Nothing Then
                 attrList.AddRange(Me._AdditionalAttributes)
             End If
+            attrList.AddRange(objProperty.DeclaringType.GetCustomAttributes(True))
+
             editInfo.Attributes = attrList.ToArray()
 
 

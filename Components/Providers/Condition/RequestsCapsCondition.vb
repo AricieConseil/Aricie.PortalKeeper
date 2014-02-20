@@ -3,12 +3,14 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
-    <System.ComponentModel.DisplayName("Requests caps Condition")> _
+    <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
+    <DisplayName("Requests caps Condition")> _
     <Description("Matches according to a set of maximum numbers of requests per unit of time")> _
+    <Serializable()> _
     Public Class RequestsCapsCondition
         Inherits DosEnabledConditionProvider(Of RequestEvent)
 

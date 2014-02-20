@@ -6,6 +6,7 @@ Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Services.Filtering
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -14,8 +15,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Random
     End Enum
 
-    <Serializable()> _
-Public Class WebProxyPool
+
+    <ActionButton(IconName.Compass, IconOptions.Normal)> _
+   <Serializable()> _
+    Public Class WebProxyPool
         Implements IDisposable
 
 

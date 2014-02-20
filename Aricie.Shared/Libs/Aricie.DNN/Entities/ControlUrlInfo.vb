@@ -1,11 +1,30 @@
 ﻿Imports System.ComponentModel
+Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services
 Imports System.Web
 Imports System.Web.Configuration
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
+
+    <Flags()> _
+    Public Enum UrlControlMode
+        Empty = 0
+        None = 1
+        Url = 2
+        Tab = 4
+        File = 8
+        Secure = 16
+        Database = 32
+        Upload = 64
+        Member = 128
+        Track = 256
+        Log = 512 + 256
+        Normal = 512 + 256 + 256 + 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
+    End Enum
+
 
     ''' <summary>
     ''' Entity class for a Link
@@ -25,6 +44,10 @@ Namespace Entities
 
         End Sub
 
+        Public Sub New(objMode As UrlControlMode)
+            Me.FilterMode = objMode
+        End Sub
+
         Public Sub New(ByVal url As String, ByVal track As Boolean)
             Me._Url = url
             Me.Track = track
@@ -37,6 +60,9 @@ Namespace Entities
                 Return DotNetNuke.Common.Globals.GetURLType(Me._Url)
             End Get
         End Property
+
+        <Browsable(False)> _
+        Public Property FilterMode As UrlControlMode
 
 
         <Editor(GetType(AricieUrlEditControl), GetType(EditControl))> _
@@ -52,6 +78,14 @@ Namespace Entities
             End Set
         End Property
 
+        <Browsable(False)> _
+        Private ReadOnly Property ShowTrack As Boolean
+            Get
+                Return ((Me.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
+            End Get
+        End Property
+
+        <ConditionalVisible("ShowTrack", False, True)> _
         Public Overridable Property Track() As Boolean
             Get
                 Return _Track

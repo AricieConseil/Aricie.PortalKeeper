@@ -4,6 +4,7 @@ Imports Aricie.DNN.Services.Flee
 Imports System.Net
 Imports System.ComponentModel
 Imports OpenRasta.Web
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -66,6 +67,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         DynamicHandler
     End Enum
 
+    <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
     Public Class RestService
         Inherits NamedConfig

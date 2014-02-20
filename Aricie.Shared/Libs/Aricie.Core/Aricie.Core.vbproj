@@ -69,6 +69,7 @@
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Security" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
   </ItemGroup>
@@ -116,6 +117,7 @@
     <Compile Include="Components\CompareIPs.vb" />
     <Compile Include="Components\ComponentModel\CData.vb" />
     <Compile Include="Components\ComponentModel\IChildEntity.vb" />
+    <Compile Include="Components\ComponentModel\IEncrypter.vb" />
     <Compile Include="Components\ComponentModel\IMergeable.vb" />
     <Compile Include="Components\ComponentModel\ISimpleEntity.vb" />
     <Compile Include="Components\ComponentModel\MainCategoryAttribute.vb" />
@@ -138,12 +140,14 @@
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />
     <Compile Include="Components\ComponentModel\GenericEventArgs.vb" />
+    <Compile Include="Components\Security\HashProvider.vb" />
     <Compile Include="Components\Providers\ConverterProviderBase.vb" />
     <Compile Include="Components\Providers\DefaultServiceProvider.vb" />
     <Compile Include="Components\Providers\IConverterProvider.vb" />
     <Compile Include="Components\Providers\SimpleTypeConverter.vb" />
     <Compile Include="Components\Providers\SystemServiceProvider.vb" />
     <Compile Include="Components\Collections\SerializableDictionary.vb" />
+    <Compile Include="Components\Security\Saml20Constants.vb" />
     <Compile Include="Components\Services\Caching\CacheHelper.vb" />
     <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Components\Services\ExceptionHelper.vb" />
@@ -229,6 +233,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

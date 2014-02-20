@@ -5,6 +5,8 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
     <System.ComponentModel.DisplayName("Portal Alias Condition")> _
     <Description("Matches according to the portal alias used in the url")> _

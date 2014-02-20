@@ -6,8 +6,11 @@ Imports DotNetNuke.UI.WebControls
 Imports FileHelpers
 Imports FileHelpers.Dynamic
 Imports Aricie.Collections
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
     <DisplayName("File Write Action")> _
         <Description("This provider allows to write a content to a file, given its path and the content to write by dynamic expressions")> _
         <Serializable()> _

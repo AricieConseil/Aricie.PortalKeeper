@@ -1,6 +1,10 @@
 ﻿Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Trophy, IconOptions.Normal)> _
     <Serializable()> _
     Public Class ProbeRanking
         Inherits NamedEntity

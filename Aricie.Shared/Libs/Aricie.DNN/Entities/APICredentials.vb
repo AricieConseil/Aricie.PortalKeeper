@@ -3,12 +3,14 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
     ''' <summary>
     ''' Entity class for common secure API credentials authentication systems
     ''' </summary>
     ''' <remarks>The last authentication date helps managing locks.</remarks>
+    <ActionButton(IconName.User, IconOptions.Normal)> _
     <Serializable()> _
     <DefaultProperty("Key")> _
     Public Class APICredentials
@@ -92,4 +94,4 @@ Namespace Entities
         End Property
 
     End Class
-End NameSpace
+End Namespace

@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.Entities.Tabs
 Imports Aricie.DNN.Entities
 Imports DotNetNuke.Entities.Modules
@@ -24,6 +25,15 @@ Namespace Services
     Public Class DnnContext
         Inherits ContextBase(Of DnnContext)
 
+        Public Event Debug As EventHandler(Of DebugEventArgs)
+
+        Public Sub OnDebug(sender As Object, e As DebugEventArgs)
+                RaiseEvent Debug(sender, e)
+        End Sub
+
+        Public Sub OnDebug()
+            RaiseEvent Debug(Me, New DebugEventArgs())
+        End Sub
 
         Private Const CONTEXT_KEY As String = "DnnContext"
         Private Shared _DefaultContext As DnnContext

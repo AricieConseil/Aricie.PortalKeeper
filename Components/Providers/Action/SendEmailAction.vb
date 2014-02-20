@@ -9,11 +9,14 @@ Imports Aricie.DNN.Services
 Imports Aricie.Text
 Imports Aricie.DNN.Services.Filtering
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
-        <System.ComponentModel.DisplayName("Send Email Action")> _
-        <Description("Sends an email to a list of destination addresses. Token replace is available for all text fields and target address list.")> _
+
+    <ActionButton(IconName.EnvelopeO, IconOptions.Normal)> _
+   <Serializable()> _
+       <System.ComponentModel.DisplayName("Send Email Action")> _
+       <Description("Sends an email to a list of destination addresses. Token replace is available for all text fields and target address list.")> _
     Public Class SendEmailAction(Of TEngineEvent As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvent)
 

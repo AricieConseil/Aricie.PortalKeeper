@@ -2,10 +2,11 @@
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
     <System.ComponentModel.DisplayName("Sub Conditions Provider")> _
     <Description("Allows to build a condition tree with sub conditions")> _

@@ -4995,4 +4995,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SubPathContainer_SubEntity.Text" xml:space="preserve">
     <value>Child Editor</value>
   </data>
+  <data name="BotFarmInfo`1_ResetEncryptionKey.Text" xml:space="preserve">
+    <value>Reset Encryption Key</value>
+  </data>
+  <data name="ResetEncryptionKey.Alert" xml:space="preserve">
+    <value>You are about to reset your main encryption key. All user data will become unreadable.</value>
+  </data>
 </root>

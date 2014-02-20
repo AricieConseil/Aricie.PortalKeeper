@@ -9,6 +9,18 @@ Namespace UI.WebControls
         Implements IPostBackEventHandler
         Implements IButtonControl
 
+        Public Overrides Property CssClass As String
+            Get
+                If MyBase.CssClass = "" Then
+                    MyBase.CssClass = "aricieActions"
+                End If
+                Return MyBase.CssClass
+            End Get
+            Set(value As String)
+                MyBase.CssClass = value
+            End Set
+        End Property
+
 
         Public Sub RaisePostBackEvent(eventArgument As String) Implements IPostBackEventHandler.RaisePostBackEvent
             If CausesValidation Then

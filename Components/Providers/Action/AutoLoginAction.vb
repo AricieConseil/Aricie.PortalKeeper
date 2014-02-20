@@ -11,8 +11,10 @@ Imports DotNetNuke.Security
 Imports DotNetNuke.Common.Utilities
 Imports System.Globalization
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+    <ActionButton(IconName.SignIn, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Auto Login")> _
         <Description("Logs the current user with predefined credentials")> _

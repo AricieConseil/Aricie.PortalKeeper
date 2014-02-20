@@ -2,6 +2,7 @@
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
+Imports System.Security.Cryptography
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Services
@@ -14,6 +15,9 @@ Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.UI.Skins.Controls
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Services.Files
+Imports System.Security.Cryptography.X509Certificates
+Imports System.Xml
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -22,10 +26,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Mutex
     End Enum
 
+
+
+    <ActionButton(IconName.Calendar, IconOptions.Normal)> _
     <XmlInclude(GetType(UserVariableInfo))> _
     <Serializable()> _
     Public Class BotFarmInfo(Of TEngineEvent As IConvertible)
         Inherits NamedConfig
+        Implements IEncrypter
+
 
 
 #Region "Private members"
@@ -33,6 +42,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _InitVector As String = String.Empty
 
         Private _EncryptionKey As String = String.Empty
+
+        Private _EncryptionPrivateKey As String = String.Empty
 
         Private _DnnDecryptionKey As String = String.Empty
 
@@ -112,19 +123,60 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <XmlIgnore()> _
-        <ExtendedCategory("UserBots")> _
-        <ConditionalVisible("EnableUserBots", False, True)> _
-        <Width(450)> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
-        Public Property EncryptionKey() As String
+
+
+
+        Private _CryptoServiceProvider As RSACryptoServiceProvider
+
+        Private ReadOnly Property CryptoServiceProvider As RSACryptoServiceProvider
             Get
-                Return _EncryptionKey
+                If _CryptoServiceProvider Is Nothing Then
+                    _CryptoServiceProvider = New RSACryptoServiceProvider
+                    _CryptoServiceProvider.FromXmlString(Me._EncryptionPrivateKey)
+                End If
+                Return _CryptoServiceProvider
+            End Get
+        End Property
+
+
+        <Browsable(False)>
+        Public Property EncryptedPrivateKey() As String
+            Get
+                Try
+                    If String.IsNullOrEmpty(_EncryptionKey) Then
+                        Me._EncryptionPrivateKey = New RSACryptoServiceProvider(2048).ToXmlString(True)
+                    End If
+                    Return Aricie.Common.Encrypt(_EncryptionPrivateKey, Me._EncryptionKey, Me._InitVector)
+                Catch ex As Exception
+                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                    Return String.Empty
+                End Try
             End Get
             Set(ByVal value As String)
-                _EncryptionKey = value
+                If Not String.IsNullOrEmpty(value) Then
+                    Try
+                        _EncryptionPrivateKey = Aricie.Common.Decrypt(value, Me._EncryptionKey, Me._InitVector)
+                    Catch ex As Exception
+                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                    End Try
+                End If
             End Set
         End Property
+
+
+        '<XmlIgnore()> _
+        '<ExtendedCategory("UserBots")> _
+        '<ConditionalVisible("EnableUserBots", False, True)> _
+        '<Width(450)> _
+        '<Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        'Public Property EncryptionKey() As String
+        '    Get
+        '        Return _EncryptionKey
+        '    End Get
+        '    Set(ByVal value As String)
+        '        _EncryptionKey = value
+        '    End Set
+        'End Property
 
         Private ReadOnly Property DnnDecyptionKey() As String
             Get
@@ -199,6 +251,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Private lastRun As DateTime = DateTime.MinValue
         Private Shared botlock As New Object
 
+
         'Private Shared _FarmMutex As Mutex
 
         'Private ReadOnly Property FarmMutex As Mutex
@@ -210,9 +263,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-        <ActionButton(IconName.Key, IconOptions.Normal)>
-        Public Sub ResetEncryptionKey(pmb As AriciePortalModuleBase)
+        Private Sub ResetEncryptionKey()
+            Me._EncryptionKey = DotNetNuke.Entities.Users.UserController.GeneratePassword(64)
+        End Sub
 
+        <ExtendedCategory("UserBots")> _
+        <ActionButton(IconName.Key, IconOptions.Normal, "ResetEncryptionKey.Alert")>
+        Public Sub ResetEncryptionKey(pmb As AriciePortalModuleBase)
+            Me.ResetEncryptionKey()
+            pmb.AddModuleMessage("ResetEncryptionKey.Completed", ModuleMessage.ModuleMessageType.YellowWarning)
         End Sub
 
         <ActionButton(IconName.Rocket, IconOptions.Normal)>
@@ -272,6 +331,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
+        '<ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
+        <ActionButton(IconName.Unlock, IconOptions.Normal)> _
+        Public Sub UnlockUserBotManager()
+            For Each objUserBot As UserBotSettings(Of TEngineEvent) In Me.UserBots.Instances
+                objUserBot.SetEncrypter(Me)
+            Next
+        End Sub
+
+
         'Private Function GetHalfSchedule() As TimeSpan
         '    Return TimeSpan.FromTicks(Me._Schedule.Ticks \ 2)
         'End Function
@@ -315,7 +383,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 For Each userSettings As UserBotSettings(Of TEngineEvent) In Me.AvailableUserBots.Values
 
-                    toreturn += userSettings.RunUserBots(Me._EncryptionKey, Me._InitVector, events, forceRun)
+                    toreturn += userSettings.RunUserBots(Me, events, forceRun)
                 Next
             End If
             If Me._EnableLogs Then
@@ -326,7 +394,41 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
+        'Public Sub Encrypt(Of T)(ByVal objSmartFile As SmartFile(Of T)) Implements IEncrypter.Encrypt
+        '    If Not objSmartFile.Encrypted Then
+        '        Dim salt As Byte() = Nothing
+        '        Dim newPayLoad As String = Common.Encrypt(objSmartFile.PayLoad, Me._EncryptionKey, Me._InitVector, salt)
+        '        objSmartFile.Encrypt(newPayLoad, salt)
+        '    End If
+        'End Sub
+
+        'Public Sub Decrypt(Of T)(ByVal objSmartFile As SmartFile(Of T)) Implements IEncrypter.Decrypt
+        '    If objSmartFile.Encrypted Then
+        '        Dim newPayLoad As String = Common.Decrypt(objSmartFile.PayLoad, Me._EncryptionKey, "", objSmartFile.SaltBytes)
+        '        objSmartFile.Decrypt(newPayLoad)
+        '    End If
+        'End Sub
+
+        Public Function Decrypt(payload As String, salt() As Byte) As String Implements IEncrypter.Decrypt
+            Return Common.Decrypt(payload, Me._EncryptionKey, Me._InitVector, salt)
+        End Function
+
+        Public Overridable Sub Sign(ByVal doc As XmlDocument, ParamArray paths As String()) Implements IEncrypter.Sign
+            Common.SignXml(doc, CryptoServiceProvider, paths)
+        End Sub
+
+        Public Overridable Function Verify(ByVal signedDoc As XmlDocument) As Boolean Implements IEncrypter.Verify
+            Common.VerifyXml(signedDoc, CryptoServiceProvider)
+        End Function
+
+        Public Function Encrypt(payload As String, ByRef salt() As Byte) As String Implements IEncrypter.Encrypt
+            Return Common.Encrypt(payload, Me._EncryptionKey, Me._InitVector, salt)
+        End Function
+
+
 
 #End Region
+
+
     End Class
 End Namespace

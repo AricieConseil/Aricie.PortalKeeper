@@ -4,13 +4,15 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
+    <ActionButton(IconName.ExternalLink, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Redirect Action")> _
         <Description("Redirect the current client to a specified url")> _
-    Public Class RedirectAction
+     Public Class RedirectAction
         Inherits ActionProvider(Of RequestEvent)
 
 

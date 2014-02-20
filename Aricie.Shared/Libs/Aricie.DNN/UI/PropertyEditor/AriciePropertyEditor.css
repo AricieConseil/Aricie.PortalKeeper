@@ -7,38 +7,13 @@
 }
 
 
-.ItemOdd div.ItemAction, .ItemEven div.ItemAction
-{
-	clear: left;
-}
 
-.ItemAction
-{
-	padding-top: 0px;
-	float: left;
-	width: 24px;
-}
 
 .SubDiv
 {
 	margin: 15px 0 15px 7px;
 }
-.dnnForm
-{
-	border: 2px solid #ccc;
-	border-radius: 3px;
-	background-color: rgba(222,222,222,10);
-	padding: 2px;
-}
-.SubDiv.even > .dnnForm
-{
-	background-color: rgba(222,222,222,10);
-}
-.SubDiv.odd > .dnnForm
-{
-	background-color: #fff;
-	
-}
+
 
 .SubDiv > .fa
 {
@@ -52,7 +27,22 @@
 .dnnForm
 {
 	width: 100%;
+	border: 2px solid #ccc;
+	border-radius: 3px;
+	background-color: rgba(222,222,222,10);
+	padding: 2px;
 }
+
+.SubDiv.even > .dnnForm
+{
+	background-color: rgba(222,222,222,10);
+}
+.SubDiv.odd > .dnnForm
+{
+	background-color: #fff;
+	
+}
+
 
 .peCol
 {
@@ -124,77 +114,6 @@
 }
 
 
-/* Accordions */
-
-.dnnForm .ui-accordion .ui-state-default a
-{
-	color: inherit;
-}
-
-
-.dnnForm .ui-accordion .ui-accordion-header
-{
-	background: -moz-linear-gradient(center top, #818181 0%, #656565 100%) repeat scroll 0 0 transparent; /* copier coller par Samy */
-	background: #4E4E4E;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
-	color: #FFFFFF;
-}
-.dnnForm .ui-accordion h3.ui-accordion-header  a
-{
-	color:#70b1c7;
-	}
-.dnnForm .ui-accordion h3.ui-accordion-header > a
-{
-	/*margin-right:60px;*/
-	color: #fff;
-	height: 18px;
-	display: block;
-	font-size: 1em;
-	padding: 0.5em 0.5em 0.5em 0.7em;
-}
-
-
-.dnnForm .ui-accordion .ui-accordion-header .ui-icon
-{
-	display: none;
-}
-
-.dnnForm .ui-accordion h3.ui-accordion-header .ItemAction
-{
-	float: right;
-	padding: 2px 2px 0 0;
-	width: auto;
-	text-align: right;
-	min-height: 25px;
-}
-.dnnForm .ui-accordion h3.ui-accordion-header:after
-{
-	display: block;
-	clear: both;
-	content: " ";
-}
-.dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input, .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction span
-{
-	float: left;
-}
-
-.dnnForm .aricieActions .actionText
-{
-	padding-left: 1em;
-}
-
-
-.dnnForm .ui-accordion .ui-accordion-content
-{
-	border: 1px solid #DDDDDD;
-	padding: 0.5em 0 0.5em 0.8em;
-}
-
-.dnnForm .fieldC .ui-accordion .ui-accordion-content
-{
-	overflow: inherit;
-}
 
 
 
@@ -284,18 +203,48 @@
 }
 
 
+/* Command Buttons*/
+
 .dnnForm .dnnFormItem span.CommandButton input
 {
-	display: inline !important;
-	float: none;
+	display: inline-block !important;
 	position: relative;
 	top: 7px;
 }
+
+/*.dnnForm span.dnnInputFileWrapper {
+    display: inline-block !important;
+    float: none;
+    margin: 0 4px 0 0;
+    overflow: hidden !important;
+    /*position: static !important;*/
+    /*width: auto !important;
+}*/
+
+
+/*span.dnnInputFileWrapper > input[type="file"] {
+    border: medium solid rgba(0, 0, 0, 0);
+    cursor: pointer;
+    direction: ltr;
+    /*height: 30px;/**//*
+    margin: 0;
+    -ms-opacity: 0;
+    opacity: 0;
+    position: relative;
+}*/
+
+
 
 .dnnForm .dnnFormItem .CommandsButtons span.CommandButton
 {
 	padding: 0 5px;
 }
+
+
+
+/* Action Button*/
+
+
 
 .dnnForm .dnnFormItem .aricieActions
 {
@@ -313,7 +262,7 @@
 	background-color: #fff;
 }
 
-.dnnForm .aricieActions:hover
+.dnnForm .aricieActions a:hover
 {
 	background-color: #70b1c7;
 	color: #eee;
@@ -331,11 +280,19 @@
 	padding: 0;
 }
 
+.dnnForm .aricieActions .actionText
+{
+	padding-left: 1em;
+}
+
+
 /* Add Panel*/
 
 .dnnForm .dnnFormItem .AddPanel
 {
-	width: 100%;
+	width: 80%;
+    margin: auto;
+      
 }
 
 .dnnForm .dnnFormItem .AddPanel > div
@@ -389,6 +346,93 @@
 .dnnForm .dnnFormItem .ExportPanel .dnnTooltip, .dnnForm .dnnFormItem .ExportPanel .dnnTooltip *, .dnnForm .dnnFormItem .ExportPanel input
 {
 	float: none;
+}
+
+
+/* Accordions */
+
+.dnnForm .ui-accordion .ui-state-default a
+{
+	color: inherit;
+}
+
+
+.dnnForm .ui-accordion .ui-accordion-header
+{
+	background: -moz-linear-gradient(center top, #818181 0%, #656565 100%) repeat scroll 0 0 transparent; /* copier coller par Samy */
+	background: #4E4E4E;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
+	color: #FFFFFF;
+}
+.dnnForm .ui-accordion h3.ui-accordion-header  a
+{
+	color:#70b1c7;
+	}
+.dnnForm .ui-accordion h3.ui-accordion-header > a
+{
+	/*margin-right:60px;*/
+	color: #fff;
+	height: 18px;
+	display: block;
+	font-size: 1em;
+	padding: 0.5em 0.5em 0.5em 0.7em;
+}
+
+
+.dnnForm .ui-accordion .ui-accordion-header .ui-icon
+{
+	display: none;
+}
+
+/* Item Buttons*/
+
+/*.ItemAction
+{
+	padding-top: 0px;
+	float: left;
+	width: 24px;
+}*/
+
+.dnnForm .ui-accordion h3.ui-accordion-header .ItemActions
+{
+	float: right;
+	padding: 2px 2px 0 0;
+	width: auto;
+	text-align: right;
+	min-height: 25px;
+}
+.dnnForm .ui-accordion h3.ui-accordion-header:after
+{
+	display: block;
+	clear: both;
+	content: " ";
+}
+/*.dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input, .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction span
+{
+	float: left;
+}*/
+
+/*.ItemOdd div.ItemAction, .ItemEven div.ItemAction
+{
+	clear: left;
+}*/
+
+
+
+
+/* Content*/
+
+
+.dnnForm .ui-accordion .ui-accordion-content
+{
+	border: 1px solid #DDDDDD;
+	padding: 0.5em 0 0.5em 0.8em;
+}
+
+.dnnForm .fieldC .ui-accordion .ui-accordion-content
+{
+	overflow: inherit;
 }
 
 

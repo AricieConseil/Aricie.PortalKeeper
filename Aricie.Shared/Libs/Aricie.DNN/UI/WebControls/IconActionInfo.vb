@@ -1,8 +1,13 @@
 ﻿Namespace UI.WebControls
     Public Class IconActionInfo
 
+        Public Sub New()
 
+        End Sub
 
+        Public Sub New(objIconName As IconName)
+            Me.IconName = objIconName
+        End Sub
 
 
         Public Property IconName() As IconName = IconName.None
@@ -16,46 +21,6 @@
         Public Property StackContainerOptions As IconOptions = IconOptions.Normal
 
 
-
-        'Public Property ZoomLevel() As IconActionInfo.Zoom = IconActionInfo.Zoom.Large
-
-        'Public Property FixWidth As Boolean = False
-
-        'Public Property Border As Boolean = False
-
-        'Public Property Spinning As Boolean = False
-
-        'Public Property FlipAndRotate As Rotate = Rotate.Normal
-
-        '  Public Property StackStatus As Stack = Stack.Normal
-
-        'fa-pencil-square-o
-
-        'Enum Zoom
-        '    Normal
-        '    Large
-        '    x2
-        '    x3
-        '    x4
-        '    x5
-        'End Enum
-
-        'Enum Rotate
-        '    Normal = 1
-        '    Rotate90 = 2
-        '    Rotate180 = 4
-        '    Rotate270 = 8
-        '    FlipHorizontal = 16
-        '    FlipVertical = 32
-        'End Enum
-
-        'Enum Stack
-        '    Normal = 1
-        '    Stack1x = 2
-        '    Stack2x = 4
-        '    InverseColor = 8
-
-        'End Enum
 
 
         Public Shared Icons As New Dictionary(Of IconName, String) From { _

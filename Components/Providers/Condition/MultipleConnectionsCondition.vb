@@ -6,12 +6,13 @@ Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-
+    <ActionButton(IconName.Random, IconOptions.Normal)> _
     <Serializable()> _
     <System.ComponentModel.DisplayName("Multiple Connections Condition")> _
     <Description("Matches if the same DNN user connects from different locations")> _
@@ -21,7 +22,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _DiscriminationSource As New RequestSource(RequestSourceType.Session)
 
-        
+
         Private objLocksLock As New Object
         Private objBackTrackLock As New Object
 
@@ -42,11 +43,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
         Public Property LockDuration() As STimeSpan = New STimeSpan(TimeSpan.FromMinutes(60))
-          
+
 
         <ExtendedCategory("Specifics")> _
         Public Property NewConnectionsDontMatch() As Boolean = False
-          
+
         Private Shared Property UserLocks() As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))
             Get
                 Dim toReturn As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) = _

@@ -4,9 +4,11 @@ Imports Aricie.Constants
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
+    <ActionButton(IconName.Archive, IconOptions.Normal)> _
     <Serializable()> _
     Public Class WebBotHistory
 

@@ -7,8 +7,10 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports Ciloci.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+    <ActionButton(IconName.Magic, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Define Variables Action Provider")> _
         <Description("This provider allows to declare and instanciate a set of variables, which will be stored in the context ""Item"" dictionary")> _
@@ -45,7 +47,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-       
+
 
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object

@@ -4,11 +4,13 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
-     <System.ComponentModel.DisplayName("Dynamic Expression Condition")> _
-    <Description("Matches according to the evaluation of a dynamic code expression defined in the Flee language")> _
+    <ActionButton(IconName.Code, IconOptions.Normal)> _
+    <DisplayName("Dynamic Expression Condition")> _
+   <Description("Matches according to the evaluation of a dynamic code expression defined in the Flee language")> _
+   <Serializable()> _
     Public Class FleeExpressionCondition(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)
 

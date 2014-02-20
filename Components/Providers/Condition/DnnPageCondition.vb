@@ -3,6 +3,8 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("DotNetNuke Page Condition")> _
         <Description("Matches according to the target DNN Page as defined in the url")> _
