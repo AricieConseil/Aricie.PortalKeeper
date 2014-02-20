@@ -15,12 +15,15 @@ Imports System.Globalization
 Imports System.Net
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
        <System.ComponentModel.DisplayName("Web Action")> _
        <Description("Performs a web call to a web address")> _
-   Public Class WebAction(Of TEngineEvents As IConvertible)
+    Public Class WebAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
 
@@ -64,7 +67,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
             <ExtendedCategory("Parameters")> _
-      Public Property InputParameters() As Variables(Of String)
+        Public Property InputParameters() As Variables(Of String)
             Get
                 Return _InputParameters
             End Get
@@ -88,7 +91,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _IncludePostData As Boolean
         Private _PostDataVar As String = "postData"
 
-        
+
 
 
         <ExtendedCategory("Parameters")> _

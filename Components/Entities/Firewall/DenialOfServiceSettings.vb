@@ -3,9 +3,12 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+
+    <ActionButton(IconName.Ban, IconOptions.Normal)> _
+   <Serializable()> _
     Public Class DenialOfServiceSettings
 
         Private _Enable As Boolean = True

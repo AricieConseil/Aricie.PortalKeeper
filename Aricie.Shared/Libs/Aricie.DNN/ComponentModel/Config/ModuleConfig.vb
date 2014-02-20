@@ -145,7 +145,7 @@ Namespace ComponentModel
                 Return _LocationSettings
             End Get
             Set(ByVal value As LocationSettings)
-                Me._LocationSettings = value
+                _LocationSettings = value
             End Set
         End Property
 
@@ -174,10 +174,10 @@ Namespace ComponentModel
         <ActionButton(IconName.FloppyO, IconOptions.Normal, "Save Current Form?")> _
         Public Sub SaveLocationSettings(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
-                SharedLocationSettings(True, False) = Me.LocationSettings
-                Me._LocationSettings = Nothing
+                SharedLocationSettings(True, False) = LocationSettings
+                _LocationSettings = Nothing
                 DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("LocationSettingsSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-                Me.Save(pe)
+                Save(pe)
             End If
         End Sub
 
@@ -186,7 +186,7 @@ Namespace ComponentModel
             _Instance = Nothing
         End Sub
 
-        Private Shared _Instance As TConfigClass
+        Private Shared _instance As TConfigClass
 
 
         Public Shared ReadOnly Property Instance() As TConfigClass
@@ -234,7 +234,7 @@ Namespace ComponentModel
             Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
         End Sub
 
-        <ActionButton(IconName.FloppyO, IconOptions.Stack1X, IconName.Ban, IconOptions.Stack2X, IconOptions.Normal)> _
+        <ActionButton(IconName.TimesCircle, IconOptions.Normal)> _
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub

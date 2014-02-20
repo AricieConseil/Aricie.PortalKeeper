@@ -7,8 +7,11 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports DotNetNuke.Framework
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
     <Serializable()> _
     Public Class RequestsCapInfo
         Inherits NamedEntity
@@ -58,6 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me._MaxNbRequest = maxNbRequest
             Me._Duration = New STimeSpan(duration)
         End Sub
+
 
         Public Property Enabled() As Boolean
             Get

@@ -4,6 +4,7 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -11,10 +12,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         WhileDo
         DoUntil
     End Enum
-
-    <Serializable()> _
-    <System.ComponentModel.DisplayName("While Action Provider")> _
-        <Description("This provider allows to loop running a sub bot while a boolean condition evaluates to true.")> _
+    <ActionButton(IconName.Repeat, IconOptions.Normal)> _
+   <Serializable()> _
+   <System.ComponentModel.DisplayName("While Action Provider")> _
+       <Description("This provider allows to loop running a sub bot while a boolean condition evaluates to true.")> _
     Public Class WhileActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)
 
@@ -88,5 +89,5 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-  
+
 End Namespace

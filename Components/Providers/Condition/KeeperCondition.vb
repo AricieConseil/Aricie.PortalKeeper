@@ -4,12 +4,14 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
 Imports System.ComponentModel
 Imports System.Xml.Serialization
+Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     'Public MustInherit Class ProviderHost(Of TSettings As {IProviderSettings}, TProvider As IProvider(Of TSettings), TProviderSettings As {AutoProvider(Of TProvider, TProviderSettings), New})
 
-
+    <ActionButton(IconName.Question, IconOptions.Normal)> _
     <Serializable()> _
     Public Class KeeperCondition(Of TEngineEvents As IConvertible)
         Inherits ProviderHost(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))

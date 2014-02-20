@@ -7,7 +7,7 @@ Namespace UI.Attributes
         IconButton
     End Enum
 
-    <AttributeUsage(AttributeTargets.Method)> _
+    <AttributeUsage(AttributeTargets.Method Or AttributeTargets.Class Or AttributeTargets.Property)> _
     Public Class ActionButtonAttribute
         Inherits Attribute
 

@@ -5,6 +5,7 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports DotNetNuke.Entities.Users
@@ -13,8 +14,18 @@ Imports Aricie.DNN.Services
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
 Imports System.Globalization
+Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Services.Files
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    Public Enum UserBotStorage
+        SmartFiles
+        Personalisation
+    End Enum
+
+
+    <ActionButton(IconName.Users, IconOptions.Normal)> _
     <Serializable()> _
         <XmlInclude(GetType(UserVariableInfo))> _
     Public Class UserBotSettings(Of TEngineEvent As IConvertible)
@@ -25,9 +36,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _BotName As String = ""
 
-        Private _Compress As Boolean
+        'Private _Compress As Boolean
 
-        Private _Encrypt As Boolean = True
+        'Private _Encrypt As Boolean = True
 
         Private _FormerName As String = ""
 
@@ -44,6 +55,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Probes As New SimpleList(Of ProbeSettings(Of TEngineEvent))
 
         Private _ResourceFile As String = "SharedResources"
+
+        Private _encrypter As IEncrypter
 
 #End Region
 
@@ -90,26 +103,39 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ExtendedCategory("Parameters")> _
-        Public Property Compress() As Boolean
+        Public Property Storage As UserBotStorage
+
+        Public Property StorageSettings As New SmartFileInfo
+
+        Public Sub SetEncrypter(encrypter As IEncrypter)
+            _encrypter = encrypter
+        End Sub
+
+        Public ReadOnly Property HasEncrypter As Boolean
             Get
-                Return _Compress
+                Return _encrypter IsNot Nothing
             End Get
-            Set(ByVal value As Boolean)
-                _Compress = value
-            End Set
         End Property
 
+        '<ExtendedCategory("Parameters")> _
+        'Public Property Compress() As Boolean
+        '    Get
+        '        Return _Compress
+        '    End Get
+        '    Set(ByVal value As Boolean)
+        '        _Compress = value
+        '    End Set
+        'End Property
 
-        <ExtendedCategory("Parameters")> _
-        Public Property Encrypt() As Boolean
-            Get
-                Return _Encrypt
-            End Get
-            Set(ByVal value As Boolean)
-                _Encrypt = value
-            End Set
-        End Property
+        '<ExtendedCategory("Parameters")> _
+        'Public Property Encrypt() As Boolean
+        '    Get
+        '        Return _Encrypt
+        '    End Get
+        '    Set(ByVal value As Boolean)
+        '        _Encrypt = value
+        '    End Set
+        'End Property
 
 
         <ExtendedCategory("Parameters")> _
@@ -171,11 +197,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-      
+
 
         <ExtendedCategory("ActionCommands")> _
         Public Property ActionCommands() As New SerializableList(Of ActionCommand)
 
+        Private _CurrentUserBots As New Dictionary(Of Integer, UserBotInfo)
+
+        <XmlIgnore()> _
+        <Selector("", "key", "value", False, True, "Select a UserBot to Display", "", False, False)> _
+        <ExtendedCategory("Management")> _
+        Public Property UserName As String = ""
+
+        <ConditionalVisible("UserName", True, True, "")> _
+        <ExtendedCategory("Management")> _
+        Public ReadOnly Property UserBot As SmartFile(Of UserBotInfo)
+            Get
+                Dim toReturn As SmartFile(Of UserBotInfo)
+                If Me.HasEncrypter AndAlso Not String.IsNullOrEmpty(Me.UserName) Then
+
+
+                End If
+                Return toReturn
+            End Get
+        End Property
 
 
         <NonSerialized()> _
@@ -234,11 +279,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Friend Function GetRankings(ByVal encryptionKey As String, ByVal initVector As String) As List(Of ProbeRanking)
+        Public Function GetRankings(ByVal encrypter As IEncrypter) As List(Of ProbeRanking)
 
             Dim toReturn As List(Of ProbeRanking) = CacheHelper.GetGlobal(Of List(Of ProbeRanking))(Me.Name)
             If toReturn Is Nothing Then
-                Dim userBotAccess As New UserBotProbeAccess(encryptionKey, initVector, Me)
+                Dim userBotAccess As New UserBotProbeAccess(encrypter, Me)
                 AsynchronousProbingTaskQueue.EnqueueTask(userBotAccess)
             End If
             Return toReturn
@@ -248,7 +293,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Friend Function RunUserBots(ByVal encryptionKey As String, ByVal initVector As String, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Integer
+        Friend Function RunUserBots(ByVal encrypter As IEncrypter, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Integer
             Dim toreturn As Integer
             If Me.Bot IsNot Nothing Then
                 If (Not forceRun AndAlso Me.Bot.Enabled) OrElse (forceRun AndAlso Me.Bot.ForceRun) Then
@@ -256,7 +301,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(NukeHelper.GetPortalUsers(pid))
                         Common.ShuffleList(Of UserInfo)(shuffledUsers)
                         For Each objUser As UserInfo In shuffledUsers
-                            If Me.RunUserBot(objUser, encryptionKey, initVector, events, forceRun) Then
+                            If Me.RunUserBot(objUser, encrypter, events, forceRun) Then
                                 toreturn += 1
                             End If
                         Next
@@ -266,10 +311,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
-        Friend Function RunUserBot(objUser As UserInfo, ByVal encryptionKey As String, ByVal initVector As String, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
+        Friend Function RunUserBot(objUser As UserInfo, ByVal encrypter As IEncrypter, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
             Dim toreturn As Boolean
             If Not Me.Bot.AsyncLockBot.ContainsKey(objUser.UserID) Then
-                Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(encryptionKey, initVector, objUser, objUser.PortalID, False)
+                Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(encrypter, objUser, objUser.PortalID, False)
                 If userBotInfo IsNot Nothing Then
                     If userBotInfo.Enabled Then
                         Dim runContext As New BotRunContext(Of TEngineEvent)(Me.Bot)
@@ -277,7 +322,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         runContext.Events = events
                         runContext.History = userBotInfo.BotHistory
                         runContext.UserParams = userBotInfo.GetParameterValues(objUser)
-                        Dim saver As New UserBotSaver(Me, encryptionKey, initVector, objUser, userBotInfo)
+                        Dim saver As New UserBotSaver(Me, encrypter, objUser, userBotInfo)
                         runContext.RunEndDelegate = AddressOf saver.SaveBot
                         toreturn = Me.Bot.RunBot(runContext, forceRun)
                     End If
@@ -286,115 +331,184 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
+        <ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Sub SwitchToSmartFiles(ByVal encrypter As IEncrypter)
+            Try
+                If Me.Storage = UserBotStorage.Personalisation Then
+                    Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(NukeHelper.GetPortalUsers(DnnContext.Current.Portal.PortalId))
+                    Common.ShuffleList(Of UserInfo)(shuffledUsers)
+                    For Each objUser As UserInfo In shuffledUsers
+                        Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, objUser, objUser.PortalID, False)
+                        If userBotInfo IsNot Nothing Then
+                            SaveSmartUserBot(encrypter, objUser, DnnContext.Current.Portal.PortalId, userBotInfo)
+                        End If
+                    Next
+                End If
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+        End Sub
 
 
 
-        Friend Function GetUserBotInfo(ByVal encryptionKey As String, ByVal initVector As String, ByVal user As UserInfo, ByVal pid As Integer, ByVal createIfNull As Boolean) As UserBotInfo
+
+        Public Function GetUserBotInfo(ByVal encrypter As IEncrypter, ByVal user As UserInfo, ByVal pid As Integer, ByVal createIfNull As Boolean) As UserBotInfo
+
             Dim userBot As UserBotInfo = Nothing '= CacheHelper.GetGlobal(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
-            If userBot Is Nothing Then
+            Try
+                If userBot Is Nothing Then
+
+                    Select Case Storage
+
+                        Case UserBotStorage.Personalisation
+
+                            Dim pc As New PersonalizationController
+                            Dim pInfo As PersonalizationInfo = pc.LoadProfile(user.UserID, pid)
 
 
-                Dim pc As New PersonalizationController
-                Dim pInfo As PersonalizationInfo = pc.LoadProfile(user.UserID, pid)
-
-                Dim strUserDataFormat As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBotFormat", Me.Name), String)
-                If String.IsNullOrEmpty(strUserDataFormat) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
-                    strUserDataFormat = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBotFormat", Me._FormerName), String)
-                    If Not String.IsNullOrEmpty(Me._FormerName) Then
-                        Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBotFormat", Me.Name, strUserDataFormat)
-                        Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBotFormat", Me._FormerName)
-                    End If
-                End If
-                Dim userDataFormat As UserBotFormat
-                If String.IsNullOrEmpty(strUserDataFormat) Then
-                    userDataFormat = New UserBotFormat
-                Else
-                    userDataFormat = ReflectionHelper.Deserialize(Of UserBotFormat)(strUserDataFormat)
-                End If
+                            Dim strUserDataFormat As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me.Name), String)
+                            If String.IsNullOrEmpty(strUserDataFormat) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
+                                strUserDataFormat = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me._FormerName), String)
+                                If Not String.IsNullOrEmpty(Me._FormerName) Then
+                                    Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me.Name, strUserDataFormat)
+                                    Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me._FormerName)
+                                End If
+                            End If
+                            Dim userDataFormat As UserBotFormat
+                            If String.IsNullOrEmpty(strUserDataFormat) Then
+                                userDataFormat = New UserBotFormat()
+                            Else
+                                userDataFormat = ReflectionHelper.Deserialize(Of UserBotFormat)(strUserDataFormat)
+                            End If
 
 
-                Dim userData As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name), String)
-                If String.IsNullOrEmpty(userData) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
-                    userData = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName), String)
-                    If Not String.IsNullOrEmpty(Me._FormerName) Then
-                        Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, userData)
-                        Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName)
-                    End If
-                End If
 
-                If Not String.IsNullOrEmpty(userData) Then
-                    Try
-                        If userDataFormat.Encrypted Then
-                            Try
-                                Dim tempData As String = Common.Decrypt(userData, encryptionKey, initVector, GetSalt(user, pid))
-                                userData = tempData
-                            Catch ex As Exception
-                                DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
-                            End Try
+                            Dim userData As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name), String)
+                            If String.IsNullOrEmpty(userData) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
+                                userData = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName), String)
+                                If Not String.IsNullOrEmpty(Me._FormerName) Then
+                                    Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, userData)
+                                    Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName)
+                                End If
+                            End If
+                            If Not String.IsNullOrEmpty(userData) Then
+
+                                If userDataFormat.Encrypted Then
+                                    Try
+
+                                        Dim tempData As String = encrypter.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
+                                        userData = tempData
+                                    Catch ex As Exception
+                                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                                    End Try
+                                End If
+                                If userDataFormat.Compressed Then
+                                    Try
+                                        Dim tempData As String = Common.DoDeCompress(userData, CompressionMethod.Gzip)
+                                        userData = tempData
+                                    Catch ex As Exception
+                                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                                    End Try
+                                End If
+                                userBot = ReflectionHelper.Deserialize(Of UserBotInfo)(userData)
+                                ' on place le user bot dans le cache après avoir potentiellement complété ses paramètres avec ceux fournis par les paramètres du user bot
+                                'CacheHelper.SetCacheDependant(Of UserBotInfo)(userBot, StaticInfo.KeyBucket.PKPCachingUserBotsDependency, TimeSpan.FromMinutes(10), Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
+
+                            End If
+
+                        Case UserBotStorage.SmartFiles
+
+                            Dim key As EntityKey = Me.GetUserBotKey(user, pid)
+                            'pid, PortalKeeperConfig.Instance.GetModuleName(), user.Username, "UserBots/" & Me.Name, "")
+                            Dim objUserBot As UserBotInfo = SmartFile.LoadAndRead(Of UserBotInfo)(key, encrypter, Me.StorageSettings)
+
+                    End Select
+
+
+
+                    If userBot Is Nothing Then
+                        If createIfNull Then
+                            userBot = New UserBotInfo
+                            userBot.Enabled = False
+                            ' ici on prend les paramètres nom et description du UserBot, pas du MasterBot
+                            userBot.Name = Name
+                            userBot.Decription = Decription
+                            Me.SetDefaultParameters(userBot)
                         End If
-                        If userDataFormat.Compressed Then
-                            Try
-                                Dim tempData As String = Common.DoDeCompress(userData, CompressionMethod.Gzip)
-                                userData = tempData
-                            Catch ex As Exception
-                                DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
-                            End Try
-                        End If
-                        userBot = ReflectionHelper.Deserialize(Of UserBotInfo)(userData)
+                    Else
                         Me.SetDefaultParameters(userBot)
-                        ' on place le user bot dans le cache après avoir potentiellement complété ses paramètres avec ceux fournis par les paramètres du user bot
-                        'CacheHelper.SetCacheDependant(Of UserBotInfo)(userBot, StaticInfo.KeyBucket.PKPCachingUserBotsDependency, TimeSpan.FromMinutes(10), Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
-                    Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
-                    End Try
-                End If
-                If userBot Is Nothing AndAlso createIfNull Then
-
-                    userBot = New UserBotInfo
-                    userBot.Enabled = False
-                    ' ici on prend les paramètres nom et description du UserBot, pas du MasterBot
-                    userBot.Name = Name
-                    userBot.Decription = Decription
-                    Me.SetDefaultParameters(userBot)
+                    End If
 
                 End If
-            End If
 
-
+            Catch ex As Exception
+                DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+            End Try
             Return userBot
         End Function
 
-        Friend Sub SetUserBotInfo(ByVal encryptionKey As String, ByVal initVector As String, ByVal user As UserInfo, ByVal pid As Integer, ByVal objUserBotInfo As UserBotInfo)
-            Dim pc As New PersonalizationController
-            Dim pInfo As PersonalizationInfo = pc.LoadProfile(user.UserID, pid)
-            If objUserBotInfo IsNot Nothing Then
-                Me.SetDefaultParameters(objUserBotInfo)
-                Dim objUserBotFormat As New UserBotFormat
-                Dim userData As String = ReflectionHelper.Serialize(objUserBotInfo).OuterXml
-                
-                If Me._Compress Then
-                    objUserBotFormat.Compressed = True
-                    userData = Common.DoCompress(userData, CompressionMethod.Gzip)
-                Else
-                    objUserBotFormat.Compressed = False
-                End If
+        Private Sub SaveSmartUserBot(ByVal encrypter As IEncrypter, user As UserInfo, pid As Integer, objUserBotInfo As UserBotInfo)
+            Dim key As EntityKey = Me.GetUserBotKey(user, pid)
+            Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings, encrypter)
+            SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
+        End Sub
 
-                If Me._Encrypt Then
-                    objUserBotFormat.Encrypted = True
-                    userData = Common.Encrypt(userData, encryptionKey, initVector, GetSalt(user, pid))
-                Else
-                    objUserBotFormat.Encrypted = False
-                End If
 
-                Dim strFormat As String = ReflectionHelper.Serialize(objUserBotFormat).OuterXml
-                Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBotFormat", Me.Name, strFormat)
-                Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, userData)
-                pc.SaveProfile(pInfo)
-            Else
-                Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, "")
-                Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name)
-                pc.SaveProfile(pInfo)
-            End If
+
+        Private Function GetUserBotKey(user As UserInfo, pid As Integer) As EntityKey
+            Dim key As New EntityKey() With {
+                               .PortalId = pid,
+                               .Application = PortalKeeperConfig.Instance.GetModuleName(),
+                               .UserName = user.Username,
+                               .Entity = "UserBots/" & Me.Name,
+                               .Field = ""
+                               }
+            Return key
+        End Function
+
+        Public Sub SetUserBotInfo(ByVal encrypter As IEncrypter, ByVal user As UserInfo, ByVal pid As Integer, ByVal objUserBotInfo As UserBotInfo)
+
+            Select Case Me.Storage
+                Case UserBotStorage.Personalisation
+                    Dim pc As New PersonalizationController
+                    Dim pInfo As PersonalizationInfo = pc.LoadProfile(user.UserID, pid)
+                    If objUserBotInfo IsNot Nothing Then
+                        Me.SetDefaultParameters(objUserBotInfo)
+                        Dim objUserBotFormat As New UserBotFormat
+                        Dim userData As String = ReflectionHelper.Serialize(objUserBotInfo).OuterXml
+
+                        If Me.StorageSettings.Compress Then
+                            objUserBotFormat.Compressed = True
+                            userData = Common.DoCompress(userData, CompressionMethod.Gzip)
+                        Else
+                            objUserBotFormat.Compressed = False
+                        End If
+
+                        If Me.StorageSettings.Encrypt Then
+                            objUserBotFormat.Encrypted = True
+                            userData = encrypter.Encrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
+                        Else
+                            objUserBotFormat.Encrypted = False
+                        End If
+
+                        Dim strFormat As String = ReflectionHelper.Serialize(objUserBotFormat).OuterXml
+                        Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me.Name, strFormat)
+                        Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, userData)
+                        pc.SaveProfile(pInfo)
+                    Else
+                        Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, "")
+                        Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name)
+                        pc.SaveProfile(pInfo)
+                    End If
+                Case UserBotStorage.SmartFiles
+                    'Dim key As EntityKey = Me.GetUserBotKey(user, pid)
+                    'Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings, encrypter)
+                    'SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
+                    Me.SaveSmartUserBot(encrypter, user, pid, objUserBotInfo)
+            End Select
+
+
             CacheHelper.RemoveCache(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
         End Sub
 
@@ -412,10 +526,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 ' - le paramètre est déclaré comme overridable
                 Dim userBotParameterTarget = userBot.UserParameters.Instances.Find(Function(ovi) ovi.Name = targetName AndAlso ovi.Mode = targetMode)
 
-                Dim parameterMatchesInUserBotSettings As Boolean = False
-                If userBotParameterTarget IsNot Nothing Then
-                    parameterMatchesInUserBotSettings = True
-                End If
+                Dim parameterMatchesInUserBotSettings = userBotParameterTarget IsNot Nothing
                 Dim userBotSettingsOverwritable As Boolean = userParameter.Override AndAlso ((Not userBot.NoOverride) OrElse userParameter.ForceOverride)
 
                 If (Not parameterMatchesInUserBotSettings OrElse userBotSettingsOverwritable) Then
@@ -490,7 +601,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 Dim users As List(Of UserInfo) = NukeHelper.GetPortalUsers(pid)
                                 For Each objUser As UserInfo In users
                                     If objUser.Membership.Approved Then
-                                        Dim objUserBotInfo As UserBotInfo = objProbeAccess.UserBotSettings.GetUserBotInfo(objProbeAccess.EncryptionKey, objProbeAccess.InitVector, objUser, pid, False)
+                                        Dim objUserBotInfo As UserBotInfo = objProbeAccess.UserBotSettings.GetUserBotInfo(objProbeAccess.Encrypter, objUser, pid, False)
                                         If objUserBotInfo IsNot Nothing AndAlso objUserBotInfo.Enabled Then
                                             Dim objProbeInstance As ProbeInstance = objParamProb.GetProbe(objUserBotInfo, objUser)
                                             If objProbeInstance IsNot Nothing Then
@@ -554,36 +665,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Class UserBotAccess
 
-            Private _EncryptionKey As String
-            Private _InitVector As String
 
 
-            Public Sub New(encryptionKey As String, initVector As String)
-                Me._EncryptionKey = encryptionKey
-                Me._InitVector = initVector
+            Public Sub New(ByVal encrypter As IEncrypter)
+                Me.Encrypter = encrypter
             End Sub
 
 
-            Public Property EncryptionKey() As String
-                Get
-                    Return _EncryptionKey
-                End Get
-                Set(ByVal value As String)
-                    _EncryptionKey = value
-                End Set
-            End Property
-
-
-
-
-            Public Property InitVector() As String
-                Get
-                    Return _InitVector
-                End Get
-                Set(ByVal value As String)
-                    _InitVector = value
-                End Set
-            End Property
+            Public Property Encrypter As IEncrypter
 
         End Class
 
@@ -591,8 +680,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class UserBotProbeAccess
             Inherits UserBotAccess
 
-            Public Sub New(encryptionKey As String, initVector As String, objUserBotSettings As UserBotSettings(Of TEngineEvent))
-                MyBase.New(encryptionKey, initVector)
+            Public Sub New(ByVal encrypter As IEncrypter, objUserBotSettings As UserBotSettings(Of TEngineEvent))
+                MyBase.New(encrypter)
                 Me._UserBotSettings = objUserBotSettings
 
             End Sub
@@ -615,8 +704,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class UserBotSaver
             Inherits UserBotAccess
 
-            Public Sub New(ByVal userSettings As UserBotSettings(Of TEngineEvent), ByVal encryptionKey As String, ByVal initVector As String, ByVal objUser As UserInfo, ByVal userBot As UserBotInfo)
-                MyBase.New(encryptionKey, initVector)
+            Public Sub New(ByVal userSettings As UserBotSettings(Of TEngineEvent), ByVal encrypter As IEncrypter, ByVal objUser As UserInfo, ByVal userBot As UserBotInfo)
+                MyBase.New(encrypter)
                 Me._UserBotSettings = userSettings
                 'Me._EncryptionKey = encryptionKey
                 'Me._InitVector = initVector
@@ -672,7 +761,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Public Sub SaveBot(ByVal botHistory As WebBotHistory, ByVal runContext As PortalKeeperContext(Of TEngineEvent))
                 Me._UserBot.BotHistory = botHistory
-                Me._UserBotSettings.SetUserBotInfo(Me.EncryptionKey, Me.InitVector, Me._User, Me._User.PortalID, Me._UserBot)
+                Me._UserBotSettings.SetUserBotInfo(Me.Encrypter, Me._User, Me._User.PortalID, Me._UserBot)
 
             End Sub
 

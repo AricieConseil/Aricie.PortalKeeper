@@ -9,10 +9,12 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Ticket, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Log Event Action")> _
         <Description("Inserts a new log in the DotNetNuke event log. Automatic email alert can be configured accordingly")> _
-    Public Class LogEventAction(Of TEngineEvents As IConvertible)
+     Public Class LogEventAction(Of TEngineEvents As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvents)
 
 

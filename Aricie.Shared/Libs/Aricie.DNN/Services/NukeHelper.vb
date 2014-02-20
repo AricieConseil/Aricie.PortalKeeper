@@ -24,7 +24,6 @@ Imports System.Threading
 '-------------------------------------------------------------------------------
 
 Namespace Services
-
     Public Module NukeHelper
 
         Private _WebServerPath As New Dictionary(Of String, String)

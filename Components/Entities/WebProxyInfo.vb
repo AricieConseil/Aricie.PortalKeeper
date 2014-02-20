@@ -7,8 +7,11 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Filtering
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Road, IconOptions.Normal)> _
     <Serializable()> _
     <DefaultProperty("Address")> _
     Public Class WebProxyInfo
@@ -20,7 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _Credentials As New LoginInfo
 
-        
+
 
         Private _Proxy As WebProxy
 
@@ -84,7 +87,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        
+
 
         Public Property Disabled() As Boolean
             Get
@@ -151,7 +154,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _CheckEnqueued As Boolean
 
-       
+
 
         Private Shared availableLock As New Object
 

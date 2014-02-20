@@ -6,11 +6,14 @@ Imports Aricie.DNN.Services.Flee
 Imports DotNetNuke.UI.WebControls
 
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
-        <DisplayName("Serialize Action Provider")> _
-        <Description("This provider allows to serialize a given entity, result of dynamic expression, into a string")> _
+
+    <ActionButton(IconName.Pencil, IconOptions.Normal)> _
+   <Serializable()> _
+       <DisplayName("Serialize Action Provider")> _
+       <Description("This provider allows to serialize a given entity, result of dynamic expression, into a string")> _
     Public Class SerializeActionProvider(Of TEngineEvents As IConvertible)
         Inherits SerializeActionProviderBase(Of TEngineEvents)
 

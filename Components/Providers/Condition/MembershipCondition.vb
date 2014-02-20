@@ -4,11 +4,14 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
-        <System.ComponentModel.DisplayName("Membership Condition")> _
-        <Description("Matches according to the user membership")> _
+
+    <ActionButton(IconName.Key, IconOptions.Normal)> _
+   <Serializable()> _
+       <System.ComponentModel.DisplayName("Membership Condition")> _
+       <Description("Matches according to the user membership")> _
     Public Class MembershipCondition
         Inherits ConditionProvider(Of RequestEvent)
 

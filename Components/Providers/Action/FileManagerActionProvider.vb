@@ -3,11 +3,15 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
 Imports System.IO
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <DisplayName("File Manager Action")> _
-    <Description("This provider allows to browse or delete files and folders, given a parent path by dynamic expressions")> _
-    <Serializable()> _
+
+
+    <ActionButton(IconName.HddO, IconOptions.Normal)> _
+   <DisplayName("File Manager Action")> _
+   <Description("This provider allows to browse or delete files and folders, given a parent path by dynamic expressions")> _
+   <Serializable()> _
     Public Class FileManagerActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileAccessActionProvider(Of TEngineEvents)
 
@@ -76,4 +80,4 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return True
         End Function
     End Class
-End NameSpace
+End Namespace

@@ -3,11 +3,14 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
-        <DisplayName("Sub Bot Action Provider")> _
-        <Description("This provider allows to run a sub-bot as a dedicated action. Because of the sequential nature of the engine, the subbot triggers each previous step up to the current step, the rules and action should be configured accordingly")> _
+
+    <ActionButton(IconName.Android, IconOptions.Normal)> _
+   <Serializable()> _
+       <DisplayName("Sub Bot Action Provider")> _
+       <Description("This provider allows to run a sub-bot as a dedicated action. Because of the sequential nature of the engine, the subbot triggers each previous step up to the current step, the rules and action should be configured accordingly")> _
     Public Class SubBotActionProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 

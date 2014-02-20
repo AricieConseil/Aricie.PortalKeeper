@@ -1,12 +1,14 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
 
     ''' <summary>
     ''' General Entity class to hold common metadata
     ''' </summary>
+    <ActionButton(IconName.Tags, IconOptions.Normal)> _
     <Serializable()> _
     Public Class MetaDataInfo
 

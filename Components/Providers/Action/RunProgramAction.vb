@@ -4,12 +4,15 @@ Imports Aricie.DNN.Services
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Workers
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
-    <System.ComponentModel.DisplayName("Run Program Action")> _
-    <Description("Run an executable program given its path and parameters")> _
+
+    <ActionButton(IconName.Desktop, IconOptions.Normal)> _
+   <Serializable()> _
+   <System.ComponentModel.DisplayName("Run Program Action")> _
+   <Description("Run an executable program given its path and parameters")> _
     Public Class RunProgramAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 

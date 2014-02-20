@@ -10,6 +10,7 @@ Imports DotNetNuke.Services.FileSystem
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Exceptions
 Imports DotNetNuke.UI.Utilities
+Imports Aricie.DNN.Entities
 
 Namespace UI.WebControls.EditControls
 
@@ -78,7 +79,7 @@ Namespace UI.WebControls.EditControls
             'ResolveNewValue()
 
             Dim strValue As String = CType(Value, String)
-            Dim strOldValue As String = DirectCast(IIf(OldValue Is Nothing, "", CType(OldValue, String)), String)
+            Dim strOldValue As String = CStr(OldValue)
 
             Dim args As New PropertyEditorEventArgs(Name)
             args.Value = strValue
@@ -108,7 +109,22 @@ Namespace UI.WebControls.EditControls
             End If
             Me.UrlControl.ShowLog = False
             Me.UrlControl.ShowTrack = False
-           
+            If TypeOf Me.ParentField.DataSource Is ControlUrlInfo Then
+                Dim objUrl As ControlUrlInfo = DirectCast(Me.ParentField.DataSource, ControlUrlInfo)
+
+                Me.UrlControl.ShowUrls = ((objUrl.FilterMode And UrlControlMode.Url) = UrlControlMode.Url)
+                Me.UrlControl.ShowTabs = ((objUrl.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
+                Me.UrlControl.ShowFiles = ((objUrl.FilterMode And UrlControlMode.File) = UrlControlMode.File)
+                Me.UrlControl.ShowSecure = ((objUrl.FilterMode And UrlControlMode.Secure) = UrlControlMode.Secure)
+                Me.UrlControl.ShowDatabase = ((objUrl.FilterMode And UrlControlMode.Database) = UrlControlMode.Database)
+                Me.UrlControl.ShowUpLoad = ((objUrl.FilterMode And UrlControlMode.Upload) = UrlControlMode.Upload)
+                Me.UrlControl.ShowUsers = ((objUrl.FilterMode And UrlControlMode.Member) = UrlControlMode.Member)
+                Me.UrlControl.ShowTrack = ((objUrl.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
+                Me.UrlControl.ShowLog = ((objUrl.FilterMode And UrlControlMode.Log) = UrlControlMode.Log)
+
+            End If
+
+
             If Me.ParentAricieModule IsNot Nothing Then
                 Dim existingUrl As String = Me.ParentAricieModule.AdvancedClientVariable(Me, UrlStateKey)
                 If String.IsNullOrEmpty(existingUrl) Then
@@ -128,7 +144,7 @@ Namespace UI.WebControls.EditControls
             'UrlControl.GetType().BaseType.GetField("_doReloadFiles", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
             'UrlControl.GetType().BaseType.GetField("_doReloadFolders", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
             Me.Controls.Add(Me.UrlControl)
-            
+
         End Sub
 
         Protected Overrides Sub CreateChildControls()

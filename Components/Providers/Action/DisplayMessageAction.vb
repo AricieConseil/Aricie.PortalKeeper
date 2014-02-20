@@ -7,12 +7,13 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-
+    <ActionButton(IconName.Comment, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Display Message Action")> _
         <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _

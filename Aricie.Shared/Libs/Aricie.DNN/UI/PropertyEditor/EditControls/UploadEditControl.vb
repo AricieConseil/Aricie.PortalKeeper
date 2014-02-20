@@ -13,28 +13,33 @@ Imports DotNetNuke.Common.Utilities
 Namespace UI.WebControls.EditControls
     Public Class UploadEditControl
         Inherits EditControl
+
+        Protected Overrides Sub OnAttributesChanged()
+            MyBase.OnAttributesChanged()
+
+            Dim attribute As Attribute
+            For Each attribute In MyBase.CustomAttributes
+                If (attribute.GetType Is GetType(FileExtensionsAttribute)) Then
+                    Dim attribute2 As FileExtensionsAttribute = DirectCast(attribute, FileExtensionsAttribute)
+                    Me.extensions = attribute2.Extensions
+                ElseIf (attribute.GetType Is GetType(PathAttribute)) Then
+                    Dim attribute3 As PathAttribute = DirectCast(attribute, PathAttribute)
+                    Me.path = attribute3.Path
+                ElseIf (attribute.GetType Is GetType(AutoEraseAttribute)) Then
+                    Me.autoErase = True
+                ElseIf (attribute.GetType Is GetType(SizeAttribute)) Then
+                    Dim attribute4 As SizeAttribute = DirectCast(attribute, SizeAttribute)
+                    Me.Size = attribute4.Size
+                End If
+            Next
+
+        End Sub
+
+
         ' Methods
         Protected Overrides Sub CreateChildControls()
             MyBase.CreateChildControls()
-            Dim attribute As Attribute
-            Try
-                For Each attribute In MyBase.CustomAttributes
-                    If (attribute.GetType Is GetType(FileExtensionsAttribute)) Then
-                        Dim attribute2 As FileExtensionsAttribute = DirectCast(attribute, FileExtensionsAttribute)
-                        Me.extensions = attribute2.Extensions
-                    ElseIf (attribute.GetType Is GetType(PathAttribute)) Then
-                        Dim attribute3 As PathAttribute = DirectCast(attribute, PathAttribute)
-                        Me.path = attribute3.Path
-                    ElseIf (attribute.GetType Is GetType(AutoEraseAttribute)) Then
-                        Me.AutoErase = True
-                    ElseIf (attribute.GetType Is GetType(SizeAttribute)) Then
-                        Dim attribute4 As SizeAttribute = DirectCast(attribute, SizeAttribute)
-                        Me.Size = attribute4.Size
-                    End If
-                Next
-            Catch ex As Exception
 
-            End Try
             Me._downloadLink = New LinkButton
             Me._downloadLink.CssClass = "Normal"
             Me._downloadLink.CausesValidation = False

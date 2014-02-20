@@ -1,11 +1,15 @@
 ﻿
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.Entities.Users
 Imports OpenRasta.IO
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
+
+    <ActionButton(IconName.CloudDownload, IconOptions.Normal)> _
+   <Serializable()> _
     Public Class RestServicesSettings
 
         Public Property Enabled As Boolean

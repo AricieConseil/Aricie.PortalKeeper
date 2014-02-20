@@ -11,13 +11,14 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
 Imports System.Threading
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
 
-
+    <ActionButton(IconName.Android, IconOptions.Normal)> _
     <DefaultProperty("Summary")> _
     <Serializable()> _
     Public Class BotInfo(Of TEngineEvent As IConvertible)
@@ -268,8 +269,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-         <ConditionalVisible("AddDumpToHistory", False, True)> _
-        <ExtendedCategory("History")> _
+        <ConditionalVisible("AddDumpToHistory", False, True)> _
+       <ExtendedCategory("History")> _
         Public Property IncludeLastDump() As Boolean
             Get
                 Return _IncludeLastDump
@@ -500,7 +501,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                 currentWebBotEvent.VariablesDump = dump
             End If
-            
+
             'currentWebBotEvent.PayLoad = HtmlEncode(ReflectionHelper.Serialize(dump).OuterXml)
 
 
@@ -565,7 +566,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
                                                 WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId)
                 End If
-             
+
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub

@@ -9,10 +9,11 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-
+    <ActionButton(IconName.User, IconOptions.Normal)> _
     <Serializable()> _
     Public Class UserBotInfo
         Inherits NamedConfig
@@ -55,7 +56,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-       
+
         '<Obsolete("Use XmlParameters")> _
         <Browsable(False)> _
         Public Property Parameters() As SerializableList(Of Object)
@@ -257,7 +258,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
            <CollectionEditor(True, False, False, False, 11, CollectionDisplayStyle.Accordion, False)> _
            <LabelMode(LabelMode.Top)> _
         Public Property ComputedEntities() As SerializableDictionary(Of String, Object)
-      
+
 
 
 

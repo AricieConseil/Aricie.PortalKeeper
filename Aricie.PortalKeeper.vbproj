@@ -254,13 +254,10 @@
     <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
     <Compile Include="Components\Entities\Scheduler\ScheduleEvent.vb" />
     <Compile Include="Components\TrialProvider.vb" />
-    <Compile Include="KeeperConfig.ascx.designer.vb">
-      <DependentUpon>KeeperConfig.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="KeeperConfig.ascx.vb">
+    <Content Include="KeeperConfig.ascx.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    </Content>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
       <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>

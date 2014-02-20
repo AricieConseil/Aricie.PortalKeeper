@@ -83,17 +83,18 @@ Namespace UI.WebControls.EditControls
 
 
             Else
-                Dim label As New Label
 
 
-                Dim objItems As IDictionary(Of String, String) = Me.GetValueKeys
 
-                Dim strText As String = Nothing
-                If Not objItems.TryGetValue(Value.ToString, strText) Then
-                    strText = Value.ToString()
+                Dim objItems As IDictionary(Of String, KeyValuePair(Of String, IconActionInfo)) = Me.GetValueKeys
+
+                Dim objNode As KeyValuePair(Of String, IconActionInfo) = Nothing
+                If Not objItems.TryGetValue(Value.ToString, objNode) Then
+                    objNode = New KeyValuePair(Of String, IconActionInfo)(Value.ToString(), New IconActionInfo)
                 End If
-                
-                label.Text = strText
+                Dim label As New IconActionControl
+                label.Text = objNode.Key
+                label.ActionItem = objNode.Value
                 label.CssClass = "SubHead"
                 label.EnableViewState = False
                 Me.Controls.Add(label)
@@ -107,14 +108,15 @@ Namespace UI.WebControls.EditControls
         End Sub
 
 
-        Private _ValueKeys As Dictionary(Of String, String)
+        Private _ValueKeys As Dictionary(Of String, KeyValuePair(Of String, IconActionInfo))
 
 
-        Private Function GetValueKeys() As Dictionary(Of String, String)
+        Private Function GetValueKeys() As Dictionary(Of String, KeyValuePair(Of String, IconActionInfo))
             If _ValueKeys Is Nothing Then
-                _ValueKeys = New Dictionary(Of String, String)
+                _ValueKeys = New Dictionary(Of String, KeyValuePair(Of String, IconActionInfo))
                 If Me._SelectorInfo.InsertNullItem Then
-                    _ValueKeys.Add(_SelectorInfo.NullItemValue, _SelectorInfo.NullItemText)
+
+                    _ValueKeys.Add(_SelectorInfo.NullItemValue, New KeyValuePair(Of String, IconActionInfo)(_SelectorInfo.NullItemText, New IconActionInfo(IconName.Home)))
                 End If
                 Dim selector As ISelector = DirectCast(ParentField.DataSource, ISelector)
                 If selector IsNot Nothing Then
@@ -140,12 +142,16 @@ Namespace UI.WebControls.EditControls
 
                             End If
                         End If
-                        _ValueKeys(objValue) = key
+                        Dim objActionButton As ActionButtonInfo = ActionButtonInfo.FromMember(rawObj.GetType)
+                        If objActionButton Is Nothing Then
+                            objActionButton = New ActionButtonInfo
+                        End If
+                        _ValueKeys(objValue) = New KeyValuePair(Of String, IconActionInfo)(key, objActionButton.IconAction)
                     Next
 
 
                 Else
-                    _ValueKeys.Add(Value.ToString(), Value.ToString())
+                    _ValueKeys.Add(Value.ToString(), New KeyValuePair(Of String, IconActionInfo)(Value.ToString(), New IconActionInfo()))
                 End If
             End If
 
@@ -154,15 +160,13 @@ Namespace UI.WebControls.EditControls
 
 
         Private Sub BuildButtons()
-            Dim items As Dictionary(Of String, String) = Me.GetValueKeys()
+            Dim items As Dictionary(Of String, KeyValuePair(Of String, IconActionInfo)) = Me.GetValueKeys()
             Dim counter As Integer = 0
             For Each objItem In items
                 'Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
                 
-                Dim objButton As New IconActionButton With {.Text = objItem.Value, .CommandArgument = objItem.Key}
-                If String.IsNullOrEmpty(objItem.Key) Then
-                    objButton.ActionItem.IconName = IconName.Sitemap
-                End If
+                Dim objButton As New IconActionButton With {.Text = objItem.Value.Key, .ActionItem = objItem.Value.Value, .CommandArgument = objItem.Key}
+                objButton.ActionItem.IconName = IconName.Home
                 AddHandler objButton.Command, AddressOf ButtonClick
                 Me.Controls.Add(objButton)
                 Me._Buttons(objItem.Key) = objButton

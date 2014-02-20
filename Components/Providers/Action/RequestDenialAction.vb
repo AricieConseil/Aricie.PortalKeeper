@@ -3,6 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -27,9 +28,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         SendStatus
     End Enum
 
-    <Serializable()> _
-        <System.ComponentModel.DisplayName("Request Denial Action")> _
-        <Description("Blocks the request. A status code can be sent or the client connection can be simply closed")> _
+    <ActionButton(IconName.MinusCircle, IconOptions.Normal)> _
+   <Serializable()> _
+       <System.ComponentModel.DisplayName("Request Denial Action")> _
+       <Description("Blocks the request. A status code can be sent or the client connection can be simply closed")> _
     Public Class RequestDenialAction
         Inherits ActionProvider(Of RequestEvent)
 

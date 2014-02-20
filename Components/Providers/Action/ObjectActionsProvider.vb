@@ -6,8 +6,11 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Ciloci.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Wrench, IconOptions.Normal)> _
     <Serializable()> _
         <System.ComponentModel.DisplayName("Object Actions Provider")> _
         <Description("This provider allows to call object methods or set object properties")> _

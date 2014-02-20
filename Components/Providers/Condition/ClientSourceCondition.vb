@@ -4,13 +4,14 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-
-    <Serializable()> _
-    <System.ComponentModel.DisplayName("Client Source Condition")> _
-    <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")> _
+    <ActionButton(IconName.MapMarker, IconOptions.Normal)> _
+   <Serializable()> _
+   <System.ComponentModel.DisplayName("Client Source Condition")> _
+   <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")> _
     Public Class ClientSourceCondition
         Inherits DosEnabledConditionProvider(Of RequestEvent)
 
