@@ -11,6 +11,7 @@ Namespace UI.Attributes
         Private _labelWidth As String
         Private _editControlWidth As String
 
+
         Public Sub New(ByVal width As String, ByVal labelWidth As String, ByVal editControlWidth As String)
             _width = width
             _labelWidth = labelWidth

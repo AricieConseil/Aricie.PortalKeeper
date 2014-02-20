@@ -1,22 +1,13 @@
 ﻿Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Globalization
 Imports System.ComponentModel
 Imports Aricie.DNN.Security.Trial
 
 Namespace UI.WebControls.EditControls
-
-    Public Class ProfileEditorEditControl
-        Inherits PropertyEditorEditControl
-
-        Protected Overrides Function GetNewEditor() As DotNetNuke.UI.WebControls.PropertyEditorControl
-            Return New ProfileEditorControl
-        End Function
-
-    End Class
-
     Public Class PropertyEditorEditControl
         Inherits AricieEditControl
         Implements INamingContainer
@@ -26,6 +17,8 @@ Namespace UI.WebControls.EditControls
         Private _labelWidth As Unit
         Private _editControlWidth As Unit
         Private _EnableExports As Nullable(Of Boolean)
+
+        Private _ActionButton As ActionButtonInfo
 
         Public ReadOnly Property InnerEditor() As PropertyEditorControl
             Get
@@ -58,6 +51,8 @@ Namespace UI.WebControls.EditControls
                         _editControlWidth = DirectCast(attribute, FieldStyleAttribute).EditControlWidth
                     ElseIf TypeOf attribute Is EnableExportsAttribute Then
                         Me._EnableExports = DirectCast(attribute, EnableExportsAttribute).Enabled
+                    ElseIf TypeOf attribute Is ActionButtonAttribute Then
+                        Me._ActionButton = ActionButtonInfo.FromAttribute(DirectCast(attribute, ActionButtonAttribute))
                     End If
                 Next
             End If
@@ -98,18 +93,28 @@ Namespace UI.WebControls.EditControls
                         AndAlso CType(Me.ParentAricieField.Editor, CollectionEditControl).DisplayStyle = CollectionDisplayStyle.Accordion Then
                     Me.Controls.Add(Me._InnerEditor)
                 Else
-
-                    Dim myPeIco As IconActionControl = New IconActionControl()
-                    myPeIco.ActionItem = New IconActionInfo() With {.IconName = IconName.Btc, .IconOptions = IconOptions.x3}
-                    Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
-                    Dim cssClass As String = "odd"
-                    If (Not ariciePropCt Is Nothing) Then
-                        If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
-                            cssClass = "even"
+                    Dim myPeIco As IconActionControl
+                    Dim strCssClass As String = "odd"
+                    If _ActionButton IsNot Nothing Then
+                        myPeIco = New IconActionControl()
+                        myPeIco.ActionItem = _ActionButton.IconAction
+                        myPeIco.Text = Me.Value.GetType.Name
+                        myPeIco.ResourceKey = Me.Value.GetType.Name & "_Title"
+                        Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
+                        If ariciePropCt IsNot Nothing Then
+                            If (Not ariciePropCt Is Nothing) Then
+                                If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
+                                    strCssClass = "even"
+                                End If
+                            End If
                         End If
                     End If
-                    Dim subPE As Control = AddSubDiv(Me._InnerEditor, cssClass)
-                    subPE.Controls.AddAt(0, myPeIco)
+
+                    Dim subPE As Control = AddSubDiv(Me._InnerEditor, strCssClass)
+                    If myPeIco IsNot Nothing Then
+                        subPE.Controls.AddAt(0, myPeIco)
+                    End If
+
                     Me.Controls.Add(subPE)
                 End If
 

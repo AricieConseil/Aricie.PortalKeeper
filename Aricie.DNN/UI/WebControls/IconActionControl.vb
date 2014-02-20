@@ -23,7 +23,8 @@ Namespace UI.WebControls
         Protected Overrides Sub OnPreRender(e As System.EventArgs)
             MyBase.OnPreRender(e)
 
-
+            Dim cssDefinedTop As Boolean
+            Dim cssDefinedChild As Boolean
 
 
             If (Not Me.ActionItem Is Nothing) Then
@@ -37,7 +38,9 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(hl)
                     currentControl = hl
                     hl.NavigateUrl = Me.Url
-                    hl.CssClass = "aricieActions " & Me.CssClass
+                    hl.CssClass = Me.CssClass '"aricieActions" 
+                    cssDefinedTop = True
+                    hl.CopyBaseAttributes(Me)
                 End If
 
                 If (ActionItem.StackedIconName <> IconName.None) Then
@@ -45,8 +48,9 @@ Namespace UI.WebControls
                     currentControl.Controls.Add(stackP)
                     currentControl = stackP
                     Dim containerCssClass As String = "fa-stack" & GetCssClass(IconName.None, ActionItem.StackContainerOptions, False)
-                    If Not String.IsNullOrEmpty(CssClass) Then
+                    If Not String.IsNullOrEmpty(CssClass) AndAlso Not cssDefinedTop Then
                         containerCssClass &= " " & CssClass
+                        cssDefinedChild = True
                     End If
                     stackP.Attributes.Add("class", containerCssClass)
                 End If
@@ -55,7 +59,7 @@ Namespace UI.WebControls
                     Dim iconLabel As New Label
                     currentControl.Controls.Add(iconLabel)
                     iconLabel.CssClass = Me.GetCssClass(ActionItem.IconName, ActionItem.IconOptions, ActionItem.StackedIconName <> IconName.None)
-                    If Not String.IsNullOrEmpty(CssClass) Then
+                    If Not String.IsNullOrEmpty(CssClass) AndAlso Not cssDefinedTop AndAlso Not cssDefinedChild Then
                         iconLabel.CssClass &= " " & CssClass
                     End If
 
@@ -67,8 +71,12 @@ Namespace UI.WebControls
 
                     currentControl.Controls.Add(stackIcon)
                     stackIcon.CssClass = Me.GetCssClass(ActionItem.StackedIconName, ActionItem.StackedIconOptions, True)
-                    If Not String.IsNullOrEmpty(CssClass) Then
-                        stackIcon.CssClass &= " " & CssClass
+                    If Not String.IsNullOrEmpty(CssClass) AndAlso Not cssDefinedTop AndAlso Not cssDefinedChild Then
+                        If Not cssDefinedTop Then
+                            stackIcon.CssClass &= " " & CssClass
+                        Else
+
+                        End If
                     End If
                     currentControl = currentControl.Parent
                 End If
@@ -77,8 +85,12 @@ Namespace UI.WebControls
                     Dim objTextLabel As New Label()
                     currentControl.Controls.Add(objTextLabel)
                     objTextLabel.Text = Me.Text
+                    objTextLabel.CssClass = "actionText"
+                    If Not String.IsNullOrEmpty(CssClass) AndAlso Not cssDefinedTop Then
+                        objTextLabel.CssClass &= " " & CssClass
+                        cssDefinedTop = True
+                    End If
                     'objTextLabel.CssClass = Me.CssClass
-                    objTextLabel.CssClass = "actionText " & CssClass
                     objTextLabel.Attributes.Add("resourcekey", Me.ResourceKey)
                 End If
 
@@ -123,6 +135,16 @@ Namespace UI.WebControls
                 toReturn.Append("  fa-spin")
             End If
 
+            If (objOptions And IconOptions.PullLeft) = IconOptions.PullLeft Then
+                toReturn.Append(" pull-left")
+            ElseIf (objOptions And IconOptions.PullRight) = IconOptions.PullRight Then
+                toReturn.Append(" pull-right")
+            End If
+
+            If (objOptions And IconOptions.Inverse) = IconOptions.Inverse Then
+                toReturn.Append("  fa-inverse")
+            End If
+
             If stacked Then
                 If (objOptions And IconOptions.Stack2X) = IconOptions.Stack2X Then
                     toReturn.Append(" fa-stack-2x")
@@ -149,9 +171,9 @@ Namespace UI.WebControls
 
 
 
-        Protected Overrides Sub Render(writer As HtmlTextWriter)
-            MyBase.RenderChildren(writer)
-        End Sub
+        'Protected Overrides Sub Render(writer As HtmlTextWriter)
+        '    MyBase.RenderChildren(writer)
+        'End Sub
 
 
     End Class

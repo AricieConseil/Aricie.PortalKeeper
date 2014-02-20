@@ -2,6 +2,7 @@
 Imports Aricie.Collections
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Controls
+Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports System.Reflection
@@ -27,6 +28,9 @@ Namespace UI.WebControls
     Public Class AriciePropertyEditorControl
         Inherits PropertyEditorControl
         Implements System.Web.UI.IPostBackEventHandler, System.Web.UI.IScriptControl
+
+        Public Event Debug As EventHandler(Of DebugEventArgs)
+
 
 
 #Region "Fields"
@@ -536,6 +540,18 @@ Namespace UI.WebControls
 
 #End Region
 
+        Public Sub OnDebug(sender As Object, e As DebugEventArgs)
+            If Me.ParentAricieEditor IsNot Nothing Then
+                Me.ParentAricieEditor.OnDebug(sender, e)
+            Else
+                RaiseEvent Debug(sender, e)
+            End If
+        End Sub
+
+        Public Sub OnDebug()
+            RaiseEvent Debug(Me, New DebugEventArgs())
+        End Sub
+
 #Region "Overrides"
 
 
@@ -579,23 +595,25 @@ Namespace UI.WebControls
 
 
         Protected Overrides Function GetRowVisibility(ByVal obj As Object) As Boolean
-            Dim toReturn As Boolean = MyBase.GetRowVisibility(obj)
-            If toReturn Then
-                Dim info As PropertyInfo = DirectCast(obj, PropertyInfo)
+            Return Me.GetRowVisibility(DirectCast(obj, MemberInfo))
+        End Function
+
+        Public Overloads Function GetRowVisibility(ByVal member As MemberInfo) As Boolean
+            Dim info As PropertyInfo = TryCast(member, PropertyInfo)
+            If (info IsNot Nothing) Then
+                If Not MyBase.GetRowVisibility(info) Then
+                    Return False
+                End If
                 'Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
                 'Jesse: reapplying the original full test
                 If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
                     'If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
                     Return False
-                Else
-                    Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(info)
-                    toReturn = ComputeVisibility(condVisibles)
                 End If
             End If
-            Return toReturn
+            Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)
+            Return ComputeVisibility(condVisibles)
         End Function
-
-
 
 
 
@@ -939,8 +957,8 @@ Namespace UI.WebControls
                     If buttonContainer Is Nothing Then
                         buttonContainer = New Panel()
                         buttonContainer.EnableViewState = False
-                        buttonContainer.ID = "divCmdButtons" & element.Name
-                        buttonContainer.CssClass = "dnnFormItem DNNAligncenter"
+                        'buttonContainer.ID = "divCmdButtons" & element.Name
+                        buttonContainer.CssClass = "aricieActions"
                         element.Container.Controls.Add(buttonContainer)
                     End If
                     Me.AddActionButton(objActionButton, buttonContainer)
@@ -977,7 +995,7 @@ Namespace UI.WebControls
                     iconbtn.Text = objButtonInfo.Method.Name
                     iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
             End Select
-           
+
             container.Controls.Add(btn)
             If objButtonInfo.AlertKey <> "" Then
                 Dim message As String = Localization.GetString(objButtonInfo.AlertKey, Me.LocalResourceFile)
@@ -1035,7 +1053,7 @@ Namespace UI.WebControls
 
             End If
 
-            
+
         End Sub
 
         Protected Sub AddEditorCtl(ByRef container As Control, ByVal obj As Object, ByVal keepHidden As Boolean)
@@ -1239,7 +1257,7 @@ Namespace UI.WebControls
 
                 Dim objProps As PropertyInfo() = DataSource.GetType().GetProperties(Bindings).Where(Function(objProp As PropertyInfo) objProp.GetIndexParameters().Length = 0).ToArray()
 
-        'Apply sort method
+                'Apply sort method
                 Select Case SortMode
                     Case PropertySortType.Alphabetical
                         Array.Sort(objProps, New PropertyNameComparer)

@@ -1,4 +1,5 @@
 Imports System.ComponentModel
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Entities.Modules
 Imports Aricie.DNN.Settings
 Imports DotNetNuke.Entities.Tabs
@@ -211,6 +212,17 @@ Namespace UI.Controls
             End Get
         End Property
 
+        Private _ParentSkin As DotNetNuke.UI.Skins.Skin
+
+        Public ReadOnly Property ParentSkin As DotNetNuke.UI.Skins.Skin
+            Get
+                If _ParentSkin Is Nothing Then
+                    _ParentSkin = DotNetNuke.UI.Skins.Skin.GetParentSkin(Me)
+                End If
+                Return _ParentSkin
+            End Get
+        End Property
+
 #End Region
 
 #Region "Public Methods"
@@ -239,6 +251,20 @@ Namespace UI.Controls
             End If
             ClientAPI.AddButtonConfirm(ctl, message)
         End Sub
+
+        Public Sub AddPageMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            DotNetNuke.UI.Skins.Skin.AddPageMessage(Me.ParentSkin, heading, strMessage, messageType)
+        End Sub
+
+        Public Sub AddModuleMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me, heading, strMessage, messageType)
+        End Sub
+
+        Public Function GetModuleMessageControl(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "") As ModuleMessage
+            Return DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
+        End Function
+
+
 
 #End Region
 

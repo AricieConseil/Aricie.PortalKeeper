@@ -1,4 +1,6 @@
 ﻿Imports System.Web.Configuration
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
 
@@ -6,6 +8,7 @@ Namespace Entities
     ''' Simpler inherited class without Redirection mode display
     ''' </summary>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Link, IconOptions.Normal)> _
     <Serializable()> _
     Public Class SimpleControlUrlInfo
         Inherits ControlUrlInfo

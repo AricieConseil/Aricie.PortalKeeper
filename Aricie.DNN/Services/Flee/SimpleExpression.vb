@@ -9,6 +9,7 @@ Imports System.Globalization
 Imports Aricie.Services
 Imports System.Threading
 Imports System.Xml.Serialization
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
 
@@ -17,6 +18,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Code, IconOptions.Normal)> _
     <Serializable()> _
     Public Class SimpleExpression(Of TResult)
         Private _Expression As String = ""

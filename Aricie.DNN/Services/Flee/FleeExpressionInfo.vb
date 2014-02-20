@@ -5,6 +5,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Services
 Imports System.Reflection
 Imports Ciloci.Flee
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
 
@@ -111,6 +112,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Code, IconOptions.Normal)> _
     <Serializable()> _
     Public Class FleeExpressionInfo(Of TResult)
         Inherits SimpleExpression(Of TResult)

@@ -1,6 +1,8 @@
 Imports Aricie.DNN.Services
 Imports System.Globalization
 Imports Aricie.DNN.Diagnostics
+Imports Aricie.DNN.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.Entities.Users
 Imports Aricie.Services
 Imports DotNetNuke.Services.Personalization
@@ -12,9 +14,15 @@ Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.Entities.Host
 Imports System.Reflection
 Imports DotNetNuke.Services.Log.EventLog
+Imports Aricie.DNN.Services.Files
+Imports DotNetNuke.Services.FileSystem
 
 
 Namespace Settings
+
+
+
+
     ''' <summary>
     ''' Controller class for settings
     ''' </summary>
@@ -184,6 +192,9 @@ Namespace Settings
 
 #Region "File Settings"
 
+       
+
+
         ''' <summary>
         ''' Loads settings as custom class from a file
         ''' </summary>
@@ -267,7 +278,7 @@ Namespace Settings
                                 Dim defaultFileName As String = GetDefaultFileName(fileName)
                                 If File.Exists(defaultFileName) Then
                                     File.Copy(defaultFileName, fileName)
-                                    Dim objFileInfo As New FileInfo(fileName)
+                                    Dim objFileInfo As New System.IO.FileInfo(fileName)
                                     If objFileInfo.IsReadOnly Then
                                         objFileInfo.IsReadOnly = False
                                     End If
@@ -355,7 +366,7 @@ Namespace Settings
             If Not objDir.Exists Then
                 objDir.Create()
             End If
-            Dim saveFile As New FileInfo(fileName)
+            Dim saveFile As New System.IO.FileInfo(fileName)
 
             If saveFile.Exists AndAlso backupsNb > 0 Then
                 Dim backupRootDir As New DirectoryInfo(objDir.FullName.TrimEnd("\"c) & "\ConfigBackups")
@@ -364,9 +375,9 @@ Namespace Settings
                 End If
                 Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & saveFile.LastWriteTime.ToString("yyyy-MM-dd_HH-mm-ss_") & Path.GetFileName(fileName)
                 System.IO.File.Copy(fileName, newBackupFileName, True)
-                Dim existingBackupFiles As FileInfo() = backupRootDir.GetFiles()
+                Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
                 If existingBackupFiles.Length >= backupsNb Then
-                    Array.Sort(Of FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
+                    Array.Sort(Of System.IO.FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of System.IO.FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
                     For i As Integer = 1 To existingBackupFiles.Length - backupsNb
                         If existingBackupFiles(i - 1).IsReadOnly Then
                             existingBackupFiles(i - 1).IsReadOnly = False
@@ -394,7 +405,7 @@ Namespace Settings
             Dim snapShotName As String = GetSnapShotName(fileName)
 
             If System.IO.File.Exists(snapShotName) Then
-                Dim objFileInfo As New FileInfo(snapShotName)
+                Dim objFileInfo As New System.IO.FileInfo(snapShotName)
                 If objFileInfo.IsReadOnly Then
                     objFileInfo.IsReadOnly = False
                 End If
@@ -435,12 +446,12 @@ Namespace Settings
             SaveFileSettings(fileName, settings, createBinarySnapShot, backupsNb)
         End Sub
 
-        Public Function GetBackups(filename As String) As IList(Of FileInfo)
-            Dim toReturn As New List(Of FileInfo)
+        Public Function GetBackups(filename As String) As IList(Of System.IO.FileInfo)
+            Dim toReturn As New List(Of System.IO.FileInfo)
             Dim objDir As New DirectoryInfo(Path.GetDirectoryName(filename))
             Dim backupRootDir As New DirectoryInfo(objDir.FullName.TrimEnd("\"c) & "\ConfigBackups")
             If backupRootDir.Exists Then
-                Dim existingBackupFiles As FileInfo() = backupRootDir.GetFiles()
+                Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
                 toReturn.AddRange(existingBackupFiles)
             End If
             Return toReturn
@@ -450,8 +461,8 @@ Namespace Settings
             Dim objDir As New DirectoryInfo(Path.GetDirectoryName(filename))
             Dim backupRootDir As New DirectoryInfo(objDir.FullName.TrimEnd("\"c) & "\ConfigBackups")
             If backupRootDir.Exists Then
-                Dim existingBackupFiles As FileInfo() = backupRootDir.GetFiles()
-                For Each existingBackupFile As FileInfo In existingBackupFiles
+                Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
+                For Each existingBackupFile As System.IO.FileInfo In existingBackupFiles
                     If existingBackupFile.Name = backupname Then
                         System.IO.File.Copy(existingBackupFile.FullName, filename, True)
                         Return True
