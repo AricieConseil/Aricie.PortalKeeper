@@ -875,7 +875,7 @@ Namespace UI.WebControls.EditControls
                     End With
                     plAction.Controls.Add(cmdCopy)
                     sm.RegisterPostBackControl(cmdCopy)
-                  
+
                 End If
 
                 If _Ordered Then
@@ -977,7 +977,7 @@ Namespace UI.WebControls.EditControls
                         AddHandler cmdPasteButton.Click, AddressOf PasteClick
                         RegisterControlForPostbackManagement(cmdPasteButton)
 
-                      
+
                         cmdExportButton = New IconActionButton
                         pnAdd.Controls.Add(cmdExportButton)
                         cmdExportButton.ActionItem.IconName = IconName.Download
@@ -993,7 +993,7 @@ Namespace UI.WebControls.EditControls
                         pnAdd.Controls.Add(ctImportFile)
 
                         cmdImportButton = New IconActionButton
-                     
+
                         pnAdd.Controls.Add(cmdImportButton)
                         cmdImportButton.ActionItem.IconName = IconName.Upload
                         cmdImportButton.Text = "Import " & Name
