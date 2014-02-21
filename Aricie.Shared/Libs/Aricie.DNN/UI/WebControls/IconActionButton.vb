@@ -12,7 +12,7 @@ Namespace UI.WebControls
         Public Overrides Property CssClass As String
             Get
                 If MyBase.CssClass = "" Then
-                    MyBase.CssClass = "aricieActions"
+                    MyBase.CssClass = "aricieAction"
                 End If
                 Return MyBase.CssClass
             End Get

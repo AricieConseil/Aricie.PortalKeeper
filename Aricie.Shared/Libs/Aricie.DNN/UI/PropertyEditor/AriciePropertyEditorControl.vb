@@ -978,7 +978,7 @@ Namespace UI.WebControls
                     'If NukeHelper.DnnVersion.Major > 6 Then
                     '    cmdbtn.CssClass = "dnnTertiaryAction aricieActions"
                     'Else
-                    cmdbtn.CssClass = "aricieActions"
+                    cmdbtn.CssClass = "aricieAction"
                     'End If
 
                     cmdbtn.Text = objButtonInfo.Method.Name

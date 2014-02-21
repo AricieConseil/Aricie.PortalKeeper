@@ -37,12 +37,15 @@ Namespace UI.WebControls
                     Dim hl As New HyperLink
                     currentControl.Controls.Add(hl)
                     currentControl = hl
-                    hl.NavigateUrl = Me.Url
+                    hl.Attributes.Add("href", Me.Url)
+                    ' hl.Attributes.Add("id", Me.ClientID)
                     hl.CssClass = Me.CssClass '"aricieActions" 
                     cssDefinedTop = True
                     hl.CopyBaseAttributes(Me)
                 End If
-
+                If Not Me.Enabled AndAlso (Not String.IsNullOrEmpty(Me.Url)) Then
+                    cssDefinedTop = True
+                End If
                 If (ActionItem.StackedIconName <> IconName.None) Then
                     Dim stackP As New HtmlControls.HtmlGenericControl("p")
                     currentControl.Controls.Add(stackP)
@@ -171,9 +174,13 @@ Namespace UI.WebControls
 
 
 
-        'Protected Overrides Sub Render(writer As HtmlTextWriter)
-        '    MyBase.RenderChildren(writer)
-        'End Sub
+        Protected Overrides Sub Render(writer As HtmlTextWriter)
+            If (Not String.IsNullOrEmpty(Url) AndAlso ActionItem.StackedIconName = IconName.None AndAlso Me.Enabled) Then
+                MyBase.RenderChildren(writer)
+            Else
+                MyBase.Render(writer)
+            End If
+        End Sub
 
 
     End Class

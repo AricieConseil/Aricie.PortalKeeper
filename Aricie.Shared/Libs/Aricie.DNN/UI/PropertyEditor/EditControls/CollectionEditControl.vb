@@ -461,7 +461,7 @@ Namespace UI.WebControls.EditControls
             Try
                 Dim addEvent As New PropertyEditorEventArgs(Me.Name)
                 addEvent.OldValue = New ArrayList(Me.CollectionValue)
-
+                Page.Validate()
                 If Me.Page.IsValid Then
                     Me.AddNewItem(Me.AddEntry)
 
@@ -494,6 +494,7 @@ Namespace UI.WebControls.EditControls
 
         Private Sub CopyClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
+                Page.Validate()
                 If Me.Page.IsValid Then
 
                     Me.Copy(Me.CollectionValue)
@@ -507,6 +508,7 @@ Namespace UI.WebControls.EditControls
 
         Private Sub ExportClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
+                Page.Validate()
                 If Me.Page.IsValid Then
 
                     Me.Download(CollectionValue)
@@ -844,7 +846,8 @@ Namespace UI.WebControls.EditControls
                         .CommandName = "Focus"
                         .CommandArgument = commandIndex.ToString()
                         '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
-                        .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}};jQuery('#{0}').click();", headerLink.ClientID))
+                        '   .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}});jQuery('#{0}').unbind('click');jQuery('#{0}').click();", headerLink.ClientID))
+                        .Attributes.Add("onclick", "SelectAndActivateParentHeader(this);")
                     End With
 
                     sm.RegisterPostBackControl(cmdFocus)
