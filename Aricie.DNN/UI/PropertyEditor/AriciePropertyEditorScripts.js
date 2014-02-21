@@ -162,6 +162,17 @@ function get_cookies_array() {
 
 }
 
+function SelectAndActivateParentHeader(src) {
+    var targetItem = jQuery(src).parent().parent().find(">a");
+    targetItem.attr('onclick','')
+    //targetItem.unbind('click');
+    //targetItem.click(function (e) {
+    //    return false;
+    //});
+  
+    targetItem.click();
+    return false;
+}
 
 // Register the class as a type that inherits from Sys.UI.Control.
 Aricie.DNN.AriciePropertyEditorScripts.registerClass('Aricie.DNN.AriciePropertyEditorScripts', Sys.UI.Control);

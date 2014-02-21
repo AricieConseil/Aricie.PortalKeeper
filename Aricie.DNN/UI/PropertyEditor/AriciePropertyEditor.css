@@ -24,13 +24,15 @@
 /* Form */
 /*todo: property editor needs some love... Clear blocks would be a start with layers of semi-transparent background */
 
-.dnnForm
-{
-	width: 100%;
-	border: 2px solid #ccc;
-	border-radius: 3px;
-	background-color: rgba(222,222,222,10);
-	padding: 2px;
+.dnnForm {
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    background-color: rgba(222,222,222,10);
+    padding: 2px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 .SubDiv.even > .dnnForm
@@ -246,7 +248,7 @@
 
 
 
-.dnnForm .dnnFormItem .aricieActions
+.aricieAction
 {
 	display: inline-block;
 	padding: 9px 9px;
@@ -261,30 +263,41 @@
 	color: #70b1c7;
 	background-color: #fff;
 }
-
-.dnnForm .aricieActions a:hover
+    .aricieAction.aspNetDisabled {
+    cursor:not-allowed;
+}
+.aricieAction:hover,
+.dnnForm .ui-accordion h3.ui-accordion-header .aricieAction:hover
 {
 	background-color: #70b1c7;
 	color: #eee;
 }
-
-* + html .dnnForm .dnnFormItem .aricieActions
+    .aspNetDisabled.aricieAction:hover,
+    .dnnForm .ui-accordion h3.ui-accordion-header .aspNetDisabled.aricieAction:hover {
+    color: #70b1c7;
+	background-color: #fff;
+    
+    }
+* + html  .aricieAction
 {
 	display: inline;
 	zoom: 1;
 }
 
-.dnnForm .aricieActions p
+.aricieAction p
 {
 	margin: 0;
 	padding: 0;
 }
 
-.dnnForm .aricieActions .actionText
+.aricieAction .actionText
 {
 	padding-left: 1em;
 }
+.aricieActions {
 
+text-align:center;
+}
 
 /* Add Panel*/
 
