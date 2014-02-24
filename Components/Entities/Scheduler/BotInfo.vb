@@ -101,7 +101,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     userString &= IIf(Me.Enabled AndAlso PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso targetUserBot.Enabled, " Enabled", " Disabled").ToString
                 End If
                 Dim forcedString As String = IIf(Me._ForceRun, "Forced", "Unforced").ToString
-                Return Me.Name.PadRight(50) & " - " & enableString.PadRight(30) & " - " & userString.PadRight(30) & " - " & forcedString.PadRight(20) & " - " & Me.Schedule.FormattedDuration
+                Return Me.Name.PadRight(50) & " - " & enableString.PadRight(20) & " - " & userString.PadRight(20) & " - " & forcedString.PadRight(10) & " - " & Me.Schedule.FormattedDuration
             End Get
         End Property
 

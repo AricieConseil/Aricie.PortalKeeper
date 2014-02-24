@@ -4,6 +4,9 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.Web.Configuration
 Imports Aricie.ComponentModel
 Imports Aricie.Cryptography
+Imports Aricie.Collections
+Imports Aricie.DNN.UI.Controls
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
@@ -14,10 +17,9 @@ Imports System.Globalization
 Imports DotNetNuke.Security.Permissions
 Imports DotNetNuke.Entities.Users
 Imports System.Xml
+Imports DotNetNuke.Services.Localization
 
 Namespace Services.Files
-
-
     <Serializable()> _
     Public Class SmartFile
         'Inherits SmartFileInfo
@@ -43,10 +45,20 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Property Signed As Boolean
 
+
+
+
         <IsReadOnly(True)> _
         Public Property Compressed As Boolean
 
         Private _encrypter As IEncrypter
+
+
+        Public ReadOnly Property HasEncrypter As Boolean
+            Get
+                Return _encrypter IsNot Nothing
+            End Get
+        End Property
 
         Public Sub SetEncrypter(ByVal encrypter As IEncrypter)
             _encrypter = encrypter
@@ -117,8 +129,12 @@ Namespace Services.Files
         Public Property CustomKey As String = ""
 
 
-        <ConditionalVisible("Compressed", True, True)> _
-      <ActionButton(IconName.Compress, IconOptions.Normal)> _
+#Region "Public Methods"
+
+        <ConditionalVisible("HasEncrypter", False, True)> _
+      <ConditionalVisible("Encrypted", True, True)> _
+      <ConditionalVisible("Compressed", True, True)> _
+    <ActionButton(IconName.Compress, IconOptions.Normal)> _
         Public Sub Sign()
             If Me.Encrypted OrElse Me.Compressed Then
                 Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
@@ -129,14 +145,44 @@ Namespace Services.Files
                     doc.LoadXml(Me.PayLoad)
                     If Me._encrypter IsNot Nothing Then
                         _encrypter.Sign(doc)
+                        PayLoad = doc.OuterXml
+                        Me.Signed = True
                     End If
-                    PayLoad = doc.OuterXml
-                    Me.Signed = True
                 End SyncLock
             End If
         End Sub
 
+        <ConditionalVisible("HasEncrypter", False, True)> _
+        <ConditionalVisible("Signed", False, True)> _
+     <ActionButton(IconName.CheckSquareO, IconOptions.Normal)> _
+        Public Overloads Sub Verify(ape As AriciePropertyEditorControl)
+            Dim message As String
+            Dim messageType As ModuleMessage.ModuleMessageType
+            If Me.Verify() Then
+                message = Localization.GetString("SignatureVerified.Message", ape.LocalResourceFile)
+                messageType = ModuleMessage.ModuleMessageType.GreenSuccess
+            Else
+                message = Localization.GetString("SignatureFailedToVerify.Message", ape.LocalResourceFile)
+                messageType = ModuleMessage.ModuleMessageType.GreenSuccess
+            End If
+            ape.DisplayMessage(message, messageType)
+        End Sub
 
+        Public Overloads Function Verify() As Boolean
+            If Not Me.Signed Then
+                Throw New ApplicationException("Unsigned document cannot be verified")
+            Else
+                Dim doc As New XmlDocument()
+                SyncLock Me
+                    doc.LoadXml(Me.PayLoad)
+                    If Me._encrypter IsNot Nothing Then
+                        Return _encrypter.Verify(doc)
+                    Else
+                        Throw New ApplicationException("Cannot sign a smart file without an ecrypter")
+                    End If
+                End SyncLock
+            End If
+        End Function
 
 
         <ConditionalVisible("Compressed", True, True)> _
@@ -175,7 +221,12 @@ Namespace Services.Files
         Public Sub Decrypt()
             Try
                 If Me.Encrypted Then
-                    Dim newPayLoad As String = Common.Decrypt(Me.PayLoad, GetKey(), "", Me._SaltBytes)
+                    Dim newPayLoad As String
+                    If _encrypter IsNot Nothing Then
+                        newPayLoad = _encrypter.Decrypt(Me.PayLoad, Me._SaltBytes)
+                    Else
+                        newPayLoad = Common.Decrypt(Me.PayLoad, GetKey(), "", Me._SaltBytes)
+                    End If
                     Me.DecryptInternal(newPayLoad)
                 End If
             Catch ex As Exception
@@ -199,10 +250,10 @@ Namespace Services.Files
             End If
         End Sub
 
-       
-       
 
-       
+
+
+
 
 
         Public Function GetKey() As String
@@ -236,6 +287,9 @@ Namespace Services.Files
         End Sub
 
         Public Sub Wrap(settings As SmartFileInfo)
+            If settings.Sign AndAlso Me._encrypter IsNot Nothing Then
+                Me.Sign()
+            End If
             If settings.Compress Then
                 Me.Compress()
             End If
@@ -246,10 +300,14 @@ Namespace Services.Files
 
 
 
+#End Region
+
+
+
 
 #Region "Shared Methods"
 
-       Public Shared Function GetFileInfo(key As EntityKey, settings As SmartFileInfo) As FileInfo
+        Public Shared Function GetFileInfo(key As EntityKey, settings As SmartFileInfo) As FileInfo
             Dim objPath As String = settings.GetPath(key)
             Dim fileName As String = System.IO.Path.GetFileName(objPath)
             Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(key.PortalId, objPath)
@@ -278,12 +336,17 @@ Namespace Services.Files
 
         Public Shared Function LoadSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo) As SmartFile(Of T)
             Dim objFileInfo As FileInfo = GetFileInfo(key, settings)
+            Return LoadSmartFile(Of T)(objFileInfo)
+        End Function
+
+        Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As FileInfo) As SmartFile(Of T)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
                 Return ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetChars(content))
             End If
             Return Nothing
         End Function
+
 
         Public Shared Function SaveSmartFile(value As SmartFile, settings As SmartFileInfo) As Boolean
             Dim objPath As String = settings.GetPath(value.Key)
@@ -369,7 +432,7 @@ Namespace Services.Files
 
 #End Region
 
-    
+
 #Region "Private Methods"
 
         Private Sub EncryptInternal(ByVal newPayLoad As String, ByVal salt As Byte())

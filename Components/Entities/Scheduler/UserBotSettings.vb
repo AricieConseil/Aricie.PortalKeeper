@@ -204,19 +204,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _CurrentUserBots As New Dictionary(Of Integer, UserBotInfo)
 
-        <XmlIgnore()> _
-        <Selector("", "key", "value", False, True, "Select a UserBot to Display", "", False, False)> _
-        <ExtendedCategory("Management")> _
-        Public Property UserName As String = ""
+        '<XmlIgnore()> _
+        '<Selector("", "key", "value", False, True, "Select a UserBot to Display", "", False, False)> _
+        '<ExtendedCategory("Management")> _
+        'Public Property UserName As String = ""
 
-        <ConditionalVisible("UserName", True, True, "")> _
+        <ConditionalVisible("HasEncrypter", True, True, "")> _
         <ExtendedCategory("Management")> _
-        Public ReadOnly Property UserBot As SmartFile(Of UserBotInfo)
+        Public ReadOnly Property UserBots As SmartFolder(Of UserBotInfo)
             Get
-                Dim toReturn As SmartFile(Of UserBotInfo)
-                If Me.HasEncrypter AndAlso Not String.IsNullOrEmpty(Me.UserName) Then
-
-
+                Dim toReturn As SmartFolder(Of UserBotInfo)
+                If Me.HasEncrypter Then
+                    Dim key As EntityKey = GetSampleBotKey(NukeHelper.PortalId)
+                    Dim strPath As String = Me.StorageSettings.GetFolderPath(key)
+                    toReturn = New SmartFolder(Of UserBotInfo) With {.FolderPath = New FolderPathInfo() With {.PortalId = NukeHelper.PortalId, .Path = New SimpleOrExpression(Of String)(strPath), .PathMode = FilePathMode.AdminPath}}
                 End If
                 Return toReturn
             End Get
@@ -454,7 +455,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
         End Sub
 
-
+        Private Function GetSampleBotKey(pid As Integer) As EntityKey
+            Dim objSampleUser As UserInfo = New UserController().GetUser(pid, NukeHelper.PortalInfo(pid).AdministratorId)
+            Return GetUserBotKey(objSampleUser, pid)
+        End Function
 
         Private Function GetUserBotKey(user As UserInfo, pid As Integer) As EntityKey
             Dim key As New EntityKey() With {

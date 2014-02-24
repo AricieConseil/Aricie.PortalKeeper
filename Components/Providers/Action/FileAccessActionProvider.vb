@@ -61,7 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Function GetFileMapPath(actionContext As PortalKeeperContext(Of TEngineEvents)) As String
-            Return Me.FilePath.GetFileMapPath(actionContext, actionContext)
+            Return Me.FilePath.GetMapPath(actionContext, actionContext)
         End Function
 
        

@@ -274,6 +274,7 @@
     <Compile Include="Services\Files\FilePathMode.vb" />
     <Compile Include="Services\Files\SmartFile.vb" />
     <Compile Include="Services\Files\SmartFileInfo.vb" />
+    <Compile Include="Services\Files\SmartFolder.vb" />
     <Compile Include="Services\Filtering\FilterControlInfo.vb" />
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />

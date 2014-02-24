@@ -11,6 +11,11 @@ Namespace Services.Files
         Public Overridable Property GrantUserView As Boolean
         Public Overridable Property GrantUserEdit As Boolean
 
+
+        Public Function GetFolderPath(key As EntityKey) As String
+            Return System.IO.Path.GetDirectoryName(GetPath(key))
+        End Function
+
         Public Function GetPath(key As EntityKey) As String Implements IKeyPathFormatter.GetPath
             Return String.Format(Me.PathFormat, key.Application, key.Entity, key.Field, key.UserName).Replace("//", "/"c).Replace("..", "."c) & ".Config"
         End Function

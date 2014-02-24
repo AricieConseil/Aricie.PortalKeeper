@@ -21,7 +21,7 @@ Namespace Services.Workers
 
 
         Public Function GetProcessStartInfo(owner As Object, lookup As IContextLookup) As ProcessStartInfo
-            Dim strProgramPath As String = ProgramFileName.GetFileMapPath(owner, lookup)
+            Dim strProgramPath As String = ProgramFileName.GetMapPath(owner, lookup)
 
             Dim toReturn As New ProcessStartInfo(strProgramPath, Arguments.GetValue(owner, lookup))
             If UseCredentials Then
