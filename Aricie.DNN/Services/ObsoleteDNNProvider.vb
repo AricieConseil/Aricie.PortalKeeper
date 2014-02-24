@@ -21,35 +21,30 @@ Namespace Services
             If NukeHelper.DnnVersion.Major < 7 Then
                 objProvider = New ObsoleteDNNProvider()
             Else
+                Try
 
-                ''Dim myManager As New DotNetNuke.Services.FileSystem.FileController()
-                'Dim myFileManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FileManager, DotNetNuke")
-                'Dim myFileManager As Object = ReflectionHelper.CreateObject(myFileManagerType)
-
-                ''Dim myFile As FileInfo = myFileManager.GetFile(5)
-
-                'Dim myGetFileMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(myFileManagerType, "GetFile"), MethodInfo)
-                'Dim myFile As FileInfo = DirectCast(myGetFileMethod.Invoke(myFileManager, {5}), FileInfo)
-
-
-
-                AddHandler AppDomain.CurrentDomain.AssemblyResolve, Function(sender, args)
-                                                                        Dim resourceName As [String] = New AssemblyName(args.Name).Name + ".dll"
-                                                                        If Assembly.GetExecutingAssembly().GetManifestResourceNames().Contains(resourceName) Then
-                                                                            Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
-                                                                                Dim assemblyData As [Byte]() = New [Byte](CInt(stream.Length - 1)) {}
-                                                                                stream.Read(assemblyData, 0, assemblyData.Length)
-                                                                                Return Assembly.Load(assemblyData)
-                                                                            End Using
-                                                                        End If
-                                                                        Return Nothing
-                                                                    End Function
+                    AddHandler AppDomain.CurrentDomain.AssemblyResolve, Function(sender, args)
+                                                                            Dim resourceName As [String] = New AssemblyName(args.Name).Name + ".dll"
+                                                                            If Assembly.GetExecutingAssembly().GetManifestResourceNames().Contains(resourceName) Then
+                                                                                Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
+                                                                                    Dim assemblyData As [Byte]() = New [Byte](CInt(stream.Length - 1)) {}
+                                                                                    stream.Read(assemblyData, 0, assemblyData.Length)
+                                                                                    Return Assembly.Load(assemblyData)
+                                                                                End Using
+                                                                            End If
+                                                                            Return Nothing
+                                                                        End Function
 
 
 
-                'Dim objAssembly As Assembly = Assembly.LoadFile("Aricie.DNN7.dll")
-                '(NukeHelper.GetModuleDirectoryMapPath("Aricie-Shared").TrimEnd("\"c) & "\DNN7\Aricie.DNN7.dll")
-                objProvider = CType(ReflectionHelper.CreateObject("Aricie.DNN.DNN7ObsoleteDNNProvider, Aricie.DNN7"), ObsoleteDNNProvider)
+                    'Dim objAssembly As Assembly = Assembly.LoadFile("Aricie.DNN7.dll")
+                    '(NukeHelper.GetModuleDirectoryMapPath("Aricie-Shared").TrimEnd("\"c) & "\DNN7\Aricie.DNN7.dll")
+                    objProvider = CType(ReflectionHelper.CreateObject("Aricie.DNN.DNN7ObsoleteDNNProvider, Aricie.DNN7"), ObsoleteDNNProvider)
+
+                Catch ex As Exception
+                    ExceptionHelper.LogException(ex)
+                    objProvider = New ObsoleteDNNProvider()
+                End Try
             End If
         End Sub
 
