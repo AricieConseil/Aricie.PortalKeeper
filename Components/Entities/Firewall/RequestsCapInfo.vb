@@ -8,6 +8,7 @@ Imports Aricie.DNN.Services.Flee
 Imports DotNetNuke.Framework
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -28,9 +29,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _RequestSource As New RequestSource(RequestSourceType.IPAddress)
 
         Private _Duration As New STimeSpan(TimeSpan.FromSeconds(60))
-        Private _RateSpan As TimeSpan = TimeSpan.Zero
+        Private _RequestRateSpan As TimeSpan = TimeSpan.Zero
         Private _MaxNbRequest As Integer = 100
         Private _MaxNbNewSources As Integer = 0
+        Private _MaxTotalBytes As Integer = 100000000
 
 
         Public Sub BeginRead()
@@ -137,12 +139,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <Browsable(False)> _
-        Public ReadOnly Property RateSpan() As TimeSpan
+        Public ReadOnly Property RequestRateSpan() As TimeSpan
             Get
-                If _RateSpan = TimeSpan.Zero Then
-                    _RateSpan = TimeSpan.FromTicks(CInt(TimeSpan.FromSeconds(1).Ticks / Math.Abs(Me.Rate)))
+                If _RequestRateSpan = TimeSpan.Zero Then
+                    _RequestRateSpan = TimeSpan.FromTicks(CInt(TimeSpan.FromSeconds(1).Ticks / Math.Abs(Me.Rate)))
                 End If
-                Return _RateSpan
+                Return _RequestRateSpan
             End Get
         End Property
 
@@ -180,15 +182,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 End SyncLock
             End If
+
+            Dim requestLength As Integer
+            If DnnContext.Current.HttpContext IsNot Nothing Then
+                requestLength = DnnContext.Current.HttpContext.Request.ContentLength
+            End If
+
             Dim currentLog As ClientSourceCapLog
             key = Me._RequestSource.GenerateKey(context)
             clue = Me._RequestSource
+
             BeginRead()
             Dim exists As Boolean = Me._Record.TryGetValue(key, currentLog)
             EndRead()
             Dim toReturn As Boolean
+
             If Not exists Then
-                currentLog = New ClientSourceCapLog(dateNow, 1, Me._CurrentCapWindow)
+                currentLog = New ClientSourceCapLog(dateNow, 1, Me._CurrentCapWindow, requestLength)
                 Interlocked.Increment(_CurrentWindowCount)
                 If Me._MaxNbNewSources > 0 AndAlso _CurrentWindowCount > Me._MaxNbNewSources Then
                     SyncLock _LockCapWindow
@@ -202,15 +212,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If dateNow.Subtract(currentLog.LastRequestTime) > Duration.Value Then
                     toReturn = True
                     Dim nb As Integer = Math.Max(1, currentLog.NbRequests - 1)
-                    currentLog = New ClientSourceCapLog(dateNow.Subtract(Duration.Value).Add(RateSpan), nb, currentLog.CapWindow)
-                    Thread.Sleep(Convert.ToInt32(Math.Pow(100, nb / Me._MaxNbRequest)))
+                    currentLog = New ClientSourceCapLog(dateNow.Subtract(Duration.Value).Add(RequestRateSpan), nb, currentLog.CapWindow, currentLog.TotalBytes - currentLog.TotalBytes \ nb)
+                    'Thread.Sleep(Convert.ToInt32(Math.Pow(100, nb / Me._MaxNbRequest)))
                 Else
-                    If currentLog.NbRequests < Me._MaxNbRequest Then
-                        currentLog = New ClientSourceCapLog(currentLog.LastRequestTime, currentLog.NbRequests + 1, currentLog.CapWindow)
+                    Dim totalBytes As Integer = currentLog.TotalBytes + requestLength
+                    If currentLog.NbRequests < Me._MaxNbRequest AndAlso totalBytes < Me._MaxTotalBytes Then
+                        currentLog = New ClientSourceCapLog(currentLog.LastRequestTime, currentLog.NbRequests + 1, currentLog.CapWindow, totalBytes)
                         toReturn = True
                     Else
-                        If currentLog.LastRequestTime < dateNow.Subtract(RateSpan) Then
-                            currentLog = New ClientSourceCapLog(currentLog.LastRequestTime.Add(RateSpan), currentLog.NbRequests, currentLog.CapWindow)
+                        If currentLog.LastRequestTime < dateNow.Subtract(RequestRateSpan) Then
+                            currentLog = New ClientSourceCapLog(currentLog.LastRequestTime.Add(RequestRateSpan), currentLog.NbRequests, currentLog.CapWindow, totalBytes)
                         End If
                     End If
                 End If

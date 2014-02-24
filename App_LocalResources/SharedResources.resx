@@ -493,7 +493,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Enable Ban</value>
   </data>
   <data name="Instances_AddNew.Text" xml:space="preserve">
-    <value>Add New Element</value>
+    <value>Add New Item</value>
   </data>
   <data name="IPAddress.Text" xml:space="preserve">
     <value>IP Address</value>
@@ -1894,10 +1894,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Export Path</value>
   </data>
   <data name="Instances_Export.Text" xml:space="preserve">
-    <value>Export Items</value>
+    <value>Export</value>
   </data>
   <data name="Instances_Import.Text" xml:space="preserve">
-    <value>Import Items</value>
+    <value>Import</value>
   </data>
   <data name="Rules_Export.Text" xml:space="preserve">
     <value>Export Rules</value>
@@ -4378,7 +4378,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Import Xml File</value>
   </data>
   <data name="Instances_Copy.Text" xml:space="preserve">
-    <value>Copy Items</value>
+    <value>Copy</value>
   </data>
   <data name="Rules_Copy.Text" xml:space="preserve">
     <value>Copy Rules</value>
@@ -5000,5 +5000,8 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="ResetEncryptionKey.Alert" xml:space="preserve">
     <value>You are about to reset your main encryption key. All user data will become unreadable.</value>
+  </data>
+  <data name="Instances_Paste.Text" xml:space="preserve">
+    <value>Paste</value>
   </data>
 </root>

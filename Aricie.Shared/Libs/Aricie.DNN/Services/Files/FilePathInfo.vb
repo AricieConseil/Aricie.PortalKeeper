@@ -14,31 +14,31 @@ Imports System.Xml
 Imports System.Text
 
 Namespace Services.Files
+
     <Serializable()>
-    Public Class FilePathInfo
+    Public Class PathInfo
 
         Public Property PathMode As FilePathMode
-
-        Public Property ChooseDnnFile As Boolean
 
         <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
         Public Property PortalId As Integer
 
-        <ConditionalVisible("ChooseDnnFile", False, True)> _
-        Public Property DnnFile As New ControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure Or UrlControlMode.Upload)
 
-        <ConditionalVisible("ChooseDnnFile", True, True)> _
-        Public Property Path As New SimpleOrExpression(Of String)("")
+        Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 
-
-        Public Function GetFileMapPath(owner As Object, lookup As IContextLookup) As String
-            Dim expressionPath As String = Me.Path.GetValue(owner, lookup)
-            Return GetFileMapPath(expressionPath)
+        Public Overloads Function GetMapPath() As String
+            Return GetMapPath(DnnContext.Current, DnnContext.Current)
         End Function
 
-        Public Function GetFileMapPath(expressionPath As String) As String
+
+        Public Overloads Function GetMapPath(owner As Object, lookup As IContextLookup) As String
+            Dim expressionPath As String = Me.Path.GetValue(owner, lookup)
+            Return GetMapPath(expressionPath)
+        End Function
+
+        Public Overloads Function GetMapPath(expressionPath As String) As String
             Dim toReturn As String = expressionPath
             Select Case Me.PathMode
                 Case FilePathMode.RootPath
@@ -50,6 +50,30 @@ Namespace Services.Files
             End Select
             Return toReturn
         End Function
+
+    End Class
+
+    <Serializable()>
+    Public Class FolderPathInfo
+        Inherits PathInfo
+
+    End Class
+
+    <Serializable()>
+    Public Class FilePathInfo
+        Inherits PathInfo
+
+
+        Public Property ChooseDnnFile As Boolean
+
+
+        <ConditionalVisible("ChooseDnnFile", False, True)> _
+        Public Property DnnFile As New ControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure Or UrlControlMode.Upload)
+
+        <ConditionalVisible("ChooseDnnFile", True, True)> _
+        Public Overrides Property Path As New SimpleOrExpression(Of String)("")
+
+
 
     End Class
 End Namespace

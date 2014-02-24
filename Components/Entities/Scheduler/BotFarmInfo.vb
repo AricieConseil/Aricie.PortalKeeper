@@ -44,6 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _EncryptionKey As String = String.Empty
 
         Private _EncryptionPrivateKey As String = String.Empty
+        Private _CryptoServiceProvider As RSACryptoServiceProvider
 
         Private _DnnDecryptionKey As String = String.Empty
 
@@ -123,10 +124,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-
-
-        Private _CryptoServiceProvider As RSACryptoServiceProvider
 
         Private ReadOnly Property CryptoServiceProvider As RSACryptoServiceProvider
             Get

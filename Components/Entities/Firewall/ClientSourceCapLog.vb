@@ -6,7 +6,7 @@
 
 
 
-        Public Sub New(ByVal lastRequestTime As DateTime, ByVal nbRequests As Integer, ByVal capWindow As DateTime)
+        Public Sub New(ByVal lastRequestTime As DateTime, ByVal nbRequests As Integer, ByVal capWindow As DateTime, totalBytes As Integer)
 
             Me.LastRequestTime = lastRequestTime
             Me.NbRequests = nbRequests
@@ -22,5 +22,7 @@
         Public CapWindow As DateTime
         Public LastRequestTime As DateTime
         Public NbRequests As Integer
+        Public TotalBytes As Integer
+
     End Structure
 End Namespace

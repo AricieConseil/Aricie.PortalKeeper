@@ -3,6 +3,7 @@ Imports Aricie.Collections
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Controls
 Imports Aricie.DNN.Diagnostics
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports System.Reflection
@@ -62,6 +63,7 @@ Namespace UI.WebControls
 
         Private _PostBackFields As New List(Of String)
 
+        Private _headerControl As PlaceHolder
         Private _ParentModule As PortalModuleBase
         Private _ParentField As AricieFieldEditorControl
 
@@ -540,6 +542,25 @@ Namespace UI.WebControls
 
 #End Region
 
+#Region "Public Methods"
+
+        Public Overloads Function GetRowVisibility(ByVal member As MemberInfo) As Boolean
+            Dim info As PropertyInfo = TryCast(member, PropertyInfo)
+            If (info IsNot Nothing) Then
+                If Not MyBase.GetRowVisibility(info) Then
+                    Return False
+                End If
+                'Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
+                'Jesse: reapplying the original full test
+                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
+                    'If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
+                    Return False
+                End If
+            End If
+            Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)
+            Return ComputeVisibility(condVisibles)
+        End Function
+
         Public Sub OnDebug(sender As Object, e As DebugEventArgs)
             If Me.ParentAricieEditor IsNot Nothing Then
                 Me.ParentAricieEditor.OnDebug(sender, e)
@@ -551,6 +572,17 @@ Namespace UI.WebControls
         Public Sub OnDebug()
             RaiseEvent Debug(Me, New DebugEventArgs())
         End Sub
+
+
+        Public Sub DisplayMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
+            moduleMessage.EnableViewState = False
+            _headerControl.Controls.Add(moduleMessage)
+        End Sub
+
+#End Region
+
+      
 
 #Region "Overrides"
 
@@ -598,22 +630,7 @@ Namespace UI.WebControls
             Return Me.GetRowVisibility(DirectCast(obj, MemberInfo))
         End Function
 
-        Public Overloads Function GetRowVisibility(ByVal member As MemberInfo) As Boolean
-            Dim info As PropertyInfo = TryCast(member, PropertyInfo)
-            If (info IsNot Nothing) Then
-                If Not MyBase.GetRowVisibility(info) Then
-                    Return False
-                End If
-                'Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
-                'Jesse: reapplying the original full test
-                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                    'If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                    Return False
-                End If
-            End If
-            Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)
-            Return ComputeVisibility(condVisibles)
-        End Function
+       
 
 
 
@@ -643,7 +660,7 @@ Namespace UI.WebControls
                     End If
 
                 End If
-
+                CreateHeader()
                 ProcessSubPath()
                 DisplayHierarchy()
 
@@ -653,7 +670,10 @@ Namespace UI.WebControls
         End Sub
 
 
-
+        Private Sub CreateHeader()
+            Me._headerControl = New PlaceHolder
+            Me.Controls.Add(_headerControl)
+        End Sub
 
 
 #End Region
@@ -1648,6 +1668,7 @@ Namespace UI.WebControls
 #End Region
 
 
+        
     End Class
 
 End Namespace

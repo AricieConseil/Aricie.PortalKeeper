@@ -1,7 +1,6 @@
 ﻿Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.Collections
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
@@ -10,14 +9,9 @@ Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.Services.Localization
 Imports Aricie.Services
 Imports Aricie.UI.WebControls.EditControls
-Imports Aricie.Web.UI
-Imports DotNetNuke.UI.UserControls
 Imports Aricie.Web.UI.Controls
 Imports System.Globalization
 Imports DotNetNuke.UI.Utilities
-Imports Aricie.DNN.UI.Controls
-Imports System.ComponentModel
-Imports System.Reflection
 Imports System.Web
 Imports Aricie.DNN.UI.WebControls.AriciePropertyEditorControl
 Imports Aricie.DNN.Services
@@ -30,7 +24,7 @@ Namespace UI.WebControls.EditControls
 
     Public MustInherit Class CollectionEditControl
         Inherits AricieEditControl
-        Implements INamingContainer, System.Web.UI.IPostBackEventHandler
+        Implements INamingContainer, IPostBackEventHandler
 
 
         Private Const PAGE_INDEX_KEY As String = "PageIndex"
@@ -440,6 +434,8 @@ Namespace UI.WebControls.EditControls
                             addEvent.Value = Me.CollectionValue
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
+                        Case "Copy"
+                            CopiedCollection = Me.ExportItem(commandIndex)
                         Case "Export"
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
@@ -521,8 +517,8 @@ Namespace UI.WebControls.EditControls
 
         Private Sub PasteClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
-                If _CopiedCollection IsNot Nothing Then
-                    ImportItems(_CopiedCollection)
+                If CopiedCollection IsNot Nothing Then
+                    ImportItems(CopiedCollection)
                 End If
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
@@ -969,13 +965,17 @@ Namespace UI.WebControls.EditControls
                         AddHandler cmdCopyButton.Click, AddressOf CopyClick
                         RegisterControlForPostbackManagement(cmdCopyButton)
 
-                        cmdPasteButton = New IconActionButton
-                        pnAdd.Controls.Add(cmdPasteButton)
-                        cmdPasteButton.ActionItem.IconName = IconName.Clipboard
-                        cmdPasteButton.Text = "Paste " & Name
-                        cmdPasteButton.ResourceKey = Me.Name + "_Paste"
-                        AddHandler cmdPasteButton.Click, AddressOf PasteClick
-                        RegisterControlForPostbackManagement(cmdPasteButton)
+                        If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
+
+                            cmdPasteButton = New IconActionButton
+                            pnAdd.Controls.Add(cmdPasteButton)
+                            cmdPasteButton.ActionItem.IconName = IconName.Clipboard
+                            cmdPasteButton.Text = "Paste " & Name
+                            cmdPasteButton.ResourceKey = Me.Name + "_Paste"
+                            AddHandler cmdPasteButton.Click, AddressOf PasteClick
+                            RegisterControlForPostbackManagement(cmdPasteButton)
+                        End If
+
 
 
                         cmdExportButton = New IconActionButton
@@ -1011,11 +1011,20 @@ Namespace UI.WebControls.EditControls
         End Sub
 
 
-        Private Shared _CopiedCollection As ICollection
+        Private Property CopiedCollection As ICollection
+            Get
+                Return DirectCast(Me.Page.Session("AricieCopy"), ICollection)
+            End Get
+            Set(value As ICollection)
+                Me.Page.Session("AricieCopy") = value
+            End Set
+        End Property
+
+
 
         Private Sub Copy(value As ICollection)
 
-            _CopiedCollection = value
+            CopiedCollection = value
         End Sub
 
         Private Sub Download(value As ICollection)

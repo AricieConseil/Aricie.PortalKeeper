@@ -20,6 +20,11 @@ Namespace Services.Flee
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
         Public Property Expression As New FleeExpressionInfo(Of T)
 
+        Public Function GetValue() As T
+            Return GetValue(DnnContext.Current, DnnContext.Current)
+        End Function
+
+
         Public Function GetValue(owner As Object, dataContext As IContextLookup) As T
             Select Case Mode
                 Case SimpleOrExpressionMode.Simple
