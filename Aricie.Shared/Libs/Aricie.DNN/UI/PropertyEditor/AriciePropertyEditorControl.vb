@@ -70,6 +70,7 @@ Namespace UI.WebControls
         Private _OnDemandSections As List(Of String)
 
         Private _CurrentTab As Tab
+        Public WithEvents ActionButton As ActionButtonInfo
 
         Private Const LOAD_COUNTER As String = "LoadCounter"
         Private Const PRERENDER_COUNTER As String = "PreRenderCounter"
@@ -573,7 +574,6 @@ Namespace UI.WebControls
             RaiseEvent Debug(Me, New DebugEventArgs())
         End Sub
 
-
         Public Sub DisplayMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
             Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
             moduleMessage.EnableViewState = False
@@ -603,10 +603,6 @@ Namespace UI.WebControls
             End Get
         End Property
 
-
-
-
-
         ''' <summary>
         ''' This override set the empty group at the first index of the array.
         ''' </summary>
@@ -623,17 +619,11 @@ Namespace UI.WebControls
             End If
             Return toReturn
         End Function
-
-
-
+        
         Protected Overrides Function GetRowVisibility(ByVal obj As Object) As Boolean
             Return Me.GetRowVisibility(DirectCast(obj, MemberInfo))
         End Function
-
-       
-
-
-
+        
         Protected Overrides Sub CreateEditor()
             Me.CssClass = "dnnForm"
             'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
@@ -669,16 +659,17 @@ Namespace UI.WebControls
             Validate()
         End Sub
 
-
-        Private Sub CreateHeader()
-            Me._headerControl = New PlaceHolder
-            Me.Controls.Add(_headerControl)
-        End Sub
-
+        
 
 #End Region
 
 #Region "Inner methods"
+
+        Private Sub CreateHeader()
+            Me._headerControl = New PlaceHolder
+            Me.Controls.Add(_headerControl)
+           
+        End Sub
 
         Private Sub ProcessSubPath()
             If Me.DataSource IsNot Nothing AndAlso Me.PropertyDepth = 0 Then
@@ -757,15 +748,19 @@ Namespace UI.WebControls
             Return toReturn
         End Function
 
-
-
-        Protected Sub DisplayHierarchy()
+        Private Sub DisplayHierarchy()
             If Me.DataSource IsNot Nothing Then
+                If ActionButton IsNot Nothing Then
+                    Dim myPeIco As New IconActionControl()
+                    myPeIco.ActionItem = _ActionButton.IconAction
+                    myPeIco.Text = Me.DataSource.GetType.Name
+                    myPeIco.ResourceKey = Me.DataSource.GetType.Name & "_Title"
+                    Me._headerControl.Controls.Add(myPeIco)
+                End If
                 Me.DisplayElement(Me.FieldsDictionary, False)
             End If
         End Sub
-
-
+        
         Protected Function DisplayElement(objElement As Element, keepHidden As Boolean) As Integer
 
 
@@ -791,7 +786,6 @@ Namespace UI.WebControls
             End If
             Return cookie
         End Function
-
 
         Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
@@ -885,7 +879,6 @@ Namespace UI.WebControls
 
         End Function
 
-
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
             Dim nbControls As Integer
@@ -904,7 +897,6 @@ Namespace UI.WebControls
             Next
             Return nbControls
         End Function
-
 
         Protected Function AddColumns(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
             ' on va sauvegarder l'élément racine pour pouvoir insérer le header si nécessaire
@@ -967,7 +959,6 @@ Namespace UI.WebControls
 
             Return counter
         End Function
-
 
         Protected Function AddActionButtons(ByVal element As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
@@ -1192,7 +1183,6 @@ Namespace UI.WebControls
             Next
         End Sub
 
-
         Public Sub LoadJQuery()
             If Me._JQueryVersion <> "" AndAlso Me._JQueryUIVersion <> "" Then
                 FormHelper.LoadjQuery(Me.Page, Me._JQueryVersion, Me._JQueryUIVersion)
@@ -1293,7 +1283,6 @@ Namespace UI.WebControls
             End If
 
         End Function
-
 
         Private Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo)) As Boolean
             Dim toReturn As Boolean = True

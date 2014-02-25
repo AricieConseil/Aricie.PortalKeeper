@@ -5004,4 +5004,28 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Instances_Paste.Text" xml:space="preserve">
     <value>Paste</value>
   </data>
+  <data name="DeleteUserBot.Alert" xml:space="preserve">
+    <value>You are about to delete your user bot parameters and start over from a new version. Proceed?</value>
+  </data>
+  <data name="ExchangeCredentials_AskTradingFee.Help" xml:space="preserve">
+    <value>Enter your individual trading fee for sell orders</value>
+  </data>
+  <data name="ExchangeCredentials_AskTradingFee.Text" xml:space="preserve">
+    <value>Ask Trading Fee</value>
+  </data>
+  <data name="ExchangeCredentials_BidTradingFee.Help" xml:space="preserve">
+    <value>Enter your individual trading fee for buy orders</value>
+  </data>
+  <data name="ExchangeCredentials_BidTradingFee.Text" xml:space="preserve">
+    <value>Bid Trading Fee</value>
+  </data>
+  <data name="UserBotInfo_Cancel.Text" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="UserBotInfo_Delete.Text" xml:space="preserve">
+    <value>Delete your Bot</value>
+  </data>
+  <data name="UserBotInfo_Save.Text" xml:space="preserve">
+    <value>Save your Bot</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Diagnostics
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Entities.Profile
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -10,6 +11,9 @@ Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Settings
+Imports DotNetNuke.Services.Localization
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -233,17 +237,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <OnDemand(False)> _
        <ExtendedCategory("Configuration")> _
            <ConditionalVisible("HasReadonlyEntities", False, False)> _
-           <Editor(GetType(ListEditControl), GetType(EditControl))> _
            <CollectionEditor(True, False, False, False, 11, CollectionDisplayStyle.Accordion, False)> _
-           <LabelMode(LabelMode.Top)> _
         Public ReadOnly Property ReadonlyEntities() As SerializableList(Of Object)
             Get
                 Dim toReturn As New SerializableList(Of Object)
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
-                    If userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly Then
-                        toReturn.Add(Me._Entities(userParameter.Name))
-                    End If
-                Next
+                toReturn.AddRange(From userParameter In Me._UserParameters.Instances Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly Select Me._Entities(userParameter.Name))
                 Return toReturn
             End Get
         End Property
@@ -256,7 +254,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <OnDemand(False)> _
        <ExtendedCategory("Configuration")> _
            <CollectionEditor(True, False, False, False, 11, CollectionDisplayStyle.Accordion, False)> _
-           <LabelMode(LabelMode.Top)> _
         Public Property ComputedEntities() As SerializableDictionary(Of String, Object)
 
 
@@ -289,6 +286,49 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _Rankings = value
             End Set
         End Property
+
+
+
+        <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
+        Public Sub Save(ByVal ape As AriciePropertyEditorControl)
+            ape.Page.Validate()
+            If ape.IsValid Then
+                Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+                If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
+                    'Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
+                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, True)
+                    Me.RevertReadonlyParameters(readOnlyUserBot)
+                    'Me.UserBot = userBotEntity
+                    'Me.BindSettings()
+                    userSettings.SetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Me)
+                    Dim key As String = "UserBot" & userSettings.Name
+                    ape.Page.Session.Remove(key)
+                    ape.DisplayMessage(Localization.GetString("UserBotSaved.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                End If
+            End If
+        End Sub
+
+        <ActionButton(IconName.TimesCircle, IconOptions.Normal)> _
+        Public Sub Cancel(ByVal ape As AriciePropertyEditorControl)
+            Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+            If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
+                Dim key As String = "UserBot" & userSettings.Name
+                ape.Page.Session.Remove(key)
+            End If
+            ape.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
+        End Sub
+
+        <ActionButton(IconName.TrashO, IconOptions.Normal, "DeleteUserBot.Alert")> _
+        Public Sub Delete(ByVal ape As AriciePropertyEditorControl)
+            Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+            If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
+                userSettings.SetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Nothing)
+                Dim key As String = "UserBot" & userSettings.Name
+                ape.Page.Session.Remove(key)
+                ape.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
+                'ape.DisplayMessage(Localization.GetString("UserBotDeleted.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+            End If
+        End Sub
 
 
 

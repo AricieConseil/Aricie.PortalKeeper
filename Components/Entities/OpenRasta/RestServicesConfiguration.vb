@@ -6,12 +6,13 @@ Imports OpenRasta.Diagnostics
 Imports OpenRasta.Hosting.AspNet
 Imports OpenRasta.Configuration
 Imports OpenRasta.Security
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class RestServicesConfiguration
         Implements IConfigurationSource
 
-        Public Sub Configure() Implements OpenRasta.Configuration.IConfigurationSource.Configure
+        Public Sub Configure() Implements IConfigurationSource.Configure
             Try
                 Dim restSettings As RestServicesSettings = PortalKeeperConfig.Instance.RestServices
                 If restSettings.Enabled Then
@@ -54,7 +55,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
 
             Catch ex As Exception
-                Aricie.Services.ExceptionHelper.LogException(ex)
+                ExceptionHelper.LogException(ex)
             End Try
         End Sub
 
@@ -67,7 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public ReadOnly Property Resolver As OpenRasta.DI.IDependencyResolver Implements OpenRasta.DI.IDependencyResolverAccessor.Resolver
+        Public ReadOnly Property Resolver As IDependencyResolver Implements IDependencyResolverAccessor.Resolver
             Get
                 Dim toReturn As New InternalDependencyResolver
                 toReturn.AddDependency(Of IDependencyRegistrar, AricieDependencyRegistrar)()
@@ -79,7 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class AricieDependencyRegistrar
         Inherits DefaultDependencyRegistrar
 
-        Protected Overrides Sub RegisterLogging(resolver As OpenRasta.DI.IDependencyResolver)
+        Protected Overrides Sub RegisterLogging(resolver As IDependencyResolver)
             resolver.AddDependency(GetType(ILogger), GetType(OpenRastaLogger), DependencyLifetime.Singleton)
         End Sub
 

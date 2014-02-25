@@ -10,9 +10,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.ExternalLink, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Redirect Action")> _
+        <DisplayName("Redirect Action")> _
         <Description("Redirect the current client to a specified url")> _
-     Public Class RedirectAction
+    Public Class RedirectAction
         Inherits ActionProvider(Of RequestEvent)
 
 

@@ -15,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.EnvelopeO, IconOptions.Normal)> _
    <Serializable()> _
-       <System.ComponentModel.DisplayName("Send Email Action")> _
+       <DisplayName("Send Email Action")> _
        <Description("Sends an email to a list of destination addresses. Token replace is available for all text fields and target address list.")> _
     Public Class SendEmailAction(Of TEngineEvent As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvent)
@@ -57,13 +57,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim targetAddresses As String = GetMessage(actionContext, Me.ToAddresses)
             Dim fromAddress As String = Me.FromAddress
             If fromAddress = "" Then
-                fromAddress = NukeHelper.PortalSettings.Email
+                fromAddress = PortalSettings.Email
                 If String.IsNullOrEmpty(fromAddress) Then
-                    fromAddress = DirectCast(NukeHelper.PortalSettings.HostSettings("HostEmail"), String)
+                    fromAddress = DirectCast(PortalSettings.HostSettings("HostEmail"), String)
                 End If
                 'fromAddress = DotNetNuke.Entities.Users.UserController.GetUser(NukeHelper.PortalSettings.PortalId, NukeHelper.PortalSettings.AdministratorId, True).Email
             End If
-            DotNetNuke.Services.Mail.Mail.SendMail(fromAddress, targetAddresses, "", "", Me.EmailPriority, mailObject, Me.BodyFormat, EncodingHelper.GetEncoding(Me.Encoding), message, _
+            Mail.SendMail(fromAddress, targetAddresses, "", "", Me.EmailPriority, mailObject, Me.BodyFormat, GetEncoding(Me.Encoding), message, _
                                                    "", "", "", "", "")
             Return True
         End Function

@@ -5,13 +5,14 @@ Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Threading
+Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    
+
 
     <Serializable()> _
-     <System.ComponentModel.DisplayName("Empty Action Provider")> _
+     <DisplayName("Empty Action Provider")> _
         <Description("This provider performs no particular action but can be used for adding a sleep time for instance")> _
     Public Class ActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProviderSettings(Of TEngineEvents)
@@ -38,7 +39,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("ConditionalAction", False, True, True)> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
         <LabelMode(LabelMode.Top)> _
-        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         <SortOrder(500)> _
         Public Property Condition() As New KeeperCondition(Of TEngineEvents)
 

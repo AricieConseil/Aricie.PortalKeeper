@@ -21,13 +21,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _NumberOfSucceedBotCall As Integer
 
 
-        Private _MinDuration As New STimeSpan(Constants.UnlimitedTimeSpan)
+        Private _MinDuration As New STimeSpan(UnlimitedTimeSpan)
 
 
-        Private _MaxDuration As New STimeSpan(Constants.UnlimitedTimeSpan)
+        Private _MaxDuration As New STimeSpan(UnlimitedTimeSpan)
 
 
-        Private _AverageDuration As New STimeSpan(Constants.UnlimitedTimeSpan)
+        Private _AverageDuration As New STimeSpan(UnlimitedTimeSpan)
 
         Private _LastRun As DateTime = DateTime.MinValue
 
@@ -92,7 +92,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Stats")> _
         Public ReadOnly Property MinDurationString() As String
             Get
-                Return Aricie.Common.FormatTimeSpan(Me._MinDuration.Value, True)
+                Return FormatTimeSpan(Me._MinDuration.Value, True)
             End Get
         End Property
 
@@ -110,7 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Stats")> _
         Public ReadOnly Property MaxDurationString() As String
             Get
-                Return Aricie.Common.FormatTimeSpan(Me._MaxDuration.Value, True)
+                Return FormatTimeSpan(Me._MaxDuration.Value, True)
             End Get
         End Property
 
@@ -128,7 +128,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Stats")> _
         Public ReadOnly Property AverageDurationString() As String
             Get
-                Return Aricie.Common.FormatTimeSpan(Me._AverageDuration.Value, True)
+                Return FormatTimeSpan(Me._AverageDuration.Value, True)
             End Get
         End Property
 
@@ -139,7 +139,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If _NumberOfSucceedBotCall > 2 Then
                     Dim totalTime As New TimeSpan(_AverageDuration.Value.Ticks * _NumberOfSucceedBotCall)
                     Dim avgTimeWOExtrems As TimeSpan = TimeSpan.FromTicks((totalTime.Ticks - _MinDuration.Value.Ticks - _MaxDuration.Value.Ticks) \ (_NumberOfSucceedBotCall - 2))
-                    Return Aricie.Common.FormatTimeSpan(avgTimeWOExtrems, True)
+                    Return FormatTimeSpan(avgTimeWOExtrems, True)
                 Else
                     Return AverageDurationString
                 End If

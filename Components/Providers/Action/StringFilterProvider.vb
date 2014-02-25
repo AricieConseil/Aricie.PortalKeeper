@@ -18,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Font, IconOptions.Normal)> _
    <Serializable()> _
-   <System.ComponentModel.DisplayName("String Filter Provider")> _
+   <DisplayName("String Filter Provider")> _
        <Description("This provider allows to you to manipulate a string, by either running a series of transformations or performing xpath selects")> _
     Public Class StringFilterProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)

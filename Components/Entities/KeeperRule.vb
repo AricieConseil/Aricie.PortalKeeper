@@ -11,6 +11,7 @@ Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -40,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
                 <LabelMode(LabelMode.Top)> _
-                <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+                <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         Public Property Condition() As KeeperCondition(Of TEngineEvents) = New KeeperCondition(Of TEngineEvents)
 
         <ExtendedCategory("RuleSettings")> _
@@ -56,7 +57,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     End Class
 
-    
+
 End Namespace
 
 

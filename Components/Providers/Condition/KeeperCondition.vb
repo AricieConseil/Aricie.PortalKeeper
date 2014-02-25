@@ -61,7 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, ConditionProviderConfig(Of TEngineEvents))
+        Public Overrides Function GetAvailableProviders() As IDictionary(Of String, ConditionProviderConfig(Of TEngineEvents))
             Dim toReturn As New SerializableDictionary(Of String, ConditionProviderConfig(Of TEngineEvents))
             Dim engines As IEnumerable(Of RuleEngineSettings(Of TEngineEvents)) = PortalKeeperConfig.Instance.GetRuleEnginesSettings(Of TEngineEvents)()
             For Each engine As RuleEngineSettings(Of TEngineEvents) In engines

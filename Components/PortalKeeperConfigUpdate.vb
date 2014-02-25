@@ -8,7 +8,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Implements IUpdateProvider
 
 
-        Public Function GetConfigElements() As System.Collections.Generic.List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
+        Public Function GetConfigElements() As List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
             Dim toReturn As New List(Of IConfigElementInfo)
             toReturn.Add(New SchedulerTaskElementInfo("PortalKeeper Bot Farm", GetType(PortalKeeperSchedule), TimeSpan.FromMinutes(1)))
             Dim toAdd As WebServerElementInfo = New HttpModuleInfo("Aricie.PortalKeeper", GetType(PortalKeeperModule), "managedHandler")
@@ -28,7 +28,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             toReturn.Add(New TrustInfo("Full"))
 
-          
+
             Return toReturn
         End Function
 

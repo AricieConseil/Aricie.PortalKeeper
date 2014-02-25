@@ -30,7 +30,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.MinusCircle, IconOptions.Normal)> _
    <Serializable()> _
-       <System.ComponentModel.DisplayName("Request Denial Action")> _
+       <DisplayName("Request Denial Action")> _
        <Description("Blocks the request. A status code can be sent or the client connection can be simply closed")> _
     Public Class RequestDenialAction
         Inherits ActionProvider(Of RequestEvent)
@@ -107,13 +107,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Select Case Me._RequestDenialActionType
                 Case RequestDenialType.Abort
                     Select Case Me._RequestAbortType
-                        Case PortalKeeper.RequestAbortType.CloseResponse
+                        Case RequestAbortType.CloseResponse
                             actionContext.DnnContext.Response.Close()
                             actionContext.DnnContext.HttpContext.ApplicationInstance.CompleteRequest()
-                        Case PortalKeeper.RequestAbortType.EndResponse
+                        Case RequestAbortType.EndResponse
                             'actionContext.DnnContext.Response.End()
                             actionContext.DnnContext.HttpContext.ApplicationInstance.CompleteRequest()
-                        Case PortalKeeper.RequestAbortType.FlushAndClose
+                        Case RequestAbortType.FlushAndClose
                             actionContext.DnnContext.Response.Flush()
                             actionContext.DnnContext.HttpContext.ApplicationInstance.CompleteRequest()
                     End Select

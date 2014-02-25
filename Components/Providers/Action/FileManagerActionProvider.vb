@@ -36,15 +36,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Select Case Mode
                 Case FileManagerMode.GetFiles
                     If Not String.IsNullOrEmpty(Me.Pattern) Then
-                        Return System.IO.Directory.GetFiles(sourceMapPath, Pattern)
+                        Return Directory.GetFiles(sourceMapPath, Pattern)
                     Else
-                        Return System.IO.Directory.GetFiles(sourceMapPath)
+                        Return Directory.GetFiles(sourceMapPath)
                     End If
                 Case FileManagerMode.GetDirectories
                     If Not String.IsNullOrEmpty(Me.Pattern) Then
-                        Return System.IO.Directory.GetDirectories(sourceMapPath, Pattern)
+                        Return Directory.GetDirectories(sourceMapPath, Pattern)
                     Else
-                        Return System.IO.Directory.GetDirectories(sourceMapPath)
+                        Return Directory.GetDirectories(sourceMapPath)
                     End If
                 Case FileManagerMode.Delete
                     If Directory.Exists(sourceMapPath) Then
@@ -62,7 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If Not Directory.Exists(targetMapPath) Then
                             Directory.CreateDirectory(targetMapPath)
                         End If
-                        Aricie.Common.CopyDirectory(sourceMapPath, targetMapPath, Me.Overwrite)
+                        CopyDirectory(sourceMapPath, targetMapPath, Me.Overwrite)
                     ElseIf File.Exists(sourceMapPath) Then
                         File.Copy(sourceMapPath, targetMapPath, Me.Overwrite)
                     Else
@@ -72,7 +72,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Dim targetPath As String = Me.TargetPathExpression.Evaluate(actionContext, actionContext)
                     Dim targetMapPath As String = Me.FilePath.GetMapPath(targetPath)
                     If Directory.Exists(sourceMapPath) OrElse File.Exists(sourceMapPath) Then
-                        System.IO.Directory.Move(sourceMapPath, targetMapPath)
+                        Directory.Move(sourceMapPath, targetMapPath)
                     Else
                         Return False
                     End If

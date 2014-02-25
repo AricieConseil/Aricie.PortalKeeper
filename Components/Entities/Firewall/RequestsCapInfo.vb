@@ -36,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Sub BeginRead()
-            _LockDico.AcquireReaderLock(Aricie.Constants.LockTimeOut)
+            _LockDico.AcquireReaderLock(Constants.LockTimeOut)
         End Sub
 
         Public Sub EndRead()
@@ -44,7 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub BeginWrite()
-            _LockDico.AcquireWriterLock(Aricie.Constants.LockTimeOut)
+            _LockDico.AcquireWriterLock(Constants.LockTimeOut)
         End Sub
 
         Private Sub EndWrite()

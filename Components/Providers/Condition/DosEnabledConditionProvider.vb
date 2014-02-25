@@ -6,6 +6,8 @@ Imports System.Threading
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.Services
+Imports DotNetNuke.Services.Exceptions
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -25,7 +27,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _LockDico As New ReaderWriterLock()
 
         Public Shared Sub BeginReadProviders()
-            _LockProviders.AcquireReaderLock(Aricie.Constants.LockTimeOut)
+            _LockProviders.AcquireReaderLock(Constants.LockTimeOut)
         End Sub
 
         Public Shared Sub EndReadProviders()
@@ -34,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Function BeginReadInternal() As Boolean
             Try
-                _LockDico.AcquireReaderLock(Aricie.Constants.LockTimeOut)
+                _LockDico.AcquireReaderLock(Constants.LockTimeOut)
             Catch ex As Exception
                 Return False
             End Try
@@ -47,7 +49,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Function BeginWriteInternal() As Boolean
             Try
-                _LockDico.AcquireWriterLock(Aricie.Constants.LockTimeOut)
+                _LockDico.AcquireWriterLock(Constants.LockTimeOut)
             Catch ex As Exception
                 Return False
             End Try
@@ -62,7 +64,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Friend ReadOnly Property DosDico() As SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime))
             Get
                 Dim toReturn As SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime)) = _
-                    Aricie.Services.CacheHelper.GetGlobal(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime)))("DosDico", Me.Name)
+                    GetGlobal(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime)))("DosDico", Me.Name)
                 If toReturn Is Nothing Then
                     _LockProviders.AcquireReaderLock(Constants.LockTimeOut)
                     Dim contains As Boolean = DosProviders.Contains(Me)
@@ -75,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         _LockProviders.ReleaseWriterLock()
                     End If
                     toReturn = New SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime))
-                    Aricie.Services.CacheHelper.SetCacheDependant(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime)))(toReturn, _
+                    CacheHelper.SetCacheDependant(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime)))(toReturn, _
                                                                         PortalKeeperConfig.GetFilePath(True), Constants.Cache.GlobalExpiration, "DosDico", Me.Name)
                 End If
                 Return toReturn
@@ -89,7 +91,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Try
                         toReturn = DosDico.Item(objClue)
                     Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                        Exceptions.LogException(ex)
                     Finally
                         EndReadInternal()
                     End Try
@@ -106,7 +108,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             DosDico.Item(objClue) = value
                         End If
                     Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                        Exceptions.LogException(ex)
                     Finally
                         EndWriteInternal()
                     End Try
@@ -167,10 +169,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Sub BroadcastTaskQueue_ActionPerformed(ByVal sender As Object, ByVal e As GenericEventArgs(Of Integer))
             If Me.BeginReadInternal() Then
                 Try
-                    Aricie.Services.CacheHelper.SetCacheDependant(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime))) _
+                    CacheHelper.SetCacheDependant(Of SerializableDictionary(Of Object, SerializableDictionary(Of String, DateTime))) _
                     (DosDico, PortalKeeperConfig.GetFilePath(True), Constants.Cache.GlobalExpiration)
                 Catch ex As Exception
-                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                    Exceptions.LogException(ex)
                 Finally
                     Me.EndReadInternal()
                 End Try
@@ -192,7 +194,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Try
                             found = DosDico.TryGetValue(dosCondition, currentPerClue)
                         Catch ex As Exception
-                            DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                            Exceptions.LogException(ex)
                         Finally
                             Me.EndReadInternal()
                         End Try

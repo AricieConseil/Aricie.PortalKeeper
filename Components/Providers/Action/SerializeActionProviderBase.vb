@@ -20,18 +20,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim value As Object = GetContent(actionContext)  '= _inputExpression.Evaluate(actionContext, actionContext)
                 If Not value Is Nothing Then
                     Select Case Me.SerializationType
-                        Case PortalKeeper.SerializationType.Xml
-                            Using xw As New System.Xml.XmlTextWriter(memStream, Encoding.UTF8)
+                        Case SerializationType.Xml
+                            Using xw As New XmlTextWriter(memStream, Encoding.UTF8)
                                 xw.Formatting = System.Xml.Formatting.Indented
-                                Aricie.Services.ReflectionHelper.Serialize(value, DirectCast(xw, XmlWriter))
+                                ReflectionHelper.Serialize(value, DirectCast(xw, XmlWriter))
                             End Using
-                        Case PortalKeeper.SerializationType.Binary
+                        Case SerializationType.Binary
                             ReflectionHelper.Instance.BinaryFormatter.Serialize(memStream, value)
-                        Case PortalKeeper.SerializationType.IConvertible
+                        Case SerializationType.IConvertible
                             Using sw As New StreamWriter(memStream, Encoding.UTF8)
                                 sw.Write(DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture))
                             End Using
-                        Case PortalKeeper.SerializationType.Json
+                        Case SerializationType.Json
                             Using sw As New StreamWriter(memStream, Encoding.UTF8)
                                 Dim jsonSettings As New JsonSerializerSettings()
                                 Using jw As New JsonTextWriter(sw)
@@ -39,7 +39,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                     serializer.Serialize(jw, value)
                                 End Using
                             End Using
-                        Case PortalKeeper.SerializationType.FileHelpers
+                        Case SerializationType.FileHelpers
                             Dim inputObjects As IEnumerable = DirectCast(value, IEnumerable)
                             If inputObjects IsNot Nothing Then
                                 Using sw As New StreamWriter(memStream, Encoding.UTF8)
@@ -49,7 +49,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End Select
                     Dim bytes As Byte() = memStream.ToArray
                     If Me.UseCompression Then
-                        bytes = Common.DoCompress(bytes, CompressionMethod.Deflate)
+                        bytes = DoCompress(bytes, CompressionMethod.Deflate)
                     End If
                     toReturn = Encoding.UTF8.GetString(memStream.ToArray)
                 Else

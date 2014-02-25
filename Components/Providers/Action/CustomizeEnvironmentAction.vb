@@ -3,11 +3,12 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.Services.Personalization
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Entities.Portals
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Desktop, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Customize Environment Action")> _
+        <DisplayName("Customize Environment Action")> _
         <Description("Tweaks various parameters from the dnn environment")> _
     Public Class CustomizeEnvironmentAction
         Inherits ActionProvider(Of RequestEvent)
@@ -53,7 +54,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 actionContext.DnnContext.Portal.UserRegistration = CInt(Me._SubPortalRegistrationType)
             End If
             If Me._EnforceViewMode AndAlso actionContext.DnnContext.IsAuthenticated Then
-                If actionContext.DnnContext.Portal.UserMode <> DotNetNuke.Entities.Portals.PortalSettings.Mode.View Then
+                If actionContext.DnnContext.Portal.UserMode <> PortalSettings.Mode.View Then
                     Personalization.SetProfile("Usability", ("UserMode" & actionContext.DnnContext.Portal.PortalId.ToString), "View")
                     Personalization.SetProfile("Usability", ("ContentVisible" & actionContext.DnnContext.Portal.PortalId.ToString), True.ToString)
                 End If

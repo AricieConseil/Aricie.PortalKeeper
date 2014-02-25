@@ -4,7 +4,7 @@ Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
-     <System.ComponentModel.DisplayName("Static Condition")> _
+     <DisplayName("Static Condition")> _
     <Description("Simply matches according to the static value configured")> _
     Public Class StaticConditionProvider(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)

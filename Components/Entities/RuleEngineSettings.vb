@@ -12,6 +12,7 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Services
 Imports System.Xml.Serialization
 Imports Aricie.Services
+Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -28,14 +29,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Editor(GetType(ListEditControl), GetType(EditControl))> _
         <InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
         <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
-        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         <SortOrder(1)> _
         Public Property Rules() As List(Of KeeperRule(Of TEngineEvents)) = New List(Of KeeperRule(Of TEngineEvents))
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property EnableSimpleLogs() As Boolean
-            
+
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
@@ -78,14 +79,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             '        _DumpVarList.Add(strVar.Trim())
                             '    End If
                             'Next
-                            _DumpVarList = Common.ParseStringList(Me._DumpVariables)
+                            _DumpVarList = ParseStringList(Me._DumpVariables)
                         End If
                     End SyncLock
                 End If
                 Return _DumpVarList
             End Get
         End Property
-            
+
 
         <ExtendedCategory("TechnicalSettings")> _
          <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
@@ -101,14 +102,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
         <LabelMode(LabelMode.Top)> _
         <SortOrder(900)> _
-        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         Public Property ConditionProviders() As ProviderList(Of ConditionProviderConfig(Of TEngineEvents)) = New ProviderList(Of ConditionProviderConfig(Of TEngineEvents))
 
         <ExtendedCategory("Providers")> _
                        <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
             <LabelMode(LabelMode.Top)> _
-            <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+            <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         <SortOrder(900)> _
         Public Property ActionProviders() As ProviderList(Of ActionProviderConfig(Of TEngineEvents)) = New ProviderList(Of ActionProviderConfig(Of TEngineEvents))
 
@@ -119,7 +120,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function BatchRun(events As IEnumerable(Of TEngineEvents), userParams As IDictionary(Of String, Object)) As PortalKeeperContext(Of TEngineEvents)
             Dim objEnableStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
-           
+
             Dim existingContext As New PortalKeeperContext(Of TEngineEvents)
             If objEnableStopWatch Then
                 'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)

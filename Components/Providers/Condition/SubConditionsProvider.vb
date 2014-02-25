@@ -8,7 +8,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
-    <System.ComponentModel.DisplayName("Sub Conditions Provider")> _
+    <DisplayName("Sub Conditions Provider")> _
     <Description("Allows to build a condition tree with sub conditions")> _
     Public Class SubConditionsProvider(Of TEngineEvents As IConvertible)
         Inherits DosEnabledConditionProvider(Of TEngineEvents)

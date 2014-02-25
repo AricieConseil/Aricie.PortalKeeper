@@ -8,6 +8,7 @@ Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.Web.UI
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -15,7 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Comment, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Display Message Action")> _
+        <DisplayName("Display Message Action")> _
         <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _
     Public Class DisplayMessageAction
         Inherits MessageBasedAction(Of RequestEvent)
@@ -89,18 +90,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If dnnPage IsNot Nothing Then
                     Dim message As String = GetMessage(actionContext)
                     If Me._ModuleId > 0 Then
-                        Dim objModules As List(Of PortalModuleBase) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of PortalModuleBase)(dnnPage)
+                        Dim objModules As List(Of PortalModuleBase) = FindControlsRecursive(Of PortalModuleBase)(dnnPage)
                         For Each objModule As PortalModuleBase In objModules
                             If objModule.ModuleId = Me._ModuleId Then
-                                DotNetNuke.UI.Skins.Skin.AddModuleMessage(objModule, Me._Heading, message, Me._ModuleMessageType)
+                                Skin.AddModuleMessage(objModule, Me._Heading, message, Me._ModuleMessageType)
                                 Return True
                             End If
                         Next
                     Else
-                        Dim objSkins As List(Of Skin) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of Skin)(dnnPage)
+                        Dim objSkins As List(Of Skin) = FindControlsRecursive(Of Skin)(dnnPage)
                         If objSkins.Count > 0 Then
                             Dim objSkin As Skin = objSkins(0)
-                            DotNetNuke.UI.Skins.Skin.AddPageMessage(objSkin, Me._Heading, message, Me._ModuleMessageType)
+                            Skin.AddPageMessage(objSkin, Me._Heading, message, Me._ModuleMessageType)
                             Return True
                         End If
 

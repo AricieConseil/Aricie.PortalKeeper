@@ -2,6 +2,7 @@
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -25,7 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("Specifics")> _
             <ConditionalVisible("EnableCache", False, True, True)> _
-            <TrialLimited(Security.Trial.TrialPropertyMode.Disable)> _
+            <TrialLimited(TrialPropertyMode.Disable)> _
         Public Property CacheKeyFormat() As String
             Get
                 Return _CacheKeyFormat
@@ -79,7 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If Me._UseSingleton Then
                     _Singletons.TryGetValue(key, returnResult)
                 Else
-                    returnResult = Aricie.Services.CacheHelper.GetCache(key)
+                    returnResult = GetCache(key)
                 End If
             End If
             If returnResult Is Nothing Then
@@ -95,7 +96,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             End If
                         End SyncLock
                     Else
-                        Aricie.Services.CacheHelper.SetCacheDependant(key, returnResult, Me._CacheDuration.Value)
+                        SetCacheDependant(key, returnResult, Me._CacheDuration.Value)
                     End If
                 End If
             End If

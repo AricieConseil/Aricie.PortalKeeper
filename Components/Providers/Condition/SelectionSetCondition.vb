@@ -28,7 +28,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class ItemsAttributes
             Implements IDynamicAttributesProvider
 
-            Public Function GetAttributes(ByVal valueType As System.Type) As System.Collections.Generic.IEnumerable(Of System.Attribute) Implements IDynamicAttributesProvider.GetAttributes
+            Public Function GetAttributes(ByVal valueType As Type) As IEnumerable(Of Attribute) Implements IDynamicAttributesProvider.GetAttributes
                 Dim toReturn As New List(Of Attribute)
                 Dim selectorAttribute As Attribute = DirectCast(Activator.CreateInstance(valueType), SelectionSetCondition).GetSelectorAttribute
                 toReturn.Add(selectorAttribute)

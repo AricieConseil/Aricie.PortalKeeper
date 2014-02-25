@@ -16,7 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Multiple Action Provider")> _
+        <DisplayName("Multiple Action Provider")> _
         <Description("Runs sub sequences of Actions")> _
     Public Class MultipleActionProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
@@ -48,11 +48,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
             Select Case Me.MultipleActionMode
-                Case PortalKeeper.MultipleActionMode.Sequence
+                Case MultipleActionMode.Sequence
                     Return Me._KeeperAction.Run(actionContext)
-                Case PortalKeeper.MultipleActionMode.ActionTree
+                Case MultipleActionMode.ActionTree
                     Return Me.ActionTree.Run(actionContext)
-                Case PortalKeeper.MultipleActionMode.ActionTreeExpression
+                Case MultipleActionMode.ActionTreeExpression
                     Dim objActionTree As ActionTree(Of TEngineEvents) = Me.ActionTreeExpression.Evaluate(actionContext, actionContext)
                     If objActionTree IsNot Nothing Then
                         Return objActionTree.Run(actionContext)

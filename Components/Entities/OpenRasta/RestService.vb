@@ -112,7 +112,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     <Serializable()> _
-     <System.ComponentModel.DisplayName("Return Rest Operation Action")> _
+     <DisplayName("Return Rest Operation Action")> _
       <Description("Ends a rest web service dynamic method with a status and an optional result resource")> _
     Public Class ReturnRestOperationAction
         Inherits CacheableAction(Of RestEngineEvent)

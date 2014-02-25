@@ -10,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Key, IconOptions.Normal)> _
    <Serializable()> _
-       <System.ComponentModel.DisplayName("Membership Condition")> _
+       <DisplayName("Membership Condition")> _
        <Description("Matches according to the user membership")> _
     Public Class MembershipCondition
         Inherits ConditionProvider(Of RequestEvent)

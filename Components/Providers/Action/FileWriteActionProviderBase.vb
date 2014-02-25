@@ -4,7 +4,7 @@ Imports Aricie.Text
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
-        Public MustInherit Class FileWriteActionProviderBase(Of TEngineEvents As IConvertible)
+    Public MustInherit Class FileWriteActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits FileReadWriteActionProvider(Of TEngineEvents)
 
 
@@ -24,7 +24,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Try
                 RWLock.AcquireWriterLock(LockTimeSpan)
                 Dim dirName As String = Path.GetDirectoryName(mapPath)
-                If Not System.IO.Directory.Exists(dirName) Then
+                If Not Directory.Exists(dirName) Then
                     Directory.CreateDirectory(dirName)
                 End If
 
@@ -32,15 +32,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 '    Case FileAccessMode.StringReadWrite
 
                 Dim contents As String = Me.GetContent(actionContext)
-                Dim objEncoding As Encoding = EncodingHelper.GetEncoding(Me.Encoding)
+                Dim objEncoding As Encoding = GetEncoding(Me.Encoding)
                 If Me.UseCompression Then
-                    contents = Common.DoCompress(contents, CompressionMethod.Deflate)
+                    contents = DoCompress(contents, CompressionMethod.Deflate)
                 End If
 
                 If AppendContent Then
-                    System.IO.File.AppendAllText(mapPath, contents, objEncoding)
+                    File.AppendAllText(mapPath, contents, objEncoding)
                 Else
-                    System.IO.File.WriteAllText(mapPath, contents, objEncoding)
+                    File.WriteAllText(mapPath, contents, objEncoding)
                 End If
 
                 'Case FileAccessMode.FileHelperCSV

@@ -1,12 +1,13 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Security
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.SignOut, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Log Off Action")> _
+        <DisplayName("Log Off Action")> _
         <Description("Signs the user out of his current session")> _
     Public Class LogOffAction
         Inherits ActionProvider(Of RequestEvent)
@@ -14,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent)) As Boolean
-            Dim ps As New DotNetNuke.Security.PortalSecurity
+            Dim ps As New PortalSecurity
             ps.SignOut()
             Return True
         End Function

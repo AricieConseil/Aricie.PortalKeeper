@@ -5,6 +5,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -14,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Enum
     <ActionButton(IconName.Repeat, IconOptions.Normal)> _
    <Serializable()> _
-   <System.ComponentModel.DisplayName("While Action Provider")> _
+   <DisplayName("While Action Provider")> _
        <Description("This provider allows to loop running a sub bot while a boolean condition evaluates to true.")> _
     Public Class WhileActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)
@@ -27,7 +28,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("WhileAction")> _
        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
                <LabelMode(LabelMode.Top)> _
-               <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+               <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         Public Property WhileCondition() As KeeperCondition(Of TEngineEvents)
             Get
                 Return _WhileCondition
@@ -65,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toReturn As Boolean = True
             Dim iterationNb As Integer = 0
             Select Case Me._WhileType
-                Case PortalKeeper.WhileType.WhileDo
+                Case WhileType.WhileDo
                     While Me._WhileCondition.Match(actionContext) AndAlso (_MaxIterationNb <= 0 OrElse iterationNb < _MaxIterationNb)
                         iterationNb += 1
                         toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
@@ -73,7 +74,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Exit While
                         End If
                     End While
-                Case PortalKeeper.WhileType.DoUntil
+                Case WhileType.DoUntil
                     Do
                         iterationNb += 1
                         toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
