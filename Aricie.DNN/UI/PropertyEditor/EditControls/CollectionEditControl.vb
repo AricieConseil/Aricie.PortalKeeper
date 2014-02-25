@@ -844,6 +844,7 @@ Namespace UI.WebControls.EditControls
                         '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
                         '   .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}});jQuery('#{0}').unbind('click');jQuery('#{0}').click();", headerLink.ClientID))
                         .Attributes.Add("onclick", "SelectAndActivateParentHeader(this);")
+                        AddHandler cmdFocus.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                     End With
 
                     sm.RegisterPostBackControl(cmdFocus)
@@ -860,6 +861,7 @@ Namespace UI.WebControls.EditControls
                         .CommandName = "Export"
                         .CommandArgument = commandIndex.ToString()
                     End With
+                    AddHandler cmdExport.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                     sm.RegisterPostBackControl(cmdExport)
 
 
@@ -869,7 +871,9 @@ Namespace UI.WebControls.EditControls
                         .CommandName = "Copy"
                         .CommandArgument = commandIndex.ToString()
                     End With
+                    AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                     plAction.Controls.Add(cmdCopy)
+
                     sm.RegisterPostBackControl(cmdCopy)
 
                 End If
@@ -887,6 +891,7 @@ Namespace UI.WebControls.EditControls
                             .CommandName = "Up"
                             .CommandArgument = commandIndex.ToString()
                         End With
+                        AddHandler cmdUp.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                         sm.RegisterPostBackControl(cmdUp)
                     End If
 
@@ -898,6 +903,7 @@ Namespace UI.WebControls.EditControls
                             .CommandName = "Down"
                             .CommandArgument = commandIndex.ToString()
                         End With
+                        AddHandler cmdDown.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                         sm.RegisterPostBackControl(cmdDown)
 
                     End If
@@ -911,6 +917,7 @@ Namespace UI.WebControls.EditControls
                     .CommandName = "Delete"
                     .CommandArgument = commandIndex.ToString()
                 End With
+                AddHandler cmdDelete.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                 sm.RegisterPostBackControl(cmdDelete)
                 DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
                 Me._DeleteControls.Add(cmdDelete)

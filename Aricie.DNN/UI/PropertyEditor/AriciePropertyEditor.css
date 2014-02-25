@@ -289,8 +289,11 @@
 	margin: 0;
 	padding: 0;
 }
-
-.aricieAction .actionText
+.aricieActions input
+{
+	float:none;
+	}
+.actionText
 {
 	padding-left: 1em;
 }
