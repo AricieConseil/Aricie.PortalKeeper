@@ -10,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.MapMarker, IconOptions.Normal)> _
    <Serializable()> _
-   <System.ComponentModel.DisplayName("Client Source Condition")> _
+   <DisplayName("Client Source Condition")> _
    <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")> _
     Public Class ClientSourceCondition
         Inherits DosEnabledConditionProvider(Of RequestEvent)
@@ -78,7 +78,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class ClientSourceAttributes
             Implements IAttributesProvider
 
-            Public Function GetAttributes() As System.Collections.Generic.IEnumerable(Of System.Attribute) Implements IAttributesProvider.GetAttributes
+            Public Function GetAttributes() As IEnumerable(Of Attribute) Implements IAttributesProvider.GetAttributes
                 Dim toReturn As New List(Of Attribute)
                 'toReturn.Add(New LineCountAttribute(2))
                 toReturn.Add(New WidthAttribute(300))

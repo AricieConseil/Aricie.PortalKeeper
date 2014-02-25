@@ -1,4 +1,5 @@
 ﻿Imports Aricie.DNN.Diagnostics
+Imports DotNetNuke.Services.Exceptions
 Imports OpenRasta.Diagnostics
 Imports OpenRasta.Hosting.AspNet
 
@@ -76,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Function Operation(source As Object, name As String) As System.IDisposable Implements OpenRasta.Diagnostics.ILogger.Operation
+        Public Function Operation(source As Object, name As String) As IDisposable Implements ILogger.Operation
             If _Enabled Then
                 Dim objDebug As New DebugInfo("OpenRasta", "Start Operation", New KeyValuePair(Of String, String)("name", name), New KeyValuePair(Of String, String)("sourceType", source.GetType().AssemblyQualifiedName))
 
@@ -86,7 +87,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return New OpenRastaLoggerCookie(name, Me.Enabled)
         End Function
 
-        Public Sub WriteDebug(message As String, ParamArray format() As Object) Implements OpenRasta.Diagnostics.ILogger.WriteDebug
+        Public Sub WriteDebug(message As String, ParamArray format() As Object) Implements ILogger.WriteDebug
             If _Enabled Then
                 Dim objDebug As New DebugInfo("OpenRasta", "Debug", New KeyValuePair(Of String, String)("message", String.Format(message, format)))
                 SimpleDebugLogger.Instance.AddDebugInfo(objDebug)
@@ -94,7 +95,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-        Public Sub WriteError(message As String, ParamArray format() As Object) Implements OpenRasta.Diagnostics.ILogger.WriteError
+        Public Sub WriteError(message As String, ParamArray format() As Object) Implements ILogger.WriteError
             If _Enabled Then
                 Dim objDebug As New DebugInfo("OpenRasta", "Error", New KeyValuePair(Of String, String)("message", String.Format(message, format)))
                 SimpleDebugLogger.Instance.AddDebugInfo(objDebug)
@@ -102,14 +103,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-        Public Sub WriteException(e As System.Exception) Implements OpenRasta.Diagnostics.ILogger.WriteException
+        Public Sub WriteException(e As Exception) Implements ILogger.WriteException
             If _Enabled Then
-                DotNetNuke.Services.Exceptions.Exceptions.LogException(e)
+                LogException(e)
             End If
 
         End Sub
 
-        Public Sub WriteInfo(message As String, ParamArray format() As Object) Implements OpenRasta.Diagnostics.ILogger.WriteInfo
+        Public Sub WriteInfo(message As String, ParamArray format() As Object) Implements ILogger.WriteInfo
             If _Enabled Then
                 Dim objDebug As New DebugInfo("OpenRasta", "Info", New KeyValuePair(Of String, String)("message", String.Format(message, format)))
                 SimpleDebugLogger.Instance.AddDebugInfo(objDebug)
@@ -117,7 +118,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-        Public Sub WriteWarning(message As String, ParamArray format() As Object) Implements OpenRasta.Diagnostics.ILogger.WriteWarning
+        Public Sub WriteWarning(message As String, ParamArray format() As Object) Implements ILogger.WriteWarning
             If _Enabled Then
                 Dim objDebug As New DebugInfo("OpenRasta", "Warning", New KeyValuePair(Of String, String)("message", String.Format(message, format)))
                 SimpleDebugLogger.Instance.AddDebugInfo(objDebug)

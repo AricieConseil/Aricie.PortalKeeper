@@ -29,7 +29,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Catch ex As Exception
                 Me.ScheduleHistoryItem.Succeeded = False
                 Me.ScheduleHistoryItem.AddLogNote(("WebBots by Aricie.PortalKeeper failed with the following exception. " & ex.ToString))
-                Exceptions.LogException(ex)
+                LogException(ex)
             End Try
         End Sub
 

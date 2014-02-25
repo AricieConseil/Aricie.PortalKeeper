@@ -2,14 +2,16 @@
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Data
 Imports Aricie.DNN.UI.WebControls
+Imports System.Data.Common
+Imports DotNetNuke.Data
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.HddO, IconOptions.Normal)> _
     <Serializable()> _
-    <System.ComponentModel.DisplayName("Execute Sql Action")> _
+    <DisplayName("Execute Sql Action")> _
     <Description("Execute a call to a stored procedure, a Sql script or sql query and returns the result")> _
-     Public Class ExecuteSqlAction(Of TEngineEvents As IConvertible)
+    Public Class ExecuteSqlAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
 
@@ -31,9 +33,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             Dim toReturn As Object = Nothing
             If Me.UseTransaction Then
-                Using dbt As System.Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
+                Using dbt As DbTransaction = DataProvider.Instance.GetTransaction()
                     toReturn = ExecuteWithoutTransaction(actionContext)
-                    DotNetNuke.Data.DataProvider.Instance.CommitTransaction(dbt)
+                    DataProvider.Instance.CommitTransaction(dbt)
                 End Using
             Else
                 toReturn = ExecuteWithoutTransaction(actionContext)

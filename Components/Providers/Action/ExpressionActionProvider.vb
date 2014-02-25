@@ -9,7 +9,7 @@ Imports Ciloci.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Expression Action Provider")> _
+        <DisplayName("Expression Action Provider")> _
         <Description("This provider runs by evaluating a boolean expression and returning the result. The current PortalKeeperContext can be used as a dedicated variable")> _
     Public Class ExpressionActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)

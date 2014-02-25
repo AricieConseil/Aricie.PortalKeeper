@@ -5,6 +5,8 @@ Imports System
 Imports System.Web
 Imports System.Reflection
 Imports Aricie.Services
+Imports DotNetNuke.Common.Utilities
+Imports DotNetNuke.Services.Exceptions
 
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -58,8 +60,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
 
-                Dim enableStopWatch As Boolean = keeperContext.EnableStopWatch
-                Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
+            Dim enableStopWatch As Boolean = keeperContext.EnableStopWatch
+            Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
             If keeperContext.CurrentFirewallConfig.Enabled AndAlso Not requestOutInScope Then
                 If Not Me.SecondaryModule Then
                     If enableStopWatch Then
@@ -167,7 +169,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
             If keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(keeperConfig.RestartParam) Then
 
-                Dim config As Type = GetType(DotNetNuke.Common.Utilities.Config)
+                Dim config As Type = GetType(Config)
                 config.InvokeMember("Touch", BindingFlags.Public, Nothing, Nothing, Nothing)
 
                 'Jesse: pb de signature différente entre versions de dnn
@@ -203,7 +205,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Try
                         currentKey = dosConditionSettings.FastGetKey(keeperContext, clueDico.Key)
                     Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                        Exceptions.LogException(ex)
                         currentKey = ""
                     End Try
                     If clueDico.Value.TryGetValue(currentKey, currentExpiration) Then

@@ -42,14 +42,14 @@
             </div>
             <div class="CommandsButtons DNNAligncenter" id="divUserBotCmds" runat="server">
                 <div class="SubDiv" id="divActionCommands" Visible="False" runat="server"/>
-                <div class="SubDiv">
+               <%-- <div class="SubDiv">
                     <dnn:CommandButton ID="cmdSaveUserBot" runat="server" ImageUrl="~/images/save.gif"
                         ResourceKey="cmdSaveUserBot" />
                     <dnn:CommandButton ID="cmdCancelUserBot" runat="server" ImageUrl="~/images/cancel.gif"
                         ResourceKey="cmdCancel" CausesValidation="false" />
                     <dnn:CommandButton ID="cmdDeleteUserBot" runat="server" ImageUrl="~/images/delete.gif"
                         ResourceKey="cmdDeleteUserBot" CausesValidation="false" />
-                </div>
+                </div>--%>
             </div>
             <asp:Label ID="lblBotDefinition" CssClass="Head" runat="server" Visible="false" ResourceKey="lblBotDefinition" /><br />
             <div class="SubDiv">

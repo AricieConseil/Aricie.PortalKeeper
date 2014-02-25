@@ -18,6 +18,9 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services.Files
 Imports System.Security.Cryptography.X509Certificates
 Imports System.Xml
+Imports Aricie.DNN.Security.Trial
+Imports DotNetNuke.Entities.Users
+Imports DotNetNuke.Services.Exceptions
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -52,7 +55,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _EnableLogs As Boolean
 
-        Private _Synchronization As SynchronizationMode = PortalKeeper.SynchronizationMode.Monitor
+        Private _Synchronization As SynchronizationMode = SynchronizationMode.Monitor
 
         Private _MutexName As String = "Aricie.PKP.FarmMutex"
 
@@ -63,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #Region "Public properties"
 
 
-        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ExtendedCategory("Bots"), MainCategory()>
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ExtendedCategory("Bots"), MainCategory()>
         Public Property Bots As New SimpleList(Of BotInfo(Of TEngineEvent))
 
 
@@ -71,7 +74,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property EnableUserBots As Boolean
 
 
-        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ConditionalVisible("EnableUserBots", False, True), ExtendedCategory("UserBots")>
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ConditionalVisible("EnableUserBots", False, True), ExtendedCategory("UserBots")>
         Public Property UserBots As New SimpleList(Of UserBotSettings(Of TEngineEvent))
 
 
@@ -90,7 +93,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property InitVector() As String
             Get
                 If String.IsNullOrEmpty(_InitVector) Then
-                    _InitVector = DotNetNuke.Entities.Users.UserController.GeneratePassword(16)
+                    _InitVector = UserController.GeneratePassword(16)
                 End If
                 Return _InitVector
             End Get
@@ -105,20 +108,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Get
                 Try
                     If String.IsNullOrEmpty(_EncryptionKey) Then
-                        Me._EncryptionKey = DotNetNuke.Entities.Users.UserController.GeneratePassword(64)
+                        Me._EncryptionKey = UserController.GeneratePassword(64)
                     End If
-                    Return Aricie.Common.Encrypt(_EncryptionKey, Me.DnnDecyptionKey, Me._InitVector)
+                    Return Common.Encrypt(_EncryptionKey, Me.DnnDecyptionKey, Me._InitVector)
                 Catch ex As Exception
-                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                    LogException(ex)
                     Return String.Empty
                 End Try
             End Get
             Set(ByVal value As String)
                 If Not String.IsNullOrEmpty(value) Then
                     Try
-                        _EncryptionKey = Aricie.Common.Decrypt(value, Me.DnnDecyptionKey, Me._InitVector)
+                        _EncryptionKey = Common.Decrypt(value, Me.DnnDecyptionKey, Me._InitVector)
                     Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                        LogException(ex)
                     End Try
                 End If
             End Set
@@ -143,18 +146,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     If String.IsNullOrEmpty(_EncryptionKey) Then
                         Me._EncryptionPrivateKey = New RSACryptoServiceProvider(2048).ToXmlString(True)
                     End If
-                    Return Aricie.Common.Encrypt(_EncryptionPrivateKey, Me._EncryptionKey, Me._InitVector)
+                    Return Common.Encrypt(_EncryptionPrivateKey, Me._EncryptionKey, Me._InitVector)
                 Catch ex As Exception
-                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                    LogException(ex)
                     Return String.Empty
                 End Try
             End Get
             Set(ByVal value As String)
                 If Not String.IsNullOrEmpty(value) Then
                     Try
-                        _EncryptionPrivateKey = Aricie.Common.Decrypt(value, Me._EncryptionKey, Me._InitVector)
+                        _EncryptionPrivateKey = Common.Decrypt(value, Me._EncryptionKey, Me._InitVector)
                     Catch ex As Exception
-                        DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
+                        LogException(ex)
                     End Try
                 End If
             End Set
@@ -178,7 +181,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private ReadOnly Property DnnDecyptionKey() As String
             Get
                 If String.IsNullOrEmpty(_DnnDecryptionKey) Then
-                    _DnnDecryptionKey = NukeHelper.WebConfigDocument.SelectSingleNode("configuration/system.web/machineKey").Attributes("decryptionKey").Value
+                    _DnnDecryptionKey = WebConfigDocument.SelectSingleNode("configuration/system.web/machineKey").Attributes("decryptionKey").Value
                 End If
                 Return _DnnDecryptionKey
             End Get
@@ -261,7 +264,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'End Property
 
         Private Sub ResetEncryptionKey()
-            Me._EncryptionKey = DotNetNuke.Entities.Users.UserController.GeneratePassword(64)
+            Me._EncryptionKey = UserController.GeneratePassword(64)
         End Sub
 
         <ExtendedCategory("UserBots")> _
@@ -279,7 +282,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim objStep As New StepInfo(Debug.PKPDebugType, "Manual Run Start", WorkingPhase.InProgress, False, False, -1, flowid)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
-            Dim nbRuns As Integer = Me.RunBots(CType(PortalKeeperSchedule.ScheduleEventList, Global.System.Collections.Generic.IList(Of TEngineEvent)), True, Guid.NewGuid.ToString)
+            Dim nbRuns As Integer = Me.RunBots(CType(PortalKeeperSchedule.ScheduleEventList, IList(Of TEngineEvent)), True, Guid.NewGuid.ToString)
 
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then
 
@@ -297,14 +300,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toreturn As Integer
             Select Case Me._Synchronization
                 Case SynchronizationMode.Monitor
-                    If System.Threading.Monitor.TryEnter(botlock, Me._SynchronisationTimeout.Value) Then
+                    If Monitor.TryEnter(botlock, Me._SynchronisationTimeout.Value) Then
                         Try
                             toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
                         Catch ex As Exception
-                            Aricie.DNN.Diagnostics.AsyncLogger.Instance.AddException(ex)
+                            AsyncLogger.Instance.AddException(ex)
                             'DotNetNuke.Services.Exceptions.LogException(ex)
                         Finally
-                            System.Threading.Monitor.Exit(botlock)
+                            Monitor.Exit(botlock)
                         End Try
                         'lastRun = Now
                     End If
@@ -314,7 +317,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Try
                                 toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
                             Catch ex As Exception
-                                Aricie.DNN.Diagnostics.AsyncLogger.Instance.AddException(ex)
+                                AsyncLogger.Instance.AddException(ex)
                                 'DotNetNuke.Services.Exceptions.LogException(ex)
                             Finally
                                 objMutex.ReleaseMutex()
@@ -411,11 +414,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Public Overridable Sub Sign(ByVal doc As XmlDocument, ParamArray paths As String()) Implements IEncrypter.Sign
-            Common.SignXml(doc, CryptoServiceProvider, paths)
+            SignXml(doc, CryptoServiceProvider, paths)
         End Sub
 
         Public Overridable Function Verify(ByVal signedDoc As XmlDocument) As Boolean Implements IEncrypter.Verify
-            Common.VerifyXml(signedDoc, CryptoServiceProvider)
+            VerifyXml(signedDoc, CryptoServiceProvider)
         End Function
 
         Public Function Encrypt(payload As String, ByRef salt() As Byte) As String Implements IEncrypter.Encrypt

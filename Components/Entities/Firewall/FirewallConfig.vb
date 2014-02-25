@@ -49,10 +49,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Dim newKey As String = Me.cacheKey & portalConfig.cacheKey
 
-            Dim toReturn As FirewallConfig = Aricie.Services.CacheHelper.GetGlobal(Of FirewallConfig)(newKey)
+            Dim toReturn As FirewallConfig = GetGlobal(Of FirewallConfig)(newKey)
 
             If toReturn Is Nothing Then
-                toReturn = Aricie.Services.ReflectionHelper.CloneObject(Of FirewallConfig)(Me)
+                toReturn = ReflectionHelper.CloneObject(Of FirewallConfig)(Me)
                 toReturn.RecoveryParam = toReturn.RecoveryParam & "," & portalConfig.RecoveryParam
                 toReturn.RequestScope = portalConfig.RequestScope
                 toReturn.IgnoredExtensions = toReturn.IgnoredExtensions & "," & portalConfig.IgnoredExtensions
@@ -60,7 +60,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 'Aricie.Services.CacheHelper.SetCacheDependant(Of FirewallConfig)(toReturn, New String() {PortalKeeperConfig.GetFilePath(True), _
                 '                                    SettingsController.GetModuleSettingsKey(Of FirewallSettings)(SettingsScope.PortalSettings, NukeHelper.PortalId)}, _
                 '                                     Constants.Cache.GlobalExpiration, newKey)
-                Aricie.Services.CacheHelper.SetCacheDependant(Of FirewallConfig)(toReturn, New String() {PortalKeeperConfig.GetFilePath(True)}, Constants.Cache.GlobalExpiration, newKey)
+                SetCacheDependant(Of FirewallConfig)(toReturn, New String() {PortalKeeperConfig.GetFilePath(True)}, Constants.Cache.GlobalExpiration, newKey)
             End If
             Return toReturn
         End Function

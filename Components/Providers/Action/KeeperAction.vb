@@ -47,7 +47,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                         Dim xmlDump As String = ""
                         If actionContext.CurrentEngine.ExceptionDumpVars.Length > 0 Then
-                            Dim dumpVars As List(Of String) = Common.ParseStringList(actionContext.CurrentEngine.ExceptionDumpVars)
+                            Dim dumpVars As List(Of String) = ParseStringList(actionContext.CurrentEngine.ExceptionDumpVars)
                             Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(False, dumpVars)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
@@ -77,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
-        Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, ActionProviderConfig(Of TEngineEvents))
+        Public Overrides Function GetAvailableProviders() As IDictionary(Of String, ActionProviderConfig(Of TEngineEvents))
             Dim toReturn As New SerializableDictionary(Of String, ActionProviderConfig(Of TEngineEvents))
             Dim engines As IEnumerable(Of RuleEngineSettings(Of TEngineEvents)) = PortalKeeperConfig.Instance.GetRuleEnginesSettings(Of TEngineEvents)()
             For Each engine As RuleEngineSettings(Of TEngineEvents) In engines

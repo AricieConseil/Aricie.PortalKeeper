@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
+Imports DotNetNuke.Common
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Services
@@ -12,6 +13,8 @@ Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
 Imports System.Threading
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Settings
+Imports FileHelper = Aricie.DNN.Services.FileHelper
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -216,7 +219,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'If Not String.IsNullOrEmpty(Me._UserName) Then
             '    botName &= "-" & Me._UserName.Trim
             'End If
-            Return Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(Me._LogPath & "BotHistory-" & botName & ".config", True)
+            Return FileHelper.GetAbsoluteMapPath(Me._LogPath & "BotHistory-" & botName & ".config", True)
         End Function
 
         <Required(True)> _
@@ -261,7 +264,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             '        _DumpVarList.Add(strVar.Trim())
                             '    End If
                             'Next
-                            _HistoryDumpVarList = Common.ParseStringList(Me.HistoryDumpVariables)
+                            _HistoryDumpVarList = ParseStringList(Me.HistoryDumpVariables)
                         End If
                     End SyncLock
                 End If
@@ -288,12 +291,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <ExtendedCategory("History")> _
         Public ReadOnly Property BotHistory() As WebBotHistory
             Get
-                Return Aricie.DNN.Settings.SettingsController.LoadFileSettings(Of WebBotHistory)(GetLogMapPath(), True)
+                Return LoadFileSettings(Of WebBotHistory)(GetLogMapPath(), True)
             End Get
         End Property
 
         Public Sub SaveHistory(ByVal botHistory As WebBotHistory, ByVal runContext As PortalKeeperContext(Of TEngineEvent))
-            Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of WebBotHistory)(GetLogMapPath(), botHistory)
+            SaveFileSettings(Of WebBotHistory)(GetLogMapPath(), botHistory)
         End Sub
 
         <ExtendedCategory("TechnicalSettings")> _
@@ -415,7 +418,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 Next
             End If
-            Return _ServerList.Count = 0 OrElse _ServerList.Contains(DotNetNuke.Common.Globals.ServerName.ToUpper)
+            Return _ServerList.Count = 0 OrElse _ServerList.Contains(ServerName.ToUpper)
         End Function
 
         Private Function InternalRun(ByVal botContext As BotRunContext(Of TEngineEvent)) As Boolean
@@ -428,7 +431,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 InternalRunUnlocked(botContext)
                                 toReturn = True
                             Catch ex As Exception
-                                Aricie.DNN.Diagnostics.AsyncLogger.Instance.AddException(ex)
+                                AsyncLogger.Instance.AddException(ex)
                             Finally
                                 objMutex.ReleaseMutex()
                             End Try
@@ -439,7 +442,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     toReturn = True
                 End If
             Catch ex As Exception
-                Aricie.DNN.Diagnostics.AsyncLogger.Instance.AddException(ex)
+                AsyncLogger.Instance.AddException(ex)
             Finally
                 Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
                 SyncLock _AsyncLocks

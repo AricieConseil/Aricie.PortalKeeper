@@ -58,9 +58,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me.TokenizedText.AdditionalTokenSource = value
             End Set
         End Property
-           
 
-        Protected Overrides Function GetAdvancedTokenReplace(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Services.AdvancedTokenReplace
+
+        Protected Overrides Function GetAdvancedTokenReplace(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As AdvancedTokenReplace
             Dim toReturn As AdvancedTokenReplace = MyBase.GetAdvancedTokenReplace(actionContext)
             Me.TokenizedText.AdditionalTokenSource.SetTokens(toReturn)
             Return toReturn

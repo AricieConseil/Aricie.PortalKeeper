@@ -12,7 +12,7 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Magic, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Define Variables Action Provider")> _
+        <DisplayName("Define Variables Action Provider")> _
         <Description("This provider allows to declare and instanciate a set of variables, which will be stored in the context ""Item"" dictionary")> _
     Public Class DefineVarsActionProvider(Of TEngineEvents As IConvertible)
         Inherits CacheableAction(Of TEngineEvents)

@@ -77,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Function CompareTo(other As ProbeInstance) As Integer Implements System.IComparable(Of ProbeInstance).CompareTo
+        Public Function CompareTo(other As ProbeInstance) As Integer Implements IComparable(Of ProbeInstance).CompareTo
             Return Me._Value.CompareTo(other._Value)
         End Function
 

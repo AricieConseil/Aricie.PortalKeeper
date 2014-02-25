@@ -48,7 +48,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <Required(True)> _
         <Width(500)> _
-        <DotNetNuke.UI.WebControls.MaxLength(256)> _
+        <MaxLength(256)> _
         Public Property Url() As String
             Get
                 Return _Url
@@ -158,24 +158,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-       
+
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal inputParams As SerializableDictionary(Of String, String), Optional ByVal headers As SerializableDictionary(Of String, String) = Nothing) As String
 
             Dim toReturn As String = ""
             Dim targetUrl As String = Me._Url
-            If Me._UrlMode = PortalKeeper.UrlMode.Expression Then
+            If Me._UrlMode = UrlMode.Expression Then
                 targetUrl = Me._UrlExpression.Evaluate(actionContext, actionContext)
             End If
             If targetUrl.StartsWith("~") Then
-                targetUrl = "http://" & (NukeHelper.PortalAliasesByPortalId(NukeHelper.PortalIds(0))(0).HTTPAlias) & targetUrl.Substring(1)
+                targetUrl = "http://" & (PortalAliasesByPortalId(PortalIds(0))(0).HTTPAlias) & targetUrl.Substring(1)
             ElseIf targetUrl.IndexOf("://") = -1 Then
                 targetUrl = "http://" & targetUrl
             End If
 
             If inputParams.Count > 0 Then
                 Select Case Me._ParametersMode
-                    Case PortalKeeper.ParametersMode.Query
+                    Case ParametersMode.Query
                         Dim urlHasParams As Boolean = targetUrl.IndexOf("?"c) > 0
                         If Not urlHasParams Then
                             targetUrl &= "?"c
@@ -262,7 +262,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 obfuscatedParams(objKey) = New String("x"c, inputParams(objKey).Length)
                             End If
                         Next
-                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", Common.FormatTimeSpan(Now.Subtract(start)), targetUrl, Me.GetParamQueryString(obfuscatedParams), Common.FormatTimeSpan(objTimeout))
+                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", FormatTimeSpan(Now.Subtract(start)), targetUrl, Me.GetParamQueryString(obfuscatedParams), FormatTimeSpan(objTimeout))
                         Dim newEx As New ApplicationException(message, ex)
                         Throw newEx
                     End If

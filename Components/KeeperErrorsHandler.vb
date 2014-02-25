@@ -5,7 +5,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class KeeperErrorsHandler
         Inherits CustomErrorsHandler
 
-        Public Overrides Function GetCustomErrors() As Aricie.DNN.Services.Errors.VirtualCustomErrorsInfo
+        Public Overrides Function GetCustomErrors() As VirtualCustomErrorsInfo
             Return PortalKeeperContext(Of RequestEvent).Instance.CurrentFirewallConfig.CustomErrorsConfig
         End Function
     End Class

@@ -536,14 +536,14 @@ Namespace Services
 
                     strPropertyName = objProperty.Name
                     searchTag = GetTag(prefix, ":"c, strPropertyName, False)
-                    If toReturn.IndexOf(searchTag) <> -1 Then
+                    If toReturn.IndexOf(searchTag, System.StringComparison.InvariantCultureIgnoreCase) <> -1 Then
 
                         Dim objIndexParameters() As ParameterInfo = objProperty.GetIndexParameters
 
                         If Not objIndexParameters.Length > 0 Then
                             searchTag = GetTag(prefix, ":"c, strPropertyName, True)
                             propValue = objProperty.GetValue(objObject, Nothing)
-                            If propValue Is Nothing = False Then
+                            If propValue IsNot Nothing Then
                                 strPropertyValue = propValue.ToString()
                             End If
 
@@ -602,7 +602,7 @@ Namespace Services
                                 End Try
 
 
-                                If propValue Is Nothing = False Then
+                                If propValue IsNot Nothing Then
                                     strPropertyValue = propValue.ToString()
                                 End If
 

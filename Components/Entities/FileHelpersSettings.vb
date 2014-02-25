@@ -18,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property FileHelpersMode() As FileHelpersMode = FileHelpersMode.Delimiter
 
-        Public Property RecordsMode() As RecordsMode = PortalKeeper.RecordsMode.StaticType
+        Public Property RecordsMode() As RecordsMode = RecordsMode.StaticType
 
         <ConditionalVisible("FileHelpersMode", False, True, FileHelpersMode.Delimiter)> _
         Public Property Delimiter As Char = ","c
@@ -44,7 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Sub Serialize(inputObjects As IEnumerable, tw As TextWriter)
             Dim target As New List(Of Object)()
             Dim objRecordType As Type
-            If Me.RecordsMode = PortalKeeper.RecordsMode.StaticType Then
+            If Me.RecordsMode = RecordsMode.StaticType Then
                 objRecordType = Me.RecordType.GetDotNetType
                 For Each item As Object In inputObjects
                     target.Add(item)
@@ -113,7 +113,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function DeSerialize(input As String) As IEnumerable
 
             Dim objRecordType As Type
-            If Me.RecordsMode = PortalKeeper.RecordsMode.StaticType Then
+            If Me.RecordsMode = RecordsMode.StaticType Then
                 objRecordType = Me.RecordType.GetDotNetType
             Else
                 'todo, gérer le cas dynamique
@@ -147,9 +147,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Private Function ComputeDynamicExpressions(inputObjects As IEnumerable) As List(Of SerializableDictionary(Of String, Object))
-           
+
             Dim toReturn As New List(Of SerializableDictionary(Of String, Object))
-            Dim fieldNames As Dictionary(Of String, String) = Common.ParsePairs(Me.FieldVars, True)
+            Dim fieldNames As Dictionary(Of String, String) = ParsePairs(Me.FieldVars, True)
             For Each inputObject As Object In inputObjects
                 Dim context As New PortalKeeperContext(Of String)
                 context.SetVar(Me.InputEntityVarName, inputObject)
@@ -166,6 +166,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-        
+
     End Class
-End NameSpace
+End Namespace

@@ -7,10 +7,12 @@ Imports System.IO
 Imports System.Globalization
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports DotNetNuke.Entities.Users
+Imports DotNetNuke.Framework
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    
+
 
 
 
@@ -64,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property RecoveryParam() As String
             Get
                 If String.IsNullOrEmpty(_RecoveryParam) Then
-                    _RecoveryParam = HttpUtility.UrlEncode(DotNetNuke.Entities.Users.UserController.GeneratePassword(6))
+                    _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
                 End If
                 Return _RecoveryParam
             End Get
@@ -80,7 +82,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property RestartParam() As String
             Get
                 If String.IsNullOrEmpty(_RestartParam) Then
-                    _RestartParam = HttpUtility.UrlEncode(DotNetNuke.Entities.Users.UserController.GeneratePassword(6))
+                    _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
                 End If
                 Return _RestartParam
             End Get
@@ -151,9 +153,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function RequestIsInScope(ByVal context As HttpContext) As Boolean
             If context.CurrentHandler IsNot Nothing Then
                 Select Case Me.RequestScope
-                    Case PortalKeeper.RequestScope.DNNPageOnly
-                        Return TypeOf context.CurrentHandler Is DotNetNuke.Framework.CDefault
-                    Case PortalKeeper.RequestScope.PagesOnly
+                    Case RequestScope.DNNPageOnly
+                        Return TypeOf context.CurrentHandler Is CDefault
+                    Case RequestScope.PagesOnly
                         Return TypeOf context.CurrentHandler Is Page
                 End Select
             End If

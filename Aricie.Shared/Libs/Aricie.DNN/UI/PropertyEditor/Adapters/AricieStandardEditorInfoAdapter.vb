@@ -171,7 +171,7 @@ Namespace UI.WebControls
             If Me._AdditionalAttributes IsNot Nothing Then
                 attrList.AddRange(Me._AdditionalAttributes)
             End If
-            attrList.AddRange(objProperty.DeclaringType.GetCustomAttributes(True))
+            attrList.AddRange(objProperty.PropertyType.GetCustomAttributes(True))
 
             editInfo.Attributes = attrList.ToArray()
 
@@ -214,7 +214,7 @@ Namespace UI.WebControls
                     End If
                 ElseIf TypeOf objAttribute Is EditorAttribute Then
                     Dim editorAttribute As EditorAttribute = DirectCast(objAttribute, EditorAttribute)
-                    If editorAttribute.EditorBaseTypeName.IndexOf("DotNetNuke.UI.WebControls.EditControl") >= 0 Then
+                    If editorAttribute.EditorBaseTypeName.Contains("DotNetNuke.UI.WebControls.EditControl") Then
                         editInfo.Editor = editorAttribute.EditorTypeName
                     End If
                 ElseIf TypeOf objAttribute Is RequiredAttribute Then

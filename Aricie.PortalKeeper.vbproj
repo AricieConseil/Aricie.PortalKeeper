@@ -350,13 +350,13 @@
     <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Aricie.PortalKeeper.dnn">
+    <Content Include="Aricie.PortalKeeper.dnn">
       <SubType>Designer</SubType>
-    </None>
+    </Content>
     <None Include="Aricie.PortalKeeper.dnn.Merge.Xml" />
-    <None Include="Aricie.PortalKeeper.dnn5">
+    <Content Include="Aricie.PortalKeeper.dnn5">
       <SubType>Designer</SubType>
-    </None>
+    </Content>
     <Content Include="Error.ashx" />
     <None Include="external\JayRock\Jayrock.dll" />
     <None Include="external\JayRock\Jayrock.Json.dll" />

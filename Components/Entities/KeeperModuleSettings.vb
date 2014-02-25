@@ -95,11 +95,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Function GetSelector(ByVal propertyName As String) As System.Collections.IList Implements ComponentModel.ISelector.GetSelector
+        Public Function GetSelector(ByVal propertyName As String) As IList Implements ISelector.GetSelector
             Return DirectCast(GetSelectorG(propertyName), IList)
         End Function
 
-        Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of UserBotSettings(Of ScheduleEvent)) Implements ComponentModel.ISelector(Of UserBotSettings(Of ScheduleEvent)).GetSelectorG
+        Public Function GetSelectorG(ByVal propertyName As String) As IList(Of UserBotSettings(Of ScheduleEvent)) Implements ISelector(Of UserBotSettings(Of ScheduleEvent)).GetSelectorG
             Return New List(Of UserBotSettings(Of ScheduleEvent))(PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.Values)
         End Function
     End Class

@@ -7,6 +7,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -14,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Random, IconOptions.Normal)> _
     <Serializable()> _
-    <System.ComponentModel.DisplayName("Multiple Connections Condition")> _
+    <DisplayName("Multiple Connections Condition")> _
     <Description("Matches if the same DNN user connects from different locations")> _
     Public Class MultipleConnectionsCondition
         Inherits ConditionProvider(Of RequestEvent)
@@ -51,7 +52,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Shared Property UserLocks() As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))
             Get
                 Dim toReturn As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) = _
-                    DirectCast(Aricie.Services.CacheHelper.GetCache("PKP_MCC_UserLocks"), SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)))
+                    DirectCast(GetCache("PKP_MCC_UserLocks"), SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)))
                 If toReturn Is Nothing Then
                     toReturn = New SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))
                     'Dim onlineUsers As ArrayList = DotNetNuke.Entities.Users.UserController.GetOnlineUsers(NukeHelper.PortalId)
@@ -59,27 +60,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     '    objUser.Profil()
                     'Next()
 
-                    Aricie.Services.CacheHelper.SetCacheDependant("PKP_MCC_UserLocks", toReturn, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
+                    SetCacheDependant("PKP_MCC_UserLocks", toReturn, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
                 End If
                 Return toReturn
             End Get
             Set(ByVal value As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)))
-                Aricie.Services.CacheHelper.SetCacheDependant("PKP_MCC_UserLocks", value, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
+                SetCacheDependant("PKP_MCC_UserLocks", value, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
             End Set
         End Property
 
         Private Shared Property BacktrackLocks() As SerializableDictionary(Of Integer, List(Of String))
             Get
                 Dim toReturn As SerializableDictionary(Of Integer, List(Of String)) = _
-                    DirectCast(Aricie.Services.CacheHelper.GetCache("PKP_MCC_BacktrackLocks"), SerializableDictionary(Of Integer, List(Of String)))
+                    DirectCast(GetCache("PKP_MCC_BacktrackLocks"), SerializableDictionary(Of Integer, List(Of String)))
                 If toReturn Is Nothing Then
                     toReturn = New SerializableDictionary(Of Integer, List(Of String))
-                    Aricie.Services.CacheHelper.SetCacheDependant("PKP_MCC_BacktrackLocks", toReturn, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
+                    SetCacheDependant("PKP_MCC_BacktrackLocks", toReturn, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
                 End If
                 Return toReturn
             End Get
             Set(ByVal value As SerializableDictionary(Of Integer, List(Of String)))
-                Aricie.Services.CacheHelper.SetCacheDependant("PKP_MCC_BacktrackLocks", value, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
+                SetCacheDependant("PKP_MCC_BacktrackLocks", value, Constants.Cache.NoExpiration, PortalKeeperConfig.GetFilePath(True))
             End Set
         End Property
 

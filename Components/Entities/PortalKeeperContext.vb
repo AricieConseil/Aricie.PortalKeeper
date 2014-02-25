@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Shared ReadOnly Property PortalKeeperModuleDefId() As Integer
             Get
                 If (_PortalKeeperModuleDefId = -1) Then
-                    _PortalKeeperModuleDefId = NukeHelper.GetModuleDefIdByModuleName(MODULE_NAME)
+                    _PortalKeeperModuleDefId = GetModuleDefIdByModuleName(MODULE_NAME)
                 End If
                 Return _PortalKeeperModuleDefId
             End Get
@@ -111,7 +111,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                     If globalConfig.EnablePortalLevelSettings Then
                         Dim portalConfig As FirewallSettings = _
-                            SettingsController.GetModuleSettings(Of FirewallSettings)(SettingsScope.PortalSettings, NukeHelper.PortalId)
+                            GetModuleSettings(Of FirewallSettings)(SettingsScope.PortalSettings, PortalId)
                         _CurrentFirewallConfig = globalConfig.GetMerge(portalConfig)
                     Else
                         _CurrentFirewallConfig = globalConfig
@@ -195,7 +195,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Shared ReadOnly Property SharedResourceFile() As String
             Get
                 If _SharedResourceFile = "" Then
-                    _SharedResourceFile = NukeHelper.GetModuleSharedResourceFile(PortalKeeperModuleDefId)
+                    _SharedResourceFile = GetModuleSharedResourceFile(PortalKeeperModuleDefId)
                 End If
                 Return _SharedResourceFile
             End Get
@@ -247,7 +247,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Catch ex As Exception
                         Dim xmlDump As String = ""
                         If Me._CurrentEngine.ExceptionDumpVars.Length > 0 Then
-                            Dim dumpVars As List(Of String) = Common.ParseStringList(Me._CurrentEngine.ExceptionDumpVars)
+                            Dim dumpVars As List(Of String) = ParseStringList(Me._CurrentEngine.ExceptionDumpVars)
                             Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(False, dumpVars)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
@@ -366,7 +366,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function ComputeDynamicExpressions(inputExpressions As String, skipNull As Boolean) As SerializableDictionary(Of String, Object)
             Dim toReturn As New SerializableDictionary(Of String, Object)
-            Dim fieldNames As Dictionary(Of String, String) = Common.ParsePairs(inputExpressions, True)
+            Dim fieldNames As Dictionary(Of String, String) = ParsePairs(inputExpressions, True)
             Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(False, fieldNames.Keys)
             Dim fieldName As String = Nothing
             For Each dumpVar As KeyValuePair(Of String, Object) In dump

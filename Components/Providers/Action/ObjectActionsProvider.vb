@@ -12,7 +12,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Wrench, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Object Actions Provider")> _
+        <DisplayName("Object Actions Provider")> _
         <Description("This provider allows to call object methods or set object properties")> _
     Public Class ObjectActionsProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)

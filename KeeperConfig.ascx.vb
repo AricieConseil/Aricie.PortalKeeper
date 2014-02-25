@@ -110,7 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected ReadOnly Property KeeperModuleSettings() As KeeperModuleSettings
             Get
-                Return SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId)
+                Return Me.GetTabModuleSettings(Of KeeperModuleSettings)()
             End Get
         End Property
 
@@ -249,45 +249,45 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             End Try
         End Sub
 
-        Private Sub cmdCancelUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelUserBot.Click
-            Try
-                Me.Response.Redirect(NavigateURL)
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
+        'Private Sub cmdCancelUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelUserBot.Click
+        '    Try
+        '        Me.Response.Redirect(NavigateURL)
+        '    Catch ex As Exception
+        '        ProcessModuleLoadException(Me, ex)
+        '    End Try
+        'End Sub
 
-        Private Sub cmdSaveUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSaveUserBot.Click
-            Try
-                If Me.ctUserBotEntities.IsValid Then
-                    Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
-                    If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
-                        Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
-                        Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, True)
-                        userBotEntity.RevertReadonlyParameters(readOnlyUserBot)
-                        Me.UserBot = userBotEntity
-                        Me.BindSettings()
-                        Skin.AddModuleMessage(Me, Localization.GetString("UserBotSaved.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-                    End If
+        'Private Sub cmdSaveUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdSaveUserBot.Click
+        '    Try
+        '        If Me.ctUserBotEntities.IsValid Then
+        '            Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+        '            If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
+        '                Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
+        '                Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, True)
+        '                userBotEntity.RevertReadonlyParameters(readOnlyUserBot)
+        '                Me.UserBot = userBotEntity
+        '                Me.BindSettings()
+        '                Skin.AddModuleMessage(Me, Localization.GetString("UserBotSaved.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+        '            End If
 
-                End If
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
+        '        End If
+        '    Catch ex As Exception
+        '        ProcessModuleLoadException(Me, ex)
+        '    End Try
+        'End Sub
 
-        Private Sub cmdDeleteUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdDeleteUserBot.Click
-            Try
-                Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
-                If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
-                    Me.UserBot = Nothing
-                    Me.BindSettings()
-                    Skin.AddModuleMessage(Me, Localization.GetString("UserBotDeleted.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-                End If
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
-        End Sub
+        'Private Sub cmdDeleteUserBot_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdDeleteUserBot.Click
+        '    Try
+        '        Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+        '        If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
+        '            Me.UserBot = Nothing
+        '            Me.BindSettings()
+        '            Skin.AddModuleMessage(Me, Localization.GetString("UserBotDeleted.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+        '        End If
+        '    Catch ex As Exception
+        '        ProcessModuleLoadException(Me, ex)
+        '    End Try
+        'End Sub
 
 #End Region
 

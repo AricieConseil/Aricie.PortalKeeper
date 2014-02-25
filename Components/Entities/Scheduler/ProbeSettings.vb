@@ -129,7 +129,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             '        _DumpVarList.Add(strVar.Trim())
                             '    End If
                             'Next
-                            _DumpVarList = Common.ParseStringList(Me._DumpVariables)
+                            _DumpVarList = ParseStringList(Me._DumpVariables)
                         End If
                     End SyncLock
                 End If
@@ -161,7 +161,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Dim context As New PortalKeeperContext(Of TEngineEvent)
             context.SetVars(objParams)
-            Dim objValue As System.IComparable = Me._ProbeValueExpression.Evaluate(context, context)
+            Dim objValue As IComparable = Me._ProbeValueExpression.Evaluate(context, context)
             context.SetVar("Value", objValue)
             If Not Me._UseFilter OrElse Me._ProbeFilterExpression.Evaluate(context, context) Then
                 Dim objHeader As String = Me._ProbeHeaderExpression.Evaluate(context, context)

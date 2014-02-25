@@ -16,7 +16,7 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.SignIn, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Auto Login")> _
+        <DisplayName("Auto Login")> _
         <Description("Logs the current user with predefined credentials")> _
     Public Class AutoLoginAction
         Inherits ActionProvider(Of RequestEvent)
@@ -50,7 +50,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent)) As Boolean
-            Dim ps As New DotNetNuke.Security.PortalSecurity
+            Dim ps As New PortalSecurity
             If actionContext.DnnContext.IsAuthenticated Then
                 ps.SignOut()
             End If

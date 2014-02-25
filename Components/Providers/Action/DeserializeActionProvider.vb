@@ -20,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Eye, IconOptions.Normal)> _
     <Serializable()> _
-        <System.ComponentModel.DisplayName("Deserialize Action Provider")> _
+        <DisplayName("Deserialize Action Provider")> _
         <Description("This provider allows to deserialize a given string, result of dynamic expression, into a typed object")> _
     Public Class DeserializeActionProvider(Of TEngineEvents As IConvertible)
         Inherits SerializationBaseActionProvider(Of TEngineEvents)
@@ -84,7 +84,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim bytes As Byte() = Encoding.UTF8.GetBytes(serializedValue)
             If Me.UseCompression Then
-                bytes = Common.DoDeCompress(bytes, CompressionMethod.Deflate)
+                bytes = DoDecompress(bytes, CompressionMethod.Deflate)
             End If
             Dim additionalTypes As New List(Of Type)
             For Each addDNT As DotNetType In Me._AdditionalTypes
@@ -93,16 +93,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Using sw As New System.IO.StringWriter(toReturn, CultureInfo.InvariantCulture)
             Using memStream As New MemoryStream(bytes)
                 Select Case Me.SerializationType
-                    Case PortalKeeper.SerializationType.Xml
+                    Case SerializationType.Xml
                         Using reader As New StreamReader(memStream, Encoding.UTF8)
                             Using xmlReader As New XmlTextReader(memStream)
                                 Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType, additionalTypes.ToArray, True)
                                 toReturn = serializer.Deserialize(xmlReader)
                             End Using
                         End Using
-                    Case PortalKeeper.SerializationType.Binary
+                    Case SerializationType.Binary
                         toReturn = ReflectionHelper.Instance.BinaryFormatter.Deserialize(memStream)
-                    Case PortalKeeper.SerializationType.Json
+                    Case SerializationType.Json
                         Dim jsonSettings As New JsonSerializerSettings()
                         'For Each addType As Type In additionalTypes
                         '    jsonSettings.ContractResolver.ResolveContract(addType)
@@ -114,7 +114,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             End Using
                         End Using
 
-                    Case PortalKeeper.SerializationType.IConvertible
+                    Case SerializationType.IConvertible
                         toReturn = TypeDescriptor.GetConverter(Me._OutputType.GetDotNetType).ConvertFromInvariantString(serializedValue)
                     Case SerializationType.FileHelpers
                         Dim sR As New StreamReader(memStream)

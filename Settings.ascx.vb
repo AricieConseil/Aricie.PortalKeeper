@@ -1,5 +1,5 @@
 Imports DotNetNuke.Entities.Modules
-Imports Aricie.Dnn.Settings
+Imports Aricie.DNN.Settings
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Services.Exceptions
 
@@ -10,10 +10,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected Property KeeperModuleSettings() As KeeperModuleSettings
             Get
-                Return SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId)
+                Return GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId)
             End Get
             Set(ByVal value As KeeperModuleSettings)
-                SettingsController.SetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId, value)
+                SetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId, value)
             End Set
         End Property
 
@@ -55,9 +55,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 #Region "Event Handlers"
 
-        Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
+        Private Sub Page_Init(ByVal sender As Object, ByVal e As EventArgs) Handles Me.Init
             Try
-                
+
                 Me.ctS.LocalResourceFile = Me.SharedResourceFile
                 Me.ctS.DataSource = Me.KeeperModuleSettings
                 Me.ctS.DataBind()

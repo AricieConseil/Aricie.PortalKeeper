@@ -9,6 +9,7 @@ Imports System.Globalization
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Common.Lists
 Imports DotNetNuke.Entities.Profile
+Imports DotNetNuke.Services.Localization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -76,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '''     [cnurse]	01/31/2006	created
         ''' </history>
         ''' -----------------------------------------------------------------------------
-        <Editor("DotNetNuke.UI.WebControls.DNNListEditControl, DotNetNuke", GetType(DotNetNuke.UI.WebControls.EditControl)), _
+        <Editor("DotNetNuke.UI.WebControls.DNNListEditControl, DotNetNuke", GetType(EditControl)), _
             List("DataType", "", ListBoundField.Id, ListBoundField.Value), _
             IsReadOnly(True), Required(True), SortOrder(1)> _
         Public Property DataType() As Integer = Null.NullInteger
@@ -176,9 +177,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Case "Date", "DateTime"
                             Return DateTime.Parse(Me._PropertyValue, CultureInfo.InvariantCulture, DateTimeStyles.None)
                         Case "Locale"
-                            Return DotNetNuke.Services.Localization.Localization.GetSupportedLocales.Item(Me._PropertyValue)
+                            Return Localization.GetSupportedLocales.Item(Me._PropertyValue)
                         Case "Page"
-                            Return NukeHelper.TabController.GetTab(Convert.ToInt32(Me._PropertyValue), NukeHelper.PortalId, False)
+                            Return TabController.GetTab(Convert.ToInt32(Me._PropertyValue), NukeHelper.PortalId, False)
                         Case Else
                             Return Me._PropertyValue
                     End Select

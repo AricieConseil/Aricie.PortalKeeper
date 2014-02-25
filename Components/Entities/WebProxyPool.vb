@@ -241,9 +241,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If avProxies.Count > 0 Then
                 Dim idx As Integer
                 Select Case PickMethod
-                    Case PortalKeeper.PickMethod.Random
+                    Case PickMethod.Random
                         idx = randomPicker.Next(0, avProxies.Count - 1)
-                    Case PortalKeeper.PickMethod.Sequential
+                    Case PickMethod.Sequential
                         SyncLock seqLock
                             If nextSequentialIndex > avProxies.Count - 1 Then
                                 nextSequentialIndex = 0

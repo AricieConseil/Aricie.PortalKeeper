@@ -8,7 +8,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
-    <System.ComponentModel.DisplayName("Portal Alias Condition")> _
+    <DisplayName("Portal Alias Condition")> _
     <Description("Matches according to the portal alias used in the url")> _
     Public Class PortalAliasCondition
         Inherits SelectionSetCondition
@@ -18,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return context.CurrentAliasId
         End Function
 
-        Public Overrides Function GetSelectorAttribute() As System.Attribute
+        Public Overrides Function GetSelectorAttribute() As Attribute
             Return New SelectorAttribute(GetType(PortalAliasSelector), "HTTPAlias", "PortalAliasID", True, True, "None", "-1", False, False)
         End Function
     End Class

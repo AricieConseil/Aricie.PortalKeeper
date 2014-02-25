@@ -21,7 +21,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
-       <System.ComponentModel.DisplayName("Web Action")> _
+       <DisplayName("Web Action")> _
        <Description("Performs a web call to a web address")> _
     Public Class WebAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)

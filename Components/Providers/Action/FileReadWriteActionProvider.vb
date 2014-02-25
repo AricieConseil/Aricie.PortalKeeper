@@ -1,5 +1,6 @@
 ﻿Imports Aricie.Text
 Imports Aricie.DNN.UI.Attributes
+Imports System.IO
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -68,8 +69,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             '    Case FileAccessMode.StringReadWrite
             Try
                 RWLock.AcquireReaderLock(LockTimeSpan)
-                If System.IO.File.Exists(mapPath) Then
-                    toReturn = System.IO.File.ReadAllText(mapPath, EncodingHelper.GetEncoding(Me.Encoding))
+                If File.Exists(mapPath) Then
+                    toReturn = File.ReadAllText(mapPath, GetEncoding(Me.Encoding))
                 Else
                     toReturn = ""
                 End If
@@ -79,7 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 RWLock.ReleaseReaderLock()
             End Try
             If Me.UseCompression AndAlso Not String.IsNullOrEmpty(toReturn) Then
-                toReturn = Common.DoDeCompress(toReturn, CompressionMethod.Deflate)
+                toReturn = DoDeCompress(toReturn, CompressionMethod.Deflate)
             End If
             'End Select
             Return toReturn
@@ -88,4 +89,4 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     End Class
-End NameSpace
+End Namespace

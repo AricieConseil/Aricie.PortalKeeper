@@ -2,6 +2,7 @@
 Imports System.Security.Cryptography.X509Certificates
 Imports System.Reflection
 Imports Aricie.Services
+Imports System.Net.Security
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class CompressionEnabledWebClient
@@ -39,7 +40,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property VirtualProxy As Boolean
 
 
-        Protected Overrides Function GetWebRequest(ByVal address As System.Uri) As System.Net.WebRequest
+        Protected Overrides Function GetWebRequest(ByVal address As Uri) As WebRequest
             'Dim toReturn As HttpWebRequest = DotNetNuke.Common.Globals.GetExternalRequest(address.AbsoluteUri)
 
             Dim toreturn As WebRequest = MyBase.GetWebRequest(address)
@@ -84,7 +85,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Function
 
-        Private Shared Function ValidateServerCertficate(ByVal sender As Object, ByVal certificate As X509Certificate, ByVal chain As X509Chain, ByVal sslpolicyerrors As System.Net.Security.SslPolicyErrors) As Boolean
+        Private Shared Function ValidateServerCertficate(ByVal sender As Object, ByVal certificate As X509Certificate, ByVal chain As X509Chain, ByVal sslpolicyerrors As SslPolicyErrors) As Boolean
 
             'If (sslpolicyerrors = sslpolicyerrors.None) Then
             '    Return True

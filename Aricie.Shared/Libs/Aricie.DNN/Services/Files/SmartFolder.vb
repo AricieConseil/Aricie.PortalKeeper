@@ -18,7 +18,7 @@ Namespace Services.Files
         Public Property SelectedFile As String = ""
 
 
-        Private _SmartFile As SmartFile
+        Private _SmartFile As SmartFile(Of T)
 
         <XmlIgnore()> _
         Public Property CurrentFile As SmartFile(Of T)
@@ -30,6 +30,7 @@ Namespace Services.Files
                         Me._SmartFile = SmartFile.LoadSmartFile(Of T)(objFileInfo)
                     End If
                 End If
+                Return _SmartFile
             End Get
             Set(value As SmartFile(Of T))
                 _SmartFile = value

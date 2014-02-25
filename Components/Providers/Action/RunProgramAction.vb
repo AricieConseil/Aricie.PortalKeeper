@@ -11,7 +11,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Desktop, IconOptions.Normal)> _
    <Serializable()> _
-   <System.ComponentModel.DisplayName("Run Program Action")> _
+   <DisplayName("Run Program Action")> _
    <Description("Run an executable program given its path and parameters")> _
     Public Class RunProgramAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)

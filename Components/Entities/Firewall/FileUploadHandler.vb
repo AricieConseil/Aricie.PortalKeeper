@@ -67,22 +67,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'If Context.User.Identity.Name IsNot Nothing Then
             Dim loginStatus As UserLoginStatus = UserLoginStatus.LOGIN_SUCCESS
 
-            Dim objUser As UserInfo = UserController.UserLogin(Aricie.DNN.Services.NukeHelper.PortalId, userName, password, "", "", "", loginStatus, True)
+            Dim objUser As UserInfo = UserController.UserLogin(PortalId, userName, password, "", "", "", loginStatus, True)
             If objUser IsNot Nothing Then
                 HttpContext.Current.Items("UserInfo") = objUser
 
-                Dim folderPath = FileSystemUtils.FormatFolderPath(System.IO.Path.GetDirectoryName(filePath).Replace("\"c, "/"c))
-                Dim fileMapPath As String = Path.Combine(Aricie.DNN.Services.DnnContext.Current.Portal.HomeDirectoryMapPath, filePath)
+                Dim folderPath = FileSystemUtils.FormatFolderPath(Path.GetDirectoryName(filePath).Replace("\"c, "/"c))
+                Dim fileMapPath As String = Path.Combine(DnnContext.Current.Portal.HomeDirectoryMapPath, filePath)
                 'Dim folderPath As String = Path.GetDirectoryName(objFile.FileName)
 
-                Dim objFolder As FolderInfo = NukeHelper.FolderController.GetFolder(NukeHelper.PortalId, folderPath, True)
+                Dim objFolder As FolderInfo = NukeHelper.FolderController.GetFolder(PortalId, folderPath, True)
                 If objFolder Is Nothing Then
-                    Dim folderDir As DirectoryInfo = System.IO.Directory.GetParent(fileMapPath)
+                    Dim folderDir As DirectoryInfo = Directory.GetParent(fileMapPath)
                     Dim parentDir As DirectoryInfo = folderDir.Parent
                     If parentDir.Exists Then
                         Dim parentPath As String = folderPath.TrimEnd("/"c)
                         parentPath = parentPath.Substring(0, parentPath.LastIndexOf("/"c) + 1)
-                        Dim parentFolder As FolderInfo = NukeHelper.FolderController.GetFolder(NukeHelper.PortalId, parentPath, True)
+                        Dim parentFolder As FolderInfo = NukeHelper.FolderController.GetFolder(PortalId, parentPath, True)
                         If Not parentFolder Is Nothing Then
                             If Not folderDir.Exists Then
                                 folderDir.Create()
@@ -90,8 +90,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             objFolder = New FolderInfo()
                             objFolder.FolderPath = folderPath
                             objFolder.StorageLocation = 0
-                            Dim folderId As Integer = NukeHelper.FolderController.AddFolder(NukeHelper.PortalId, folderPath)
-                            objFolder = NukeHelper.FolderController.GetFolderInfo(NukeHelper.PortalId, folderId)
+                            Dim folderId As Integer = NukeHelper.FolderController.AddFolder(PortalId, folderPath)
+                            objFolder = NukeHelper.FolderController.GetFolderInfo(PortalId, folderId)
 
                             Dim permc As New PermissionController
                             Dim perm As PermissionInfo = DirectCast(permc.GetPermissionByCodeAndKey("SYSTEM_FOLDER", "WRITE")(0), PermissionInfo)
@@ -103,7 +103,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             fp.FolderID = objFolder.FolderID
                             Dim fpc As New FolderPermissionController
                             fpc.AddFolderPermission(fp)
-                            DotNetNuke.Common.Utilities.DataCache.ClearFolderPermissionsCache(NukeHelper.PortalId)
+                            DataCache.ClearFolderPermissionsCache(PortalId)
                             'If FolderPermissionController.HasFolderPermission(NukeHelper.PortalId, parentPath, "WRITE") Then
 
 
@@ -112,7 +112,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     End If
                 End If
-                If FolderPermissionController.HasFolderPermission(NukeHelper.PortalId, folderPath, "WRITE") Then
+                If FolderPermissionController.HasFolderPermission(PortalId, folderPath, "WRITE") Then
                     'FileSystemUtils.SaveFile(fileMapPath, fileContent)
                     'FileSystemUtils.FormatFolderPath(fileMapPath)
 
