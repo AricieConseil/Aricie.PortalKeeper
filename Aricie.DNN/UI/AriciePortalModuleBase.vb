@@ -101,9 +101,25 @@ Namespace UI.Controls
             End Get
             Set(ByVal Value As GeneralSettings)
                 Me._GeneralSettings = Value
+                SettingsController.SetModuleSettings(Of GeneralSettings)(SettingsScope.ModuleSettings, Me.ModuleId, Value)
             End Set
         End Property
 
+        Public Function GetTabModuleSettings(Of T As Class)() As T
+            Return SettingsController.GetModuleSettings(Of T)(SettingsScope.TabModuleSettings, Me.TabModuleId)
+        End Function
+
+        Public Sub SetTabModuleSettings(Of T As Class)(value As T)
+            SettingsController.SetModuleSettings(Of T)(SettingsScope.TabModuleSettings, Me.TabModuleId, value)
+        End Sub
+
+        Public Function GetModuleSettings(Of T As Class)() As T
+            Return SettingsController.GetModuleSettings(Of T)(SettingsScope.ModuleSettings, Me.ModuleId)
+        End Function
+
+        Public Sub SetModuleSettings(Of T As Class)(value As T)
+            SettingsController.SetModuleSettings(Of T)(SettingsScope.ModuleSettings, Me.ModuleId, value)
+        End Sub
 
 
         <Browsable(False), DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)> _

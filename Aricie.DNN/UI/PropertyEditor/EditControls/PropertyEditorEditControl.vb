@@ -93,26 +93,20 @@ Namespace UI.WebControls.EditControls
                         AndAlso CType(Me.ParentAricieField.Editor, CollectionEditControl).DisplayStyle = CollectionDisplayStyle.Accordion Then
                     Me.Controls.Add(Me._InnerEditor)
                 Else
-                    Dim myPeIco As IconActionControl
                     Dim strCssClass As String = "odd"
-                    If _ActionButton IsNot Nothing Then
-                        myPeIco = New IconActionControl()
-                        myPeIco.ActionItem = _ActionButton.IconAction
-                        myPeIco.Text = Me.Value.GetType.Name
-                        myPeIco.ResourceKey = Me.Value.GetType.Name & "_Title"
-                        Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
-                        If ariciePropCt IsNot Nothing Then
-                            If (Not ariciePropCt Is Nothing) Then
-                                If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
-                                    strCssClass = "even"
-                                End If
-                            End If
-                        End If
+                    If _ActionButton IsNot Nothing AndAlso TypeOf Me._InnerEditor Is AriciePropertyEditorControl Then
+                        DirectCast(Me._InnerEditor, AriciePropertyEditorControl).ActionButton = Me._ActionButton
                     End If
 
                     Dim subPE As Control = AddSubDiv(Me._InnerEditor, strCssClass)
-                    If myPeIco IsNot Nothing Then
-                        subPE.Controls.AddAt(0, myPeIco)
+
+                    Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
+                    If ariciePropCt IsNot Nothing Then
+                        If (Not ariciePropCt Is Nothing) Then
+                            If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
+                                strCssClass = "even"
+                            End If
+                        End If
                     End If
 
                     Me.Controls.Add(subPE)

@@ -192,6 +192,7 @@
     <Compile Include="Config\VirtualCustomErrorUpdater.vb" />
     <Compile Include="Config\XmlNamedConfigElementInfo.vb" />
     <Compile Include="Diagnostics\Constants.vb" />
+    <Compile Include="Diagnostics\DebugEventArgs.vb" />
     <Compile Include="Diagnostics\DebugInfoScope.vb" />
     <Compile Include="Entities\APICredentials.vb" />
     <Compile Include="Entities\FileUpload.vb" />

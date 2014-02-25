@@ -228,7 +228,7 @@ Namespace UI
 
         Public Function AddSubDiv(ByVal childControl As Control, Optional ByVal additionnalCSS As String = "") As Control
             Dim objDiv As New HtmlGenericControl("div")
-            objDiv.ID = "div" & childControl.ID
+            'objDiv.ID = "div" & childControl.ID
             objDiv.Attributes.Add("class", String.Format("SubDiv {0}", additionnalCSS))
             'objDiv.Attributes.CssStyle.Add(HtmlTextWriterStyle.MarginLeft, "20px")
             'objDiv.Attributes.CssStyle.Add(HtmlTextWriterStyle.MarginTop, "20px")
