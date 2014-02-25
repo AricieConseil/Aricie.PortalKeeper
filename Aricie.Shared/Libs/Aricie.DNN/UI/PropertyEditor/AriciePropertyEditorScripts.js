@@ -74,7 +74,7 @@ function initialisePropertyEditorsScripts() {
         collapsible: true
     });
 
-    jQuery('> h3.ui-accordion-header a', selectedNode).click(function () {
+    jQuery('> h3.ui-accordion-header>a', selectedNode).click(function () {
         var h3 = jQuery(this).parent();
         var index = h3.parent().children('h3.ui-accordion-header').index(h3);
         var cookieVal = eval(jQuery.cookie(cookieAccName));
@@ -165,13 +165,11 @@ function get_cookies_array() {
 function SelectAndActivateParentHeader(src) {
     var targetItem = jQuery(src).parent().parent().find(">a");
     targetItem.attr('onclick','')
-    //targetItem.unbind('click');
-    //targetItem.click(function (e) {
-    //    return false;
-    //});
+   
   
-    targetItem.click();
-    return false;
+   targetItem.click();
+    //return false;
+    window.location.hash = targetItem.attr("href");
 }
 
 // Register the class as a type that inherits from Sys.UI.Control.
