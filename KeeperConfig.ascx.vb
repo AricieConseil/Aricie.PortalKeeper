@@ -110,7 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected ReadOnly Property KeeperModuleSettings() As KeeperModuleSettings
             Get
-                Return Me.GetTabModuleSettings(Of KeeperModuleSettings)()
+                Return Me.GetModuleSettings(Of KeeperModuleSettings)()
             End Get
         End Property
 
@@ -299,7 +299,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 Me.KC.DataSource = Me.KeeperConfig
                 Me.KC.DataBind()
             Else
-                If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Me.KeeperModuleSettings.AssignUserBot Then
+                If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Not String.IsNullOrEmpty(Me.KeeperModuleSettings.UserBotName) Then
                     If Me.KeeperModuleSettings.UserBot IsNot Nothing AndAlso Me.KeeperModuleSettings.UserBot.Bot IsNot Nothing Then
                         Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                         If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
@@ -392,7 +392,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                         Me.divPortalSettings.Visible = True
                     End If
                 End If
-                If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Me.KeeperModuleSettings.AssignUserBot Then
+                If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Not String.IsNullOrEmpty(Me.KeeperModuleSettings.UserBotName) Then
                     If Me.KeeperModuleSettings.UserBot IsNot Nothing Then
                         Me.divUserBot.Visible = True
                         If Not DotNetNuke.Security.Permissions.ModulePermissionController.HasModulePermission(Me.ModuleConfiguration.ModulePermissions, "EDIT") Then

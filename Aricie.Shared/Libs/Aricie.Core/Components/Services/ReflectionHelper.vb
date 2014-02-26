@@ -784,7 +784,7 @@ Namespace Services
                 ReflectionHelper.Serialize(objObject, omitDeclaration, objTextWriter)
             End Using
 
-            Dim xmlSerializedObject As New XmlDocument
+            Dim xmlSerializedObject As New XmlDocument()
 
             Using objStringReader As New StringReader(objStringBuilder.ToString())
                 xmlSerializedObject.Load(objStringReader)
