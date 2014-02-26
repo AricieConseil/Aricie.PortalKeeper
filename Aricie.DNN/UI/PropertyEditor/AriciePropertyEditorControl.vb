@@ -1036,8 +1036,8 @@ Namespace UI.WebControls
                 Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
                 If Not targetType Is GetType(SubPathContainer) Then
                     targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
-                    For Each objEntity As Object In objContainer.GetParentEntities()
-                        If objEntity.GetType.IsAssignableFrom(targetType) Then
+                    For Each objEntity As Object In objContainer.GetParentEntities().Values
+                        If targetType.IsInstanceOfType(objEntity) Then
                             targetEntity = objEntity
                             Exit For
                         End If
