@@ -280,13 +280,10 @@
       <DependentUpon>Error.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Settings.ascx.designer.vb">
-      <DependentUpon>Settings.ascx</DependentUpon>
-    </Compile>
-    <Compile Include="Settings.ascx.vb">
+    <Content Include="Settings.ascx.vb">
       <DependentUpon>Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Compile>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aricie.PortalKeeper.Default.config" />

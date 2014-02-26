@@ -18,6 +18,7 @@ Imports DotNetNuke.Security.Permissions
 Imports DotNetNuke.Entities.Users
 Imports System.Xml
 Imports DotNetNuke.Services.Localization
+Imports System.IO
 
 Namespace Services.Files
     <Serializable()> _
@@ -38,7 +39,7 @@ Namespace Services.Files
 
         Protected _SaltBytes As Byte()
 
-        Private _PayLoad As String = ""
+        Private _PayLoad As New CData("")
 
         Public Property Key As EntityKey
 
@@ -110,12 +111,12 @@ Namespace Services.Files
 
         <ConditionalVisible("ShowPayLoad", False, True)> _
         <IsReadOnly(True)>
-        Public Property PayLoad As String
+        Public Property PayLoad As CData
             Get
                 Return _PayLoad
             End Get
-            Set(value As String)
-                If _PayLoad <> value Then
+            Set(value As CData)
+                If _PayLoad.Value <> value.Value Then
                     Me.Compressed = False
                     Me.Encrypted = False
                 End If
@@ -307,13 +308,14 @@ Namespace Services.Files
 
 #Region "Shared Methods"
 
-        Public Shared Function GetFileInfo(key As EntityKey, settings As SmartFileInfo) As FileInfo
+        Public Shared Function GetFileInfo(key As EntityKey, settings As SmartFileInfo) As DotNetNuke.Services.FileSystem.FileInfo
             Dim objPath As String = settings.GetPath(key)
             Dim fileName As String = System.IO.Path.GetFileName(objPath)
-            Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(key.PortalId, objPath)
+            Dim folderPath As String = settings.GetFolderPath(key)
+            Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(key.PortalId, folderPath)
             If objFolderInfo IsNot Nothing Then
                 Dim objFiles As IEnumerable(Of DotNetNuke.Services.FileSystem.FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolderInfo)
-                For Each objFile As FileInfo In objFiles
+                For Each objFile As DotNetNuke.Services.FileSystem.FileInfo In objFiles
                     If objFile.FileName = fileName Then
                         Return objFile
                     End If
@@ -324,10 +326,10 @@ Namespace Services.Files
 
         Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, encrypter As IEncrypter, settings As SmartFileInfo) As T
             Dim toReturn As T
-            Dim objFileInfo As FileInfo = GetFileInfo(key, settings)
+            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
-                Dim objSmartFile As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetChars(content))
+                Dim objSmartFile As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetString(content))
                 objSmartFile.SetEncrypter(encrypter)
                 toReturn = objSmartFile.Value
             End If
@@ -335,11 +337,11 @@ Namespace Services.Files
         End Function
 
         Public Shared Function LoadSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo) As SmartFile(Of T)
-            Dim objFileInfo As FileInfo = GetFileInfo(key, settings)
+            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
             Return LoadSmartFile(Of T)(objFileInfo)
         End Function
 
-        Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As FileInfo) As SmartFile(Of T)
+        Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile(Of T)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
                 Return ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetChars(content))
@@ -349,83 +351,97 @@ Namespace Services.Files
 
 
         Public Shared Function SaveSmartFile(value As SmartFile, settings As SmartFileInfo) As Boolean
-            Dim objPath As String = settings.GetPath(value.Key)
-            Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(value.Key.PortalId, objPath)
-            If objFolderInfo Is Nothing Then
-                Dim permissionUserId As Integer = -1
-                If (settings.GrantUserView OrElse settings.GrantUserEdit) AndAlso value.Key.UserName <> "" Then
-                    Dim objUser As UserInfo = DotNetNuke.Entities.Users.UserController.GetUserByName(value.Key.PortalId, value.Key.UserName)
-                    If objUser IsNot Nothing Then
-                        permissionUserId = objUser.UserID
+            If value IsNot Nothing Then
+                value.Wrap(settings)
+                Dim objFolderPäth As String = settings.GetFolderPath(value.Key)
+                Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(value.Key.PortalId, objFolderPäth)
+                If objFolderInfo Is Nothing Then
+                    Dim permissionUserId As Integer = -1
+                    If (settings.GrantUserView OrElse settings.GrantUserEdit) AndAlso value.Key.UserName <> "" Then
+                        Dim objUser As UserInfo = DotNetNuke.Entities.Users.UserController.GetUserByName(value.Key.PortalId, value.Key.UserName)
+                        If objUser IsNot Nothing Then
+                            permissionUserId = objUser.UserID
+                        End If
                     End If
+                    CreateSecureFoldersRecursive(value.Key.PortalId, objFolderPäth, permissionUserId, settings)
+                    objFolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(value.Key.PortalId, objFolderPäth)
                 End If
-                CreateSecureFoldersRecursive(value.Key.PortalId, objPath, permissionUserId, settings)
-                objFolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(value.Key.PortalId, objPath)
-            End If
-            If objFolderInfo IsNot Nothing Then
-                Dim objFileInfo As FileInfo = GetFileInfo(value.Key, settings)
-                If objFileInfo Is Nothing Then
-                    objFileInfo = New FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
-                    Dim result As Integer = NukeHelper.FileController.AddFile(objFileInfo)
-                    If result > 0 Then
-                        Dim content As Byte() = Encoding.UTF8.GetBytes(ReflectionHelper.Serialize(value, False).OuterXml)
-                        ObsoleteDNNProvider.Instance.UpdateFileContent(objFileInfo, content)
-                    Else
+                If objFolderInfo IsNot Nothing Then
+                    Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(value.Key, settings)
+                    'If objFileInfo Is Nothing Then
+                    Dim objPath As String = settings.GetPath(value.Key)
+                    objFileInfo = New DotNetNuke.Services.FileSystem.FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
+                    Dim doc As XmlDocument = ReflectionHelper.Serialize(value, False)
+                    Dim content As Byte()
+                    Using ms As New MemoryStream()
+                        Using sw As New StreamWriter(ms)
+                            Dim objXmlSettings As New XmlWriterSettings
+                            objXmlSettings.Encoding = Encoding.UTF8
+                            objXmlSettings.Indent = True
+                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                                ReflectionHelper.Serialize(value, writer)
+                            End Using
+                        End Using
+                        content = ms.ToArray()
+                    End Using
+                    Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content)
+                    If result < 0 Then
                         Throw New ApplicationException("Save failed, DNN returned " & result.ToString(CultureInfo.InvariantCulture))
                     End If
+                    'End If
+                Else
+                    Throw New ApplicationException("Could not access Smart File Storage")
                 End If
             Else
-                Throw New ApplicationException("Could not access Smart File Storage")
+                Throw New ApplicationException("Cannot save null smartfile")
             End If
+            
             Return True
         End Function
 
         Protected Shared Sub CreateSecureFoldersRecursive(portalId As Integer, path As String, permissionUserId As Integer, settings As SmartFileInfo)
-            If path.Contains("/"c) Then
-                Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(portalId, path)
-                If objFolderInfo Is Nothing Then
-                    Dim parentPath As String = path.TrimEnd("/"c)
-                    If parentPath.Contains("/"c) Then
-                        parentPath = parentPath.Substring(0, parentPath.LastIndexOf("/"c))
-                        CreateSecureFoldersRecursive(portalId, parentPath, -1, settings)
-                    End If
-                    Dim folder As New FolderInfo() With { _
-                        .PortalID = portalId, _
-                        .FolderPath = path, _
-                        .StorageLocation = 2, _
-                        .IsProtected = False, _
-                        .IsCached = False _
-                    }
-                    ObsoleteDNNProvider.Instance.AddFolder(folder)
-                    folder = ObsoleteDNNProvider.Instance.GetFolderFromPath(folder.PortalID, folder.FolderPath)
-                    If folder IsNot Nothing Then
-                        If permissionUserId > 0 Then
-                            Dim fpc As New FolderPermissionController()
-                            If settings.GrantUserView Then
-                                Dim fp As New FolderPermissionInfo()
-                                With fp
-                                    .UserID = permissionUserId
-                                    .FolderID = folder.FolderID
-                                    .FolderPath = folder.FolderPath
-                                    .PermissionCode = "VIEW"
-                                    .PermissionKey = "VIEW"
-                                End With
-                                fpc.AddFolderPermission(fp)
-                            End If
-                            If settings.GrantUserEdit Then
-                                Dim fp As New FolderPermissionInfo()
-                                With fp
-                                    .UserID = permissionUserId
-                                    .FolderID = folder.FolderID
-                                    .FolderPath = folder.FolderPath
-                                    .PermissionCode = "EDIT"
-                                    .PermissionKey = "EDIT"
-                                End With
-                                fpc.AddFolderPermission(fp)
-                            End If
+            Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(portalId, path)
+            If objFolderInfo Is Nothing Then
+                Dim parentPath As String = path.TrimEnd("/"c)
+                If parentPath.Contains("/"c) Then
+                    parentPath = parentPath.Substring(0, parentPath.LastIndexOf("/"c))
+                    CreateSecureFoldersRecursive(portalId, parentPath, -1, settings)
+                End If
+                Dim folder As New FolderInfo() With { _
+                    .PortalID = portalId, _
+                    .FolderPath = path, _
+                    .StorageLocation = 2, _
+                    .IsProtected = False, _
+                    .IsCached = False _
+                }
+                ObsoleteDNNProvider.Instance.AddFolder(folder)
+                folder = ObsoleteDNNProvider.Instance.GetFolderFromPath(folder.PortalID, folder.FolderPath)
+                If folder IsNot Nothing Then
+                    If permissionUserId > 0 Then
+                        Dim fpc As New FolderPermissionController()
+                        If settings.GrantUserView Then
+                            Dim fp As New FolderPermissionInfo()
+                            With fp
+                                .UserID = permissionUserId
+                                .FolderID = folder.FolderID
+                                .FolderPath = folder.FolderPath
+                                .PermissionCode = "VIEW"
+                                .PermissionKey = "VIEW"
+                            End With
+                            fpc.AddFolderPermission(fp)
+                        End If
+                        If settings.GrantUserEdit Then
+                            Dim fp As New FolderPermissionInfo()
+                            With fp
+                                .UserID = permissionUserId
+                                .FolderID = folder.FolderID
+                                .FolderPath = folder.FolderPath
+                                .PermissionCode = "EDIT"
+                                .PermissionKey = "EDIT"
+                            End With
+                            fpc.AddFolderPermission(fp)
                         End If
                     End If
-
                 End If
             End If
         End Sub
@@ -489,8 +505,18 @@ Namespace Services.Files
                 Return _Value
             End Get
             Set(value As T)
+                _Value = value
                 If value IsNot Nothing Then
-                    Me.PayLoad = Aricie.Services.ReflectionHelper.Serialize(value).OuterXml
+                    Dim sb As New StringBuilder()
+                    Using sw As New StringWriter(sb)
+                        Dim objXmlSettings As New XmlWriterSettings
+                        objXmlSettings.Encoding = Encoding.UTF8
+                        objXmlSettings.Indent = True
+                        Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                            ReflectionHelper.Serialize(value, writer)
+                        End Using
+                    End Using
+                    Me.PayLoad = sb.ToString()
                 Else
                     Me.PayLoad = ""
                 End If

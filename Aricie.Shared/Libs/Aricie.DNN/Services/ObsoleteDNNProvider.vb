@@ -19,7 +19,7 @@ Namespace Services
             Dim resourceName As [String] = New AssemblyName(args.Name).Name + ".dll"
             For Each realResourceName As String In Assembly.GetExecutingAssembly().GetManifestResourceNames()
                 If realResourceName.Contains(resourceName) Then
-                    Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(resourceName)
+                    Using stream = Assembly.GetExecutingAssembly().GetManifestResourceStream(realResourceName)
                         Dim assemblyData As [Byte]() = New [Byte](CInt(stream.Length - 1)) {}
                         stream.Read(assemblyData, 0, assemblyData.Length)
                         Return Assembly.Load(assemblyData)
@@ -79,6 +79,17 @@ Namespace Services
             NukeHelper.FolderController.AddFolder(objFolderInfo.PortalID, objFolderInfo.FolderPath, objFolderInfo.StorageLocation, objFolderInfo.IsProtected, objFolderInfo.IsCached)
         End Sub
 
+        Public Overridable Function AddOrUpdateFile(objFile As DotNetNuke.Services.FileSystem.FileInfo, content As Byte()) As Integer
+            Dim fileId As Integer = objFile.FileId
+            If fileId <= 0 Then
+                fileId = NukeHelper.FileController.AddFile(objFile)
+            End If
+            If fileId > 0 Then
+                NukeHelper.FileController.UpdateFileContent(fileId, content)
+            End If
+            Return fileId
+        End Function
+
         Public Overridable Function GetFolderFromPath(portalId As Integer, path As String) As FolderInfo
             Return NukeHelper.FolderController.GetFolder(portalId, path, False)
         End Function
@@ -89,11 +100,6 @@ Namespace Services
 
         End Function
 
-        Public Overridable Sub UpdateFileContent(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo, content As Byte())
-
-            NukeHelper.FileController.UpdateFileContent(objFileInfo.FileId, content)
-
-        End Sub
 
         Public Overridable Sub ClearFileContent(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo)
 

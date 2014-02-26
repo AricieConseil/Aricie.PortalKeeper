@@ -2,6 +2,7 @@ Imports DotNetNuke.Entities.Modules
 Imports Aricie.DNN.Settings
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Services.Exceptions
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
@@ -10,10 +11,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected Property KeeperModuleSettings() As KeeperModuleSettings
             Get
-                Return GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId)
+                Return GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, Me.ModuleId)
             End Get
             Set(ByVal value As KeeperModuleSettings)
-                SetModuleSettings(Of KeeperModuleSettings)(SettingsScope.TabModuleSettings, Me.TabModuleId, value)
+                SetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, Me.ModuleId, value)
             End Set
         End Property
 
@@ -76,13 +77,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 #Region "Private methods"
 
         Private Sub SaveSettings()
+            Dim resultSettings As KeeperModuleSettings
+            If ctS.DataSource IsNot Nothing Then
+                If TypeOf ctS.DataSource Is KeeperModuleSettings Then
+                    resultSettings = DirectCast(Me.ctS.DataSource, KeeperModuleSettings)
+                ElseIf TypeOf ctS.DataSource Is SubPathContainer Then
+                    resultSettings = DirectCast(DirectCast(Me.ctS.DataSource, SubPathContainer).OriginalEntity, KeeperModuleSettings)
+                End If
+            End If
 
-
-            Dim resultSettings As KeeperModuleSettings = DirectCast(Me.ctS.DataSource, KeeperModuleSettings)
-
-
-            Me.KeeperModuleSettings = resultSettings
-
+            If resultSettings IsNot Nothing Then
+                Me.KeeperModuleSettings = resultSettings
+            End If
 
         End Sub
 

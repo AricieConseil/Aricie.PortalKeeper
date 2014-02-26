@@ -25,24 +25,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("UserBots")> _
-        <ConditionalVisible("EnableUserBots", False, True)> _
-        Public Property AssignUserBot() As Boolean
-            Get
-                Return PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso _AssignUserBot
-            End Get
-            Set(ByVal value As Boolean)
-                _AssignUserBot = value
-            End Set
-        End Property
+        '<ExtendedCategory("UserBots")> _
+        '<ConditionalVisible("EnableUserBots", False, True)> _
+        'Public Property AssignUserBot() As Boolean
+        '    Get
+        '        Return PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso _AssignUserBot
+        '    End Get
+        '    Set(ByVal value As Boolean)
+        '        _AssignUserBot = value
+        '    End Set
+        'End Property
 
 
-
+        '<ConditionalVisible("AssignUserBot", False, True)> _
+        '<ProvidersSelector()> _
         <ExtendedCategory("UserBots")> _
            <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-           <ProvidersSelector()> _
-           <ConditionalVisible("AssignUserBot", False, True)> _
-           <AutoPostBack()> _
+           <Selector("Name", "Name", False, True, "No UserBot assigned", "", True, True)> _
+        <AutoPostBack()> _
         Public Property UserBotName() As String
             Get
                 Return _UserBotName
@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("UserBots")> _
-            <ConditionalVisible("AssignUserBot", False, True)> _
+            <ConditionalVisible("UserBotName", True, True, "")> _
         Public Property DisplayBotConfig() As Boolean
             Get
                 Return _DisplayBotConfig
@@ -64,7 +64,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("UserBots")> _
-            <ConditionalVisible("AssignUserBot", False, True)> _
+            <ConditionalVisible("UserBotName", True, True, "")> _
         Public Property DisplayRankings() As Boolean
             Get
                 Return _DisplayRankings
@@ -74,7 +74,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("AssignUserBot", False, True)> _
+        <ConditionalVisible("UserBotName", True, True, "")> _
         <ExtendedCategory("UserBots")> _
         Public Property EnableActionCommands() As Boolean = True
 
@@ -84,7 +84,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("UserBots")> _
-          <ConditionalVisible("AssignUserBot", False, True)> _
+          <ConditionalVisible("UserBotName", True, True, "")> _
           <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
           <LabelMode(LabelMode.Top)> _
         Public ReadOnly Property UserBot() As UserBotSettings(Of ScheduleEvent)

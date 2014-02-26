@@ -427,7 +427,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                             Dim key As EntityKey = Me.GetUserBotKey(user, pid)
                             'pid, PortalKeeperConfig.Instance.GetModuleName(), user.Username, "UserBots/" & Me.Name, "")
-                            Dim objUserBot As UserBotInfo = SmartFile.LoadAndRead(Of UserBotInfo)(key, encrypter, Me.StorageSettings)
+                            userBot = SmartFile.LoadAndRead(Of UserBotInfo)(key, encrypter, Me.StorageSettings)
 
                     End Select
 
