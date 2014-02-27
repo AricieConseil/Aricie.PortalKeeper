@@ -296,11 +296,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                 If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
                     'Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
-                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, True)
+                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, True)
                     Me.RevertReadonlyParameters(readOnlyUserBot)
                     'Me.UserBot = userBotEntity
                     'Me.BindSettings()
-                    userSettings.SetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Me)
+                    userSettings.SetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Me)
                     Dim key As String = "UserBot" & userSettings.Name
                     ape.Page.Session.Remove(key)
                     ape.DisplayMessage(Localization.GetString("UserBotSaved.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -322,7 +322,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Sub Delete(ByVal ape As AriciePropertyEditorControl)
             Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
             If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
-                userSettings.SetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Nothing)
+                userSettings.SetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Nothing)
                 Dim key As String = "UserBot" & userSettings.Name
                 ape.Page.Session.Remove(key)
                 ape.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())

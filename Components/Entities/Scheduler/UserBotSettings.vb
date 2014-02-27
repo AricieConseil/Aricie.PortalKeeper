@@ -56,7 +56,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _ResourceFile As String = "SharedResources"
 
-        Private _encrypter As IEncrypter
+        'Private _encrypter As IEncrypter
 
 #End Region
 
@@ -87,8 +87,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("MasterBot")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
         Public ReadOnly Property Bot() As BotInfo(Of TEngineEvent)
             Get
                 If _Bot Is Nothing Then
@@ -103,20 +101,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Property Storage As UserBotStorage
+      
 
-        Public Property StorageSettings As New SmartFileInfo
-
-        Public Sub SetEncrypter(encrypter As IEncrypter)
-            _encrypter = encrypter
-        End Sub
-
-        Public ReadOnly Property HasEncrypter As Boolean
-            Get
-                Return _encrypter IsNot Nothing
-            End Get
-        End Property
-
+      
         '<ExtendedCategory("Parameters")> _
         'Public Property Compress() As Boolean
         '    Get
@@ -209,18 +196,42 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '<ExtendedCategory("Management")> _
         'Public Property UserName As String = ""
 
-        <ConditionalVisible("HasEncrypter", True, True, "")> _
+
+        <ExtendedCategory("Storage")> _
+        Public Property Storage As UserBotStorage
+
+        <ExtendedCategory("Storage")> _
+        Public Property StorageSettings As New SmartFileInfo
+
+        'Public Sub SetEncrypter(encrypter As IEncrypter)
+        '    _encrypter = encrypter
+        'End Sub
+
+
+        Private _UserBots As SmartFolder(Of UserBotInfo)
+
+
+        '<ExtendedCategory("Management")> _
+        'Public ReadOnly Property HasEncrypter As Boolean
+        '    Get
+        '        Return _encrypter IsNot Nothing
+        '    End Get
+        'End Property
+
+
         <ExtendedCategory("Management")> _
-        Public ReadOnly Property UserBots As SmartFolder(Of UserBotInfo)
+        Public Property UserBots As SmartFolder(Of UserBotInfo)
             Get
-                Dim toReturn As SmartFolder(Of UserBotInfo)
-                If Me.HasEncrypter Then
-                    Dim key As EntityKey = GetSampleBotKey(PortalId)
-                    Dim strPath As String = Me.StorageSettings.GetFolderPath(key)
-                    toReturn = New SmartFolder(Of UserBotInfo) With {.FolderPath = New FolderPathInfo() With {.PortalId = PortalId, .Path = New SimpleOrExpression(Of String)(strPath), .PathMode = FilePathMode.AdminPath}}
+                If _UserBots Is Nothing Then
+                        Dim key As EntityKey = GetSampleBotKey(PortalId)
+                        Dim strPath As String = Me.StorageSettings.GetFolderPath(key)
+                        _UserBots = New SmartFolder(Of UserBotInfo) With {.FolderPath = New FolderPathInfo() With {.PortalId = PortalId, .Path = New SimpleOrExpression(Of String)(strPath), .PathMode = FilePathMode.AdminPath}}
                 End If
-                Return toReturn
+                Return _UserBots
             End Get
+            Set(value As SmartFolder(Of UserBotInfo))
+                _UserBots = value
+            End Set
         End Property
 
 
@@ -280,11 +291,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Function GetRankings(ByVal encrypter As IEncrypter) As List(Of ProbeRanking)
+        Public Function GetRankings() As List(Of ProbeRanking)
 
             Dim toReturn As List(Of ProbeRanking) = GetGlobal(Of List(Of ProbeRanking))(Me.Name)
             If toReturn Is Nothing Then
-                Dim userBotAccess As New UserBotProbeAccess(encrypter, Me)
+                Dim userBotAccess As New UserBotProbeAccess(Me)
                 AsynchronousProbingTaskQueue.EnqueueTask(userBotAccess)
             End If
             Return toReturn
@@ -294,7 +305,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Friend Function RunUserBots(ByVal encrypter As IEncrypter, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Integer
+        Friend Function RunUserBots(ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Integer
             Dim toreturn As Integer
             If Me.Bot IsNot Nothing Then
                 If (Not forceRun AndAlso Me.Bot.Enabled) OrElse (forceRun AndAlso Me.Bot.ForceRun) Then
@@ -302,7 +313,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(GetPortalUsers(pid))
                         ShuffleList(Of UserInfo)(shuffledUsers)
                         For Each objUser As UserInfo In shuffledUsers
-                            If Me.RunUserBot(objUser, encrypter, events, forceRun) Then
+                            If Me.RunUserBot(objUser, events, forceRun) Then
                                 toreturn += 1
                             End If
                         Next
@@ -312,10 +323,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
-        Friend Function RunUserBot(objUser As UserInfo, ByVal encrypter As IEncrypter, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
+        Friend Function RunUserBot(objUser As UserInfo, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
             Dim toreturn As Boolean
             If Not Me.Bot.AsyncLockBot.ContainsKey(objUser.UserID) Then
-                Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(encrypter, objUser, objUser.PortalID, False)
+                Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(objUser, objUser.PortalID, False)
                 If userBotInfo IsNot Nothing Then
                     If userBotInfo.Enabled Then
                         Dim runContext As New BotRunContext(Of TEngineEvent)(Me.Bot)
@@ -323,7 +334,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         runContext.Events = events
                         runContext.History = userBotInfo.BotHistory
                         runContext.UserParams = userBotInfo.GetParameterValues(objUser)
-                        Dim saver As New UserBotSaver(Me, encrypter, objUser, userBotInfo)
+                        Dim saver As New UserBotSaver(Me, objUser, userBotInfo)
                         runContext.RunEndDelegate = AddressOf saver.SaveBot
                         toreturn = Me.Bot.RunBot(runContext, forceRun)
                     End If
@@ -332,34 +343,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
+        
+        'Public Sub SwitchToSmartFiles()
+        '        If Me._encrypter IsNot Nothing Then
+        '        Me.SwitchToSmartFiles(_encrypter)
+        '        End If
+        'End Sub
+
+
         <ConditionalVisible("HasEncrypter", False, True, UserBotStorage.Personalisation)> _
-        <ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
-       <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+         <ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
         Public Sub SwitchToSmartFiles()
-                If Me._encrypter IsNot Nothing Then
-                Me.SwitchToSmartFiles(_encrypter)
-                End If
-        End Sub
-
-
-       
-        Public Sub SwitchToSmartFiles(ByVal encrypter As IEncrypter)
-                If Me.Storage = UserBotStorage.Personalisation Then
-                    Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(GetPortalUsers(DnnContext.Current.Portal.PortalId))
-                    ShuffleList(Of UserInfo)(shuffledUsers)
-                    For Each objUser As UserInfo In shuffledUsers
-                        Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(PortalKeeperConfig.Instance.SchedulerFarm, objUser, objUser.PortalID, False)
-                        If userBotInfo IsNot Nothing Then
-                            SaveSmartUserBot(encrypter, objUser, DnnContext.Current.Portal.PortalId, userBotInfo)
-                        End If
-                    Next
-                End If
+            If Me.Storage = UserBotStorage.Personalisation Then
+                Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(GetPortalUsers(DnnContext.Current.Portal.PortalId))
+                ShuffleList(Of UserInfo)(shuffledUsers)
+                For Each objUser As UserInfo In shuffledUsers
+                    Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(objUser, objUser.PortalID, False)
+                    If userBotInfo IsNot Nothing Then
+                        SaveSmartUserBot(objUser, DnnContext.Current.Portal.PortalId, userBotInfo)
+                    End If
+                Next
+            End If
         End Sub
 
 
 
 
-        Public Function GetUserBotInfo(ByVal encrypter As IEncrypter, ByVal user As UserInfo, ByVal pid As Integer, ByVal createIfNull As Boolean) As UserBotInfo
+        Public Function GetUserBotInfo(ByVal user As UserInfo, ByVal pid As Integer, ByVal createIfNull As Boolean) As UserBotInfo
 
             Dim userBot As UserBotInfo = Nothing '= CacheHelper.GetGlobal(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
             Try
@@ -403,7 +414,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 If userDataFormat.Encrypted Then
                                     Try
 
-                                        Dim tempData As String = encrypter.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
+                                        Dim tempData As String = Me.StorageSettings.Encryption.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
                                         userData = tempData
                                     Catch ex As Exception
                                         Exceptions.LogException(ex)
@@ -427,7 +438,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                             Dim key As EntityKey = Me.GetUserBotKey(user, pid)
                             'pid, PortalKeeperConfig.Instance.GetModuleName(), user.Username, "UserBots/" & Me.Name, "")
-                            userBot = SmartFile.LoadAndRead(Of UserBotInfo)(key, encrypter, Me.StorageSettings)
+                            userBot = SmartFile.LoadAndRead(Of UserBotInfo)(key, Me.StorageSettings)
 
                     End Select
 
@@ -460,7 +471,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return userBot
         End Function
 
-        Public Sub SetUserBotInfo(ByVal encrypter As IEncrypter, ByVal user As UserInfo, ByVal pid As Integer, ByVal objUserBotInfo As UserBotInfo)
+        Public Sub SetUserBotInfo(ByVal user As UserInfo, ByVal pid As Integer, ByVal objUserBotInfo As UserBotInfo)
 
             Select Case Me.Storage
                 Case UserBotStorage.Personalisation
@@ -480,7 +491,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                         If Me.StorageSettings.Encrypt Then
                             objUserBotFormat.Encrypted = True
-                            userData = encrypter.Encrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
+                            userData = Me.StorageSettings.Encryption.DoEncrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
                         Else
                             objUserBotFormat.Encrypted = False
                         End If
@@ -498,7 +509,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     'Dim key As EntityKey = Me.GetUserBotKey(user, pid)
                     'Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings, encrypter)
                     'SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
-                    Me.SaveSmartUserBot(encrypter, user, pid, objUserBotInfo)
+                    Me.SaveSmartUserBot(user, pid, objUserBotInfo)
             End Select
 
 
@@ -508,9 +519,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private Sub SaveSmartUserBot(ByVal encrypter As IEncrypter, user As UserInfo, pid As Integer, objUserBotInfo As UserBotInfo)
+        Private Sub SaveSmartUserBot(user As UserInfo, pid As Integer, objUserBotInfo As UserBotInfo)
             Dim key As EntityKey = Me.GetUserBotKey(user, pid)
-            Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings, encrypter)
+            Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings)
             SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
         End Sub
 
@@ -524,7 +535,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                .PortalId = pid,
                                .Application = PortalKeeperConfig.Instance.GetModuleName(),
                                .UserName = user.Username,
-                               .Entity = "UserBots/" & Me.Name,
+                               .Entity = Me.Name,
                                .Field = ""
                                }
             Return key
@@ -619,7 +630,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 Dim users As List(Of UserInfo) = GetPortalUsers(pid)
                                 For Each objUser As UserInfo In users
                                     If objUser.Membership.Approved Then
-                                        Dim objUserBotInfo As UserBotInfo = objProbeAccess.UserBotSettings.GetUserBotInfo(objProbeAccess.Encrypter, objUser, pid, False)
+                                        Dim objUserBotInfo As UserBotInfo = objProbeAccess.UserBotSettings.GetUserBotInfo(objUser, pid, False)
                                         If objUserBotInfo IsNot Nothing AndAlso objUserBotInfo.Enabled Then
                                             Dim objProbeInstance As ProbeInstance = objParamProb.GetProbe(objUserBotInfo, objUser)
                                             If objProbeInstance IsNot Nothing Then
@@ -698,8 +709,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class UserBotProbeAccess
             Inherits UserBotAccess
 
-            Public Sub New(ByVal encrypter As IEncrypter, objUserBotSettings As UserBotSettings(Of TEngineEvent))
-                MyBase.New(encrypter)
+            Public Sub New(objUserBotSettings As UserBotSettings(Of TEngineEvent))
+                MyBase.New(objUserBotSettings.StorageSettings.Encryption)
                 Me._UserBotSettings = objUserBotSettings
 
             End Sub
@@ -722,8 +733,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Class UserBotSaver
             Inherits UserBotAccess
 
-            Public Sub New(ByVal userSettings As UserBotSettings(Of TEngineEvent), ByVal encrypter As IEncrypter, ByVal objUser As UserInfo, ByVal userBot As UserBotInfo)
-                MyBase.New(encrypter)
+            Public Sub New(ByVal userSettings As UserBotSettings(Of TEngineEvent), ByVal objUser As UserInfo, ByVal userBot As UserBotInfo)
+                MyBase.New(userSettings.StorageSettings.Encryption)
                 Me._UserBotSettings = userSettings
                 'Me._EncryptionKey = encryptionKey
                 'Me._InitVector = initVector
@@ -779,7 +790,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Public Sub SaveBot(ByVal botHistory As WebBotHistory, ByVal runContext As PortalKeeperContext(Of TEngineEvent))
                 Me._UserBot.BotHistory = botHistory
-                Me._UserBotSettings.SetUserBotInfo(Me.Encrypter, Me._User, Me._User.PortalID, Me._UserBot)
+                Me._UserBotSettings.SetUserBotInfo(Me._User, Me._User.PortalID, Me._UserBot)
 
             End Sub
 

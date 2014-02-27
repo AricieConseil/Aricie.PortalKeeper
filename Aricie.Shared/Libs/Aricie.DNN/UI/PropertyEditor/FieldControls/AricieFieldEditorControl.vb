@@ -214,7 +214,7 @@ Public Class AricieFieldEditorControl
                 Case Else
                     If objType.IsEnum Then
                         propEditor = New EnumEditControl(editorInfo.Type)
-                    ElseIf editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) Then
+                    ElseIf editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
                         editorInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top
                         If objType.GetInterface("ICollection") IsNot Nothing Then
                             If objType.GetInterface("IDictionary") IsNot Nothing Then
