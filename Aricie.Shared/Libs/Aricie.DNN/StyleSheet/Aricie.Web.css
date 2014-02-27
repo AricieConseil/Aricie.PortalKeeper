@@ -191,3 +191,64 @@ a.caldisabled,a.caldisabled:link,a.caldisabled:hover,a.caldisabled:visited {
 	min-width: 100%;
 	*width: 100%;	
 }
+
+
+/* ===Icons=== */
+/* Action Button*/
+
+.aricieAction
+{
+	display: inline-block;
+	padding: 9px 9px;
+	margin: 4px;
+	cursor: pointer; /*-moz-min-width: 75px;     -ms-min-width: 75px;     -o-min-width: 75px;     -webkit-min-width: 75px;     min-width: 75px;*/
+	border: 1px solid #c2c2c2;
+	-webkit-border-radius: 3px;
+	-ms-border-radius: 3px;
+	border-radius: 3px;
+	text-decoration: none;
+	text-align: center;
+	color: #70b1c7;
+	background-color: #fff;
+}
+    .aricieAction.aspNetDisabled {
+    cursor:not-allowed;
+}
+.aricieAction:hover,
+.dnnForm .ui-accordion h3.ui-accordion-header .aricieAction:hover
+{
+	background-color: #70b1c7;
+	color: #eee;
+}
+    .aspNetDisabled.aricieAction:hover,
+    .dnnForm .ui-accordion h3.ui-accordion-header .aspNetDisabled.aricieAction:hover {
+    color: #70b1c7;
+	background-color: #fff;
+    
+    }
+* + html  .aricieAction
+{
+	display: inline;
+	zoom: 1;
+}
+.aricieIcon
+{
+	padding:0 0 0 10px;
+	}
+.aricieAction p
+{
+	margin: 0;
+	padding: 0;
+}
+.aricieActions input
+{
+	float:none;
+	}
+.actionText
+{
+	padding-left: 1em;
+}
+.aricieActions {
+
+text-align:center;
+}
