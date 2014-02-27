@@ -178,6 +178,9 @@ Namespace UI.WebControls
             If (Not String.IsNullOrEmpty(Url) AndAlso ActionItem.StackedIconName = IconName.None AndAlso Me.Enabled) Then
                 MyBase.RenderChildren(writer)
             Else
+                If String.IsNullOrEmpty(Me.CssClass) Then
+                    Me.CssClass = "aricieIcon"
+                End If
                 MyBase.Render(writer)
             End If
         End Sub
