@@ -10,7 +10,7 @@ Imports Aricie.Services
 
 Namespace UI.WebControls
     Public Class SubPathContainer
-        Implements ISelector(Of KeyValuePair(Of String, String))
+        Implements ISelector(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String))
 
         Private _SubEntities As New Dictionary(Of String, Object)
 
@@ -46,10 +46,10 @@ Namespace UI.WebControls
         Public Function GetParentEntities() As Dictionary(Of String, Object)
             Dim toReturn As New Dictionary(Of String, Object)
             toReturn.Add("", Me.OriginalEntity)
-            Dim innerList As IList(Of KeyValuePair(Of String, String)) = Me.GetSelectorG("Path")
-            For Each pathPair As KeyValuePair(Of String, String) In innerList
-                If Path.Contains(pathPair.Value) AndAlso Not Path = pathPair.Value Then
-                    toReturn(pathPair.Value) = GetSubEntity(pathPair.Value)
+            Dim innerList As IList(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)) = Me.GetSelectorG("Path")
+            For Each pathPair As KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String) In innerList
+                If Path.Contains(pathPair.Key.Text) AndAlso Not Path = pathPair.Key.Text Then
+                    toReturn(pathPair.Key.Text) = GetSubEntity(pathPair.Key.Text)
                 End If
             Next
             Return toReturn
@@ -78,26 +78,34 @@ Namespace UI.WebControls
             Return DirectCast(GetSelectorG(propertyName), IList)
         End Function
 
-        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of String, String)) Implements ISelector(Of KeyValuePair(Of String, String)).GetSelectorG
-            Dim toReturn As New List(Of KeyValuePair(Of String, String))
+        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)) Implements ISelector(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)).GetSelectorG
+            Dim toReturn As New List(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String))
             Dim dicoBuilder As New StringBuilder()
             Dim split As String() = Me.OriginalPath.Split("."c)
             Select Case propertyName
                 Case "Path"
                     For i As Integer = LBound(split) To UBound(split) Step 1
                         Dim segment As String = split(i)
+                        Dim itemIcone = New IconActionInfo()
                         dicoBuilder.Append(segment)
                         Dim subPath As String = dicoBuilder.ToString()
                         If segment.Contains("["c) Then
                             Dim entity As Object = GetSubEntity(subPath)
                             If entity IsNot Nothing Then
+                                'recuperation de l'attribut d'icone
+                                Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
+                                If Not entityButton Is Nothing Then
+                                    itemIcone = entityButton.IconAction
+                                End If
+
+                                'recuperation du friendlyName
                                 Dim strFriendlyName = ReflectionHelper.GetFriendlyName(entity)
                                 If Not strFriendlyName.StartsWith(entity.GetType.Name) Then
                                     segment = """" & strFriendlyName & """"
                                 End If
                             End If
                         End If
-                        toReturn.Add(New KeyValuePair(Of String, String)(segment, subPath))
+                        toReturn.Add(New KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)(New BreadCrumbsEditControl.IconInfo() With {.Text = subPath, .Icon = itemIcone}, segment))
                         If i <> UBound(split) Then
                             dicoBuilder.Append("."c)
                         End If
