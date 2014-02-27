@@ -15,6 +15,7 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Entities
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.UI.Utilities
+Imports System.Collections.Generic
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
