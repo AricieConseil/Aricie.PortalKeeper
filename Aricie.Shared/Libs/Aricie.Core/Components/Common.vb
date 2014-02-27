@@ -81,6 +81,15 @@ Public Module Common
 #Region "Crypto"
 
 
+    Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
+        Return Convert.ToBase64String(Encoding.UTF8.GetBytes(strUtf8))
+    End Function
+
+    Public Function GetUtf8FromBase64(ByVal strBase64 As String) As String
+        Return Encoding.UTF8.GetString(Convert.FromBase64String(strBase64))
+    End Function
+
+
     Public Sub AddRandomDelay()
 
         Thread.Sleep(GetNewSalt(0)(0))
@@ -115,6 +124,8 @@ Public Module Common
 
 
 
+
+
     <Obsolete("Use version with byref byte array salt")>
     Public Function Encrypt(ByVal plainText As String, _
                          ByVal key As String, _
@@ -133,7 +144,7 @@ Public Module Common
 
     Public Function Encrypt(ByVal plainText As String, ByVal key As String, ByVal initVector As String, ByRef salt As Byte()) As String
 
-        If salt.Length = 0 Then
+        If salt Is Nothing OrElse salt.Length = 0 Then
             salt = GetNewSalt(30)
         End If
 

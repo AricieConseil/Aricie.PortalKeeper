@@ -158,6 +158,12 @@ Namespace UI.WebControls
             End Get
         End Property
 
+        Public ReadOnly Property ParentAricieModule() As AriciePortalModuleBase
+            Get
+                Return DirectCast(Me.ParentModule, AriciePortalModuleBase)
+            End Get
+        End Property
+
         Public ReadOnly Property ParentEditor() As PropertyEditorControl
             Get
                 If Me._ParentEditor Is Nothing Then
@@ -666,9 +672,11 @@ Namespace UI.WebControls
 #Region "Inner methods"
 
         Private Sub CreateHeader()
-            Me._headerControl = New PlaceHolder
+            If _headerControl Is Nothing Then
+                Me._headerControl = New PlaceHolder
+            End If
             Me.Controls.Add(_headerControl)
-           
+
         End Sub
 
         Private Sub ProcessSubPath()

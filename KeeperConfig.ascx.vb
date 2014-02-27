@@ -82,11 +82,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                         Dim key As String = "UserBot" & Me.UserBotSettings.Name
                         If Not Me.IsPostBack OrElse Session(key) Is Nothing Then
 
-                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, True)
+                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.UserInfo, Me.PortalId, True)
                         End If
                         _UserBot = DirectCast(Session(key), UserBotInfo)
                         If Me.KeeperModuleSettings.DisplayRankings Then
-                            Dim objRankings As List(Of ProbeRanking) = Me.UserBotSettings.GetRankings(Me.KeeperConfig.SchedulerFarm)
+                            Dim objRankings As List(Of ProbeRanking) = Me.UserBotSettings.GetRankings()
                             If objRankings IsNot Nothing Then
                                 _UserBot.Rankings = objRankings
                             End If
@@ -99,7 +99,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             Set(value As UserBotInfo)
                 Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                 If Me.KeeperConfig.SchedulerFarm.AvailableUserBots.TryGetValue(Me.KeeperModuleSettings.UserBotName, userSettings) Then
-                    userSettings.SetUserBotInfo(Me.KeeperConfig.SchedulerFarm, Me.UserInfo, Me.PortalId, value)
+                    userSettings.SetUserBotInfo(Me.UserInfo, Me.PortalId, value)
                     Dim key As String = "UserBot" & userSettings.Name
                     Session.Remove(key)
                     _UserBot = Nothing

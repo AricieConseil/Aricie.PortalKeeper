@@ -271,6 +271,7 @@
     <Compile Include="Services\Errors\ErrorsHelper.vb" />
     <Compile Include="Services\Errors\MultipleCustomErrorsMode.vb" />
     <Compile Include="Services\Errors\VirtualCustomErrorsInfo.vb" />
+    <Compile Include="Security\EncryptionInfo.vb" />
     <Compile Include="Services\Files\FilePathInfo.vb" />
     <Compile Include="Services\Files\FilePathMode.vb" />
     <Compile Include="Services\Files\SmartFile.vb" />

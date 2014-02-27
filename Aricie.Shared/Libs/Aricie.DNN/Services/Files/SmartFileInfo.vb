@@ -1,14 +1,54 @@
 ﻿Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.Security
+Imports Aricie.DNN.UI.Attributes
+
+
+Namespace Security
+End Namespace
+
 
 Namespace Services.Files
+
+   
+
     <Serializable()> _
     Public Class SmartFileInfo
         Implements IKeyPathFormatter
+
+        <ExtendedCategory("Processing")> _
         Public Overridable Property Sign As Boolean
+        <ExtendedCategory("Processing")> _
         Public Overridable Property Compress As Boolean
+        <ExtendedCategory("Processing")> _
         Public Overridable Property Encrypt As Boolean
+
+        <ExtendedCategory("Keys")> _
+        Public Overridable Property Encryption As New EncryptionInfo
+
+
+
+        '<XmlIgnore()> _
+        '<ExtendedCategory("UserBots")> _
+        '<ConditionalVisible("EnableUserBots", False, True)> _
+        '<Width(450)> _
+        '<Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        'Public Property EncryptionKey() As String
+        '    Get
+        '        Return _EncryptionKey
+        '    End Get
+        '    Set(ByVal value As String)
+        '        _EncryptionKey = value
+        '    End Set
+        'End Property
+
+
+
+
+        <ExtendedCategory("Storage")> _
         Public Overridable Property PathFormat As String = "{Application}/{Entity}/{Field}/{UserName}.xml"
+        <ExtendedCategory("Storage")> _
         Public Overridable Property GrantUserView As Boolean
+        <ExtendedCategory("Storage")> _
         Public Overridable Property GrantUserEdit As Boolean
 
 

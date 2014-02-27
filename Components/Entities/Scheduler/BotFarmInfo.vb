@@ -36,20 +36,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class BotFarmInfo(Of TEngineEvent As IConvertible)
         Inherits NamedConfig
-        Implements IEncrypter
+
 
 
 
 #Region "Private members"
 
-        Private _InitVector As String = String.Empty
-
-        Private _EncryptionKey As String = String.Empty
-
-        Private _EncryptionPrivateKey As String = String.Empty
-        Private _CryptoServiceProvider As RSACryptoServiceProvider
-
-        Private _DnnDecryptionKey As String = String.Empty
+     
 
         Private _Schedule As New STimeSpan(TimeSpan.FromSeconds(15))
 
@@ -87,106 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <IsReadOnly(True)> _
-        <ExtendedCategory("UserBots")> _
-        <ConditionalVisible("EnableUserBots", False, True)>
-        Public Property InitVector() As String
-            Get
-                If String.IsNullOrEmpty(_InitVector) Then
-                    _InitVector = UserController.GeneratePassword(16)
-                End If
-                Return _InitVector
-            End Get
-            Set(ByVal value As String)
-                _InitVector = value
-            End Set
-        End Property
-
-
-        <Browsable(False)>
-        Public Property EncryptedKey() As String
-            Get
-                Try
-                    If String.IsNullOrEmpty(_EncryptionKey) Then
-                        Me._EncryptionKey = UserController.GeneratePassword(64)
-                    End If
-                    Return Common.Encrypt(_EncryptionKey, Me.DnnDecyptionKey, Me._InitVector)
-                Catch ex As Exception
-                    LogException(ex)
-                    Return String.Empty
-                End Try
-            End Get
-            Set(ByVal value As String)
-                If Not String.IsNullOrEmpty(value) Then
-                    Try
-                        _EncryptionKey = Common.Decrypt(value, Me.DnnDecyptionKey, Me._InitVector)
-                    Catch ex As Exception
-                        LogException(ex)
-                    End Try
-                End If
-            End Set
-        End Property
-
-
-        Private ReadOnly Property CryptoServiceProvider As RSACryptoServiceProvider
-            Get
-                If _CryptoServiceProvider Is Nothing Then
-                    _CryptoServiceProvider = New RSACryptoServiceProvider
-                    _CryptoServiceProvider.FromXmlString(Me._EncryptionPrivateKey)
-                End If
-                Return _CryptoServiceProvider
-            End Get
-        End Property
-
-
-        <Browsable(False)>
-        Public Property EncryptedPrivateKey() As String
-            Get
-                Try
-                    If String.IsNullOrEmpty(_EncryptionKey) Then
-                        Me._EncryptionPrivateKey = New RSACryptoServiceProvider(2048).ToXmlString(True)
-                    End If
-                    Return Common.Encrypt(_EncryptionPrivateKey, Me._EncryptionKey, Me._InitVector)
-                Catch ex As Exception
-                    LogException(ex)
-                    Return String.Empty
-                End Try
-            End Get
-            Set(ByVal value As String)
-                If Not String.IsNullOrEmpty(value) Then
-                    Try
-                        _EncryptionPrivateKey = Common.Decrypt(value, Me._EncryptionKey, Me._InitVector)
-                    Catch ex As Exception
-                        LogException(ex)
-                    End Try
-                End If
-            End Set
-        End Property
-
-
-        '<XmlIgnore()> _
-        '<ExtendedCategory("UserBots")> _
-        '<ConditionalVisible("EnableUserBots", False, True)> _
-        '<Width(450)> _
-        '<Editor(GetType(CustomTextEditControl), GetType(EditControl))>
-        'Public Property EncryptionKey() As String
-        '    Get
-        '        Return _EncryptionKey
-        '    End Get
-        '    Set(ByVal value As String)
-        '        _EncryptionKey = value
-        '    End Set
-        'End Property
-
-        Private ReadOnly Property DnnDecyptionKey() As String
-            Get
-                If String.IsNullOrEmpty(_DnnDecryptionKey) Then
-                    _DnnDecryptionKey = WebConfigDocument.SelectSingleNode("configuration/system.web/machineKey").Attributes("decryptionKey").Value
-                End If
-                Return _DnnDecryptionKey
-            End Get
-        End Property
-
+      
         <ExtendedCategory("TechnicalSettings")>
         Public Property Schedule() As STimeSpan
             Get
@@ -263,16 +157,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-        Private Sub ResetEncryptionKey()
-            Me._EncryptionKey = UserController.GeneratePassword(64)
-        End Sub
-
-        <ExtendedCategory("UserBots")> _
-        <ActionButton(IconName.Key, IconOptions.Normal, "ResetEncryptionKey.Alert")>
-        Public Sub ResetEncryptionKey(pmb As AriciePortalModuleBase)
-            Me.ResetEncryptionKey()
-            pmb.AddModuleMessage("ResetEncryptionKey.Completed", ModuleMessage.ModuleMessageType.YellowWarning)
-        End Sub
+      
 
         <ActionButton(IconName.Rocket, IconOptions.Normal)>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
@@ -331,13 +216,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
-        '<ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
-        <ActionButton(IconName.Unlock, IconOptions.Normal)> _
-        Public Sub UnlockUserBotManager()
-            For Each objUserBot As UserBotSettings(Of TEngineEvent) In Me.UserBots.Instances
-                objUserBot.SetEncrypter(Me)
-            Next
-        End Sub
+        ''<ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
+        '<ActionButton(IconName.Unlock, IconOptions.Normal)> _
+        'Public Sub UnlockUserBotManager()
+        '    For Each objUserBot As UserBotSettings(Of TEngineEvent) In Me.UserBots.Instances
+        '        objUserBot.SetEncrypter(Me)
+        '    Next
+        'End Sub
 
 
         'Private Function GetHalfSchedule() As TimeSpan
@@ -383,7 +268,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 For Each userSettings As UserBotSettings(Of TEngineEvent) In Me.AvailableUserBots.Values
 
-                    toreturn += userSettings.RunUserBots(Me, events, forceRun)
+                    toreturn += userSettings.RunUserBots(events, forceRun)
                 Next
             End If
             If Me._EnableLogs Then
@@ -409,21 +294,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End If
         'End Sub
 
-        Public Function Decrypt(payload As String, salt() As Byte) As String Implements IEncrypter.Decrypt
-            Return Common.Decrypt(payload, Me._EncryptionKey, Me._InitVector, salt)
-        End Function
-
-        Public Overridable Sub Sign(ByVal doc As XmlDocument, ParamArray paths As String()) Implements IEncrypter.Sign
-            SignXml(doc, CryptoServiceProvider, paths)
-        End Sub
-
-        Public Overridable Function Verify(ByVal signedDoc As XmlDocument) As Boolean Implements IEncrypter.Verify
-            VerifyXml(signedDoc, CryptoServiceProvider)
-        End Function
-
-        Public Function Encrypt(payload As String, ByRef salt() As Byte) As String Implements IEncrypter.Encrypt
-            Return Common.Encrypt(payload, Me._EncryptionKey, Me._InitVector, salt)
-        End Function
+      
 
 
 

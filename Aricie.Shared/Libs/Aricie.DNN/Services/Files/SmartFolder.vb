@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.Services.FileSystem
 Imports System.Xml.Serialization
+Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Files
     <Serializable()> _
@@ -10,16 +11,18 @@ Namespace Services.Files
         Implements ISelector(Of FileInfo)
 
 
-        <Browsable(False)> _
+        <IsReadOnly(True)> _
         Public Overridable Property FolderPath As New FolderPathInfo()
 
-
+        <AutoPostBack()> _
+        <Editor(GetType(Aricie.DNN.UI.WebControls.EditControls.SelectorEditControl), GetType(EditControl))> _
         <Selector("FileName", "FileId", False, True, "Select a file", "", False, True)>
         Public Property SelectedFile As String = ""
 
 
         Private _SmartFile As SmartFile(Of T)
 
+        <ConditionalVisible("SelectedFile", True, True, "")> _
         <XmlIgnore()> _
         Public Property CurrentFile As SmartFile(Of T)
             Get

@@ -3576,22 +3576,22 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="FileAccessActionProvider`1_File.Header" xml:space="preserve">
     <value>File Settings</value>
   </data>
-  <data name="FileAccessActionProvider`1_PathExpression.Help" xml:space="preserve">
-    <value>Enter here a String expression that resolves into the file path, according to the path choosen above.</value>
+  <data name="PathInfo_Path.Help" xml:space="preserve">
+    <value>Enter here a String or a String expression that resolves into the file path, according to the path mode choosen above.</value>
   </data>
-  <data name="FileAccessActionProvider`1_PathExpression.Text" xml:space="preserve">
-    <value>File Path Expression</value>
+  <data name="PathInfo_Path.Text" xml:space="preserve">
+    <value>File Path</value>
   </data>
-  <data name="FileAccessActionProvider`1_PathMode.Help" xml:space="preserve">
+  <data name="PathInfo_PathMode.Help" xml:space="preserve">
     <value>Enter here the mode to compute the complete file path from the expression below. You can choose to provide the full file mappath or a path relative to the application root, the host "_default" directory or the current portal home directory</value>
   </data>
-  <data name="FileAccessActionProvider`1_PathMode.Text" xml:space="preserve">
+  <data name="PathInfo_PathMode.Text" xml:space="preserve">
     <value>Path Mode</value>
   </data>
-  <data name="FileAccessActionProvider`1_PortalId.Help" xml:space="preserve">
+  <data name="PathInfo_PortalId.Help" xml:space="preserve">
     <value>Select the portal, from which the home directory is computed</value>
   </data>
-  <data name="FileAccessActionProvider`1_PortalId.Text" xml:space="preserve">
+  <data name="PathInfo_PortalId.Text" xml:space="preserve">
     <value>Portal</value>
   </data>
   <data name="FileReadWriteActionProvider`1_UseCompression.Help" xml:space="preserve">
@@ -5027,5 +5027,233 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="UserBotInfo_Save.Text" xml:space="preserve">
     <value>Save your Bot</value>
+  </data>
+  <data name="EncryptionInfo_EncryptedKey.Help" xml:space="preserve">
+    <value>Your symmetrical key was encrypted using the current dotnetnuke instance decryption key. Use the reset keys button to change it to a new or a known version</value>
+  </data>
+  <data name="EncryptionInfo_EncryptedKey.Text" xml:space="preserve">
+    <value>Encrypted Symmetrical Key</value>
+  </data>
+  <data name="EncryptionInfo_EncryptedPrivateKey.Help" xml:space="preserve">
+    <value>Your asymmetrical private key was encrypted using the current encryption key. Use the reset keys button to change it to a new or a known version</value>
+  </data>
+  <data name="EncryptionInfo_EncryptedPrivateKey.Text" xml:space="preserve">
+    <value>Encrypted Asymmetrical Private Key</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionKey.Help" xml:space="preserve">
+    <value>This is your main password, from which your symmpetrical encryption key</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionKey.Text" xml:space="preserve">
+    <value>Symmetrical Key</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionPrivateKey.Help" xml:space="preserve">
+    <value>Those are the parameters used to derive an asymetrical RSA private key</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionPrivateKey.Text" xml:space="preserve">
+    <value>Asymmetrical Private Key</value>
+  </data>
+  <data name="EncryptionInfo_InitVector.Help" xml:space="preserve">
+    <value>This is an auto-generated string that serves customizing the encryption process</value>
+  </data>
+  <data name="EncryptionInfo_InitVector.Text" xml:space="preserve">
+    <value>Init Vector</value>
+  </data>
+  <data name="EncryptionInfo_ResetEncryptionKey.Text" xml:space="preserve">
+    <value>Reset Encryption Keys</value>
+  </data>
+  <data name="EncryptionInfo_Salt.Help" xml:space="preserve">
+    <value>When the encryption key is sealed and encrypted, a salt is generated and saved together with the key.</value>
+  </data>
+  <data name="EncryptionInfo_Salt.Text" xml:space="preserve">
+    <value>Salt</value>
+  </data>
+  <data name="EncryptionInfo_Seal.Text" xml:space="preserve">
+    <value>Seal Keys</value>
+  </data>
+  <data name="Personalisation.Text" xml:space="preserve">
+    <value>Personalisation</value>
+  </data>
+  <data name="ResetEncryption.Completed" xml:space="preserve">
+    <value>Symmetrical and Asymmetrical keys were reset. You can also override them with previously saved versions.</value>
+  </data>
+  <data name="SealEncryption.Completed" xml:space="preserve">
+    <value>Your keys were sealed and a salt generated. Don't forget to save your new configuration. If you want to move your data to a new DotNetNuke instance, you will need to reset and manually restore the previous keys in order for the existing data to be properly processed.</value>
+  </data>
+  <data name="SealEncryptionKey.Alert" xml:space="preserve">
+    <value>Warning: You are about to seal your encryption keys. Make sure you have a copy of them, since they won't be available through the UI nor the API anymore. </value>
+  </data>
+  <data name="SimpleOrExpression`1_Mode.Help" xml:space="preserve">
+    <value>You can choose to directly edit an object value or to enter an expression, which resolves at runtime into an object of the right type</value>
+  </data>
+  <data name="SimpleOrExpression`1_Mode.Text" xml:space="preserve">
+    <value>Definition Mode</value>
+  </data>
+  <data name="SimpleOrExpression`1_Simple.Help" xml:space="preserve">
+    <value>Enter here the direct value to be used</value>
+  </data>
+  <data name="SimpleOrExpression`1_Simple.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SmartFileInfo_Compress.Help" xml:space="preserve">
+    <value>You can choose to compress the resulting string using gzip compression</value>
+  </data>
+  <data name="SmartFileInfo_Compress.Text" xml:space="preserve">
+    <value>Compress</value>
+  </data>
+  <data name="SmartFileInfo_Encrypt.Help" xml:space="preserve">
+    <value>You can choose to encrypt the resulting string with the symmetrical key available in the corresponding tab, and should saved and sealed before data is produced.</value>
+  </data>
+  <data name="SmartFileInfo_Encrypt.Text" xml:space="preserve">
+    <value>Encrypt</value>
+  </data>
+  <data name="SmartFileInfo_Encryption.Help" xml:space="preserve">
+    <value>The parameters below define how the file will be signed and encrypted. Make sure to save the keys to a safe location and seal them before you release your system as public.</value>
+  </data>
+  <data name="SmartFileInfo_Encryption.Text" xml:space="preserve">
+    <value>Encryption Parameters</value>
+  </data>
+  <data name="SmartFileInfo_GrantUserEdit.Help" xml:space="preserve">
+    <value>Check if you want the target user, if any, to be granted Edit permission to the parent folder where the smart file is saved.</value>
+  </data>
+  <data name="SmartFileInfo_GrantUserEdit.Text" xml:space="preserve">
+    <value>Grant Users Edit Permission</value>
+  </data>
+  <data name="SmartFileInfo_GrantUserView.Help" xml:space="preserve">
+    <value>Check if you want the target user, if any, to be granted view permission to the parent folder where the smart file is saved.</value>
+  </data>
+  <data name="SmartFileInfo_GrantUserView.Text" xml:space="preserve">
+    <value>Grant Users View Permission</value>
+  </data>
+  <data name="SmartFileInfo_Keys.Header" xml:space="preserve">
+    <value>Encryption Keys</value>
+  </data>
+  <data name="SmartFileInfo_PathFormat.Help" xml:space="preserve">
+    <value>Use the corresponding pattern as a template to build the paths to save your smart files to. </value>
+  </data>
+  <data name="SmartFileInfo_PathFormat.Text" xml:space="preserve">
+    <value>Path Format</value>
+  </data>
+  <data name="SmartFileInfo_Processing.Header" xml:space="preserve">
+    <value>Processing</value>
+  </data>
+  <data name="SmartFileInfo_Sign.Help" xml:space="preserve">
+    <value>You can choose to sign the Xml documents created through serialization, such that each signed document is checked for authenticity of the signature upon retrieval. The key used is the asymmetrical key available in the corresponding tab and should saved and sealed before data is produced.</value>
+  </data>
+  <data name="SmartFileInfo_Sign.Text" xml:space="preserve">
+    <value>Sign</value>
+  </data>
+  <data name="SmartFileInfo_Storage.Header" xml:space="preserve">
+    <value>Storage Location</value>
+  </data>
+  <data name="SmartFiles.Text" xml:space="preserve">
+    <value>Smart Files</value>
+  </data>
+  <data name="SmartFolder`1_FolderPath.Help" xml:space="preserve">
+    <value>The following data define where the folder is located</value>
+  </data>
+  <data name="SmartFolder`1_FolderPath.Text" xml:space="preserve">
+    <value>Folder Path</value>
+  </data>
+  <data name="SmartFolder`1_SelectedFile.Help" xml:space="preserve">
+    <value>Select a file from the corresponding list to display its content.</value>
+  </data>
+  <data name="SmartFolder`1_SelectedFile.Text" xml:space="preserve">
+    <value>Select File</value>
+  </data>
+  <data name="UserBotSettings`1_Management.Header" xml:space="preserve">
+    <value>Management</value>
+  </data>
+  <data name="UserBotSettings`1_Storage.Header" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="UserBotSettings`1_Storage.Help" xml:space="preserve">
+    <value>Choose how you want to save the user bot data. Several persistence systems are proposed</value>
+  </data>
+  <data name="UserBotSettings`1_Storage.Text" xml:space="preserve">
+    <value>Storage Type</value>
+  </data>
+  <data name="UserBotSettings`1_StorageSettings.Help" xml:space="preserve">
+    <value>A range of options let you define how the data is stored in the choosen persistence system. </value>
+  </data>
+  <data name="UserBotSettings`1_StorageSettings.Text" xml:space="preserve">
+    <value>Storage Settings</value>
+  </data>
+  <data name="UserBotSettings`1_UserBots.Help" xml:space="preserve">
+    <value>Below is a list of all user bot files saved according to your configuration</value>
+  </data>
+  <data name="UserBotSettings`1_UserBots.Text" xml:space="preserve">
+    <value>Registered User Bots</value>
+  </data>
+  <data name="SmartFile_Key.Header" xml:space="preserve">
+    <value>Item Key</value>
+  </data>
+  <data name="SmartFolder`1_CurrentFile.Help" xml:space="preserve">
+    <value>Smart files are embedded files with metadata, optional optimisation and online editing.</value>
+  </data>
+  <data name="SmartFolder`1_CurrentFile.Text" xml:space="preserve">
+    <value>File Details</value>
+  </data>
+  <data name="UserBotSaved.Message" xml:space="preserve">
+    <value>Your bot settings were updated</value>
+  </data>
+  <data name="EntityKey_Application.Text" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="EntityKey_Entity.Text" xml:space="preserve">
+    <value>Entity</value>
+  </data>
+  <data name="EntityKey_Field.Text" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="EntityKey_PortalId.Text" xml:space="preserve">
+    <value>Portal</value>
+  </data>
+  <data name="EntityKey_UserName.Text" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="SmartFileCompressed.Message" xml:space="preserve">
+    <value>File payload was compressed</value>
+  </data>
+  <data name="SmartFileDecompressed.Message" xml:space="preserve">
+    <value>File Payload was decompressed</value>
+  </data>
+  <data name="SmartFile_Compressed.Help" xml:space="preserve">
+    <value>Indicates if the current file content is compressed</value>
+  </data>
+  <data name="SmartFile_Compressed.Text" xml:space="preserve">
+    <value>Is Compressed</value>
+  </data>
+  <data name="SmartFile_Content.Header" xml:space="preserve">
+    <value>File Content</value>
+  </data>
+  <data name="SmartFile_Encrypted.Help" xml:space="preserve">
+    <value>Indicates if the current file content is encrypted</value>
+  </data>
+  <data name="SmartFile_Encrypted.Text" xml:space="preserve">
+    <value>Encrypted</value>
+  </data>
+  <data name="SmartFile_HasEncrypter.Help" xml:space="preserve">
+    <value>Indicates if the file is currently loaded with a custom encrypter</value>
+  </data>
+  <data name="SmartFile_HasEncrypter.Text" xml:space="preserve">
+    <value>Has Encrypter</value>
+  </data>
+  <data name="SmartFile_Key.Text" xml:space="preserve">
+    <value>Object Key</value>
+  </data>
+  <data name="SmartFile_MD5Checksum.Help" xml:space="preserve">
+    <value>Computes a live MD5 Checksum of the actual content</value>
+  </data>
+  <data name="SmartFile_MD5Checksum.Text" xml:space="preserve">
+    <value>MD5  Checksum</value>
+  </data>
+  <data name="SmartFile_Signed.Help" xml:space="preserve">
+    <value>Indicates if the inner Xml Document was signed upon saving. If so, the signature will get verified upon retrieval if applicable.</value>
+  </data>
+  <data name="SmartFile_Signed.Text" xml:space="preserve">
+    <value>Is Signed</value>
+  </data>
+  <data name="SmartFile`1_Value.Header" xml:space="preserve">
+    <value>Value</value>
   </data>
 </root>
