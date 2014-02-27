@@ -225,7 +225,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If _UserBots Is Nothing Then
                         Dim key As EntityKey = GetSampleBotKey(PortalId)
                         Dim strPath As String = Me.StorageSettings.GetFolderPath(key)
-                        _UserBots = New SmartFolder(Of UserBotInfo) With {.FolderPath = New FolderPathInfo() With {.PortalId = PortalId, .Path = New SimpleOrExpression(Of String)(strPath), .PathMode = FilePathMode.AdminPath}}
+                    _UserBots = New SmartFolder(Of UserBotInfo)(Me.StorageSettings.Encryption) With {.FolderPath = New FolderPathInfo() With {.PortalId = PortalId, .Path = New SimpleOrExpression(Of String)(strPath), .PathMode = FilePathMode.AdminPath}}
                 End If
                 Return _UserBots
             End Get

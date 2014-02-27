@@ -19,6 +19,7 @@ Imports DotNetNuke.Entities.Users
 Imports System.Xml
 Imports DotNetNuke.Services.Localization
 Imports System.IO
+Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Files
     <Serializable()> _
@@ -102,6 +103,46 @@ Namespace Services.Files
             End Set
         End Property
 
+       
+
+        <ExtendedCategory("Content")> _
+        Public Property ShowPayLoad As Boolean
+
+
+     
+
+      
+        <Browsable(False)>
+        Public Property PayLoad As CData
+            Get
+                Return _PayLoad
+            End Get
+            Set(value As CData)
+                If _PayLoad.Value <> value.Value Then
+                    Me.Compressed = False
+                    Me.Encrypted = False
+                End If
+                _PayLoad = value
+            End Set
+        End Property
+
+
+
+        <LineCount(20)> _
+      <Width(500)> _
+      <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+       <ExtendedCategory("Content")> _
+     <ConditionalVisible("ShowPayLoad", False, True)> _
+       <XmlIgnore()> _
+        Public Property EditPayLoad As String
+            Get
+                Return _PayLoad.Value
+            End Get
+            Set(value As String)
+                _PayLoad.Value = value
+            End Set
+        End Property
+
         <ExtendedCategory("Content")> _
         Public ReadOnly Property MD5Checksum As String
             Get
@@ -117,25 +158,6 @@ Namespace Services.Files
         End Property
 
         <ExtendedCategory("Content")> _
-        Public Property ShowPayLoad As Boolean
-
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("ShowPayLoad", False, True)> _
-        <IsReadOnly(True)>
-        Public Property PayLoad As CData
-            Get
-                Return _PayLoad
-            End Get
-            Set(value As CData)
-                If _PayLoad.Value <> value.Value Then
-                    Me.Compressed = False
-                    Me.Encrypted = False
-                End If
-                _PayLoad = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Content")> _
         Public Property UseCustomKey As Boolean
 
         <ExtendedCategory("Content")> _
@@ -146,6 +168,7 @@ Namespace Services.Files
 #Region "Public Methods"
 
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("HasEncrypter", False, True)> _
       <ConditionalVisible("Encrypted", True, True)> _
       <ConditionalVisible("Compressed", True, True)> _
@@ -159,7 +182,7 @@ Namespace Services.Files
 
 
       
-
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("HasEncrypter", False, True)> _
         <ConditionalVisible("Signed", False, True)> _
      <ActionButton(IconName.CheckSquareO, IconOptions.Normal)> _
@@ -176,6 +199,7 @@ Namespace Services.Files
             ape.DisplayMessage(message, messageType)
         End Sub
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("Compressed", True, True)> _
       <ActionButton(IconName.Compress, IconOptions.Normal)> _
         Public Sub Compress(ape As AriciePropertyEditorControl)
@@ -185,6 +209,7 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("Compressed", False, True)> _
        <ActionButton(IconName.Expand, IconOptions.Normal)> _
         Public Sub Decompress(ape As AriciePropertyEditorControl)
@@ -193,6 +218,43 @@ Namespace Services.Files
             Dim message As String = Localization.GetString("SmartFileDecompressed.Message", ape.LocalResourceFile)
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
+
+        <ExtendedCategory("Content")> _
+        <ConditionalVisible("Encrypted", False, True)> _
+           <ActionButton(IconName.Unlock, IconOptions.Normal)> _
+        Public Sub Decrypt()
+            Try
+                If Me.Encrypted Then
+                    Dim newPayLoad As String
+                    If _encrypter IsNot Nothing Then
+                        newPayLoad = _encrypter.Decrypt(Me.PayLoad, Me._SaltBytes)
+                    Else
+                        newPayLoad = Common.Decrypt(Me.PayLoad, GetKey(), "", Me._SaltBytes)
+                    End If
+                    Me.DecryptInternal(newPayLoad)
+                End If
+            Catch ex As Exception
+                Throw New ApplicationException("Value was encrypted with a distinct key")
+            End Try
+        End Sub
+
+        <ExtendedCategory("Content")> _
+        <ConditionalVisible("Encrypted", True, True)> _
+        <ActionButton(IconName.Lock, IconOptions.Normal)> _
+        Public Sub Encrypt()
+            If Not Me.Encrypted Then
+                Dim objSalt As Byte() = Nothing
+                Dim newPayload As String
+                If _encrypter IsNot Nothing Then
+                    newPayload = _encrypter.Encrypt(Me.PayLoad, objSalt)
+                    Me.Encrypt(newPayload, objSalt)
+                Else
+                    newPayload = Common.Encrypt(Me.PayLoad, GetKey(), "", objSalt)
+                    Me.EncryptInternal(newPayload, objSalt)
+                End If
+            End If
+        End Sub
+
 
 
         Public Sub Sign()
@@ -257,39 +319,7 @@ Namespace Services.Files
 
 
 
-        <ConditionalVisible("Encrypted", False, True)> _
-            <ActionButton(IconName.Unlock, IconOptions.Normal)> _
-        Public Sub Decrypt()
-            Try
-                If Me.Encrypted Then
-                    Dim newPayLoad As String
-                    If _encrypter IsNot Nothing Then
-                        newPayLoad = _encrypter.Decrypt(Me.PayLoad, Me._SaltBytes)
-                    Else
-                        newPayLoad = Common.Decrypt(Me.PayLoad, GetKey(), "", Me._SaltBytes)
-                    End If
-                    Me.DecryptInternal(newPayLoad)
-                End If
-            Catch ex As Exception
-                Throw New ApplicationException("Value was encrypted with a distinct key")
-            End Try
-        End Sub
-
-        <ConditionalVisible("Encrypted", True, True)> _
-        <ActionButton(IconName.Lock, IconOptions.Normal)> _
-        Public Sub Encrypt()
-            If Not Me.Encrypted Then
-                Dim objSalt As Byte() = Nothing
-                Dim newPayload As String
-                If _encrypter IsNot Nothing Then
-                    newPayload = _encrypter.Encrypt(Me.PayLoad, objSalt)
-                    Me.Encrypt(newPayload, objSalt)
-                Else
-                    newPayload = Common.Encrypt(Me.PayLoad, GetKey(), "", objSalt)
-                    Me.EncryptInternal(newPayload, objSalt)
-                End If
-            End If
-        End Sub
+       
 
 
 
@@ -563,6 +593,7 @@ Namespace Services.Files
             End Set
         End Property
 
+        <ExtendedCategory("Value")> _
         <ActionButton(IconName.Refresh, IconOptions.Normal)> _
         Public Sub UpdatePayload(ape As AriciePropertyEditorControl)
             Me.UpdatePayload()
