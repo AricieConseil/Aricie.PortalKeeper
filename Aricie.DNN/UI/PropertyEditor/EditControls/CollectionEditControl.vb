@@ -765,7 +765,7 @@ Namespace UI.WebControls.EditControls
 
 
             Dim headerLink As New IconActionControl  'HtmlGenericControl("a")
-
+            headerLink.EnableViewState = False
 
             If item.DataItem IsNot Nothing Then
                 Dim objActionButtonInfo As ActionButtonInfo = ActionButtonInfo.FromMember(item.DataItem.GetType)
@@ -1035,7 +1035,7 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Private Sub Download(value As ICollection)
-            'todo: don't save the collection to a file or at least to a one time temporary filename 
+
             Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(GetExportFileName(), False)
             Aricie.DNN.Settings.SettingsController.SaveFileSettings(path, value, False)
             Aricie.Services.FileHelper.DownloadFile(path, Me.Page.Response, Me.Page.Server)
