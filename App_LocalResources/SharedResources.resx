@@ -5217,6 +5217,9 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SmartFileDecompressed.Message" xml:space="preserve">
     <value>File Payload was decompressed</value>
   </data>
+  <data name="SmartFile_Compress.Text" xml:space="preserve">
+    <value>Compress</value>
+  </data>
   <data name="SmartFile_Compressed.Help" xml:space="preserve">
     <value>Indicates if the current file content is compressed</value>
   </data>
@@ -5225,6 +5228,12 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="SmartFile_Content.Header" xml:space="preserve">
     <value>File Content</value>
+  </data>
+  <data name="SmartFile_Decompress.Text" xml:space="preserve">
+    <value>Decompress</value>
+  </data>
+  <data name="SmartFile_Encrypt.Text" xml:space="preserve">
+    <value>Encrypt</value>
   </data>
   <data name="SmartFile_Encrypted.Help" xml:space="preserve">
     <value>Indicates if the current file content is encrypted</value>
@@ -5247,13 +5256,73 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SmartFile_MD5Checksum.Text" xml:space="preserve">
     <value>MD5  Checksum</value>
   </data>
+  <data name="SmartFile_EditPayLoad.Help" xml:space="preserve">
+    <value>Above is the full content of the file, in the current state.</value>
+  </data>
+  <data name="SmartFile_EditPayLoad.Text" xml:space="preserve">
+    <value>File Content</value>
+  </data>
+  <data name="SmartFile_Sha256Checksum.Help" xml:space="preserve">
+    <value>Computes a live SHA256 Hash of the actual content</value>
+  </data>
+  <data name="SmartFile_Sha256Checksum.Text" xml:space="preserve">
+    <value>SHA256 Hash</value>
+  </data>
+  <data name="SmartFile_ShowPayLoad.Help" xml:space="preserve">
+    <value>Check to display the actual file content as a String</value>
+  </data>
+  <data name="SmartFile_ShowPayLoad.Text" xml:space="preserve">
+    <value>Display File Content</value>
+  </data>
   <data name="SmartFile_Signed.Help" xml:space="preserve">
     <value>Indicates if the inner Xml Document was signed upon saving. If so, the signature will get verified upon retrieval if applicable.</value>
   </data>
   <data name="SmartFile_Signed.Text" xml:space="preserve">
     <value>Is Signed</value>
   </data>
+  <data name="SmartFile_UseCustomKey.Help" xml:space="preserve">
+    <value>Check to enter a new encryption key to be used for encryption / decryption according to the current state</value>
+  </data>
+  <data name="SmartFile_UseCustomKey.Text" xml:space="preserve">
+    <value>Enter custom encryption key</value>
+  </data>
+  <data name="SmartFile`1_ShowValue.Help" xml:space="preserve">
+    <value>Check to display an editing form of the actual deserialized object. You'll need to click the update button for the file content to reflect your changes</value>
+  </data>
+  <data name="SmartFile`1_ShowValue.Text" xml:space="preserve">
+    <value>Show Value</value>
+  </data>
+  <data name="SmartFile`1_UpdatePayload.Text" xml:space="preserve">
+    <value>Update File Content</value>
+  </data>
   <data name="SmartFile`1_Value.Header" xml:space="preserve">
     <value>Value</value>
+  </data>
+  <data name="SmartFile`1_Value.Help" xml:space="preserve">
+    <value>The form below contains an actual in memory representation of the object as deserialized from the file content. You'll need to click the update button for the file content to reflect your changes</value>
+  </data>
+  <data name="SmartFile`1_Value.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SmartFile_CustomEncryption.Help" xml:space="preserve">
+    <value>Checked if the content was encrypted with a custom encrypter, which you need to load or alternatively to provide a custom encryption key, in order for the content to be decrypted.</value>
+  </data>
+  <data name="SmartFile_CustomEncryption.Text" xml:space="preserve">
+    <value>Custom Encryption</value>
+  </data>
+  <data name="SmartFile_Decrypt.Text" xml:space="preserve">
+    <value>Decrypt</value>
+  </data>
+  <data name="SmartFile_Salt.Help" xml:space="preserve">
+    <value>This is the salt that was generated upon encrypting the file content</value>
+  </data>
+  <data name="SmartFile_Salt.Text" xml:space="preserve">
+    <value>Encryption Salt</value>
+  </data>
+  <data name="SmartFolder`1_HasEncrypter.Help" xml:space="preserve">
+    <value>If checked, indicates that a custom encrypter was associated to the folder to allow for encrypting/decrypting file content</value>
+  </data>
+  <data name="SmartFolder`1_HasEncrypter.Text" xml:space="preserve">
+    <value>Encrypter Loaded</value>
   </data>
 </root>
