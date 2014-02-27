@@ -467,7 +467,15 @@ Namespace UI.WebControls
                         lnk.Href = Page.ResolveUrl(url)
                         lnk.Attributes.Add("type", "text/css")
                         lnk.Attributes.Add("rel", "stylesheet")
+
+                        Dim lnkAricieWeb As New HtmlLink
+                        lnkAricieWeb.ID = "AricieWebCss"
+                        lnkAricieWeb.Href = Page.ResolveUrl(Page.ClientScript.GetWebResourceUrl(Me.GetType, "Aricie.DNN.Aricie.Web.css"))
+                        lnkAricieWeb.Attributes.Add("type", "text/css")
+                        lnkAricieWeb.Attributes.Add("rel", "stylesheet")
+
                         Page.Header.Controls.Add(lnk)
+                        Page.Header.Controls.Add(lnkAricieWeb)
 
                     End If
                 End If
@@ -763,6 +771,7 @@ Namespace UI.WebControls
                     myPeIco.ActionItem = _ActionButton.IconAction
                     myPeIco.Text = Me.DataSource.GetType.Name
                     myPeIco.ResourceKey = Me.DataSource.GetType.Name & "_Title"
+                    ' myPeIco.CssClass = "aricieIcon"
                     Me._headerControl.Controls.Add(myPeIco)
                 End If
                 Me.DisplayElement(Me.FieldsDictionary, False)
