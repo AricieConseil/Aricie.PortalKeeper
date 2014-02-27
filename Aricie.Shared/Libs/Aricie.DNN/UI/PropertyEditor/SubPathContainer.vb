@@ -10,7 +10,7 @@ Imports Aricie.Services
 
 Namespace UI.WebControls
     Public Class SubPathContainer
-        Implements ISelector(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String))
+        Implements ISelector(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo))
 
         Private _SubEntities As New Dictionary(Of String, Object)
 
@@ -46,10 +46,10 @@ Namespace UI.WebControls
         Public Function GetParentEntities() As Dictionary(Of String, Object)
             Dim toReturn As New Dictionary(Of String, Object)
             toReturn.Add("", Me.OriginalEntity)
-            Dim innerList As IList(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)) = Me.GetSelectorG("Path")
-            For Each pathPair As KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String) In innerList
-                If Path.Contains(pathPair.Key.Text) AndAlso Not Path = pathPair.Key.Text Then
-                    toReturn(pathPair.Key.Text) = GetSubEntity(pathPair.Key.Text)
+            Dim innerList As IList(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)) = Me.GetSelectorG("Path")
+            For Each pathPair As KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo) In innerList
+                If Path.Contains(pathPair.Key) AndAlso Not Path = pathPair.Key Then
+                    toReturn(pathPair.Key) = GetSubEntity(pathPair.Key)
                 End If
             Next
             Return toReturn
@@ -78,8 +78,8 @@ Namespace UI.WebControls
             Return DirectCast(GetSelectorG(propertyName), IList)
         End Function
 
-        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)) Implements ISelector(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)).GetSelectorG
-            Dim toReturn As New List(Of KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String))
+        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)) Implements ISelector(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)).GetSelectorG
+            Dim toReturn As New List(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo))
             Dim dicoBuilder As New StringBuilder()
             Dim split As String() = Me.OriginalPath.Split("."c)
             Select Case propertyName
@@ -105,7 +105,7 @@ Namespace UI.WebControls
                                 End If
                             End If
                         End If
-                        toReturn.Add(New KeyValuePair(Of BreadCrumbsEditControl.IconInfo, String)(New BreadCrumbsEditControl.IconInfo() With {.Text = subPath, .Icon = itemIcone}, segment))
+                        toReturn.Add(New KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)(subPath, New BreadCrumbsEditControl.IconInfo() With {.Text = segment, .Icon = itemIcone}))
                         If i <> UBound(split) Then
                             dicoBuilder.Append("."c)
                         End If
