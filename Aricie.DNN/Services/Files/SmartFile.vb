@@ -41,20 +41,23 @@ Namespace Services.Files
 
         Private _PayLoad As New CData("")
 
+        <ExtendedCategory("Key")> _
+        <IsReadOnly(True)> _
         Public Property Key As EntityKey
 
+        <ExtendedCategory("Content")> _
         <IsReadOnly(True)> _
         Public Property Signed As Boolean
 
 
 
-
+        <ExtendedCategory("Content")> _
         <IsReadOnly(True)> _
         Public Property Compressed As Boolean
 
         Private _encrypter As IEncrypter
 
-
+        <ExtendedCategory("Content")> _
         Public ReadOnly Property HasEncrypter As Boolean
             Get
                 Return _encrypter IsNot Nothing
@@ -65,11 +68,16 @@ Namespace Services.Files
             _encrypter = encrypter
         End Sub
 
+        <ExtendedCategory("Content")> _
+        <IsReadOnly(True)> _
+        Public Property Encrypted As Boolean
+
+        <ExtendedCategory("Content")> _
+        <ConditionalVisible("Encrypted", False, True)> _
         <IsReadOnly(True)> _
         Public Property CustomEncryption As Boolean
 
-        <IsReadOnly(True)> _
-        Public Property Encrypted As Boolean
+
 
         <Browsable(False)> _
         <XmlIgnore()>
@@ -79,6 +87,7 @@ Namespace Services.Files
             End Get
         End Property
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("Encrypted", False, True)> _
         <IsReadOnly(True)> _
         Public Property Salt As String
@@ -93,22 +102,24 @@ Namespace Services.Files
             End Set
         End Property
 
-
+        <ExtendedCategory("Content")> _
         Public ReadOnly Property MD5Checksum As String
             Get
                 Return Common.Hash(Me.PayLoad, HashProvider.MD5)
             End Get
         End Property
 
+        <ExtendedCategory("Content")> _
         Public ReadOnly Property Sha256Checksum As String
             Get
                 Return Common.Hash(Me.PayLoad, HashProvider.SHA256)
             End Get
         End Property
 
-
+        <ExtendedCategory("Content")> _
         Public Property ShowPayLoad As Boolean
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("ShowPayLoad", False, True)> _
         <IsReadOnly(True)>
         Public Property PayLoad As CData
@@ -124,34 +135,30 @@ Namespace Services.Files
             End Set
         End Property
 
+        <ExtendedCategory("Content")> _
         Public Property UseCustomKey As Boolean
 
+        <ExtendedCategory("Content")> _
         <ConditionalVisible("UseCustomKey", False, True)> _
         Public Property CustomKey As String = ""
 
 
 #Region "Public Methods"
 
+
         <ConditionalVisible("HasEncrypter", False, True)> _
       <ConditionalVisible("Encrypted", True, True)> _
       <ConditionalVisible("Compressed", True, True)> _
-    <ActionButton(IconName.Compress, IconOptions.Normal)> _
-        Public Sub Sign()
-            If Me.Encrypted OrElse Me.Compressed Then
-                Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
-            End If
-            If Not Me.Signed Then
-                Dim doc As New XmlDocument()
-                SyncLock Me
-                    doc.LoadXml(Me.PayLoad)
-                    If Me._encrypter IsNot Nothing Then
-                        _encrypter.Sign(doc)
-                        PayLoad = doc.OuterXml
-                        Me.Signed = True
-                    End If
-                End SyncLock
-            End If
+    <ActionButton(IconName.Key, IconOptions.Normal)> _
+        Public Sub Sign(ape As AriciePropertyEditorControl)
+            Me.Sign()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileSigned.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
+
+
+      
 
         <ConditionalVisible("HasEncrypter", False, True)> _
         <ConditionalVisible("Signed", False, True)> _
@@ -167,6 +174,42 @@ Namespace Services.Files
                 messageType = ModuleMessage.ModuleMessageType.GreenSuccess
             End If
             ape.DisplayMessage(message, messageType)
+        End Sub
+
+        <ConditionalVisible("Compressed", True, True)> _
+      <ActionButton(IconName.Compress, IconOptions.Normal)> _
+        Public Sub Compress(ape As AriciePropertyEditorControl)
+            Me.Compress()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileCompressed.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+        <ConditionalVisible("Compressed", False, True)> _
+       <ActionButton(IconName.Expand, IconOptions.Normal)> _
+        Public Sub Decompress(ape As AriciePropertyEditorControl)
+            Me.Decompress()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileDecompressed.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+
+        Public Sub Sign()
+            If Me.Encrypted OrElse Me.Compressed Then
+                Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
+            End If
+            If Not Me.Signed Then
+                Dim doc As New XmlDocument()
+                SyncLock Me
+                    doc.LoadXml(Me.PayLoad)
+                    If Me._encrypter IsNot Nothing Then
+                        _encrypter.Sign(doc)
+                        PayLoad = doc.OuterXml
+                        Me.Signed = True
+                    End If
+                End SyncLock
+            End If
         End Sub
 
         Public Overloads Function Verify() As Boolean
@@ -186,8 +229,7 @@ Namespace Services.Files
         End Function
 
 
-        <ConditionalVisible("Compressed", True, True)> _
-       <ActionButton(IconName.Compress, IconOptions.Normal)> _
+       
         Public Sub Compress()
             If Me.Encrypted Then
                 Throw New ApplicationException("Encrypted Content cannot be compressed")
@@ -200,8 +242,6 @@ Namespace Services.Files
             End If
         End Sub
 
-        <ConditionalVisible("Compressed", False, True)> _
-       <ActionButton(IconName.Expand, IconOptions.Normal)> _
         Public Sub Decompress()
             If Me.Encrypted Then
                 Throw New ApplicationException("Encrypted Content cannot be decompressed")
@@ -285,6 +325,11 @@ Namespace Services.Files
         Public Overridable Sub UnWrap()
             Me.Decrypt()
             Me.Decompress()
+            If Me.Signed Then
+                If Not Me.Verify() Then
+                    Throw New ApplicationException("smart file integrity signature does not verify")
+                End If
+            End If
         End Sub
 
         Public Sub Wrap(settings As SmartFileInfo)
@@ -324,13 +369,13 @@ Namespace Services.Files
             Return Nothing
         End Function
 
-        Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, encrypter As IEncrypter, settings As SmartFileInfo) As T
+        Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, settings As SmartFileInfo) As T
             Dim toReturn As T
             Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
                 Dim objSmartFile As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetString(content))
-                objSmartFile.SetEncrypter(encrypter)
+                objSmartFile.SetEncrypter(settings.Encryption)
                 toReturn = objSmartFile.Value
             End If
             Return toReturn
@@ -477,21 +522,29 @@ Namespace Services.Files
     Public Class SmartFile(Of T)
         Inherits SmartFile
 
+        Private _Value As T
+
+
         Public Sub New()
         End Sub
 
 
-        Public Sub New(key As EntityKey, value As T, settings As SmartFileInfo, encrypter As IEncrypter)
-            MyBase.New(key, encrypter)
+        Public Sub New(key As EntityKey, value As T, settings As SmartFileInfo)
+            MyBase.New(key, settings.Encryption)
             Me.Value = value
             Me.Wrap(settings)
         End Sub
 
+
+
+
+        <ExtendedCategory("Value")> _
         Public Property ShowValue As Boolean
 
-        Private _Value As T
 
 
+
+        <ExtendedCategory("Value")> _
         <XmlIgnore()> _
         <ConditionalVisible("ShowValue", False, True)> _
         Public Property Value As T
@@ -506,22 +559,35 @@ Namespace Services.Files
             End Get
             Set(value As T)
                 _Value = value
-                If value IsNot Nothing Then
-                    Dim sb As New StringBuilder()
-                    Using sw As New StringWriter(sb)
-                        Dim objXmlSettings As New XmlWriterSettings
-                        objXmlSettings.Encoding = Encoding.UTF8
-                        objXmlSettings.Indent = True
-                        Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                            ReflectionHelper.Serialize(value, writer)
-                        End Using
-                    End Using
-                    Me.PayLoad = sb.ToString()
-                Else
-                    Me.PayLoad = ""
-                End If
+                Me.UpdatePayload()
             End Set
         End Property
+
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Sub UpdatePayload(ape As AriciePropertyEditorControl)
+            Me.UpdatePayload()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileDecompressed.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+        Public Sub UpdatePayload()
+            If _Value IsNot Nothing Then
+                Dim sb As New StringBuilder()
+                Using sw As New StringWriter(sb)
+                    Dim objXmlSettings As New XmlWriterSettings
+                    objXmlSettings.Encoding = Encoding.UTF8
+                    objXmlSettings.Indent = True
+                    Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                        ReflectionHelper.Serialize(_Value, writer)
+                    End Using
+                End Using
+                Me.PayLoad = sb.ToString()
+            Else
+                Me.PayLoad = ""
+            End If
+        End Sub
+
 
 
     End Class
