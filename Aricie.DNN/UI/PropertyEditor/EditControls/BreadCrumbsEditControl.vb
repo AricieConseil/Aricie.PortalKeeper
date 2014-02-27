@@ -142,18 +142,18 @@ Namespace UI.WebControls.EditControls
                         Dim prop As PropertyInfo = Nothing
                         If Not String.IsNullOrEmpty(Me._SelectorInfo.DataTextField) Then
                             If props.TryGetValue(_SelectorInfo.DataTextField, prop) Then
+                                objValue = prop.GetValue(rawObj, Nothing).ToString()
+                            End If
+                        End If
+                        If Not String.IsNullOrEmpty(Me._SelectorInfo.DataValueField) Then
+                            If props.TryGetValue(_SelectorInfo.DataValueField, prop) Then
+
                                 Dim raObjKey As Object = prop.GetValue(rawObj, Nothing)
                                 If TypeOf raObjKey Is IconInfo Then
                                     key = DirectCast(raObjKey, IconInfo)
                                 Else
                                     key = New IconInfo() With {.Text = raObjKey.ToString(), .Icon = New IconActionInfo}
                                 End If
-                            End If
-                        End If
-                        If Not String.IsNullOrEmpty(Me._SelectorInfo.DataValueField) Then
-                            If props.TryGetValue(_SelectorInfo.DataValueField, prop) Then
-                                objValue = prop.GetValue(rawObj, Nothing).ToString()
-
                             End If
                         End If
                         'Dim objActionButton As ActionButtonInfo = ActionButtonInfo.FromMember(rawObj.GetType)
