@@ -21,6 +21,7 @@ Imports System.Xml
 Imports Aricie.DNN.Security.Trial
 Imports DotNetNuke.Entities.Users
 Imports DotNetNuke.Services.Exceptions
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -197,17 +198,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         'lastRun = Now
                     End If
                 Case SynchronizationMode.Mutex
-                    Using objMutex As New Mutex(False, Me._MutexName)
-                        If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
-                            Try
+                    Dim owned As Boolean
+                    Dim mutexId As String = _MutexName
+                    'todo: check if a global mutex is necessary (see the code below for security access)
+                    'mutexId = String.Format("Global\{0}", mutexId)
+                    Using objMutex As New Mutex(False, mutexId)
+                        Try
+                            'Dim allowEveryoneRule As New MutexAccessRule(New SecurityIdentifier(WellKnownSidType.WorldSid, Nothing), MutexRights.FullControl, AccessControlType.Allow)
+                            'Dim securitySettings As New MutexSecurity()
+                            'securitySettings.AddAccessRule(allowEveryoneRule)
+                            'objMutex.SetAccessControl(securitySettings)
+
+                            If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
+                                owned = True
                                 toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
-                            Catch ex As Exception
-                                AsyncLogger.Instance.AddException(ex)
-                                'DotNetNuke.Services.Exceptions.LogException(ex)
-                            Finally
+                            End If
+                        Catch ex As AbandonedMutexException
+                            ExceptionHelper.LogException(ex)
+                            owned = True
+                        Catch ex As Exception
+                            ExceptionHelper.LogException(ex)
+                        Finally
+                            If owned Then
                                 objMutex.ReleaseMutex()
-                            End Try
-                        End If
+                            End If
+                        End Try
                     End Using
             End Select
             'Else
