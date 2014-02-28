@@ -21,7 +21,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Private _WaitTime As New STimeSpan(TimeSpan.FromSeconds(1))
 
 
-        Private _UseCounter As Boolean
         Private _CounterStart As New SimpleExpression(Of Integer)("0")
         Private _CounterUpdate As New SimpleExpression(Of Integer)("CurrentLoopItem + 1")
         Private _CounterEval As New SimpleExpression(Of Boolean)("CurrentLoopItem < 10")
@@ -38,15 +37,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("LoopAction")> _
-        Public Property UseCounter() As Boolean
-            Get
-                Return _UseCounter
-            End Get
-            Set(ByVal value As Boolean)
-                _UseCounter = value
-            End Set
-        End Property
+        <ExtendedCategory("LoopAction")>
+        Public Property UseCounter As Boolean
+
+        <ExtendedCategory("LoopAction")>
+        Public Property MaxNbIterations As Integer = 0
 
 
         <ExtendedCategory("LoopAction")> _
@@ -116,20 +111,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
             Dim toReturn As Boolean = True
-            If Me._UseCounter Then
+            Dim maxIterations As Integer = Integer.MaxValue
+            If Me.MaxNbIterations > 0 Then
+                maxIterations = MaxNbIterations
+            End If
+            Dim counter As Integer = 0
+            If Me.UseCounter Then
                 actionContext.SetVar(Me._CurrentItemParam, Me._CounterStart.Evaluate(actionContext, actionContext))
-                While Me._CounterEval.Evaluate(actionContext, actionContext)
+                While Me._CounterEval.Evaluate(actionContext, actionContext) AndAlso counter < maxIterations
                     toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
                     actionContext.SetVar(Me._CurrentItemParam, Me._CounterUpdate.Evaluate(actionContext, actionContext))
+                    counter += 1
                 End While
             Else
                 Dim objEnumerable As IEnumerable = Me._EnumerableExpression.Evaluate(actionContext, actionContext)
-                For Each objCurrent As Object In objEnumerable
-                    actionContext.SetVar(Me._CurrentItemParam, objCurrent)
-                    'Me.SubBot.ProcessRules(actionContext, actionContext.CurrentEventStep, False)
-                    toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
-                    'Threading.Thread.Sleep(Me._WaitTime.Value)
-                Next
+                If objEnumerable IsNot Nothing Then
+                    For Each objCurrent As Object In objEnumerable
+                        If counter = maxIterations Then
+                            Exit For
+                        End If
+                        actionContext.SetVar(Me._CurrentItemParam, objCurrent)
+                        'Me.SubBot.ProcessRules(actionContext, actionContext.CurrentEventStep, False)
+                        toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
+                        'Threading.Thread.Sleep(Me._WaitTime.Value)
+                        counter += 1
+                    Next
+                Else
+                    Throw New ApplicationException(String.Format("Expression {0} does not evaluate to an Enumerable entity", Me._EnumerableExpression.Expression))
+                End If
             End If
 
             Return toReturn

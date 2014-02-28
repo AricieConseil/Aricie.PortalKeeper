@@ -10,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Private _AccessMode As FileAccessMode
 
         'Private _EntityType As New DotNetType
-        Private _Encoding As SimpleEncoding
+        Private _Encoding As SimpleEncoding = SimpleEncoding.UTF8
 
         Private _UseCompression As Boolean
 

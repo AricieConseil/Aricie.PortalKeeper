@@ -232,24 +232,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Function RunBotsUnlocked(ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean, flowId As String) As Integer
             Dim toreturn As Integer
-            'Dim flowid As String = ""
             If Me._EnableLogs Then
-                'If flowId = "" Then
-                '    flowId = Guid.NewGuid.ToString
-                'End If
-                'flowId = Guid.NewGuid.ToString
                 Dim objStep As New StepInfo(Debug.PKPDebugType, "Farm Run Start", WorkingPhase.InProgress, False, False, -1, flowId)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
             For Each webBot As BotInfo(Of TEngineEvent) In Me.Bots.Instances
-                'Dim unused As Boolean = True
-                'For Each objUserBotSettings As UserBotSettings(Of TEngineEvent) In Me.AvailableUserBots.Values
-                '    If objUserBotSettings.BotName = webBot.Name AndAlso objUserBotSettings.DisableTemplateBot Then
-                '        unused = False
-                '    End If
-                'Next
-                If Not webBot.MasterBotDisabled AndAlso Not webBot.AsyncLockBot.ContainsKey(-1) Then
-                    'Dim botHistory = Aricie.DNN.Settings.SettingsController.LoadFileSettings(Of WebBotHistory)(GetLogMapPath(), True)
+                
+                If Not webBot.MasterBotDisabled Then 'AndAlso Not webBot.AsyncLockBot.ContainsKey(-1)
                     Dim runContext As New BotRunContext(Of TEngineEvent)(webBot)
                     runContext.Events = events
                     runContext.History = webBot.BotHistory
@@ -258,7 +247,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     If webBot.RunBot(runContext, forceRun) Then
                         toreturn += 1
                     End If
-                    'Aricie.DNN.Settings.SettingsController.SaveFileSettings(Of WebBotHistory)(GetLogMapPath(), webBot.BotHistory)
                 End If
             Next
             If Me.EnableUserBots Then

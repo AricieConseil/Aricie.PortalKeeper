@@ -234,7 +234,7 @@ Namespace ComponentModel
             Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
         End Sub
 
-        <ActionButton(IconName.TimesCircle, IconOptions.Normal)> _
+        <ActionButton(IconName.Undo, IconOptions.Normal)> _
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub

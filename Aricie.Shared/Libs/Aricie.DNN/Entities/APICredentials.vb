@@ -89,7 +89,7 @@ Namespace Entities
         <XmlIgnore()> _
         Public ReadOnly Property Enabled() As Boolean
             Get
-                Return Not _Disabled AndAlso Not String.IsNullOrEmpty(Me._Key) AndAlso Not String.IsNullOrEmpty(Me._Secret) AndAlso Not Me._Secret.Contains(" "c)
+                Return Not _Disabled AndAlso Not String.IsNullOrEmpty(Me._Key) AndAlso Not String.IsNullOrEmpty(Me._Secret)
             End Get
         End Property
 

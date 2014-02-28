@@ -15,6 +15,7 @@ Namespace UI.WebControls.EditControls
 
         Private _Buttons As New Dictionary(Of String, WebControl)
         Public Property Separator As String = " / "
+        Public Property MaxLength As Integer = 30
 
 
         Protected Overrides Sub OnInit(ByVal e As EventArgs)
@@ -60,6 +61,7 @@ Namespace UI.WebControls.EditControls
                 Dim objButton As WebControl = Nothing
                 If _Buttons.TryGetValue(Value.ToString, objButton) Then
                     objButton.Enabled = False
+                    objButton.CssClass &= " Selected"
                 End If
             End If
         End Sub
@@ -94,6 +96,7 @@ Namespace UI.WebControls.EditControls
                     objNode = New IconInfo With {.Text = Value.ToString(), .Icon = New IconActionInfo} 'New KeyValuePair(Of String, IconActionInfo)(Value.ToString(), New IconActionInfo)
                 End If
                 Dim label As New IconActionControl
+                
                 label.Text = objNode.Text
                 label.ActionItem = objNode.Icon
                 label.CssClass = "SubHead"
@@ -153,6 +156,12 @@ Namespace UI.WebControls.EditControls
                                     key = DirectCast(raObjKey, IconInfo)
                                 Else
                                     key = New IconInfo() With {.Text = raObjKey.ToString(), .Icon = New IconActionInfo}
+                                End If
+                                If key.Text.Length > MaxLength Then
+                                    key.Text = key.Text.Substring(0, MaxLength) & " (...)"
+                                    If key.Text.StartsWith(""""c) Then
+                                        key.Text &= """"c
+                                    End If
                                 End If
                             End If
                         End If

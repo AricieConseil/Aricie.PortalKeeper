@@ -37,9 +37,21 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        <ActionButton(IconName.Undo, IconOptions.Normal)> _
+        <ActionButton(IconName.Home, IconOptions.Normal)> _
         Public Sub CloseSubEditor(pe As AriciePropertyEditorControl)
             pe.RootEditor.CloseSubEditor()
+        End Sub
+
+        <ConditionalVisible("Path", True, True, "")> _
+        <ActionButton(IconName.LevelUp, IconOptions.Normal)> _
+        Public Sub LevelUp(pe As AriciePropertyEditorControl)
+            Dim lastDotIdx As Integer = Me.Path.LastIndexOf("."c)
+            If lastDotIdx > 0 Then
+                Path = Path.Substring(0, lastDotIdx)
+            Else
+                Path = ""
+            End If
+            pe.ItemChanged = True
         End Sub
 
 

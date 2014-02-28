@@ -59,26 +59,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <NonSerialized()> _
-        Private Shared _AsyncLocks As New Dictionary(Of String, Dictionary(Of Integer, String))
+        '<NonSerialized()> _
+        'Private Shared _AsyncLocks As New Dictionary(Of String, Dictionary(Of Integer, String))
 
 
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public ReadOnly Property AsyncLockBot() As Dictionary(Of Integer, String)
-            Get
-                Dim toReturn As Dictionary(Of Integer, String) = Nothing
-                If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
-                    SyncLock _AsyncLocks
-                        If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
-                            toReturn = New Dictionary(Of Integer, String)
-                            _AsyncLocks(Me.Name) = toReturn
-                        End If
-                    End SyncLock
-                End If
-                Return toReturn
-            End Get
-        End Property
+        '<XmlIgnore()> _
+        '<Browsable(False)> _
+        'Public ReadOnly Property AsyncLockBot() As Dictionary(Of Integer, String)
+        '    Get
+        '        Dim toReturn As Dictionary(Of Integer, String) = Nothing
+        '        If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
+        '            SyncLock _AsyncLocks
+        '                If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
+        '                    toReturn = New Dictionary(Of Integer, String)
+        '                    _AsyncLocks(Me.Name) = toReturn
+        '                End If
+        '            End SyncLock
+        '        End If
+        '        Return toReturn
+        '    End Get
+        'End Property
 
 
 #End Region
@@ -376,27 +376,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function RunBot(ByVal botContext As BotRunContext(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
             Dim toReturn As Boolean
             If Me.MatchServer Then
-                Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
-                If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                    If (forceRun AndAlso Me._ForceRun) _
-                    OrElse (Not forceRun AndAlso Me.Enabled AndAlso botContext.History.LastRun.Add(Me.Schedule.Value) <= Now) Then
-                        Dim runUnlocked As Boolean
-                        SyncLock _AsyncLocks
-                            If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                                asyncbotLocks(botContext.AsyncLockId) = botContext.Id
-                                runUnlocked = True
-                            End If
-                        End SyncLock
-                        If runUnlocked Then
-                            If Not Me._UseTaskQueue Then
-                                toReturn = Me.InternalRun(botContext)
-                            Else
-                                Me.AsynchronousRunTaskQueue.EnqueueTask(botContext)
-                                toReturn = True
-                            End If
-                        End If
+                'Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
+                'If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
+                If (forceRun AndAlso Me._ForceRun) _
+                OrElse (Not forceRun AndAlso Me.Enabled AndAlso botContext.History.LastRun.Add(Me.Schedule.Value) <= Now) Then
+                    'Dim runUnlocked As Boolean
+                    'SyncLock _AsyncLocks
+                    '    If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
+                    '        asyncbotLocks(botContext.AsyncLockId) = botContext.Id
+                    '        runUnlocked = True
+                    '    End If
+                    'End SyncLock
+                    'If runUnlocked Then
+                    If Not Me._UseTaskQueue Then
+                        toReturn = Me.InternalRun(botContext)
+                    Else
+                        Me.AsynchronousRunTaskQueue.EnqueueTask(botContext)
+                        toReturn = True
                     End If
+                    'End If
                 End If
+                'End If
             End If
             Return toReturn
         End Function
@@ -443,18 +443,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
             Catch ex As Exception
                 AsyncLogger.Instance.AddException(ex)
-            Finally
-                Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
-                SyncLock _AsyncLocks
-                    Dim lockId As String = Nothing
-                    If asyncbotLocks.TryGetValue(botContext.AsyncLockId, lockId) Then
-                        If lockId = botContext.Id Then
-                            asyncbotLocks.Remove(botContext.AsyncLockId)
-                        Else
-                            Throw New ApplicationException("concurrence issue during bot execution")
-                        End If
-                    End If
-                End SyncLock
+                'Finally
+                '    Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
+                '    SyncLock _AsyncLocks
+                '        Dim lockId As String = Nothing
+                '        If asyncbotLocks.TryGetValue(botContext.AsyncLockId, lockId) Then
+                '            If lockId = botContext.Id Then
+                '                asyncbotLocks.Remove(botContext.AsyncLockId)
+                '            Else
+                '                Throw New ApplicationException("concurrence issue during bot execution")
+                '            End If
+                '        End If
+                '    End SyncLock
             End Try
             Return toReturn
         End Function

@@ -35,10 +35,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim sourceMapPath As String = Me.GetFileMapPath(actionContext)
             Select Case Mode
                 Case FileManagerMode.GetFiles
-                    If Not String.IsNullOrEmpty(Me.Pattern) Then
-                        Return Directory.GetFiles(sourceMapPath, Pattern)
+                    If Directory.Exists(sourceMapPath) Then
+                        If Not String.IsNullOrEmpty(Me.Pattern) Then
+                            Return Directory.GetFiles(sourceMapPath, Pattern)
+                        Else
+                            Return Directory.GetFiles(sourceMapPath)
+                        End If
                     Else
-                        Return Directory.GetFiles(sourceMapPath)
+                        Return New String() {}
                     End If
                 Case FileManagerMode.GetDirectories
                     If Not String.IsNullOrEmpty(Me.Pattern) Then
