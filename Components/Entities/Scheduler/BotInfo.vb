@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.ComponentModel
+﻿Imports System.Security.AccessControl
+Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Diagnostics
@@ -14,6 +15,7 @@ Imports Aricie.DNN.Services.Flee
 Imports System.Threading
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Settings
+Imports System.Security.Principal
 Imports FileHelper = Aricie.DNN.Services.FileHelper
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -425,17 +427,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toReturn As Boolean
             Try
                 If Me.UseMutex Then
-                    Using objMutex As New Mutex(False, "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture))
-                        If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
-                            Try
+                    Dim owned As Boolean
+                    Dim mutexId As String = "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture)
+                    'todo: check if a global mutex is necessary (see the code below for security access)
+                    'mutexId = String.Format("Global\{0}", mutexId)
+                    Using objMutex As New Mutex(False, mutexId)
+                        Try
+                            'Dim allowEveryoneRule As New MutexAccessRule(New SecurityIdentifier(WellKnownSidType.WorldSid, Nothing), MutexRights.FullControl, AccessControlType.Allow)
+                            'Dim securitySettings As New MutexSecurity()
+                            'securitySettings.AddAccessRule(allowEveryoneRule)
+                            'objMutex.SetAccessControl(securitySettings)
+
+                            If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
+                                owned = True
                                 InternalRunUnlocked(botContext)
                                 toReturn = True
-                            Catch ex As Exception
-                                AsyncLogger.Instance.AddException(ex)
-                            Finally
+                            End If
+                        Catch ex As AbandonedMutexException
+                            ExceptionHelper.LogException(ex)
+                            owned = True
+                        Catch ex As Exception
+                            ExceptionHelper.LogException(ex)
+                        Finally
+                            If owned Then
                                 objMutex.ReleaseMutex()
-                            End Try
-                        End If
+                            End If
+                        End Try
                     End Using
                 Else
                     InternalRunUnlocked(botContext)
