@@ -144,8 +144,9 @@ Namespace Services
         Private ReadOnly Property FolderManagerInstance As Object
             Get
                 If _FolderManagerInstance Is Nothing Then
-                    Dim folderManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke")
-                    _FolderManagerInstance = folderManagerType.GetProperty("Instance").GetValue(Nothing, Nothing)
+                    'Dim folderManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke")
+                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase'2[[DotNetNuke.Services.FileSystem.IFolderManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke]], DotNetNuke")
+                    _FolderManagerInstance = componentBaseType.GetProperty("Instance").GetValue(Nothing, Nothing)
                 End If
                 Return _FolderManagerInstance
             End Get
@@ -180,8 +181,9 @@ Namespace Services
         Private ReadOnly Property FileManagerInstance As Object
             Get
                 If _FileManagerInstance Is Nothing Then
-                    Dim fileManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FileManager, DotNetNuke")
-                    _FileManagerInstance = fileManagerType.GetProperty("Instance").GetValue(Nothing, Nothing)
+                    'Dim fileManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FileManager, DotNetNuke")
+                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase'2[[DotNetNuke.Services.FileSystem.IFileManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FileManager, DotNetNuke]], DotNetNuke")
+                    _FileManagerInstance = componentBaseType.GetProperty("Instance").GetValue(Nothing, Nothing)
                 End If
                 Return _FileManagerInstance
             End Get

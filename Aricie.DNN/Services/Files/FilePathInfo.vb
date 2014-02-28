@@ -18,13 +18,14 @@ Namespace Services.Files
     <Serializable()>
     Public Class PathInfo
 
-        Public Property PathMode As FilePathMode
+        <SortOrder(0)> _
+        Public Property PathMode As FilePathMode = FilePathMode.AdminPath
 
+        <SortOrder(1)> _
         <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
         Public Property PortalId As Integer
-
 
         Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 
@@ -39,6 +40,9 @@ Namespace Services.Files
         End Function
 
         Public Overloads Function GetMapPath(expressionPath As String) As String
+            If expressionPath Is Nothing Then
+                Throw New ApplicationException(String.Format("path cannot be null"))
+            End If
             Dim toReturn As String = expressionPath
             Select Case Me.PathMode
                 Case FilePathMode.RootPath
@@ -63,7 +67,7 @@ Namespace Services.Files
     Public Class FilePathInfo
         Inherits PathInfo
 
-
+        <SortOrder(2)> _
         Public Property ChooseDnnFile As Boolean
 
 

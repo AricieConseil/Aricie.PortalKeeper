@@ -130,7 +130,7 @@ Namespace Services.Flee
                                 End SyncLock
                             Catch ex As Ciloci.Flee.ExpressionCompileException
                                 Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to compile with the inner exception", Me.Expression), ex)
-                                DotNetNuke.Services.Exceptions.Exceptions.LogException(objFLeeException)
+                                ExceptionHelper.LogException(objFLeeException)
                                 toReturn = Nothing
                             Finally
                                 RemoveHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
