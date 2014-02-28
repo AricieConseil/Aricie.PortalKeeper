@@ -8,6 +8,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class CompressionEnabledWebClient
         Inherits WebClient
 
+        Private Const DefaultUserAgent As String = "Mozilla/5.0 (Windows NT 6.3; WOW64; rv:27.0) Gecko/20100101 Firefox/27.0"
+        Private Const DefaultAccept As String = "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8"
+        Private Const DefaultAcceptCharset As String = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
+        Private Const DefaultAcceptEncoding As String = "gzip, deflate"
+
         Public Sub New(ByVal verb As String)
             Me._Method = verb
         End Sub
@@ -39,22 +44,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property VirtualProxy As Boolean
 
+       
+
 
         Protected Overrides Function GetWebRequest(ByVal address As Uri) As WebRequest
-            'Dim toReturn As HttpWebRequest = DotNetNuke.Common.Globals.GetExternalRequest(address.AbsoluteUri)
 
             Dim toreturn As WebRequest = MyBase.GetWebRequest(address)
 
-            'toReturn.Headers("User-Agent") = "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
-            'toReturn.Headers("Accept") = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-            toreturn.Headers("Accept-Charset") = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
-            toreturn.Headers("Accept-Encoding") = "gzip, deflate"
+            toreturn.Headers("Accept-Charset") = DefaultAcceptCharset
+            toreturn.Headers("Accept-Encoding") = DefaultAcceptEncoding
             toreturn.Method = Me._Method
             toreturn.Timeout = CInt(Me._Timeout.TotalMilliseconds)
             If TypeOf toreturn Is HttpWebRequest Then
                 Dim httpRequest As HttpWebRequest = DirectCast(toreturn, HttpWebRequest)
-                httpRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
-                httpRequest.Accept = "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+                httpRequest.UserAgent = DefaultUserAgent
+                httpRequest.Accept = DefaultAccept
                 httpRequest.AutomaticDecompression = DecompressionMethods.Deflate Or DecompressionMethods.GZip
 
                 If httpRequest.Proxy IsNot Nothing AndAlso Me.VirtualProxy Then
@@ -70,16 +74,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Shared Function GetWebClient(ByVal method As String, ByVal timeout As TimeSpan) As CompressionEnabledWebClient
             Dim toReturn As New CompressionEnabledWebClient(method)
             toReturn._Timeout = timeout
-            toReturn.Headers("User-Agent") = "Mozilla/5.0 (Windows NT 6.0; WOW64; rv:2.0.1) Gecko/20100101 Firefox/4.0.1"
-            'toReturn.Headers("User-Agent") = "Wget/1.9.1"
+            toReturn.Headers("User-Agent") = DefaultUserAgent
 
-            toReturn.Headers("Accept") = "text/html,application/xhtml+xml,application/xml,application/json;q=0.9,*/*;q=0.8"
-            toReturn.Headers("Accept-Charset") = "ISO-8859-1,utf-8;q=0.7,*;q=0.7"
-            toReturn.Headers("Accept-Encoding") = "gzip, deflate"
-            'If ServicePointManager.SecurityProtocol <> SecurityProtocolType.Ssl3 Then
-            '    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3
-            'End If
-            ServicePointManager.ServerCertificateValidationCallback = AddressOf ValidateServerCertficate
+            toReturn.Headers("Accept") = DefaultAccept
+            toReturn.Headers("Accept-Charset") = DefaultAcceptCharset
+            toReturn.Headers("Accept-Encoding") = DefaultAcceptEncoding
+
+            'todo: removing that, can't remember why ssl certificate validation was off
+            'ServicePointManager.ServerCertificateValidationCallback = AddressOf ValidateServerCertficate
 
             Return toReturn
 

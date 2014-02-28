@@ -435,7 +435,7 @@ Namespace UI.WebControls.EditControls
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
                         Case "Copy"
-                            CopiedCollection = Me.ExportItem(commandIndex)
+                            Me.Copy(Me.ExportItem(commandIndex))
                         Case "Export"
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
@@ -883,29 +883,31 @@ Namespace UI.WebControls.EditControls
                     Dim firstItem As Boolean = (commandIndex = 0)
                     Dim lastItem As Boolean = (commandIndex = CollectionValue.Count - 1)
 
-                    If Not firstItem Then
-                        Dim cmdUp As New IconActionButton
-                        plAction.Controls.Add(cmdUp)
-                        With cmdUp
-                            .ActionItem.IconName = IconName.CaretSquareOUp
-                            .CommandName = "Up"
-                            .CommandArgument = commandIndex.ToString()
-                        End With
-                        AddHandler cmdUp.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                        sm.RegisterPostBackControl(cmdUp)
-                    End If
+                    
 
                     If Not lastItem Then
                         Dim cmdDown As New IconActionButton
                         plAction.Controls.Add(cmdDown)
                         With cmdDown
-                            .ActionItem.IconName = IconName.CaretSquareODown
+                            .ActionItem.IconName = IconName.ArrowDown
                             .CommandName = "Down"
                             .CommandArgument = commandIndex.ToString()
                         End With
                         AddHandler cmdDown.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                         sm.RegisterPostBackControl(cmdDown)
 
+                    End If
+
+                    If Not firstItem Then
+                        Dim cmdUp As New IconActionButton
+                        plAction.Controls.Add(cmdUp)
+                        With cmdUp
+                            .ActionItem.IconName = IconName.ArrowUp
+                            .CommandName = "Up"
+                            .CommandArgument = commandIndex.ToString()
+                        End With
+                        AddHandler cmdUp.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                        sm.RegisterPostBackControl(cmdUp)
                     End If
 
                 End If
@@ -1031,7 +1033,8 @@ Namespace UI.WebControls.EditControls
 
         Private Sub Copy(value As ICollection)
 
-            CopiedCollection = value
+            CopiedCollection = ReflectionHelper.CloneObject(value)
+            Me.ParentAricieEditor.ItemChanged = True
         End Sub
 
         Private Sub Download(value As ICollection)

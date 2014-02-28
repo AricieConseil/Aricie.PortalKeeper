@@ -51,7 +51,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(False, dumpVars)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
-                        Dim message As String = String.Format("Action Exception, Engine Name: {0}, Rule Name: {1}, Action Name: {2},Dumped Vars: {3}, InnerException: {4}", actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump, ex.ToString())
+                        Dim message As String = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0} Dumped Vars: {5}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
                         Dim newEx As New ApplicationException(message, ex)
                         If Not element.DontLogExceptions Then
                             DotNetNuke.Services.Exceptions.LogException(newEx)
@@ -61,7 +61,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     Finally
                         If enableStopWatch Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - End Run Action", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
+                            Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - End Run Action", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                     End Try

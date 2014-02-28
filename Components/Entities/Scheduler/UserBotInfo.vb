@@ -308,7 +308,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
-        <ActionButton(IconName.TimesCircle, IconOptions.Normal)> _
+        <ActionButton(IconName.Undo, IconOptions.Normal)> _
         Public Sub Cancel(ByVal ape As AriciePropertyEditorControl)
             Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
             If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then

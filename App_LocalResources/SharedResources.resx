@@ -4975,7 +4975,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Message Content</value>
   </data>
   <data name="SubPathContainer_CloseSubEditor.Text" xml:space="preserve">
-    <value>Back to Full Editor</value>
+    <value>Full Editor</value>
   </data>
   <data name="SubPathContainer_OriginalPath.Help" xml:space="preserve">
     <value>When switching to child entities editing, this is the original subpath selected.</value>
@@ -5324,5 +5324,56 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="SmartFolder`1_HasEncrypter.Text" xml:space="preserve">
     <value>Encrypter Loaded</value>
+  </data>
+  <data name="CacheableAction`1_ProcessTokens.Help" xml:space="preserve">
+    <value>If enabled, you can add tokens to the caching key format, to be replaced at runtime with contextual values such as parameters or local variables</value>
+  </data>
+  <data name="CacheableAction`1_ProcessTokens.Text" xml:space="preserve">
+    <value>Process Tokens</value>
+  </data>
+  <data name="FileAccessActionProvider`1_FilePath.Help" xml:space="preserve">
+    <value>There are several ways to specify a file path, from a string expression, or from the direct selction of a dnn file.</value>
+  </data>
+  <data name="FileAccessActionProvider`1_FilePath.Text" xml:space="preserve">
+    <value>File Path</value>
+  </data>
+  <data name="FilePathInfo_ChooseDnnFile.Help" xml:space="preserve">
+    <value>You can choose to select an existing file rather than specifying the file path. Note that in this case, the file id will be saved, so you should make sure that the file does not risk being deleted or resynchronised from dnn file system.</value>
+  </data>
+  <data name="FilePathInfo_ChooseDnnFile.Text" xml:space="preserve">
+    <value>Select DotNetNuke File</value>
+  </data>
+  <data name="FilePathInfo_DnnFile.Help" xml:space="preserve">
+    <value>Use the form below to select your file</value>
+  </data>
+  <data name="FilePathInfo_DnnFile.Text" xml:space="preserve">
+    <value>DotNetNuke File</value>
+  </data>
+  <data name="GetMarkets.Text" xml:space="preserve">
+    <value>Get Markets</value>
+  </data>
+  <data name="KeyValuePair`2_Value.Required" xml:space="preserve">
+    <value>Value is required</value>
+  </data>
+  <data name="LoopActionProvider`1_MaxNbIterations.Help" xml:space="preserve">
+    <value>Additionally to the loop condition, you can specify an absolute maximum number of iterations</value>
+  </data>
+  <data name="LoopActionProvider`1_MaxNbIterations.Text" xml:space="preserve">
+    <value>Max Number of Iterations</value>
+  </data>
+  <data name="MissingFile.Message" xml:space="preserve">
+    <value>Please specify a file to import</value>
+  </data>
+  <data name="Rules_Paste.Text" xml:space="preserve">
+    <value>Paste Rules</value>
+  </data>
+  <data name="SubPathContainer_LevelUp.Text" xml:space="preserve">
+    <value>Level Up</value>
+  </data>
+  <data name="FileWriteActionProviderBase`1_AppendContent.Help" xml:space="preserve">
+    <value>You can choose to append content to existing file rather than overwriting.</value>
+  </data>
+  <data name="FileWriteActionProviderBase`1_AppendContent.Text" xml:space="preserve">
+    <value>Append Content</value>
   </data>
 </root>

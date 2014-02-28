@@ -325,21 +325,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Friend Function RunUserBot(objUser As UserInfo, ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
             Dim toreturn As Boolean
-            If Not Me.Bot.AsyncLockBot.ContainsKey(objUser.UserID) Then
-                Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(objUser, objUser.PortalID, False)
-                If userBotInfo IsNot Nothing Then
-                    If userBotInfo.Enabled Then
-                        Dim runContext As New BotRunContext(Of TEngineEvent)(Me.Bot)
-                        runContext.AsyncLockId -= objUser.UserID
-                        runContext.Events = events
-                        runContext.History = userBotInfo.BotHistory
-                        runContext.UserParams = userBotInfo.GetParameterValues(objUser)
-                        Dim saver As New UserBotSaver(Me, objUser, userBotInfo)
-                        runContext.RunEndDelegate = AddressOf saver.SaveBot
-                        toreturn = Me.Bot.RunBot(runContext, forceRun)
-                    End If
+            'If Not Me.Bot.AsyncLockBot.ContainsKey(objUser.UserID) Then
+            Dim userBotInfo As UserBotInfo = Me.GetUserBotInfo(objUser, objUser.PortalID, False)
+            If userBotInfo IsNot Nothing Then
+                If userBotInfo.Enabled Then
+                    Dim runContext As New BotRunContext(Of TEngineEvent)(Me.Bot)
+                    runContext.AsyncLockId -= objUser.UserID
+                    runContext.Events = events
+                    runContext.History = userBotInfo.BotHistory
+                    runContext.UserParams = userBotInfo.GetParameterValues(objUser)
+                    Dim saver As New UserBotSaver(Me, objUser, userBotInfo)
+                    runContext.RunEndDelegate = AddressOf saver.SaveBot
+                    toreturn = Me.Bot.RunBot(runContext, forceRun)
                 End If
             End If
+            'End If
             Return toreturn
         End Function
 
