@@ -99,16 +99,16 @@ Namespace Entities
         End Property
 
         <IsReadOnly(True)> _
-        Public Overridable Property UrlPath() As String
+        Public ReadOnly Property UrlPath() As String
             Get
                 If String.IsNullOrEmpty(_UrlPath) Then
                     _UrlPath = Aricie.DNN.Services.NukeHelper.GetPathFromCtrUrl(NukeHelper.PortalId, Me._Url, Me._Track)
                 End If
                 Return Me._UrlPath
             End Get
-            Set(ByVal value As String)
-                Me._UrlPath = value
-            End Set
+            'Set(ByVal value As String)
+            '    Me._UrlPath = value
+            'End Set
         End Property
 
         Public Overridable Property RedirectMode() As CustomErrorsRedirectMode

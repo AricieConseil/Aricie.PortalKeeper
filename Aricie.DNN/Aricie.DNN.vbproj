@@ -96,6 +96,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="SmartThreadPool, Version=2.2.3.0, Culture=neutral, PublicKeyToken=1126fe8b671e8a79, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\SmartThreadPool.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -607,6 +611,7 @@
     <Content Include="external\AjaxControlToolKit\zh-CHS\AjaxControlToolkit.resources.dll" />
     <Content Include="external\AjaxControlToolKit\zh-CHT\AjaxControlToolkit.resources.dll" />
     <Content Include="external\DomainName.Library.dll" />
+    <Content Include="external\SmartThreadPool.dll" />
     <Content Include="external\Telerik.Web.UI.dll" />
     <EmbeddedResource Include="UI\WebControls\AutoCompleteTextBox.js" />
     <EmbeddedResource Include="Images\dropdown.png" />

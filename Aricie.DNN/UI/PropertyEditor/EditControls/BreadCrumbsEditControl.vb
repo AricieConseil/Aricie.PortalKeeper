@@ -115,12 +115,6 @@ Namespace UI.WebControls.EditControls
         Private _ValueKeys As Dictionary(Of String, IconInfo)
 
 
-        Public Structure IconInfo
-
-            Public Property [Text] As String
-            Public Property Icon As IconActionInfo
-        End Structure
-
         Private Function GetValueKeys() As Dictionary(Of String, IconInfo)
             If _ValueKeys Is Nothing Then
                 _ValueKeys = New Dictionary(Of String, IconInfo)
@@ -210,4 +204,10 @@ Namespace UI.WebControls.EditControls
             RenderChildren(writer)
         End Sub
     End Class
+
+    Public Structure IconInfo
+
+        Public Property [Text] As String
+        Public Property Icon As IconActionInfo
+    End Structure
 End Namespace

@@ -966,13 +966,15 @@ Namespace UI.WebControls.EditControls
 
                     If Me._EnableExport AndAlso (Me.ParentAricieEditor Is Nothing OrElse Not Me.ParentAricieEditor.DisableExports) Then
 
-                        cmdCopyButton = New IconActionButton
-                        pnAdd.Controls.Add(cmdCopyButton)
-                        cmdCopyButton.ActionItem.IconName = IconName.FilesO
-                        cmdCopyButton.Text = "Copy " & Name
-                        cmdCopyButton.ResourceKey = Me.Name + "_Copy"
-                        AddHandler cmdCopyButton.Click, AddressOf CopyClick
-                        RegisterControlForPostbackManagement(cmdCopyButton)
+                        If Me.CollectionValue.Count > 0 Then
+                            cmdCopyButton = New IconActionButton
+                            pnAdd.Controls.Add(cmdCopyButton)
+                            cmdCopyButton.ActionItem.IconName = IconName.FilesO
+                            cmdCopyButton.Text = "Copy " & Name
+                            cmdCopyButton.ResourceKey = Me.Name + "_Copy"
+                            AddHandler cmdCopyButton.Click, AddressOf CopyClick
+                            RegisterControlForPostbackManagement(cmdCopyButton)
+                        End If
 
                         If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
 

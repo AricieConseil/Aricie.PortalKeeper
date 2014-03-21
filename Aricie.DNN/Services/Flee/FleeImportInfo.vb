@@ -2,16 +2,19 @@
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Collections
+Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
     ''' <summary>
     ''' Flee import class
     ''' </summary>
     ''' <remarks></remarks>
-    <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
+    <ActionButton(IconName.Wrench, IconOptions.Normal)> _
+   <DefaultProperty("FriendlyName")> _
+   <Serializable()> _
     Public Class FleeImportInfo
 
         Public Sub New()
