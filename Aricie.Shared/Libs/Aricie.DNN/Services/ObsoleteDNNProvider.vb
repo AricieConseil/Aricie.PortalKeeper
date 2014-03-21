@@ -91,16 +91,16 @@ Namespace Services
                 End If
                 Return fileId
             Else
-                Dim params As Object() = {objFile.FileId}
+                Dim params As Object() = {objFile.FolderId}
                 Dim objFolder As FolderInfo = DirectCast(FolderManagerGetFolderMethod.Invoke(FolderManagerInstance, params), FolderInfo)
                 If objFolder IsNot Nothing Then
                     Using objStream As New MemoryStream(content)
                         If objFile.FileId > 0 Then
                             params = {objFile, objStream}
-                            Return DirectCast(FileManagerUpdateFileMethod.Invoke(FileManagerInstance, params), Integer)
+                            Return DirectCast(FileManagerUpdateFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
                         Else
                             params = {objFolder, objFile.FileName, objStream}
-                            Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), Integer)
+                            Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
                         End If
                     End Using
                 End If
@@ -120,8 +120,29 @@ Namespace Services
         End Function
 
         Public Overridable Function GetFileContent(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As Byte()
+            If NukeHelper.DnnVersion.Major < 6 Then
+                Return NukeHelper.FileController.GetFileContent(objFileInfo.FileId, objFileInfo.PortalId)
+            Else
+                Dim fileManagerType As Type = FileManagerInstance.GetType()
+                Dim getFileContentMethod As MethodInfo = fileManagerType.GetMethod("GetFileContent")
+                Dim params As Object() = {objFileInfo}
+                Dim res As Stream = DirectCast(getFileContentMethod.Invoke(FileManagerInstance, params), Stream)
+                Dim tr As New System.IO.StreamReader(res, System.Text.Encoding.UTF8)
 
-            Return NukeHelper.FileController.GetFileContent(objFileInfo.FileId, objFileInfo.PortalId)
+                Dim str = tr.ReadToEnd()
+
+
+                'Dim streamLength As Integer = Convert.ToInt32(res.Length)
+                '                Dim fileData() As Byte = New Byte(streamLength) {}
+
+                'res.Read(fileData, 0, streamLength)
+                'res.Close()
+
+                Return System.Text.Encoding.UTF8.GetBytes(str)
+
+            End If
+
+
 
         End Function
 
@@ -145,7 +166,7 @@ Namespace Services
             Get
                 If _FolderManagerInstance Is Nothing Then
                     'Dim folderManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke")
-                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase'2[[DotNetNuke.Services.FileSystem.IFolderManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke]], DotNetNuke")
+                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase`2[[DotNetNuke.Services.FileSystem.IFolderManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FolderManager, DotNetNuke]], DotNetNuke")
                     _FolderManagerInstance = componentBaseType.GetProperty("Instance").GetValue(Nothing, Nothing)
                 End If
                 Return _FolderManagerInstance
@@ -182,7 +203,7 @@ Namespace Services
             Get
                 If _FileManagerInstance Is Nothing Then
                     'Dim fileManagerType As Type = ReflectionHelper.CreateType("DotNetNuke.Services.FileSystem.FileManager, DotNetNuke")
-                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase'2[[DotNetNuke.Services.FileSystem.IFileManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FileManager, DotNetNuke]], DotNetNuke")
+                    Dim componentBaseType As Type = ReflectionHelper.CreateType("DotNetNuke.ComponentModel.ComponentBase`2[[DotNetNuke.Services.FileSystem.IFileManager, DotNetNuke],[DotNetNuke.Services.FileSystem.FileManager, DotNetNuke]], DotNetNuke")
                     _FileManagerInstance = componentBaseType.GetProperty("Instance").GetValue(Nothing, Nothing)
                 End If
                 Return _FileManagerInstance
