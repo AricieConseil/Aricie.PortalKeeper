@@ -60,14 +60,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private ReadOnly Property Escaper() As StringEscaper
-            Get
-                If _Escaper Is Nothing Then
-                    _Escaper = New StringEscaper(Me._ExpressionFilter)
-                End If
-                Return _Escaper
-            End Get
-        End Property
+        'Private ReadOnly Property Escaper() As StringEscaper
+        '    Get
+        '        If _Escaper Is Nothing Then
+        '            _Escaper = New StringEscaper(Me._ExpressionFilter)
+        '        End If
+        '        Return _Escaper
+        '    End Get
+        'End Property
 
         Public Function GenerateKey(ByVal context As PortalKeeperContext(Of RequestEvent)) As String
             Dim toReturn As String = ""
@@ -101,7 +101,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case Else
                     toReturn = String.Empty
             End Select
-            Return Escaper.EscapeString(toReturn)
+            Return ExpressionFilter.Process(toReturn)
         End Function
 
     End Class

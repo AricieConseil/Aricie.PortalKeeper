@@ -6,14 +6,16 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
     ''' <summary>
     ''' Base class for flee actions
     ''' </summary>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Wrench, IconOptions.Normal)> _
     <Serializable()> _
-    Public MustInherit Class ObjectAction
+     Public MustInherit Class ObjectAction
         Inherits NamedConfig
 
         ''' <summary>

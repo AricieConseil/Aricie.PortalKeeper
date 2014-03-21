@@ -3,6 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.Threading
 
 Namespace Services.Workers
     ''' <summary>
@@ -71,6 +72,16 @@ Namespace Services.Workers
         ''' <remarks></remarks>
         <Category("AdvancedSettings")> _
         Public Property IsBackground() As Boolean = True
+
+        <Category("AdvancedSettings")> _
+        Public Property ThreadPriority() As ThreadPriority = ThreadPriority.Lowest
+
+        <Category("AdvancedSettings")> _
+        Public Property EnablePerformanceCounters As Boolean
+
+        <ConditionalVisible("EnablePerformanceCounters", False, True)> _
+        <Category("AdvancedSettings")> _
+        Public Property PerformanceCounterInstanceName As String = "Aricie-STP"
 
 
     End Class

@@ -29,7 +29,7 @@
     border: 2px solid #ccc;
     border-radius: 3px;
     background-color: rgba(222,222,222,10);
-    padding: 2px;
+    padding: 1em;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;

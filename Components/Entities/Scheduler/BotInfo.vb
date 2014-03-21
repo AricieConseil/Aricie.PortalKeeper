@@ -331,12 +331,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("TechnicalSettings")> _
-        Public Property UseMutex() As Boolean
-
-        <ConditionalVisible("UseMutex", False, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.FromSeconds(2))
+      
 
         <ExtendedCategory("TechnicalSettings")> _
             <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
@@ -351,6 +346,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property UseMutex() As Boolean
+
+        <ConditionalVisible("UseMutex", False, True)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.FromSeconds(2))
 
         Private ReadOnly Property AsynchronousRunTaskQueue() As TaskQueue(Of BotRunContext(Of TEngineEvent))
             Get
@@ -438,7 +439,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             'securitySettings.AddAccessRule(allowEveryoneRule)
                             'objMutex.SetAccessControl(securitySettings)
 
-                            If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
+                            If (Not Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objMutex.WaitOne(Me.SynchronisationTimeout.Value)) OrElse (Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objMutex.WaitOne()) Then
                                 owned = True
                                 InternalRunUnlocked(botContext)
                                 toReturn = True
