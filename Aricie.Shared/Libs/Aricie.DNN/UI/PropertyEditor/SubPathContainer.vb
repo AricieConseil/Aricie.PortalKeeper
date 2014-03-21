@@ -10,7 +10,7 @@ Imports Aricie.Services
 
 Namespace UI.WebControls
     Public Class SubPathContainer
-        Implements ISelector(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo))
+        Implements ISelector(Of KeyValuePair(Of String, IconInfo))
 
         Private _SubEntities As New Dictionary(Of String, Object)
 
@@ -58,8 +58,8 @@ Namespace UI.WebControls
         Public Function GetParentEntities() As Dictionary(Of String, Object)
             Dim toReturn As New Dictionary(Of String, Object)
             toReturn.Add("", Me.OriginalEntity)
-            Dim innerList As IList(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)) = Me.GetSelectorG("Path")
-            For Each pathPair As KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo) In innerList
+            Dim innerList As IList(Of KeyValuePair(Of String, IconInfo)) = Me.GetSelectorG("Path")
+            For Each pathPair As KeyValuePair(Of String, IconInfo) In innerList
                 If Path.Contains(pathPair.Key) AndAlso Not Path = pathPair.Key Then
                     toReturn(pathPair.Key) = GetSubEntity(pathPair.Key)
                 End If
@@ -90,8 +90,8 @@ Namespace UI.WebControls
             Return DirectCast(GetSelectorG(propertyName), IList)
         End Function
 
-        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)) Implements ISelector(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)).GetSelectorG
-            Dim toReturn As New List(Of KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo))
+        Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of String, IconInfo)) Implements ISelector(Of KeyValuePair(Of String, IconInfo)).GetSelectorG
+            Dim toReturn As New List(Of KeyValuePair(Of String, IconInfo))
             Dim dicoBuilder As New StringBuilder()
             Dim split As String() = Me.OriginalPath.Split("."c)
             Select Case propertyName
@@ -106,18 +106,25 @@ Namespace UI.WebControls
                             If entity IsNot Nothing Then
                                 'recuperation de l'attribut d'icone
                                 Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
+                                Dim include As Boolean
                                 If Not entityButton Is Nothing Then
                                     itemIcone = entityButton.IconAction
+                                    include = True
                                 End If
 
                                 'recuperation du friendlyName
                                 Dim strFriendlyName = ReflectionHelper.GetFriendlyName(entity)
                                 If Not strFriendlyName.StartsWith(entity.GetType.Name) Then
-                                    segment = """" & strFriendlyName & """"
+                                    segment = strFriendlyName
+                                    include = True
                                 End If
+                                If include Then
+                                    toReturn.Add(New KeyValuePair(Of String, IconInfo)(subPath, New IconInfo() With {.Text = segment, .Icon = itemIcone}))
+                                End If
+
                             End If
                         End If
-                        toReturn.Add(New KeyValuePair(Of String, BreadCrumbsEditControl.IconInfo)(subPath, New BreadCrumbsEditControl.IconInfo() With {.Text = segment, .Icon = itemIcone}))
+
                         If i <> UBound(split) Then
                             dicoBuilder.Append("."c)
                         End If

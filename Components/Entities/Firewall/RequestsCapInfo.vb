@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Threading
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -9,14 +10,14 @@ Imports DotNetNuke.Framework
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
+Imports System.Globalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
+    <ActionButton(IconName.ExclamationTriangle, IconOptions.Normal)> _
+    <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class RequestsCapInfo
-        Inherits NamedEntity
-
 
         'Private _CountStartTime As DateTime = Now
         'Private _RecordLock As New Object
@@ -64,6 +65,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me._Duration = New STimeSpan(duration)
         End Sub
 
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName() As String
+            Get
+                Return String.Format("Max {0} Requests ({1}) / sec per {2} over {3}", Me.Rate.ToString(CultureInfo.InvariantCulture), Me.CappedRequestScope.ToString(), Me.RequestSource.SourceType.ToString(), Me.Duration.ToString())
+            End Get
+        End Property
+
 
         Public Property Enabled() As Boolean
             Get
@@ -73,6 +81,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _Enabled = value
             End Set
         End Property
+
+        <ExtendedCategory("")> _
+          <Width(300)> _
+          <LineCount(4)> _
+          <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        Public Property Decription() As New CData
 
 
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
@@ -117,6 +131,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
+          <LabelMode(LabelMode.Top)> _
+        Public Property Duration() As STimeSpan
+            Get
+                Return _Duration
+            End Get
+            Set(ByVal value As STimeSpan)
+                _Duration = value
+            End Set
+        End Property
+
         Public Property MaxNbNewSources() As Integer
             Get
                 Return _MaxNbNewSources
@@ -126,17 +151,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
-        Public Property Duration() As STimeSpan
+        Public Property MaxTotalBytes As Integer
             Get
-                Return _Duration
+                Return _MaxTotalBytes
             End Get
-            Set(ByVal value As STimeSpan)
-                _Duration = value
+            Set(value As Integer)
+                _MaxTotalBytes = value
             End Set
         End Property
+
+
+
 
         <Browsable(False)> _
         Public ReadOnly Property RequestRateSpan() As TimeSpan
@@ -147,6 +172,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return _RequestRateSpan
             End Get
         End Property
+
 
 
 
@@ -216,7 +242,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     'Thread.Sleep(Convert.ToInt32(Math.Pow(100, nb / Me._MaxNbRequest)))
                 Else
                     Dim totalBytes As Integer = currentLog.TotalBytes + requestLength
-                    If currentLog.NbRequests < Me._MaxNbRequest AndAlso totalBytes < Me._MaxTotalBytes Then
+                    If currentLog.NbRequests < Me._MaxNbRequest AndAlso totalBytes < Me.MaxTotalBytes Then
                         currentLog = New ClientSourceCapLog(currentLog.LastRequestTime, currentLog.NbRequests + 1, currentLog.CapWindow, totalBytes)
                         toReturn = True
                     Else

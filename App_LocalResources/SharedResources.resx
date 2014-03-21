@@ -5376,4 +5376,91 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="FileWriteActionProviderBase`1_AppendContent.Text" xml:space="preserve">
     <value>Append Content</value>
   </data>
+  <data name="AboveNormal.Text" xml:space="preserve">
+    <value>High</value>
+  </data>
+  <data name="ActionProvider`1_NbConcurrentThreads.Help" xml:space="preserve">
+    <value>Number of concurrent threads allowed by the semaphore to enter the named section (system-wide)</value>
+  </data>
+  <data name="ActionProvider`1_NbConcurrentThreads.Text" xml:space="preserve">
+    <value>Nb Concurrent Threads</value>
+  </data>
+  <data name="ActionProvider`1_SemaphoreName.Help" xml:space="preserve">
+    <value>This is the system-wide name that will indentify your blocking semaphore. Example: HttpRequest-www.cryptsy.com</value>
+  </data>
+  <data name="ActionProvider`1_SemaphoreName.Text" xml:space="preserve">
+    <value>Semaphore Name</value>
+  </data>
+  <data name="ActionProvider`1_SynchronisationTimeout.Help" xml:space="preserve">
+    <value>Set a non zero value if you want a blocked thread to give up waiting after a time out. In such a case, the action is skipped and returns false</value>
+  </data>
+  <data name="ActionProvider`1_SynchronisationTimeout.Text" xml:space="preserve">
+    <value>Synchronization Timeout</value>
+  </data>
+  <data name="ActionProvider`1_UseSemaphore.Help" xml:space="preserve">
+    <value>When you start running agents or actions asynchronously, you may observe that several actions run simultaneously. This might be detrimental in certain cases: for instance you may want to control the rate of concurrent http requests to a particular domain to avoid reaching advertised limits. Using a semaphore ensures that only a certain amount of concurrent threads can enter a named section simulatneously. Use that mechanims together with the addition of sleep time to precisally adjut the running rate. Also, if you run a web farm, you might have to  make sure that your bot is configured to run on a single server. </value>
+  </data>
+  <data name="ActionProvider`1_UseSemaphore.Text" xml:space="preserve">
+    <value>Use Semaphore</value>
+  </data>
+  <data name="BelowNormal.Text" xml:space="preserve">
+    <value>Low</value>
+  </data>
+  <data name="Highest.Text" xml:space="preserve">
+    <value>Highest</value>
+  </data>
+  <data name="Lowest.Text" xml:space="preserve">
+    <value>Lowest</value>
+  </data>
+  <data name="ModuleConfig`2_RestoreBackup.Text" xml:space="preserve">
+    <value>Restore Selected Backup</value>
+  </data>
+  <data name="TaskQueueInfo_EnablePerformanceCounters.Help" xml:space="preserve">
+    <value>If checked, this enable collecting Smart Thread Pool performances to a dedicated Windows Performance Counter</value>
+  </data>
+  <data name="TaskQueueInfo_EnablePerformanceCounters.Text" xml:space="preserve">
+    <value>Enable Performance Counters</value>
+  </data>
+  <data name="TaskQueueInfo_PerformanceCounterInstanceName.Help" xml:space="preserve">
+    <value>The Name of your custom Data collector. Since all asynchronous queues will log the same metrics, choose a name to identify this particular queue.</value>
+  </data>
+  <data name="TaskQueueInfo_PerformanceCounterInstanceName.Text" xml:space="preserve">
+    <value>Collector Instance Name</value>
+  </data>
+  <data name="TaskQueueInfo_ThreadPriority.Text" xml:space="preserve">
+    <value>Thread Priority</value>
+  </data>
+  <data name="UserBotInfo_IsAuthenticated.Help" xml:space="preserve">
+    <value>That indicator determines whether the user can save edits of the user bot parameters</value>
+  </data>
+  <data name="UserBotInfo_IsAuthenticated.Text" xml:space="preserve">
+    <value>Is Authenticated</value>
+  </data>
+  <data name="UserVariableInfo_UseSubStorage.Help" xml:space="preserve">
+    <value>If checked, saves that parameter to a distinct store from the other user bots parameters, for performances fine-tuning</value>
+  </data>
+  <data name="UserVariableInfo_UseSubStorage.Text" xml:space="preserve">
+    <value>Use Dedicated Storage</value>
+  </data>
+  <data name="AdditionalFilters_Copy.Text" xml:space="preserve">
+    <value>Copy Filters</value>
+  </data>
+  <data name="RequestsCapInfo_MaxTotalBytes.Help" xml:space="preserve">
+    <value>This sets a limit in the max total size of requests for the selected source and the selected period of time.</value>
+  </data>
+  <data name="RequestsCapInfo_MaxTotalBytes.Text" xml:space="preserve">
+    <value>Max Total Bytes</value>
+  </data>
+  <data name="TransformList_Copy.Text" xml:space="preserve">
+    <value>Copy Transforms</value>
+  </data>
+  <data name="CustomCondition.Text" xml:space="preserve">
+    <value>Custom Condition</value>
+  </data>
+  <data name="RequestsCapInfo_Decription.Help" xml:space="preserve">
+    <value>Enter optional comments to describe what the current request limit is trying to achieve.</value>
+  </data>
+  <data name="RequestsCapInfo_Decription.Text" xml:space="preserve">
+    <value>Description</value>
+  </data>
 </root>

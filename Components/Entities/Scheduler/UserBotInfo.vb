@@ -14,6 +14,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Settings
 Imports DotNetNuke.Services.Localization
 Imports System.Linq
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -31,6 +32,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Entities As New Dictionary(Of String, Object)
         Private _Rankings As List(Of ProbeRanking)
 
+        Public ReadOnly Property IsAuthenticated As Boolean
+            Get
+                If DnnContext.Current.HttpContext IsNot Nothing Then
+                    Return DnnContext.Current.HttpContext.User.Identity.IsAuthenticated
+                End If
+                Return False
+            End Get
+        End Property
 
         Public Property NoOverride() As Boolean
             Get
@@ -288,7 +297,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-
+        <ConditionalVisible("IsAuthenticated", False, False)> _
         <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
         Public Sub Save(ByVal ape As AriciePropertyEditorControl)
             ape.Page.Validate()
@@ -308,6 +317,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
+        <ConditionalVisible("IsAuthenticated", False, False)> _
         <ActionButton(IconName.Undo, IconOptions.Normal)> _
         Public Sub Cancel(ByVal ape As AriciePropertyEditorControl)
             Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
@@ -318,6 +328,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             ape.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
 
+        <ConditionalVisible("IsAuthenticated", False, False)> _
         <ActionButton(IconName.TrashO, IconOptions.Normal, "DeleteUserBot.Alert")> _
         Public Sub Delete(ByVal ape As AriciePropertyEditorControl)
             Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing

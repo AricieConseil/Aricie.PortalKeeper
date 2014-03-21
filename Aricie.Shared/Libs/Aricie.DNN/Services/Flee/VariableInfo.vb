@@ -4,12 +4,14 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
     ''' <summary>
     ''' Variable information
     ''' </summary>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Cog, IconOptions.Normal)> _
     <Serializable()> _
     Public MustInherit Class VariableInfo
         Inherits NamedEntity
@@ -36,7 +38,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
-        Public Overridable Property EvaluationMode() As VarEvaluationMode= VarEvaluationMode.Dynamic
+        Public Overridable Property EvaluationMode() As VarEvaluationMode = VarEvaluationMode.Dynamic
 
         ''' <summary>
         ''' Gets or sets the scope
@@ -57,7 +59,7 @@ Namespace Services.Flee
             <XmlIgnore()> _
         <IsReadOnly(True)> _
         Public Property ProviderName() As String = String.Empty Implements ComponentModel.IProviderSettings.ProviderName
-          
+
 
         Public MustOverride Function EvaluateOnce(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
 

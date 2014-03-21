@@ -241,6 +241,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                                         actionContext.FlowId, targetKey, paramsKey)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
+
                         start = Now
                         Select Case Me._Method
                             Case WebMethod.Get

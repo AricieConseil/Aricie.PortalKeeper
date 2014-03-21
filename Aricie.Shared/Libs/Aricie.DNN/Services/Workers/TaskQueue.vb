@@ -1,6 +1,7 @@
 ﻿Imports Aricie.ComponentModel
 Imports System.Threading
 Imports DotNetNuke.Services.Exceptions
+Imports Amib.Threading
 
 Namespace Services.Workers
 
@@ -51,19 +52,28 @@ Namespace Services.Workers
 
         Private _ID As Guid
         Private _Action As Action(Of T)
-        Private _NbThreads As Integer = 1
 
-        Private _Queue As New Queue(Of T)
+
+        Private _TaskInfo As TaskQueueInfo
+        'Private _NbThreads As Integer = 1
+
+
+        'Private _Queue As New Queue(Of T)
         Private _Started As Boolean
         Private _WakeUp As Boolean
 
 
-        Private _InitialWaitTime As TimeSpan
-        Private _WakeUpWaitTime As TimeSpan
-        Private _TaksWaitTime As TimeSpan
+        'Private _InitialWaitTime As TimeSpan
+        'Private _WakeUpWaitTime As TimeSpan
+        'Private _TaksWaitTime As TimeSpan
 
         Private _Locker As New Object
         Private _TerminateWorkers As Integer = 0
+
+        Private _SmartPool As SmartThreadPool
+
+
+
 
 #Region "cTors"
 
@@ -75,36 +85,59 @@ Namespace Services.Workers
         ''' <param name="objTask">Objet de paramètres de la TaskQueue</param>
         ''' <remarks></remarks>
         Public Sub New(ByVal action As Action(Of T), ByVal objTask As TaskQueueInfo)
-            Me.New(action, objTask.NbThreads, objTask.IsBackground, objTask.InitialWaitTime.Value, objTask.WakeUpWaitTime.Value, objTask.TaksWaitTime.Value)
+            'Me.New(action, objTask.NbThreads, objTask.IsBackground, objTask.InitialWaitTime.Value, objTask.WakeUpWaitTime.Value, objTask.TaksWaitTime.Value)
+            Me._Action = action
+            Me._ID = Guid.NewGuid
+            Me._TaskInfo = objTask
+            'AsyncWorker.Instance.Start(Me._ID.ToString, AddressOf Me.Work, objTask.NbThreads, objTask.IsBackground, Me)
+
+            Dim smtpInfo As New STPStartInfo()
+            smtpInfo.AreThreadsBackground = Me._TaskInfo.IsBackground
+            smtpInfo.MaxWorkerThreads = Me._TaskInfo.NbThreads
+            smtpInfo.ThreadPoolName = Me._ID.ToString()
+            smtpInfo.UseCallerCallContext = True
+            smtpInfo.UseCallerHttpContext = True
+            smtpInfo.PostExecuteWorkItemCallback = AddressOf PostExecuteWorkItemCallback
+            smtpInfo.ThreadPriority = Me._TaskInfo.ThreadPriority
+            If Me._TaskInfo.EnablePerformanceCounters Then
+                smtpInfo.PerformanceCounterInstanceName = Me._TaskInfo.PerformanceCounterInstanceName
+                'smtpInfo.EnableLocalPerformanceCounters = True
+            End If
+            
+            _SmartPool = New SmartThreadPool(smtpInfo)
+
+            AddHandler SmartPool.OnThreadTermination, AddressOf OnThreadTermination
+            SmartPool.Start()
+
+
 
         End Sub
 
+       
+
+
         Public Sub New(ByVal action As Action(Of T), ByVal nbThreads As Integer, ByVal background As Boolean, _
                         ByVal initialWaitTime As TimeSpan, ByVal wakeUpWaitTime As TimeSpan, ByVal taskWaitTime As TimeSpan)
+            Me.New(action, New TaskQueueInfo(nbThreads, background, initialWaitTime, wakeUpWaitTime, taskWaitTime))
+            'Me._NbThreads = nbThreads
+            'Me._InitialWaitTime = initialWaitTime
+            'Me._WakeUpWaitTime = wakeUpWaitTime
+            'Me._TaksWaitTime = taskWaitTime
 
-            Me._Action = action
-            Me._ID = Guid.NewGuid
-            Me._NbThreads = nbThreads
-            Me._InitialWaitTime = initialWaitTime
-            Me._WakeUpWaitTime = wakeUpWaitTime
-            Me._TaksWaitTime = taskWaitTime
-            AsyncWorker.Instance.Start(Me._ID.ToString, AddressOf Me.Work, nbThreads, background, Me)
 
         End Sub
 
         <Obsolete()> _
         Public Sub New(ByVal action As Action(Of T), ByVal nbThreads As Integer, ByVal background As Boolean, _
-                      ByVal waitTimeBeforeStart As TimeSpan)
-
-            Me._Action = action
-            Me._ID = Guid.NewGuid
-            Me._NbThreads = nbThreads
-            Me._TaksWaitTime = waitTimeBeforeStart
-            AsyncWorker.Instance.Start(Me._ID.ToString, AddressOf Me.Work, nbThreads, background, Me)
-
-
-
+                      ByVal taskWaitTime As TimeSpan)
+            Me.New(action, nbThreads, background, taskWaitTime, TimeSpan.Zero, TimeSpan.Zero)
         End Sub
+
+        Public ReadOnly Property SmartPool As SmartThreadPool
+            Get
+                Return _SmartPool
+            End Get
+        End Property
 
 #End Region
 
@@ -116,13 +149,15 @@ Namespace Services.Workers
         ''' <param name="tasks"></param>
         ''' <remarks></remarks>
         Public Sub EnqueueTasks(ByVal tasks As IEnumerable(Of T))
-            SyncLock _Locker
-                For Each task As T In tasks
-                    _Queue.Enqueue(task)
-                Next
-                Monitor.PulseAll(_Locker)
+            'SyncLock _Locker
+            For Each task As T In tasks
+                SmartPool.QueueWorkItem(Of T)(AddressOf Me.Work, task)
+                '        _Queue.Enqueue(task)
+            Next
+            '    Monitor.PulseAll(_Locker)
 
-            End SyncLock
+            'End SyncLock
+
         End Sub
 
         ''' <summary>
@@ -131,11 +166,12 @@ Namespace Services.Workers
         ''' <param name="task"></param>
         ''' <remarks></remarks>
         Public Sub EnqueueTask(ByVal task As T)
-            SyncLock _Locker
-                _Queue.Enqueue(task)
-                Monitor.PulseAll(_Locker)
+            SmartPool.QueueWorkItem(Of T)(Me._Action, task)
+            'SyncLock _Locker
+            '    _Queue.Enqueue(task)
+            '    Monitor.PulseAll(_Locker)
 
-            End SyncLock
+            'End SyncLock
         End Sub
 
         ''' <summary>
@@ -144,17 +180,18 @@ Namespace Services.Workers
         ''' <remarks></remarks>
         Public Sub Terminate()
             Thread.VolatileWrite(_TerminateWorkers, 1)
-            SyncLock _Locker
-                Monitor.PulseAll(_Locker)
-            End SyncLock
+            SmartPool.Shutdown(True, TimeSpan.FromMilliseconds(300))
+            'SyncLock _Locker
+            '    Monitor.PulseAll(_Locker)
+            'End SyncLock
 
-            Dim timeOut As TimeSpan = TimeSpan.FromMilliseconds(300 / Me._NbThreads) + Me._TaksWaitTime
-            If Not Me._Started Then
-                timeOut += Me._InitialWaitTime
-            ElseIf Me._WakeUp Then
-                timeOut += Me._WakeUpWaitTime
-            End If
-            AsyncWorker.Instance.JoinAll(Me._ID.ToString, timeOut)
+            'Dim timeOut As TimeSpan = TimeSpan.FromMilliseconds(300 / Me._TaskInfo.NbThreads) + Me._TaskInfo.TaksWaitTime
+            'If Not Me._Started Then
+            '    timeOut += Me._TaskInfo.InitialWaitTime
+            'ElseIf Me._WakeUp Then
+            '    timeOut += Me._TaskInfo.WakeUpWaitTime
+            'End If
+            'AsyncWorker.Instance.JoinAll(Me._ID.ToString, timeOut)
         End Sub
 
 #End Region
@@ -166,50 +203,97 @@ Namespace Services.Workers
         ''' runs methods waiting in the queue
         ''' </summary>
         ''' <remarks></remarks>
-        Private Sub Work()
-            If Not Me._InitialWaitTime = TimeSpan.Zero Then
-                Thread.Sleep(Me._InitialWaitTime)
-            End If
-            _Started = True
+        Private Sub Work(state As T)
 
-            While Thread.VolatileRead(Me._TerminateWorkers) = 0
+            Try
+                If Not _Started Then
+                    If Not Me._TaskInfo.InitialWaitTime = TimeSpan.Zero Then
+                        Thread.Sleep(Me._TaskInfo.InitialWaitTime)
+                    End If
+                    _Started = True
+                End If
+                If _WakeUp AndAlso Not Me._TaskInfo.WakeUpWaitTime = TimeSpan.Zero Then
+                    Thread.Sleep(Me._TaskInfo.WakeUpWaitTime)
+                End If
+                Me._Action.Invoke(state)
+                If Not Me._TaskInfo.TaksWaitTime = TimeSpan.Zero Then
+                    Thread.Sleep(Me._TaskInfo.TaksWaitTime)
+                End If
+                'Catch ex As ThreadInterruptedException
+                '    Try
+                '        Aricie.Services.ExceptionHelper.LogException(ex)
+                '    Catch
+                '    End Try
+                'Catch ex As ThreadAbortException
+                '    Thread.ResetAbort()
+                '    Try
+                '        Aricie.Services.ExceptionHelper.LogException(ex)
+                '    Catch
+                '    End Try
+            Catch ex As Exception
                 Try
-                    Dim objTask As T
-                    _WakeUp = False
-                    SyncLock _Locker
-
-
-                        While _Queue.Count = 0 AndAlso Thread.VolatileRead(Me._TerminateWorkers) = 0
-
-                            Monitor.Wait(_Locker)
-                            _WakeUp = True
-
-
-                        End While
-                        If Thread.VolatileRead(Me._TerminateWorkers) = 1 Then
-                            Exit While
-                        End If
-
-
-                        objTask = _Queue.Dequeue
-
-                    End SyncLock
-
-                    If _WakeUp AndAlso Not Me._WakeUpWaitTime = TimeSpan.Zero Then
-                        Thread.Sleep(Me._WakeUpWaitTime)
-                    End If
-
-                    _Action.Invoke(objTask)
-                    Me.OnActionPerformed()
-                    If Not Me._TaksWaitTime = TimeSpan.Zero Then
-                        Thread.Sleep(Me._TaksWaitTime)
-                    End If
-                Catch ex As Exception
-                    Aricie.Providers.SystemServiceProvider.Instance().LogException(ex)
+                    Aricie.Services.ExceptionHelper.LogException(ex)
+                Catch
                 End Try
+            End Try
 
-            End While
 
+
+        End Sub
+
+
+        ' ''' <summary>
+        ' ''' runs methods waiting in the queue
+        ' ''' </summary>
+        ' ''' <remarks></remarks>
+        'Private Sub Work()
+        '    If Not Me._TaskInfo.InitialWaitTime = TimeSpan.Zero Then
+        '        Thread.Sleep(Me._TaskInfo.InitialWaitTime)
+        '    End If
+        '    _Started = True
+
+        '    While Thread.VolatileRead(Me._TerminateWorkers) = 0
+        '        Try
+        '            Dim objTask As T
+        '            _WakeUp = False
+        '            SyncLock _Locker
+
+
+        '                While _Queue.Count = 0 AndAlso Thread.VolatileRead(Me._TerminateWorkers) = 0
+
+        '                    Monitor.Wait(_Locker)
+        '                    _WakeUp = True
+
+
+        '                End While
+        '                If Thread.VolatileRead(Me._TerminateWorkers) = 1 Then
+        '                    Exit While
+        '                End If
+
+
+        '                objTask = _Queue.Dequeue
+
+        '            End SyncLock
+
+        '            If _WakeUp AndAlso Not Me._TaskInfo.WakeUpWaitTime = TimeSpan.Zero Then
+        '                Thread.Sleep(Me._TaskInfo.WakeUpWaitTime)
+        '            End If
+
+        '            _Action.Invoke(objTask)
+        '            Me.OnActionPerformed()
+        '            If Not Me._TaskInfo.TaksWaitTime = TimeSpan.Zero Then
+        '                Thread.Sleep(Me._TaskInfo.TaksWaitTime)
+        '            End If
+        '        Catch ex As Exception
+        '            Aricie.Providers.SystemServiceProvider.Instance().LogException(ex)
+        '        End Try
+
+        '    End While
+
+        'End Sub
+
+        Private Sub PostExecuteWorkItemCallback(ByVal wir As IWorkItemResult)
+            Me.OnActionPerformed()
         End Sub
 
         ''' <summary>
@@ -217,11 +301,20 @@ Namespace Services.Workers
         ''' </summary>
         ''' <remarks></remarks>
         Private Sub OnActionPerformed()
-            RaiseEvent ActionPerformed(Me, New GenericEventArgs(Of Integer)(_Queue.Count))
+            RaiseEvent ActionPerformed(Me, New GenericEventArgs(Of Integer)(Me.SmartPool.WaitingCallbacks))
         End Sub
 
         Public Event ActionPerformed As EventHandler(Of GenericEventArgs(Of Integer))
 
+        Private Sub OnIdle(ByVal workitemsgroup As IWorkItemsGroup)
+            _WakeUp = True
+        End Sub
+
+        Private Sub OnThreadTermination()
+            If _SmartPool.WaitingCallbacks = 0 Then
+                _WakeUp = True
+            End If
+        End Sub
 
 #End Region
 

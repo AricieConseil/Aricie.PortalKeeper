@@ -55,6 +55,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             toreturn.Headers("Accept-Encoding") = DefaultAcceptEncoding
             toreturn.Method = Me._Method
             toreturn.Timeout = CInt(Me._Timeout.TotalMilliseconds)
+
             If TypeOf toreturn Is HttpWebRequest Then
                 Dim httpRequest As HttpWebRequest = DirectCast(toreturn, HttpWebRequest)
                 httpRequest.UserAgent = DefaultUserAgent
