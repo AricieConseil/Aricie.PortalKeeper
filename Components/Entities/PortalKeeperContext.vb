@@ -19,7 +19,7 @@ Imports Aricie.Services
 Namespace Aricie.DNN.Modules.PortalKeeper
 
 
-
+    <Serializable()> _
     Public Class PortalKeeperContext(Of TEngineEvents As IConvertible)
         Inherits ContextBase(Of PortalKeeperContext(Of TEngineEvents))
 
@@ -43,7 +43,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Shared _PortalKeeperModuleDefId As Integer = -1
         Private Shared _SharedResourceFile As String = ""
 
-        Private _MatchedRules As New List(Of KeeperRule(Of TEngineEvents))
+        'Private _MatchedRules As New List(Of KeeperRule(Of TEngineEvents))
         Private _CurrentEventStep As TEngineEvents
         Private _PreviousSteps As New List(Of TEngineEvents)
 
@@ -92,7 +92,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Instance Properties"
 
-        Friend Property Disabled() As Boolean
+        Public Property Disabled() As Boolean
             Get
                 Return _Disabled
             End Get
@@ -155,14 +155,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Friend Property MatchedRules() As List(Of KeeperRule(Of TEngineEvents))
-            Get
-                Return _MatchedRules
-            End Get
-            Set(ByVal value As List(Of KeeperRule(Of TEngineEvents)))
-                _MatchedRules = value
-            End Set
-        End Property
+        'Public Property MatchedRules() As List(Of KeeperRule(Of TEngineEvents))
+        '    Get
+        '        Return _MatchedRules
+        '    End Get
+        '    Set(ByVal value As List(Of KeeperRule(Of TEngineEvents)))
+        '        _MatchedRules = value
+        '    End Set
+        'End Property
 
         Public ReadOnly Property PreviousSteps() As List(Of TEngineEvents)
             Get
@@ -230,16 +230,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
         End Sub
 
-        Public Sub MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents)))
+        Public Function MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents))) As List(Of KeeperRule(Of TEngineEvents))
+            Dim toReturn As New List(Of KeeperRule(Of TEngineEvents))
             Dim objRule As KeeperRule(Of TEngineEvents)
-
             For i As Integer = 0 To configRules.Count - 1
                 objRule = configRules(i)
                 If objRule.Enabled _
                     AndAlso objRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture) Then
                     Try
                         If objRule.Condition.Match(Me) Then
-                            Me._MatchedRules.Add(objRule)
+                            toReturn.Add(objRule)
                             If objRule.StopRule Then
                                 Exit For
                             End If
@@ -257,16 +257,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End Try
                 End If
             Next
+            Return toReturn
+        End Function
 
-        End Sub
+        'Private _CurrentEngine As RuleEngineSettings(Of TEngineEvents)
 
-        Private _CurrentEngine As RuleEngineSettings(Of TEngineEvents)
-
-        Public ReadOnly Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
-            Get
-                Return _CurrentEngine
-            End Get
-        End Property
+        Public Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
+        
 
         Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
             If Not Me._CurrentEngine Is configRules Then
@@ -279,10 +276,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
             Me.CurrentEventStep = objEvent
-            Me.MatchRules(configRules.Rules)
-            For Each matchedRule As KeeperRule(Of TEngineEvents) In Me._MatchedRules
+
+
+
+            For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
                 matchedRule.RunActions(Me)
             Next
+            
             If enableStopWatch Then
 
                 Dim objStep As StepInfo
@@ -331,14 +331,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toReturn As SerializableDictionary(Of String, Object)
             Dim dumpVar As Object = Nothing
             If dumpAllVars Then
-                toReturn = New SerializableDictionary(Of String, Object)(Me.Items.Count)
-                For Each objVar As KeyValuePair(Of String, Object) In Me.Items
-                    If objVar.Value IsNot Nothing Then
-                        If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User" OrElse (objVar.Key.StartsWith("Last"))) Then
-                            toReturn(objVar.Key) = objVar.Value
+                SyncLock (Items)
+                    toReturn = New SerializableDictionary(Of String, Object)(Me.Items.Count)
+                    For Each objVar As KeyValuePair(Of String, Object) In Me.Items
+                        If objVar.Value IsNot Nothing Then
+                            If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User" OrElse (objVar.Key.StartsWith("Last"))) Then
+                                toReturn(objVar.Key) = objVar.Value
+                            End If
                         End If
-                    End If
-                Next
+                    Next
+                End SyncLock
             Else
                 toReturn = New SerializableDictionary(Of String, Object)(dumpaVarList.Count)
                 For Each key As String In dumpaVarList

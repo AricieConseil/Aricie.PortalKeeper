@@ -4,46 +4,8 @@ Imports DotNetNuke.Services.Exceptions
 Imports Amib.Threading
 
 Namespace Services.Workers
-
     ''' <summary>
-    ''' Queue d'attente de résolutions
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Class WaitQueue
-        Inherits TaskQueue(Of Boolean)
-
-        Public Sub New(ByVal objTask As TaskQueueInfo)
-            MyBase.New(AddressOf WaitInternal, objTask.NbThreads, objTask.IsBackground, objTask.InitialWaitTime.Value, objTask.WakeUpWaitTime.Value, objTask.TaksWaitTime.Value)
-
-        End Sub
-
-        ''' <summary>
-        ''' Attend numTimes réponses
-        ''' </summary>
-        ''' <param name="numTimes"></param>
-        ''' <remarks></remarks>
-        Public Sub Wait(ByVal numTimes As Integer)
-            Dim params(numTimes) As Boolean
-            Me.EnqueueTasks(params)
-        End Sub
-
-        ''' <summary>
-        ''' Attend une réponse
-        ''' </summary>
-        ''' <remarks></remarks>
-        Public Sub WaitOne()
-            Me.EnqueueTask(True)
-        End Sub
-
-
-        Private Shared Sub WaitInternal(ByVal dumbParam As Boolean)
-
-        End Sub
-
-    End Class
-
-    ''' <summary>
-    ''' Queue de traitement
+    ''' Processing Queue
     ''' </summary>
     ''' <typeparam name="T"></typeparam>
     ''' <remarks></remarks>
@@ -73,7 +35,7 @@ Namespace Services.Workers
         Private _SmartPool As SmartThreadPool
 
 
-
+        Private _Timer As Timer
 
 #Region "cTors"
 
@@ -99,21 +61,33 @@ Namespace Services.Workers
             smtpInfo.UseCallerHttpContext = True
             smtpInfo.PostExecuteWorkItemCallback = AddressOf PostExecuteWorkItemCallback
             smtpInfo.ThreadPriority = Me._TaskInfo.ThreadPriority
+            smtpInfo.IdleTimeout = CInt(Me._TaskInfo.IdleTimeout.Value.TotalMilliseconds)
             If Me._TaskInfo.EnablePerformanceCounters Then
                 smtpInfo.PerformanceCounterInstanceName = Me._TaskInfo.PerformanceCounterInstanceName
                 'smtpInfo.EnableLocalPerformanceCounters = True
             End If
-            
+            If Me._TaskInfo.InitialWaitTime.Value <> TimeSpan.Zero Then
+                smtpInfo.StartSuspended = True
+            End If
+
             _SmartPool = New SmartThreadPool(smtpInfo)
 
+            If Me._TaskInfo.InitialWaitTime.Value <> TimeSpan.Zero Then
+                _Timer = New Timer(New TimerCallback(AddressOf Me.StartSmartThreadPool), Me, Me._TaskInfo.InitialWaitTime.Value, TimeSpan.FromMilliseconds(-1))
+            End If
+
+
             AddHandler SmartPool.OnThreadTermination, AddressOf OnThreadTermination
-            SmartPool.Start()
+            'SmartPool.Start()
 
 
 
         End Sub
 
-       
+        Private Sub StartSmartThreadPool(ByVal state As Object)
+            _Timer = Nothing
+            _SmartPool.Start()
+        End Sub
 
 
         Public Sub New(ByVal action As Action(Of T), ByVal nbThreads As Integer, ByVal background As Boolean, _
@@ -149,14 +123,14 @@ Namespace Services.Workers
         ''' <param name="tasks"></param>
         ''' <remarks></remarks>
         Public Sub EnqueueTasks(ByVal tasks As IEnumerable(Of T))
-            'SyncLock _Locker
-            For Each task As T In tasks
-                SmartPool.QueueWorkItem(Of T)(AddressOf Me.Work, task)
-                '        _Queue.Enqueue(task)
-            Next
-            '    Monitor.PulseAll(_Locker)
+            SyncLock _Locker
+                For Each task As T In tasks
+                    SmartPool.QueueWorkItem(Of T)(AddressOf Me.Work, task)
+                    '        _Queue.Enqueue(task)
+                Next
+                '    Monitor.PulseAll(_Locker)
 
-            'End SyncLock
+            End SyncLock
 
         End Sub
 
@@ -166,7 +140,10 @@ Namespace Services.Workers
         ''' <param name="task"></param>
         ''' <remarks></remarks>
         Public Sub EnqueueTask(ByVal task As T)
-            SmartPool.QueueWorkItem(Of T)(Me._Action, task)
+            SyncLock _Locker
+                SmartPool.QueueWorkItem(Of T)(AddressOf Me.Work, task)
+            End SyncLock
+
             'SyncLock _Locker
             '    _Queue.Enqueue(task)
             '    Monitor.PulseAll(_Locker)
@@ -179,11 +156,12 @@ Namespace Services.Workers
         ''' </summary>
         ''' <remarks></remarks>
         Public Sub Terminate()
-            Thread.VolatileWrite(_TerminateWorkers, 1)
-            SmartPool.Shutdown(True, TimeSpan.FromMilliseconds(300))
-            'SyncLock _Locker
-            '    Monitor.PulseAll(_Locker)
-            'End SyncLock
+            SyncLock _Locker
+                Thread.VolatileWrite(_TerminateWorkers, 1)
+                SmartPool.Shutdown(True, TimeSpan.FromMilliseconds(300))
+
+                '    Monitor.PulseAll(_Locker)
+            End SyncLock
 
             'Dim timeOut As TimeSpan = TimeSpan.FromMilliseconds(300 / Me._TaskInfo.NbThreads) + Me._TaskInfo.TaksWaitTime
             'If Not Me._Started Then
@@ -204,32 +182,37 @@ Namespace Services.Workers
         ''' </summary>
         ''' <remarks></remarks>
         Private Sub Work(state As T)
-
+           
             Try
+                'SyncLock _Locker
                 If Not _Started Then
-                    If Not Me._TaskInfo.InitialWaitTime = TimeSpan.Zero Then
-                        Thread.Sleep(Me._TaskInfo.InitialWaitTime)
-                    End If
+                    'If Not Me._TaskInfo.InitialWaitTime = TimeSpan.Zero Then
+                    '    Thread.Sleep(Me._TaskInfo.InitialWaitTime)
+                    'End If
                     _Started = True
-                End If
-                If _WakeUp AndAlso Not Me._TaskInfo.WakeUpWaitTime = TimeSpan.Zero Then
+                ElseIf _WakeUp AndAlso Not Me._TaskInfo.WakeUpWaitTime = TimeSpan.Zero Then
                     Thread.Sleep(Me._TaskInfo.WakeUpWaitTime)
-                End If
-                Me._Action.Invoke(state)
-                If Not Me._TaskInfo.TaksWaitTime = TimeSpan.Zero Then
+                    _WakeUp = False
+                ElseIf Not Me._TaskInfo.TaksWaitTime = TimeSpan.Zero Then
                     Thread.Sleep(Me._TaskInfo.TaksWaitTime)
                 End If
-                'Catch ex As ThreadInterruptedException
-                '    Try
-                '        Aricie.Services.ExceptionHelper.LogException(ex)
-                '    Catch
-                '    End Try
-                'Catch ex As ThreadAbortException
-                '    Thread.ResetAbort()
-                '    Try
-                '        Aricie.Services.ExceptionHelper.LogException(ex)
-                '    Catch
-                '    End Try
+                    Me._Action.Invoke(state)
+                    'End SyncLock
+
+
+
+
+                    'Catch ex As ThreadInterruptedException
+                    '    Try
+                    '        Aricie.Services.ExceptionHelper.LogException(ex)
+                    '    Catch
+                    '    End Try
+                    'Catch ex As ThreadAbortException
+                    '    Thread.ResetAbort()
+                    '    Try
+                    '        Aricie.Services.ExceptionHelper.LogException(ex)
+                    '    Catch
+                    '    End Try
             Catch ex As Exception
                 Try
                     Aricie.Services.ExceptionHelper.LogException(ex)

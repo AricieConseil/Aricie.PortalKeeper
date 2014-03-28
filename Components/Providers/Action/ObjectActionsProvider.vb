@@ -15,7 +15,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <DisplayName("Object Actions Provider")> _
         <Description("This provider allows to call object methods or set object properties")> _
     Public Class ObjectActionsProvider(Of TEngineEvents As IConvertible)
-        Inherits ActionProvider(Of TEngineEvents)
+        Inherits AsyncEnabledActionProvider(Of TEngineEvents)
+
 
 
         Private _ObjectActions As New ObjectActions
@@ -34,13 +35,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-        Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+        
+        Protected Overloads Overrides Function Run(actionContext As PortalKeeperContext(Of TEngineEvents), aSync As Boolean) As Boolean
             'Return MyBase.Run(actionContext)
             Me._ObjectActions.Run(actionContext, actionContext)
-
-            Return True
         End Function
-
     End Class
 End Namespace

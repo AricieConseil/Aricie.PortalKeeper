@@ -40,7 +40,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("CaptureException", False, True)> _
         <SortOrder(1000)> _
         Public Property ExceptionVarName() As String = "ActionException"
-            
+
+      
 
         
 
