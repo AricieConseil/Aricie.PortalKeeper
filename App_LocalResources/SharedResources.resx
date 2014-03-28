@@ -5356,7 +5356,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Value is required</value>
   </data>
   <data name="LoopActionProvider`1_MaxNbIterations.Help" xml:space="preserve">
-    <value>Additionally to the loop condition, you can specify an absolute maximum number of iterations</value>
+    <value>Additionally to the loop condition, you can specify an absolute maximum number of iterations (0 = unlimited)</value>
   </data>
   <data name="LoopActionProvider`1_MaxNbIterations.Text" xml:space="preserve">
     <value>Max Number of Iterations</value>
