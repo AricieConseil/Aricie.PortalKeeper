@@ -5526,4 +5526,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="TaskQueueInfo_MainSettings.Header" xml:space="preserve">
     <value>Main Settings</value>
   </data>
+  <data name="RuleEngineSettings`1_ExceptionDumpAllVars.Help" xml:space="preserve">
+    <value>In case of Exception during a run, you have the possibility to dump all current variables or alternatively to selectively dump a subset of variable expressions.</value>
+  </data>
+  <data name="RuleEngineSettings`1_ExceptionDumpAllVars.Text" xml:space="preserve">
+    <value>Dump All Vars On Exception</value>
+  </data>
 </root>

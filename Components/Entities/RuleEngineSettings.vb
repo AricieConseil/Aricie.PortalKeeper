@@ -88,6 +88,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1000)> _
+        Public Property ExceptionDumpAllVars() As Boolean
+
+        <ConditionalVisible("ExceptionDumpAllVars", True, True)> _
         <ExtendedCategory("TechnicalSettings")> _
          <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
            LineCount(4), Width(500)> _

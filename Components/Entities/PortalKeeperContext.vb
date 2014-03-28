@@ -246,9 +246,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     Catch ex As Exception
                         Dim xmlDump As String = ""
-                        If Me._CurrentEngine.ExceptionDumpVars.Length > 0 Then
+                        If Me._CurrentEngine.ExceptionDumpAllVars OrElse Me._CurrentEngine.ExceptionDumpVars.Length > 0 Then
                             Dim dumpVars As List(Of String) = ParseStringList(Me._CurrentEngine.ExceptionDumpVars)
-                            Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(False, dumpVars)
+                            Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(Me._CurrentEngine.ExceptionDumpAllVars, dumpVars)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
                         Dim message As String = String.Format("Rule Condition Exception, Engine Name: {0}, Rule Name: {1}, Dumped Vars: {2}, InnerException: ", Me._CurrentEngine.Name, objRule.Name, xmlDump)
