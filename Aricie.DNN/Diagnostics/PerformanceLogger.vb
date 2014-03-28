@@ -78,17 +78,47 @@ Namespace Diagnostics
 
         Protected Overrides ReadOnly Property AddLogTypeAndName() As Boolean
             Get
-
                 Return False
             End Get
         End Property
 
         Public Overrides Sub AddDebugInfo(ByVal objToLog As StepInfo, ByVal serialize As Boolean)
-
-            objToLog.StopElapsed = Me.StopWatch.Elapsed
-            MyBase.AddDebugInfo(objToLog, serialize)
+            If Me._DisabledLogs.Count = 0 OrElse Not Me._DisabledLogs.Contains(objToLog.FlowId) Then
+                objToLog.StopElapsed = Me.StopWatch.Elapsed
+                If Me._AgregatedLogs.Count > 0 AndAlso Me._AgregatedLogs.Contains(objToLog.FlowId) Then
+                    objToLog.Cumulated = True
+                End If
+                MyBase.AddDebugInfo(objToLog, serialize)
+            End If
         End Sub
 
+        Private _DisabledLogs As New HashSet(Of String)
+        Private _AgregatedLogs As New HashSet(Of String)
+
+
+        Public Sub AgregateLogs(id As String)
+            SyncLock _AgregatedLogs
+                _AgregatedLogs.Add(id)
+            End SyncLock
+        End Sub
+
+        Public Sub DisableAregates(id As String)
+            SyncLock _AgregatedLogs
+                _AgregatedLogs.Remove(id)
+            End SyncLock
+        End Sub
+
+        Public Sub DisableLog(id As String)
+            SyncLock _DisabledLogs
+                _DisabledLogs.Add(id)
+            End SyncLock
+        End Sub
+
+        Public Sub EnableLog(id As String)
+            SyncLock _DisabledLogs
+                _DisabledLogs.Remove(id)
+            End SyncLock
+        End Sub
 
 
         Protected Overrides Sub FillLogObject(ByVal objToLog As StepInfo, ByRef objEventLogInfo As LogInfo, _
@@ -100,14 +130,14 @@ Namespace Diagnostics
                 key &= objToLog.ThreadId
             End If
 
-
-
-
             Dim currentPerfTimer As TimingCounter = Nothing
 
+            Dim timerNotFound As Boolean
+            SyncLock _PerfTimers
+                timerNotFound = Not _PerfTimers.TryGetValue(key, currentPerfTimer)
+            End SyncLock
 
-
-            If Not _PerfTimers.TryGetValue(key, currentPerfTimer) Then
+            If timerNotFound Then
                 currentPerfTimer = New TimingCounter(objToLog.StopElapsed)
                 objToLog.IsNew = True
             Else
@@ -153,12 +183,11 @@ Namespace Diagnostics
             End If
             objToLog.FlowStartTime = Me.StopWatchStartTime.Add(currentPerfTimer.StartTime)
 
-
-            objEventLogInfo.AddProperty(glbDebugTypePropertyName, objToLog.DebugType)
-
             objEventLogInfo.AddProperty("Step", objToLog.StepNumber.ToString(CultureInfo.InvariantCulture))
 
             objEventLogInfo.AddProperty("Name", objToLog.Name)
+
+            objEventLogInfo.AddProperty(glbDebugTypePropertyName, objToLog.DebugType)
 
             objEventLogInfo.AddProperty("Last Step", objToLog.IsLastStep.ToString)
 
@@ -218,14 +247,17 @@ Namespace Diagnostics
 
 
             If objToLog.IsLastStep Then
-                _PerfTimers.Remove(key)
+                SyncLock _PerfTimers
+                    _PerfTimers.Remove(key)
+                End SyncLock
+
             Else
                 currentPerfTimer.LastStepWorkingPhase = objToLog.WorkingPhase
                 currentPerfTimer.LastStepTime = objToLog.StopElapsed
-                _PerfTimers(key) = currentPerfTimer
+                SyncLock _PerfTimers
+                    _PerfTimers(key) = currentPerfTimer
+                End SyncLock
             End If
-
-
         End Sub
     End Class
 

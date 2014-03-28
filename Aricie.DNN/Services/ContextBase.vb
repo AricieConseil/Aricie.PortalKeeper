@@ -113,7 +113,9 @@ Namespace Services
         ''' <param name="value"></param>
         ''' <remarks></remarks>
         Public Sub SetVar(ByVal key As String, ByVal value As Object)
-            Me._Items(key) = value
+            SyncLock Me._Items
+                Me._Items(key) = value
+            End SyncLock
         End Sub
 
         ''' <summary>
@@ -122,9 +124,11 @@ Namespace Services
         ''' <param name="items"></param>
         ''' <remarks></remarks>
         Public Sub SetVars(ByVal items As IDictionary(Of String, Object))
-            For Each objItem As KeyValuePair(Of String, Object) In items
-                Me._Items(objItem.Key) = objItem.Value
-            Next
+            SyncLock Me._Items
+                For Each objItem As KeyValuePair(Of String, Object) In items
+                    Me._Items(objItem.Key) = objItem.Value
+                Next
+            End SyncLock
         End Sub
 
         ''' <summary>
@@ -137,11 +141,15 @@ Namespace Services
         Public Property Item(ByVal key As String) As Object
             Get
                 Dim toReturn As Object = Nothing
-                Me._Items.TryGetValue(key, toReturn)
+                SyncLock Me._Items
+                    Me._Items.TryGetValue(key, toReturn)
+                End SyncLock
                 Return toReturn
             End Get
             Set(ByVal value As Object)
-                Me._Items(key) = value
+                SyncLock Me._Items
+                    Me._Items(key) = value
+                End SyncLock
             End Set
         End Property
 

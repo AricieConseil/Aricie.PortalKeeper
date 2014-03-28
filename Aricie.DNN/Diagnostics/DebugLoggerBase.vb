@@ -17,7 +17,7 @@ Namespace Diagnostics
 
 
         Private Const glbSerializedPropertyName As String = "Serialized"
-        Public Const glbDebugTypePropertyName As String = "DebugType"
+        Public Const glbDebugTypePropertyName As String = "From"
 
         Private Shared _StopWatch As Stopwatch
         Private Shared _StopWatchStartTime As DateTime
@@ -67,7 +67,13 @@ Namespace Diagnostics
         Private ReadOnly Property LogTaskQueueNoSerialize() As TaskQueue(Of T)
             Get
                 If _LogTaskQueueNoSerialize Is Nothing Then
-                    _LogTaskQueueNoSerialize = New TaskQueue(Of T)(New Action(Of T)(AddressOf ProcessDebugInfoNoSerialize), 1, True, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(5))
+
+                    Dim objTaskInfo As New TaskQueueInfo(1, True, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(9))
+#If (Debug) Then
+                    objTaskInfo.EnablePerformanceCounters = True
+                    objTaskInfo.PerformanceCounterInstanceName &= "-DebugLogger-NoSerialize"
+#End If
+                    _LogTaskQueueNoSerialize = New TaskQueue(Of T)(New Action(Of T)(AddressOf ProcessDebugInfoNoSerialize), objTaskInfo)
                 End If
                 Return _LogTaskQueueNoSerialize
             End Get
@@ -76,7 +82,14 @@ Namespace Diagnostics
         Private ReadOnly Property LogTaskQueueSerialize() As TaskQueue(Of T)
             Get
                 If _LogTaskQueueSerialize Is Nothing Then
-                    _LogTaskQueueSerialize = New TaskQueue(Of T)(New Action(Of T)(AddressOf ProcessDebugInfoSerialize), 1, True, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(5))
+
+                    Dim objTaskInfo As New TaskQueueInfo(1, True, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(3), TimeSpan.FromMilliseconds(9))
+#If (Debug) Then
+                    objTaskInfo.EnablePerformanceCounters = True
+                    objTaskInfo.PerformanceCounterInstanceName &= "-DebugLogger-Serialize"
+#End If
+                    _LogTaskQueueSerialize = New TaskQueue(Of T)(New Action(Of T)(AddressOf ProcessDebugInfoSerialize), objTaskInfo)
+
                 End If
                 Return _LogTaskQueueSerialize
             End Get
@@ -84,8 +97,10 @@ Namespace Diagnostics
 
 #Region "Public methods"
 
-        Public Sub AddDebugInfo(ByVal objToLog As T)
+       
 
+
+        Public Sub AddDebugInfo(ByVal objToLog As T)
             Me.AddDebugInfo(objToLog, False)
 
         End Sub
