@@ -33,7 +33,8 @@ Namespace Services.Workers
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Property NbThreads() As Integer = 1
+        <ExtendedCategory("MainSettings")> _
+         Public Property NbThreads() As Integer = 1
 
 
         ''' <summary>
@@ -42,6 +43,7 @@ Namespace Services.Workers
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("MainSettings")> _
         Public Property TaksWaitTime() As New STimeSpan
 
         ''' <summary>
@@ -50,7 +52,7 @@ Namespace Services.Workers
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property InitialWaitTime() As New STimeSpan
 
         ''' <summary>
@@ -59,8 +61,10 @@ Namespace Services.Workers
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property WakeUpWaitTime() As New STimeSpan
+
+
 
 
 
@@ -70,17 +74,21 @@ Namespace Services.Workers
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property IsBackground() As Boolean = True
 
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
+        Public Property IdleTimeout As New STimeSpan(TimeSpan.FromMilliseconds(100))
+
+
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property ThreadPriority() As ThreadPriority = ThreadPriority.Lowest
 
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property EnablePerformanceCounters As Boolean
 
         <ConditionalVisible("EnablePerformanceCounters", False, True)> _
-        <Category("AdvancedSettings")> _
+        <ExtendedCategory("AdvancedSettings")> _
         Public Property PerformanceCounterInstanceName As String = "Aricie-STP"
 
 

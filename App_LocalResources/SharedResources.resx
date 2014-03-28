@@ -5463,4 +5463,67 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RequestsCapInfo_Decription.Text" xml:space="preserve">
     <value>Description</value>
   </data>
+  <data name="BotInfo`1_InstanceNumber.Help" xml:space="preserve">
+    <value>If </value>
+  </data>
+  <data name="BotInfo`1_InstanceNumber.Text" xml:space="preserve">
+    <value>Instance Number</value>
+  </data>
+  <data name="ActionProvider`1_DisablePerformanceLogger.Help" xml:space="preserve">
+    <value>If the action is repeated a lot of times per run, it might be more convenient to silent the performance logger over that specific action to keep the total number of steps recorded tractable.</value>
+  </data>
+  <data name="ActionProvider`1_DisablePerformanceLogger.Text" xml:space="preserve">
+    <value>Disable Performance Logger</value>
+  </data>
+  <data name="LoopActionProvider`1_LogParticularSteps.Help" xml:space="preserve">
+    <value>If you enable the performance logger, you might want to restrict the recording of specific loop instances, e.g. by default only the first one</value>
+  </data>
+  <data name="LoopActionProvider`1_LogParticularSteps.Text" xml:space="preserve">
+    <value>Log Specific Steps</value>
+  </data>
+  <data name="LoopActionProvider`1_StepsToLogAsString.Help" xml:space="preserve">
+    <value>Enter a semi-colon separated list of Integer indexes for the loop instances to log.</value>
+  </data>
+  <data name="LoopActionProvider`1_StepsToLogAsString.Text" xml:space="preserve">
+    <value>Steps to Log</value>
+  </data>
+  <data name="ObjectAction_LockTarget.Help" xml:space="preserve">
+    <value>In case of concurrent runs through the use of task queues, it is advised to lock objects in case the subsequent calls are not thread safe.</value>
+  </data>
+  <data name="ObjectAction_LockTarget.Text" xml:space="preserve">
+    <value>Lock Target</value>
+  </data>
+  <data name="LoopActionProvider`1_AgregateLogSteps.Help" xml:space="preserve">
+    <value>If performance logger is activated, will individual loop instance logs into agregated steps</value>
+  </data>
+  <data name="LoopActionProvider`1_AgregateLogSteps.Text" xml:space="preserve">
+    <value>Agregate Log Steps</value>
+  </data>
+  <data name="BotInfo`1_NoSave.Help" xml:space="preserve">
+    <value>This cancels the history and parameters saving at the end of a bot run (~10-50ms overhead)</value>
+  </data>
+  <data name="BotInfo`1_NoSave.Text" xml:space="preserve">
+    <value>No Save</value>
+  </data>
+  <data name="BotInfo`1_RunSeveralInstances.Help" xml:space="preserve">
+    <value>You can optionnally start several instances of the bot. This might be useful when running bots asynchronously.</value>
+  </data>
+  <data name="BotInfo`1_RunSeveralInstances.Text" xml:space="preserve">
+    <value>Run Several Instances</value>
+  </data>
+  <data name="BotInfo`1_SharedContext.Help" xml:space="preserve">
+    <value>When several instances are started, the initial bot context is cloned for a fresh start on each run. Sharing the context saves some time, but it will certainly bring erroneous results, although Monitors are generally used to prevent cross thread locks.</value>
+  </data>
+  <data name="BotInfo`1_SharedContext.Text" xml:space="preserve">
+    <value>Shared Context</value>
+  </data>
+  <data name="TaskQueueInfo_IdleTimeout.Help" xml:space="preserve">
+    <value>The Task Queue engine uses the smartthreadpool component, which is capable of adjusting the number of active threads up to the specified thread number. When a thread is idle, it is stopped after the given timeout to free resources.</value>
+  </data>
+  <data name="TaskQueueInfo_IdleTimeout.Text" xml:space="preserve">
+    <value>Idle Timeout</value>
+  </data>
+  <data name="TaskQueueInfo_MainSettings.Header" xml:space="preserve">
+    <value>Main Settings</value>
+  </data>
 </root>

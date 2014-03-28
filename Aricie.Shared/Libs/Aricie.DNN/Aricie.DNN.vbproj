@@ -98,7 +98,7 @@
     </Reference>
     <Reference Include="SmartThreadPool, Version=2.2.3.0, Culture=neutral, PublicKeyToken=1126fe8b671e8a79, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\SmartThreadPool.dll</HintPath>
+      <HintPath>external\SmartThreadPool\SmartThreadPool.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -248,7 +248,7 @@
     <Compile Include="Config\ProviderInfo.vb" />
     <Compile Include="Config\IConfigUpdater.vb" />
     <Compile Include="Diagnostics\DebugInfo.vb" />
-    <Compile Include="Diagnostics\DebugLogger.vb" />
+    <Compile Include="Diagnostics\DebugLoggerBase.vb" />
     <Compile Include="Diagnostics\ExternalFileAsyncLogger.vb" />
     <Compile Include="Diagnostics\ExternalFileLog.vb" />
     <Compile Include="Diagnostics\SimpleDebugLogger.vb" />
@@ -285,10 +285,12 @@
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
     <Compile Include="Services\Filtering\XPathInfo.vb" />
+    <Compile Include="Services\Flee\CallObjectMethod.vb" />
     <Compile Include="Services\Flee\CtorVariableInfo.vb" />
     <Compile Include="Services\Flee\ObjectAction.vb" />
     <Compile Include="Services\Flee\ObjectActions.vb" />
     <Compile Include="Services\Flee\ObjectActionsBase.vb" />
+    <Compile Include="Services\Flee\SetObjectProperty.vb" />
     <Compile Include="Services\Flee\SimpleExpression.vb" />
     <Compile Include="Services\Flee\SimpleOrExpression.vb" />
     <Compile Include="Services\Flee\SimpleOrExpressionMode.vb" />
@@ -365,9 +367,11 @@
     <Compile Include="Services\Filtering\StringEscaper.vb" />
     <Compile Include="Services\Tokens\TokenSourceInfo.vb" />
     <Compile Include="Diagnostics\AsyncLogger.vb" />
+    <Compile Include="Services\Workers\SafeSemaphore.vb" />
     <Compile Include="Services\Workers\SimpleProcessStartInfo.vb" />
     <Compile Include="Services\Workers\TaskQueue.vb" />
     <Compile Include="Services\Workers\TaskQueueInfo.vb" />
+    <Compile Include="Services\Workers\WaitQueue.vb" />
     <Compile Include="Settings\GeneralSettings.vb" />
     <Compile Include="Settings\PersonalSettings.vb" />
     <Compile Include="Settings\SettingsController.vb" />
@@ -537,6 +541,7 @@
     <None Include="external\Flee\Ciloci.Flee.dll" />
     <None Include="external\Flee\Ciloci.Flee.license.txt" />
     <None Include="external\HtmlAgilityPack\HtmlAgilityPack.dll" />
+    <None Include="external\SmartThreadPool\SmartThreadPool.dll" />
     <None Include="My Project\Application.myapp">
       <Generator>MyApplicationCodeGenerator</Generator>
       <LastGenOutput>Application.Designer.vb</LastGenOutput>
@@ -611,7 +616,6 @@
     <Content Include="external\AjaxControlToolKit\zh-CHS\AjaxControlToolkit.resources.dll" />
     <Content Include="external\AjaxControlToolKit\zh-CHT\AjaxControlToolkit.resources.dll" />
     <Content Include="external\DomainName.Library.dll" />
-    <Content Include="external\SmartThreadPool.dll" />
     <Content Include="external\Telerik.Web.UI.dll" />
     <EmbeddedResource Include="UI\WebControls\AutoCompleteTextBox.js" />
     <EmbeddedResource Include="Images\dropdown.png" />

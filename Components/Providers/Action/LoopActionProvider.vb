@@ -3,8 +3,10 @@ Imports Aricie.DNN.Services.Flee
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
+Imports System.Xml.Serialization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -95,6 +97,45 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <XmlIgnore()> _
+        <ConditionalVisible("DisablePerformanceLogger", True, True)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1001)> _
+        Public Overridable Property AgregateLogSteps() As Boolean
+
+
+        <XmlIgnore()> _
+        <ConditionalVisible("DisablePerformanceLogger", True, True)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1001)> _
+        Public Property LogParticularSteps() As Boolean = True
+
+        <ConditionalVisible("LogParticularSteps", False, True)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1001)> _
+        Public Property StepsToLogAsString As String = "0;"
+
+
+        Private _StepsToLog As List(Of Integer)
+
+        <Browsable(False)> _
+        Public ReadOnly Property StepsToLog As List(Of Integer)
+            Get
+                If _StepsToLog Is Nothing Then
+                    Dim toReturn As New List(Of Integer)
+                    Dim toAdds As String() = StepsToLogAsString.Trim().Trim(";"c).Split(";"c)
+                    For Each objAdd As String In toAdds
+                        Dim toAdd As Integer
+                        If Integer.TryParse(objAdd, toAdd) Then
+                            toReturn.Add(toAdd)
+                        End If
+                    Next
+                    _StepsToLog = toReturn
+                End If
+                Return _StepsToLog
+            End Get
+        End Property
+
 
 
         ' <ExtendedCategory("LoopAction")> _
@@ -111,6 +152,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
             Dim toReturn As Boolean = True
+
+            If Me.AgregateLogSteps Then
+                PerformanceLogger.Instance.AgregateLogs(actionContext.FlowId)
+            End If
+
+
             Dim maxIterations As Integer = Integer.MaxValue
             If Me.MaxNbIterations > 0 Then
                 maxIterations = MaxNbIterations
@@ -119,7 +166,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me.UseCounter Then
                 actionContext.SetVar(Me._CurrentItemParam, Me._CounterStart.Evaluate(actionContext, actionContext))
                 While Me._CounterEval.Evaluate(actionContext, actionContext) AndAlso counter < maxIterations
+                    If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
+                        PerformanceLogger.Instance().DisableLog(actionContext.FlowId)
+                    End If
                     toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
+                    If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
+                        PerformanceLogger.Instance().EnableLog(actionContext.FlowId)
+                    End If
                     actionContext.SetVar(Me._CurrentItemParam, Me._CounterUpdate.Evaluate(actionContext, actionContext))
                     counter += 1
                 End While
@@ -132,13 +185,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                         actionContext.SetVar(Me._CurrentItemParam, objCurrent)
                         'Me.SubBot.ProcessRules(actionContext, actionContext.CurrentEventStep, False)
+                        If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
+                            PerformanceLogger.Instance().DisableLog(actionContext.FlowId)
+                        End If
                         toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
+                        If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
+                            PerformanceLogger.Instance().EnableLog(actionContext.FlowId)
+                        End If
                         'Threading.Thread.Sleep(Me._WaitTime.Value)
                         counter += 1
                     Next
                 Else
                     Throw New ApplicationException(String.Format("Expression {0} does not evaluate to an Enumerable entity", Me._EnumerableExpression.Expression))
                 End If
+            End If
+
+            If Me.AgregateLogSteps Then
+                PerformanceLogger.Instance.DisableAregates(actionContext.FlowId)
             End If
 
             Return toReturn

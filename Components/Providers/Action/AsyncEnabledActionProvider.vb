@@ -16,12 +16,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
 
-        <SortOrder(1000)> _
+        <SortOrder(900)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property UseTaskQueue() As Boolean
 
 
-        <SortOrder(1000)> _
+        <SortOrder(900)> _
         <ExtendedCategory("TechnicalSettings")> _
             <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _

@@ -57,7 +57,12 @@ Namespace Diagnostics
         Private ReadOnly Property LogTaskQueue() As TaskQueue(Of LogInfo)
             Get
                 If _LogTaskQueue Is Nothing Then
-                    _LogTaskQueue = New TaskQueue(Of LogInfo)(New Action(Of LogInfo)(AddressOf LogSlowly), 1, True, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromMilliseconds(10))
+                    Dim objTaskInfo As New TaskQueueInfo(1, True, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromMilliseconds(10))
+#If (Debug) Then
+                    objTaskInfo.EnablePerformanceCounters = True
+                    objTaskInfo.PerformanceCounterInstanceName &= "-AsyncLogger"
+#End If
+                    _LogTaskQueue = New TaskQueue(Of LogInfo)(New Action(Of LogInfo)(AddressOf LogSlowly), objTaskInfo)
                 End If
                 Return _LogTaskQueue
             End Get

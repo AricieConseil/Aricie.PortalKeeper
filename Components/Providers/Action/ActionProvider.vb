@@ -7,6 +7,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Threading
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.Services
+Imports Aricie.DNN.Services.Workers
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -21,31 +22,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("TechnicalSettings")> _
-     <SortOrder(1000)> _
+     <SortOrder(950)> _
         Public Property AddSleepTime() As Boolean
 
         <ExtendedCategory("TechnicalSettings")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
         <LabelMode(LabelMode.Top)> _
         <ConditionalVisible("AddSleepTime", False, True)> _
-        <SortOrder(1000)> _
+        <SortOrder(950)> _
         Public Property SleepTime() As New STimeSpan()
 
         <ExtendedCategory("TechnicalSettings")> _
-         <SortOrder(1000)> _
+         <SortOrder(950)> _
         Public Property UseSemaphore As Boolean
 
-        <SortOrder(1000)> _
+        <SortOrder(950)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings")> _
-         Public Property SemaphoreName As String = "Aricie-ActionSemaphore"
+        Public Property SemaphoreName As String = "Aricie-ActionSemaphore"
 
-        <SortOrder(1000)> _
+        <SortOrder(950)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings")> _
-         Public Property NbConcurrentThreads As Integer = 1
+        Public Property NbConcurrentThreads As Integer = 1
 
-        <SortOrder(1000)> _
+        <SortOrder(950)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
        <ExtendedCategory("TechnicalSettings")> _
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
@@ -83,20 +84,29 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property RunDurationVarName() As String = String.Empty
 
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1000)> _
+        Public Property DisablePerformanceLogger() As Boolean
+
+
+
+
+
 
         Public Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
             If Me.UseSemaphore Then
                 Dim owned As Boolean
                 'Dim semaphoreId As String = "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture)
-                'todo: check if a global mutex is necessary (see the code below for security access)
-                'mutexId = String.Format("Global\{0}", mutexId)
-                Using objSemaphore As New Semaphore(0, Me.NbConcurrentThreads, Me.SemaphoreName)
+                'todo: check if a global semaphore is necessary (see the code below for security access)
+                'semaphoreId = String.Format("Global\{0}", semaphoreId)
+                'Using objSemaphore As New Semaphore(0, Me.NbConcurrentThreads, Me.SemaphoreName)
+                Using objSemaphore As New SafeSemaphore(Me.NbConcurrentThreads, Me.SemaphoreName)
                     Try
                         'Dim allowEveryoneRule As New MutexAccessRule(New SecurityIdentifier(WellKnownSidType.WorldSid, Nothing), MutexRights.FullControl, AccessControlType.Allow)
                         'Dim securitySettings As New MutexSecurity()
                         'securitySettings.AddAccessRule(allowEveryoneRule)
                         'objMutex.SetAccessControl(securitySettings)
-                        If (Not Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objSemaphore.WaitOne(Me.SynchronisationTimeout.Value)) OrElse (Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objSemaphore.WaitOne()) Then
+                        If (Me.SynchronisationTimeout.Value <> TimeSpan.Zero AndAlso objSemaphore.Wait(Me.SynchronisationTimeout.Value)) OrElse (Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objSemaphore.Wait()) Then
                             owned = True
                             Return RunAndSleepUnlocked(actionContext)
                         Else
@@ -123,6 +133,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Function RunAndSleepUnlocked(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+            If Me.DisablePerformanceLogger Then
+                PerformanceLogger.Instance.DisableLog(actionContext.FlowId)
+            End If
             Dim toreturn As Boolean
             Dim runStart As DateTime
             If Me._CaptureRunDuration Then
@@ -139,6 +152,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me._CaptureRunDuration Then
                 Dim duration As TimeSpan = PerformanceLogger.Instance.Now.Subtract(runStart)
                 actionContext.SetVar(Me._RunDurationVarName, duration)
+            End If
+            If Me.DisablePerformanceLogger Then
+                PerformanceLogger.Instance.EnableLog(actionContext.FlowId)
             End If
             Return toreturn
         End Function

@@ -33,14 +33,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 element.CheckIsCorrectStepRange(context)
 
                 If enableStopWatch Then
-                    Dim objStep As New StepInfo(Debug.PKPDebugType, "Start Eval Condition: " & element.Name, WorkingPhase.InProgress, False, False, -1, context.FlowId)
+                    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
                     PerformanceLogger.Instance.AddDebugInfo(objStep)
                 End If
                 If element.IsMandatory Then
                     If Not (element.GetProvider.Match(context) Xor element.Negate) Then
                         If enableStopWatch Then
                             Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Eval Condition: " & element.Name, WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End Eval - {0} ", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                         Return False

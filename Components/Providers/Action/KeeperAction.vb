@@ -36,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Else
 
                             If enableStopWatch Then
-                                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - Start Run Action", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
+                                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
                                 PerformanceLogger.Instance.AddDebugInfo(objStep)
                             End If
                             toReturn = toReturn And prov.Run(actionContext)
@@ -62,7 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Finally
                         If enableStopWatch Then
                             Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - End Run Action", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                     End Try

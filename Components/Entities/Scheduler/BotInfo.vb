@@ -32,12 +32,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #Region "Private members"
 
 
-        'Private _Enabled As Boolean = False
-
-        'Private _Period As TimeSpan = TimeSpan.FromMinutes(10)
+       
         Private _Schedule As New STimeSpan(TimeSpan.FromMinutes(10))
-
-        'Private _ApiUrl As String
 
         Private _ForceRun As Boolean
 
@@ -47,9 +43,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _RetainHistoryNb As Integer = 5
 
-        'Private _DumpAllVars As Boolean = True
-        'Private _DumpVariables As String = ""
-
         Private _IncludeLastDump As Boolean
 
         Private _BotHistory As New WebBotHistory
@@ -58,29 +51,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _RunningServers As String = ""
 
 
+        Private _UseTaskQueue As Boolean
+        Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(2000), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100))
+        <NonSerialized()> _
+        Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of BotRunContext(Of TEngineEvent))
 
-
-
-        '<NonSerialized()> _
-        'Private Shared _AsyncLocks As New Dictionary(Of String, Dictionary(Of Integer, String))
-
-
-        '<XmlIgnore()> _
-        '<Browsable(False)> _
-        'Public ReadOnly Property AsyncLockBot() As Dictionary(Of Integer, String)
-        '    Get
-        '        Dim toReturn As Dictionary(Of Integer, String) = Nothing
-        '        If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
-        '            SyncLock _AsyncLocks
-        '                If Not _AsyncLocks.TryGetValue(Me.Name, toReturn) Then
-        '                    toReturn = New Dictionary(Of Integer, String)
-        '                    _AsyncLocks(Me.Name) = toReturn
-        '                End If
-        '            End SyncLock
-        '        End If
-        '        Return toReturn
-        '    End Get
-        'End Property
 
 
 #End Region
@@ -92,7 +67,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public ReadOnly Property Summary As String
             Get
-                Dim enableString As String = "Master " & IIf(Me.Enabled AndAlso Not Me.MasterBotDisabled, "Enabled", "Disabled").ToString
+                Dim enableString As String = "Master " & IIf(Me.Enabled AndAlso Not Me.MasterBotDisabled, "On", "Off").ToString
                 Dim userString As String = "User bot"
                 Dim targetUserBot As UserBotSettings(Of ScheduleEvent) = Nothing
                 For Each objUserBot As UserBotSettings(Of ScheduleEvent) In PortalKeeperConfig.Instance.SchedulerFarm.UserBots.Instances
@@ -103,7 +78,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If targetUserBot Is Nothing Then
                     userString = "No " & userString
                 Else
-                    userString &= IIf(Me.Enabled AndAlso PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso targetUserBot.Enabled, " Enabled", " Disabled").ToString
+                    userString &= IIf(Me.Enabled AndAlso PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso targetUserBot.Enabled, " On", " Off").ToString
                 End If
                 Dim forcedString As String = IIf(Me._ForceRun, "Forced", "Unforced").ToString
                 Return Me.Name.PadRight(50) & " - " & enableString.PadRight(20) & " - " & userString.PadRight(20) & " - " & forcedString.PadRight(10) & " - " & Me.Schedule.FormattedDuration
@@ -136,19 +111,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        '<XmlIgnore()> _
-        '<Browsable(False)> _
-        'Public Property Period() As TimeSpan
-        '    Get
-        '        Return _Period
-        '    End Get
-        '    Set(ByVal value As TimeSpan)
-        '        _Period = value
-        '    End Set
-        'End Property
-
-
-
         <ExtendedCategory("Schedule")> _
         <SortOrder(2)> _
         Public Property Schedule() As STimeSpan
@@ -174,35 +136,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        '<ExtendedCategory("Engine")> _
-        '<Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        '    <LabelMode(LabelMode.Top)> _
-        'Public Property BotEngine() As RuleEngineSettings(Of BotEvent)
-        '    Get
-        '        Return _BotEngine
-        '    End Get
-        '    Set(ByVal value As RuleEngineSettings(Of BotEvent))
-        '        _BotEngine = value
-        '    End Set
-        'End Property
-
-        '<CollectionEditor(True, False, False, True, 10, CollectionDisplayStyle.List)> _
-
-        'Private _UserName As String = ""
-
-        '<Browsable(False)> _
-        'Public Property UserName() As String
-        '    Get
-        '        Return _UserName
-        '    End Get
-        '    Set(ByVal value As String)
-        '        _UserName = value
-        '    End Set
-        'End Property
-
-
-
-
 
 
 
@@ -218,9 +151,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Function GetLogMapPath() As String
             Dim botName As String = Me.Name
-            'If Not String.IsNullOrEmpty(Me._UserName) Then
-            '    botName &= "-" & Me._UserName.Trim
-            'End If
             Return FileHelper.GetAbsoluteMapPath(Me._LogPath & "BotHistory-" & botName & ".config", True)
         End Function
 
@@ -259,13 +189,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If _HistoryDumpVarList Is Nothing Then
                     SyncLock _HistorydumpVarLock
                         If _HistoryDumpVarList Is Nothing Then
-                            '_DumpVarList = New List(Of String)
-                            'Dim strVars As String() = Me._DumpVariables.Split(","c)
-                            'For Each strVar As String In strVars
-                            '    If strVar.Trim <> "" Then
-                            '        _DumpVarList.Add(strVar.Trim())
-                            '    End If
-                            'Next
                             _HistoryDumpVarList = ParseStringList(Me.HistoryDumpVariables)
                         End If
                     End SyncLock
@@ -315,12 +238,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        Private _UseTaskQueue As Boolean
-        Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(2000), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100))
-        <NonSerialized()> _
-        Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of BotRunContext(Of TEngineEvent))
-
-
         <ExtendedCategory("TechnicalSettings")> _
         Public Property UseTaskQueue() As Boolean
             Get
@@ -331,11 +248,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-      
-
         <ExtendedCategory("TechnicalSettings")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
             <ConditionalVisible("UseTaskQueue", False, True)> _
         Public Property TaskQueueInfo() As TaskQueueInfo
             Get
@@ -356,18 +269,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private ReadOnly Property AsynchronousRunTaskQueue() As TaskQueue(Of BotRunContext(Of TEngineEvent))
             Get
                 If _AsynchronousRunTaskQueue Is Nothing Then
+
                     _AsynchronousRunTaskQueue = New TaskQueue(Of BotRunContext(Of TEngineEvent))(AddressOf InternalRun, Me._TaskQueueInfo)
-                    'AddHandler _PersisterTaskQueue.ActionPerformed, AddressOf Me.PersisterTaskQueue_ActionPerformed
                 End If
                 Return _AsynchronousRunTaskQueue
             End Get
         End Property
 
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property RunSeveralInstances As Boolean
 
+        <ExtendedCategory("TechnicalSettings")> _
+         <ConditionalVisible("RunSeveralInstances", False, True)> _
+        Public Property InstanceNumber As Integer = 1
 
-        'Public Overrides Sub ProcessRules(ByVal context As PortalKeeperContext(Of TEngineEvent), ByVal objEvent As TEngineEvent, ByVal endSequence As Boolean)
-        '    MyBase.ProcessRules(context, objEvent, endSequence)
-        'End Sub
+        <ExtendedCategory("TechnicalSettings")> _
+         <ConditionalVisible("RunSeveralInstances", False, True)> _
+        Public Property SharedContext As Boolean
+
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property NoSave As Boolean
+
 
 
 
@@ -379,27 +301,44 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function RunBot(ByVal botContext As BotRunContext(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
             Dim toReturn As Boolean
             If Me.MatchServer Then
-                'Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
-                'If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                If (forceRun AndAlso Me._ForceRun) _
-                OrElse (Not forceRun AndAlso Me.Enabled AndAlso botContext.History.LastRun.Add(Me.Schedule.Value) <= Now) Then
-                    'Dim runUnlocked As Boolean
-                    'SyncLock _AsyncLocks
-                    '    If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                    '        asyncbotLocks(botContext.AsyncLockId) = botContext.Id
-                    '        runUnlocked = True
-                    '    End If
-                    'End SyncLock
-                    'If runUnlocked Then
-                    If Not Me._UseTaskQueue Then
-                        toReturn = Me.InternalRun(botContext)
-                    Else
-                        Me.AsynchronousRunTaskQueue.EnqueueTask(botContext)
-                        toReturn = True
+                Dim cloneContext As BotRunContext(Of TEngineEvent)
+                Dim instanceNb = 1
+                If Me.RunSeveralInstances Then
+                    instanceNb = Me.InstanceNumber
+                End If
+                For i As Integer = 0 To instanceNb - 1
+                    If Me.RunSeveralInstances AndAlso Not Me.SharedContext Then
+                        If i > 0 Then
+                            botContext = cloneContext
+                        End If
+                        If i < instanceNb - 1 Then
+                            cloneContext = ReflectionHelper.CloneObject(Of BotRunContext(Of TEngineEvent))(botContext)
+                        End If
+                    End If
+                    'Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
+                    'If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
+                    If (forceRun AndAlso Me._ForceRun) _
+                    OrElse (Not forceRun AndAlso Me.Enabled AndAlso botContext.History.LastRun.Add(Me.Schedule.Value) <= Now) Then
+                        'Dim runUnlocked As Boolean
+                        'SyncLock _AsyncLocks
+                        '    If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
+                        '        asyncbotLocks(botContext.AsyncLockId) = botContext.Id
+                        '        runUnlocked = True
+                        '    End If
+                        'End SyncLock
+                        'If runUnlocked Then
+                        If Not Me._UseTaskQueue Then
+                            toReturn = Me.InternalRun(botContext)
+                        Else
+                            SyncLock (botContext)
+                                Me.AsynchronousRunTaskQueue.EnqueueTask(botContext)
+                            End SyncLock
+                            toReturn = True
+                        End If
+                        'End If
                     End If
                     'End If
-                End If
-                'End If
+                Next
             End If
             Return toReturn
         End Function
@@ -480,116 +419,131 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Sub InternalRunUnlocked(ByVal botContext As BotRunContext(Of TEngineEvent))
             Dim currentWebBotEvent As New BotInfoEvent
-
-            If botContext.EngineContext Is Nothing Then
-                botContext.EngineContext = New PortalKeeperContext(Of TEngineEvent)
-                botContext.EngineContext.Init(Me, botContext.UserParams)
-            End If
-
             Dim objEnableStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
-            If objEnableStopWatch Then
-                'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Start", Me.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
-
-            If botContext.History.BotCallHistory.Count > Me.RetainHistoryNb Then
-                botContext.History.BotCallHistory.RemoveRange(Me.RetainHistoryNb, botContext.History.BotCallHistory.Count - Me.RetainHistoryNb)
-            End If
+            SyncLock botContext
 
 
-            If Me._IncludeLastDump Then
-                If botContext.History.BotCallHistory.Count > 0 Then
-                    For Each objVarPair As KeyValuePair(Of String, Object) In botContext.History.BotCallHistory(0).VariablesDump
-                        botContext.UserParams("Last" & objVarPair.Key) = objVarPair.Value
-                    Next
+                If botContext.EngineContext Is Nothing Then
+                    botContext.EngineContext = New PortalKeeperContext(Of TEngineEvent)
+                    botContext.EngineContext.Init(Me, botContext.UserParams)
                 End If
-            End If
-
-            Me.BatchRun(botContext.Events, botContext.EngineContext)
-
-            'botContext.EngineContext.Init(Me, botContext.UserParams)
-            'For Each eventStep As TEngineEvent In botContext.Events
-            '    Me.ProcessRules(botContext.EngineContext, eventStep, False)
-            'Next
-
-            botContext.History.LastRun = currentWebBotEvent.Time
-            botContext.History.BotCallHistory.Insert(0, currentWebBotEvent)
-
-            If Me.AddDumpToHistory Then
-                Dim dump As SerializableDictionary(Of String, Object) = botContext.EngineContext.GetDump(Me.HistoryDumpAllVars, Me.HistoryDumpVariablesDumpVarList)
-
-                currentWebBotEvent.VariablesDump = dump
-            End If
-
-            'currentWebBotEvent.PayLoad = HtmlEncode(ReflectionHelper.Serialize(dump).OuterXml)
 
 
-
-            currentWebBotEvent.Duration = Now.Subtract(currentWebBotEvent.Time)
-            currentWebBotEvent.Success = True
-
-
-            'If Me.BotStatsInfo Is Nothing OrElse Me.BotStatsInfo.Count = 0 Then
-            '    Me.BotStatsInfo = New List(Of WebBotStatInfo)
-            '    currentStats = New WebBotStatInfo
-            'Else
-            '    currentStats = Me.BotStatsInfo(0)
-            'End If
-            botContext.History.NumberOfBotCall += 1
-            If currentWebBotEvent.Success Then
-                botContext.History.NumberOfSucceedBotCall += 1
-                If botContext.History.NumberOfSucceedBotCall > 1 Then
-                    Dim totalWebBotDuration As TimeSpan = TimeSpan.FromTicks(botContext.History.AverageDuration.Value.Ticks * (botContext.History.NumberOfSucceedBotCall - 1))
-                    totalWebBotDuration = totalWebBotDuration.Add(currentWebBotEvent.Duration)
-                    botContext.History.AverageDuration.Value = TimeSpan.FromTicks(totalWebBotDuration.Ticks \ botContext.History.NumberOfSucceedBotCall)
-                Else
-                    botContext.History.AverageDuration.Value = currentWebBotEvent.Duration
-                End If
-                If currentWebBotEvent.Duration < botContext.History.MinDuration Then
-                    botContext.History.MinDuration.Value = currentWebBotEvent.Duration
-                End If
-                If currentWebBotEvent.Duration > botContext.History.MaxDuration OrElse botContext.History.MaxDuration = TimeSpan.MaxValue Then
-                    botContext.History.MaxDuration.Value = currentWebBotEvent.Duration
-                End If
-            End If
-            'If Me.BotStatsInfo.Count = 0 Then
-            '    Me.BotStatsInfo.Add(currentStats)
-            'End If
-
-            If botContext.RunEndDelegate IsNot Nothing Then
                 If objEnableStopWatch Then
-                    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Finalizing", Me.Name), _
+                    'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+                    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Start", Me.Name), _
                                                 WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
                     PerformanceLogger.Instance.AddDebugInfo(objStep)
                 End If
-                botContext.RunEndDelegate.Invoke(botContext.History, botContext.EngineContext)
-            End If
 
-
-            If objEnableStopWatch Then
-                'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                Dim objStep As StepInfo
-                If Me.LogDump Then
-                    Dim dump As SerializableDictionary(Of String, Object) = botContext.EngineContext.GetDump()
-                    Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
-                    For Each objItem As KeyValuePair(Of String, Object) In dump
-                        If objItem.Value IsNot Nothing Then
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
-                        Else
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                        End If
-                    Next
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
-                                                WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId, tempItems.ToArray)
-                Else
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
-                                                WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId)
+                If botContext.History.BotCallHistory.Count > Me.RetainHistoryNb Then
+                    botContext.History.BotCallHistory.RemoveRange(Me.RetainHistoryNb, botContext.History.BotCallHistory.Count - Me.RetainHistoryNb)
                 End If
 
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
+
+                If Me._IncludeLastDump Then
+                    If botContext.History.BotCallHistory.Count > 0 Then
+                        For Each objVarPair As KeyValuePair(Of String, Object) In botContext.History.BotCallHistory(0).VariablesDump
+                            botContext.UserParams("Last" & objVarPair.Key) = objVarPair.Value
+                        Next
+                    End If
+                End If
+            End SyncLock
+
+           
+
+            Me.BatchRun(botContext.Events, botContext.EngineContext)
+
+            SyncLock botContext
+
+                'botContext.EngineContext.Init(Me, botContext.UserParams)
+                'For Each eventStep As TEngineEvent In botContext.Events
+                '    Me.ProcessRules(botContext.EngineContext, eventStep, False)
+                'Next
+
+                botContext.History.LastRun = currentWebBotEvent.Time
+                botContext.History.BotCallHistory.Insert(0, currentWebBotEvent)
+
+                If Me.AddDumpToHistory Then
+                    Dim dump As SerializableDictionary(Of String, Object) = botContext.EngineContext.GetDump(Me.HistoryDumpAllVars, Me.HistoryDumpVariablesDumpVarList)
+
+                    currentWebBotEvent.VariablesDump = dump
+                End If
+
+                'currentWebBotEvent.PayLoad = HtmlEncode(ReflectionHelper.Serialize(dump).OuterXml)
+
+
+
+                currentWebBotEvent.Duration = Now.Subtract(currentWebBotEvent.Time)
+                currentWebBotEvent.Success = True
+
+
+                'If Me.BotStatsInfo Is Nothing OrElse Me.BotStatsInfo.Count = 0 Then
+                '    Me.BotStatsInfo = New List(Of WebBotStatInfo)
+                '    currentStats = New WebBotStatInfo
+                'Else
+                '    currentStats = Me.BotStatsInfo(0)
+                'End If
+                botContext.History.NumberOfBotCall += 1
+                If currentWebBotEvent.Success Then
+                    botContext.History.NumberOfSucceedBotCall += 1
+                    If botContext.History.NumberOfSucceedBotCall > 1 Then
+                        Dim totalWebBotDuration As TimeSpan = TimeSpan.FromTicks(botContext.History.AverageDuration.Value.Ticks * (botContext.History.NumberOfSucceedBotCall - 1))
+                        totalWebBotDuration = totalWebBotDuration.Add(currentWebBotEvent.Duration)
+                        botContext.History.AverageDuration.Value = TimeSpan.FromTicks(totalWebBotDuration.Ticks \ botContext.History.NumberOfSucceedBotCall)
+                    Else
+                        botContext.History.AverageDuration.Value = currentWebBotEvent.Duration
+                    End If
+                    If currentWebBotEvent.Duration < botContext.History.MinDuration Then
+                        botContext.History.MinDuration.Value = currentWebBotEvent.Duration
+                    End If
+                    If currentWebBotEvent.Duration > botContext.History.MaxDuration OrElse botContext.History.MaxDuration = TimeSpan.MaxValue Then
+                        botContext.History.MaxDuration.Value = currentWebBotEvent.Duration
+                    End If
+                End If
+                'If Me.BotStatsInfo.Count = 0 Then
+                '    Me.BotStatsInfo.Add(currentStats)
+                'End If
+
+                If botContext.RunEndDelegate IsNot Nothing Then
+                    If objEnableStopWatch Then
+                        Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Finalizing", Me.Name), _
+                                                    WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
+                        PerformanceLogger.Instance.AddDebugInfo(objStep)
+                    End If
+                    If Not Me.NoSave Then
+                        botContext.RunEndDelegate.Invoke(botContext.History, botContext.EngineContext)
+                    End If
+                End If
+
+
+                If objEnableStopWatch Then
+                    'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+                    Dim objStep As StepInfo
+                    If Me.LogDump Then
+                        Dim dump As SerializableDictionary(Of String, Object) = botContext.EngineContext.GetDump()
+                        Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
+                        For Each objItem As KeyValuePair(Of String, Object) In dump
+                            If objItem.Value IsNot Nothing Then
+                                tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
+                            Else
+                                tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
+                            End If
+                        Next
+                        objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
+                                                    WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId, tempItems.ToArray)
+                    Else
+                        objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
+                                                    WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId)
+                    End If
+
+                    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                End If
+
+            End SyncLock
+
+
+           
         End Sub
 
 
