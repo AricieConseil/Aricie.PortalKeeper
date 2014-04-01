@@ -264,22 +264,31 @@ Public Module Common
 
         'CREATE A SIGNED XML DOCUMENT
         Dim signedXml As New SignedXml(doc)
+        signedXml.SignedInfo.CanonicalizationMethod = signedXml.XmlDsigExcC14NTransformUrl
 
         'ADD THE RSA KEY TO THE SIGNED DOCUMENT
         signedXml.SigningKey = privateKey
 
+        If paths Is Nothing OrElse paths.Length = 0 Then
+            paths = {""}
+        End If
+
         'CREATE A REFERENCE TO BE SIGNED
         For Each objPath As String In paths
             Dim reference As New Reference()
+            'If Not String.IsNullOrEmpty(objPath) Then
             reference.Uri = objPath
+            'End If
 
-            'CREATE AN ENVELOPED SIGNATURE WHICH
-            Dim env As New XmlDsigEnvelopedSignatureTransform(True)
+            ''CREATE AN ENVELOPED SIGNATURE WHICH
+            Dim env As New XmlDsigEnvelopedSignatureTransform()
             reference.AddTransform(env)
+            'reference.AddTransform(New XmlDsigExcC14NTransform())
 
             'ADD THE REFERENCE TO THE SIGNED DOCUMENT
             signedXml.AddReference(reference)
         Next
+
 
         'COMPUTE THE DOCUMENTS SIGNATURE
         signedXml.ComputeSignature()
@@ -444,6 +453,7 @@ Public Module Common
                     Return BitConverter.ToString(strHash).Replace("-", "").ToLowerInvariant().Trim()
                 End Using
         End Select
+        Return Nothing
     End Function
 
 #End Region

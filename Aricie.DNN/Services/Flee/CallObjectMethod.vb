@@ -13,6 +13,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
+    <DisplayName("Call Method")> _
     <Serializable()> _
     Public Class CallObjectMethod(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
@@ -27,7 +28,11 @@ Namespace Services.Flee
         <ExtendedCategory("Instance")> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ProvidersSelector()> _
-        Public Property MethodName() As String = string.Empty
+        Public Property MethodName() As String = String.Empty
+
+        <ExtendedCategory("Instance")> _
+        Public MethodIndex As Integer = 1
+
 
         ''' <summary>
         ''' Runs the method
@@ -43,23 +48,27 @@ Namespace Services.Flee
             Dim potentialsMembers As List(Of MemberInfo) = Nothing
             Dim targetMethod As MethodInfo
             If ReflectionHelper.GetFullMembersDictionary(GetType(TObjectType)).TryGetValue(Me._MethodName, potentialsMembers) Then
+                Dim index As Integer = 0
                 For Each potentialMember As MemberInfo In potentialsMembers
                     If TypeOf potentialMember Is MethodInfo Then
                         targetMethod = DirectCast(potentialMember, MethodInfo)
                         If targetMethod.GetParameters.Length = args.Count Then
-                            If targetMethod.IsStatic Then
-                                targetMethod.Invoke(Nothing, args.ToArray)
-                            Else
-                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                If Me.LockTarget Then
-                                    SyncLock target
-                                        targetMethod.Invoke(target, args.ToArray)
-                                    End SyncLock
+                            index += 1
+                            If index = MethodIndex Then
+                                If targetMethod.IsStatic Then
+                                    targetMethod.Invoke(Nothing, args.ToArray)
                                 Else
-                                    targetMethod.Invoke(target, args.ToArray)
+                                    Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                    If Me.LockTarget Then
+                                        SyncLock target
+                                            targetMethod.Invoke(target, args.ToArray)
+                                        End SyncLock
+                                    Else
+                                        targetMethod.Invoke(target, args.ToArray)
+                                    End If
                                 End If
+                                Exit Sub
                             End If
-                            Exit Sub
                         End If
                     End If
                 Next

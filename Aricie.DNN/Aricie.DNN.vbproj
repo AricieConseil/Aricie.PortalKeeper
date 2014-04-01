@@ -287,6 +287,7 @@
     <Compile Include="Services\Filtering\XPathInfo.vb" />
     <Compile Include="Services\Flee\CallObjectMethod.vb" />
     <Compile Include="Services\Flee\CtorVariableInfo.vb" />
+    <Compile Include="Services\Flee\DelegateVariableInfo.vb" />
     <Compile Include="Services\Flee\ObjectAction.vb" />
     <Compile Include="Services\Flee\ObjectActions.vb" />
     <Compile Include="Services\Flee\ObjectActionsBase.vb" />

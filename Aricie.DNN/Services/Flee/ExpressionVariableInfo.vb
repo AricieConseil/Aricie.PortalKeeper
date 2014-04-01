@@ -1,11 +1,9 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 
 Namespace Services.Flee
-
     ''' <summary>
     ''' Class to use flee variables
     ''' </summary>

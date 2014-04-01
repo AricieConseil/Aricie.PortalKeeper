@@ -62,9 +62,13 @@ Namespace Services.Flee
     Public Class Variables
         Inherits VariablesBase
 
+        Private Shared ReadOnly _GenerictypeLessTypeDelegateVar As Type = GetType(DelegateVariableInfo(Of ))
+
         <Category("")> _
         Public Property ShowAvailableTypes() As Boolean
 
+        <ConditionalVisible("ShowAvailableTypes", False, True)> _
+          Public Property AddDelegates As Boolean
 
         ''' <summary>
         ''' Gets or sets expression types
@@ -72,8 +76,6 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <MainCategory()> _
-        <Category("")> _
             <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
             <LabelMode(LabelMode.Top)> _
@@ -99,6 +101,18 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
+        Protected Overrides Function Genericize(simpleDotNetType As DotNetType) As Dictionary(Of String, DotNetType(Of VariableInfo))
+            Dim toReturn As Dictionary(Of String, DotNetType(Of VariableInfo)) = MyBase.Genericize(simpleDotNetType)
+            If Me.AddDelegates Then
+                Dim simpleType As Type = simpleDotNetType.GetDotNetType()
+                If simpleType IsNot Nothing Then
+                    Dim toAddCtor As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeDelegateVar, simpleDotNetType)
+                    toReturn.Add(toAddCtor.Name, toAddCtor)
+                End If
+            End If
+            Return toReturn
+        End Function
+      
         <ConditionalVisible("ShowAvailableTypes", False, True)> _
         <ActionButton("~/images/action_refresh.gif")> _
         Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)
@@ -109,6 +123,7 @@ Namespace Services.Flee
             End If
         End Sub
 
-
     End Class
+
+
 End Namespace
