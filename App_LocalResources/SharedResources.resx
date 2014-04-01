@@ -5532,4 +5532,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RuleEngineSettings`1_ExceptionDumpAllVars.Text" xml:space="preserve">
     <value>Dump All Vars On Exception</value>
   </data>
+  <data name="SmartFile_Sign.Text" xml:space="preserve">
+    <value>Sign</value>
+  </data>
 </root>

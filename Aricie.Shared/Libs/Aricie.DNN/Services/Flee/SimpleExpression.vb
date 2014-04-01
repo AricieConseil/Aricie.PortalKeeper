@@ -216,16 +216,19 @@ Namespace Services.Flee
                     tempContext.Options.ParseCulture = New CultureInfo(Me.InternalCustomCultureLocale)
             End Select
             tempContext.Options.RealLiteralDataType = Me.InternalRealLiteralDataType
-            If Me.InternalStaticImports.Count = 0 Then
-                tempContext.Imports.AddType(GetType(System.Math), "")
-            Else
-                For Each staticImport As FleeImportInfo In Me.InternalStaticImports
-                    tempContext.Imports.AddType(staticImport.DotNetType.GetDotNetType, staticImport.CustomNamespace)
-                Next
-            End If
+            'If Me.InternalStaticImports.Count = 0 Then
+            '    tempContext.Imports.AddType(GetType(System.Math), "")
+            'Else
             If Me.InternalImportBuiltinTypes Then
                 tempContext.Imports.ImportBuiltinTypes()
+                tempContext.Imports.AddType(GetType(System.Math), "")
+                tempContext.Imports.AddType(GetType(System.Linq.Enumerable), "")
             End If
+            For Each staticImport As FleeImportInfo In Me.InternalStaticImports
+                tempContext.Imports.AddType(staticImport.DotNetType.GetDotNetType, staticImport.CustomNamespace)
+            Next
+            'End If
+            
             tempContext.Imports.AddType(GetType(FleeHelper), "")
 
             Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)

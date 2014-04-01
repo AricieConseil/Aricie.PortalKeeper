@@ -352,6 +352,7 @@ Namespace Settings
             SaveFileSettings(fileName, settings, createBinarySnapShot, 0)
         End Sub
 
+
         ''' <summary>
         ''' Saves settings to a file
         ''' </summary>
@@ -373,18 +374,21 @@ Namespace Settings
                 If Not backupRootDir.Exists Then
                     backupRootDir.Create()
                 End If
-                Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & saveFile.LastWriteTime.ToString("yyyy-MM-dd_HH-mm-ss_") & Path.GetFileName(fileName)
-                System.IO.File.Copy(fileName, newBackupFileName, True)
-                Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
-                If existingBackupFiles.Length >= backupsNb Then
-                    Array.Sort(Of System.IO.FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of System.IO.FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
-                    For i As Integer = 1 To existingBackupFiles.Length - backupsNb
-                        If existingBackupFiles(i - 1).IsReadOnly Then
-                            existingBackupFiles(i - 1).IsReadOnly = False
-                        End If
-                        System.IO.File.Delete(existingBackupFiles(i - 1).FullName)
-                    Next
-                End If
+                SyncLock loaderLock
+                    Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & saveFile.LastWriteTime.ToString("yyyy-MM-dd_HH-mm-ss_") & Path.GetFileName(fileName)
+                    System.IO.File.Copy(fileName, newBackupFileName, True)
+                    Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
+                    If existingBackupFiles.Length >= backupsNb Then
+
+                        Array.Sort(Of System.IO.FileInfo)(existingBackupFiles, New Aricie.Business.Filters.SimpleComparer(Of System.IO.FileInfo)("CreationTime", System.ComponentModel.ListSortDirection.Ascending))
+                        For i As Integer = 1 To existingBackupFiles.Length - backupsNb
+                            If existingBackupFiles(i - 1).IsReadOnly Then
+                                existingBackupFiles(i - 1).IsReadOnly = False
+                            End If
+                            System.IO.File.Delete(existingBackupFiles(i - 1).FullName)
+                        Next
+                    End If
+                End SyncLock
             End If
 
             SyncLock loaderLock

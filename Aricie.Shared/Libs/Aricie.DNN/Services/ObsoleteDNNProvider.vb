@@ -79,7 +79,7 @@ Namespace Services
             NukeHelper.FolderController.AddFolder(objFolderInfo.PortalID, objFolderInfo.FolderPath, objFolderInfo.StorageLocation, objFolderInfo.IsProtected, objFolderInfo.IsCached)
         End Sub
 
-        Public Overridable Function AddOrUpdateFile(objFile As DotNetNuke.Services.FileSystem.FileInfo, content As Byte()) As Integer
+        Public Overridable Function AddOrUpdateFile(objFile As DotNetNuke.Services.FileSystem.FileInfo, content As Byte(), contentOnly As Boolean) As Integer
 
             If NukeHelper.DnnVersion.Major < 6 Then
                 Dim fileId As Integer = objFile.FileId
@@ -87,29 +87,35 @@ Namespace Services
                     fileId = NukeHelper.FileController.AddFile(objFile)
                 End If
                 If fileId > 0 Then
-                    NukeHelper.FileController.UpdateFileContent(fileId, content)
+                    If content IsNot Nothing AndAlso content.Length > 0 Then
+                        NukeHelper.FileController.UpdateFileContent(fileId, content)
+                    ElseIf objFile.FileId > 0 Then
+                        NukeHelper.FileController.UpdateFile(fileId, objFile.FileName, objFile.Extension, objFile.Size, objFile.Width, objFile.Height, objFile.ContentType, "", objFile.FolderId)
+                    End If
                 End If
                 Return fileId
             Else
                 Dim params As Object() = {objFile.FolderId}
                 Dim objFolder As FolderInfo = DirectCast(FolderManagerGetFolderMethod.Invoke(FolderManagerInstance, params), FolderInfo)
                 If objFolder IsNot Nothing Then
-                    Using objStream As New MemoryStream(content)
-                        If objFile.FileId > 0 Then
-                            params = {objFile, objStream}
-                            Return DirectCast(FileManagerUpdateFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
-                        Else
-                            params = {objFolder, objFile.FileName, objStream}
-                            Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
-                        End If
-                    End Using
+                    If content IsNot Nothing AndAlso content.Length > 0 Then
+                        Using objStream As New MemoryStream(content)
+                            If objFile.FileId > 0 Then
+                                params = {objFile, objStream}
+                                Return DirectCast(FileManagerUpdateFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
+                            Else
+                                params = {objFolder, objFile.FileName, objStream}
+                                Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
+                            End If
+                        End Using
+                    End If
                 End If
             End If
             Return -1
         End Function
 
 
-       
+
 
 
 

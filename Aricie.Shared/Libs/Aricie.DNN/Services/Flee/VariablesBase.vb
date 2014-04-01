@@ -65,20 +65,27 @@ Namespace Services.Flee
                 Me._ExpressionTypes.AddRange(GetInitialTypes())
             End If
             For Each simpleDotNetType As DotNetType In Me._ExpressionTypes
-                Dim simpleType As Type = simpleDotNetType.GetDotNetType
-                If simpleType IsNot Nothing Then
-                    Dim toAddVar As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeVar, simpleDotNetType)
-                    toReturn.Add(toAddVar.Name, toAddVar)
-                    If simpleType.GetConstructors.Length > 0 Then
-                        If simpleType.Name <> "String" Then
-                            Dim toAddCtor As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeCTorVar, simpleDotNetType)
-                            toReturn.Add(toAddCtor.Name, toAddCtor)
-                        End If
-                    End If
-                    Dim toAddExp As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeExpressionVar, simpleDotNetType)
-                    toReturn.Add(toAddExp.Name, toAddExp)
-                End If
+                toReturn.Concat(Me.Genericize(simpleDotNetType))
             Next
+            Return toReturn
+        End Function
+
+
+        Protected Overridable Function Genericize(simpleDotNetType As DotNetType) As Dictionary(Of String, DotNetType(Of VariableInfo))
+            Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
+            Dim toAddVar As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeVar, simpleDotNetType)
+            toReturn.Add(toAddVar.Name, toAddVar)
+            Dim simpleType As Type = simpleDotNetType.GetDotNetType
+            If simpleType IsNot Nothing Then
+                If simpleType.GetConstructors.Length > 0 Then
+                    If simpleType.Name <> "String" Then
+                        Dim toAddCtor As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeCTorVar, simpleDotNetType)
+                        toReturn.Add(toAddCtor.Name, toAddCtor)
+                    End If
+                End If
+                Dim toAddExp As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeExpressionVar, simpleDotNetType)
+                toReturn.Add(toAddExp.Name, toAddExp)
+            End If
             Return toReturn
         End Function
 
