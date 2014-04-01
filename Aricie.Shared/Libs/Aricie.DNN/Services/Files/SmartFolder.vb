@@ -5,6 +5,8 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.Services.FileSystem
 Imports System.Xml.Serialization
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.Services
+Imports System.Globalization
 
 Namespace Services.Files
     <Serializable()> _
@@ -31,6 +33,7 @@ Namespace Services.Files
         <Selector("FileName", "FileId", False, True, "Select a file", "", False, True)>
         Public Property SelectedFile As String = ""
 
+        Public Property NoCache As Boolean
 
         Private _SmartFile As SmartFile(Of T)
 
@@ -47,13 +50,27 @@ Namespace Services.Files
             Get
                 If _SmartFile Is Nothing Then
                     If Not String.IsNullOrEmpty(SelectedFile) Then
+
                         Dim intFileId As Integer = Integer.Parse(Me.SelectedFile)
-                        Dim objFileInfo As FileInfo = New FileController().GetFileById(intFileId, FolderPath.PortalId)
-                        Dim objFile As SmartFile(Of T) = SmartFile.LoadSmartFile(Of T)(objFileInfo)
-                        If Me.HasEncrypter Then
+                        Dim objFile As SmartFile(Of T)
+                        If Not NoCache Then
+                            objFile = CacheHelper.GetGlobal(Of SmartFile(Of T))(intFileId.ToString(CultureInfo.InvariantCulture))
+                        End If
+                        If objFile Is Nothing Then
+                            Dim objFileInfo As FileInfo = New FileController().GetFileById(intFileId, FolderPath.PortalId)
+                            objFile = SmartFile.LoadSmartFile(Of T)(objFileInfo)
+                            If Not NoCache Then
+                                CacheHelper.SetCacheDependant(Of SmartFile(Of T))(objFile, "", TimeSpan.FromMinutes(5), intFileId.ToString(CultureInfo.InvariantCulture))
+                            End If
+                        End If
+                        If Me.HasEncrypter AndAlso objFile IsNot Nothing Then
                             objFile.SetEncrypter(_Encrypter)
                         End If
                         Me._SmartFile = objFile
+                    End If
+                Else
+                    If String.IsNullOrEmpty(SelectedFile) Then
+                        _SmartFile = Nothing
                     End If
                 End If
                 Return _SmartFile
@@ -62,6 +79,10 @@ Namespace Services.Files
                 _SmartFile = value
             End Set
         End Property
+
+        Public Sub SetEncrypter(ByVal encrypter As IEncrypter)
+            _encrypter = encrypter
+        End Sub
 
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector

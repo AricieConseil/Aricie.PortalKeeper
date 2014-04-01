@@ -50,8 +50,6 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Property Signed As Boolean
 
-
-
         <ExtendedCategory("Content")> _
         <IsReadOnly(True)> _
         Public Property Compressed As Boolean
@@ -78,8 +76,6 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Property CustomEncryption As Boolean
 
-
-
         <Browsable(False)> _
         <XmlIgnore()>
         Public ReadOnly Property SaltBytes As Byte()
@@ -103,30 +99,8 @@ Namespace Services.Files
             End Set
         End Property
 
-       
-
         <ExtendedCategory("Content")> _
         Public Property ShowPayLoad As Boolean
-
-
-     
-
-      
-        <Browsable(False)>
-        Public Property PayLoad As CData
-            Get
-                Return _PayLoad
-            End Get
-            Set(value As CData)
-                If _PayLoad.Value <> value.Value Then
-                    Me.Compressed = False
-                    Me.Encrypted = False
-                End If
-                _PayLoad = value
-            End Set
-        End Property
-
-
 
         <LineCount(20)> _
       <Width(500)> _
@@ -139,9 +113,24 @@ Namespace Services.Files
                 Return _PayLoad.Value
             End Get
             Set(value As String)
+                If Not String.IsNullOrEmpty(_PayLoad.Value) AndAlso _PayLoad.Value <> value Then
+                    Me.Compressed = False
+                    Me.Encrypted = False
+                End If
                 _PayLoad.Value = value
             End Set
         End Property
+
+        <Browsable(False)>
+        Public Property PayLoad As CData
+            Get
+                Return _PayLoad
+            End Get
+            Set(value As CData)
+                _PayLoad = value
+            End Set
+        End Property
+
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property MD5Checksum As String
@@ -169,11 +158,10 @@ Namespace Services.Files
 
 
         <ExtendedCategory("Content")> _
-        <ConditionalVisible("HasEncrypter", False, True)> _
       <ConditionalVisible("Encrypted", True, True)> _
       <ConditionalVisible("Compressed", True, True)> _
     <ActionButton(IconName.Key, IconOptions.Normal)> _
-        Public Sub Sign(ape As AriciePropertyEditorControl)
+        Public Overloads Sub Sign(ape As AriciePropertyEditorControl)
             Me.Sign()
             ape.ItemChanged = True
             Dim message As String = Localization.GetString("SmartFileSigned.Message", ape.LocalResourceFile)
@@ -181,9 +169,8 @@ Namespace Services.Files
         End Sub
 
 
-      
+        '<ConditionalVisible("HasEncrypter", False, True)> _
         <ExtendedCategory("Content")> _
-        <ConditionalVisible("HasEncrypter", False, True)> _
         <ConditionalVisible("Signed", False, True)> _
      <ActionButton(IconName.CheckSquareO, IconOptions.Normal)> _
         Public Overloads Sub Verify(ape As AriciePropertyEditorControl)
@@ -194,8 +181,19 @@ Namespace Services.Files
                 messageType = ModuleMessage.ModuleMessageType.GreenSuccess
             Else
                 message = Localization.GetString("SignatureFailedToVerify.Message", ape.LocalResourceFile)
-                messageType = ModuleMessage.ModuleMessageType.GreenSuccess
+                messageType = ModuleMessage.ModuleMessageType.RedError
             End If
+            ape.DisplayMessage(message, messageType)
+        End Sub
+
+        <ExtendedCategory("Content")> _
+      <ConditionalVisible("Signed", False, True)> _
+   <ActionButton(IconName.Eraser, IconOptions.Normal)> _
+        Public Overloads Sub RemoveSignature(ape As AriciePropertyEditorControl)
+            Me.RemoveSignature()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SignatureRemoved.Message", ape.LocalResourceFile)
+            Dim messageType As ModuleMessage.ModuleMessageType = ModuleMessage.ModuleMessageType.GreenSuccess
             ape.DisplayMessage(message, messageType)
         End Sub
 
@@ -220,8 +218,27 @@ Namespace Services.Files
         End Sub
 
         <ExtendedCategory("Content")> _
-        <ConditionalVisible("Encrypted", False, True)> _
-           <ActionButton(IconName.Unlock, IconOptions.Normal)> _
+       <ConditionalVisible("Encrypted", False, True)> _
+          <ActionButton(IconName.Unlock, IconOptions.Normal)> _
+        Public Sub Decrypt(ape As AriciePropertyEditorControl)
+            Me.Decrypt()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileDecrypted.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+        <ExtendedCategory("Content")> _
+       <ConditionalVisible("Encrypted", True, True)> _
+       <ActionButton(IconName.Lock, IconOptions.Normal)> _
+        Public Sub Encrypt(ape As AriciePropertyEditorControl)
+            Me.Encrypt()
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("SmartFileEncrypted.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+      
+
         Public Sub Decrypt()
             Try
                 If Me.Encrypted Then
@@ -238,9 +255,7 @@ Namespace Services.Files
             End Try
         End Sub
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Encrypted", True, True)> _
-        <ActionButton(IconName.Lock, IconOptions.Normal)> _
+        
         Public Sub Encrypt()
             If Not Me.Encrypted Then
                 Dim objSalt As Byte() = Nothing
@@ -257,7 +272,7 @@ Namespace Services.Files
 
 
 
-        Public Sub Sign()
+        Public Overloads Sub Sign()
             If Me.Encrypted OrElse Me.Compressed Then
                 Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
             End If
@@ -291,7 +306,23 @@ Namespace Services.Files
         End Function
 
 
-       
+
+        Public Overloads Sub RemoveSignature()
+            If Not Me.Signed Then
+                Throw New ApplicationException("Unsigned document cannot have signature removed")
+            Else
+                Dim doc As New XmlDocument()
+                SyncLock Me
+                    doc.LoadXml(Me.PayLoad)
+                    Dim sigNode As XmlNode = doc.SelectSingleNode("/Signature")
+                    If sigNode IsNot Nothing Then
+                        doc.RemoveChild(sigNode)
+                    End If
+                    Me.PayLoad = doc.OuterXml
+                End SyncLock
+            End If
+        End Sub
+
         Public Sub Compress()
             If Me.Encrypted Then
                 Throw New ApplicationException("Encrypted Content cannot be compressed")
@@ -317,16 +348,6 @@ Namespace Services.Files
         End Sub
 
 
-
-
-       
-
-
-
-
-
-
-
         Public Function GetKey() As String
             If UseCustomKey Then
                 Return Me.CustomKey
@@ -342,8 +363,6 @@ Namespace Services.Files
             End SyncLock
         End Sub
 
-
-
         Public Sub Encrypt(ByVal newPayLoad As String, ByVal salt As Byte())
             SyncLock Me
                 Me.EncryptInternal(newPayLoad, salt)
@@ -351,13 +370,12 @@ Namespace Services.Files
             End SyncLock
         End Sub
 
-
         Public Overridable Sub UnWrap()
             Me.Decrypt()
             Me.Decompress()
             If Me.Signed Then
                 If Not Me.Verify() Then
-                    Throw New ApplicationException("smart file integrity signature does not verify")
+                    Throw New ApplicationException("Smart file integrity signature does not verify against the provided encryption")
                 End If
             End If
         End Sub
@@ -459,7 +477,7 @@ Namespace Services.Files
                         End Using
                         content = ms.ToArray()
                     End Using
-                    Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content)
+                    Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content, False)
                     If result < 0 Then
                         Throw New ApplicationException("Save failed, DNN returned " & result.ToString(CultureInfo.InvariantCulture))
                     End If
@@ -470,7 +488,7 @@ Namespace Services.Files
             Else
                 Throw New ApplicationException("Cannot save null smartfile")
             End If
-            
+
             Return True
         End Function
 
@@ -554,7 +572,6 @@ Namespace Services.Files
 
         Private _Value As T
 
-
         Public Sub New()
         End Sub
 
@@ -565,14 +582,8 @@ Namespace Services.Files
             Me.Wrap(settings)
         End Sub
 
-
-
-
         <ExtendedCategory("Value")> _
         Public Property ShowValue As Boolean
-
-
-
 
         <ExtendedCategory("Value")> _
         <XmlIgnore()> _
@@ -618,8 +629,6 @@ Namespace Services.Files
                 Me.PayLoad = ""
             End If
         End Sub
-
-
 
     End Class
 

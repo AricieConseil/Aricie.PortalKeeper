@@ -1019,9 +1019,10 @@ Namespace UI.WebControls
                     Dim iconbtn As New IconActionButton()
                     btn = iconbtn
                     'iconbtn.CssClass = "dnnTertiaryAction"
+                    iconbtn.ID = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name
                     iconbtn.ActionItem = objButtonInfo.IconAction
                     iconbtn.Text = objButtonInfo.Method.Name
-                    iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
+                    iconbtn.ResourceKey = iconbtn.ID & ".Text"
             End Select
 
             container.Controls.Add(btn)
@@ -1053,7 +1054,7 @@ Namespace UI.WebControls
                 Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
                 If Not targetType Is GetType(SubPathContainer) Then
                     targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
-                    For Each objEntity As Object In objContainer.GetParentEntities().Values
+                    For Each objEntity As Object In objContainer.GetParentEntities().Values.Reverse()
                         If targetType.IsInstanceOfType(objEntity) Then
                             targetEntity = objEntity
                             Exit For

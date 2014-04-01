@@ -34,15 +34,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aricie.Core, Version=1.7.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Aricie.Core">
       <HintPath>external\Aricie.Core.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="Aricie.DNN, Version=1.7.12.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Aricie.DNN">
       <HintPath>external\Aricie.DNN.dll</HintPath>
-      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke, Version=7.2.0.607, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -92,17 +88,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="external\Aricie.Core.dll" />
-    <None Include="external\Aricie.DNN.dll" />
-    <None Include="external\DNN7\DotNetNuke.dll" />
-    <None Include="external\DNN7\DotNetNuke.HttpModules.dll" />
-    <None Include="external\DNN7\DotNetNuke.Instrumentation.dll" />
-    <None Include="external\DNN7\DotNetNuke.Web.Client.dll" />
-    <None Include="external\DNN7\DotNetNuke.Web.dll" />
-    <None Include="external\DNN7\DotNetNuke.WebControls.dll" />
-    <None Include="external\DNN7\DotNetNuke.WebUtility.dll" />
+    <Content Include="external\DNN7\DotNetNuke.dll" />
+    <Content Include="external\DNN7\DotNetNuke.HttpModules.dll" />
+    <Content Include="external\DNN7\DotNetNuke.Instrumentation.dll" />
+    <Content Include="external\DNN7\DotNetNuke.Web.Client.dll" />
+    <Content Include="external\DNN7\DotNetNuke.Web.dll" />
+    <Content Include="external\DNN7\DotNetNuke.WebControls.dll" />
+    <Content Include="external\DNN7\DotNetNuke.WebUtility.dll" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="external\Aricie.Core.dll" />
+    <Content Include="external\Aricie.DNN.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

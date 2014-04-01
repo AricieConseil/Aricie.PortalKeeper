@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Aricie.DNN.Services;
+using DotNetNuke.ComponentModel;
 using DotNetNuke.Services.FileSystem;
 using FileInfo = DotNetNuke.Services.FileSystem.FileInfo;
 
@@ -29,22 +30,55 @@ namespace Aricie.DNN
             return FolderManager.Instance.GetFiles(folderInfo).OfType<FileInfo>().ToList();
         }
 
-        public override int AddOrUpdateFile(FileInfo objFile, byte[] content)
+
+        public override int AddOrUpdateFile(FileInfo objFile, byte[] content, bool contentOnly)
         {
             var objFolder = FolderManager.Instance.GetFolder(objFile.FolderId);
             if (objFolder != null)
             {
-                using (var objStream = new MemoryStream(content))
+                if (content != null && content.Length > 0)
+                {
+                    using (var objStream = new MemoryStream(content))
+                    {
+                        if (objFile.FileId > 0)
+                        {
+                            var toReturn = objFile.FileId;
+                            if (!contentOnly)
+                            {
+                                toReturn = FileManager.Instance.UpdateFile(objFile, objStream).FileId;
+                            }
+                            //Todo: seems the updatefile does not have the proper call to that function. Should be registered as a bug.
+                            FolderProvider folderProvider =
+                                FolderProvider.Instance(
+                                    ComponentBase<IFolderMappingController, FolderMappingController>.Instance
+                                        .GetFolderMapping(objFolder.PortalID, objFolder.FolderMappingID)
+                                        .FolderProviderType);
+                            folderProvider.UpdateFile(objFolder, objFile.FileName, objStream);
+                            return toReturn;
+                        }
+                        else
+                        {
+                            return FileManager.Instance.AddFile(objFolder, objFile.FileName, objStream).FileId;
+                        }
+                    }
+                }
+                else
                 {
                     if (objFile.FileId > 0)
                     {
-                        return FileManager.Instance.UpdateFile( objFile, objStream).FileId;
+                        var toReturn = objFile.FileId;
+                        if (!contentOnly)
+                        {
+                            toReturn = FileManager.Instance.UpdateFile(objFile).FileId;
+                        }
+                        return toReturn;
                     }
                     else
                     {
-                        return FileManager.Instance.AddFile(objFolder, objFile.FileName, objStream).FileId;    
+                        return FileManager.Instance.AddFile(objFolder, objFile.FileName, null).FileId;
                     }
                 }
+                
             }
             return -1;
         }

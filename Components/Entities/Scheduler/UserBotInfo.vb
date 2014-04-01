@@ -32,6 +32,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Entities As New Dictionary(Of String, Object)
         Private _Rankings As List(Of ProbeRanking)
 
+        <Browsable(False)> _
         Public ReadOnly Property IsAuthenticated As Boolean
             Get
                 If DnnContext.Current.HttpContext IsNot Nothing Then
