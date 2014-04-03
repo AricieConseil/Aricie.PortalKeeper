@@ -196,7 +196,8 @@ a.caldisabled,a.caldisabled:link,a.caldisabled:hover,a.caldisabled:visited {
 /* ===Icons=== */
 /* Action Button*/
 
-.aricieAction
+
+.aricieAction, .dnnForm .ui-state-hover .aricieAction
 {
 	display: inline-block;
 	padding: 9px 9px;
@@ -209,7 +210,7 @@ a.caldisabled,a.caldisabled:link,a.caldisabled:hover,a.caldisabled:visited {
 	text-decoration: none;
 	text-align: center;
 	color: #70b1c7;
-	background-color: #fff;
+	background: #fff;
 }
     .aricieAction.aspNetDisabled {
     cursor:not-allowed;
@@ -217,13 +218,13 @@ a.caldisabled,a.caldisabled:link,a.caldisabled:hover,a.caldisabled:visited {
 .aricieAction:hover,
 .dnnForm .ui-accordion h3.ui-accordion-header .aricieAction:hover
 {
-	background-color: #70b1c7;
+	background: #70b1c7;
 	color: #eee;
 }
     .aspNetDisabled.aricieAction:hover,
     .dnnForm .ui-accordion h3.ui-accordion-header .aspNetDisabled.aricieAction:hover {
     color: #70b1c7;
-	background-color: #fff;
+	background: #fff;
     
     }
 * + html  .aricieAction
