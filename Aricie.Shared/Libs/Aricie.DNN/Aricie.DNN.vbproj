@@ -177,6 +177,7 @@
     <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
     <Compile Include="ComponentModel\RelationCardinality.vb" />
     <Compile Include="ComponentModel\RelationNature.vb" />
+    <Compile Include="ComponentModel\UIConstants.vb" />
     <Compile Include="Config\AddInfo.vb" />
     <Compile Include="Config\AppSettingAddInfo.vb" />
     <Compile Include="Config\ComplexNodeInfo.vb" />

@@ -758,12 +758,15 @@ Namespace UI.WebControls.EditControls
 
             Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
 
-            accordionHeaderText = String.Format("{0}  -  {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText)
+            accordionHeaderText = String.Format("{0} {2} {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText, ComponentModel.UIConstants.TITLE_SEPERATOR)
+            Dim accordeonSB = New StringBuilder()
+            Dim lstTerms() As String = accordionHeaderText.Split(New String() {ComponentModel.UIConstants.TITLE_SEPERATOR}, StringSplitOptions.None)
 
+            For Each myAccordeonItem As String In lstTerms
+                accordeonSB.AppendFormat("<span>{0}</span>", myAccordeonItem.Trim())
+            Next
 
-
-
-
+            accordionHeaderText = accordeonSB.ToString()
             Dim headerLink As New IconActionControl  'HtmlGenericControl("a")
             headerLink.EnableViewState = False
 
@@ -781,7 +784,7 @@ Namespace UI.WebControls.EditControls
 
             'headerLink.InnerText = accordionHeaderText.Replace(" "c, ChrW(160))
 
-            headerLink.Text = accordionHeaderText.Replace(" "c, ChrW(160))
+            headerLink.Text = accordionHeaderText '.Replace(" "c, ChrW(160))
 
             'headerLink.Attributes.Add("href", String.Format("#{0}_{1}", Me.ID, commandIndex))
 
