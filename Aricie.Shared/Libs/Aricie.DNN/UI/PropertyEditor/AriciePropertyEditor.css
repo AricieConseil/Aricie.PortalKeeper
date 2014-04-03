@@ -24,15 +24,16 @@
 /* Form */
 /*todo: property editor needs some love... Clear blocks would be a start with layers of semi-transparent background */
 
-.dnnForm {
-    width: 100%;
-    border: 2px solid #ccc;
-    border-radius: 3px;
-    background-color: rgba(222,222,222,10);
-    padding: 1em;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+.dnnForm
+{
+	width: 100%;
+	border: 2px solid #ccc;
+	border-radius: 3px;
+	background-color: rgba(222,222,222,10);
+	padding: 1em;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .SubDiv.even > .dnnForm
@@ -42,7 +43,6 @@
 .SubDiv.odd > .dnnForm
 {
 	background-color: #fff;
-	
 }
 
 
@@ -179,16 +179,18 @@
 {
 	max-width: none;
 	width: auto;
-	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .dnnForm .dnnFormItem textarea
 {
 	max-width: none;
 	width: 100%;
-	box-sizing: border-box;
 	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 .dnnForm .dnnFormItem .aricieFullWidth label a.dnnFormHelp
@@ -220,7 +222,7 @@
     margin: 0 4px 0 0;
     overflow: hidden !important;
     /*position: static !important;*/
-    /*width: auto !important;
+/*width: auto !important;
 }*/
 
 
@@ -250,8 +252,7 @@
 .dnnForm .dnnFormItem .AddPanel
 {
 	width: 80%;
-    margin: auto;
-      
+	margin: auto;
 }
 
 .dnnForm .dnnFormItem .AddPanel > div
@@ -323,19 +324,40 @@
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
 	color: #FFFFFF;
+	height: 4em;
 }
-.dnnForm .ui-accordion h3.ui-accordion-header  a
+.actionText span:nth-child(2)
 {
-	color:#70b1c7;
-	}
+	width: 25%;
+}
+.actionText span
+{
+	padding: 0 8px;
+	display: inline-block;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+}
+* + html .actionText span
+{
+	display: inline;
+	zoom: 1;
+}
+.dnnForm .ui-accordion h3.ui-accordion-header a
+{
+	color: #70b1c7;
+}
 .dnnForm .ui-accordion h3.ui-accordion-header > a
 {
 	/*margin-right:60px;*/
 	color: #fff;
-	height: 18px;
+	height: 100%;
 	display: block;
 	font-size: 1em;
-	padding: 0.5em 0.5em 0.5em 0.7em;
+	padding: 1.5em 0.5em 0.5em 0.7em;
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
 
