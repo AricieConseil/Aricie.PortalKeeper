@@ -12,7 +12,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Repeat, IconOptions.Normal)> _
     <Serializable()> _
-    <DisplayName("Loop Action Provider")> _
+    <DisplayName("Loop")> _
         <Description("This provider allows to loop running a sub bot over a custom collection. On each run, the current item of the collection is affected to a custom variable.")> _
     Public Class LoopActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)

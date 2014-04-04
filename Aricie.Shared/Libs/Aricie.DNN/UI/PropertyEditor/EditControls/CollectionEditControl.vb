@@ -790,11 +790,15 @@ Namespace UI.WebControls.EditControls
 
             headerLink.Url = String.Format("#{0}_{1}", Me.ID, commandIndex)
 
-            Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieAccordion" & Me.ParentEditor.ClientID.GetHashCode())
+            '  Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieAccordion" & Me.ParentEditor.ClientID.GetHashCode())
             Dim cookieValue As Integer = -1
 
-            If cookie IsNot Nothing Then
-                Integer.TryParse(cookie.Value, cookieValue)
+            'If cookie IsNot Nothing Then
+            '    Integer.TryParse(cookie.Value, cookieValue)
+            'End If
+            Dim advStringValue As String = Me.ParentAricieModule.AdvancedClientVariable(Me, "cookieAccordion")
+            If (Not String.IsNullOrEmpty(advStringValue)) Then
+                Integer.TryParse(advStringValue, cookieValue)
             End If
 
             If cookieValue <> item.ItemIndex Then
