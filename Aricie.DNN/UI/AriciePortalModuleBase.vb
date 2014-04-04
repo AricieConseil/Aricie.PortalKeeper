@@ -145,7 +145,9 @@ Namespace UI.Controls
                     If String.IsNullOrEmpty(dnnclientVar) Then
                         _AdvancedClientVars = New SerializableDictionary(Of String, String)
                     Else
-                        _AdvancedClientVars = ReflectionHelper.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
+                        Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+                        _AdvancedClientVars = jss.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
+                        '_AdvancedClientVars = ReflectionHelper.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
                     End If
                     'DnnContext.Current.SetItem(Of SerializableDictionary(Of String, String))(toReturn, AdvancedVarKey)
                     AddHandler Me.AfterPreRenderComplete, AddressOf SerializeAdvancedClientVars
@@ -157,13 +159,15 @@ Namespace UI.Controls
         Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
             If Me.AdvancedClientVars.Count > 0 Then
                 Dim dnnclientVar As String = ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
+                Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+                dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
                 ClientAPI.RegisterClientVariable(Me.Page, AdvancedVarKey, dnnclientVar, True)
             End If
         End Sub
 
         Public Property AdvancedClientVariable(ByVal objControl As Control, ByVal localKey As String) As String
             Get
-                Dim varKey As String = localKey & objControl.ID & objControl.ClientID.GetHashCode
+                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
                 Dim toReturn As String = Nothing
                 If Me.AdvancedClientVars.TryGetValue(varKey, toReturn) Then
                     Return toReturn
@@ -180,7 +184,7 @@ Namespace UI.Controls
                 'Return toReturn
             End Get
             Set(ByVal value As String)
-                Dim varKey As String = localKey & objControl.ID & objControl.ClientID.GetHashCode
+                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
                 Me.AdvancedClientVars(varKey) = value
                 'ClientAPI.RegisterClientVariable(objControl.Page, varKey, value, True)
                 'Dim parentModule As AriciePortalModuleBase = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AriciePortalModuleBase)(objControl)
