@@ -2,22 +2,18 @@
 Imports System.Reflection
 Imports System.Xml
 Imports System.Xml.Serialization
-Imports Aricie.Providers
 Imports System.Text
 Imports System.IO
 Imports System.Runtime.Serialization.Formatters.Binary
 Imports System.Globalization
 Imports System.Web.Compilation
-Imports System.Runtime.Serialization
 Imports System.Security
-Imports System.Web
 Imports System.Security.Permissions
 Imports Aricie.ComponentModel
 Imports System.Text.RegularExpressions
 Imports System.Web.Caching
 Imports System.Runtime.CompilerServices
 Imports System.ComponentModel
-Imports Microsoft.VisualBasic.CompilerServices
 
 Namespace Services
 
@@ -794,13 +790,20 @@ Namespace Services
 
         End Function
 
-        Public Shared Sub Serialize(ByVal objObject As Object, ByVal omitDeclaration As Boolean, ByRef objTextWriter As TextWriter)
 
-
-            'New XmlTextWriter(objTextWriter)
+        Public Shared Function GetStandardXmlWriterSettings() As XmlWriterSettings
             Dim objXmlSettings As New XmlWriterSettings
             objXmlSettings.Encoding = Encoding.UTF8
             objXmlSettings.Indent = True
+            'objXmlSettings.NewLineHandling = NewLineHandling.Replace
+            objXmlSettings.NewLineChars = vbLf
+            Return objXmlSettings
+        End Function
+
+        Public Shared Sub Serialize(ByVal objObject As Object, ByVal omitDeclaration As Boolean, ByRef objTextWriter As TextWriter)
+
+            'New XmlTextWriter(objTextWriter)
+            Dim objXmlSettings As XmlWriterSettings = GetStandardXmlWriterSettings()
             If omitDeclaration Then
                 objXmlSettings.OmitXmlDeclaration = True
             End If
