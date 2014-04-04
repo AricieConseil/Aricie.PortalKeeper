@@ -351,12 +351,13 @@ Namespace UI.WebControls
             MyBase.OnInit(e)
         End Sub
 
-        'Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
-        '    MyBase.OnLoad(e)
-        '    If Me.ParentModule IsNot Nothing Then
-        '        Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) += 1
-        '    End If
-        'End Sub
+        Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
+            MyBase.OnLoad(e)
+            '    If Me.ParentModule IsNot Nothing Then
+            '        Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) += 1
+            '    End If
+
+        End Sub
 
 
         Public Sub RaisePostBackEvent(ByVal eventArgument As String) Implements System.Web.UI.IPostBackEventHandler.RaisePostBackEvent
@@ -390,16 +391,19 @@ Namespace UI.WebControls
                         End If
 
                         'SB: we set the value of the tab index in the cookie because further databindings may use this value from the 
-                        Dim cookieName As String = "cookieTab" & Me.ClientID.GetHashCode()
-                        Dim cookie As HttpCookie = Me.RetrieveCookieValue(cookieName)
-                        If cookie IsNot Nothing Then
-                            Me.Page.Response.Cookies.Remove(cookieName)
-                        End If
-                        _CurrentTab = t
-                        cookie = New HttpCookie(cookieName)
-                        cookie.HttpOnly = False
-                        cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
-                        HttpContext.Current.Response.Cookies.Add(cookie)
+                        'Dim cookieName As String = "cookieTab" & Me.ClientID.GetHashCode()
+                        'Dim cookie As HttpCookie = Me.RetrieveCookieValue(cookieName)
+                        'If cookie IsNot Nothing Then
+                        '    Me.Page.Response.Cookies.Remove(cookieName)
+                        'End If
+                        '_CurrentTab = t
+                        'cookie = New HttpCookie(cookieName)
+                        'cookie.HttpOnly = False
+                        'cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
+                        'HttpContext.Current.Response.Cookies.Add(cookie)
+                        Dim clientVarName As String = "cookieTab" '& Me.ClientID.GetHashCode()
+                        Dim clientVarValueStr As String = Me.ParentAricieModule.AdvancedClientVariable(Me, clientVarName)
+                        Me.ParentAricieModule.AdvancedClientVariable(Me, clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
 
                         Me.FieldsDictionary.HideAllTabs()
 
@@ -596,7 +600,7 @@ Namespace UI.WebControls
 
 #End Region
 
-      
+
 
 #Region "Overrides"
 
@@ -633,11 +637,11 @@ Namespace UI.WebControls
             End If
             Return toReturn
         End Function
-        
+
         Protected Overrides Function GetRowVisibility(ByVal obj As Object) As Boolean
             Return Me.GetRowVisibility(DirectCast(obj, MemberInfo))
         End Function
-        
+
         Protected Overrides Sub CreateEditor()
             Me.CssClass = "dnnForm"
             'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
@@ -673,7 +677,7 @@ Namespace UI.WebControls
             Validate()
         End Sub
 
-        
+
 
 #End Region
 
@@ -777,7 +781,7 @@ Namespace UI.WebControls
                 Me.DisplayElement(Me.FieldsDictionary, False)
             End If
         End Sub
-        
+
         Protected Function DisplayElement(objElement As Element, keepHidden As Boolean) As Integer
 
 
@@ -807,12 +811,17 @@ Namespace UI.WebControls
         Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
-                Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
+                ' Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
+                Dim advStr As String = Me.ParentAricieModule.AdvancedClientVariable(Me, "cookieTab")
+
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
-                If cookie IsNot Nothing Then
-                    Integer.TryParse(cookie.Value, currentTabIndex)
+                If (Not String.IsNullOrEmpty(advStr)) Then
+                    Integer.TryParse(advStr, currentTabIndex)
                 End If
+                'If cookie IsNot Nothing Then
+                '    Integer.TryParse(cookie.Value, currentTabIndex)
+                'End If
                 If currentTabIndex > objElement.Tabs.Count - 1 Then
                     currentTabIndex = 0
                 End If
@@ -1675,7 +1684,7 @@ Namespace UI.WebControls
 #End Region
 
 
-        
+
     End Class
 
 End Namespace

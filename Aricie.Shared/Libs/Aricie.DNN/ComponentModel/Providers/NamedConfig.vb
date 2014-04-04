@@ -90,7 +90,7 @@ Namespace ComponentModel
                 If Not Me.Enabled Then
                     strEnable = "Disabled"
                 End If
-                Return String.Format("{0}  -  {1}", Me.Name, strEnable)
+                Return String.Format("{0} {2} {1}", Me.Name, strEnable, Aricie.DNN.ComponentModel.UIConstants.TITLE_SEPERATOR)
             End Get
         End Property
 
