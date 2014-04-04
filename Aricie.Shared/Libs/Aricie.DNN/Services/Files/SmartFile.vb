@@ -4,8 +4,6 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.Web.Configuration
 Imports Aricie.ComponentModel
 Imports Aricie.Cryptography
-Imports Aricie.Collections
-Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
@@ -22,6 +20,14 @@ Imports System.IO
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Files
+
+    Public Enum PayLoadFormat
+        None
+        [String]
+        Bytes
+        Base64String
+    End Enum
+
     <Serializable()> _
     Public Class SmartFile
         'Inherits SmartFileInfo
@@ -99,25 +105,70 @@ Namespace Services.Files
             End Set
         End Property
 
-        <ExtendedCategory("Content")> _
-        Public Property ShowPayLoad As Boolean
 
         <LineCount(20)> _
       <Width(500)> _
       <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
        <ExtendedCategory("Content")> _
-     <ConditionalVisible("ShowPayLoad", False, True)> _
+     <ConditionalVisible("EditPayLoadFormat", True, True, PayLoadFormat.None)> _
        <XmlIgnore()> _
         Public Property EditPayLoad As String
             Get
-                Return _PayLoad.Value
+                'If ShowLineBreaks Then
+                '    Return EditPayLoad(EditPayLoadFormat).Replace(vbCr, "{CR}").Replace(vbLf, "{LF}")
+                'Else
+                Return EditPayLoad(EditPayLoadFormat)
+                'End If
             End Get
             Set(value As String)
-                If Not String.IsNullOrEmpty(_PayLoad.Value) AndAlso _PayLoad.Value <> value Then
-                    Me.Compressed = False
-                    Me.Encrypted = False
+                'If ShowLineBreaks Then
+                '    EditPayLoad(EditPayLoadFormat) = value.Replace("{CR}", vbCr).Replace("{LF}", vbLf)
+                'Else
+                EditPayLoad(EditPayLoadFormat) = value
+                'End If
+            End Set
+        End Property
+
+        <ExtendedCategory("Content")> _
+               <XmlIgnore()> _
+        Public Property EditPayLoadFormat As PayLoadFormat = PayLoadFormat.None
+        '<ExtendedCategory("Content")> _
+        'Public Property ShowPayLoad As Boolean
+
+        ' <AutoPostBack()> _
+        '<ExtendedCategory("Content")> _
+        '       <XmlIgnore()> _
+        ' Public Property ShowLineBreaks As Boolean
+
+
+        <Browsable(False)>
+        Public Property EditPayload(format As PayLoadFormat) As String
+            Get
+                Select Case format
+                    Case PayLoadFormat.String
+                        Return _PayLoad.Value
+                    Case PayLoadFormat.Bytes
+                        Return BitConverter.ToString(Encoding.UTF8.GetBytes(_PayLoad.Value))
+                    Case PayLoadFormat.Base64String
+                        Return Common.GetBase64FromUtf8(_PayLoad.Value)
+                    Case Else
+                        Return String.Empty
+                End Select
+            End Get
+            Set(value As String)
+                If format <> PayLoadFormat.None Then
+                    Dim newValue As String
+                    Select Case format
+                        Case PayLoadFormat.String
+                            newValue = value
+                        Case PayLoadFormat.Bytes
+                            'newValue = Encoding.UTF8.GetString(Common.StringToByteArray(value))
+                            newValue = Encoding.UTF8.GetString(Common.BitConverterStringToByteArray(value))
+                        Case PayLoadFormat.Base64String
+                            newValue = Common.GetUtf8FromBase64(value)
+                    End Select
+                    _PayLoad.Value = newValue
                 End If
-                _PayLoad.Value = value
             End Set
         End Property
 
@@ -131,6 +182,20 @@ Namespace Services.Files
             End Set
         End Property
 
+        <Browsable(False)> _
+        Public ReadOnly Property PayLoadBytes As Byte()
+            Get
+                Return Encoding.UTF8.GetBytes(Me._PayLoad.Value)
+            End Get
+        End Property
+
+
+        <ExtendedCategory("Content")> _
+        Public ReadOnly Property Size As Integer
+            Get
+                Return Me.PayLoadBytes.Length
+            End Get
+        End Property
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property MD5Checksum As String
@@ -147,10 +212,12 @@ Namespace Services.Files
         End Property
 
         <ExtendedCategory("Content")> _
+               <XmlIgnore()> _
         Public Property UseCustomKey As Boolean
 
         <ExtendedCategory("Content")> _
         <ConditionalVisible("UseCustomKey", False, True)> _
+               <XmlIgnore()> _
         Public Property CustomKey As String = ""
 
 
@@ -158,6 +225,7 @@ Namespace Services.Files
 
 
         <ExtendedCategory("Content")> _
+        <ConditionalVisible("Signed", True, True)> _
       <ConditionalVisible("Encrypted", True, True)> _
       <ConditionalVisible("Compressed", True, True)> _
     <ActionButton(IconName.Key, IconOptions.Normal)> _
@@ -172,6 +240,8 @@ Namespace Services.Files
         '<ConditionalVisible("HasEncrypter", False, True)> _
         <ExtendedCategory("Content")> _
         <ConditionalVisible("Signed", False, True)> _
+         <ConditionalVisible("Encrypted", True, True)> _
+      <ConditionalVisible("Compressed", True, True)> _
      <ActionButton(IconName.CheckSquareO, IconOptions.Normal)> _
         Public Overloads Sub Verify(ape As AriciePropertyEditorControl)
             Dim message As String
@@ -188,6 +258,8 @@ Namespace Services.Files
 
         <ExtendedCategory("Content")> _
       <ConditionalVisible("Signed", False, True)> _
+       <ConditionalVisible("Encrypted", True, True)> _
+      <ConditionalVisible("Compressed", True, True)> _
    <ActionButton(IconName.Eraser, IconOptions.Normal)> _
         Public Overloads Sub RemoveSignature(ape As AriciePropertyEditorControl)
             Me.RemoveSignature()
@@ -199,6 +271,7 @@ Namespace Services.Files
 
         <ExtendedCategory("Content")> _
         <ConditionalVisible("Compressed", True, True)> _
+         <ConditionalVisible("Encrypted", True, True)> _
       <ActionButton(IconName.Compress, IconOptions.Normal)> _
         Public Sub Compress(ape As AriciePropertyEditorControl)
             Me.Compress()
@@ -209,6 +282,7 @@ Namespace Services.Files
 
         <ExtendedCategory("Content")> _
         <ConditionalVisible("Compressed", False, True)> _
+         <ConditionalVisible("Encrypted", True, True)> _
        <ActionButton(IconName.Expand, IconOptions.Normal)> _
         Public Sub Decompress(ape As AriciePropertyEditorControl)
             Me.Decompress()
@@ -237,7 +311,7 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-      
+
 
         Public Sub Decrypt()
             Try
@@ -255,7 +329,7 @@ Namespace Services.Files
             End Try
         End Sub
 
-        
+
         Public Sub Encrypt()
             If Not Me.Encrypted Then
                 Dim objSalt As Byte() = Nothing
@@ -282,7 +356,16 @@ Namespace Services.Files
                     doc.LoadXml(Me.PayLoad)
                     If Me._encrypter IsNot Nothing Then
                         _encrypter.Sign(doc)
-                        PayLoad = doc.OuterXml
+                        Dim tempLoad As String
+                        Dim sb As New StringBuilder()
+                        Using sw As New StringWriter(sb)
+                            'Using sw As New StreamWriter(ms)
+                            Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                                doc.WriteTo(writer)
+                            End Using
+                            PayLoad = sb.ToString
+                        End Using
                         Me.Signed = True
                     End If
                 End SyncLock
@@ -319,6 +402,7 @@ Namespace Services.Files
                         doc.RemoveChild(sigNode)
                     End If
                     Me.PayLoad = doc.OuterXml
+                    Me.Signed = False
                 End SyncLock
             End If
         End Sub
@@ -419,10 +503,8 @@ Namespace Services.Files
 
         Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, settings As SmartFileInfo) As T
             Dim toReturn As T
-            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
-            If objFileInfo IsNot Nothing Then
-                Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
-                Dim objSmartFile As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetString(content))
+            Dim objSmartFile As SmartFile(Of T) = LoadSmartFile(Of T)(key, settings)
+            If objSmartFile IsNot Nothing Then
                 objSmartFile.SetEncrypter(settings.Encryption)
                 toReturn = objSmartFile.Value
             End If
@@ -437,7 +519,11 @@ Namespace Services.Files
         Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile(Of T)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
-                Return ReflectionHelper.Deserialize(Of SmartFile(Of T))(Encoding.UTF8.GetChars(content))
+                Using ms As New MemoryStream(content)
+                    Using reader As XmlReader = XmlReader.Create(ms)
+                        Return ReflectionHelper.Deserialize(Of SmartFile(Of T))(reader)
+                    End Using
+                End Using
             End If
             Return Nothing
         End Function
@@ -464,17 +550,15 @@ Namespace Services.Files
                     'If objFileInfo Is Nothing Then
                     Dim objPath As String = settings.GetPath(value.Key)
                     objFileInfo = New DotNetNuke.Services.FileSystem.FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
-                    Dim doc As XmlDocument = ReflectionHelper.Serialize(value, False)
+                    'Dim doc As XmlDocument = ReflectionHelper.Serialize(value, False)
                     Dim content As Byte()
                     Using ms As New MemoryStream()
-                        Using sw As New StreamWriter(ms)
-                            Dim objXmlSettings As New XmlWriterSettings
-                            objXmlSettings.Encoding = Encoding.UTF8
-                            objXmlSettings.Indent = True
-                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                                ReflectionHelper.Serialize(value, writer)
-                            End Using
+                        'Using sw As New StreamWriter(ms, Encoding.UTF8)
+                        Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                        Using writer As XmlWriter = XmlWriter.Create(ms, objXmlSettings)
+                            ReflectionHelper.Serialize(value, writer)
                         End Using
+                        'End Using
                         content = ms.ToArray()
                     End Using
                     Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content, False)
@@ -582,6 +666,7 @@ Namespace Services.Files
             Me.Wrap(settings)
         End Sub
 
+        <XmlIgnore()> _
         <ExtendedCategory("Value")> _
         Public Property ShowValue As Boolean
 
@@ -617,9 +702,7 @@ Namespace Services.Files
             If _Value IsNot Nothing Then
                 Dim sb As New StringBuilder()
                 Using sw As New StringWriter(sb)
-                    Dim objXmlSettings As New XmlWriterSettings
-                    objXmlSettings.Encoding = Encoding.UTF8
-                    objXmlSettings.Indent = True
+                    Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
                     Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
                         ReflectionHelper.Serialize(_Value, writer)
                     End Using

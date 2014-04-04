@@ -1,11 +1,7 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.ComponentModel
-Imports System.Security.Cryptography
 Imports DotNetNuke.UI.WebControls
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Services
 Imports System.Xml.Serialization
 Imports System.Threading
 Imports Aricie.DNN.Diagnostics
@@ -15,12 +11,7 @@ Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.UI.Skins.Controls
 Imports Aricie.DNN.UI.WebControls
-Imports Aricie.DNN.Services.Files
-Imports System.Security.Cryptography.X509Certificates
-Imports System.Xml
 Imports Aricie.DNN.Security.Trial
-Imports DotNetNuke.Entities.Users
-Imports DotNetNuke.Services.Exceptions
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -36,7 +27,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <XmlInclude(GetType(UserVariableInfo))> _
     <Serializable()> _
     Public Class BotFarmInfo(Of TEngineEvent As IConvertible)
-        Inherits NamedConfig
+        Implements IEnabled
+
 
 
 
@@ -59,8 +51,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public properties"
 
+        Public Property Enabled() As Boolean Implements IEnabled.Enabled
 
-        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ExtendedCategory("Bots"), MainCategory()>
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
+        <ExtendedCategory("Bots")>
         Public Property Bots As New SimpleList(Of BotInfo(Of TEngineEvent))
 
 
@@ -68,7 +62,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property EnableUserBots As Boolean
 
 
-        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete), LabelMode(LabelMode.Top), Editor(GetType(PropertyEditorEditControl), GetType(EditControl)), ConditionalVisible("EnableUserBots", False, True), ExtendedCategory("UserBots")>
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
+        <ConditionalVisible("EnableUserBots", False, True)> _
+        <ExtendedCategory("UserBots")>
         Public Property UserBots As New SimpleList(Of UserBotSettings(Of TEngineEvent))
 
 
@@ -302,6 +298,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 #End Region
+
 
 
     End Class

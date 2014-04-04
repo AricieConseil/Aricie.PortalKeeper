@@ -1,11 +1,9 @@
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
-Imports Aricie.DNN.Entities
 Imports System.IO
-Imports System.Globalization
-Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.Entities.Users
 Imports DotNetNuke.Framework
@@ -55,9 +53,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public Properties"
 
+        <Browsable(False)> _
+        <XmlIgnore()> _
+        Public Overrides Property Name As String
+            Get
+                Return MyBase.Name
+            End Get
+            Set(value As String)
+                MyBase.Name = value
+            End Set
+        End Property
 
-
-
+        <Browsable(False)> _
+         <XmlIgnore()> _
+        Public Overrides Property Decription As CData
+            Get
+                Return MyBase.Decription
+            End Get
+            Set(value As CData)
+                MyBase.Decription = value
+            End Set
+        End Property
 
 
         <ExtendedCategory("")> _
