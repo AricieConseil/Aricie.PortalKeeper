@@ -14,8 +14,7 @@ Imports System.Xml
 Imports System.Security.Cryptography.X509Certificates
 Imports System.Security.Cryptography.Xml
 Imports Aricie.Cryptography
-
-
+Imports System.Linq
 
 
 ''' <summary>
@@ -79,6 +78,16 @@ Public Module Common
 
 
 #Region "Crypto"
+
+
+    Public Function StringToByteArray(hexInput As String) As Byte()
+        Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
+    End Function
+
+    Public Function BitConverterStringToByteArray(hexBitConverter As String) As Byte()
+        Dim hexInput As String = hexBitConverter.Replace("-"c, "").Trim()
+        Return StringToByteArray(hexInput)
+    End Function
 
 
     Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
@@ -298,7 +307,7 @@ Public Module Common
 
         'APPEND THE SIGNATURE TO THE END OF THE DOCUMENT
         'Doc.DocumentElement.AppendChild(Doc.ImportNode(xmlDigitalSignature, true));
-        doc.DocumentElement.AppendChild(xmlDigitalSignature)
+        doc.DocumentElement.AppendChild(doc.ImportNode(xmlDigitalSignature, True))
     End Sub
 
     ''' <summary>

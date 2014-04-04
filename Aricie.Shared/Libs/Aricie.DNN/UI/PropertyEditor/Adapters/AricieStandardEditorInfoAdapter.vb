@@ -76,13 +76,13 @@ Namespace UI.WebControls
 
 
             If Not _EditorClones.TryGetValue(key, cachedEditor) Then
-                toReturn = GetEditorInfo(Me.DataSource, Me._CurrentProperty)
+                toReturn = GetEditorInfo()
                 SyncLock _EditorClones
                     _EditorClones(key) = toReturn
                 End SyncLock
                 'CacheHelper.SetGlobal(Of EditorInfo)(toReturn, currentType.FullName, FieldName)
             Else
-                toReturn = GetCloneEditor(cachedEditor, Me._CurrentProperty)
+                toReturn = GetCloneEditor(cachedEditor, value)
             End If
             Return toReturn
         End Function
@@ -110,25 +110,25 @@ Namespace UI.WebControls
             Return e.Changed
         End Function
 
-        Public Function GetCloneEditor(ByVal previousEditor As EditorInfo, ByVal objProperty As PropertyInfo) As EditorInfo
+        Public Function GetCloneEditor(ByVal previousEditor As EditorInfo, ByVal objValue As Object) As EditorInfo
             Dim toReturn As New EditorInfo
             toReturn.Name = previousEditor.Name
             toReturn.Type = previousEditor.Type
             toReturn.Attributes = previousEditor.Attributes
             toReturn.Category = previousEditor.Category
 
-            If Not objProperty.CanWrite Then
-                toReturn.EditMode = PropertyEditorMode.View
-            Else
-                Dim readOnlyAttributes As Object() = objProperty.GetCustomAttributes(GetType(IsReadOnlyAttribute), True)
-                If (readOnlyAttributes.Length > 0) Then
-                    Dim readOnlyMode As IsReadOnlyAttribute = CType(readOnlyAttributes(0), IsReadOnlyAttribute)
-                    If readOnlyMode.IsReadOnly Then
-                        toReturn.EditMode = PropertyEditorMode.View
-                    End If
-                End If
-            End If
-
+            'If Not _CurrentProperty.CanWrite Then
+            '    toReturn.EditMode = PropertyEditorMode.View
+            'Else
+            '    Dim readOnlyAttributes As Object() = _CurrentProperty.GetCustomAttributes(GetType(IsReadOnlyAttribute), True)
+            '    If (readOnlyAttributes.Length > 0) Then
+            '        Dim readOnlyMode As IsReadOnlyAttribute = CType(readOnlyAttributes(0), IsReadOnlyAttribute)
+            '        If readOnlyMode.IsReadOnly Then
+            '            toReturn.EditMode = PropertyEditorMode.View
+            '        End If
+            '    End If
+            'End If
+            toReturn.EditMode = previousEditor.EditMode
 
             'toReturn.EditMode = previousEditor.EditMode
             toReturn.Editor = previousEditor.Editor
@@ -139,7 +139,7 @@ Namespace UI.WebControls
             toReturn.ValidationExpression = previousEditor.ValidationExpression
             toReturn.Visibility = previousEditor.Visibility
 
-            toReturn.Value = Me._CurrentProperty.GetValue(Me.DataSource, Nothing)
+            toReturn.Value = objValue
 
             Return toReturn
         End Function
@@ -150,35 +150,36 @@ Namespace UI.WebControls
         ''' GetEditorInfo builds an EditorInfo object for a propoerty
         ''' </summary>
         ''' -----------------------------------------------------------------------------
-        Private Function GetEditorInfo(ByVal dataSource As Object, ByVal objProperty As PropertyInfo) As EditorInfo
+        Private Function GetEditorInfo() As EditorInfo
 
-            Dim objType As Type = dataSource.GetType
+            Dim objType As Type = Me.DataSource.GetType
 
             Dim editInfo As New EditorInfo
 
             'Get the Name of the property
-            editInfo.Name = objProperty.Name()
+            editInfo.Name = _CurrentProperty.Name()
 
             'Get the value of the property
-            editInfo.Value = objProperty.GetValue(dataSource, Nothing)
+            editInfo.Value = _CurrentProperty.GetValue(Me.DataSource, Nothing)
 
             'Get the type of the property
-            editInfo.Type = objProperty.PropertyType().AssemblyQualifiedName
+            editInfo.Type = _CurrentProperty.PropertyType().AssemblyQualifiedName
 
             'Get the Custom Attributes for the property
-            Dim attrList As New List(Of Object)(objProperty.GetCustomAttributes(True))
-           
+            Dim attrList As New List(Of Object)(_CurrentProperty.GetCustomAttributes(True))
+
             If Me._AdditionalAttributes IsNot Nothing Then
                 attrList.AddRange(Me._AdditionalAttributes)
             End If
-            attrList.AddRange(objProperty.PropertyType.GetCustomAttributes(True))
+            'todo: is this ok?
+            attrList.AddRange(_CurrentProperty.PropertyType.GetCustomAttributes(True))
 
             editInfo.Attributes = attrList.ToArray()
 
 
             editInfo.Category = String.Empty
-       
-            If Not objProperty.CanWrite Then
+
+            If Not _CurrentProperty.CanWrite Then
                 editInfo.EditMode = PropertyEditorMode.View
             End If
             editInfo.Editor = "UseSystemType"
@@ -186,9 +187,9 @@ Namespace UI.WebControls
             editInfo.ControlStyle = New Style
             editInfo.LabelMode = LabelMode.Left
 
-            Dim declaringType As Type = objProperty.GetAccessors().First.GetBaseDefinition.DeclaringType
+            Dim declaringType As Type = _CurrentProperty.GetAccessors().First.GetBaseDefinition.DeclaringType
 
-            editInfo.ResourceKey = String.Format("{0}_{1}", declaringType.Name, objProperty.Name)
+            editInfo.ResourceKey = String.Format("{0}_{1}", declaringType.Name, _CurrentProperty.Name)
             editInfo.ValidationExpression = String.Empty
 
             'Set Visibility
@@ -211,6 +212,8 @@ Namespace UI.WebControls
                     Dim readOnlyMode As IsReadOnlyAttribute = DirectCast(objAttribute, IsReadOnlyAttribute)
                     If readOnlyMode.IsReadOnly Then
                         editInfo.EditMode = PropertyEditorMode.View
+                    Else
+                        editInfo.EditMode = PropertyEditorMode.Edit
                     End If
                 ElseIf TypeOf objAttribute Is EditorAttribute Then
                     Dim editorAttribute As EditorAttribute = DirectCast(objAttribute, EditorAttribute)
@@ -234,11 +237,7 @@ Namespace UI.WebControls
                     Dim regExAttribute As RegularExpressionValidatorAttribute = DirectCast(objAttribute, RegularExpressionValidatorAttribute)
                     editInfo.ValidationExpression = regExAttribute.Expression
                 End If
-
             Next
-
-
-
         End Sub
 
 

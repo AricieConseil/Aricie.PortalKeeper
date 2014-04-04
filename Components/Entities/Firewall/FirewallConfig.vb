@@ -1,18 +1,9 @@
 Imports System.ComponentModel
-Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.ComponentModel
-Imports Aricie.DNN.Settings
-Imports Aricie.DNN.Services
 Imports Aricie.DNN.Services.Errors
 Imports Aricie.Services
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports DotNetNuke.UI.Skins
-Imports DotNetNuke.Services.Localization
-Imports DotNetNuke.UI.Skins.Controls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper

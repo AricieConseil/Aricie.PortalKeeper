@@ -16,6 +16,8 @@ Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services.Files
 Imports DotNetNuke.Services.Exceptions
+Imports System.IO
+Imports System.Xml
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -374,16 +376,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function GetUserBotInfo(ByVal user As UserInfo, ByVal pid As Integer, ByVal createIfNull As Boolean) As UserBotInfo
 
             Dim userBot As UserBotInfo = Nothing '= CacheHelper.GetGlobal(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
-            Try
-                If userBot Is Nothing Then
-
+            If userBot Is Nothing Then
+                Try
                     Select Case Storage
-
                         Case UserBotStorage.Personalisation
-
                             Dim pc As New PersonalizationController
                             Dim pInfo As PersonalizationInfo = pc.LoadProfile(user.UserID, pid)
-
 
                             Dim strUserDataFormat As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.SmartFile", Me.Name), String)
                             If String.IsNullOrEmpty(strUserDataFormat) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
@@ -400,8 +398,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 userDataFormat = ReflectionHelper.Deserialize(Of UserBotFormat)(strUserDataFormat)
                             End If
 
-
-
                             Dim userData As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name), String)
                             If String.IsNullOrEmpty(userData) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
                                 userData = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName), String)
@@ -411,23 +407,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 End If
                             End If
                             If Not String.IsNullOrEmpty(userData) Then
-
                                 If userDataFormat.Encrypted Then
-                                    Try
-
-                                        Dim tempData As String = Me.StorageSettings.Encryption.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
-                                        userData = tempData
-                                    Catch ex As Exception
-                                        Exceptions.LogException(ex)
-                                    End Try
+                                    Dim tempData As String = Me.StorageSettings.Encryption.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user, pid)))
+                                    userData = tempData
                                 End If
                                 If userDataFormat.Compressed Then
-                                    Try
-                                        Dim tempData As String = DoDeCompress(userData, CompressionMethod.Gzip)
-                                        userData = tempData
-                                    Catch ex As Exception
-                                        Exceptions.LogException(ex)
-                                    End Try
+                                    Dim tempData As String = DoDeCompress(userData, CompressionMethod.Gzip)
+                                    userData = tempData
                                 End If
                                 userBot = ReflectionHelper.Deserialize(Of UserBotInfo)(userData)
                                 ' on place le user bot dans le cache après avoir potentiellement complété ses paramètres avec ceux fournis par les paramètres du user bot
@@ -441,23 +427,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             'pid, PortalKeeperConfig.Instance.GetModuleName(), user.Username, "UserBots/" & Me.Name, "")
                             userBot = SmartFile.LoadAndRead(Of UserBotInfo)(key, Me.StorageSettings)
 
+
                     End Select
+                Catch ex As Exception
+                    Dim newEx As New ApplicationException(String.Format("User Bot Failed to load from persistence storage for user {0}", user.Username), ex)
+                    Exceptions.LogException(newEx)
+                End Try
 
 
-
-                    If userBot Is Nothing Then
-                        If createIfNull Then
-                            userBot = GetNewUserBot()
-                        End If
-                    Else
-                        Me.SetDefaultParameters(userBot)
+                If userBot Is Nothing Then
+                    If createIfNull Then
+                        userBot = GetNewUserBot()
                     End If
-
+                Else
+                    Me.SetDefaultParameters(userBot)
                 End If
 
-            Catch ex As Exception
-                Exceptions.LogException(ex)
-            End Try
+            End If
+
             Return userBot
         End Function
 
@@ -481,7 +468,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     If objUserBotInfo IsNot Nothing Then
                         Me.SetDefaultParameters(objUserBotInfo)
                         Dim objUserBotFormat As New UserBotFormat
-                        Dim userData As String = ReflectionHelper.Serialize(objUserBotInfo).OuterXml
+
+                        Dim sb As New StringBuilder()
+                        Using sw As New StringWriter(sb)
+                            Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                                ReflectionHelper.Serialize(objUserBotInfo, writer)
+                            End Using
+                        End Using
+
+                        Dim userData As String = sb.ToString()
 
                         If Me.StorageSettings.Compress Then
                             objUserBotFormat.Compressed = True

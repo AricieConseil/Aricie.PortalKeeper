@@ -2194,7 +2194,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Dynamic Expression</value>
   </data>
   <data name="String.Text" xml:space="preserve">
-    <value>String Constant</value>
+    <value>String</value>
   </data>
   <data name="WebRequestInfo`1_UrlExpression.Help" xml:space="preserve">
     <value>Enter here a Flee Expression, which resumes into a String</value>
@@ -5532,7 +5532,55 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RuleEngineSettings`1_ExceptionDumpAllVars.Text" xml:space="preserve">
     <value>Dump All Vars On Exception</value>
   </data>
+  <data name="Base64String.Text" xml:space="preserve">
+    <value>Base 64</value>
+  </data>
+  <data name="Bytes.Text" xml:space="preserve">
+    <value>Bytes</value>
+  </data>
+  <data name="SignatureFailedToVerify.Message" xml:space="preserve">
+    <value>Signature failed to verify with the encryption available</value>
+  </data>
+  <data name="SignatureRemoved.Message" xml:space="preserve">
+    <value>Signature succesfully removed</value>
+  </data>
+  <data name="SmartFileDecrypted.Message" xml:space="preserve">
+    <value>Smart File sucessfuly decrypted</value>
+  </data>
+  <data name="SmartFileSigned.Message" xml:space="preserve">
+    <value>Smart File successfully signed using available encryption</value>
+  </data>
+  <data name="SmartFile_EditPayLoadFormat.Help" xml:space="preserve">
+    <value>You can choose to visualize and edit the content of the SmartFile in various formats</value>
+  </data>
+  <data name="SmartFile_EditPayLoadFormat.Text" xml:space="preserve">
+    <value>PayLoad Format</value>
+  </data>
+  <data name="SmartFile_RemoveSignature.Text" xml:space="preserve">
+    <value>Remove Signature</value>
+  </data>
   <data name="SmartFile_Sign.Text" xml:space="preserve">
     <value>Sign</value>
+  </data>
+  <data name="SmartFile_Size.Help" xml:space="preserve">
+    <value>This is the size of the payload in bytes using utf-8 encoding</value>
+  </data>
+  <data name="SmartFile_Size.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="SmartFile_Verify.Text" xml:space="preserve">
+    <value>Verify</value>
+  </data>
+  <data name="SmartFolder`1_NoCache.Help" xml:space="preserve">
+    <value>Smart File documents are normally kept in cache for better performances. Uncheck for a DB call on each call back.</value>
+  </data>
+  <data name="SmartFolder`1_NoCache.Text" xml:space="preserve">
+    <value>No Cache</value>
+  </data>
+  <data name="BotFarmInfo`1_Enabled.Help" xml:space="preserve">
+    <value>This is a central switch for scheduled bots. You can still run specific bots manually when the sheduled farm is off.</value>
+  </data>
+  <data name="BotFarmInfo`1_Enabled.Text" xml:space="preserve">
+    <value>Enable Scheduler</value>
   </data>
 </root>
