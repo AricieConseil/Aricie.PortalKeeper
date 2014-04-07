@@ -120,7 +120,8 @@ function initialisePropertyEditorsScripts() {
         },
         activate: function (e, ui) {
             //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
-            setAdvanceVariableValue(cookieTabName, ui.index); //lis.index(ui.newTab) -->newTab=undefined
+            var currentIndex = ui.newTab.parent().find("li").index(ui.newTab);
+            setAdvanceVariableValue(cookieTabName, currentIndex); //lis.index(ui.newTab) -->newTab=undefined
             var resultat = performASPNetValidation();
             return resultat;
         },
