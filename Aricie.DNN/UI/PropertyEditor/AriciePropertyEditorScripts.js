@@ -59,7 +59,7 @@ function initialisePropertyEditorsScripts() {
     selector = ".aricie_pe_accordion" + "-" + AriciePropertyEditorScripts.get_clientId();
     cookieAccName = 'cookieAccordion' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
     var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
-    if (cookieVal == undefined || cookieVal == -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
+    if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
         cookieVal = false;
     } else {
     cookieVal = parseInt(cookieVal);
@@ -81,11 +81,12 @@ function initialisePropertyEditorsScripts() {
         var h3 = jQuery(this).parent();
         var index = h3.parent().children('h3.ui-accordion-header').index(h3);
         var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
-        if (cookieVal == index) {
-            //jQuery.cookie(cookieAccName, null);
+       
+        if (cookieVal === index) {
+            
             setAdvanceVariableValue(cookieAccName, null);
         } else {
-            // jQuery.cookie(cookieAccName, index);
+            
             setAdvanceVariableValue(cookieAccName, index);
         }
     });

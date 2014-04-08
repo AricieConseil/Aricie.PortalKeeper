@@ -796,7 +796,7 @@ Namespace UI.WebControls.EditControls
             'If cookie IsNot Nothing Then
             '    Integer.TryParse(cookie.Value, cookieValue)
             'End If
-            Dim advStringValue As String = Me.ParentAricieModule.AdvancedClientVariable(Me, "cookieAccordion")
+            Dim advStringValue As String = Me.ParentAricieModule.AdvancedClientVariable(Me.ParentAricieEditor, "cookieAccordion")
             If (Not String.IsNullOrEmpty(advStringValue)) Then
                 Integer.TryParse(advStringValue, cookieValue)
             End If
