@@ -58,7 +58,7 @@ Namespace Diagnostics
             Get
                 If _LogTaskQueue Is Nothing Then
                     Dim objTaskInfo As New TaskQueueInfo(1, True, TimeSpan.Zero, TimeSpan.Zero, TimeSpan.FromMilliseconds(10))
-#If (Debug) Then
+#If DEBUG Then
                     objTaskInfo.EnablePerformanceCounters = True
                     objTaskInfo.PerformanceCounterInstanceName &= "-AsyncLogger"
 #End If

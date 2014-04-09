@@ -346,7 +346,7 @@ Namespace Services.Files
 
 
 
-        Public Overloads Sub Sign()
+        Public Overridable Overloads Sub Sign()
             If Me.Encrypted OrElse Me.Compressed Then
                 Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
             End If
@@ -356,7 +356,6 @@ Namespace Services.Files
                     doc.LoadXml(Me.PayLoad)
                     If Me._encrypter IsNot Nothing Then
                         _encrypter.Sign(doc)
-                        Dim tempLoad As String
                         Dim sb As New StringBuilder()
                         Using sw As New StringWriter(sb)
                             'Using sw As New StreamWriter(ms)
@@ -372,7 +371,7 @@ Namespace Services.Files
             End If
         End Sub
 
-        Public Overloads Function Verify() As Boolean
+        Public Overridable Overloads Function Verify() As Boolean
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot be verified")
             Else
@@ -390,7 +389,7 @@ Namespace Services.Files
 
 
 
-        Public Overloads Sub RemoveSignature()
+        Public Overridable Overloads Sub RemoveSignature()
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot have signature removed")
             Else
@@ -401,7 +400,16 @@ Namespace Services.Files
                     If sigNode IsNot Nothing Then
                         doc.RemoveChild(sigNode)
                     End If
-                    Me.PayLoad = doc.OuterXml
+                    'Me.PayLoad = doc.OuterXml
+                    Dim sb As New StringBuilder()
+                    Using sw As New StringWriter(sb)
+                        'Using sw As New StreamWriter(ms)
+                        Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                        Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                            doc.WriteTo(writer)
+                        End Using
+                        PayLoad = sb.ToString
+                    End Using
                     Me.Signed = False
                 End SyncLock
             End If
@@ -464,7 +472,7 @@ Namespace Services.Files
             End If
         End Sub
 
-        Public Sub Wrap(settings As SmartFileInfo)
+        Public Overridable Sub Wrap(settings As SmartFileInfo)
             If settings.Sign AndAlso Me._encrypter IsNot Nothing Then
                 Me.Sign()
             End If
@@ -698,7 +706,7 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-        Public Sub UpdatePayload()
+        Public Overridable Sub UpdatePayload()
             If _Value IsNot Nothing Then
                 Dim sb As New StringBuilder()
                 Using sw As New StringWriter(sb)

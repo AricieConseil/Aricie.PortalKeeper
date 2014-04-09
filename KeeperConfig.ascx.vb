@@ -16,6 +16,10 @@ Imports Aricie.DNN.Entities
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.UI.Utilities
 Imports System.Collections.Generic
+Imports System.Xml
+Imports System.Security.Cryptography
+Imports System.IO
+Imports Aricie.DNN.Security
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
@@ -23,7 +27,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Public Sub New()
             MyBase.New()
+#If DEBUG Then
             AddHandler DnnContext.Current.Debug, AddressOf Me.OnDebug
+#End If
         End Sub
 
 
@@ -412,60 +418,40 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
-       
+
 
         Private Sub OnCmdDebug()
 
-
-            'Dim atr As New AdvancedTokenReplace
-
-            Dim myTypeObject As New ActionTree(Of ScheduleEvent)
-            Dim message As String = ReflectionHelper.GetSafeTypeName(myTypeObject.GetType)
-            DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me, message, ModuleMessage.ModuleMessageType.GreenSuccess)
-
-            'DirectCast(Me.KeeperConfig.SchedulerFarm.Bots.Instances(1).Rules(1).Action.Instances(0), DeserializeActionProvider(Of ScheduleEvent, PortalKeeperContext(Of ScheduleEvent))).AdditionalTypes(0) = New dotnettype(GetType(List(Of BitCoin.Order)))
-
-            Dim newScheduleProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
-            newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExecuteSqlAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
-            newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(RunProgramAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
+            Dim result As Boolean
 
 
-            For Each prov As ActionProviderConfig(Of ScheduleEvent) In newScheduleProviders
+            Dim objDoc As XmlDocument = ReflectionHelper.Serialize(New UserBotInfo)
+
+            'Dim crypto As New RSACryptoServiceProvider()
+            'Common.SignXml(objDoc, crypto)
+
+            Dim encrypt As New EncryptionInfo()
+            encrypt.DoSign(objDoc)
+
+            Dim sb As New StringBuilder()
+            Using sw As New StringWriter(sb)
+                'Using sw As New StreamWriter(ms)
+                Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                    objDoc.WriteTo(writer)
+                End Using
+
+            End Using
+            Dim obDoc2 As New XmlDocument()
+            obDoc2.LoadXml(sb.ToString())
 
 
-
-                For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
-                    Dim found As Boolean
-                    For Each existing As ActionProviderConfig(Of ScheduleEvent) In objBot.ActionProviders
-                        If existing.Name = prov.Name Then
-                            found = True
-                        End If
-                    Next
-                    If Not found Then
-                        objBot.ActionProviders.Add(prov)
-                    End If
-                Next
-            Next
-
-            Dim newRequestProviders As New List(Of ActionProviderConfig(Of RequestEvent))
-            newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(ExecuteSqlAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
-            newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(RunProgramAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
-
-            For Each prov As ActionProviderConfig(Of RequestEvent) In newRequestProviders
-                Dim found As Boolean
-                For Each existing As ActionProviderConfig(Of RequestEvent) In Me.KeeperConfig.FirewallConfig.ActionProviders
-                    If existing.Name = prov.Name Then
-                        found = True
-                    End If
-                Next
-                If Not found Then
-                    Me.KeeperConfig.FirewallConfig.ActionProviders.Add(prov)
-                End If
-            Next
+            'result = Common.VerifyXml(obDoc2, crypto)
+            result = encrypt.Verify(obDoc2)
 
 
+            Me.AddModuleMessage(result, ModuleMessage.ModuleMessageType.BlueInfo)
 
-            Me.BindSettings()
 
         End Sub
 
@@ -474,11 +460,57 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         End Sub
 
+
+        Private Sub AddNewProviders()
+            'Dim newScheduleProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
+            'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExecuteSqlAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
+            'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(RunProgramAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
+
+
+            'For Each prov As ActionProviderConfig(Of ScheduleEvent) In newScheduleProviders
+
+
+
+            '    For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
+            '        Dim found As Boolean
+            '        For Each existing As ActionProviderConfig(Of ScheduleEvent) In objBot.ActionProviders
+            '            If existing.Name = prov.Name Then
+            '                found = True
+            '            End If
+            '        Next
+            '        If Not found Then
+            '            objBot.ActionProviders.Add(prov)
+            '        End If
+            '    Next
+            'Next
+
+            'Dim newRequestProviders As New List(Of ActionProviderConfig(Of RequestEvent))
+            'newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(ExecuteSqlAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
+            'newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(RunProgramAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
+
+            'For Each prov As ActionProviderConfig(Of RequestEvent) In newRequestProviders
+            '    Dim found As Boolean
+            '    For Each existing As ActionProviderConfig(Of RequestEvent) In Me.KeeperConfig.FirewallConfig.ActionProviders
+            '        If existing.Name = prov.Name Then
+            '            found = True
+            '        End If
+            '    Next
+            '    If Not found Then
+            '        Me.KeeperConfig.FirewallConfig.ActionProviders.Add(prov)
+            '    End If
+            'Next
+
+
+
+            'Me.BindSettings()
+
+        End Sub
+
 #End Region
 
 
 
-        
+
     End Class
 End Namespace
 
