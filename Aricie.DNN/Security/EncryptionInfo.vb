@@ -31,7 +31,8 @@ Namespace Security
 
         Private _DnnDecryptionKey As String = String.Empty
 
-        Private ReadOnly Property DnnDecyptionKey() As String
+
+        Private ReadOnly Property DnnDecryptionKey() As String
             Get
                 If String.IsNullOrEmpty(_DnnDecryptionKey) Then
                     _DnnDecryptionKey = NukeHelper.WebConfigDocument.SelectSingleNode("configuration/system.web/machineKey").Attributes("decryptionKey").Value
@@ -116,7 +117,7 @@ Namespace Security
                         'If String.IsNullOrEmpty(_EncryptionKey) Then
                         '    ResetEncryptionKeys()
                         'End If
-                        Return Common.Encrypt(_EncryptionKey, Me.DnnDecyptionKey, Me._InitVector, Me._SaltBytes)
+                        Return Common.Encrypt(_EncryptionKey, Me.DnnDecryptionKey, Me._InitVector, Me._SaltBytes)
                     Catch ex As Exception
                         ExceptionHelper.LogException(ex)
                     End Try
@@ -126,7 +127,7 @@ Namespace Security
             Set(ByVal value As String)
                 If Not String.IsNullOrEmpty(value) AndAlso Me.IsSalted Then
                     Try
-                        _EncryptionKey = Common.Decrypt(value, Me.DnnDecyptionKey, Me._InitVector, Me._SaltBytes)
+                        _EncryptionKey = Common.Decrypt(value, Me.DnnDecryptionKey, Me._InitVector, Me._SaltBytes)
                     Catch ex As Exception
                         ExceptionHelper.LogException(ex)
                     End Try
@@ -141,6 +142,9 @@ Namespace Security
         Public Property EncryptionPrivateKey As String
             Get
                 If Not Me.IsSalted Then
+                    If String.IsNullOrEmpty(_EncryptionPrivateKey) Then
+                        ResetEncryptionKeys()
+                    End If
                     Return Me._EncryptionPrivateKey
                 End If
                 Return Nothing
@@ -182,6 +186,9 @@ Namespace Security
         Private ReadOnly Property CryptoServiceProvider As RSACryptoServiceProvider
             Get
                 If _CryptoServiceProvider Is Nothing Then
+                    If String.IsNullOrEmpty(_EncryptionPrivateKey) Then
+                        ResetEncryptionKeys()
+                    End If
                     _CryptoServiceProvider = New RSACryptoServiceProvider
                     _CryptoServiceProvider.FromXmlString(Me._EncryptionPrivateKey)
                 End If
@@ -191,11 +198,11 @@ Namespace Security
 
 
 
-
-
         <ActionButton(IconName.Key, IconOptions.Normal, "SealEncryptionKey.Alert")>
         Public Sub Seal(ape As AriciePropertyEditorControl)
-            Common.Encrypt(_EncryptionKey, Me.DnnDecyptionKey, Me._InitVector, Me._SaltBytes)
+            SyncLock Me
+                Common.Encrypt(_EncryptionKey, Me.DnnDecryptionKey, Me._InitVector, Me._SaltBytes)
+            End SyncLock
             ape.ItemChanged = True
             ape.DisplayMessage("SealEncryption.Completed", ModuleMessage.ModuleMessageType.YellowWarning)
         End Sub
@@ -219,7 +226,7 @@ Namespace Security
         End Sub
 
         Public Overridable Function Verify(ByVal signedDoc As XmlDocument) As Boolean Implements IEncrypter.Verify
-            VerifyXml(signedDoc, CryptoServiceProvider)
+            Return VerifyXml(signedDoc, CryptoServiceProvider)
         End Function
 
         Public Function DoEncrypt(payload As String, ByRef salt() As Byte) As String Implements IEncrypter.Encrypt

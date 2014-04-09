@@ -109,9 +109,24 @@ Namespace Services
         Public Shared Function CreateType(ByVal typeName As String, ByVal throwOnError As Boolean) As Type
             Dim toReturn As Type = Nothing
 
+
+
             If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
+
+
+
                 ' use reflection to get the type of the class
                 toReturn = BuildManager.GetType(typeName, throwOnError, True)
+
+#If DEBUG Then
+                If toReturn IsNot Nothing Then
+                    Dim debugTypeName As String = toReturn.Namespace & ".Debug" & toReturn.Name
+                    Dim debugType As Type = CreateType(debugTypeName, False)
+                    If debugType IsNot Nothing Then
+                        toReturn = debugType
+                    End If
+                End If
+#End If
 
                 ' insert the type into the cache
                 SyncLock ReflectionHelper.Instance._TypesByTypeName
@@ -720,6 +735,7 @@ Namespace Services
         Public Shared Function GetSerializer(ByVal objType As Type, ByVal extraTypes() As Type, ByVal useCache As Boolean, ByVal rootName As String) As XmlSerializer
 
 
+
             Dim toReturn As XmlSerializer = Nothing
 
             If useCache Then
@@ -760,6 +776,11 @@ Namespace Services
             Return toReturn
 
         End Function
+
+        Public Function GetDebugType(originalTypeName As String) As String
+
+        End Function
+
 
 #End Region
 
