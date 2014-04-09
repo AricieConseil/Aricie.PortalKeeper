@@ -5583,4 +5583,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="BotFarmInfo`1_Enabled.Text" xml:space="preserve">
     <value>Enable Scheduler</value>
   </data>
+  <data name="SignatureVerified.Message" xml:space="preserve">
+    <value>The signature was checked and matches the available encryption</value>
+  </data>
 </root>
