@@ -422,42 +422,53 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub OnCmdDebug()
 
-            Dim result As Boolean
+            Try
+                'Dim result As Boolean
 
 
-            Dim objDoc As XmlDocument = ReflectionHelper.Serialize(New UserBotInfo)
+                Dim objDoc As XmlDocument = ReflectionHelper.Serialize(New UserBotInfo)
 
-            'Dim crypto As New RSACryptoServiceProvider()
-            'Common.SignXml(objDoc, crypto)
+                'Dim crypto As New RSACryptoServiceProvider()
+                'Common.SignXml(objDoc, crypto)
 
-            Dim encrypt As New EncryptionInfo()
-            encrypt.DoSign(objDoc)
+                Dim encrypt As New EncryptionInfo()
+                'encrypt.DoSign(objDoc)
 
-            Dim sb As New StringBuilder()
-            Using sw As New StringWriter(sb)
-                'Using sw As New StreamWriter(ms)
-                Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                    objDoc.WriteTo(writer)
-                End Using
+                'Dim sb As New StringBuilder()
+                'Using sw As New StringWriter(sb)
+                '    'Using sw As New StreamWriter(ms)
+                '    Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
+                '    Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
+                '        objDoc.WriteTo(writer)
+                '    End Using
 
-            End Using
-            Dim obDoc2 As New XmlDocument()
-            obDoc2.LoadXml(sb.ToString())
-
-
-            'result = Common.VerifyXml(obDoc2, crypto)
-            result = encrypt.Verify(obDoc2)
+                'End Using
+                'Dim obDoc2 As New XmlDocument()
+                'obDoc2.LoadXml(sb.ToString())
 
 
-            Me.AddModuleMessage(result, ModuleMessage.ModuleMessageType.BlueInfo)
+                ''result = Common.VerifyXml(obDoc2, crypto)
+                'result = encrypt.Verify(obDoc2)
+                Dim signed As String = EncryptionHelper.SignXmlString(objDoc.OuterXml, encrypt)
+                Dim unsigned As String = EncryptionHelper.RemoveSignatureFromXmlString(signed)
+
+                Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.BlueInfo)
+            Catch ex As Exception
+                ProcessModuleLoadException(Me, ex)
+            End Try
+
+       
 
 
         End Sub
 
 
         Private Sub OnDebug(sender As Object, e As DebugEventArgs)
-
+            Try
+              
+            Catch ex As Exception
+                ProcessModuleLoadException(Me, ex)
+            End Try
         End Sub
 
 

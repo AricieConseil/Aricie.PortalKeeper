@@ -26,6 +26,10 @@ Imports System.Globalization
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
 
 Namespace UI.WebControls
+
+
+
+
     Public Class AriciePropertyEditorControl
         Inherits PropertyEditorControl
         Implements System.Web.UI.IPostBackEventHandler, System.Web.UI.IScriptControl
@@ -112,10 +116,10 @@ Namespace UI.WebControls
         End Property
 
 
-        Private _ExceptionToProcess As Exception
+        Private _ExceptionsToProcess As New List(Of Exception)
 
         Public Sub ProcessException(ex As Exception)
-            _ExceptionToProcess = ex
+            _ExceptionsToProcess.Add(ex)
         End Sub
 
 
@@ -484,7 +488,7 @@ Namespace UI.WebControls
                     End If
                 End If
             Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
+                Me.ProcessException(ex)
             End Try
             If Not Me.DesignMode Then
 
@@ -504,8 +508,8 @@ Namespace UI.WebControls
 
             End If
 
-            If Me._ExceptionToProcess IsNot Nothing Then
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, Me._ExceptionToProcess)
+            If Me._ExceptionsToProcess.Count > 0 Then
+                Me._ExceptionsToProcess.ForEach(Sub(ex As Exception) DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex))
             End If
 
             'If NukeHelper.DnnVersion.Major > 6 And Me Is ParentAricieEditor Then
@@ -537,26 +541,26 @@ Namespace UI.WebControls
 
         Public Overrides Sub DataBind()
 
-            Try
-                'Invoke OnDataBinding so DataBinding Event is raised
-                MyBase.OnDataBinding(EventArgs.Empty)
+            'Try
+            'Invoke OnDataBinding so DataBinding Event is raised
+            MyBase.OnDataBinding(EventArgs.Empty)
 
-                'Clear Existing Controls
-                Controls.Clear()
-
-
-                'Start Tracking ViewState
-                TrackViewState()
-
-                'Create the Editor
-                CreateEditor()
+            'Clear Existing Controls
+            Controls.Clear()
 
 
-                'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
-                ChildControlsCreated = True
-            Catch ex As Exception
-                Me.ProcessException(ex)
-            End Try
+            'Start Tracking ViewState
+            TrackViewState()
+
+            'Create the Editor
+            CreateEditor()
+
+
+            'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
+            ChildControlsCreated = True
+            'Catch ex As Exception
+            '    Me.ProcessException(ex)
+            'End Try
         End Sub
 
 #End Region
@@ -643,38 +647,42 @@ Namespace UI.WebControls
         End Function
 
         Protected Overrides Sub CreateEditor()
-            Me.CssClass = String.Format("{0} dnnForm", Me.CssClass)
-            'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
-            If Not Me.AutoGenerate Then
-                Dim mainC As New HtmlControls.HtmlGenericControl("div")
-                mainC.ID = "main"
-                'mainC.EnableViewState = False
-                Me.AddCtFields(mainC)
-                Me.Controls.Add(mainC)
-            Else
-                Me.Fields.Clear()
-                Me.LoadJQuery()
+            Try
+                Me.CssClass = String.Format("{0} dnnForm", Me.CssClass)
+                'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
+                If Not Me.AutoGenerate Then
+                    Dim mainC As New HtmlControls.HtmlGenericControl("div")
+                    mainC.ID = "main"
+                    'mainC.EnableViewState = False
+                    Me.AddCtFields(mainC)
+                    Me.Controls.Add(mainC)
+                Else
+                    Me.Fields.Clear()
+                    Me.LoadJQuery()
 
-                If (Page IsNot Nothing) AndAlso (Page.Header IsNot Nothing) AndAlso NukeHelper.DnnVersion.Major > 6 OrElse NukeHelper.DnnVersion.Major < 6 Then
-                    Dim cssId As String = "JqueryUiCss"
+                    If (Page IsNot Nothing) AndAlso (Page.Header IsNot Nothing) AndAlso NukeHelper.DnnVersion.Major > 6 OrElse NukeHelper.DnnVersion.Major < 6 Then
+                        Dim cssId As String = "JqueryUiCss"
 
-                    If Page.Header.FindControl(cssId) Is Nothing Then
-                        Dim lnk As New HtmlControls.HtmlLink
-                        lnk.ID = cssId
-                        lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
-                        lnk.Attributes.Add("type", "text/css")
-                        lnk.Attributes.Add("rel", "stylesheet")
-                        Page.Header.Controls.Add(lnk)
+                        If Page.Header.FindControl(cssId) Is Nothing Then
+                            Dim lnk As New HtmlControls.HtmlLink
+                            lnk.ID = cssId
+                            lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
+                            lnk.Attributes.Add("type", "text/css")
+                            lnk.Attributes.Add("rel", "stylesheet")
+                            Page.Header.Controls.Add(lnk)
+                        End If
+
                     End If
+                    CreateHeader()
+                    ProcessSubPath()
+                    DisplayHierarchy()
 
                 End If
-                CreateHeader()
-                ProcessSubPath()
-                DisplayHierarchy()
 
-            End If
-
-            Validate()
+                Validate()
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            End Try
         End Sub
 
 
