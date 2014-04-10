@@ -140,8 +140,22 @@ Namespace UI.Controls
         Private ReadOnly Property AdvancedClientVars() As SerializableDictionary(Of String, String)
             Get
                 'Dim toReturn As SerializableDictionary(Of String, String) = DnnContext.Current.GetItem(Of SerializableDictionary(Of String, String))(AdvancedVarKey)
-                If _AdvancedClientVars Is Nothing Then
+                If _AdvancedClientVars Is Nothing OrElse _AdvancedClientVars.Count = 0 Then
                     Dim dnnclientVar As String = ClientAPI.GetClientVariable(Me.Page, AdvancedVarKey)
+                    If (String.IsNullOrEmpty(dnnclientVar)) Then
+                        'HACK the dnn process to get the dnnvariable (deserialisation pb) - check the HTTP Context
+                        Dim dnnVariable As String = Me.Context.Request("__dnnVariable")
+                        If (Not String.IsNullOrEmpty(dnnVariable)) Then
+                            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+                            If (dnnVariable.StartsWith("`")) Then
+                                dnnVariable = dnnVariable.Remove(0, 1)
+                            End If
+                            Dim dnnVariableObj As Dictionary(Of String, String) = jss.Deserialize(Of Dictionary(Of String, String))(dnnVariable.Replace("`", "'"))
+                            If dnnVariableObj.ContainsKey(AdvancedVarKey) Then
+                                dnnclientVar = CStr(dnnVariableObj(AdvancedVarKey))
+                            End If
+                        End If
+                    End If
                     If String.IsNullOrEmpty(dnnclientVar) Then
                         _AdvancedClientVars = New SerializableDictionary(Of String, String)
                     Else
@@ -157,12 +171,13 @@ Namespace UI.Controls
         End Property
 
         Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
-            If Me.AdvancedClientVars.Count > 0 Then
-                Dim dnnclientVar As String = ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
-                Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
-                dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
-                ClientAPI.RegisterClientVariable(Me.Page, AdvancedVarKey, dnnclientVar, True)
-            End If
+            '  If Me.AdvancedClientVars.Count > 0 Then
+            Dim dnnclientVar As String = String.Empty 'ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
+            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+            dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
+            ClientAPI.RegisterClientVariable(Me.Page, AdvancedVarKey, dnnclientVar, True)
+
+            '  End If
         End Sub
 
         Public Property AdvancedClientVariable(ByVal objControl As Control, ByVal localKey As String) As String
@@ -305,6 +320,7 @@ Namespace UI.Controls
         End Sub
 
         Private Sub AjaxifyClientVariable()
+          
             If DotNetNuke.Framework.AJAX.IsEnabled AndAlso ModuleConfiguration IsNot Nothing AndAlso ModuleConfiguration.SupportsPartialRendering Then
                 If Me.Context.Items("AjaxifyClientVariable") Is Nothing Then 'AndAlso Not Me.IsPostBack 
                     Dim clientVarControl As HtmlInputHidden = DotNetNuke.UI.Utilities.ClientAPI.RegisterDNNVariableControl(Me)
