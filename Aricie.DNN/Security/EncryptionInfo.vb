@@ -13,6 +13,7 @@ Imports Aricie.DNN.Services
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Text
+Imports System.IO
 
 Namespace Security
     <Serializable()> _
@@ -215,6 +216,9 @@ Namespace Security
             ape.ItemChanged = True
             ape.DisplayMessage("ResetEncryption.Completed", ModuleMessage.ModuleMessageType.YellowWarning)
         End Sub
+
+       
+
 
 
         Public Function Decrypt(payload As String, salt() As Byte) As String Implements IEncrypter.Decrypt
