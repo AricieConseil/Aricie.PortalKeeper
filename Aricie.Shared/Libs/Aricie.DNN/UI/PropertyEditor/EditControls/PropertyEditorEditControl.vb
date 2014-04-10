@@ -98,7 +98,7 @@ Namespace UI.WebControls.EditControls
                         DirectCast(Me._InnerEditor, AriciePropertyEditorControl).ActionButton = Me._ActionButton
                     End If
 
-                    Dim subPE As Control = AddSubDiv(Me._InnerEditor, strCssClass)
+
 
                     Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
                     If ariciePropCt IsNot Nothing Then
@@ -108,7 +108,9 @@ Namespace UI.WebControls.EditControls
                             End If
                         End If
                     End If
-
+                    Me._InnerEditor.CssClass = strCssClass
+                    strCssClass = String.Empty
+                    Dim subPE As Control = AddSubDiv(Me._InnerEditor, strCssClass)
                     Me.Controls.Add(subPE)
                 End If
 

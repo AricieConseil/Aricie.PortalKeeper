@@ -643,7 +643,7 @@ Namespace UI.WebControls
         End Function
 
         Protected Overrides Sub CreateEditor()
-            Me.CssClass = "dnnForm"
+            Me.CssClass = String.Format("{0} dnnForm", Me.CssClass)
             'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
             If Not Me.AutoGenerate Then
                 Dim mainC As New HtmlControls.HtmlGenericControl("div")
