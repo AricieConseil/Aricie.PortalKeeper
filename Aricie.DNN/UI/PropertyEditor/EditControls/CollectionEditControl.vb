@@ -836,7 +836,7 @@ Namespace UI.WebControls.EditControls
                 Dim plAction As New HtmlGenericControl("div")
                 plAction.Attributes.Add("class", "ItemActions")
 
-                actionContainer.Controls.AddAt(0, plAction)
+                actionContainer.Controls.Add(plAction)
 
                 Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
                 'SubPropertyEditor button
