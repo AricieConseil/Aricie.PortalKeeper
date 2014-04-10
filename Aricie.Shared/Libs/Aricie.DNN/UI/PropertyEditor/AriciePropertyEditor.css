@@ -36,11 +36,11 @@
 	box-sizing: border-box;
 }
 
-.SubDiv.even > .dnnForm
+.dnnForm.even 
 {
 	background-color: rgba(222,222,222,10);
 }
-.SubDiv.odd > .dnnForm
+.dnnForm.odd 
 {
 	background-color: #fff;
 }
@@ -206,7 +206,10 @@
 	top: 15px;
 }
 
-
+.fieldC .NormalTextBox {
+margin-top: 5px;
+display: inline-block;
+}
 /* Command Buttons*/
 
 .dnnForm .dnnFormItem span.CommandButton input
