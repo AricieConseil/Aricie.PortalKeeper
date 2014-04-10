@@ -114,18 +114,10 @@ Namespace Services.Files
        <XmlIgnore()> _
         Public Property EditPayLoad As String
             Get
-                'If ShowLineBreaks Then
-                '    Return EditPayLoad(EditPayLoadFormat).Replace(vbCr, "{CR}").Replace(vbLf, "{LF}")
-                'Else
                 Return EditPayLoad(EditPayLoadFormat)
-                'End If
             End Get
             Set(value As String)
-                'If ShowLineBreaks Then
-                '    EditPayLoad(EditPayLoadFormat) = value.Replace("{CR}", vbCr).Replace("{LF}", vbLf)
-                'Else
                 EditPayLoad(EditPayLoadFormat) = value
-                'End If
             End Set
         End Property
 
@@ -351,23 +343,12 @@ Namespace Services.Files
                 Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
             End If
             If Not Me.Signed Then
-                Dim doc As New XmlDocument()
-                SyncLock Me
-                    doc.LoadXml(Me.PayLoad)
-                    If Me._encrypter IsNot Nothing Then
-                        _encrypter.Sign(doc)
-                        Dim sb As New StringBuilder()
-                        Using sw As New StringWriter(sb)
-                            'Using sw As New StreamWriter(ms)
-                            Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                                doc.WriteTo(writer)
-                            End Using
-                            PayLoad = sb.ToString
-                        End Using
+                If Me._encrypter IsNot Nothing Then
+                    SyncLock Me
+                        PayLoad = Aricie.DNN.Security.EncryptionHelper.SignXmlString(Me.PayLoad, _encrypter)
                         Me.Signed = True
-                    End If
-                End SyncLock
+                    End SyncLock
+                End If
             End If
         End Sub
 
@@ -393,23 +374,8 @@ Namespace Services.Files
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot have signature removed")
             Else
-                Dim doc As New XmlDocument()
                 SyncLock Me
-                    doc.LoadXml(Me.PayLoad)
-                    Dim sigNode As XmlNode = doc.SelectSingleNode("/Signature")
-                    If sigNode IsNot Nothing Then
-                        doc.RemoveChild(sigNode)
-                    End If
-                    'Me.PayLoad = doc.OuterXml
-                    Dim sb As New StringBuilder()
-                    Using sw As New StringWriter(sb)
-                        'Using sw As New StreamWriter(ms)
-                        Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                        Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                            doc.WriteTo(writer)
-                        End Using
-                        PayLoad = sb.ToString
-                    End Using
+                    PayLoad = Aricie.DNN.Security.EncryptionHelper.RemoveSignatureFromXmlString(Me.PayLoad)
                     Me.Signed = False
                 End SyncLock
             End If

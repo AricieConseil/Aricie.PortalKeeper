@@ -256,6 +256,11 @@ Public Module Common
     End Function
 
 
+
+
+
+
+
     ''' <summary>
     ''' SIGN AN XML DOCUMENT USING THE PRIVATE KEY
     ''' </summary>

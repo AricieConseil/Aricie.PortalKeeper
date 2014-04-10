@@ -97,39 +97,43 @@ Namespace UI.WebControls
             Select Case propertyName
                 Case "Path"
                     For i As Integer = LBound(split) To UBound(split) Step 1
-                        Dim segment As String = split(i)
-                        Dim itemIcone = New IconActionInfo()
-                        dicoBuilder.Append(segment)
-                        Dim subPath As String = dicoBuilder.ToString()
-                        If segment.Contains("["c) Then
-                            Dim entity As Object = GetSubEntity(subPath)
-                            If entity IsNot Nothing Then
-                                'recuperation de l'attribut d'icone
-                                Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
-                                'Dim include As Boolean
-                                If Not entityButton Is Nothing Then
-                                    itemIcone = entityButton.IconAction
-                                    'include = True
+                        Try
+                            Dim segment As String = split(i)
+                            Dim itemIcone = New IconActionInfo()
+                            dicoBuilder.Append(segment)
+                            Dim subPath As String = dicoBuilder.ToString()
+                            If segment.Contains("["c) Then
+
+                                Dim entity As Object = GetSubEntity(subPath)
+                                If entity IsNot Nothing Then
+                                    'recuperation de l'attribut d'icone
+                                    Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
+                                    'Dim include As Boolean
+                                    If Not entityButton Is Nothing Then
+                                        itemIcone = entityButton.IconAction
+                                        'include = True
+                                    End If
+
+                                    'recuperation du friendlyName
+                                    Dim strFriendlyName = ReflectionHelper.GetFriendlyName(entity)
+                                    If Not strFriendlyName.StartsWith(entity.GetType.Name) Then
+                                        segment = strFriendlyName
+                                        'include = True
+                                    End If
+                                    'If include Then
+
+                                    'End If
+
                                 End If
-
-                                'recuperation du friendlyName
-                                Dim strFriendlyName = ReflectionHelper.GetFriendlyName(entity)
-                                If Not strFriendlyName.StartsWith(entity.GetType.Name) Then
-                                    segment = strFriendlyName
-                                    'include = True
-                                End If
-                                'If include Then
-
-                                'End If
-
                             End If
-                        End If
 
-                        toReturn.Add(New KeyValuePair(Of String, IconInfo)(subPath, New IconInfo() With {.Text = segment, .Icon = itemIcone}))
-
-                        If i <> UBound(split) Then
-                            dicoBuilder.Append("."c)
-                        End If
+                            toReturn.Add(New KeyValuePair(Of String, IconInfo)(subPath, New IconInfo() With {.Text = segment, .Icon = itemIcone}))
+                            If i <> UBound(split) Then
+                                dicoBuilder.Append("."c)
+                            End If
+                        Catch ex As Exception
+                            ExceptionHelper.LogException(ex)
+                        End Try
                     Next
             End Select
             Return toReturn
