@@ -1,118 +1,99 @@
 ﻿/* Grids */
-
-.ItemOdd, .ItemEven
-{
-	padding: 2px 0 5px 0;
-	margin: 2px 0 5px 0;
+.ItemOdd, .ItemEven {
+    padding: 2px 0 5px 0;
+    margin: 2px 0 5px 0;
 }
 
-
-
-
-.SubDiv
-{
-	margin: 15px 0 15px 7px;
+.SubDiv {
+    margin: 15px 0 15px 7px;
 }
 
-
-.SubDiv > .fa
-{
-	float: right;
-	padding: 5px;
-}
+    .SubDiv > .fa {
+        float: right;
+        padding: 5px;
+    }
 
 /* Form */
 /*todo: property editor needs some love... Clear blocks would be a start with layers of semi-transparent background */
 
-.dnnForm
-{
-	width: 100%;
-	border: 2px solid #ccc;
-	border-radius: 3px;
-	background-color: rgba(222,222,222,10);
-	padding: 1em;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
+.dnnForm {
+    width: 100%;
+    border: 2px solid #ccc;
+    border-radius: 3px;
+    background-color: rgba(222,222,222,10);
+    padding: 1em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-.dnnForm.even 
-{
-	background-color: rgba(222,222,222,10);
-}
-.dnnForm.odd 
-{
-	background-color: #fff;
-}
+    .dnnForm.even {
+        background-color: rgba(222,222,222,10);
+    }
+
+    .dnnForm.odd {
+        background-color: #fff;
+    }
 
 
-.peCol
-{
-	display: inline-block;
-	vertical-align: top;
+.peCol {
+    display: inline-block;
+    vertical-align: top;
 }
 
-* + html .peCol
-{
-	display: inline;
-	zoom: 1;
+* + html .peCol {
+    display: inline;
+    -ms-zoom: 1;
+    zoom: 1;
 }
 
-.peCol2
-{
-	width: 50%;
+.peCol2 {
+    width: 50%;
 }
 
-.peCol3
-{
-	width: 33%;
+.peCol3 {
+    width: 33%;
 }
 
-.peCol4
-{
-	width: 25%;
+.peCol4 {
+    width: 25%;
 }
 
 /* Sections */
 
-.aricie_pe_sections a.sectionHeader
-{
-	display: block;
-	padding: 5px 25px;
-	border: none;
-	border-bottom: 1px solid black;
-	background: none;
+.aricie_pe_sections a.sectionHeader {
+    display: block;
+    padding: 5px 25px;
+    border: none;
+    border-bottom: 1px solid black;
+    background: none;
 }
 
 
 /* Tabs */
 
 
-.aricie_pe_tabs
-{
-	margin-top: 0.5em;
+.aricie_pe_tabs {
+    margin-top: 0.5em;
 }
 
-.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:link, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:visited, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active, .dnnForm .ui-tabs .ui-tabs-nav .ui-widget-content .ui-state-active, .dnnForm .ui-tabs .ui-tabs-nav .ui-widget-header .ui-state-active
-{
-	font-weight: bold;
-	color: #fff;
-	cursor: pointer;
-	background: #4E4E4E;
-	background: -moz-linear-gradient(top, #4E4E4E 0%, #282828 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
+.dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:link, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active a:visited, .dnnForm .ui-tabs .ui-tabs-nav .ui-state-active, .dnnForm .ui-tabs .ui-tabs-nav .ui-widget-content .ui-state-active, .dnnForm .ui-tabs .ui-tabs-nav .ui-widget-header .ui-state-active {
+    font-weight: bold;
+    color: #fff;
+    cursor: pointer;
+    background: #4E4E4E;
+    background: -moz-linear-gradient(top, #4E4E4E 0%, #282828 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
 }
 
-.dnnForm .ui-tabs .ui-tabs-panel
-{
-	padding: 1em 0em 0.8em 0.7em;
+.dnnForm .ui-tabs .ui-tabs-panel {
+    padding: 1em 0 0.8em 0.7em;
 }
 
 
-.dnnForm .ui-state-default
-{
-	background: #ccc;
+.dnnForm .ui-state-default {
+    background: #ccc;
 }
 
 
@@ -121,102 +102,87 @@
 
 /* Fields */
 
-.pkSettings
-{
-	margin: 10px 0 0 8px;
+.pkSettings {
+    margin: 10px 0 0 8px;
 }
 
-.HeaderPl
-{
-	clear: both;
+.HeaderPl {
+    clear: both;
 }
 
-.section
-{
-	margin-left: 10px; /*clear:both;*/
+.section {
+    margin-left: 10px; /*clear:both;*/
 }
 
-.clear
-{
-	clear: both;
+.clear {
+    clear: both;
 }
 
-.fieldC
-{
-	clear: both;
+.fieldC {
+    clear: both;
 }
 
 
-.labelLeft
-{
-	float: left;
+.labelLeft {
+    float: left;
 }
 
-.labelRight
-{
-	float: right;
+.labelRight {
+    float: right;
 }
 
-.ctRight
-{
-	float: right;
+.ctRight {
+    float: right;
 }
 
-.ctLeft
-{
-	float: left;
+.ctLeft {
+    float: left;
 }
 
 
-.dnnForm .dnnFormItem .aricieFullWidth, .dnnForm .dnnFormItem .aricieFullWidth label
-{
-	float: none;
-	width: auto;
-	text-align: left;
+.dnnForm .dnnFormItem .aricieFullWidth, .dnnForm .dnnFormItem .aricieFullWidth label {
+    float: none;
+    width: auto;
+    text-align: left;
 }
 
-.dnnForm .dnnFormItem select
-{
-	max-width: none;
-	width: auto;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
+.dnnForm .dnnFormItem select {
+    max-width: none;
+    width: auto;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-.dnnForm .dnnFormItem textarea
-{
-	max-width: none;
-	width: 100%;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
+.dnnForm .dnnFormItem textarea {
+    max-width: none;
+    width: 100%;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
-.dnnForm .dnnFormItem .aricieFullWidth label a.dnnFormHelp
-{
-	background-position: left;
-	padding-left: 16px;
-	margin: 2px;
+.dnnForm .dnnFormItem .aricieFullWidth label a.dnnFormHelp {
+    background-position: left;
+    padding-left: 16px;
+    margin: 2px;
 }
 
-.dnnForm .dnnFormItem .aricieFullWidth .dnnFormHelpContent
-{
-	left: 5px;
-	top: 15px;
+.dnnForm .dnnFormItem .aricieFullWidth .dnnFormHelpContent {
+    left: 5px;
+    top: 15px;
 }
 
 .fieldC .NormalTextBox {
-margin-top: 5px;
-display: inline-block;
+    margin-top: 5px;
+    display: inline-block;
 }
 /* Command Buttons*/
 
-.dnnForm .dnnFormItem span.CommandButton input
-{
-	display: inline-block !important;
-	position: relative;
-	top: 7px;
+.dnnForm .dnnFormItem span.CommandButton input {
+    display: inline-block !important;
+    position: relative;
+    top: 7px;
 }
 
 /*.dnnForm span.dnnInputFileWrapper {
@@ -233,7 +199,7 @@ display: inline-block;
     border: medium solid rgba(0, 0, 0, 0);
     cursor: pointer;
     direction: ltr;
-    /*height: 30px;/**//*
+    /*height: 30px;/**/ /*
     margin: 0;
     -ms-opacity: 0;
     opacity: 0;
@@ -242,9 +208,8 @@ display: inline-block;
 
 
 
-.dnnForm .dnnFormItem .CommandsButtons span.CommandButton
-{
-	padding: 0 5px;
+.dnnForm .dnnFormItem .CommandsButtons span.CommandButton {
+    padding: 0 5px;
 }
 
 
@@ -252,121 +217,116 @@ display: inline-block;
 
 /* Add Panel*/
 
-.dnnForm .dnnFormItem .AddPanel
-{
-	width: 80%;
-	margin: auto;
+.dnnForm .dnnFormItem .AddPanel {
+    width: 80%;
+    margin: auto;
 }
 
-.dnnForm .dnnFormItem .AddPanel > div
-{
-	display: inline-block;
-	padding: 5px 5px 5px 10px;
-	vertical-align: top;
-}
+    .dnnForm .dnnFormItem .AddPanel > div {
+        display: inline-block;
+        padding: 5px 5px 5px 10px;
+        vertical-align: top;
+    }
 
-.dnnForm .dnnFormItem .AddPanel > div > select
-{
-	width: 100%;
-}
+        .dnnForm .dnnFormItem .AddPanel > div > select {
+            width: 100%;
+        }
 
 /* Export Panel */
 
-.dnnForm .dnnFormItem .ExportPanel
-{
-	width: 100%;
+.dnnForm .dnnFormItem .ExportPanel {
+    width: 100%;
 }
 
-.dnnForm .dnnFormItem .ExportPanel > div
-{
-	display: inline-block;
-	padding: 5px 5px 5px 10px;
-	vertical-align: top;
-}
+    .dnnForm .dnnFormItem .ExportPanel > div {
+        display: inline-block;
+        padding: 5px 5px 5px 10px;
+        vertical-align: top;
+    }
 
-.dnnForm .dnnFormItem .ExportPanel > div:first-child
-{
-	border-right: 1px solid #CCCCCC;
-	padding: 5px 20px 5px 5px;
-	width: auto;
-}
+        .dnnForm .dnnFormItem .ExportPanel > div:first-child {
+            border-right: 1px solid #CCCCCC;
+            padding: 5px 20px 5px 5px;
+            width: auto;
+        }
 
-.dnnForm .dnnFormItem .ExportPanel > div > *
-{
-	display: inline-block !important;
-	float: none !important;
-	text-align: left;
-	vertical-align: top;
-}
+        .dnnForm .dnnFormItem .ExportPanel > div > * {
+            display: inline-block !important;
+            float: none !important;
+            text-align: left;
+            vertical-align: top;
+        }
 
-.dnnForm .dnnFormItem .ExportPanel .dnnLabel
-{
-	padding-right: 20px;
-	width: auto;
-}
+    .dnnForm .dnnFormItem .ExportPanel .dnnLabel {
+        padding-right: 20px;
+        width: auto;
+    }
 
 
-.dnnForm .dnnFormItem .ExportPanel .dnnTooltip, .dnnForm .dnnFormItem .ExportPanel .dnnTooltip *, .dnnForm .dnnFormItem .ExportPanel input
-{
-	float: none;
-}
+    .dnnForm .dnnFormItem .ExportPanel .dnnTooltip, .dnnForm .dnnFormItem .ExportPanel .dnnTooltip *, .dnnForm .dnnFormItem .ExportPanel input {
+        float: none;
+    }
 
 
 /* Accordions */
 
-.dnnForm .ui-accordion .ui-state-default a
-{
-	color: inherit;
+.dnnForm .ui-accordion .ui-state-default a {
+    color: inherit;
 }
 
 
-.dnnForm .ui-accordion .ui-accordion-header
-{
-	background: -moz-linear-gradient(center top, #818181 0%, #656565 100%) repeat scroll 0 0 transparent; /* copier coller par Samy */
-	background: #4E4E4E;
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
-	color: #FFFFFF;
-	height: 4em;
+.dnnForm .ui-accordion .ui-accordion-header {
+    background: -moz-linear-gradient(center top, #818181 0%, #656565 100%) repeat scroll 0 0 transparent; /* copier coller par Samy */
+    background: #4E4E4E;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4E4E4E), color-stop(100%,#282828));
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4E4E4E', endColorstr='#282828',GradientType=0 );
+    color: #FFFFFF;
+    min-height: 4em;
 }
-.actionText span:nth-child(2)
-{
-	width: 25%;
+
+.actionText span:nth-child(2) {
+    width: 50%;
+    font-weight:bold;
+    font-style: normal;
 }
-.actionText span
-{
-	padding: 0 8px;
-	display: inline-block;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
+
+.actionText span {
+    padding: 0 8px;
+    display: inline-block;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    font-weight:normal;
+    font-style:italic;
 }
-* + html .actionText span
-{
-	display: inline;
-	zoom: 1;
+
+* + html .actionText span {
+    display: inline;
+    -ms-zoom: 1;
+    zoom: 1;
 }
-.dnnForm .ui-accordion h3.ui-accordion-header a
-{
-	color: #70b1c7;
+
+.dnnForm .ui-accordion h3.ui-accordion-header a {
+    color: #70b1c7;
 }
-.dnnForm .ui-accordion h3.ui-accordion-header > a
-{
-	/*margin-right:60px;*/
-	color: #fff;
-	height: 100%;
-	display: block;
-	font-size: 1em;
-	padding: 1.5em 0.5em 0.5em 0.7em;
-	-moz-box-sizing: border-box;
-	-webkit-box-sizing: border-box;
-	box-sizing: border-box;
+
+.dnnForm .ui-accordion h3.ui-accordion-header > a {
+    /*margin-right:60px;*/
+    color: #fff;
+    height: 100%;
+    display: inline-block;
+    font-size: 1em;
+    padding: 1.5em 0.5em 0.5em 0.7em;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width:69%;
+    vertical-align:top;
 }
 
 
-.dnnForm .ui-accordion .ui-accordion-header .ui-icon
-{
-	display: none;
+.dnnForm .ui-accordion .ui-accordion-header .ui-icon {
+    display: none;
 }
 
 /* Item Buttons*/
@@ -378,19 +338,20 @@ display: inline-block;
 	width: 24px;
 }*/
 
-.dnnForm .ui-accordion h3.ui-accordion-header .ItemActions
-{
-	float: right;
-	padding: 2px 2px 0 0;
-	width: auto;
-	text-align: right;
-	min-height: 25px;
+.dnnForm .ui-accordion h3.ui-accordion-header .ItemActions {
+    float: none;
+    padding: 2px 2px 0 0;
+    width: 30%;
+    text-align: right;
+    min-height: 25px;
+    display:inline-block;
+    vertical-align:top;
 }
-.dnnForm .ui-accordion h3.ui-accordion-header:after
-{
-	display: block;
-	clear: both;
-	content: " ";
+
+.dnnForm .ui-accordion h3.ui-accordion-header:after {
+    display: block;
+    clear: both;
+    content: " ";
 }
 /*.dnnForm .ui-accordion h3.ui-accordion-header .ItemAction input, .dnnForm .ui-accordion h3.ui-accordion-header .ItemAction span
 {
@@ -402,21 +363,14 @@ display: inline-block;
 	clear: left;
 }*/
 
-
-
-
 /* Content*/
 
 
-.dnnForm .ui-accordion .ui-accordion-content
-{
-	border: 1px solid #DDDDDD;
-	padding: 0.5em 0 0.5em 0.8em;
+.dnnForm .ui-accordion .ui-accordion-content {
+    border: 1px solid #DDDDDD;
+    padding: 0.5em 0 0.5em 0.8em;
 }
 
-.dnnForm .fieldC .ui-accordion .ui-accordion-content
-{
-	overflow: inherit;
+.dnnForm .fieldC .ui-accordion .ui-accordion-content {
+    overflow: inherit;
 }
-
-

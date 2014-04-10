@@ -1,7 +1,5 @@
-﻿
-/* Calendrier */
+﻿/* Calendrier */
 /* For the details, see: http://flowplayer.org/tools/dateinput/index.html#skinning */
-
 /* the input field */
 .date {
     border: 1px solid #ccc;
@@ -11,8 +9,8 @@
     width: 194px;
     -moz-box-shadow: 0 0 10px #eee inset;
     -webkit-box-shadow: 0 0 10px #eee inset;
+    box-shadow: 0 0 10px #eee inset;
 }
-
 /* calendar root element */
 #calroot, .calroot {
     /* place on top of other elements. set a higher value if nessessary */
@@ -25,10 +23,11 @@
     border: 1px solid #ccc;
     -moz-border-radius: 5px;
     -webkit-border-radius: 5px;
+    border-radius: 5px;
     -moz-box-shadow: 0 0 15px #666;
     -webkit-box-shadow: 0 0 15px #666;
+    box-shadow: 0 0 15px #666;
 }
-
 /* head. contains title, prev/next month controls and possible month/year selectors */
 #calhead {
     padding: 2px 0;
@@ -42,6 +41,7 @@
     text-align: center;
     width: 155px;
     line-height: 20px;
+    -webkit-text-shadow: 0 1px 0 #ddd;
     text-shadow: 0 1px 0 #ddd;
 }
 
@@ -62,12 +62,10 @@
     #calprev.caldisabled, #calnext.caldisabled {
         visibility: hidden;
     }
-
 /* year/month selector */
 #caltitle select {
     font-size: 10px;
 }
-
 /* names of the days */
 #caldays {
     height: 14px;
@@ -80,19 +78,16 @@
         width: 28px;
         text-align: center;
     }
-
 /* container for weeks */
 #calweeks {
     background-color: #fff;
     margin-top: 4px;
 }
-
 /* single week */
 .calweek {
     clear: left;
     height: 22px;
 }
-
     /* single day */
     .calweek a, .calweek a:link, .calweek a:hover, .calweek a:visited {
         display: block;
@@ -107,18 +102,16 @@
         color: #666;
         -moz-border-radius: 3px;
         -webkit-border-radius: 3px;
+        border-radius: 3px;
     }
-
         /* different states */
         .calweek a:hover, .calfocus {
             background-color: #ddd;
         }
-
 /* sunday */
 a.calsun, a.calsun:link, a.calsun:visited, a.calsun:hover {
     color: red;
 }
-
 /* offmonth day */
 a.caloff, a.caloff:link, a.caloff:hover, a.caloff:visited {
     color: #ccc;
@@ -127,21 +120,17 @@ a.caloff, a.caloff:link, a.caloff:hover, a.caloff:visited {
     a.caloff:hover {
         background-color: rgb(245, 245, 250);
     }
-
-
 /* unselecteble day */
 a.caldisabled, a.caldisabled:link, a.caldisabled:hover, a.caldisabled:visited {
     background-color: #efefef !important;
     color: #ccc !important;
     cursor: default;
 }
-
 /* current day */
 #calcurrent {
     background-color: #498CE2;
     color: #fff;
 }
-
 /* today */
 #caltoday {
     background-color: #333;
@@ -182,12 +171,8 @@ a.caldisabled, a.caldisabled:link, a.caldisabled:hover, a.caldisabled:visited {
         min-width: 100%;
         *width: 100%;
     }
-
-
 /* ===Icons=== */
 /* Action Button*/
-
-
 .aricieAction, .dnnForm .ui-state-hover .aricieAction {
     display: inline-block;
     padding: 9px 9px;
@@ -227,6 +212,7 @@ a.caldisabled, a.caldisabled:link, a.caldisabled:hover, a.caldisabled:visited {
 
 * + html .aricieAction {
     display: inline;
+    -ms-zoom: 1;
     zoom: 1;
 }
 
