@@ -238,12 +238,9 @@ Namespace UI
         End Function
 
 
-        Public Function IsFirstPass(ByVal objControl As Control, pmb As AriciePortalModuleBase) As Boolean
-            If pmb Is Nothing Then
-                Return True
-            End If
-            If String.IsNullOrEmpty(pmb.AdvancedClientVariable(objControl, "ifp")) Then
-                pmb.AdvancedClientVariable(objControl, "ifp") = "0"
+        Public Function IsFirstPass(ByVal objControl As Control) As Boolean
+            If String.IsNullOrEmpty(DnnContext.Current.AdvancedClientVariable(objControl, "ifp")) Then
+                DnnContext.Current.AdvancedClientVariable(objControl, "ifp") = "0"
                 Return True
             End If
             Return False

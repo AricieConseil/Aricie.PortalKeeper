@@ -25,11 +25,24 @@ namespace Aricie.DNN
 
         }
 
-        public override IEnumerable<FileInfo> GetFiles(FolderInfo folderInfo)
+        public override IEnumerable<FileInfo> GetFiles(FolderInfo objfolderInfo)
         {
-            return FolderManager.Instance.GetFiles(folderInfo).OfType<FileInfo>().ToList();
+            return FolderManager.Instance.GetFiles(objfolderInfo).OfType<FileInfo>().ToList();
         }
 
+        public override FileInfo GetFile(FolderInfo objfolderInfo, string filename)
+        {
+            return (FileInfo) FileManager.Instance.GetFile(objfolderInfo, filename);
+        }
+
+        public override DateTime GetFileLastModificationDate(FileInfo objFile)
+        {
+             if (objFile != null) 
+             {
+                 return objFile.LastModificationTime;   
+             }
+             return DateTime.MinValue;
+        }
 
         public override int AddOrUpdateFile(FileInfo objFile, byte[] content, bool contentOnly)
         {
@@ -97,6 +110,6 @@ namespace Aricie.DNN
             DatabaseFolderProvider.ClearFileContent(objFileInfo.FileId);
         }
 
-      
+       
     }
 }

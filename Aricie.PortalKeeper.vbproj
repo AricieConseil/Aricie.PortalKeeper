@@ -139,39 +139,39 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Components\Entities\ActionCommand.vb" />
-    <Compile Include="Components\Entities\ActionTree.vb" />
-    <Compile Include="Components\Entities\CompressionEnabledWebClient.vb">
+    <Compile Include="Components\Core\ActionCommand.vb" />
+    <Compile Include="Components\Core\ActionTree.vb" />
+    <Compile Include="Components\Web\CompressionEnabledWebClient.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Entities\Firewall\DNNAuthenticationProvider.vb" />
-    <Compile Include="Components\Entities\Firewall\FileUploadHandler.vb" />
-    <Compile Include="Components\Entities\OpenRasta\OpenRastaLogger.vb" />
-    <Compile Include="Components\Entities\OpenRasta\RestService.vb" />
-    <Compile Include="Components\Entities\OpenRasta\RestServicesConfiguration.vb" />
-    <Compile Include="Components\Entities\OpenRasta\RestServicesSettings.vb" />
-    <Compile Include="Components\Entities\KeeperModuleSettings.vb" />
-    <Compile Include="Components\Entities\ParametersMode.vb" />
-    <Compile Include="Components\Entities\Scheduler\BotRunContext.vb" />
-    <Compile Include="Components\Entities\Scheduler\GeneralPropertyDefinition.vb">
+    <Compile Include="Components\Firewall\DNNAuthenticationProvider.vb" />
+    <Compile Include="Components\Firewall\FileUploadHandler.vb" />
+    <Compile Include="Components\OpenRasta\OpenRastaLogger.vb" />
+    <Compile Include="Components\OpenRasta\RestService.vb" />
+    <Compile Include="Components\OpenRasta\RestServicesConfiguration.vb" />
+    <Compile Include="Components\OpenRasta\RestServicesSettings.vb" />
+    <Compile Include="Components\Core\KeeperModuleSettings.vb" />
+    <Compile Include="Components\Core\ParametersMode.vb" />
+    <Compile Include="Components\Scheduler\BotRunContext.vb" />
+    <Compile Include="Components\Scheduler\GeneralPropertyDefinition.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Components\Entities\Scheduler\ProbeInstance.vb" />
-    <Compile Include="Components\Entities\Scheduler\ProbeRanking.vb" />
-    <Compile Include="Components\Entities\Scheduler\ProbeSettings.vb" />
-    <Compile Include="Components\Entities\OpenRasta\RestEngineEvent.vb" />
-    <Compile Include="Components\Entities\Scheduler\UserBotInfo.vb" />
-    <Compile Include="Components\Entities\Scheduler\UserBotSettings.vb" />
-    <Compile Include="Components\Entities\Scheduler\UserParameterMode.vb" />
-    <Compile Include="Components\Entities\Scheduler\UserVariableInfo.vb" />
-    <Compile Include="Components\Entities\Scheduler\WebBotHistory.vb" />
-    <Compile Include="Components\Entities\UrlMode.vb" />
-    <Compile Include="Components\Entities\WebMethod.vb" />
-    <Compile Include="Components\Entities\WebProxyInfo.vb" />
-    <Compile Include="Components\Entities\WebProxyPool.vb" />
-    <Compile Include="Components\Entities\FileHelpersMode.vb" />
-    <Compile Include="Components\Entities\FileHelpersSettings.vb" />
-    <Compile Include="Components\Entities\RecordsMode.vb" />
+    <Compile Include="Components\Scheduler\ProbeInstance.vb" />
+    <Compile Include="Components\Scheduler\ProbeRanking.vb" />
+    <Compile Include="Components\Scheduler\ProbeSettings.vb" />
+    <Compile Include="Components\OpenRasta\RestEngineEvent.vb" />
+    <Compile Include="Components\Scheduler\UserBotInfo.vb" />
+    <Compile Include="Components\Scheduler\UserBotSettings.vb" />
+    <Compile Include="Components\Scheduler\UserParameterMode.vb" />
+    <Compile Include="Components\Scheduler\UserVariableInfo.vb" />
+    <Compile Include="Components\Scheduler\WebBotHistory.vb" />
+    <Compile Include="Components\Web\UrlMode.vb" />
+    <Compile Include="Components\Web\WebMethod.vb" />
+    <Compile Include="Components\Web\WebProxyInfo.vb" />
+    <Compile Include="Components\Web\WebProxyPool.vb" />
+    <Compile Include="Components\Files\FileHelpersMode.vb" />
+    <Compile Include="Components\Files\FileHelpersSettings.vb" />
+    <Compile Include="Components\Files\RecordsMode.vb" />
     <Compile Include="Components\Providers\Action\ExecuteSqlAction.vb" />
     <Compile Include="Components\Providers\Action\ExpressionActionProvider.vb" />
     <Compile Include="Components\Providers\Action\FileAccessMode.vb" />
@@ -181,16 +181,15 @@
     <Compile Include="Components\Providers\Action\FileWriteActionProviderBase.vb" />
     <Compile Include="Components\Providers\Action\RunProgramAction.vb" />
     <Compile Include="Components\Providers\Action\SerializeActionProviderBase.vb" />
-    <Compile Include="Components\StaticInfo\KeyBucket.vb" />
-    <Compile Include="Components\PortalKeeperSchedule.vb" />
-    <Compile Include="Components\Entities\Scheduler\BotFarmInfo.vb" />
-    <Compile Include="Components\Entities\Firewall\ClientSourceCapLog.vb" />
-    <Compile Include="Components\Entities\Firewall\DenialOfServiceSettings.vb" />
-    <Compile Include="Components\Entities\WebRequestInfo.vb">
+    <Compile Include="Components\Scheduler\PortalKeeperSchedule.vb" />
+    <Compile Include="Components\Scheduler\BotFarmInfo.vb" />
+    <Compile Include="Components\Firewall\ClientSourceCapLog.vb" />
+    <Compile Include="Components\Firewall\DenialOfServiceSettings.vb" />
+    <Compile Include="Components\Web\WebRequestInfo.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Entities\Scheduler\BotInfo.vb" />
-    <Compile Include="Components\Entities\Scheduler\BotInfoEvent.vb" />
+    <Compile Include="Components\Scheduler\BotInfo.vb" />
+    <Compile Include="Components\Scheduler\BotInfoEvent.vb" />
     <Compile Include="Components\Providers\Action\CacheableAction.vb" />
     <Compile Include="Components\Providers\Action\DefineVarsActionProvider.vb" />
     <Compile Include="Components\Providers\Action\DeserializeActionProvider.vb" />
@@ -205,18 +204,18 @@
     <Compile Include="Components\Providers\Action\SerializeActionProvider.vb" />
     <Compile Include="Components\Providers\Action\StringFilterProvider.vb" />
     <Compile Include="Components\Providers\Action\WebAction.vb" />
-    <Compile Include="Components\Entities\PortalKeeperConfig.vb" />
-    <Compile Include="Components\Entities\RuleEngineSettings.vb" />
-    <Compile Include="Components\PortalKeeperModuleAfterDNN.vb" />
-    <Compile Include="Components\Entities\Firewall\AutoLoginInfo.vb" />
-    <Compile Include="Components\Entities\Firewall\RequestSource.vb" />
+    <Compile Include="Components\Core\PortalKeeperConfig.vb" />
+    <Compile Include="Components\Core\RuleEngineSettings.vb" />
+    <Compile Include="Components\Firewall\PortalKeeperModuleAfterDNN.vb" />
+    <Compile Include="Components\Firewall\AutoLoginInfo.vb" />
+    <Compile Include="Components\Firewall\RequestSource.vb" />
     <Compile Include="Components\Providers\Action\ActionContext.vb" />
     <Compile Include="Components\Providers\Action\ActionProviderConfig.vb" />
     <Compile Include="Components\Providers\Action\ActionProviderSettings.vb" />
     <Compile Include="Components\Providers\Action\AsyncEnabledActionProvider.vb" />
     <Compile Include="Components\Providers\Action\DisplayMessageAction.vb" />
     <Compile Include="Components\Providers\Action\MessageBasedAction.vb" />
-    <Compile Include="Components\Entities\Firewall\RequestLifeCycleEvent.vb" />
+    <Compile Include="Components\Firewall\RequestLifeCycleEvent.vb" />
     <Compile Include="Components\Providers\Action\SendEmailAction.vb" />
     <Compile Include="Components\Providers\Action\SubBotActionProvider.vb" />
     <Compile Include="Components\Providers\Action\WhileActionProvider.vb" />
@@ -225,11 +224,11 @@
     <Compile Include="Components\Providers\Condition\StaticConditionProvider.vb" />
     <Compile Include="Components\Providers\KeeperProviderConfig.vb" />
     <Compile Include="Components\Providers\Condition\ConditionProviderConfig.vb" />
-    <Compile Include="Components\Entities\Firewall\RequestScope.vb" />
+    <Compile Include="Components\Firewall\RequestScope.vb" />
     <Compile Include="Components\Providers\Action\ActionProvider.vb" />
     <Compile Include="Components\Providers\Action\AutoLoginAction.vb" />
     <Compile Include="Components\Providers\Action\CustomizeEnvironmentAction.vb" />
-    <Compile Include="Components\Providers\Action\KeeperAction.vb" />
+    <Compile Include="Components\Core\KeeperAction.vb" />
     <Compile Include="Components\Providers\Action\LogEventAction.vb" />
     <Compile Include="Components\Providers\Action\LogOffAction.vb" />
     <Compile Include="Components\Providers\Action\MultipleActionProvider.vb" />
@@ -242,26 +241,26 @@
     <Compile Include="Components\Providers\Condition\DosEnabledConditionProvider.vb" />
     <Compile Include="Components\Providers\Condition\FleeExpressionCondition.vb" />
     <Compile Include="Components\Providers\Condition\IConditionProvider.vb" />
-    <Compile Include="Components\Entities\Firewall\RequestsCapInfo.vb" />
-    <Compile Include="Components\KeeperErrorsHandler.vb">
+    <Compile Include="Components\Firewall\RequestsCapInfo.vb" />
+    <Compile Include="Components\Firewall\KeeperErrorsHandler.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Components\Entities\Firewall\FirewallConfig.vb" />
+    <Compile Include="Components\Firewall\FirewallConfig.vb" />
     <Compile Include="Components\Providers\Condition\IDoSEnabledConditionProvider.vb" />
-    <Compile Include="Components\Providers\Condition\KeeperCondition.vb" />
-    <Compile Include="Components\Entities\KeeperRule.vb" />
-    <Compile Include="Components\Entities\PortalKeeperContext.vb" />
-    <Compile Include="Components\PortalKeeperModule.vb" />
-    <Compile Include="Components\PortalKeeperConfigUpdate.vb" />
-    <Compile Include="Components\BusinessController.vb" />
-    <Compile Include="Components\Entities\Firewall\FirewallSettings.vb" />
+    <Compile Include="Components\Core\KeeperCondition.vb" />
+    <Compile Include="Components\Core\KeeperRule.vb" />
+    <Compile Include="Components\Core\PortalKeeperContext.vb" />
+    <Compile Include="Components\Firewall\PortalKeeperModule.vb" />
+    <Compile Include="Components\DNN\PortalKeeperConfigUpdate.vb" />
+    <Compile Include="Components\DNN\BusinessController.vb" />
+    <Compile Include="Components\Firewall\FirewallSettings.vb" />
     <Compile Include="Components\Providers\Condition\MembershipCondition.vb" />
     <Compile Include="Components\Providers\Condition\MultipleConnectionsCondition.vb" />
     <Compile Include="Components\Providers\Condition\PortalAliasCondition.vb" />
     <Compile Include="Components\Providers\Condition\RequestsCapsCondition.vb" />
     <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
-    <Compile Include="Components\Entities\Scheduler\ScheduleEvent.vb" />
-    <Compile Include="Components\TrialProvider.vb" />
+    <Compile Include="Components\Scheduler\ScheduleEvent.vb" />
+    <Compile Include="Components\DNN\TrialProvider.vb" />
     <Content Include="KeeperConfig.ascx.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -361,6 +360,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Components\Entities\" />
     <Folder Include="Providers\BotProviders\" />
   </ItemGroup>
   <ItemGroup>

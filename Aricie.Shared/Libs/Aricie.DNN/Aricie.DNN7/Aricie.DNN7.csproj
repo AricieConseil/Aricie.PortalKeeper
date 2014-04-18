@@ -36,9 +36,11 @@
   <ItemGroup>
     <Reference Include="Aricie.Core">
       <HintPath>external\Aricie.Core.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="Aricie.DNN">
       <HintPath>external\Aricie.DNN.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke, Version=7.2.0.607, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>

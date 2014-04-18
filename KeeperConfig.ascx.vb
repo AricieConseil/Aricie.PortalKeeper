@@ -88,7 +88,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                         Dim key As String = "UserBot" & Me.UserBotSettings.Name
                         If Not Me.IsPostBack OrElse Session(key) Is Nothing Then
 
-                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.UserInfo, Me.PortalId, True)
+                            Session(key) = Me.UserBotSettings.GetUserBotInfo(Me.UserInfo, True)
                         End If
                         _UserBot = DirectCast(Session(key), UserBotInfo)
                         If Me.KeeperModuleSettings.DisplayRankings Then
@@ -516,6 +516,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             'Me.BindSettings()
 
         End Sub
+
+
+
+        Public Function GetUserBotSaveTime() As DateTime
+
+        End Function
+
+        Public Sub TouchUserBot()
+
+        End Sub
+
+
 
 #End Region
 
