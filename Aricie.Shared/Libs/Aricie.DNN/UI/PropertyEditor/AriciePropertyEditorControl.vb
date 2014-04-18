@@ -47,11 +47,14 @@ Namespace UI.WebControls
         Private _SortedUnderLyingDataSource As PropertyInfo()
         Private _TrialStatus As TrialStatusInfo = TrialStatusInfo.NoTrial(TrialConfigInfo.Empty)
         Private _ValidationGroup As String
+        Private _isHidden As Boolean
 
         Private _ItemChanged As Boolean
         Private _Groups As New Dictionary(Of String, KeyValuePair(Of Control, Control))
         Private _PropertyDepth As Integer
         Private _ParentEditor As PropertyEditorControl
+
+        Private _ParentEditControl As EditControl
         Private _EnabledOnDemandSections As Boolean = True
         Private _RestrictedFields As New Dictionary(Of AricieFieldEditorControl, TrialLimitedAttribute)
         Private _FieldsDictionary As FieldsHierarchy
@@ -76,19 +79,19 @@ Namespace UI.WebControls
         Private _CurrentTab As Tab
         Public WithEvents ActionButton As ActionButtonInfo
 
-        Private Const LOAD_COUNTER As String = "LoadCounter"
-        Private Const PRERENDER_COUNTER As String = "PreRenderCounter"
+        'Private Const LOAD_COUNTER As String = "LoadCounter"
+        'Private Const PRERENDER_COUNTER As String = "PreRenderCounter"
 
-        Private ReadOnly Property SessionVisibleCatsDico() As SerializableDictionary(Of String, Boolean)
-            Get
-                Dim toReturn As SerializableDictionary(Of String, Boolean) = DirectCast(HttpContext.Current.Session.Item("SessionVisibleCatsDico"), SerializableDictionary(Of String, Boolean))
-                If toReturn Is Nothing Then
-                    toReturn = New SerializableDictionary(Of String, Boolean)()
-                    HttpContext.Current.Session.Add("SessionVisibleCatsDico", toReturn)
-                End If
-                Return toReturn
-            End Get
-        End Property
+        'Private ReadOnly Property SessionVisibleCatsDico() As SerializableDictionary(Of String, Boolean)
+        '    Get
+        '        Dim toReturn As SerializableDictionary(Of String, Boolean) = DirectCast(HttpContext.Current.Session.Item("SessionVisibleCatsDico"), SerializableDictionary(Of String, Boolean))
+        '        If toReturn Is Nothing Then
+        '            toReturn = New SerializableDictionary(Of String, Boolean)()
+        '            HttpContext.Current.Session.Add("SessionVisibleCatsDico", toReturn)
+        '        End If
+        '        Return toReturn
+        '    End Get
+        'End Property
 
 #End Region
 
@@ -108,7 +111,7 @@ Namespace UI.WebControls
         Public ReadOnly Property FieldsDictionary As FieldsHierarchy
             Get
                 If _FieldsDictionary Is Nothing Then
-                    Dim objButtons As IEnumerable(Of ActionButtonInfo) = Me.GetCommandButtons()
+                    Dim objButtons As List(Of IEnumerable(Of ActionButtonInfo)) = Me.GetCommandButtons()
                     _FieldsDictionary = New FieldsHierarchy(Me.UnderlyingDataSource, objButtons, Me)
                 End If
                 Return _FieldsDictionary
@@ -144,7 +147,7 @@ Namespace UI.WebControls
         End Property
 
 
-        Private _isHidden As Boolean
+
 
         Public WriteOnly Property IsHidden() As Boolean
             Set(value As Boolean)
@@ -210,7 +213,7 @@ Namespace UI.WebControls
             End Get
         End Property
 
-        Private _ParentEditControl As EditControl
+
 
         Public ReadOnly Property ParentEditControl As EditControl
             Get
@@ -311,24 +314,20 @@ Namespace UI.WebControls
 
         Public Property SubEditorPath As String
             Get
-                Dim name As String = "SubEditorPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                Return CStr(DnnContext.Current.Session(name))
+                Return DnnContext.Current.AdvancedClientVariable(Me, "SubEditorPath")
             End Get
             Set(value As String)
-                Dim name As String = "SubEditorPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                DnnContext.Current.Session(name) = value
+                DnnContext.Current.AdvancedClientVariable(Me, "SubEditorPath") = value
             End Set
         End Property
 
 
         Public Property SubEditorFullPath As String
             Get
-                Dim name As String = "SubEditorFullPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                Return CStr(DnnContext.Current.Session(name))
+                Return DnnContext.Current.AdvancedClientVariable(Me, "SubEditorFullPath")
             End Get
             Set(value As String)
-                Dim name As String = "SubEditorFullPath" & Me.ClientID.GetHashCode().ToString(CultureInfo.InvariantCulture)
-                DnnContext.Current.Session(name) = value
+                DnnContext.Current.AdvancedClientVariable(Me, "SubEditorFullPath") = value
                 SubEditorPath = value
                 Dim subPathContainer = TryCast(DataSource, SubPathContainer)
                 If (subPathContainer IsNot Nothing) Then
@@ -406,8 +405,8 @@ Namespace UI.WebControls
                         'cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
                         'HttpContext.Current.Response.Cookies.Add(cookie)
                         Dim clientVarName As String = "cookieTab" '& Me.ClientID.GetHashCode()
-                        Dim clientVarValueStr As String = Me.ParentAricieModule.AdvancedClientVariable(Me, clientVarName)
-                        Me.ParentAricieModule.AdvancedClientVariable(Me, clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
+                        Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(Me, clientVarName)
+                        DnnContext.Current.AdvancedClientVariable(Me, clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
 
                         Me.FieldsDictionary.HideAllTabs()
 
@@ -745,24 +744,26 @@ Namespace UI.WebControls
             End If
         End Sub
 
-        Private Function GetCommandButtons() As IEnumerable(Of ActionButtonInfo)
-            Dim toReturn As List(Of ActionButtonInfo)
+        Private Function GetCommandButtons() As List(Of IEnumerable(Of ActionButtonInfo))
+            Dim toReturn As New List(Of IEnumerable(Of ActionButtonInfo))
             If Me.DataSource IsNot Nothing Then
-                toReturn = GetCommandButtons(Me.DataSource.GetType())
+                toReturn.Add(GetCommandButtons(Me.DataSource.GetType()))
                 Dim subPathContainer = TryCast(Me.DataSource, SubPathContainer)
                 If (subPathContainer IsNot Nothing AndAlso Not subPathContainer.OriginalEntity Is subPathContainer.SubEntity) Then
-                    toReturn = New List(Of ActionButtonInfo)(toReturn)
+                    'toReturn = New List(Of ActionButtonInfo)(toReturn)
                     Dim dico = subPathContainer.GetParentEntities()
                     For Each objEntityPair As KeyValuePair(Of String, Object) In dico
                         If objEntityPair.Value IsNot Nothing Then
                             Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(objEntityPair.Value.GetType)
-                            toReturn.AddRange(From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName) AndAlso actionButton.ConditionalVisibles.Count = 0)
+                            Dim toAdd As IEnumerable(Of ActionButtonInfo) = From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName) AndAlso actionButton.ConditionalVisibles.Count = 0
+                            If toAdd.Count > 0 Then
+                                toReturn.Add(toAdd)
+                            End If
                         End If
                     Next
                 End If
-            Else
-                toReturn = New List(Of ActionButtonInfo)
             End If
+            toReturn.Reverse()
             Return toReturn
         End Function
 
@@ -820,7 +821,7 @@ Namespace UI.WebControls
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
                 ' Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
-                Dim advStr As String = Me.ParentAricieModule.AdvancedClientVariable(Me, "cookieTab")
+                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me, "cookieTab")
 
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
@@ -997,18 +998,21 @@ Namespace UI.WebControls
         Protected Function AddActionButtons(ByVal element As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             Dim buttonContainer As Panel = Nothing
-            For Each objActionButton As ActionButtonInfo In element.ActionButtons
-                If Me.ComputeVisibility(objActionButton.ConditionalVisibles) Then
-                    If buttonContainer Is Nothing Then
-                        buttonContainer = New Panel()
-                        buttonContainer.EnableViewState = False
-                        'buttonContainer.ID = "divCmdButtons" & element.Name
-                        buttonContainer.CssClass = "aricieActions"
-                        element.Container.Controls.Add(buttonContainer)
+            For Each buttonList As List(Of ActionButtonInfo) In element.ActionButtons
+                For Each objActionButton As ActionButtonInfo In buttonList
+                    If Me.ComputeVisibility(objActionButton.ConditionalVisibles) Then
+                        If buttonContainer Is Nothing Then
+                            buttonContainer = New Panel()
+                            buttonContainer.EnableViewState = False
+                            'buttonContainer.ID = "divCmdButtons" & element.Name
+                            buttonContainer.CssClass = "aricieActions"
+                            element.Container.Controls.Add(buttonContainer)
+                        End If
+                        Me.AddActionButton(objActionButton, buttonContainer)
+                        nbControls += 1
                     End If
-                    Me.AddActionButton(objActionButton, buttonContainer)
-                    nbControls += 1
-                End If
+                Next
+                buttonContainer = Nothing
             Next
             Return nbControls
         End Function
@@ -1468,7 +1472,7 @@ Namespace UI.WebControls
 
             Public Property Tabs As New Dictionary(Of String, Tab)
 
-            Public Property ActionButtons As New List(Of ActionButtonInfo)
+            Public Property ActionButtons As New List(Of List(Of ActionButtonInfo))
 
             Public Sub HideAllTabs()
                 For Each t As Tab In Me.Tabs.Values
@@ -1544,7 +1548,7 @@ Namespace UI.WebControls
             Inherits Element
 
 
-            Public Sub New(ByVal underlyingDatasource As IEnumerable, objButtons As IEnumerable(Of ActionButtonInfo), ByVal editor As AriciePropertyEditorControl)
+            Public Sub New(ByVal underlyingDatasource As IEnumerable, objButtons As List(Of IEnumerable(Of ActionButtonInfo)), ByVal editor As AriciePropertyEditorControl)
                 MyBase.New(editor.FriendlyName, editor)
                 Me.ParseProperties(underlyingDatasource)
                 Me.ParseActionButtons(objButtons)
@@ -1678,10 +1682,17 @@ Namespace UI.WebControls
                 Return toReturnElt
             End Function
 
-            Private Sub ParseActionButtons(ByVal objActionButtons As IEnumerable(Of ActionButtonInfo))
-                For Each actionButton As ActionButtonInfo In objActionButtons
-                    Dim target As Element = Me.ProcessExtendedCategory(actionButton.ExtendedCategory)
-                    target.ActionButtons.Add(actionButton)
+            Private Sub ParseActionButtons(ByVal objActionButtons As List(Of IEnumerable(Of ActionButtonInfo)))
+                Dim idx As Integer = 0
+                For Each actionButtonList As IEnumerable(Of ActionButtonInfo) In objActionButtons
+                    For Each objActionButton As ActionButtonInfo In actionButtonList
+                        Dim target As Element = Me.ProcessExtendedCategory(objActionButton.ExtendedCategory)
+                        If target.ActionButtons.Count <= idx Then
+                            target.ActionButtons.Add(New List(Of ActionButtonInfo))
+                        End If
+                        target.ActionButtons.Last.Add(objActionButton)
+                    Next
+                    idx += 1
                 Next
             End Sub
 

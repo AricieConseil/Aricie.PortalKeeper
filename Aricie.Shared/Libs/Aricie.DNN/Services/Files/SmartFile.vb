@@ -18,6 +18,7 @@ Imports System.Xml
 Imports DotNetNuke.Services.Localization
 Imports System.IO
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.Security
 
 Namespace Services.Files
 
@@ -32,6 +33,12 @@ Namespace Services.Files
     Public Class SmartFile
         'Inherits SmartFileInfo
 
+        Private _encrypter As IEncrypter
+        Protected _SaltBytes As Byte()
+        Private _PayLoad As New CData("")
+        Private _DNNFile As DotNetNuke.Services.FileSystem.FileInfo
+
+
         Public Sub New()
         End Sub
 
@@ -44,9 +51,13 @@ Namespace Services.Files
             Me._encrypter = encrypter
         End Sub
 
-        Protected _SaltBytes As Byte()
+        <Browsable(False)>
+        Public ReadOnly Property DNNFile As DotNetNuke.Services.FileSystem.FileInfo
+            Get
+                Return _DNNFile
+            End Get
+        End Property
 
-        Private _PayLoad As New CData("")
 
         <ExtendedCategory("Key")> _
         <IsReadOnly(True)> _
@@ -60,7 +71,7 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Property Compressed As Boolean
 
-        Private _encrypter As IEncrypter
+
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property HasEncrypter As Boolean
@@ -80,7 +91,7 @@ Namespace Services.Files
         <ExtendedCategory("Content")> _
         <ConditionalVisible("Encrypted", False, True)> _
         <IsReadOnly(True)> _
-        Public Property CustomEncryption As Boolean
+        Public Property HasCustomEncryption As Boolean
 
         <Browsable(False)> _
         <XmlIgnore()>
@@ -205,12 +216,12 @@ Namespace Services.Files
 
         <ExtendedCategory("Content")> _
                <XmlIgnore()> _
-        Public Property UseCustomKey As Boolean
+        Public Property UseCustomEncryption As Boolean
 
         <ExtendedCategory("Content")> _
-        <ConditionalVisible("UseCustomKey", False, True)> _
+        <ConditionalVisible("UseCustomEncryption", False, True)> _
                <XmlIgnore()> _
-        Public Property CustomKey As String = ""
+        Public Property CustomEncryption As New EncryptionInfo()
 
 
 #Region "Public Methods"
@@ -309,15 +320,17 @@ Namespace Services.Files
             Try
                 If Me.Encrypted Then
                     Dim newPayLoad As String
-                    If _encrypter IsNot Nothing Then
+                    If UseCustomEncryption Then
+                        newPayLoad = Me.CustomEncryption.Decrypt(Me.PayLoad, Me._SaltBytes)
+                    ElseIf _encrypter IsNot Nothing Then
                         newPayLoad = _encrypter.Decrypt(Me.PayLoad, Me._SaltBytes)
                     Else
-                        newPayLoad = Common.Decrypt(Me.PayLoad, GetKey(), "", Me._SaltBytes)
+                        newPayLoad = Common.Decrypt(Me.PayLoad, GetDefaultKey(), "", Me._SaltBytes)
                     End If
                     Me.DecryptInternal(newPayLoad)
                 End If
             Catch ex As Exception
-                Throw New ApplicationException("Value was encrypted with a distinct key")
+                Throw New ApplicationException("Value was encrypted with a distinct key or encrypted bytes were corrupted.")
             End Try
         End Sub
 
@@ -326,11 +339,14 @@ Namespace Services.Files
             If Not Me.Encrypted Then
                 Dim objSalt As Byte() = Nothing
                 Dim newPayload As String
-                If _encrypter IsNot Nothing Then
+                If UseCustomEncryption Then
+                    newPayload = Me.CustomEncryption.DoEncrypt(Me.PayLoad, objSalt)
+                    Me.Encrypt(newPayload, objSalt)
+                ElseIf _encrypter IsNot Nothing Then
                     newPayload = _encrypter.Encrypt(Me.PayLoad, objSalt)
                     Me.Encrypt(newPayload, objSalt)
                 Else
-                    newPayload = Common.Encrypt(Me.PayLoad, GetKey(), "", objSalt)
+                    newPayload = Common.Encrypt(Me.PayLoad, GetDefaultKey(), "", objSalt)
                     Me.EncryptInternal(newPayload, objSalt)
                 End If
             End If
@@ -338,31 +354,38 @@ Namespace Services.Files
 
 
 
-        Public Overridable Overloads Sub Sign()
+        Public Overloads Sub Sign()
             If Me.Encrypted OrElse Me.Compressed Then
                 Throw New ApplicationException("Encrypted or compressed Content cannot be Signed")
             End If
             If Not Me.Signed Then
-                If Me._encrypter IsNot Nothing Then
-                    SyncLock Me
+                SyncLock Me
+                    If UseCustomEncryption Then
+                        PayLoad = Aricie.DNN.Security.EncryptionHelper.SignXmlString(Me.PayLoad, Me.CustomEncryption)
+                        Me.Signed = True
+                    ElseIf Me._encrypter IsNot Nothing Then
                         PayLoad = Aricie.DNN.Security.EncryptionHelper.SignXmlString(Me.PayLoad, _encrypter)
                         Me.Signed = True
-                    End SyncLock
-                End If
+                    Else
+                        Throw New ApplicationException("Cannot sign a smart file without an ecrypter")
+                    End If
+                End SyncLock
             End If
         End Sub
 
-        Public Overridable Overloads Function Verify() As Boolean
+        Public Overloads Function Verify() As Boolean
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot be verified")
             Else
                 Dim doc As New XmlDocument()
                 SyncLock Me
                     doc.LoadXml(Me.PayLoad)
-                    If Me._encrypter IsNot Nothing Then
+                    If UseCustomEncryption Then
+                        Return Me.CustomEncryption.Verify(doc)
+                    ElseIf Me._encrypter IsNot Nothing Then
                         Return _encrypter.Verify(doc)
                     Else
-                        Throw New ApplicationException("Cannot sign a smart file without an ecrypter")
+                        Throw New ApplicationException("Cannot verify a smart file without an ecrypter")
                     End If
                 End SyncLock
             End If
@@ -370,7 +393,7 @@ Namespace Services.Files
 
 
 
-        Public Overridable Overloads Sub RemoveSignature()
+        Public Overloads Sub RemoveSignature()
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot have signature removed")
             Else
@@ -406,25 +429,30 @@ Namespace Services.Files
         End Sub
 
 
-        Public Function GetKey() As String
-            If UseCustomKey Then
-                Return Me.CustomKey
-            Else
-                Return New MachineKeySection().DecryptionKey
-            End If
+        Public Function GetDefaultKey() As String
+            Return New MachineKeySection().DecryptionKey
         End Function
+
+
+        'Public Function GetKey() As String
+        '    If UseCustomKey Then
+        '        Return Me.CustomKey
+        '    Else
+        '        Return New MachineKeySection().DecryptionKey
+        '    End If
+        'End Function
 
         Public Sub Decrypt(newPayload As String)
             SyncLock Me
                 Me.DecryptInternal(newPayload)
-                Me.CustomEncryption = True
+                Me.HasCustomEncryption = True
             End SyncLock
         End Sub
 
         Public Sub Encrypt(ByVal newPayLoad As String, ByVal salt As Byte())
             SyncLock Me
                 Me.EncryptInternal(newPayLoad, salt)
-                Me.CustomEncryption = True
+                Me.HasCustomEncryption = True
             End SyncLock
         End Sub
 
@@ -438,7 +466,7 @@ Namespace Services.Files
             End If
         End Sub
 
-        Public Overridable Sub Wrap(settings As SmartFileInfo)
+        Public Sub Wrap(settings As SmartFileInfo)
             If settings.Sign AndAlso Me._encrypter IsNot Nothing Then
                 Me.Sign()
             End If
@@ -459,35 +487,36 @@ Namespace Services.Files
 
 #Region "Shared Methods"
 
+
         Public Shared Function GetFileInfo(key As EntityKey, settings As SmartFileInfo) As DotNetNuke.Services.FileSystem.FileInfo
             Dim objPath As String = settings.GetPath(key)
-            Dim fileName As String = System.IO.Path.GetFileName(objPath)
             Dim folderPath As String = settings.GetFolderPath(key)
             Dim objFolderInfo As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(key.PortalId, folderPath)
             If objFolderInfo IsNot Nothing Then
-                Dim objFiles As IEnumerable(Of DotNetNuke.Services.FileSystem.FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolderInfo)
-                For Each objFile As DotNetNuke.Services.FileSystem.FileInfo In objFiles
-                    If objFile.FileName = fileName Then
-                        Return objFile
-                    End If
-                Next
+                Dim fileName As String = System.IO.Path.GetFileName(objPath)
+                Return ObsoleteDNNProvider.Instance.GetFile(objFolderInfo, fileName)
             End If
             Return Nothing
         End Function
 
-        Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, settings As SmartFileInfo) As T
-            Dim toReturn As T
-            Dim objSmartFile As SmartFile(Of T) = LoadSmartFile(Of T)(key, settings)
-            If objSmartFile IsNot Nothing Then
-                objSmartFile.SetEncrypter(settings.Encryption)
-                toReturn = objSmartFile.Value
-            End If
-            Return toReturn
-        End Function
+        'Public Shared Function LoadAndRead(Of T As New)(key As EntityKey, settings As SmartFileInfo) As T
+        '    Dim toReturn As T
+        '    Dim objSmartFile As SmartFile(Of T) = LoadSmartFile(Of T)(key, settings)
+        '    If objSmartFile IsNot Nothing Then
+        '        toReturn = objSmartFile.Value
+        '    End If
+        '    Return toReturn
+        'End Function
+
 
         Public Shared Function LoadSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo) As SmartFile(Of T)
             Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
-            Return LoadSmartFile(Of T)(objFileInfo)
+            Dim toReturn As SmartFile(Of T) = LoadSmartFile(Of T)(objFileInfo)
+            If Not settings.CheckSmartFile(toReturn) Then
+                Throw New ApplicationException(String.Format("smart file for key {0} at path {1} didn't match security settings", key.ToString(), objFileInfo.PhysicalPath))
+            End If
+            toReturn.SetEncrypter(settings.Encryption)
+            Return toReturn
         End Function
 
         Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile(Of T)
@@ -495,7 +524,9 @@ Namespace Services.Files
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
                 Using ms As New MemoryStream(content)
                     Using reader As XmlReader = XmlReader.Create(ms)
-                        Return ReflectionHelper.Deserialize(Of SmartFile(Of T))(reader)
+                        Dim toReturn As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(reader)
+                        toReturn._DNNFile = objFileInfo
+                        Return toReturn
                     End Using
                 End Using
             End If
@@ -521,18 +552,16 @@ Namespace Services.Files
                 End If
                 If objFolderInfo IsNot Nothing Then
                     Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(value.Key, settings)
-                    'If objFileInfo Is Nothing Then
-                    Dim objPath As String = settings.GetPath(value.Key)
-                    objFileInfo = New DotNetNuke.Services.FileSystem.FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
-                    'Dim doc As XmlDocument = ReflectionHelper.Serialize(value, False)
+                    If objFileInfo Is Nothing Then
+                        Dim objPath As String = settings.GetPath(value.Key)
+                        objFileInfo = New DotNetNuke.Services.FileSystem.FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
+                    End If
                     Dim content As Byte()
                     Using ms As New MemoryStream()
-                        'Using sw As New StreamWriter(ms, Encoding.UTF8)
                         Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
                         Using writer As XmlWriter = XmlWriter.Create(ms, objXmlSettings)
                             ReflectionHelper.Serialize(value, writer)
                         End Using
-                        'End Using
                         content = ms.ToArray()
                     End Using
                     Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content, False)
@@ -597,10 +626,12 @@ Namespace Services.Files
             End If
         End Sub
 
+
 #End Region
 
 
 #Region "Private Methods"
+
 
         Private Sub EncryptInternal(ByVal newPayLoad As String, ByVal salt As Byte())
             SyncLock Me
@@ -672,7 +703,7 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-        Public Overridable Sub UpdatePayload()
+        Public Sub UpdatePayload()
             If _Value IsNot Nothing Then
                 Dim sb As New StringBuilder()
                 Using sw As New StringWriter(sb)

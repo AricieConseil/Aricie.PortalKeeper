@@ -69,7 +69,7 @@ Namespace UI.WebControls.EditControls
         Private Sub PreRenderComplete(ByVal sender As Object, ByVal e As EventArgs)
             Dim parentModule As AriciePortalModuleBase = Me.ParentAricieModule
             If parentModule IsNot Nothing Then
-                Me.ParentAricieModule.AdvancedClientVariable(Me, UrlStateKey) = Me.UrlControl.Url
+                DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = Me.UrlControl.Url
             Else
                 Me.ViewState(UrlStateKey) = Me.UrlControl.Url
             End If
@@ -126,11 +126,11 @@ Namespace UI.WebControls.EditControls
 
 
             If Me.ParentAricieModule IsNot Nothing Then
-                Dim existingUrl As String = Me.ParentAricieModule.AdvancedClientVariable(Me, UrlStateKey)
+                Dim existingUrl As String = DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
                 If String.IsNullOrEmpty(existingUrl) Then
                     Me.UrlControl.Url = Me.StringValue
                 Else
-                    Me.ParentAricieModule.AdvancedClientVariable(Me, UrlStateKey) = ""
+                    DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = ""
                 End If
             Else
                 'on est pas dans le cas d'un portalmodulebase(ex:settings)

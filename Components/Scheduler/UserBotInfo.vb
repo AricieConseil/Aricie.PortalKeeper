@@ -306,7 +306,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                 If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
                     'Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
-                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, True)
+                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(ape.ParentModule.UserInfo, True)
                     Me.RevertReadonlyParameters(readOnlyUserBot)
                     'Me.UserBot = userBotEntity
                     'Me.BindSettings()

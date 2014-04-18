@@ -67,7 +67,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Next
             End If
             listEvents.Add(actionContext.CurrentEventStep)
-            Dim runContext As New BotRunContext(Of TEngineEvents)(Me.SubBot)
+            Dim runContext As New BotRunContext(Of TEngineEvents)(Me.SubBot, DateTime.MinValue)
             runContext.Events = listEvents
             runContext.EngineContext = actionContext
             Dim mainEngine As RuleEngineSettings(Of TEngineEvents) = actionContext.CurrentEngine

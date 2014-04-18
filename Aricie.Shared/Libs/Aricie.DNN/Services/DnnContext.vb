@@ -16,6 +16,9 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Net
 Imports DotNetNuke.Security
 Imports DotNetNuke.Common.Utilities
+Imports System.Web.UI
+Imports Aricie.Collections
+Imports DotNetNuke.UI.Utilities
 
 Namespace Services
     ''' <summary>
@@ -28,7 +31,7 @@ Namespace Services
         Public Event Debug As EventHandler(Of DebugEventArgs)
 
         Public Sub OnDebug(sender As Object, e As DebugEventArgs)
-                RaiseEvent Debug(sender, e)
+            RaiseEvent Debug(sender, e)
         End Sub
 
         Public Sub OnDebug()
@@ -335,6 +338,24 @@ Namespace Services
             End Get
         End Property
 
+
+
+        ''' <summary>
+        ''' Returns the current page
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public ReadOnly Property Page() As Page
+            Get
+                If Me.HttpContext IsNot Nothing AndAlso TypeOf Me.HttpContext.CurrentHandler Is Page Then
+                    Return DirectCast(Me.HttpContext.CurrentHandler, Page)
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+
         ''' <summary>
         ''' Returns the current page
         ''' </summary>
@@ -437,6 +458,37 @@ Namespace Services
             End Get
         End Property
 
+
+
+        Public Property AdvancedClientVariable(ByVal objControl As Control, ByVal localKey As String) As String
+            Get
+                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
+                Dim toReturn As String = Nothing
+                If Me.AdvancedClientVars.TryGetValue(varKey, toReturn) Then
+                    Return toReturn
+                Else
+                    Return ""
+                End If
+            End Get
+            Set(ByVal value As String)
+                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
+                Me.AdvancedClientVars(varKey) = value
+            End Set
+        End Property
+
+        Public Property AdvancedCounter(ByVal objControl As Control, ByVal localKey As String) As Integer
+            Get
+                Dim toReturn As Integer = 0
+                Dim strExisting As String = AdvancedClientVariable(objControl, localKey)
+                If Not String.IsNullOrEmpty(strExisting) Then
+                    toReturn = Integer.Parse(strExisting, CultureInfo.InvariantCulture)
+                End If
+                Return toReturn
+            End Get
+            Set(ByVal value As Integer)
+                AdvancedClientVariable(objControl, localKey) = value.ToString(CultureInfo.InvariantCulture)
+            End Set
+        End Property
 
 
 
@@ -564,9 +616,61 @@ Namespace Services
 
         End Function
 
+
+
 #End Region
 
+#Region "Private members"
 
+        Private Const AdvancedVarKey As String = "AdvVar"
+
+        Private _AdvancedClientVars As SerializableDictionary(Of String, String)
+
+        Private ReadOnly Property AdvancedClientVars() As SerializableDictionary(Of String, String)
+            Get
+                'Dim toReturn As SerializableDictionary(Of String, String) = DnnContext.Current.GetItem(Of SerializableDictionary(Of String, String))(AdvancedVarKey)
+                If _AdvancedClientVars Is Nothing OrElse _AdvancedClientVars.Count = 0 Then
+                    Dim dnnclientVar As String = ClientAPI.GetClientVariable(Me.DnnPage, AdvancedVarKey)
+                    If (String.IsNullOrEmpty(dnnclientVar)) Then
+                        'HACK the dnn process to get the dnnvariable (deserialisation pb) - check the HTTP Context
+                        Dim dnnVariable As String = Me.HttpContext.Request("__dnnVariable")
+                        If (Not String.IsNullOrEmpty(dnnVariable)) Then
+                            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+                            If (dnnVariable.StartsWith("`")) Then
+                                dnnVariable = dnnVariable.Remove(0, 1)
+                            End If
+                            Dim dnnVariableObj As Dictionary(Of String, String) = jss.Deserialize(Of Dictionary(Of String, String))(dnnVariable.Replace("`", "'"))
+                            If dnnVariableObj.ContainsKey(AdvancedVarKey) Then
+                                dnnclientVar = CStr(dnnVariableObj(AdvancedVarKey))
+                            End If
+                        End If
+                    End If
+                    If String.IsNullOrEmpty(dnnclientVar) Then
+                        _AdvancedClientVars = New SerializableDictionary(Of String, String)
+                    Else
+                        Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+                        _AdvancedClientVars = jss.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
+                        '_AdvancedClientVars = ReflectionHelper.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
+                    End If
+                    'DnnContext.Current.SetItem(Of SerializableDictionary(Of String, String))(toReturn, AdvancedVarKey)
+                    AddHandler Me.DnnPage.PreRenderComplete, AddressOf SerializeAdvancedClientVars
+                End If
+                Return _AdvancedClientVars
+            End Get
+        End Property
+
+        Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
+            '  If Me.AdvancedClientVars.Count > 0 Then
+            Dim dnnclientVar As String = String.Empty 'ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
+            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
+            dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
+            ClientAPI.RegisterClientVariable(Me.DnnPage, AdvancedVarKey, dnnclientVar, True)
+
+            '  End If
+        End Sub
+
+
+#End Region
 
     End Class
 

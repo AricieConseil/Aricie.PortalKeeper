@@ -5280,10 +5280,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SmartFile_Signed.Text" xml:space="preserve">
     <value>Is Signed</value>
   </data>
-  <data name="SmartFile_UseCustomKey.Help" xml:space="preserve">
+  <data name="SmartFile_UseCustomEncryption.Help" xml:space="preserve">
     <value>Check to enter a new encryption key to be used for encryption / decryption according to the current state</value>
   </data>
-  <data name="SmartFile_UseCustomKey.Text" xml:space="preserve">
+  <data name="SmartFile_UseCustomEncryption.Text" xml:space="preserve">
     <value>Enter custom encryption key</value>
   </data>
   <data name="SmartFile`1_ShowValue.Help" xml:space="preserve">
@@ -5304,11 +5304,11 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SmartFile`1_Value.Text" xml:space="preserve">
     <value>Value</value>
   </data>
-  <data name="SmartFile_CustomEncryption.Help" xml:space="preserve">
-    <value>Checked if the content was encrypted with a custom encrypter, which you need to load or alternatively to provide a custom encryption key, in order for the content to be decrypted.</value>
+  <data name="SmartFile_HasCustomEncryption.Help" xml:space="preserve">
+    <value>Checked if the content was encrypted with a custom encrypter, which you need to load or alternatively to provide through custom encryption key, in order for the content to be decrypted.</value>
   </data>
-  <data name="SmartFile_CustomEncryption.Text" xml:space="preserve">
-    <value>Custom Encryption</value>
+  <data name="SmartFile_HasCustomEncryption.Text" xml:space="preserve">
+    <value>Has Custom Encryption</value>
   </data>
   <data name="SmartFile_Decrypt.Text" xml:space="preserve">
     <value>Decrypt</value>
@@ -5585,5 +5585,29 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="SignatureVerified.Message" xml:space="preserve">
     <value>The signature was checked and matches the available encryption</value>
+  </data>
+  <data name="ActionCommands_Copy.Text" xml:space="preserve">
+    <value>Copy Action Commands</value>
+  </data>
+  <data name="SmartFileEncrypted.Message" xml:space="preserve">
+    <value>Smart File content successfully encrypted</value>
+  </data>
+  <data name="SmartFileInfo_EnforceEncryption.Help" xml:space="preserve">
+    <value>If checked, the engine will refuse to serve unencrypted files and throw exceptions instead </value>
+  </data>
+  <data name="SmartFileInfo_EnforceEncryption.Text" xml:space="preserve">
+    <value>Mandatory Encryption</value>
+  </data>
+  <data name="SmartFileInfo_EnforceSignature.Help" xml:space="preserve">
+    <value>If checked, the engine will refuse to serve unsigned files and throw exceptions instead</value>
+  </data>
+  <data name="SmartFileInfo_EnforceSignature.Text" xml:space="preserve">
+    <value>Mandatory Signature</value>
+  </data>
+  <data name="SmartFile_CustomEncryption.Help" xml:space="preserve">
+    <value>Enter here the custom encryption key to encrypt / decrypt the file content</value>
+  </data>
+  <data name="SmartFile_CustomEncryption.Text" xml:space="preserve">
+    <value>Custom Encryption</value>
   </data>
 </root>
