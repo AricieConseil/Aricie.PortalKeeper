@@ -42,7 +42,10 @@ Namespace Security
             End Get
         End Property
 
-        <IsReadOnly(True)> _
+        '<IsReadOnly(True)> _
+        <LineCount(3)> _
+      <Width(500)> _
+      <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         Public Property InitVector() As String
             Get
                 If String.IsNullOrEmpty(_InitVector) Then

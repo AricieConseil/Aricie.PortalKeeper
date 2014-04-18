@@ -39,7 +39,9 @@
         Public Property Field As String
 
 
-
+        Public Overrides Function ToString() As String
+            Return String.Format("{0} - {1} - {2} - {3} - {4}", PortalId, Application, Entity, UserName, Field)
+        End Function
 
 
     End Structure

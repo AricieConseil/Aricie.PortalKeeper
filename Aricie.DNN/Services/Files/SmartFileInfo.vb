@@ -16,14 +16,24 @@ Namespace Services.Files
         Implements IKeyPathFormatter
 
         <ExtendedCategory("Processing")> _
-        Public Overridable Property Sign As Boolean
+        Public Property Sign As Boolean
+
+        <ConditionalVisible("Sign", False, True)> _
         <ExtendedCategory("Processing")> _
-        Public Overridable Property Compress As Boolean
+        Public Property EnforceSignature As Boolean
+
         <ExtendedCategory("Processing")> _
-        Public Overridable Property Encrypt As Boolean
+        Public Property Compress As Boolean
+
+        <ExtendedCategory("Processing")> _
+        Public Property Encrypt As Boolean
+
+        <ConditionalVisible("Encrypt", False, True)> _
+       <ExtendedCategory("Processing")> _
+        Public Property EnforceEncryption As Boolean
 
         <ExtendedCategory("Keys")> _
-        Public Overridable Property Encryption As New EncryptionInfo
+        Public Property Encryption As New EncryptionInfo
 
 
 
@@ -42,14 +52,17 @@ Namespace Services.Files
         'End Property
 
 
+        Public Function CheckSmartFile(objSmartFile As SmartFile) As Boolean
+            Return (objSmartFile.Encrypted OrElse (Not Me.Encrypt) OrElse (Not Me.EnforceEncryption)) _
+                AndAlso (objSmartFile.Signed OrElse (Not Me.Sign) OrElse (Not Me.EnforceSignature))
+        End Function
 
-
         <ExtendedCategory("Storage")> _
-        Public Overridable Property PathFormat As String = "{Application}/{Entity}/{Field}/{UserName}.xml"
+        Public Property PathFormat As String = "{Application}/{Entity}/{Field}/{UserName}.xml"
         <ExtendedCategory("Storage")> _
-        Public Overridable Property GrantUserView As Boolean
+        Public Property GrantUserView As Boolean
         <ExtendedCategory("Storage")> _
-        Public Overridable Property GrantUserEdit As Boolean
+        Public Property GrantUserEdit As Boolean
 
 
         Public Function GetFolderPath(key As EntityKey) As String

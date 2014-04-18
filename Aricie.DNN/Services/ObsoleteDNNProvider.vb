@@ -108,6 +108,14 @@ Namespace Services
                                 Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
                             End If
                         End Using
+                    Else
+                        If objFile.FileId > 0 Then
+                            params = {objFile, Nothing}
+                            Return DirectCast(FileManagerUpdateFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
+                        Else
+                            params = {objFolder, objFile.FileName, Nothing}
+                            Return DirectCast(FileManagerAddFileMethod.Invoke(FileManagerInstance, params), DotNetNuke.Services.FileSystem.FileInfo).FileId
+                        End If
                     End If
                 End If
             End If
@@ -160,9 +168,20 @@ Namespace Services
         End Sub
 
 
-        Public Overridable Function GetFiles(folderInfo As FolderInfo) As IEnumerable(Of DotNetNuke.Services.FileSystem.FileInfo)
-            Return CBO.FillCollection(Of DotNetNuke.Services.FileSystem.FileInfo)(NukeHelper.FileController.GetFiles(folderInfo.PortalID, folderInfo.FolderID))
+        Public Overridable Function GetFiles(objfolderInfo As FolderInfo) As IEnumerable(Of DotNetNuke.Services.FileSystem.FileInfo)
+            Return CBO.FillCollection(Of DotNetNuke.Services.FileSystem.FileInfo)(NukeHelper.FileController.GetFiles(objfolderInfo.PortalID, objfolderInfo.FolderID))
         End Function
+
+        Public Overridable Function GetFile(objfolderInfo As FolderInfo, filename As String) As DotNetNuke.Services.FileSystem.FileInfo
+            Return NukeHelper.FileController.GetFile(filename, objfolderInfo.PortalID, objfolderInfo.FolderID)
+        End Function
+
+        Public Overridable Function GetFileLastModificationDate(objFile as DotNetNuke.Services.FileSystem.FileInfo) As DateTime
+            Return DateTime.MinValue
+        End Function
+
+
+
 
 #Region "Private members"
 
