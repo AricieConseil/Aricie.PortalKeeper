@@ -23,10 +23,10 @@ Namespace Web.UI
             Dim toReturn As New List(Of T)
             For Each cont As Control In container.Controls
                 If TypeOf cont Is T Then
-                    toReturn.Add(TryCast(cont, T))
+                    toReturn.Add(DirectCast(DirectCast(cont, Object), T))
                 End If
                 If cont.Controls.Count > 0 AndAlso maxDepth > 0 Then
-                    If stopType Is Nothing OrElse Not cont.GetType Is stopType Then
+                    If stopType Is Nothing OrElse cont.GetType IsNot stopType Then
                         toReturn.AddRange(FindControlsRecursive(Of T)(cont, maxDepth - 1, stopType))
                     End If
                 End If
@@ -51,7 +51,6 @@ Namespace Web.UI
             End If
         End Function
 
-
         Public Function FindControlRecursive(ByVal objControl As Control, ByVal ParamArray parentTypes() As Type) As Control
             If objControl.Parent Is Nothing Then
                 Return Nothing
@@ -74,7 +73,7 @@ Namespace Web.UI
             Dim found As Control = Nothing
 
             For Each activeControl As Control In startingControl.Controls
-                found = TryCast(activeControl, Control)
+                found = activeControl
 
                 If String.Compare(id, found.ID, True) <> 0 Then
                     found = Nothing
@@ -84,7 +83,7 @@ Namespace Web.UI
                     found = FindControlRecursive(activeControl, id)
                 End If
 
-                If Not found Is Nothing Then
+                If found IsNot Nothing Then
                     Exit For
                 End If
             Next
@@ -92,7 +91,7 @@ Namespace Web.UI
             Return found
         End Function
 
-        Public Function FindControlRecursive(ByVal objControl As Control, ByVal parentType As Type, ByVal controlID As String) As Control
+        Public Function FindControlRecursive(ByVal objControl As Control, ByVal parentType As Type, ByVal controlId As String) As Control
             If objControl.Parent Is Nothing Then
                 Return Nothing
             Else
@@ -104,8 +103,7 @@ Namespace Web.UI
             End If
         End Function
 
-
-        Public Function FindNearbyControl(Of T As Control)(ByVal control As Control, ByVal controlID As String) As T
+        Public Function FindNearbyControl(Of T As Control)(ByVal control As Control, ByVal controlId As String) As T
             Dim toReturn As Control = FindControl(control, controlID)
             If toReturn IsNot Nothing AndAlso TypeOf toReturn Is T Then
                 Return DirectCast(toReturn, T)
@@ -113,16 +111,16 @@ Namespace Web.UI
             Return Nothing
         End Function
 
-        Public Function FindControl(ByVal control As Control, ByVal controlID As String) As Control
+        Public Function FindControl(ByVal control As Control, ByVal controlId As String) As Control
             Dim namingContainer As Control = control
             Dim toReturn As Control = Nothing
-            If (Not control Is control.Page) Then
+            If (control IsNot control.Page) Then
                 Do While ((toReturn Is Nothing) AndAlso (namingContainer IsNot control.Page))
                     namingContainer = namingContainer.NamingContainer
                     If (namingContainer Is Nothing) Then
-                        Throw New ArgumentException("No Naming Container: check controlId ", controlID)
+                        Throw New ArgumentException("No Naming Container: check controlId ", controlId)
                     End If
-                    toReturn = namingContainer.FindControl(controlID)
+                    toReturn = namingContainer.FindControl(controlId)
                 Loop
                 Return toReturn
             End If
