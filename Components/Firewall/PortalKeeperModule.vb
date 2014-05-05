@@ -112,12 +112,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If keeperConfig.Enabled Then
                 If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
                     Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
+                    AddHandler objPage.PreInit, AddressOf Me.Page_PreInit
                     AddHandler objPage.Init, AddressOf Me.Page_Init
                     AddHandler objPage.Load, AddressOf Me.Page_Load
                     AddHandler objPage.PreRender, AddressOf Me.Page_PreRender
                     AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
                 End If
             End If
+        End Sub
+
+        Private Sub Page_PreInit(ByVal sender As Object, ByVal args As EventArgs)
+            Dim context As HttpContext = HttpContext.Current
+            PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+            Me.ProcessStep(context, RequestEvent.PagePreInit, False)
         End Sub
 
         Private Sub Page_Init(ByVal sender As Object, ByVal args As EventArgs)
@@ -172,8 +179,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim config As Type = GetType(Config)
                 config.InvokeMember("Touch", BindingFlags.Public, Nothing, Nothing, Nothing)
 
-                'Jesse: pb de signature différente entre versions de dnn
-                ''pas compris, je rétablis
+                'Jesse: pb with suposedly different signatures between dnn versions
+                'todo: Not sure what's wrong with the following statement
                 'DotNetNuke.Common.Utilities.Config.Touch()
             End If
         End Sub

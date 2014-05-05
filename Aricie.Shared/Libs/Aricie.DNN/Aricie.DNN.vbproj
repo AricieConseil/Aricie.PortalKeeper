@@ -378,6 +378,7 @@
     <Compile Include="Settings\PersonalSettings.vb" />
     <Compile Include="Settings\SettingsController.vb" />
     <Compile Include="Settings\SettingsScope.vb" />
+    <Compile Include="UI\Adapters\GenericControlAdapter.vb" />
     <Compile Include="UI\AriciePopupBase.vb">
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
@@ -442,6 +443,7 @@
     <Compile Include="UI\PropertyEditor\EditControls\AricieEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\BreadCrumbsEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\IProviderContainer.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\ProfileEditorEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\RequiredNumberForAdminControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\RequiredTextBoxForAdminControl.vb" />

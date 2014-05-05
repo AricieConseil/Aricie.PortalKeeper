@@ -18,16 +18,20 @@
 
 .dnnForm {
     width: 100%;
-    border: 2px solid #ccc;
-    border-radius: 3px;
     background-color: rgba(222,222,222,10);
-    padding: 1em;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
+    display: block;
 }
 
-    .dnnForm.even {
+    .dnnForm .dnnForm {
+        border-radius: 3px;
+        border: 2px solid #ccc;
+        padding: 1em;
+    }
+
+.dnnForm.even {
         background-color: rgba(222,222,222,10);
     }
 
@@ -120,6 +124,7 @@
 
 .fieldC {
     clear: both;
+    text-align: left;
 }
 
 
@@ -137,6 +142,8 @@
 
 .ctLeft {
     float: left;
+    padding-right: 15px;
+    text-align: right;
 }
 
 

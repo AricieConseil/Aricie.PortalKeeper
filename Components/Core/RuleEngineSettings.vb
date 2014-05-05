@@ -10,9 +10,33 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.Security.Trial
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    Public Enum RuleEngineMode
+        Actions
+        Rules
+    End Enum
+
+    Public Class SimpleRuleEngine
+        Inherits RuleEngineSettings(Of Boolean)
+
+        <XmlIgnore()> _
+      <Browsable(False)> _
+        Public Overrides Property Mode As RuleEngineMode
+            Get
+                Return RuleEngineMode.Actions
+            End Get
+            Set(value As RuleEngineMode)
+                'do nothing
+            End Set
+        End Property
+
+    End Class
+
     <Serializable()> _
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
+
+        Public Overridable Property Mode As RuleEngineMode
 
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
@@ -20,13 +44,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <SortOrder(2)> _
         Public Property Variables() As Variables = New Variables
 
-        <ExtendedCategory("Rules")> _
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-        <InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
-        <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
+
+
+        <ConditionalVisible("Mode", False, True, RuleEngineMode.Actions)> _
+        <ExtendedCategory("Actions")> _
         <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         <SortOrder(1)> _
-        Public Property Rules() As List(Of KeeperRule(Of TEngineEvents)) = New List(Of KeeperRule(Of TEngineEvents))
+        Public Property Actions As New KeeperAction(Of TEngineEvents)
+
+        '<Editor(GetType(ListEditControl), GetType(EditControl))> _
+        '<InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
+        '<CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
+        <ConditionalVisible("Mode", False, True, RuleEngineMode.Rules)> _
+        <ExtendedCategory("Rules")> _
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
+        <SortOrder(1)> _
+        Public Property Rules() As New List(Of KeeperRule(Of TEngineEvents))
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _

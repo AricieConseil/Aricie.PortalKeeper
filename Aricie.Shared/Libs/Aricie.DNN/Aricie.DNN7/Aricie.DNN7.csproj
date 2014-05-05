@@ -90,6 +90,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="external\Aricie.Core.dll" />
+    <Content Include="external\Aricie.DNN.dll" />
     <Content Include="external\DNN7\DotNetNuke.dll" />
     <Content Include="external\DNN7\DotNetNuke.HttpModules.dll" />
     <Content Include="external\DNN7\DotNetNuke.Instrumentation.dll" />
@@ -97,10 +99,6 @@
     <Content Include="external\DNN7\DotNetNuke.Web.dll" />
     <Content Include="external\DNN7\DotNetNuke.WebControls.dll" />
     <Content Include="external\DNN7\DotNetNuke.WebUtility.dll" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="external\Aricie.Core.dll" />
-    <Content Include="external\Aricie.DNN.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

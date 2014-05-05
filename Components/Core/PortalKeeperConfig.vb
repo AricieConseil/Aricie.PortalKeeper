@@ -35,6 +35,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Firewall")> _
         Public Property FirewallConfig() As New FirewallConfig
 
+        <ExtendedCategory("ControlAdapters")> _
+        Public Property ControlAdapters As New ControlAdaptersConfig
+
+
         <ExtendedCategory("Scheduler")> _
         Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
 

@@ -1,4 +1,4 @@
-<%@ Control Language="vb" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.Settings" CodeFile="Settings.ascx.vb" %>
+<%@ Control Language="vb" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.Settings" Codebehind="Settings.ascx.vb" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
 <asp:Label ID="lblGeneralIntro" CssClass="Normal" runat="server" ResourceKey="GeneralIntro"></asp:Label>
     <aricie:AriciePropertyEditorControl ID="ctS" EditControlStyle-CssClass="NormalTextBox"

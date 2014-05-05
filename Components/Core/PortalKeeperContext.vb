@@ -277,11 +277,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Me.CurrentEventStep = objEvent
 
+            If configRules.Mode = RuleEngineMode.Rules Then
+                For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
+                    matchedRule.RunActions(Me)
+                Next
+            Else
+                configRules.Actions.Run(Me)
+            End If
 
-
-            For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
-                matchedRule.RunActions(Me)
-            Next
             
             If enableStopWatch Then
 

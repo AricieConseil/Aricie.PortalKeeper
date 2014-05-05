@@ -949,9 +949,12 @@ Namespace UI.WebControls.EditControls
                     If (Not Me._NoAddition) AndAlso (Me._MaxItemNb = 0 OrElse Me.CollectionValue.Count <= Me._MaxItemNb) Then
 
                         If TypeOf Me.ParentField.DataSource Is IProviderContainer AndAlso Me._SelectorInfo IsNot Nothing Then
-                            Me.addSelector = Me._SelectorInfo.BuildSelector(Me.ParentField)
-                            pnAdd.Controls.Add(Me.addSelector)
-                            Me.addSelector.DataBind()
+                            Dim ctrAddSelector As SelectorControl = Me._SelectorInfo.BuildSelector(Me.ParentField)
+                            If ctrAddSelector.AllItems.Count > 0 Then
+                                Me.addSelector = ctrAddSelector
+                                pnAdd.Controls.Add(Me.addSelector)
+                                Me.addSelector.DataBind()
+                            End If
                         End If
 
                         cmdAddButton = New IconActionButton()
