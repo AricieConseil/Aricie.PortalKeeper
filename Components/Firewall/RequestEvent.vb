@@ -9,6 +9,7 @@
         AuthenticateRequest
         PostMapRequestHandler
         PreRequestHandlerExecute
+        PagePreInit
         PageInit
         PageLoad
         PagePreRender

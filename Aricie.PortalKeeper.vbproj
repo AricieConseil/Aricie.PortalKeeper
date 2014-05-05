@@ -139,6 +139,7 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Adapters\ControlAdapterEngine.vb" />
     <Compile Include="Components\Core\ActionCommand.vb" />
     <Compile Include="Components\Core\ActionTree.vb" />
     <Compile Include="Components\Web\CompressionEnabledWebClient.vb">
@@ -146,10 +147,10 @@
     </Compile>
     <Compile Include="Components\Firewall\DNNAuthenticationProvider.vb" />
     <Compile Include="Components\Firewall\FileUploadHandler.vb" />
-    <Compile Include="Components\OpenRasta\OpenRastaLogger.vb" />
-    <Compile Include="Components\OpenRasta\RestService.vb" />
-    <Compile Include="Components\OpenRasta\RestServicesConfiguration.vb" />
-    <Compile Include="Components\OpenRasta\RestServicesSettings.vb" />
+    <Compile Include="Components\RestServices\OpenRastaLogger.vb" />
+    <Compile Include="Components\RestServices\RestService.vb" />
+    <Compile Include="Components\RestServices\RestServicesConfiguration.vb" />
+    <Compile Include="Components\RestServices\RestServicesSettings.vb" />
     <Compile Include="Components\Core\KeeperModuleSettings.vb" />
     <Compile Include="Components\Core\ParametersMode.vb" />
     <Compile Include="Components\Scheduler\BotRunContext.vb" />
@@ -159,7 +160,7 @@
     <Compile Include="Components\Scheduler\ProbeInstance.vb" />
     <Compile Include="Components\Scheduler\ProbeRanking.vb" />
     <Compile Include="Components\Scheduler\ProbeSettings.vb" />
-    <Compile Include="Components\OpenRasta\RestEngineEvent.vb" />
+    <Compile Include="Components\RestServices\RestEngineEvent.vb" />
     <Compile Include="Components\Scheduler\UserBotInfo.vb" />
     <Compile Include="Components\Scheduler\UserBotSettings.vb" />
     <Compile Include="Components\Scheduler\UserParameterMode.vb" />
@@ -215,7 +216,7 @@
     <Compile Include="Components\Providers\Action\AsyncEnabledActionProvider.vb" />
     <Compile Include="Components\Providers\Action\DisplayMessageAction.vb" />
     <Compile Include="Components\Providers\Action\MessageBasedAction.vb" />
-    <Compile Include="Components\Firewall\RequestLifeCycleEvent.vb" />
+    <Compile Include="Components\Firewall\RequestEvent.vb" />
     <Compile Include="Components\Providers\Action\SendEmailAction.vb" />
     <Compile Include="Components\Providers\Action\SubBotActionProvider.vb" />
     <Compile Include="Components\Providers\Action\WhileActionProvider.vb" />
@@ -261,10 +262,13 @@
     <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
     <Compile Include="Components\Scheduler\ScheduleEvent.vb" />
     <Compile Include="Components\DNN\TrialProvider.vb" />
-    <Content Include="KeeperConfig.ascx.vb">
+    <Compile Include="KeeperConfig.ascx.designer.vb">
+      <DependentUpon>KeeperConfig.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="KeeperConfig.ascx.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
       <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
@@ -279,10 +283,13 @@
       <DependentUpon>Error.ashx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Content Include="Settings.ascx.vb">
+    <Compile Include="Settings.ascx.designer.vb">
+      <DependentUpon>Settings.ascx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.ascx.vb">
       <DependentUpon>Settings.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aricie.PortalKeeper.Default.config" />

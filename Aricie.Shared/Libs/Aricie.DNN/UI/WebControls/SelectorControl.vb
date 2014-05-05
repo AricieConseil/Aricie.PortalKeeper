@@ -435,6 +435,9 @@ Namespace UI.WebControls
 
         Public Property SelectedObjectG() As T
             Get
+                If (Me.SelectedObject Is Nothing) Then
+                    Return Nothing
+                End If
                 Return DirectCast(Me.SelectedObject, T)
             End Get
             Set(ByVal value As T)

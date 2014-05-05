@@ -452,7 +452,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 Dim signed As String = EncryptionHelper.SignXmlString(objDoc.OuterXml, encrypt)
                 Dim unsigned As String = EncryptionHelper.RemoveSignatureFromXmlString(signed)
 
-                Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.BlueInfo)
+                Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.GreenSuccess)
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try

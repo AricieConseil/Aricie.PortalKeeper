@@ -53,6 +53,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public Properties"
 
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property Mode As RuleEngineMode
+            Get
+                Return RuleEngineMode.Rules
+            End Get
+            Set(value As RuleEngineMode)
+                'do nothing
+            End Set
+        End Property
+
         <Browsable(False)> _
         <XmlIgnore()> _
         Public Overrides Property Name As String

@@ -62,7 +62,7 @@ Namespace Entities
         End Property
 
         <Browsable(False)> _
-        Public Property FilterMode As UrlControlMode
+        Public Overridable Property FilterMode As UrlControlMode = UrlControlMode.Normal
 
 
         <Editor(GetType(AricieUrlEditControl), GetType(EditControl))> _
