@@ -369,7 +369,7 @@ Namespace UI.WebControls.EditControls
             Dim args As String() = Strings.Split(eventArgument, ClientAPI.COLUMN_DELIMITER)
             Dim index As Integer = -1
 
-            If args.Length = 2 AndAlso Integer.TryParse(args(1), index) Then
+            If args.Length = 2 AndAlso args(0) = "navigate" AndAlso Integer.TryParse(args(1), index) Then
 
                 Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                 If toEditor IsNot Nothing Then
@@ -381,8 +381,6 @@ Namespace UI.WebControls.EditControls
                 End If
                 toEditor.ItemChanged = True
 
-              
-
             End If
         End Sub
 
@@ -391,7 +389,7 @@ Namespace UI.WebControls.EditControls
                 If e.CommandArgument.ToString <> "" Then
                     Dim commandIndex As Integer = Integer.Parse(e.CommandArgument.ToString())
                     Select Case e.CommandName
-                        Case "Focus"
+                        Case "Expand"
                             Dim header As WebControl = Nothing
                             If _headers.TryGetValue(commandIndex, header) Then
                                 header.Attributes.Remove("onClick")
@@ -803,7 +801,7 @@ Namespace UI.WebControls.EditControls
 
             If cookieValue <> item.ItemIndex Then
 
-                Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "expand" & ClientAPI.COLUMN_DELIMITER & item.ItemIndex))
+                Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "navigate" & ClientAPI.COLUMN_DELIMITER & commandIndex))
                 _headers(item.ItemIndex) = headerLink
             Else
 
@@ -846,7 +844,7 @@ Namespace UI.WebControls.EditControls
                     plAction.Controls.Add(cmdFocus)
                     With cmdFocus
                         .ActionItem.IconName = IconName.SearchPlus
-                        .CommandName = "Focus"
+                        .CommandName = "Expand"
                         .CommandArgument = commandIndex.ToString()
                         '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
                         '   .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}});jQuery('#{0}').unbind('click');jQuery('#{0}').click();", headerLink.ClientID))
