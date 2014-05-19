@@ -9,11 +9,21 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Key, IconOptions.Normal)> _
+  <Serializable()> _
+      <DisplayName("Membership Condition")> _
+      <Description("Matches according to the user membership")> _
+    Public Class MembershipCondition
+        Inherits MembershipCondition(Of RequestEvent)
+
+    End Class
+
+
+    <ActionButton(IconName.Key, IconOptions.Normal)> _
    <Serializable()> _
        <DisplayName("Membership Condition")> _
        <Description("Matches according to the user membership")> _
-    Public Class MembershipCondition
-        Inherits ConditionProvider(Of RequestEvent)
+    Public Class MembershipCondition(Of TEngineEvents As IConvertible)
+        Inherits ConditionProvider(Of TEngineEvents)
 
         Private _MatchSuperUsers As Boolean
 
@@ -60,7 +70,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Overrides Function Match(ByVal context As PortalKeeperContext(Of RequestEvent)) As Boolean
+        Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
             Dim objUser As UserInfo = context.DnnContext.User
             context.Items("ClientUser") = objUser
             If Me._MatchSuperUsers AndAlso objUser.IsSuperUser Then

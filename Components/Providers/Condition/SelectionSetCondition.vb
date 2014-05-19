@@ -2,11 +2,20 @@
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+
+
+
+
+
     <Serializable()> _
-    Public MustInherit Class SelectionSetCondition
-        Inherits ConditionProvider(Of RequestEvent)
+    Public MustInherit Class SelectionSetCondition(Of TEngineEvents As IConvertible)
+        Inherits ConditionProvider(Of TEngineEvents)
+        Implements ISelectorAttributeProvider
+
 
 
         Private _Items As New List(Of Integer)
@@ -25,19 +34,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        Private Class ItemsAttributes
-            Implements IDynamicAttributesProvider
-
-            Public Function GetAttributes(ByVal valueType As Type) As IEnumerable(Of Attribute) Implements IDynamicAttributesProvider.GetAttributes
-                Dim toReturn As New List(Of Attribute)
-                Dim selectorAttribute As Attribute = DirectCast(Activator.CreateInstance(valueType), SelectionSetCondition).GetSelectorAttribute
-                toReturn.Add(selectorAttribute)
-                Return toReturn
-            End Function
-        End Class
 
 
-        Public Overrides Function Match(ByVal context As PortalKeeperContext(Of RequestEvent)) As Boolean
+
+        Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
 
             Dim currentItem As Integer = Me.GetCurrentValue(context)
 
@@ -48,11 +48,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
-        Public MustOverride Function GetCurrentValue(ByVal context As PortalKeeperContext(Of RequestEvent)) As Integer
-        Public MustOverride Function GetSelectorAttribute() As Attribute
+        Public MustOverride Function GetCurrentValue(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Integer
 
 
-
-
+        Public MustOverride Function GetSelectorAttribute() As Attribute Implements ISelectorAttributeProvider.GetSelectorAttribute
+           
     End Class
 End Namespace

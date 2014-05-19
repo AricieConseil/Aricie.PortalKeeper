@@ -42,9 +42,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Scheduler")> _
         Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
 
-
-          
-
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
             Dim toReturn As New List(Of RuleEngineSettings(Of TEngineEvents))
             Select Case GetType(TEngineEvents).Name
@@ -53,6 +50,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case GetType(ScheduleEvent).Name
                     For Each objBot As BotInfo(Of ScheduleEvent) In Me.SchedulerFarm.Bots.Instances
                         toReturn.Add(DirectCast(DirectCast(objBot, Object), RuleEngineSettings(Of TEngineEvents)))
+                    Next
+                Case GetType(SimpleEngineEvent).Name
+                    For Each objservice As RestService In Me.RestServices.Services.Instances
+                        For Each objDynamicMethod As DynamicRestMethod In objservice.DynamicMethods
+                            toReturn.Add(DirectCast(DirectCast(objDynamicMethod, Object), RuleEngineSettings(Of TEngineEvents)))
+                        Next
+                    Next
+                    For Each objAdapter As ControlAdapterSettings In Me.ControlAdapters.Adapters
+                        For Each objDynAdapter As DynamicHandlerSettings In objAdapter.DynamicHandlers
+                            toReturn.Add(DirectCast(DirectCast(objDynAdapter, Object), RuleEngineSettings(Of TEngineEvents)))
+                        Next
                     Next
             End Select
             Return toReturn

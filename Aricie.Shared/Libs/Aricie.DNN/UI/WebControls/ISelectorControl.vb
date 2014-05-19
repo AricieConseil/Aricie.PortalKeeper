@@ -1,4 +1,5 @@
 Imports System.Web.UI
+Imports Aricie.DNN.UI.Attributes
 
 
 Namespace UI.WebControls
@@ -22,4 +23,23 @@ Namespace UI.WebControls
 
         Function GetEntitiesG() As IList(Of T)
     End Interface
+
+    Public Interface ISelectorAttributeProvider
+
+        Function GetSelectorAttribute() As Attribute
+
+    End Interface
+
+    Public Class ItemsAttributes
+        Implements IDynamicAttributesProvider
+
+        Public Function GetAttributes(ByVal valueType As Type) As IEnumerable(Of Attribute) Implements IDynamicAttributesProvider.GetAttributes
+            Dim toReturn As New List(Of Attribute)
+            Dim selectorAttribute As Attribute = DirectCast(Activator.CreateInstance(valueType), ISelectorAttributeProvider).GetSelectorAttribute
+            toReturn.Add(selectorAttribute)
+            Return toReturn
+        End Function
+    End Class
+
+
 End Namespace

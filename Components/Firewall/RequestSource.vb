@@ -69,7 +69,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-        Public Function GenerateKey(ByVal context As PortalKeeperContext(Of RequestEvent)) As String
+        Public Function GenerateKey(Of TEngineEvent As IConvertible)(ByVal context As PortalKeeperContext(Of TEngineEvent)) As String
             Dim toReturn As String = ""
             Select Case Me.SourceType
                 Case RequestSourceType.Country

@@ -7,14 +7,25 @@ Imports Aricie.Services
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Globe, IconOptions.Normal)> _
+   <Serializable()> _
+   <DisplayName("Portal Alias Condition")> _
+   <Description("Matches according to the portal alias used in the url")> _
+    Public Class PortalAliasCondition
+        Inherits PortalAliasCondition(Of RequestEvent)
+
+    End Class
+
+
+
+    <ActionButton(IconName.Globe, IconOptions.Normal)> _
     <Serializable()> _
     <DisplayName("Portal Alias Condition")> _
     <Description("Matches according to the portal alias used in the url")> _
-    Public Class PortalAliasCondition
-        Inherits SelectionSetCondition
+    Public Class PortalAliasCondition(Of TEngineEvents As IConvertible)
+        Inherits SelectionSetCondition(Of TEngineEvents)
 
 
-        Public Overrides Function GetCurrentValue(ByVal context As PortalKeeperContext(Of RequestEvent)) As Integer
+        Public Overrides Function GetCurrentValue(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Integer
             Return context.CurrentAliasId
         End Function
 

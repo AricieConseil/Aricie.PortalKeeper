@@ -64,6 +64,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <XmlIgnore()> _
+       <Browsable(False)> _
+        Public Overrides Property Actions As KeeperAction(Of RequestEvent)
+            Get
+                Return Nothing
+            End Get
+            Set(value As KeeperAction(Of RequestEvent))
+                'do nothing
+            End Set
+        End Property
+
         <Browsable(False)> _
         <XmlIgnore()> _
         Public Overrides Property Name As String

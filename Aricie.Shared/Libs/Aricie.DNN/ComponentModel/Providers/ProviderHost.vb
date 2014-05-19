@@ -20,13 +20,13 @@ Namespace ComponentModel
 
         Private _Instances As New SerializableList(Of TSettings)
 
-        <ExtendedCategory("")> _
-        <MainCategory()> _
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(False, False, True, True, 11, CollectionDisplayStyle.Accordion, True)> _
-            <ProvidersSelector()> _
-            <LabelMode(LabelMode.Top)> _
-            <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
+        '<ExtendedCategory("")> _
+        '<MainCategory()> _
+        '<Editor(GetType(ListEditControl), GetType(EditControl))> _
+        '<CollectionEditor(False, False, True, True, 11, CollectionDisplayStyle.Accordion, True)> _
+        <ProvidersSelector()> _
+        <LabelMode(LabelMode.Top)> _
+        <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
         Public Property Instances() As SerializableList(Of TSettings)
             Get
                 Return _Instances
@@ -41,25 +41,24 @@ Namespace ComponentModel
 
         End Sub
 
-
         Public MustOverride Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, TConfig)
 
 
-        Private _AvailableProviders As IDictionary(Of String, TConfig)
+        'Private _AvailableProviders As IDictionary(Of String, TConfig)
 
-        <Browsable(False)> _
-        Public ReadOnly Property AvailableProviders As IDictionary(Of String, TConfig)
-            Get
-                If _AvailableProviders Is Nothing Then
-                    _AvailableProviders = GetAvailableProviders()
-                End If
-                Return _AvailableProviders
-            End Get
-        End Property
+        '<Browsable(False)> _
+        'Public ReadOnly Property AvailableProviders As IDictionary(Of String, TConfig)
+        '    Get
+        '        If _AvailableProviders Is Nothing Then
+        '            _AvailableProviders = GetAvailableProviders()
+        '        End If
+        '        Return _AvailableProviders
+        '    End Get
+        'End Property
 
-        Protected Sub ClearAvailableProviders()
-            Me._AvailableProviders = Nothing
-        End Sub
+        'Protected Sub ClearAvailableProviders()
+        '    Me._AvailableProviders = Nothing
+        'End Sub
 
 
 
@@ -72,7 +71,7 @@ Namespace ComponentModel
         Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of TConfig) Implements ISelector(Of TConfig).GetSelectorG
             Select Case propertyName
                 Case "Instances"
-                    Return New List(Of TConfig)(Me.AvailableProviders.Values)
+                    Return New List(Of TConfig)(Me.GetAvailableProviders().Values)
                 Case Else
                     Return Nothing
             End Select
@@ -82,7 +81,7 @@ Namespace ComponentModel
             Select Case collectionPropertyName
                 Case "Instances"
                     Dim toReturn As TSettings
-                    Dim objProvider As TProvider = Me.AvailableProviders(providerName).GetTypedProvider
+                    Dim objProvider As TProvider = Me.GetAvailableProviders(providerName).GetTypedProvider
                     If TypeOf objProvider Is IProvider(Of TConfig, TSettings) Then
                         toReturn = DirectCast(objProvider, IProvider(Of TConfig, TSettings)).GetNewProviderSettings
                     Else

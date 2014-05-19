@@ -1,4 +1,5 @@
 ﻿Imports Aricie.DNN.UI.Attributes
+Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Flee
     <Serializable()>
@@ -14,6 +15,7 @@ Namespace Services.Flee
 
         Public Property Mode As SimpleOrExpressionMode
 
+        <Required(True)> _
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Simple)>
         Public Overridable Property Simple As T
 

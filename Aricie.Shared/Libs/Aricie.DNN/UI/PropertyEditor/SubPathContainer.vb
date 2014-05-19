@@ -76,8 +76,14 @@ Namespace UI.WebControls
             If Not _SubEntities.TryGetValue(objPath, toReturn) Then
                 If Not "" = objPath Then
                     Dim propAccess As New DeepObjectPropertyAccess(Me.OriginalEntity)
+                    propAccess.LevelAccess = TokenLevelAccess.PropertiesOnly
                     Dim tokenPath As String = objPath.Replace("."c, ":"c).Replace("["c, ":").Replace("]"c, "")
-                    toReturn = propAccess.GetValue(tokenPath)
+                    Try
+                        toReturn = propAccess.GetValue(tokenPath)
+                    Catch ex As Exception
+                        Dim message As String = "DataSource subpath unavailable: """ & tokenPath & """"
+                        Throw New ApplicationException(message, ex)
+                    End Try
                 Else
                     toReturn = Me.OriginalEntity
                 End If
@@ -109,7 +115,7 @@ Namespace UI.WebControls
                                     'recuperation de l'attribut d'icone
                                     Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
                                     'Dim include As Boolean
-                                    If Not entityButton Is Nothing Then
+                                    If entityButton IsNot Nothing Then
                                         itemIcone = entityButton.IconAction
                                         'include = True
                                     End If

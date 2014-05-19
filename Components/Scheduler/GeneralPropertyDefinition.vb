@@ -165,7 +165,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <Browsable(False)> _
-        Public ReadOnly Property TypedValue As Object
+        Public Property TypedValue As Object
             Get
                 Dim listEntry As ListEntryInfo = New ListController().GetListEntryInfo(Me._DataType)
                 If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
@@ -186,6 +186,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 Return Me._PropertyValue
             End Get
+            Set(value As Object)
+                Dim listEntry As ListEntryInfo = New ListController().GetListEntryInfo(Me._DataType)
+                If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
+                    Select Case listEntry.Value
+                        Case "Integer"
+                            Me._PropertyValue = CInt(value).ToString(CultureInfo.InvariantCulture)
+                        Case "TrueFalse"
+                            Me._PropertyValue = CBool(value).ToString(CultureInfo.InvariantCulture)
+                        Case "Date", "DateTime"
+                            Me._PropertyValue = CDate(value).ToString(CultureInfo.InvariantCulture)
+                        Case "Locale"
+                            Me._PropertyValue = CType(value, Locale).Code
+                        Case "Page"
+                            Me._PropertyValue = CType(value, DotNetNuke.Entities.Tabs.TabInfo).TabID.ToString(CultureInfo.InvariantCulture)
+                        Case Else
+                            Me._PropertyValue = value.ToString()
+                    End Select
+                End If
+            End Set
         End Property
 
 

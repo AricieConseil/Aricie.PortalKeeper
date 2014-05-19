@@ -1,14 +1,13 @@
-<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" Codebehind="KeeperConfig.ascx.vb" %>
+<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" Codefile="KeeperConfig.ascx.vb" %>
 <%@ Register Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
 <div class="divPKP">
     <div id="divConfig" runat="server">
-          <div class="divcenter">
+          <div class="divcenter" runat="server" visible="false" id="divDebug">
                 <dnn:CommandButton ID="cmdDebug" Visible="true" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
                     ResourceKey="cmdDebug" />
             </div>
         <div id="divHostConfig" runat="server">
-            <asp:Label ID="lblConfig" CssClass="Head" runat="server" ResourceKey="lblConfig" /><br />
             <aricie:AriciePropertyEditorControl ID="KC" EditControlStyle-CssClass="NormalTextBox"
                 EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                 GroupHeaderIncludeRule="true" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"

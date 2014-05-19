@@ -24,6 +24,35 @@ Public Module Common
 
 #Region " Public Methods "
 
+
+#Region "Generics"
+
+
+    Public Function IsAssignableToGenericType(givenType As Type, genericType As Type) As Boolean
+        Dim interfaceTypes = givenType.GetInterfaces()
+
+        For Each it As Type In interfaceTypes
+            If it.IsGenericType AndAlso it.GetGenericTypeDefinition() Is genericType Then
+                Return True
+            End If
+        Next
+
+        If givenType.IsGenericType AndAlso givenType.GetGenericTypeDefinition() Is genericType Then
+            Return True
+        End If
+
+        Dim baseType As Type = givenType.BaseType
+        If baseType Is Nothing Then
+            Return False
+        End If
+
+        Return IsAssignableToGenericType(baseType, genericType)
+    End Function
+
+
+#End Region
+
+
 #Region " Enum methods "
 
     Public Function GetEnum(Of T)(ByVal strEnum As String) As T

@@ -81,10 +81,9 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ExtendedCategory("")> _
-            <MainCategory()> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
-            LineCount(8), Width(500)> _
+        <Required(True)> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
+        LineCount(8), Width(500)> _
         Public Property Expression() As String
             Get
                 Return _Expression

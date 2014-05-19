@@ -197,14 +197,17 @@ Namespace UI.Controls
             ClientAPI.AddButtonConfirm(ctl, message)
         End Sub
 
+        <Obsolete("Use DnnContext instead")> _
         Public Sub AddPageMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
             DotNetNuke.UI.Skins.Skin.AddPageMessage(Me.ParentSkin, heading, strMessage, messageType)
         End Sub
 
+        <Obsolete("Use DnnContext instead")> _
         Public Sub AddModuleMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
             DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me, heading, strMessage, messageType)
         End Sub
 
+        <Obsolete("Use DnnContext instead")> _
         Public Function GetModuleMessageControl(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "") As ModuleMessage
             Return DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
         End Function
