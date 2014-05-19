@@ -1,5 +1,6 @@
 Imports System.Reflection
 Imports Aricie.Services
+Imports System.Text
 
 Namespace Services
 
@@ -13,9 +14,11 @@ Namespace Services
         Public Const LocalizedKey As String = "Localized"
         Public Shared ArrayGetMethod As MethodInfo = GetType(Array).GetMethod("GetValue", New Type() {GetType(Integer)})
 
+        Public Property LevelAccess As TokenLevelAccess = TokenLevelAccess.All
+
         Private _Separator As Char
 
-        Public Sub New(ByVal expression As String, ByVal initialValue As Object)
+        Public Sub New(ByVal expression As String, ByVal initialValue As Object, levelAccess As TokenLevelAccess)
             Me.New(expression, initialValue, ":"c)
         End Sub
 
@@ -175,6 +178,9 @@ Namespace Services
                             End If
                         End If
                         If _CurrentMember IsNot Nothing Then
+                            If LevelAccess = TokenLevelAccess.PropertiesOnly AndAlso _CurrentMember.MemberType <> MemberTypes.Property Then
+                                Throw New ArgumentException(String.Format("Only properties allowed in token replace, {0} is not allowed", _CurrentMember.Name))
+                            End If
 
                             Select Case _CurrentMember.MemberType
                                 Case MemberTypes.Property
@@ -186,7 +192,18 @@ Namespace Services
                                     If paramvalues IsNot Nothing Then
                                         Me.CurrentIndex += paramvalues.Length
                                     End If
-                                    Me._CurrentValue = propInfo.GetValue(Me.CurrentValue, paramvalues)
+                                    Try
+                                        Me._CurrentValue = propInfo.GetValue(Me.CurrentValue, paramvalues)
+                                    Catch ex As Exception
+                                        Dim message As New StringBuilder()
+                                        message.AppendLine("Evaluation Failure: ")
+                                        message.Append("Parameters: ")
+                                        For i As Integer = LBound(objIndexParameters) To UBound(objIndexParameters) Step 1
+                                            Dim objParam As ParameterInfo = objIndexParameters(i)
+                                            message.AppendLine(String.Format("{0} = {1} ;", objParam.Name, paramvalues(i)))
+                                        Next
+                                        Throw New ApplicationException(message.ToString(), ex)
+                                    End Try
                                 Case MemberTypes.Field
                                     Dim fInfo As FieldInfo = DirectCast(_CurrentMember, FieldInfo)
                                     Me._CurrentValue = fInfo.GetValue(Me.CurrentValue)
@@ -218,7 +235,7 @@ Namespace Services
             Catch ex As Exception
                 Dim strMemberName As String = ""
                 If Me.CurrentMember IsNot Nothing Then
-                    strMemberName = String.Format("{0}.{1}", Me.CurrentMember.DeclaringType.Name, Me.CurrentMember.Name.ToString())
+                    strMemberName = String.Format("{0}.{1}", ReflectionHelper.GetSimpleTypeName(Me.CurrentMember.DeclaringType), Me.CurrentMember.Name.ToString())
                 End If
                 Dim strValue As String = ""
                 If Me.CurrentValue IsNot Nothing Then

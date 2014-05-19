@@ -931,7 +931,23 @@ Namespace Services
 
 #Region "Objects manipulation"
 
+
+        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
+
+        Public Shared Function CanCreateObject(objectType As Type) As Boolean
+            Dim toReturn As Boolean
+            If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
+                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse HasDefaultConstructor(objectType)
+                _CanCreateTypes(objectType) = toReturn
+            End If
+            Return toReturn
+        End Function
+
         Public Shared Function CreateObject(ByVal objectType As Type) As Object
+
+            If Not CanCreateObject(objectType) Then
+                Throw New ApplicationException(String.Format("Cannot create object of Type {0}, because it has no default constructor", objectType.AssemblyQualifiedName))
+            End If
 
             Dim toReturn As Object
 
@@ -1104,13 +1120,15 @@ Namespace Services
                 End If
             End If
 
-
-
-
-
             If toReturn Is Nothing Then
-                toReturn = ReflectionHelper.CreateObject(objType)
-                cloneDico(objectToClone) = toReturn
+                If ReflectionHelper.CanCreateObject(objType) Then
+                    toReturn = ReflectionHelper.CreateObject(objType)
+                    cloneDico(objectToClone) = toReturn
+                Else
+                    toReturn = objectToClone
+                    cloneDico(objectToClone) = toReturn
+                    Return toReturn
+                End If
             End If
 
             'Finally, try to clone any writeable property (it may complete or even discard the ienumerable actions)
@@ -1119,7 +1137,7 @@ Namespace Services
             For Each propName As String In props.Keys
                 Dim p As PropertyInfo = props(propName)
 
-                If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
+                If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then ' AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0 (There are times when it is explicitally needed to overwrite such xmlignored properties )
                     Dim pSourceValue As Object = p.GetValue(objectToClone, Nothing)
                     If pSourceValue IsNot Nothing Then
 
@@ -1128,15 +1146,14 @@ Namespace Services
                         p.SetValue(toReturn, pDestValue, Nothing)
                     End If
                 End If
-
             Next
-
-
 
             Return toReturn
 
         End Function
 
+
+        
 
         Public Shared Function BuildParameters(ByVal params As ParameterInfo(), ByVal values As List(Of String)) As Object()
             Dim paramValues As New List(Of Object)
@@ -1238,21 +1255,31 @@ Namespace Services
                     extraTypesList.AddRange(objType.GetGenericArguments())
                 End If
 
-
-                If Not String.IsNullOrEmpty(rootName) Then
-                    Dim rootAttribute As New XmlRootAttribute(rootName)
-                    If extraTypesList.Count = 0 Then
-                        toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, rootAttribute)
+                Try
+                    If Not String.IsNullOrEmpty(rootName) Then
+                        Dim rootAttribute As New XmlRootAttribute(rootName)
+                        If extraTypesList.Count = 0 Then
+                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, rootAttribute)
+                        Else
+                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, Nothing, extraTypesList.ToArray(), rootAttribute, Nothing)
+                        End If
                     Else
-                        toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, Nothing, extraTypesList.ToArray(), rootAttribute, Nothing)
+                        If extraTypesList.Count = 0 Then
+                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType)
+                        Else
+                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, extraTypesList.ToArray())
+                        End If
                     End If
-                Else
-                    If extraTypesList.Count = 0 Then
-                        toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType)
-                    Else
-                        toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, extraTypesList.ToArray())
-                    End If
-                End If
+                Catch ex As Exception
+                    Dim messageBuilder As New StringBuilder()
+                    While ex.InnerException IsNot Nothing
+                        messageBuilder.AppendLine(ex.Message)
+                        ex = ex.InnerException
+                    End While
+                    messageBuilder.AppendLine(ex.Message)
+                    Dim newEx As New ApplicationException(String.Format("Cannot create serializer for type {0}. Stack of messages: {1}.", objType.AssemblyQualifiedName, messageBuilder.ToString()), ex)
+                    Throw (newEx)
+                End Try
 
 
                 'If useCache Then

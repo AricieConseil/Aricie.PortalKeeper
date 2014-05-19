@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.Diagnostics
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Entities.Tabs
 Imports Aricie.DNN.Entities
 Imports DotNetNuke.Entities.Modules
@@ -19,6 +20,7 @@ Imports DotNetNuke.Common.Utilities
 Imports System.Web.UI
 Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
+Imports Aricie.DNN.UI
 
 Namespace Services
     ''' <summary>
@@ -260,6 +262,43 @@ Namespace Services
             End Get
         End Property
 
+
+
+        Private _Page As Page
+
+        ''' <summary>
+        ''' Returns the current page
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public ReadOnly Property Page() As Page
+            Get
+                If _Page Is Nothing Then
+                    If Me.HttpContext IsNot Nothing AndAlso TypeOf Me.HttpContext.CurrentHandler Is Page Then
+                        _Page = DirectCast(Me.HttpContext.CurrentHandler, Page)
+                    End If
+                End If
+                Return _Page
+            End Get
+        End Property
+
+
+        ''' <summary>
+        ''' Returns the current page
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public ReadOnly Property DnnPage() As CDefault
+            Get
+                If Page IsNot Nothing AndAlso TypeOf Page Is CDefault Then
+                    Return DirectCast(Page, CDefault)
+                End If
+                Return Nothing
+            End Get
+        End Property
+
         ''' <summary>
         ''' Returns desktopTabs for the current portal
         ''' </summary>
@@ -293,6 +332,24 @@ Namespace Services
                 Return NukeHelper.User
             End Get
         End Property
+
+
+        Private _CurrentSkin As DotNetNuke.UI.Skins.Skin
+
+        Public ReadOnly Property CurrentSkin As DotNetNuke.UI.Skins.Skin
+            Get
+                If _CurrentSkin Is Nothing Then
+                    If Me.DnnPage IsNot Nothing Then
+                        Dim skinList As IList(Of DotNetNuke.UI.Skins.Skin) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of DotNetNuke.UI.Skins.Skin)(Me.DnnPage)
+                        If skinList.Count > 0 Then
+                            _CurrentSkin = skinList(0)
+                        End If
+                    End If
+                End If
+                Return _CurrentSkin
+            End Get
+        End Property
+
 
         ''' <summary>
         ''' Returns the current module
@@ -340,36 +397,7 @@ Namespace Services
 
 
 
-        ''' <summary>
-        ''' Returns the current page
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public ReadOnly Property Page() As Page
-            Get
-                If Me.HttpContext IsNot Nothing AndAlso TypeOf Me.HttpContext.CurrentHandler Is Page Then
-                    Return DirectCast(Me.HttpContext.CurrentHandler, Page)
-                End If
-                Return Nothing
-            End Get
-        End Property
-
-
-        ''' <summary>
-        ''' Returns the current page
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public ReadOnly Property DnnPage() As CDefault
-            Get
-                If Me.HttpContext IsNot Nothing AndAlso TypeOf Me.HttpContext.CurrentHandler Is CDefault Then
-                    Return DirectCast(Me.HttpContext.CurrentHandler, CDefault)
-                End If
-                Return Nothing
-            End Get
-        End Property
+      
 
         ''' <summary>
         ''' Gets or sets the AdvancedTokenReplace
@@ -554,6 +582,18 @@ Namespace Services
             Me._ModuleForms(value.ModuleId) = value
             Me._CurrentModuleId = value.ModuleId
         End Sub
+
+        Public Sub AddPageMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            DotNetNuke.UI.Skins.Skin.AddPageMessage(Me.CurrentSkin, heading, strMessage, messageType)
+        End Sub
+
+        Public Sub AddModuleMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me.CurrentModule, heading, strMessage, messageType)
+        End Sub
+
+        Public Function GetModuleMessageControl(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "") As ModuleMessage
+            Return DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
+        End Function
 
 
         Public Function IsModuleVisible(ByVal portalId As Integer, ByVal tabid As Integer, ByVal mid As Integer) _

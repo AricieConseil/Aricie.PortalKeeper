@@ -516,6 +516,7 @@
     <Compile Include="UI\WebControls\MultiSelectorControl.vb" />
     <Compile Include="UI\WebControls\MultiSelectorControlBase.vb" />
     <Compile Include="UI\WebControls\PortalAliasSelector.vb" />
+    <Compile Include="UI\WebControls\PortalSelector.vb" />
     <Compile Include="UI\WebControls\ResourcesUtils.vb" />
     <Compile Include="UI\WebControls\SelectorControl.vb" />
     <Compile Include="UI\WebControls\TabSelector.vb" />

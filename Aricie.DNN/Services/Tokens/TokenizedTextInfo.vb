@@ -10,11 +10,12 @@ Namespace Services.Filtering
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <LineCount(10)> _
         <Width(400)> _
-        Public Overridable Property Text() As String = ""
+        Public Property Text() As String = ""
 
-        Public Overridable Property EnableTokenReplace() As Boolean
+        Public Property EnableTokenReplace() As Boolean
 
-        Public Overridable Property AdditionalTokenSource() As TokenSourceInfo = New TokenSourceInfo
+        <ConditionalVisible("EnableTokenReplace", False, True)> _
+        Public Property AdditionalTokenSource() As TokenSourceInfo = New TokenSourceInfo()
 
         Public Overloads Function GetText() As String
             Return GetText(Nothing)
