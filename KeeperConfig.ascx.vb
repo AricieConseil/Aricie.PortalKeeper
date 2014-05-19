@@ -1,7 +1,6 @@
 Imports Aricie.DNN.UI.Controls
 Imports Aricie.DNN.Settings
 Imports Aricie.DNN.Security.Trial
-Imports Aricie.DNN.ComponentModel
 Imports Aricie.Collections
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.Skins.Controls
@@ -12,13 +11,9 @@ Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.Services
 Imports Aricie.Services
 Imports Aricie.DNN.Diagnostics
-Imports Aricie.DNN.Entities
 Imports DotNetNuke.UI.WebControls
-Imports DotNetNuke.UI.Utilities
 Imports System.Collections.Generic
 Imports System.Xml
-Imports System.Security.Cryptography
-Imports System.IO
 Imports Aricie.DNN.Security
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
@@ -38,6 +33,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Protected ReadOnly Property KeeperConfig() As PortalKeeperConfig
             Get
+
                 If _KeeperConfig Is Nothing Then
                     If Me.UserInfo.IsSuperUser Then
                         If Not Me.IsPostBack OrElse Session("KeeperConfig") Is Nothing Then
@@ -128,6 +124,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 AddHandler Me.KC.Debug, AddressOf Me.OnDebug
                 If Not Me.IsPostBack Then
                     AssertInstalled()
+#If DEBUG Then
+                    Me.divDebug.Visible = True
+#End If
                 End If
                 EnforceFreeVersion()
                 BindSettings()
@@ -418,46 +417,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
+#End Region
 
+#Region "Debug"
 
         Private Sub OnCmdDebug()
 
             Try
-                'Dim result As Boolean
+
+                AddNewProviders()
 
 
-                Dim objDoc As XmlDocument = ReflectionHelper.Serialize(New UserBotInfo)
-
-                'Dim crypto As New RSACryptoServiceProvider()
-                'Common.SignXml(objDoc, crypto)
-
-                Dim encrypt As New EncryptionInfo()
-                'encrypt.DoSign(objDoc)
-
-                'Dim sb As New StringBuilder()
-                'Using sw As New StringWriter(sb)
-                '    'Using sw As New StreamWriter(ms)
-                '    Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                '    Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                '        objDoc.WriteTo(writer)
-                '    End Using
-
-                'End Using
-                'Dim obDoc2 As New XmlDocument()
-                'obDoc2.LoadXml(sb.ToString())
-
-
-                ''result = Common.VerifyXml(obDoc2, crypto)
-                'result = encrypt.Verify(obDoc2)
-                Dim signed As String = EncryptionHelper.SignXmlString(objDoc.OuterXml, encrypt)
-                Dim unsigned As String = EncryptionHelper.RemoveSignatureFromXmlString(signed)
-
-                Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.GreenSuccess)
+                'Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.GreenSuccess)
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try
 
-       
+
 
 
         End Sub
@@ -465,7 +441,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub OnDebug(sender As Object, e As DebugEventArgs)
             Try
-              
+
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try
@@ -473,6 +449,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 
         Private Sub AddNewProviders()
+
+            Dim conditionProviders As New List(Of Type)
+            For Each objType As Type In GetType(PortalKeeperConfig).Assembly.GetTypes()
+                If Not objType.IsAbstract Then
+                    If Aricie.Common.IsAssignableToGenericType(objType, GetType(IConditionProvider(Of ))) AndAlso objType IsNot GetType(ConditionProvider(Of )) Then
+                        If objType.IsGenericType Then
+                            objType = objType.MakeGenericType(GetType(Boolean))
+                        End If
+                        If objType.GetInterfaces().Contains(GetType(IConditionProvider(Of Boolean))) Then
+                            Me.AddModuleMessage(objType.AssemblyQualifiedName, ModuleMessage.ModuleMessageType.GreenSuccess)
+                        Else
+                            Me.AddModuleMessage(objType.AssemblyQualifiedName, ModuleMessage.ModuleMessageType.YellowWarning)
+                        End If
+
+                    End If
+                End If
+            Next
+
+
+
+
+
+
+
+
+
+
+
             'Dim newScheduleProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
             'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExecuteSqlAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
             'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(RunProgramAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
@@ -518,20 +522,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
-
-        Public Function GetUserBotSaveTime() As DateTime
-
-        End Function
-
-        Public Sub TouchUserBot()
-
-        End Sub
-
-
-
 #End Region
-
-
 
 
     End Class

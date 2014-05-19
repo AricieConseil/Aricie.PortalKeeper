@@ -24,6 +24,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected WithEvents divConfig As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
         '''<summary>
+        '''divDebug control.
+        '''</summary>
+        '''<remarks>
+        '''Auto-generated field.
+        '''To modify move field declaration from designer file to code-behind file.
+        '''</remarks>
+        Protected WithEvents divDebug As Global.System.Web.UI.HtmlControls.HtmlGenericControl
+
+        '''<summary>
         '''cmdDebug control.
         '''</summary>
         '''<remarks>
@@ -40,15 +49,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         '''To modify move field declaration from designer file to code-behind file.
         '''</remarks>
         Protected WithEvents divHostConfig As Global.System.Web.UI.HtmlControls.HtmlGenericControl
-
-        '''<summary>
-        '''lblConfig control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents lblConfig As Global.System.Web.UI.WebControls.Label
 
         '''<summary>
         '''KC control.

@@ -22,6 +22,8 @@ Imports System.Threading
 '-------------------------------------------------------------------------------
 ' 28/03/2011 - [JBB] - Modification du trim pour ne supprimer les \ qu'à la fin et non pas non plus au début (chemin réseau)
 '-------------------------------------------------------------------------------
+Imports DotNetNuke.Services.Personalization
+Imports DotNetNuke.Entities.Profile
 
 Namespace Services
     Public Module NukeHelper
@@ -55,19 +57,21 @@ Namespace Services
 #Region "instanciated controllers"
 
         Public HostController As New HostSettingsController()
-        Public PortalController As New PortalController
-        Public PortalAliasController As New PortalAliasController
-        Public ModuleController As New ModuleController
+        Public PortalController As New PortalController()
+        Public PortalAliasController As New PortalAliasController()
+        Public ModuleController As New ModuleController()
         Private _RoleController As RoleController
 
-        Public FileController As New FileController
-        Public FolderController As New FolderController
+        Public FileController As New FileController()
+        Public FolderController As New FolderController()
 
-        Public TabController As New TabController
-        Public LogController As New EventLogController
+        Public TabController As New TabController()
+        Public LogController As New EventLogController()
 
-        Public DesktopModuleController As New DesktopModuleController
-        Public ModuleDefinitionController As New ModuleDefinitionController
+        Public DesktopModuleController As New DesktopModuleController()
+        Public ModuleDefinitionController As New ModuleDefinitionController()
+        Public PersonnalizationController As New PersonalizationController()
+        Public ProfileController As New ProfileController()
 
 #End Region
 
@@ -80,7 +84,7 @@ Namespace Services
         Public ReadOnly Property RoleController As RoleController
             Get
                 If _RoleController Is Nothing Then
-                    _RoleController = New RoleController
+                    _RoleController = New RoleController()
                 End If
 
                 Return _RoleController
@@ -230,6 +234,9 @@ Namespace Services
                 Return UserController.GetCurrentUserInfo()
             End Get
         End Property
+
+
+
 
 #End Region
 

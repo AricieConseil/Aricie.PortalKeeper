@@ -1,13 +1,19 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports System.IO
 Imports Aricie.Text
+Imports System.ComponentModel
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public MustInherit Class FileWriteActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits FileReadWriteActionProvider(Of TEngineEvents)
 
-
+        <Browsable(False)> _
+        Public Overrides ReadOnly Property ShowOutput As Boolean
+            Get
+                Return False
+            End Get
+        End Property
 
         <ExtendedCategory("File")> _
         <ConditionalVisible("AccessMode", False, True, FileAccessMode.StringReadWrite)> _

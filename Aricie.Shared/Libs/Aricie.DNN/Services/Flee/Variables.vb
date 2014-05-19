@@ -116,7 +116,6 @@ Namespace Services.Flee
         <ConditionalVisible("ShowAvailableTypes", False, True)> _
         <ActionButton("~/images/action_refresh.gif")> _
         Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)
-            Me.ClearAvailableProviders()
             If pe IsNot Nothing Then
                 pe.ItemChanged = True
                 Me.ShowAvailableTypes = False

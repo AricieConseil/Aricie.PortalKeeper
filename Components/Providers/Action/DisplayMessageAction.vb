@@ -9,8 +9,18 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.Web.UI
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Comment, IconOptions.Normal)> _
+    <Serializable()> _
+        <DisplayName("Display Message Action")> _
+        <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _
+    Public Class DisplayMessageAction
+        Inherits DisplayMessageAction(Of RequestEvent)
+
+    End Class
 
 
 
@@ -18,8 +28,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
         <DisplayName("Display Message Action")> _
         <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _
-    Public Class DisplayMessageAction
-        Inherits MessageBasedAction(Of RequestEvent)
+    Public Class DisplayMessageAction(Of TEngineEvents As IConvertible)
+        Inherits MessageBasedAction(Of TEngineEvents)
 
 
         Public Sub New()
@@ -83,7 +93,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent), ByVal aSync As Boolean) As Boolean
+        Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
             'Dim objLog As New LogInfo()
             If Not aSync Then
                 Dim dnnPage As CDefault = actionContext.DnnContext.DnnPage
@@ -98,17 +108,28 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             End If
                         Next
                     Else
-                        Dim objSkins As List(Of Skin) = FindControlsRecursive(Of Skin)(dnnPage)
-                        If objSkins.Count > 0 Then
-                            Dim objSkin As Skin = objSkins(0)
-                            Skin.AddPageMessage(objSkin, Me._Heading, message, Me._ModuleMessageType)
+                        Dim objSkin As Skin = actionContext.DnnContext.CurrentSkin
+                        Dim done As Boolean
+                        If objSkin IsNot Nothing Then
+                            AddHandler objSkin.Load, AddressOf Skin_Display
+                            AddHandler objSkin.DataBinding, AddressOf Skin_Display
+                            AddHandler objSkin.PreRender, AddressOf Skin_Display
+                            'Skin.AddPageMessage(objSkin, Me._Heading, message, Me._ModuleMessageType)
                             Return True
                         End If
-
                     End If
                 End If
             End If
             Return False
         End Function
+
+        Private Sub Skin_Display(ByVal sender As Object, ByVal e As EventArgs)
+            If DnnContext.Current.GetVar("SkinDisplay" & Me.Name) Is Nothing Then
+                Dim objSkin As Skin = DirectCast(sender, Skin)
+                Skin.AddPageMessage(objSkin, Me._Heading, Message, Me._ModuleMessageType)
+                DnnContext.Current.SetVar("SkinDisplay" & Me.Name, True)
+            End If
+            
+        End Sub
     End Class
 End Namespace

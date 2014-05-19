@@ -8,8 +8,12 @@ Namespace UI.Attributes
     Public Class ProvidersSelectorAttribute
         Inherits SelectorAttribute
 
+        Public Sub New(nameFieldName As String, valueFieldName As String)
+            MyBase.New(nameFieldName, valueFieldName, False, False, "", "", True, False)
+        End Sub
+
         Public Sub New(ByVal nameFieldName As String)
-            MyBase.New(nameFieldName, nameFieldName, False, False, "", "", False, False)
+            MyBase.New(nameFieldName, nameFieldName, False, False, "", "", True, False)
         End Sub
 
         Public Sub New()

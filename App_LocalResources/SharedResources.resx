@@ -123,22 +123,22 @@
   <data name="ValueList_AddNew.Text" xml:space="preserve">
     <value>Add new Value</value>
   </data>
-  <data name="MembershipCondition_MatchRoles.Help" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchRoles.Help" xml:space="preserve">
     <value>Enter a semi-colon separated list of role names, the members of which will trigger the condition on incoming client connections.</value>
   </data>
-  <data name="MembershipCondition_MatchRoles.Text" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchRoles.Text" xml:space="preserve">
     <value>Match Roles</value>
   </data>
-  <data name="MembershipCondition_MatchSuperUsers.Help" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchSuperUsers.Help" xml:space="preserve">
     <value>Check to filter any matching client logged in with a super user account. Be careful before applying that feature to the default rule that your host user is available through a known specific rule condition. </value>
   </data>
-  <data name="MembershipCondition_MatchSuperUsers.Text" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchSuperUsers.Text" xml:space="preserve">
     <value>Match Super Users</value>
   </data>
-  <data name="ClientSourceCondition_ValueList.Help" xml:space="preserve">
+  <data name="ClientSourceCondition`1_ValueList.Help" xml:space="preserve">
     <value>Enter a list of source values to be matched. The current value shown above might help. You can skip the last chars for range matching.</value>
   </data>
-  <data name="ClientSourceCondition_ValueList.Text" xml:space="preserve">
+  <data name="ClientSourceCondition`1_ValueList.Text" xml:space="preserve">
     <value>Values</value>
   </data>
   <data name="PortalAliasCondition_PortalAliases.Help" xml:space="preserve">
@@ -245,10 +245,10 @@ If you wish to continue using it, please purchase our module on &lt;a href="http
   <data name="FirewallSettings_IgnoredExtensions.Text" xml:space="preserve">
     <value>Ignored extensions list</value>
   </data>
-  <data name="MembershipCondition_MatchUserIds.Text" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchUserIds.Text" xml:space="preserve">
     <value>Match User Ids</value>
   </data>
-  <data name="MembershipCondition_MatchUserIds.Help" xml:space="preserve">
+  <data name="MembershipCondition`1_MatchUserIds.Help" xml:space="preserve">
     <value>Enter a semi-colon separated list of integers, corresponding to the user ids to be matched by the condition</value>
   </data>
   <data name="AutoLoginInfo_EditAutoLoginPassword.Help" xml:space="preserve">
@@ -444,7 +444,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Any.Text" xml:space="preserve">
     <value>Any</value>
   </data>
-  <data name="ClientSourceCondition_Specifics.Header" xml:space="preserve">
+  <data name="ClientSourceCondition`1_Specifics.Header" xml:space="preserve">
     <value>Client Source Specifics</value>
   </data>
   <data name="ConditionProviderConfig_IsDoSEnabled.Help" xml:space="preserve">
@@ -504,7 +504,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="KeeperRule`1_StopRule.Text" xml:space="preserve">
     <value>Stop Rule</value>
   </data>
-  <data name="MembershipCondition_Specifics.Header" xml:space="preserve">
+  <data name="MembershipCondition`1_Specifics.Header" xml:space="preserve">
     <value>Membership Specifics</value>
   </data>
   <data name="NamedEntity_Decription.Help" xml:space="preserve">
@@ -831,10 +831,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RequestSource_CurrentValue.Text" xml:space="preserve">
     <value>Current Value</value>
   </data>
-  <data name="ClientSourceCondition_RequestSource.Help" xml:space="preserve">
+  <data name="ClientSourceCondition`1_RequestSource.Help" xml:space="preserve">
     <value>Enter here the parameter to be evaluated</value>
   </data>
-  <data name="ClientSourceCondition_RequestSource.Text" xml:space="preserve">
+  <data name="ClientSourceCondition`1_RequestSource.Text" xml:space="preserve">
     <value>Source Type</value>
   </data>
   <data name="CloseResponse.Text" xml:space="preserve">
@@ -1011,7 +1011,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="AsyncEnabledActionProvider`1_UseTaskQueue.Text" xml:space="preserve">
     <value>Use Asynchronous Queue</value>
   </data>
-  <data name="ClientSourceCondition_DenialOfService.Header" xml:space="preserve">
+  <data name="ClientSourceCondition`1_DenialOfService.Header" xml:space="preserve">
     <value>Ban Settings</value>
   </data>
   <data name="ConditionalSources_AddNew.Text" xml:space="preserve">
@@ -1092,25 +1092,25 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="TransformList_AddNew.Text" xml:space="preserve">
     <value>Add New Transform</value>
   </data>
-  <data name="DisplayMessageAction_MessageSettings.Header" xml:space="preserve">
+  <data name="DisplayMessageAction`1_MessageSettings.Header" xml:space="preserve">
     <value>Message Settings</value>
   </data>
-  <data name="DisplayMessageAction_ModuleId.Help" xml:space="preserve">
+  <data name="DisplayMessageAction`1_ModuleId.Help" xml:space="preserve">
     <value>You can optionnally enter a target module, such that the message is displayed specifically in that module</value>
   </data>
-  <data name="DisplayMessageAction_ModuleId.Text" xml:space="preserve">
+  <data name="DisplayMessageAction`1_ModuleId.Text" xml:space="preserve">
     <value>Module Id</value>
   </data>
-  <data name="DisplayMessageAction_ModuleMessageType.Help" xml:space="preserve">
+  <data name="DisplayMessageAction`1_ModuleMessageType.Help" xml:space="preserve">
     <value>This accounts for the coloured icon associated with the message</value>
   </data>
-  <data name="DisplayMessageAction_ModuleMessageType.Text" xml:space="preserve">
+  <data name="DisplayMessageAction`1_ModuleMessageType.Text" xml:space="preserve">
     <value>Message Type</value>
   </data>
-  <data name="DisplayMessageAction_Specifics.Header" xml:space="preserve">
+  <data name="DisplayMessageAction`1_Specifics.Header" xml:space="preserve">
     <value>Display Message Specifics</value>
   </data>
-  <data name="DisplayMessageAction_TechnicalSettings.Header" xml:space="preserve">
+  <data name="DisplayMessageAction`1_TechnicalSettings.Header" xml:space="preserve">
     <value>TechnicalSettings</value>
   </data>
   <data name="GreenSuccess.Text" xml:space="preserve">
@@ -1122,10 +1122,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="YellowWarning.Text" xml:space="preserve">
     <value>Yellow Warning</value>
   </data>
-  <data name="ClientSourceCondition_RegexList.Help" xml:space="preserve">
+  <data name="ClientSourceCondition`1_RegexList.Help" xml:space="preserve">
     <value>You can optionally enter a list of regular expressions to be matched in addition to enumerated static values. </value>
   </data>
-  <data name="ClientSourceCondition_RegexList.Text" xml:space="preserve">
+  <data name="ClientSourceCondition`1_RegexList.Text" xml:space="preserve">
     <value>Regular Expressions</value>
   </data>
   <data name="RegexList_AddNew.Text" xml:space="preserve">
@@ -1542,10 +1542,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Items_AddNew.Text" xml:space="preserve">
     <value>Add New Item</value>
   </data>
-  <data name="SelectionSetCondition_Items.Help" xml:space="preserve">
+  <data name="SelectionSetCondition`1_Items.Help" xml:space="preserve">
     <value>Add here the elements of the set of items to be matched</value>
   </data>
-  <data name="SelectionSetCondition_Items.Text" xml:space="preserve">
+  <data name="SelectionSetCondition`1_Items.Text" xml:space="preserve">
     <value>Matching Set</value>
   </data>
   <data name="DnnPageCondition_Specifics.Header" xml:space="preserve">
@@ -2133,7 +2133,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="MessageBasedAction`1_MessageSettings.Header" xml:space="preserve">
     <value>Message Settings</value>
   </data>
-  <data name="SelectionSetCondition_Specifics.Header" xml:space="preserve">
+  <data name="SelectionSetCondition`1_Specifics.Header" xml:space="preserve">
     <value>Selection Set</value>
   </data>
   <data name="SubConditionsProvider`1_Specifics.Header" xml:space="preserve">
@@ -4173,16 +4173,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="PagePreRenderComplete.Text" xml:space="preserve">
     <value>Page PreRender Complete</value>
   </data>
-  <data name="DisplayMessageAction_Heading.Help" xml:space="preserve">
+  <data name="DisplayMessageAction`1_Heading.Help" xml:space="preserve">
     <value>You can optionally enter a heading to be inserted as a label together with your message</value>
   </data>
-  <data name="DisplayMessageAction_Heading.Text" xml:space="preserve">
+  <data name="DisplayMessageAction`1_Heading.Text" xml:space="preserve">
     <value>Heading</value>
   </data>
-  <data name="DisplayMessageAction_IsModuleMessage.Help" xml:space="preserve">
+  <data name="DisplayMessageAction`1_IsModuleMessage.Help" xml:space="preserve">
     <value>Check if you want to display your message within a specific module rather than as a page message</value>
   </data>
-  <data name="DisplayMessageAction_IsModuleMessage.Text" xml:space="preserve">
+  <data name="DisplayMessageAction`1_IsModuleMessage.Text" xml:space="preserve">
     <value>Module Message</value>
   </data>
   <data name="UserBotInfo_ReadonlyEntities.Help" xml:space="preserve">
@@ -5609,5 +5609,206 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="SmartFile_CustomEncryption.Text" xml:space="preserve">
     <value>Custom Encryption</value>
+  </data>
+  <data name="Adapters_AddNew.Text" xml:space="preserve">
+    <value>Add New Control Adapter</value>
+  </data>
+  <data name="Adapters_Copy.Text" xml:space="preserve">
+    <value>Copy Control Adapters</value>
+  </data>
+  <data name="Adapters_Export.Text" xml:space="preserve">
+    <value>Export Control Adapters</value>
+  </data>
+  <data name="Adapters_Import.Text" xml:space="preserve">
+    <value>Import Control Adapters</value>
+  </data>
+  <data name="Adapters_Paste.Text" xml:space="preserve">
+    <value>Paste Control Adapters</value>
+  </data>
+  <data name="After.Text" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="Before.Text" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="ChildControlEvent.Text" xml:space="preserve">
+    <value>Child Control Event</value>
+  </data>
+  <data name="ControlAdaptersConfig_Adapters.Help" xml:space="preserve">
+    <value>You can add, edit, export or import a collection of control adapters settings. </value>
+  </data>
+  <data name="ControlAdaptersConfig_Adapters.Text" xml:space="preserve">
+    <value>Adapters</value>
+  </data>
+  <data name="ControlAdaptersConfig_Enabled.Help" xml:space="preserve">
+    <value>This is a central switch to activate or deactivate all control adapters defined here.</value>
+  </data>
+  <data name="ControlAdaptersConfig_Enabled.Text" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedControlPath.Help" xml:space="preserve">
+    <value>Enter the path of an aspx page or an ascx user control to be adapted. The corresponding control will be loaded once at runtime to figure out its generated type.</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedControlPath.Text" xml:space="preserve">
+    <value>Adapted Control Path</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedControlType.Help" xml:space="preserve">
+    <value>The is the qualified .Net type of the control to be adapted. </value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedControlType.Text" xml:space="preserve">
+    <value>Adapted Control Type</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedMode.Help" xml:space="preserve">
+    <value>You can either designate a control to be adapted by its .Net type name, or by its path for a Page or a User Control. The latter is paticularly userful with codefile user control, the  assembly of which might be unknown at runtime. The underlying .Net type is obtained by instanciating the control once. </value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedMode.Text" xml:space="preserve">
+    <value>Adapted Control Mode</value>
+  </data>
+  <data name="ControlAdapterSettings_AdapterControlType.Help" xml:space="preserve">
+    <value>The is the qualified .Net type of the adapter control class; it should inherit directly or indirectly from the ControlAdapter base class.</value>
+  </data>
+  <data name="ControlAdapterSettings_AdapterControlType.Text" xml:space="preserve">
+    <value>Adapter Control Type</value>
+  </data>
+  <data name="ControlAdapterSettings_AdapterMode.Help" xml:space="preserve">
+    <value>There are 2 Control Adapter modes: Type, where you enter the .Net type name of a class, that inherits the base ControlAdapter or WebControlAdapter classes, or Dynamic Adapters, which are handlers built with the same engine as the firewall or scheduled bots.</value>
+  </data>
+  <data name="ControlAdapterSettings_AdapterMode.Text" xml:space="preserve">
+    <value>Control Adapter Mode</value>
+  </data>
+  <data name="ControlAdapterSettings_DynamicHandlers.Help" xml:space="preserve">
+    <value>Dynamic Handlers are individual actions to be attached to a life cycle event of a control or a child control .</value>
+  </data>
+  <data name="ControlAdapterSettings_DynamicHandlers.Text" xml:space="preserve">
+    <value>Dynamic Handlers</value>
+  </data>
+  <data name="ControlAdapterSettings_HandlersRegistrationStep.Help" xml:space="preserve">
+    <value>If some your dynamic handlers are hooked to control or child controls events, you need to specify when to register those event handlers, according to when the controls are available for hooking.</value>
+  </data>
+  <data name="ControlAdapterSettings_HandlersRegistrationStep.Text" xml:space="preserve">
+    <value>Event Handlers Registration Step</value>
+  </data>
+  <data name="ControlEvent.Text" xml:space="preserve">
+    <value>Control Event</value>
+  </data>
+  <data name="CreateChildControls.Text" xml:space="preserve">
+    <value>CreateChildControls</value>
+  </data>
+  <data name="DynamicAdapter.Text" xml:space="preserve">
+    <value>Dynamic Adapter</value>
+  </data>
+  <data name="DynamicHandlerSettings_BaseHandlerMode.Help" xml:space="preserve">
+    <value>This indicates if the dynamic handler must be run before, after, the original handler, or if the original handler must be removed.</value>
+  </data>
+  <data name="DynamicHandlerSettings_BaseHandlerMode.Text" xml:space="preserve">
+    <value>Base Handler Mode</value>
+  </data>
+  <data name="DynamicHandlerSettings_ChildControlId.Help" xml:space="preserve">
+    <value>If the dynamic handler is configured to handle a child control event, the child control to be hooked is found by its id.</value>
+  </data>
+  <data name="DynamicHandlerSettings_ChildControlId.Text" xml:space="preserve">
+    <value>Child Control Id</value>
+  </data>
+  <data name="DynamicHandlerSettings_ControlEventName.Help" xml:space="preserve">
+    <value>In order to hook the dynamic handler up to the adapted control or one of its child controls event, you must provide the event name.</value>
+  </data>
+  <data name="DynamicHandlerSettings_ControlEventName.Text" xml:space="preserve">
+    <value>Control Event</value>
+  </data>
+  <data name="DynamicHandlerSettings_MainControlStep.Help" xml:space="preserve">
+    <value>Defines when to run the configured handler. It can be associated to one of the available overrides, a control's event or a child control's event.</value>
+  </data>
+  <data name="DynamicHandlerSettings_MainControlStep.Text" xml:space="preserve">
+    <value>Handler Step</value>
+  </data>
+  <data name="DynamicHandlers_AddNew.Text" xml:space="preserve">
+    <value>Add New Dynamic Handler</value>
+  </data>
+  <data name="DynamicHandlers_Copy.Text" xml:space="preserve">
+    <value>Copy Dynamic Handlers</value>
+  </data>
+  <data name="DynamicHandlers_Export.Text" xml:space="preserve">
+    <value>Export Dynamic Handlers</value>
+  </data>
+  <data name="DynamicHandlers_Import.Text" xml:space="preserve">
+    <value>Import Dynamic Handlers</value>
+  </data>
+  <data name="DynamicHandlers_Paste.Text" xml:space="preserve">
+    <value>Paste Dynamic Handlers</value>
+  </data>
+  <data name="OnInit.Text" xml:space="preserve">
+    <value>OnInit</value>
+  </data>
+  <data name="OnLoad.Text" xml:space="preserve">
+    <value>OnLoad</value>
+  </data>
+  <data name="OnPreRender.Text" xml:space="preserve">
+    <value>OnPreRender</value>
+  </data>
+  <data name="OnUnload.Text" xml:space="preserve">
+    <value>OnUnload</value>
+  </data>
+  <data name="Path.Text" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="PortalKeeperConfig_ControlAdapters.Header" xml:space="preserve">
+    <value>Control Adapters</value>
+  </data>
+  <data name="PortalKeeperConfig_ControlAdapters.Help" xml:space="preserve">
+    <value>In this section, you manage a collection of control adapters, to be dynamically registered during asp.net lifecycle. They can be traditional strongly typed Control adapters, or dynamical adapters leveraging the same engine as the firewall and schedule bots.</value>
+  </data>
+  <data name="PortalKeeperConfig_ControlAdapters.Text" xml:space="preserve">
+    <value>Attach Adapters to compiled or user controls </value>
+  </data>
+  <data name="Removed.Text" xml:space="preserve">
+    <value>Removed</value>
+  </data>
+  <data name="Render.Text" xml:space="preserve">
+    <value>Render</value>
+  </data>
+  <data name="RenderChildren.Text" xml:space="preserve">
+    <value>RenderChildren</value>
+  </data>
+  <data name="RuleEngineSettings`1_Actions.Header" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="RuleEngineSettings`1_Actions.Help" xml:space="preserve">
+    <value>Here is a sequential list of actions to be executed. Don't forget to update the providers section for portability.</value>
+  </data>
+  <data name="RuleEngineSettings`1_Actions.Text" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="Type.Text" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ActionProviders_Copy.Text" xml:space="preserve">
+    <value>Copy Action Providers</value>
+  </data>
+  <data name="ActionProviders_Paste.Text" xml:space="preserve">
+    <value>Paste Action Providers</value>
+  </data>
+  <data name="ConditionProviders_Copy.Text" xml:space="preserve">
+    <value>Copy Condition Providers</value>
+  </data>
+  <data name="ConditionProviders_Paste.Text" xml:space="preserve">
+    <value>Paste Condition Providers</value>
+  </data>
+  <data name="RuleEngineSettings`1_ImportAvailableProviders.Text" xml:space="preserve">
+    <value>Import Available Providers</value>
+  </data>
+  <data name="ActionProvider`1_TechnicalSettings.Header" xml:space="preserve">
+    <value>Technical Settings</value>
+  </data>
+  <data name="Random.Text" xml:space="preserve">
+    <value>Random</value>
+  </data>
+  <data name="Sequential.Text" xml:space="preserve">
+    <value>Sequential</value>
+  </data>
+  <data name="WebProxyPool_PickMethod.Help" xml:space="preserve">
+    <value>Amongst the available proxies from the pool, you can choose to process them sequentially or in random order.</value>
+  </data>
+  <data name="WebProxyPool_PickMethod.Text" xml:space="preserve">
+    <value>Selection Method</value>
   </data>
 </root>

@@ -354,7 +354,7 @@ Namespace UI.WebControls
             Dim typeName As String = Me.GetType.Name & "."
             Dim localText As String
             For i As Integer = 0 To Me.Items.Count - 1
-                localText = Localization.GetString(typeName & Me.Items(i).Text, Me.LocalResourceFile)
+                localText = Localization.GetString(typeName & Me.Items(i).Value, Me.LocalResourceFile)
                 If Not String.IsNullOrEmpty(localText) Then
                     Me.Items(i).Text = localText
                 End If

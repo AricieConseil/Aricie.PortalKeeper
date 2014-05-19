@@ -23,12 +23,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me._DefaultTEngineEvents = defaultLifeCycleEvent
         End Sub
 
+        <Browsable(False)> _
+        Public ReadOnly Property HasEvent As Boolean
+            Get
+                Return GetType(TEngineEvents) IsNot GetType(Boolean)
+            End Get
+        End Property
+
+        <ConditionalVisible("HasEvent", True, True)> _
         <Category("RequestEvents")> _
         Public Property MinTEngineEvents() As TEngineEvents
-            
+
+        <ConditionalVisible("HasEvent", True, True)> _
         <Category("RequestEvents")> _
         Public Property MaxTEngineEvents() As TEngineEvents
-            
+
+        <ConditionalVisible("HasEvent", True, True)> _
         <Category("RequestEvents")> _
         Public Property DefaultTEngineEvents() As TEngineEvents
             

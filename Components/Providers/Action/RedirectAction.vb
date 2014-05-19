@@ -15,6 +15,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class RedirectAction
         Inherits ActionProvider(Of RequestEvent)
 
+    End Class
+
+
+    <ActionButton(IconName.ExternalLink, IconOptions.Normal)> _
+    <Serializable()> _
+        <DisplayName("Redirect Action")> _
+        <Description("Redirect the current client to a specified url")> _
+    Public Class RedirectAction(Of TEngineEvents As IConvertible)
+        Inherits ActionProvider(Of TEngineEvents)
+
 
         Private _Target As New ControlUrlInfo
 
@@ -44,7 +54,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent)) As Boolean
+        Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             'actionContext.DnnContext.Response.Redirect(Me._Target.UrlPath, Me._EndResponse)
             Return Me._Target.Redirect(actionContext.DnnContext.HttpContext)
         End Function

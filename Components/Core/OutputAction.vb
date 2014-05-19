@@ -20,9 +20,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Simulation As Boolean
         Private _SimulationData As CData = ""
 
+        <Browsable(False)> _
+        Public Overridable ReadOnly Property ShowOutput As Boolean
+            Get
+                Return True
+            End Get
+        End Property
 
-
-
+        <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property OutputName() As String
             Get
@@ -35,6 +40,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _AddItems As Boolean
 
+        <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property AddItems() As Boolean
             Get
@@ -45,7 +51,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
+        <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property Simulation() As Boolean
             Get
@@ -60,7 +66,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <Width(500)> _
             <LineCount(8)> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <ConditionalVisible("Simulation", False, True, True)> _
+            <ConditionalVisible("ShowOutput", False, True)> _
+            <ConditionalVisible("Simulation", False, True)> _
         Public Overridable Property SimulationData() As CData
             Get
                 Return _SimulationData

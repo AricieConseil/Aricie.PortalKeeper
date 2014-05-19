@@ -51,7 +51,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(actionContext.CurrentEngine.ExceptionDumpAllVars, dumpVars)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
-                        Dim message As String = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0} Dumped Vars: {5}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
+                        Dim message As String
+                        If actionContext.CurrentRule IsNot Nothing Then
+                            message = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0} Dumped Vars: {5}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
+                        Else
+                            message = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} No Rule {0} Action Name: {3} {0} Dumped Vars: {4}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, element.Name, xmlDump)
+                        End If
+
                         Dim newEx As New ApplicationException(message, ex)
                         If Not element.DontLogExceptions Then
                             DotNetNuke.Services.Exceptions.LogException(newEx)

@@ -7,6 +7,11 @@ Imports DotNetNuke.Services.Exceptions
 
 Namespace Services
 
+    Public Enum TokenLevelAccess
+        All
+        PropertiesOnly
+    End Enum
+
     ''' <summary>
     ''' Reflection access for complex types in the ATR context
     ''' </summary>
@@ -40,6 +45,11 @@ Namespace Services
             Me.New(objTokenSource, resourceFile)
             Me._cacheable = cacheablility
         End Sub
+
+
+        Public Property LevelAccess As TokenLevelAccess = TokenLevelAccess.All
+
+
 
 #End Region
         ''' <summary>
@@ -83,7 +93,7 @@ Namespace Services
 
         Private Overloads Function GetValue(ByVal strPropertyName As String, ByRef isLocalized As Boolean) As Object
 
-            Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource)
+            Dim propExplorer As New PropertyExplorer(strPropertyName, Me._TokenSource, Me.LevelAccess)
 
             propExplorer.GetDeepPropertyValue(Me)
 

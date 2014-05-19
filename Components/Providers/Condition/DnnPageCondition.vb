@@ -6,14 +6,24 @@ Imports DotNetNuke.Entities.Tabs
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
+   <Serializable()> _
+       <DisplayName("DotNetNuke Page Condition")> _
+       <Description("Matches according to the target DNN Page as defined in the url")> _
+    Public Class DnnPageCondition
+        Inherits DnnPageCondition(Of RequestEvent)
+
+    End Class
+
+
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
     <Serializable()> _
         <DisplayName("DotNetNuke Page Condition")> _
         <Description("Matches according to the target DNN Page as defined in the url")> _
-    Public Class DnnPageCondition
-        Inherits SelectionSetCondition
+    Public Class DnnPageCondition(Of TEngineEvents As IConvertible)
+        Inherits SelectionSetCondition(Of TEngineEvents)
 
 
-        Public Overrides Function GetCurrentValue(ByVal context As PortalKeeperContext(Of RequestEvent)) As Integer
+        Public Overrides Function GetCurrentValue(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Integer
             Dim currentPage As TabInfo = context.DnnContext.Portal.ActiveTab
             If currentPage IsNot Nothing Then
                 Return currentPage.TabID

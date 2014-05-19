@@ -116,7 +116,11 @@ Namespace Providers
         Public Overrides Sub LogException(ByVal ex As System.Exception)
             Dim currentModule As PortalModuleBase = DnnContext.Current.CurrentModule
             If currentModule IsNot Nothing Then
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)
+                If DnnContext.Current.User.IsSuperUser Then
+                    DnnContext.Current.AddModuleMessage(ex.ToString, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.RedError)
+                Else
+                    DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)
+                End If
             Else
                 DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
             End If

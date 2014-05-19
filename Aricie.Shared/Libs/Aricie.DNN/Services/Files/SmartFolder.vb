@@ -28,6 +28,7 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Overridable Property FolderPath As New FolderPathInfo()
 
+        <XmlIgnore()> _
         <AutoPostBack()> _
         <Editor(GetType(Aricie.DNN.UI.WebControls.EditControls.SelectorEditControl), GetType(EditControl))> _
         <Selector("FileName", "FileId", False, True, "Select a file", "", False, True)>

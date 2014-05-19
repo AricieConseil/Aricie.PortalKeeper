@@ -10,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ActionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
 
-
+        <Browsable(False)> _
         Public ReadOnly Property HasEvent As Boolean
             Get
                 Return GetType(TEngineEvents) IsNot GetType(Boolean)
