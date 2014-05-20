@@ -125,6 +125,8 @@ Namespace Services.Flee
             MyBase.New(expressionText)
         End Sub
 
+        <ExtendedCategory("ExpressionOwner")> _
+        <AutoPostBack()> _
         Public Property OverrideOwner As Boolean
             Get
                 Return InternalOverrideOwner
@@ -132,7 +134,7 @@ Namespace Services.Flee
             Set(value As Boolean)
                 If value <> InternalOverrideOwner Then
                     If value Then
-                        InternalNewOwner = New SimpleExpression(Of Object)
+                        InternalNewOwner = New FleeExpressionInfo(Of Object)
                     Else
                         InternalNewOwner = Nothing
                     End If
@@ -141,12 +143,13 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <ExtendedCategory("ExpressionOwner")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
-        Public Property NewOwner As SimpleExpression(Of Object)
+        Public Property NewOwner As FleeExpressionInfo(Of Object)
             Get
                 Return InternalNewOwner
             End Get
-            Set(value As SimpleExpression(Of Object))
+            Set(value As FleeExpressionInfo(Of Object))
                 InternalNewOwner = value
             End Set
         End Property

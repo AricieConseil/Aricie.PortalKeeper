@@ -80,9 +80,11 @@ Namespace UI.WebControls
                     Dim tokenPath As String = objPath.Replace("."c, ":"c).Replace("["c, ":").Replace("]"c, "")
                     Try
                         toReturn = propAccess.GetValue(tokenPath)
-                    Catch ex As Exception
-                        Dim message As String = "DataSource subpath unavailable: """ & tokenPath & """"
-                        ExceptionHelper.LogException(New ApplicationException(message, ex))
+                        'Catch ex As Exception
+                        '    Dim message As String = "DataSource subpath unavailable: """ & tokenPath & """"
+                        '    ExceptionHelper.LogException(New ApplicationException(message, ex))
+                    Catch
+                        toReturn = Nothing
                     End Try
                 Else
                     toReturn = Me.OriginalEntity

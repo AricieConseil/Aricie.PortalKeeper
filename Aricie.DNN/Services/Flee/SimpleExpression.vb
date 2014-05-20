@@ -27,7 +27,8 @@ Namespace Services.Flee
         Protected InternalImportBuiltinTypes As Boolean = True
 
         Protected InternalOverrideOwner As Boolean
-        Protected InternalNewOwner As SimpleExpression(Of Object)
+        Protected InternalNewOwner As FleeExpressionInfo(Of Object)
+
         Protected InternalVariables As New Variables
 
 
@@ -257,7 +258,9 @@ Namespace Services.Flee
             If Me.InternalImportBuiltinTypes Then
                 toReturn.Imports.ImportBuiltinTypes()
                 toReturn.Imports.AddType(GetType(System.Math), "")
-                toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "")
+                toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "Enumerable")
+                'toReturn.Imports.AddType(GetType(ReflectionHelper), "ReflectionHelper")
+                'toReturn.Imports.AddType(GetType(System.Linq.Expressions.Expression), "Expression")
             End If
             For Each staticImport As FleeImportInfo In Me.InternalStaticImports
                 toReturn.Imports.AddType(staticImport.DotNetType.GetDotNetType, staticImport.CustomNamespace)

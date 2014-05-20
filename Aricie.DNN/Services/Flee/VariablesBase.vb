@@ -60,14 +60,11 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, DotNetType(Of VariableInfo))
-            Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
             If Me._ExpressionTypes.Count = 0 Then
                 Me._ExpressionTypes.AddRange(GetInitialTypes())
             End If
-            For Each simpleDotNetType As DotNetType In Me._ExpressionTypes
-                toReturn.Concat(Me.Genericize(simpleDotNetType))
-            Next
-            Return toReturn
+
+            Return (From simpleDotNetType In Me._ExpressionTypes From objKeyPair In Me.Genericize(simpleDotNetType) Select objKeyPair).ToDictionary(Function(objKeyPair) objKeyPair.Key, Function(objKeyPair) objKeyPair.Value)
         End Function
 
 

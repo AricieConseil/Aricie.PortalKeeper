@@ -1033,13 +1033,23 @@ Namespace Services
             If sourceObject IsNot Nothing AndAlso targetObject IsNot Nothing Then
                 Dim objType As Type = sourceObject.GetType()
                 Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
+                Dim targetProps As Dictionary(Of String, PropertyInfo) = Nothing
+                If targetObject.GetType() IsNot objType Then
+                    targetProps = GetPropertiesDictionary(targetObject.GetType())
+                End If
+                Dim targetProp As PropertyInfo = Nothing
 
                 For Each propName As String In props.Keys
                     Dim p As PropertyInfo = props(propName)
 
-                    If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
+                    If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 AndAlso (targetProps Is Nothing OrElse targetProps.TryGetValue(p.Name, targetProp)) Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
                         Dim pSourceValue As Object = p.GetValue(sourceObject, Nothing)
-                        p.SetValue(targetObject, pSourceValue, Nothing)
+                        If targetProp IsNot Nothing Then
+                            targetProp.SetValue(targetObject, pSourceValue, Nothing)
+                        Else
+                            p.SetValue(targetObject, pSourceValue, Nothing)
+                        End If
+
                     End If
                 Next
             End If
@@ -1221,7 +1231,18 @@ Namespace Services
             Return objEventInfo.EventHandlerType.GetMethod("Invoke").GetParameters()
         End Function
 
-        Private Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
+        Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
+            Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
+            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+            Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
+
+            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters.ToArray())
+            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
+
+            objEventInfo.AddEventHandler(item, handler)
+        End Sub
+
+        Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
             Dim parameters = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
 
             Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
