@@ -44,7 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         Public Property Condition() As KeeperCondition(Of TEngineEvents) = New KeeperCondition(Of TEngineEvents)
 
-
+        <Browsable(False)> _
         Public ReadOnly Property HasEvent As Boolean
             Get
                 Return GetType(TEngineEvents) IsNot GetType(Boolean)

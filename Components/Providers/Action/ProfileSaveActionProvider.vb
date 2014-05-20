@@ -24,7 +24,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim objValue As Object = Me.Value.Evaluate(actionContext, actionContext)
             Select Case ProfileType
                 Case PortalKeeper.ProfileType.Personalization
-                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, Me.PortalId)
+                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, objUser.PortalID)
                     Personalization.SetProfile(pInfo, Me.NamingContainer, Me.PropertyName, objValue)
                     NukeHelper.PersonnalizationController.SaveProfile(pInfo)
                 Case PortalKeeper.ProfileType.Identity
@@ -35,7 +35,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         objUser.Profile.SetProfileProperty(PropertyName, objDef.PropertyValue)
                     End If
 
-                    UserController.UpdateUser(Me.PortalId, objUser)
+                    UserController.UpdateUser(objUser.PortalID, objUser)
             End Select
             Return True
         End Function

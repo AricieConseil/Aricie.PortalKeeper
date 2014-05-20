@@ -14,12 +14,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         OnInit
         CreateChildControls
         OnLoad
-        ControlEvent
-        ChildControlEvent
         OnPreRender
         Render
         RenderChildren
         OnUnload
+        ControlEvent
+        ChildControlEvent
     End Enum
 
     Public Enum ControlBaseHandlerMode

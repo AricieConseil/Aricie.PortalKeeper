@@ -19,11 +19,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
         Public Property EditChildControl As Boolean
 
+        <Required(True)> _
+        <ConditionalVisible("EditChildControl", False, True)>
+       <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
+        Public Overrides Property ChildControlId As String = String.Empty
+
         '<Selector("Text", "Value", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
          <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
          <ConditionalVisible("EditChildControl", True, True)>
-        <AutoPostBack> _
+        <AutoPostBack()> _
         <XmlIgnore()> _
         Public Property SelectedChildControlId() As String
             Get
@@ -34,8 +39,57 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <Browsable(False)> _
+        Public ReadOnly Property ChildControlMember As MemberInfo
+            Get
+                Dim targetControlType As Type = GetType(TAdaptedType)
+                Return ReflectionHelper.GetMember(targetControlType, ChildControlId, True, True)
+            End Get
+        End Property
+
+
+        <Browsable(False)> _
+        Public ReadOnly Property EventControlType As Type
+            Get
+                Dim targetControlType As Type = GetType(TAdaptedType)
+                If Me.MainControlStep = ControlStep.ChildControlEvent Then
+                    Dim objMember As MemberInfo = ChildControlMember
+                    If objMember IsNot Nothing AndAlso TypeOf objMember Is FieldInfo Then
+                        targetControlType = DirectCast(objMember, FieldInfo).FieldType
+                    Else
+                        targetControlType = GetType(Control)
+                    End If
+                End If
+                Return targetControlType
+            End Get
+        End Property
+
+        <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
+        Public ReadOnly Property EventControlTypeAsString As String
+            Get
+                Return ReflectionHelper.GetSafeTypeName(EventControlType)
+            End Get
+        End Property
+
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
+        Public ReadOnly Property ChildControlDeclaringType As String
+            Get
+                Dim objMember As MemberInfo = ChildControlMember
+                If objMember IsNot Nothing AndAlso TypeOf objMember Is FieldInfo Then
+                    Return ReflectionHelper.GetSafeTypeName(DirectCast(objMember, FieldInfo).DeclaringType)
+                Else
+                    Return ReflectionHelper.GetSafeTypeName(GetType(TAdaptedType))
+                End If
+            End Get
+        End Property
+
+        <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
         Public Property EditEventName As Boolean
+
+        <Required(True)> _
+        <ConditionalVisible("EditEventName", False, True)> _
+         <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
+        Public Overrides Property ControlEventName As String = String.Empty
 
         '<Selector("Text", "Value", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
@@ -52,13 +106,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("EditChildControl", False, True)>
-        <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
-        Public Overrides Property ChildControlId As String = String.Empty
-
-        <ConditionalVisible("EditEventName", False, True)> _
-        <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
-        Public Overrides Property ControlEventName As String = String.Empty
+        <LabelMode(LabelMode.Left)> _
+        <XmlIgnore()> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
+        Public ReadOnly Property AvailableParameters As SerializableDictionary(Of String, String)
+            Get
+                Dim toReturn As New SerializableDictionary(Of String, String)
+                Select Case Me.MainControlStep
+                    Case ControlStep.ControlEvent, ControlStep.ChildControlEvent
+                        Dim objEvent As EventInfo = EventControlType.GetEvent(ControlEventName)
+                        If objEvent IsNot Nothing Then
+                            Dim objParams As ParameterInfo() = ReflectionHelper.GetEventParameters(objEvent)
+                            For Each objParam As ParameterInfo In objParams
+                                toReturn.Add(objParam.Name, ReflectionHelper.GetSafeTypeName(objParam.ParameterType))
+                            Next
+                        End If
+                    Case ControlStep.Render, ControlStep.RenderChildren
+                        toReturn.Add("writer", ReflectionHelper.GetSafeTypeName(GetType(HtmlTextWriter)))
+                    Case Else
+                        toReturn.Add("e", ReflectionHelper.GetSafeTypeName(GetType(EventArgs)))
+                End Select
+                Return toReturn
+            End Get
+        End Property
+        
 
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
@@ -66,34 +137,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Select Case propertyName
                 Case "SelectedChildControlId"
                     Dim objField As FieldInfo
-                    Dim typeMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(GetType(TAdaptedType))
-                    For Each objMembersByName As KeyValuePair(Of String, List(Of MemberInfo)) In typeMembers
-                        For Each objMember As MemberInfo In objMembersByName.Value
-                            objField = TryCast(objMember, FieldInfo)
-                            If objField IsNot Nothing AndAlso GetType(Control).IsAssignableFrom(objField.FieldType) Then
-                                toReturn.Add(objField.Name)
-                            End If
-                        Next
+                    Dim typeMembers As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(GetType(TAdaptedType), True, True)
+                    For Each objMembersByName As KeyValuePair(Of String, MemberInfo) In typeMembers
+                        objField = TryCast(objMembersByName.Value, FieldInfo)
+                        If objField IsNot Nothing AndAlso GetType(Control).IsAssignableFrom(objField.FieldType) Then
+                            toReturn.Add(objField.Name)
+                        End If
                     Next
                 Case "SelectedControlEventName"
                     Dim objEvent As EventInfo
-                    Dim targetControlType As Type = GetType(TAdaptedType)
-                    If Me.MainControlStep = ControlStep.ChildControlEvent Then
-                        Dim objMember As MemberInfo = ReflectionHelper.GetMember(targetControlType, ChildControlId)
-                        If objMember IsNot Nothing AndAlso TypeOf objMember Is FieldInfo Then
-                            targetControlType = DirectCast(objMember, FieldInfo).FieldType
-                        Else
-                            targetControlType = GetType(Control)
+                    Dim targetControlType As Type = EventControlType
+                    Dim typeMembers As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(targetControlType, True, True)
+                    For Each objMembersByName As KeyValuePair(Of String, MemberInfo) In typeMembers
+                        objEvent = TryCast(objMembersByName.Value, EventInfo)
+                        If objEvent IsNot Nothing Then
+                            toReturn.Add(objEvent.Name)
                         End If
-                    End If
-                    Dim typeMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(targetControlType)
-                    For Each objMembersByName As KeyValuePair(Of String, List(Of MemberInfo)) In typeMembers
-                        For Each objMember As MemberInfo In objMembersByName.Value
-                            objEvent = TryCast(objMember, EventInfo)
-                            If objEvent IsNot Nothing Then
-                                toReturn.Add(objEvent.Name)
-                            End If
-                        Next
                     Next
             End Select
             Return toReturn
@@ -110,10 +169,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property MainControlStep As ControlStep
 
+        <Required(True)> _
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
         Public Overridable Property ChildControlId As String = String.Empty
 
-
+        <Required(True)> _
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
         Public Overridable Property ControlEventName As String = String.Empty
 
@@ -128,6 +188,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        <ConditionalVisible("MainControlStep", True, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
+        Public Property BaseHandlerMode As ControlBaseHandlerMode = ControlBaseHandlerMode.Before
+
 
         Public Sub RegisterEvent(objCtl As Control)
             Me._EventInfo = objCtl.GetType().GetEvent(Me.ControlEventName)
@@ -140,9 +203,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             controlAdapter.ProcessStep(parameters, Nothing, Me.GetStep(), False)
         End Sub
 
-
-
-        Public Property BaseHandlerMode As ControlBaseHandlerMode = ControlBaseHandlerMode.Before
 
         Public Function GetStep() As DynamicHandlerStep
             If MainControlStep = ControlStep.ChildControlEvent Then
