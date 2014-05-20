@@ -125,6 +125,32 @@ Namespace Services.Flee
             MyBase.New(expressionText)
         End Sub
 
+        Public Property OverrideOwner As Boolean
+            Get
+                Return InternalOverrideOwner
+            End Get
+            Set(value As Boolean)
+                If value <> InternalOverrideOwner Then
+                    If value Then
+                        InternalNewOwner = New SimpleExpression(Of Object)
+                    Else
+                        InternalNewOwner = Nothing
+                    End If
+                End If
+                InternalOverrideOwner = value
+            End Set
+        End Property
+
+        <ConditionalVisible("OverrideOwner", False, True)> _
+        Public Property NewOwner As SimpleExpression(Of Object)
+            Get
+                Return InternalNewOwner
+            End Get
+            Set(value As SimpleExpression(Of Object))
+                InternalNewOwner = value
+            End Set
+        End Property
+       
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalVariables
         ''' </summary>
@@ -295,6 +321,8 @@ Namespace Services.Flee
                 InternalRealLiteralDataType = value
             End Set
         End Property
+
+
 
     End Class
 End Namespace
