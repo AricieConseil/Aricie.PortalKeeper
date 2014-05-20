@@ -14,7 +14,14 @@ Namespace Services
     ''' <remarks></remarks>
     Public Interface IContextLookup
 
-        ReadOnly Property Items() As System.Collections.Generic.IDictionary(Of String, Object)
+        ReadOnly Property Items() As IDictionary(Of String, Object)
+
+
+    End Interface
+
+    Public Interface IContextOwnerProvider
+
+        Property ContextOwner As Object
 
     End Interface
 

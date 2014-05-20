@@ -17,6 +17,8 @@ Namespace Services
         Implements IServiceProvider
         Implements IDisposable
         Implements IModuleContext
+        Implements IContextOwnerProvider
+
 
 
 
@@ -165,6 +167,8 @@ Namespace Services
             End Get
         End Property
 
+        Public Property ContextOwner As Object Implements IContextOwnerProvider.ContextOwner
+
 #Region "IServiceProvider"
 
         ''' <summary>
@@ -277,7 +281,8 @@ Namespace Services
 
 
 
-        
+
+
     End Class
 
 

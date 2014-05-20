@@ -26,6 +26,8 @@ Namespace Services.Flee
         Protected InternalStaticImports As New List(Of FleeImportInfo)
         Protected InternalImportBuiltinTypes As Boolean = True
 
+        Protected InternalOverrideOwner As Boolean
+        Protected InternalNewOwner As SimpleExpression(Of Object)
         Protected InternalVariables As New Variables
 
 
@@ -82,8 +84,8 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Required(True)> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
-        LineCount(8), Width(500)> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        <LineCount(8), Width(500)> _
         Public Property Expression() As String
             Get
                 Return _Expression
@@ -100,60 +102,14 @@ Namespace Services.Flee
             End Set
         End Property
 
-        Private Shared expWriterLock As New Object
 
-        ''' <summary>
-        ''' Returns the compiled flee expression
-        ''' </summary>
-        ''' <param name="owner"></param>
-        ''' <param name="globalVars"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <Browsable(False)> _
-        Public Function GetCompiledExpression(ByVal owner As Object, ByVal globalVars As IContextLookup) As IGenericExpression(Of TResult)
-            Dim toReturn As IGenericExpression(Of TResult) = Nothing
 
-            If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
-                SyncLock Me._Expression
-                    SyncLock expWriterLock
-                        If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
 
-                            Dim context As ExpressionContext = Me.GetExpressionContext(owner, globalVars)
-                            Dim onDemand As New OnDemandVariableLookup(globalVars)
-                            AddHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
-                            AddHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
-                            Try
-                                toReturn = context.CompileGeneric(Of TResult)(Me._Expression)
-                                SyncLock _CompiledExpressions
-                                    _CompiledExpressions(Me._Expression) = toReturn
-                                End SyncLock
-                            Catch ex As Ciloci.Flee.ExpressionCompileException
-                                Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to compile with the inner exception", Me.Expression), ex)
-                                ExceptionHelper.LogException(objFLeeException)
-                                toReturn = Nothing
-                            Finally
-                                RemoveHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
-                                RemoveHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
-                            End Try
-                        End If
-                    End SyncLock
-                End SyncLock
-            End If
-            If toReturn IsNot Nothing Then
-                toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
 
-                Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)
-                For Each objVar As VariableInfo In Me.InternalVariables.Instances
-                    If objVar.EvaluationMode = VarEvaluationMode.Dynamic Then
-                        toReturn.Context.Variables(objVar.Name) = vars(objVar.Name)
-                    End If
-                Next
 
-                toReturn.Owner = owner
-            End If
+        'Private Shared expWriterLock As New Object
 
-            Return toReturn
-        End Function
+      
 
 
         ''' <summary>
@@ -189,6 +145,71 @@ Namespace Services.Flee
 
         End Function
 
+
+        ''' <summary>
+        ''' Returns the compiled flee expression
+        ''' </summary>
+        ''' <param name="owner"></param>
+        ''' <param name="globalVars"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <Browsable(False)> _
+        Public Function GetCompiledExpression(ByVal owner As Object, ByVal globalVars As IContextLookup) As IGenericExpression(Of TResult)
+            Dim toReturn As IGenericExpression(Of TResult) = Nothing
+
+            If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
+                SyncLock Me
+                    'SyncLock expWriterLock
+                    If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
+
+                        Dim context As ExpressionContext = Me.GetExpressionContext(owner, globalVars)
+                        Dim onDemand As New OnDemandVariableLookup(globalVars)
+                        AddHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
+                        AddHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                        Try
+                            toReturn = context.CompileGeneric(Of TResult)(Me._Expression)
+                            SyncLock _CompiledExpressions
+                                _CompiledExpressions(Me._Expression) = toReturn
+                            End SyncLock
+                        Catch ex As Ciloci.Flee.ExpressionCompileException
+                            Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to compile with the inner exception", Me.Expression), ex)
+                            ExceptionHelper.LogException(objFLeeException)
+                            toReturn = Nothing
+                        Finally
+                            RemoveHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
+                            RemoveHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                        End Try
+                    End If
+                    'End SyncLock
+                End SyncLock
+            End If
+            If toReturn IsNot Nothing Then
+                toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
+                If Me.InternalVariables.Instances.Count > 0 Then
+                    Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)
+                    For Each objVar As VariableInfo In Me.InternalVariables.Instances
+                        If objVar.EvaluationMode = VarEvaluationMode.Dynamic Then
+                            toReturn.Context.Variables(objVar.Name) = vars(objVar.Name)
+                        End If
+                    Next
+                End If
+                If Not _OwnerProviderSuplied Then
+                    If InternalOverrideOwner Then
+                        Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                        toReturn.Owner = newOwner
+                    End If
+                    toReturn.Owner = owner
+                Else
+                    toReturn.Owner = DirectCast(owner, IContextOwnerProvider).ContextOwner
+                End If
+
+            End If
+
+            Return toReturn
+        End Function
+
+        Private _OwnerProviderSuplied As Boolean
+
         ''' <summary>
         ''' Returns the expression context
         ''' </summary>
@@ -199,43 +220,58 @@ Namespace Services.Flee
         <Browsable(False)> _
         Private Function GetExpressionContext(ByVal owner As Object, ByVal globalVars As IContextLookup) As ExpressionContext
 
-            Dim tempContext As New ExpressionContext(owner)
+            Dim toReturn As ExpressionContext
+            If TypeOf owner Is IContextOwnerProvider Then
+                Dim ownerProvider As IContextOwnerProvider = DirectCast(owner, IContextOwnerProvider)
+                If ownerProvider.ContextOwner IsNot Nothing Then
+                    toReturn = New ExpressionContext(ownerProvider.ContextOwner)
+                    _OwnerProviderSuplied = True
+                Else
+                    toReturn = New ExpressionContext(owner)
+                End If
+            Else
+                If InternalOverrideOwner Then
+                    Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                    toReturn = New ExpressionContext(newOwner)
+                End If
+                toReturn = New ExpressionContext(owner)
+            End If
 
-            tempContext.ParserOptions.DateTimeFormat = Me.InternalDateTimeFormat
-            tempContext.ParserOptions.RequireDigitsBeforeDecimalPoint = Me.InternalRequireDigitsBeforeDecimalPoint
-            tempContext.ParserOptions.DecimalSeparator = Me.InternalDecimalSeparator
-            tempContext.ParserOptions.FunctionArgumentSeparator = Me.InternalFunctionArgumentSeparator
-            tempContext.ParserOptions.RecreateParser()
+            toReturn.ParserOptions.DateTimeFormat = Me.InternalDateTimeFormat
+            toReturn.ParserOptions.RequireDigitsBeforeDecimalPoint = Me.InternalRequireDigitsBeforeDecimalPoint
+            toReturn.ParserOptions.DecimalSeparator = Me.InternalDecimalSeparator
+            toReturn.ParserOptions.FunctionArgumentSeparator = Me.InternalFunctionArgumentSeparator
+            toReturn.ParserOptions.RecreateParser()
             Select Case Me.InternalParseCultureMode
                 Case CultureInfoMode.Current
-                    tempContext.Options.ParseCulture = DirectCast(Thread.CurrentThread.CurrentCulture.Clone, CultureInfo)
+                    toReturn.Options.ParseCulture = DirectCast(Thread.CurrentThread.CurrentCulture.Clone, CultureInfo)
                 Case CultureInfoMode.CurrentUI
-                    tempContext.Options.ParseCulture = DirectCast(Thread.CurrentThread.CurrentUICulture.Clone, CultureInfo)
+                    toReturn.Options.ParseCulture = DirectCast(Thread.CurrentThread.CurrentUICulture.Clone, CultureInfo)
                 Case CultureInfoMode.Custom
-                    tempContext.Options.ParseCulture = New CultureInfo(Me.InternalCustomCultureLocale)
+                    toReturn.Options.ParseCulture = New CultureInfo(Me.InternalCustomCultureLocale)
             End Select
-            tempContext.Options.RealLiteralDataType = Me.InternalRealLiteralDataType
+            toReturn.Options.RealLiteralDataType = Me.InternalRealLiteralDataType
             'If Me.InternalStaticImports.Count = 0 Then
             '    tempContext.Imports.AddType(GetType(System.Math), "")
             'Else
             If Me.InternalImportBuiltinTypes Then
-                tempContext.Imports.ImportBuiltinTypes()
-                tempContext.Imports.AddType(GetType(System.Math), "")
-                tempContext.Imports.AddType(GetType(System.Linq.Enumerable), "")
+                toReturn.Imports.ImportBuiltinTypes()
+                toReturn.Imports.AddType(GetType(System.Math), "")
+                toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "")
             End If
             For Each staticImport As FleeImportInfo In Me.InternalStaticImports
-                tempContext.Imports.AddType(staticImport.DotNetType.GetDotNetType, staticImport.CustomNamespace)
+                toReturn.Imports.AddType(staticImport.DotNetType.GetDotNetType, staticImport.CustomNamespace)
             Next
             'End If
-            
-            tempContext.Imports.AddType(GetType(FleeHelper), "")
+
+            toReturn.Imports.AddType(GetType(FleeHelper), "")
 
             Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)
             For Each objVar As KeyValuePair(Of String, Object) In vars
-                tempContext.Variables.Add(objVar.Key, objVar.Value)
+                toReturn.Variables.Add(objVar.Key, objVar.Value)
             Next
 
-            Return tempContext
+            Return toReturn
         End Function
 
         ''' <summary>
