@@ -9,9 +9,8 @@ Aricie.DNN.AriciePropertyEditorScripts = function (element) {
     AriciePropertyEditorScripts = this;
     this._clientId = null;
     this._hash = null;
-}
+};
 Aricie.DNN.AriciePropertyEditorScripts.prototype = {
-
 
     initialize: function () {
         Aricie.DNN.AriciePropertyEditorScripts.callBaseMethod(this, 'initialize');
@@ -45,7 +44,7 @@ Aricie.DNN.AriciePropertyEditorScripts.prototype = {
             this.raisePropertyChanged('hash');
         }
     }
-}
+};
 
 function initialisePropertyEditorsScripts() {
 
@@ -91,11 +90,10 @@ function initialisePropertyEditorsScripts() {
         }
     });
 
-
     jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
         jQuery.each(jQuery(h3).data("events") || jQuery._data(h3, "events"), function (j, event) {
             jQuery.each(event, function (k, h) {
-                if (h.type == 'click') {
+                if (h.type === 'click') {
                     jQuery(h3).unbind(h.type, h.handler);
                     jQuery(h3).children("a").click(function () {
                         jQuery(this).parent().bind(h.type, h.handler);
@@ -110,7 +108,7 @@ function initialisePropertyEditorsScripts() {
     // tabs
     selector = ".aricie_pe_tabs" + "-" + AriciePropertyEditorScripts.get_clientId();
     cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-    var lis = jQuery(selector).find('ul').eq(0).find('li');
+   // var lis = jQuery(selector).find('ul').eq(0).find('li');
     jQuery(selector).tabs({
         /*cookie: { name: cookieTabName, expires: 1 },*/
         select: function (event, ui) {
@@ -142,14 +140,13 @@ function initJSON() {
     JSON.stringify = JSON.stringify || function (obj) {
 
         var t = typeof (obj);
-        if (t != "object" || obj === null) {
+        if (t !== "object" || obj === null) {
 
             // simple data type
-            if (t == "string") obj = '"' + obj + '"';
+            if (t === "string") { obj = '"' + obj + '"'; }
             return String(obj);
 
-        }
-        else {
+        }else {
 
             // recurse array or object
             var n, v, json = [], arr = (obj && obj.constructor == Array);
@@ -157,8 +154,13 @@ function initJSON() {
             for (n in obj) {
                 v = obj[n]; t = typeof (v);
 
-                if (t == "string") v = '"' + v + '"';
-                else if (t == "object" && v !== null) v = JSON.stringify(v);
+                if (t === "string") {
+                    v = '"' + v + '"';
+                }else {
+                    if (t == "object" && v !== null) {
+                        v = JSON.stringify(v);
+                    }
+                }
 
                 json.push((arr ? "" : '"' + n + '":') + String(v));
             }
@@ -169,7 +171,9 @@ function initJSON() {
 
     // implement JSON.parse de-serialization
     JSON.parse = JSON.parse || function (str) {
-        if (str === "") str = '""';
+        if (str === "") {
+            str = '""';
+        }
         eval("var p=" + str + ";");
         return p;
     };
@@ -179,7 +183,6 @@ function getAdvanceVariableValue(key) {
     var Adv = dnn.getVar("AdvVar");
     var AdvObj;
     if (Adv != undefined) {
-
 
         if (JSON) {
             AdvObj = JSON.parse(Adv);
@@ -230,7 +233,6 @@ function performASPNetValidation() {
     }
 }
 
-
 function get_cookies_array() {
 
     var cookies = {};
@@ -250,10 +252,8 @@ function get_cookies_array() {
 
 function SelectAndActivateParentHeader(src) {
     var targetItem = jQuery(src).parent().parent().find(">a");
-    targetItem.attr('onclick', '')
-
-
-    targetItem.click();
+    targetItem.attr('onclick', '');
+     targetItem.click();
     //return false;
     window.location.hash = targetItem.attr("href");
 }
@@ -261,5 +261,4 @@ function SelectAndActivateParentHeader(src) {
 // Register the class as a type that inherits from Sys.UI.Control.
 Aricie.DNN.AriciePropertyEditorScripts.registerClass('Aricie.DNN.AriciePropertyEditorScripts', Sys.UI.Control);
 
-if (typeof (Sys) !== 'undefined') Sys.Application.notifyScriptLoaded();
-
+if (typeof (Sys) !== 'undefined') { Sys.Application.notifyScriptLoaded(); }
