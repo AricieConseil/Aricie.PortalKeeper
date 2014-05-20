@@ -13,11 +13,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class ProfileActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
-        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
-       <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        Public Property PortalId As Integer
-
         Public Property UserMode As ProfileUserMode
+
+        <ConditionalVisible("UserMode", True, True, ProfileUserMode.CurrentUser, ProfileUserMode.ByUserinfo)> _
+        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
+      <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        Public Property PortalId As Integer
 
         <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUserId)> _
         Public Property UserIdExpression As New SimpleOrExpression(Of Integer)
@@ -36,7 +37,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case ProfileUserMode.ByUserId
                     toReturn = UserController.GetUser(Me.PortalId, UserIdExpression.GetValue(objContext, objContext), True)
                 Case ProfileUserMode.ByUsername
-                    toReturn = UserController.GetUserByName(-1, UsernameExpression.GetValue(objContext, objContext), True)
+                    toReturn = UserController.GetUserByName(Me.PortalId, UsernameExpression.GetValue(objContext, objContext), True)
                 Case ProfileUserMode.ByUserinfo
                     toReturn = UserInfoExpression.Evaluate(objContext, objContext)
             End Select

@@ -14,6 +14,8 @@ Imports System.Text.RegularExpressions
 Imports System.Web.Caching
 Imports System.Runtime.CompilerServices
 Imports System.ComponentModel
+Imports System.Linq
+Imports System.Linq.Expressions
 
 Namespace Services
 
@@ -333,53 +335,95 @@ Namespace Services
         End Function
 
         Public Shared Function GetMembersDictionary(ByVal objType As Type) As Dictionary(Of String, MemberInfo)
+            Return GetMembersDictionary(objType, False, False)
+        End Function
+
+        Public Shared Function GetMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, MemberInfo)
 
 
             ' Use the cache because the reflection used later is expensive
-            Dim objMembers As Dictionary(Of String, MemberInfo) = GetGlobal(Of Dictionary(Of String, MemberInfo))(objType.FullName)
+            Dim objMembers As Dictionary(Of String, MemberInfo) = GetGlobal(Of Dictionary(Of String, MemberInfo))(objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
 
             If objMembers Is Nothing Then
                 objMembers = New Dictionary(Of String, MemberInfo)(StringComparer.OrdinalIgnoreCase)
-                For Each objMember As MemberInfo In objType.GetMembers()
-                    If Not objMembers.ContainsKey(objMember.Name) Then
-                        objMembers(objMember.Name) = objMember
-                    End If
-
-                Next
-                SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.FullName)
+                Dim currentType As Type = objType
+                Do
+                    FillMembersDictionary(currentType, objMembers, includePrivateFields)
+                    currentType = currentType.BaseType
+                Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
+                SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
             End If
 
             Return objMembers
 
         End Function
 
+
+        Private Shared Sub FillMembersDictionary(ByVal objType As Type, ByRef objMembers As Dictionary(Of String, MemberInfo), includePrivateFields As Boolean)
+            Dim objBindingFlags As BindingFlags = BindingFlags.Instance Or BindingFlags.[Static] Or BindingFlags.[Public]
+            If includePrivateFields Then
+                objBindingFlags = objBindingFlags Or BindingFlags.NonPublic
+            End If
+            For Each objMember As MemberInfo In objType.GetMembers(objBindingFlags)
+                If Not objMembers.ContainsKey(objMember.Name) Then
+                    objMembers(objMember.Name) = objMember
+                End If
+
+            Next
+        End Sub
+
+
+
         Public Shared Function GetFullMembersDictionary(ByVal objType As Type) As Dictionary(Of String, List(Of MemberInfo))
+            Return GetFullMembersDictionary(objType, False, False)
+        End Function
+
+        Public Shared Function GetFullMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, List(Of MemberInfo))
 
 
             ' Use the cache because the reflection used later is expensive
-            Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = GetGlobal(Of Dictionary(Of String, List(Of MemberInfo)))(objType.FullName)
+            Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = GetGlobal(Of Dictionary(Of String, List(Of MemberInfo)))(objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
 
             If objMembers Is Nothing Then
                 objMembers = New Dictionary(Of String, List(Of MemberInfo))(StringComparer.OrdinalIgnoreCase)
-                For Each objMember As MemberInfo In objType.GetMembers()
-                    Dim memberList As List(Of MemberInfo) = Nothing
-                    If Not objMembers.TryGetValue(objMember.Name, memberList) Then
-                        memberList = New List(Of MemberInfo)
-                    End If
-                    memberList.Add(objMember)
-                    objMembers(objMember.Name) = memberList
-                Next
-                SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.FullName)
+                Dim currentType As Type = objType
+                Do
+                    FillFullMembersDictionary(currentType, objMembers, includePrivateFields)
+                    currentType = currentType.BaseType
+                Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
+
+                SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
             End If
 
             Return objMembers
 
         End Function
 
+        Private Shared Sub FillFullMembersDictionary(ByVal objType As Type, ByRef dicoToFill As Dictionary(Of String, List(Of MemberInfo)), includePrivateFields As Boolean)
+            Dim objBindingFlags As BindingFlags = BindingFlags.Instance Or BindingFlags.[Static] Or BindingFlags.[Public]
+            If includePrivateFields Then
+                objBindingFlags = objBindingFlags Or BindingFlags.NonPublic
+            End If
+            Dim objMembers As MemberInfo() = objType.GetMembers(objBindingFlags)
 
+            For Each objMember As MemberInfo In objType.GetMembers(objBindingFlags)
+                Dim memberList As List(Of MemberInfo) = Nothing
+                If Not dicoToFill.TryGetValue(objMember.Name, memberList) Then
+                    memberList = New List(Of MemberInfo)
+                End If
+                If Not memberList.Contains(objMember) Then
+                    memberList.Add(objMember)
+                End If
+                dicoToFill(objMember.Name) = memberList
+            Next
+        End Sub
 
 
         Public Shared Function GetMember(ByVal objtype As Type, ByVal memberName As String) As MemberInfo
+            Return GetMember(objtype, memberName, False, False)
+        End Function
+
+        Public Shared Function GetMember(ByVal objtype As Type, ByVal memberName As String, includeHierarchy As Boolean, includePrivateFields As Boolean) As MemberInfo
             Dim toReturn As MemberInfo = Nothing
             If objtype IsNot Nothing Then
                 If memberName.IndexOf("-"c) > 0 Then
@@ -387,7 +431,7 @@ Namespace Services
                     If memberSplit.Length <> 2 OrElse Not IsNumber(memberSplit(1)) Then
                         Throw New ArgumentException(String.Format("memberName {0} wrongly Formatted", memberName), "memberName")
                     End If
-                    Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(objtype)
+                    Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(objtype, True, True)
                     Dim objList As List(Of MemberInfo) = Nothing
                     If objMembers.TryGetValue(memberSplit(0), objList) Then
                         Dim idx As Integer = Integer.Parse(memberSplit(1))
@@ -397,7 +441,7 @@ Namespace Services
                         toReturn = objList(idx)
                     End If
                 Else
-                    Dim objMembers As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(objtype)
+                    Dim objMembers As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(objtype, True, True)
                     objMembers.TryGetValue(memberName, toReturn)
 
                 End If
@@ -425,7 +469,7 @@ Namespace Services
                 SyncLock ReflectionHelper.Instance._PropertiesByType
                     ReflectionHelper.Instance._PropertiesByType(objType) = objProperties
                 End SyncLock
-                
+
             End If
 
 
@@ -443,9 +487,9 @@ Namespace Services
             If objProperties Is Nothing Then
                 objProperties = New Dictionary(Of String, PropertyInfo)
                 Dim tempProperties As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
-                For Each pkey As String In tempProperties.Keys
-                    If Not tempProperties(pkey).PropertyType.GetInterface("IEntity2") Is Nothing Then
-                        objProperties(pkey) = tempProperties(pkey)
+                For Each tempProperty As KeyValuePair(Of String, PropertyInfo) In tempProperties
+                    If tempProperty.Value.PropertyType.GetInterface("IEntity2") IsNot Nothing Then
+                        objProperties(tempProperty.Key) = tempProperty.Value
                     End If
                 Next
                 CacheHelper.SetGlobal(Of Dictionary(Of String, PropertyInfo))(objProperties, objType.FullName, ReflectionMembers.EntityProperties.ToString())
@@ -463,13 +507,8 @@ Namespace Services
             Dim objProperties As Dictionary(Of String, PropertyInfo) = CacheHelper.GetGlobal(Of Dictionary(Of String, PropertyInfo))(objType.FullName, ReflectionMembers.EntityCollectionProperties.ToString())
 
             If objProperties Is Nothing Then
-                objProperties = New Dictionary(Of String, PropertyInfo)
                 Dim tempProperties As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
-                For Each pkey As String In tempProperties.Keys
-                    If Not tempProperties(pkey).PropertyType.GetInterface("IEntityCollection2") Is Nothing Then
-                        objProperties.Add(pkey, tempProperties(pkey))
-                    End If
-                Next
+                objProperties = (From pkey In tempProperties.Keys Where tempProperties(pkey).PropertyType.GetInterface("IEntityCollection2") IsNot Nothing).ToDictionary(Function(pkey) pkey, Function(pkey) tempProperties(pkey))
                 CacheHelper.SetGlobal(Of Dictionary(Of String, PropertyInfo))(objProperties, objType.FullName, ReflectionMembers.EntityCollectionProperties.ToString())
             End If
 
@@ -1153,7 +1192,7 @@ Namespace Services
         End Function
 
 
-        
+
 
         Public Shared Function BuildParameters(ByVal params As ParameterInfo(), ByVal values As List(Of String)) As Object()
             Dim paramValues As New List(Of Object)
@@ -1176,6 +1215,19 @@ Namespace Services
             End If
             Return Nothing
         End Function
+
+
+        Public Shared Function GetEventParameters(objEventInfo As EventInfo) As ParameterInfo()
+            Return objEventInfo.EventHandlerType.GetMethod("Invoke").GetParameters()
+        End Function
+
+        Private Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
+            Dim parameters = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+
+            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
+
+            objEventInfo.AddEventHandler(item, handler)
+        End Sub
 
         Public Shared Function GetFriendlyName(value As Object) As String
 

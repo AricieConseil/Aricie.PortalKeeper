@@ -13,7 +13,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim objUser = Me.GetUser(actionContext)
             Select Case ProfileType
                 Case PortalKeeper.ProfileType.Personalization
-                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, Me.PortalId)
+                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, objUser.PortalID)
                     toReturn = Personalization.GetProfile(pInfo, Me.NamingContainer, PropertyName)
                 Case PortalKeeper.ProfileType.Identity
                     If AsString Then

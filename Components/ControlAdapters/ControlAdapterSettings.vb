@@ -121,8 +121,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Select Case propertyName
                 Case "DynamicHandlers"
                     Dim toReturn As New ListItemCollection
-                    toReturn.Add(New ListItem("Typed Dynamic Handler", "Typed"))
-                    toReturn.Add(New ListItem("Untyped Dynamic Handler", "UnTyped"))
+                    toReturn.Add(New ListItem("Typed Handler", "Typed"))
+                    toReturn.Add(New ListItem("Portable Handler", "Portable"))
                     Return toReturn
             End Select
 
@@ -131,7 +131,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function GetNewItem(collectionPropertyName As String, providerName As String) As Object Implements IProviderContainer.GetNewItem
             If collectionPropertyName = "DynamicHandlers" Then
-                If providerName = "Typed" Then
+                If providerName = "Portable" Then
                     Return New DynamicHandlerSettings()
                 Else
                     Return ReflectionHelper.CreateObject(GetType(DynamicHandlerSettings(Of )).MakeGenericType(Me.ResolvedAdaptedControlType))

@@ -5811,4 +5811,118 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="WebProxyPool_PickMethod.Text" xml:space="preserve">
     <value>Selection Method</value>
   </data>
+  <data name="DynamicHandlerSettings`1_EditChildControl.Help" xml:space="preserve">
+    <value>A typed control handler will let you select from control ids declared as fields in the adapted control type. You can altenatively manually enter the control ID, as with untyped dynamic handlers.</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_EditChildControl.Text" xml:space="preserve">
+    <value>Edit Child Control ID</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_EditEventName.Help" xml:space="preserve">
+    <value>A typed control handler will let you select from control events obtained by Reflection over the adapted control type or its child control when applicable. You can altenatively manually enter the event name.</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_EditEventName.Text" xml:space="preserve">
+    <value>Edit Event Name</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_SelectedChildControlId.Help" xml:space="preserve">
+    <value>The list is built by reflection on the adapted control type with control fields</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_SelectedChildControlId.Text" xml:space="preserve">
+    <value>Select Child Control ID</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_SelectedControlEventName.Help" xml:space="preserve">
+    <value>The list is built by reflection on the adapted control type or its child control when applicable.</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_SelectedControlEventName.Text" xml:space="preserve">
+    <value>Select Control Event</value>
+  </data>
+  <data name="Actions.Text" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="ByUserId.Text" xml:space="preserve">
+    <value>By UserId</value>
+  </data>
+  <data name="ByUserinfo.Text" xml:space="preserve">
+    <value>By Userinfo</value>
+  </data>
+  <data name="ByUsername.Text" xml:space="preserve">
+    <value>By Username</value>
+  </data>
+  <data name="CurrentUser.Text" xml:space="preserve">
+    <value>Current User</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_AvailableParameters.Help" xml:space="preserve">
+    <value>This is a list of additional parameters available during the action sequence as obtained from the adapter overriden method or event signatures.</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_AvailableParameters.Text" xml:space="preserve">
+    <value>Additional Parameters</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_ChildControlDeclaringType.Help" xml:space="preserve">
+    <value>The following type is obtained by Reflection by looking up the adapted control type and its base types' private fields. If the targeted child control does not correspond to a field, yet is still available through a FindControl(id) call, you can safely ignore it.</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_ChildControlDeclaringType.Text" xml:space="preserve">
+    <value>Child Control Declaring Type</value>
+  </data>
+  <data name="DynamicHandlerSettings`1_EventControlTypeAsString.Help" xml:space="preserve">
+    <value>When targetting a child control, the following type is obtained by Reflection by looking up the adapted control type and its base types' private fields. If the targeted child control does not correspond to a field, yet is still available through a FindControl(id) call, you can safely ignore it. </value>
+  </data>
+  <data name="DynamicHandlerSettings`1_EventControlTypeAsString.Text" xml:space="preserve">
+    <value>Event Control Type</value>
+  </data>
+  <data name="Identity.Text" xml:space="preserve">
+    <value>Identity</value>
+  </data>
+  <data name="Personalization.Text" xml:space="preserve">
+    <value>Personalization</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_AsString.Help" xml:space="preserve">
+    <value>When using the Identity Profile, you can choose to manipulate values as string or as their strongly typed definition</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_AsString.Text" xml:space="preserve">
+    <value>As String</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_PortalId.Help" xml:space="preserve">
+    <value>This is the target user's portal</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_PortalId.Text" xml:space="preserve">
+    <value>User Portal</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_ProfileType.Help" xml:space="preserve">
+    <value>There are 2 user profile which you can access: &lt;ul&gt;&lt;li&gt;the identity user profile (with a dedicated form, which the user can edit).&lt;/li&gt;, &lt;li&gt;the personalization user profile (that one is rarely used and does not have an edit form associated, it is intended to customize user experience).&lt;/li&gt;&lt;/ul&gt; </value>
+  </data>
+  <data name="ProfileActionProviderBase`1_ProfileType.Text" xml:space="preserve">
+    <value>Profile Type</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_PropertyName.Help" xml:space="preserve">
+    <value>This is the name of the profile property to access</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_PropertyName.Required" xml:space="preserve">
+    <value>Profile Property Name is required</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_PropertyName.Text" xml:space="preserve">
+    <value>Property Name</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserMode.Help" xml:space="preserve">
+    <value>There are several ways to select the user, the profile of which to be accessed: &lt;ul&gt;&lt;li&gt;Current user: implies that the action is run in an authenticated context, the authenticated user is choosen &lt;/li&gt;&lt;li&gt;By User Id: you have to explicitally indicate the portal and the user id or an integer expression that resolves into the user id &lt;/li&gt;&lt;li&gt;By Username : you have to explicitally indicate the portal and the target user's Username or a string expression that resolves into the username&lt;/li&gt;&lt;li&gt;By Userinfo: You have to supply a UserInfo expression that resolves into the targetted user entity&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserMode.Text" xml:space="preserve">
+    <value>User Mode</value>
+  </data>
+  <data name="ProfileSaveActionProvider`1_Value.Help" xml:space="preserve">
+    <value>This is the value to update the profile property to. The expected type depends on the above configuration.</value>
+  </data>
+  <data name="ProfileSaveActionProvider`1_Value.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="RuleEngineSettings`1_Mode.Help" xml:space="preserve">
+    <value>There are 2 engine modes: Rules where the entry points are Condition based rules, and Actions, where the entry a point is a simpler single Action sequence.</value>
+  </data>
+  <data name="RuleEngineSettings`1_Mode.Text" xml:space="preserve">
+    <value>Engine Mode</value>
+  </data>
+  <data name="Rules.Text" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="SimpleExpression`1_Expression.Required" xml:space="preserve">
+    <value>A non empty Expression is required</value>
+  </data>
 </root>

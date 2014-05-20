@@ -5,18 +5,22 @@ Imports System.Web.UI
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Services
+Imports Aricie.Web.UI
+Imports System.Web.UI.HtmlControls
+Imports DotNetNuke.Common.Utilities
+Imports DotNetNuke.Services.Localization
 
 
 Public Class AricieFieldEditorControl
-    Inherits DotNetNuke.UI.WebControls.FieldEditorControl
+    Inherits FieldEditorControl
 
 
 
 
-   
+
     Public Sub New()
         MyBase.New()
-        Me.Validators = New System.Web.UI.ValidatorCollection
+        Me.Validators = New ValidatorCollection
         'Me._ValidationExpression = Null.NullString
         Me._IsValid = True
         Me._Validated = False
@@ -30,7 +34,7 @@ Public Class AricieFieldEditorControl
 
     Private _IsValid As Boolean
     Private _Validated As Boolean
-    Private _Validators As System.Web.UI.ValidatorCollection
+    Private _Validators As ValidatorCollection
     Private _Editor As EditControl
 
 #Region "Properties"
@@ -86,11 +90,11 @@ Public Class AricieFieldEditorControl
 
     End Property
 
-    Public Property Validators() As System.Web.UI.ValidatorCollection
+    Public Property Validators() As ValidatorCollection
         Get
             Return _Validators
         End Get
-        Set(ByVal value As System.Web.UI.ValidatorCollection)
+        Set(ByVal value As ValidatorCollection)
             _Validators = value
         End Set
     End Property
@@ -101,19 +105,19 @@ Public Class AricieFieldEditorControl
 #Region "Overrides"
 
     Protected Overrides Sub CreateEditor()
-        If Me.EditorDisplayMode = DotNetNuke.UI.WebControls.EditorDisplayMode.Table Then
+        If Me.EditorDisplayMode = EditorDisplayMode.Table Then
             MyBase.CreateEditor()
 
         Else
-            Dim editor As DotNetNuke.UI.WebControls.EditorInfo = Me.EditorInfoAdapter.CreateEditControl
+            Dim editor As EditorInfo = Me.EditorInfoAdapter.CreateEditControl
 
-            If (editor.EditMode = DotNetNuke.UI.WebControls.PropertyEditorMode.Edit) Then
+            If (editor.EditMode = PropertyEditorMode.Edit) Then
                 editor.EditMode = Me.EditMode
             End If
             If Not String.IsNullOrEmpty(Me.EditorTypeName) Then
                 editor.Editor = Me.EditorTypeName
             End If
-            If (Me.LabelMode <> DotNetNuke.UI.WebControls.LabelMode.Left) Then
+            If (Me.LabelMode <> LabelMode.Left) Then
                 editor.LabelMode = Me.LabelMode
             End If
             If Me.Required Then
@@ -122,7 +126,7 @@ Public Class AricieFieldEditorControl
             If Not String.IsNullOrEmpty(Me.ValidationExpression) Then
                 editor.ValidationExpression = Me.ValidationExpression
             End If
-            Me.OnItemCreated(New DotNetNuke.UI.WebControls.PropertyEditorItemEventArgs(editor))
+            Me.OnItemCreated(New PropertyEditorItemEventArgs(editor))
             Me.Visible = editor.Visible
             For Each customAttribute As Attribute In editor.Attributes
                 If TypeOf customAttribute Is AutoPostBackAttribute Then
@@ -173,11 +177,11 @@ Public Class AricieFieldEditorControl
 
 #Region "Events"
 
-    Protected Overrides Sub ValueChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
+    Protected Overrides Sub ValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
         MyBase.ValueChanged(sender, e)
     End Sub
 
-    Protected Overrides Sub RenderChildren(ByVal writer As System.Web.UI.HtmlTextWriter)
+    Protected Overrides Sub RenderChildren(ByVal writer As HtmlTextWriter)
         Dim newHtmlTextWriter As New FieldEditorHtmlWriter(Me, writer, Me._AutoPostBack, Me.PasswordMode)
         MyBase.RenderChildren(newHtmlTextWriter)
     End Sub
@@ -192,7 +196,7 @@ Public Class AricieFieldEditorControl
         Dim propEditor As EditControl
 
         If editorInfo.Editor = "UseSystemType" Then
-            Dim objType As System.Type = Aricie.Services.ReflectionHelper.CreateType(editorInfo.Type)
+            Dim objType As Type = ReflectionHelper.CreateType(editorInfo.Type)
             'Use System Type
 
             Select Case objType.FullName
@@ -215,7 +219,7 @@ Public Class AricieFieldEditorControl
                     If objType.IsEnum Then
                         propEditor = New EnumEditControl(editorInfo.Type)
                     ElseIf editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
-                        editorInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top
+                        editorInfo.LabelMode = LabelMode.Top
                         If objType.GetInterface("ICollection") IsNot Nothing Then
                             If objType.GetInterface("IDictionary") IsNot Nothing Then
                                 propEditor = New DictionaryEditControl()
@@ -233,7 +237,7 @@ Public Class AricieFieldEditorControl
             End Select
         Else
             'Use Editor
-            Dim editType As System.Type = Aricie.Services.ReflectionHelper.CreateType(editorInfo.Editor)
+            Dim editType As Type = ReflectionHelper.CreateType(editorInfo.Editor)
             propEditor = CType(Activator.CreateInstance(editType), EditControl)
         End If
 
@@ -281,7 +285,7 @@ Public Class AricieFieldEditorControl
             '        Exit Sub
             '    End If
             'Next
-            Dim vals As List(Of BaseValidator) = Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of BaseValidator)(Me)
+            Dim vals As List(Of BaseValidator) = FindControlsRecursive(Of BaseValidator)(Me)
             For Each objVal As BaseValidator In vals
                 objVal.Validate()
 
@@ -305,8 +309,8 @@ Public Class AricieFieldEditorControl
 
 #Region "private Methods"
 
-    Private Sub BuildLtDiv(ByVal editInfo As DotNetNuke.UI.WebControls.EditorInfo)
-        Dim child As System.Web.UI.HtmlControls.HtmlGenericControl = Nothing
+    Private Sub BuildLtDiv(ByVal editInfo As EditorInfo)
+        Dim child As HtmlGenericControl = Nothing
         Dim label As PropertyLabelControl = Nothing
 
 
@@ -318,43 +322,43 @@ Public Class AricieFieldEditorControl
         '    control.Attributes.Add("style", str3)
         'End If
 
-        Dim ctlEditControl As DotNetNuke.UI.WebControls.EditControl = Me.BuildEditor(editInfo)
+        Dim ctlEditControl As EditControl = Me.BuildEditor(editInfo)
 
-        If editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top OrElse editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Bottom OrElse editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.None Then
+        If editInfo.LabelMode = LabelMode.Top OrElse editInfo.LabelMode = LabelMode.Bottom OrElse editInfo.LabelMode = LabelMode.None Then
             Me._FullWidth = True
         End If
 
-        If (editInfo.LabelMode <> DotNetNuke.UI.WebControls.LabelMode.None) Then
-            child = New System.Web.UI.HtmlControls.HtmlGenericControl("div")
+        If (editInfo.LabelMode <> LabelMode.None) Then
+            child = New HtmlGenericControl("div")
             child.EnableViewState = False
 
             Select Case editInfo.LabelMode
-                Case DotNetNuke.UI.WebControls.LabelMode.Left
+                Case LabelMode.Left
                     child.Attributes.Add("class", "ctLeft")
-                Case DotNetNuke.UI.WebControls.LabelMode.Right
+                Case LabelMode.Right
                     child.Attributes.Add("class", "ctRight")
                 Case Else
             End Select
 
 
             '  Dim str2 As String = ("float: " & editInfo.LabelMode.ToString.ToLower)
-            If ((editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Left) Or (editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
+            If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
                 'str2 = (str2 & "; width: " & Me.LabelWidth.ToString)
                 child.Attributes.Add("style", String.Format("width:{0}", Me.LabelWidth.ToString))
             End If
 
             label = Me.BuildLtLabel(editInfo)
         End If
-        Dim control As New System.Web.UI.HtmlControls.HtmlGenericControl("div")
+        Dim control As New HtmlGenericControl("div")
 
-        Dim ctlVisibility As DotNetNuke.UI.WebControls.VisibilityControl = Me.BuildVisibility(editInfo)
-        If (Not ctlVisibility Is Nothing) Then
+        Dim ctlVisibility As VisibilityControl = Me.BuildVisibility(editInfo)
+        If (ctlVisibility IsNot Nothing) Then
             ctlVisibility.Attributes.Add("class", "ctRight")
             control.Controls.Add(ctlVisibility)
         End If
         control.Controls.Add(ctlEditControl)
-        Dim image As System.Web.UI.WebControls.Image = Me.BuildRequiredIcon(editInfo)
-        If (Not image Is Nothing) Then
+        Dim image As Image = Me.BuildRequiredIcon(editInfo)
+        If (image IsNot Nothing) Then
             control.Controls.Add(image)
         End If
 
@@ -372,12 +376,12 @@ Public Class AricieFieldEditorControl
                 child.Controls.Add(label)
             End If
 
-            If ((editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Left) Or (editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Top)) Then
+            If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Top)) Then
                 Me.Controls.Add(child)
                 Me.Controls.Add(control)
             Else
                 Me.Controls.Add(control)
-                If (Not child Is Nothing) Then
+                If (child IsNot Nothing) Then
                     Me.Controls.Add(child)
                 End If
             End If
@@ -394,32 +398,32 @@ Public Class AricieFieldEditorControl
         End If
     End Sub
 
-    Protected Function BuildLtLabel(ByVal editInfo As DotNetNuke.UI.WebControls.EditorInfo) As DotNetNuke.UI.WebControls.PropertyLabelControl
-        Dim control2 As New DotNetNuke.UI.WebControls.PropertyLabelControl
+    Protected Function BuildLtLabel(ByVal editInfo As EditorInfo) As PropertyLabelControl
+        Dim control2 As New PropertyLabelControl
         control2.ID = (editInfo.Name & "_Label")
         control2.HelpStyle.CopyFrom(Me.HelpStyle)
         control2.LabelStyle.CopyFrom(Me.LabelStyle)
         control2.EnableViewState = False
         Dim str As String = TryCast(editInfo.Value, String)
         Select Case Me.HelpDisplayMode
-            Case DotNetNuke.UI.WebControls.HelpDisplayMode.Never
+            Case HelpDisplayMode.Never
                 control2.ShowHelp = False
                 Exit Select
-            Case DotNetNuke.UI.WebControls.HelpDisplayMode.EditOnly
-                If Not ((editInfo.EditMode = DotNetNuke.UI.WebControls.PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str))) Then
+            Case HelpDisplayMode.EditOnly
+                If Not ((editInfo.EditMode = PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str))) Then
                     control2.ShowHelp = False
                     Exit Select
                 End If
                 control2.ShowHelp = True
                 Exit Select
-            Case DotNetNuke.UI.WebControls.HelpDisplayMode.Always
+            Case HelpDisplayMode.Always
                 control2.ShowHelp = True
                 Exit Select
         End Select
         control2.Caption = editInfo.Name
         control2.HelpText = editInfo.Name
         control2.ResourceKey = editInfo.ResourceKey
-        If ((editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Left) Or (editInfo.LabelMode = DotNetNuke.UI.WebControls.LabelMode.Right)) Then
+        If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) Then
             control2.Width = Me.LabelWidth
         End If
         If _FullWidth Then
@@ -430,7 +434,7 @@ Public Class AricieFieldEditorControl
     End Function
 
     Protected Function BuildEditor(ByVal editInfo As EditorInfo) As EditControl
-        Dim control2 As EditControl = AricieFieldEditorControl.CreateEditControl(editInfo, Me)
+        Dim control2 As EditControl = CreateEditControl(editInfo, Me)
         control2.ControlStyle.CopyFrom(Me.EditControlStyle)
         control2.LocalResourceFile = Me.LocalResourceFile
         If (Not editInfo.ControlStyle Is Nothing) Then
@@ -446,13 +450,13 @@ Public Class AricieFieldEditorControl
     End Function
 
 
-    Protected Function BuildRequiredIcon(ByVal editInfo As EditorInfo) As System.Web.UI.WebControls.Image
-        Dim image2 As System.Web.UI.WebControls.Image = Nothing
+    Protected Function BuildRequiredIcon(ByVal editInfo As EditorInfo) As Image
+        Dim image2 As Image = Nothing
         Dim str As String = TryCast(editInfo.Value, String)
         If ((Me.ShowRequired AndAlso editInfo.Required) AndAlso ((editInfo.EditMode = PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str)))) Then
-            image2 = New System.Web.UI.WebControls.Image
+            image2 = New Image
             image2.EnableViewState = False
-            If (Me.RequiredUrl = DotNetNuke.Common.Utilities.Null.NullString) Then
+            If (Me.RequiredUrl = Null.NullString) Then
                 image2.ImageUrl = "~/images/required.gif"
             Else
                 image2.ImageUrl = Me.RequiredUrl
@@ -467,7 +471,7 @@ Public Class AricieFieldEditorControl
         Dim toReturn As New List(Of BaseValidator)
         If editInfo.Required Then
             Dim validator As New RequiredFieldValidator
-            validator.ID = (System.Guid.NewGuid().ToString().Replace("-"c, "") & "_Req")
+            validator.ID = (Guid.NewGuid().ToString().Replace("-"c, "") & "_Req")
             validator.ControlToValidate = targetId
             validator.Display = ValidatorDisplay.Dynamic
             validator.ControlStyle.CopyFrom(fieldCtl.ErrorStyle)
@@ -480,7 +484,7 @@ Public Class AricieFieldEditorControl
         End If
         If (editInfo.ValidationExpression <> "") Then
             Dim validator2 As New RegularExpressionValidator
-            validator2.ID = (System.Guid.NewGuid().ToString().Replace("-"c, "") & "_RegEx")
+            validator2.ID = (Guid.NewGuid().ToString().Replace("-"c, "") & "_RegEx")
             validator2.ControlToValidate = targetId
             validator2.ValidationExpression = editInfo.ValidationExpression
             validator2.Display = ValidatorDisplay.Dynamic
@@ -501,7 +505,7 @@ Public Class AricieFieldEditorControl
         If Me.ShowVisibility Then
             control2 = New VisibilityControl
             control2.ID = (Me.ID & "_vis")
-            control2.Caption = DotNetNuke.Services.Localization.Localization.GetString("Visibility")
+            control2.Caption = Localization.GetString("Visibility")
             control2.Name = editInfo.Name
             control2.Value = editInfo.Visibility
             control2.ControlStyle.CopyFrom(Me.VisibilityStyle)
@@ -515,10 +519,10 @@ Public Class AricieFieldEditorControl
 
 #End Region
 
-    
 
-  
-   
+
+
+
     'Private Shared Sub propEditor_PreRender(ByVal sender As Object, ByVal e As EventArgs)
     '    Dim myEditCtl As EditControl = DirectCast(sender, EditControl)
 
@@ -526,15 +530,15 @@ Public Class AricieFieldEditorControl
     'End Sub
 
 
-   
-
-    
 
 
 
-   
 
 
 
-    
+
+
+
+
+
 End Class
