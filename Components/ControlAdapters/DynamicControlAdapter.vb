@@ -1,6 +1,9 @@
 ﻿Imports System.Web.UI.Adapters
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.Services
+Imports System.Reflection
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -72,6 +75,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class DynamicControlAdapter
         Inherits ControlAdapter 'Base(Of T)
 
+        Public Const EventArgsVarName As String = "Eargs"
 
         Private Shared ReadOnly _BaseType As Type = GetType(DynamicControlAdapter(Of ))
 
@@ -87,76 +91,107 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Delegate Sub ControlEventHandler()
 
 
-
-
         Protected Overrides Sub OnInit(e As EventArgs)
-
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("e", e)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.OnInit(e)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.OnInit), False)
-            If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnInit Then
-                Me.RegisterEventHandlers()
-            End If
-
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add(EventArgsVarName, e)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.OnInit(e)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnInit), False)
+                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnInit Then
+                    Me.RegisterEventHandlers()
+                End If
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
         End Sub
 
         Protected Overrides Sub CreateChildControls()
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.CreateChildControls()
-                                                               End Sub), New DynamicHandlerStep(ControlStep.CreateChildControls), False)
-            If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.CreateChildControls Then
-                Me.RegisterEventHandlers()
-            End If
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.CreateChildControls()
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.CreateChildControls), False)
+                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.CreateChildControls Then
+                    Me.RegisterEventHandlers()
+                End If
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+
+            
         End Sub
 
 
         Protected Overrides Sub OnLoad(e As EventArgs)
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("e", e)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.OnLoad(e)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.OnLoad), False)
-            If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnLoad Then
-                Me.RegisterEventHandlers()
-            End If
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add(EventArgsVarName, e)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.OnLoad(e)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnLoad), False)
+                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnLoad Then
+                    Me.RegisterEventHandlers()
+                End If
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+           
         End Sub
 
         Protected Overrides Sub OnPreRender(e As EventArgs)
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("e", e)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.OnPreRender(e)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.OnPreRender), False)
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add(EventArgsVarName, e)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.OnPreRender(e)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnPreRender), False)
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+         
 
         End Sub
 
         Protected Overrides Sub Render(writer As HtmlTextWriter)
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("writer", writer)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.Render(writer)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.Render), False)
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add("writer", writer)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.Render(writer)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.Render), False)
 
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+          
         End Sub
 
         Protected Overrides Sub RenderChildren(writer As HtmlTextWriter)
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("writer", writer)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.RenderChildren(writer)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.RenderChildren), False)
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add("writer", writer)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.RenderChildren(writer)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.RenderChildren), False)
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+          
         End Sub
 
 
         Protected Overrides Sub OnUnload(e As EventArgs)
-            Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("e", e)
-            Me.ProcessStep(parameters, New ControlEventHandler(Sub()
-                                                                   MyBase.OnUnload(e)
-                                                               End Sub), New DynamicHandlerStep(ControlStep.OnUnload), True)
+            Try
+                Dim parameters As New SerializableDictionary(Of String, Object)
+                parameters.Add(EventArgsVarName, e)
+                Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+                                                                       MyBase.OnUnload(e)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnUnload), True)
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+        
         End Sub
 
         Public Sub ProcessStep(parameters As IDictionary(Of String, Object), ByVal baseHandler As ControlEventHandler, ByVal newStep As DynamicHandlerStep, ByVal endSequence As Boolean)
@@ -191,13 +226,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             objDynamicHandler.RegisterEvent(ctrl)
                         End If
                         If objDynamicHandler.EventInfo IsNot Nothing Then
-                            If objDynamicHandler.EventInfo.EventHandlerType.IsAssignableFrom(GetType(EventHandler)) Then
-                                Dim closureHandler As DynamicHandlerSettings = objDynamicHandler
+                            Dim closureHandler As DynamicHandlerSettings = objDynamicHandler
 
-                                objDynamicHandler.EventInfo.AddEventHandler(ctrl, New EventHandler(Sub(sender As Object, ea As EventArgs)
-                                                                                                       closureHandler.DynamicEventHandler(Me, sender, ea)
-                                                                                                   End Sub))
-                            End If
+                            Dim dynamicEventHandler As New EventHandler(Of EventArgs)(Sub(sender As Object, ea As EventArgs)
+                                                                                          closureHandler.DynamicEventHandler(Me, sender, ea)
+                                                                                      End Sub)
+
+                            ReflectionHelper.AddEventHandler(Of EventArgs)(objDynamicHandler.EventInfo, ctrl, dynamicEventHandler)
                         Else
                             Throw New ApplicationException(String.Format("Control Event was not found for dynamic handler {0}", objDynamicHandler.GetStep().ToString()))
                         End If

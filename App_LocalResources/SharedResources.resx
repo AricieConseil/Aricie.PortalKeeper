@@ -5925,6 +5925,21 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SimpleExpression`1_Expression.Required" xml:space="preserve">
     <value>A non empty Expression is required</value>
   </data>
+  <data name="ControlAdapterSettings_DowngradeDynamicHandlers.Text" xml:space="preserve">
+    <value>Downgrade Dynamic Handlers</value>
+  </data>
+  <data name="ControlAdapterSettings_UpgradeDynamicHandlers.Text" xml:space="preserve">
+    <value>Update Dynamic Handlers</value>
+  </data>
+  <data name="FleeExpressionInfo`1_ExpressionOwner.Header" xml:space="preserve">
+    <value>Expression Owner</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NewOwner.Help" xml:space="preserve">
+    <value>Enter here a Flee expression that will be evaluated in order to provide a new dedicated &lt;a href="http://flee.codeplex.com/wikipage?title=ExpressionOwner&amp;referringTitle=Examples" &gt; Expression Owner&lt;/a&gt; to the main expression. All members from the new owner (including private fields) are then available in the main expression.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NewOwner.Text" xml:space="preserve">
+    <value>New Owner Expression</value>
+  </data>
   <data name="FleeExpressionInfo`1_OverrideOwner.Help" xml:space="preserve">
     <value>The Flee Compiler used for code expressions has the underlying concept of an &lt;a href="http://flee.codeplex.com/wikipage?title=ExpressionOwner&amp;referringTitle=Examples" &gt; Expression Owner&lt;/a&gt;. By default, the current instance of PortalKeeperContext is passed as an expression owner of all expressions. You can alternatively supply a simple expression that resolves into the desired context owner. One big advantage is the posibility to access private members without relying on time consuming Reflection operations.</value>
   </data>
@@ -5939,5 +5954,41 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="ProfileActionProviderBase`1_NamingContainer.Text" xml:space="preserve">
     <value>Naming Container</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserIdExpression.Help" xml:space="preserve">
+    <value>You can supply the user id as a static integer constant or as a dynamic expression to be evaluated at runtime.</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserIdExpression.Text" xml:space="preserve">
+    <value>User Id</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserInfoExpression.Help" xml:space="preserve">
+    <value>Enter a dynamic expression resolving to an instance of type UserInfo to be evaluated at runtime.</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UserInfoExpression.Text" xml:space="preserve">
+    <value>Userinfo Expression</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UsernameExpression.Help" xml:space="preserve">
+    <value>You can supply the username as a static string constant or as a dynamic expression to be evaluated at runtime.</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_UsernameExpression.Text" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="Simple.Text" xml:space="preserve">
+    <value>Simple Value</value>
+  </data>
+  <data name="SimpleOrExpression`1_Expression.Help" xml:space="preserve">
+    <value>Enter below a Flee expression to be evaluated at runtime given a context owner, local and global variables, and static imports. Lookup the &lt;a href="http://flee.codeplex.com/wikipage?title=LanguageReference&amp;referringTitle=Home"&gt; language reference &lt;/a&gt; for more information.</value>
+  </data>
+  <data name="SimpleOrExpression`1_Expression.Text" xml:space="preserve">
+    <value>Dynamic Expression</value>
+  </data>
+  <data name="SimpleOrExpression`1_Simple.Required" xml:space="preserve">
+    <value>Simple value is required</value>
+  </data>
+  <data name="Variables_AddDelegates.Help" xml:space="preserve">
+    <value>You can create Delegate variables by selecting a method name from the given type. The variable can then be used in Expressions with  "Var.invoke(...)"</value>
+  </data>
+  <data name="Variables_AddDelegates.Text" xml:space="preserve">
+    <value>Include Delegates</value>
   </data>
 </root>
