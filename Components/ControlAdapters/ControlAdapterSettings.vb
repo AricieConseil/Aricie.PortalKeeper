@@ -6,6 +6,7 @@ Imports Aricie.DNN.Services
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Collections
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -117,6 +118,43 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        <ActionButton(IconName.Anchor, IconOptions.Normal)> _
+        Public Sub UpgradeDynamicHandlers(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
+            Dim genericDynamicHandlerType As Type = Me.GetGenericDynamicHandlerType()
+            SyncLock Me
+                Dim tempList As New SerializableList(Of DynamicHandlerSettings)
+                For Each objDynamicHandler As DynamicHandlerSettings In Me.DynamicHandlers
+
+                    Dim objHandlerType As Type = objDynamicHandler.GetType()
+
+                    If objHandlerType Is GetType(DynamicHandlerSettings) Then
+                        tempList.Add(DirectCast(Activator.CreateInstance(genericDynamicHandlerType, objDynamicHandler), DynamicHandlerSettings))
+                    Else
+                        tempList.Add(objDynamicHandler)
+                    End If
+                Next
+                Me.DynamicHandlers = tempList
+            End SyncLock
+
+        End Sub
+
+        <ActionButton(IconName.Suitcase, IconOptions.Normal)> _
+        Public Sub DowngradeDynamicHandlers(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
+            SyncLock Me
+                Dim tempList As New SerializableList(Of DynamicHandlerSettings)
+                For Each objDynamicHandler As DynamicHandlerSettings In Me.DynamicHandlers
+                    Dim objHandlerType As Type = objDynamicHandler.GetType()
+                    If objHandlerType IsNot GetType(DynamicHandlerSettings) Then
+                        tempList.Add(objDynamicHandler.Downgrade())
+                    Else
+                        tempList.Add(objDynamicHandler)
+                    End If
+                Next
+                Me.DynamicHandlers = tempList
+            End SyncLock
+        End Sub
+
+
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
             Select Case propertyName
                 Case "DynamicHandlers"
@@ -134,13 +172,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If providerName = "Portable" Then
                     Return New DynamicHandlerSettings()
                 Else
-                    Return ReflectionHelper.CreateObject(GetType(DynamicHandlerSettings(Of )).MakeGenericType(Me.ResolvedAdaptedControlType))
+                    Return ReflectionHelper.CreateObject(GetGenericDynamicHandlerType())
                 End If
             End If
             Return Nothing
         End Function
 
+        'Private _GenericDynamicHandlerType As Type
 
+        Public Function GetGenericDynamicHandlerType() As Type
+            'If _GenericDynamicHandlerType Is Nothing Then
+            Return GetType(DynamicHandlerSettings(Of )).MakeGenericType(Me.ResolvedAdaptedControlType)
+            'End If
+            'Return _GenericDynamicHandlerType
+        End Function
 
 
     End Class

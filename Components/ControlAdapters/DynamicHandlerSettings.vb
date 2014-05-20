@@ -15,6 +15,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits DynamicHandlerSettings
         Implements ISelector
 
+        Public Sub New()
+
+        End Sub
+
+        Public Sub New(untyped As DynamicHandlerSettings)
+            ReflectionHelper.MergeObjects(untyped, Me)
+        End Sub
 
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ChildControlEvent)>
         Public Property EditChildControl As Boolean
@@ -106,6 +113,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+
+
+
         <LabelMode(LabelMode.Left)> _
         <XmlIgnore()> _
         <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
@@ -118,19 +128,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If objEvent IsNot Nothing Then
                             Dim objParams As ParameterInfo() = ReflectionHelper.GetEventParameters(objEvent)
                             For Each objParam As ParameterInfo In objParams
-                                toReturn.Add(objParam.Name, ReflectionHelper.GetSafeTypeName(objParam.ParameterType))
+                                Dim objParamName As String = objParam.Name
+                                If objParamName = "e" Then
+                                    objParamName = DynamicControlAdapter.EventArgsVarName
+                                End If
+                                toReturn.Add(objParamName, ReflectionHelper.GetSafeTypeName(objParam.ParameterType))
                             Next
                         End If
                     Case ControlStep.Render, ControlStep.RenderChildren
                         toReturn.Add("writer", ReflectionHelper.GetSafeTypeName(GetType(HtmlTextWriter)))
+                    Case ControlStep.CreateChildControls
+                        Exit Select
                     Case Else
-                        toReturn.Add("e", ReflectionHelper.GetSafeTypeName(GetType(EventArgs)))
+                        toReturn.Add(DynamicControlAdapter.EventArgsVarName, ReflectionHelper.GetSafeTypeName(GetType(EventArgs)))
                 End Select
                 Return toReturn
             End Get
         End Property
         
-
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
             Dim toReturn As New ListItemCollection()
@@ -157,6 +172,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Select
             Return toReturn
         End Function
+
+        
 
 
     End Class
@@ -198,8 +215,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Sub DynamicEventHandler(controlAdapter As DynamicControlAdapter, sender As Object, e As EventArgs)
             Dim parameters As New SerializableDictionary(Of String, Object)
-            parameters.Add("sender", sender)
-            parameters.Add("e", e)
+            Dim objParams As ParameterInfo() = ReflectionHelper.GetEventParameters(Me.EventInfo)
+            parameters(objParams(0).Name) = sender
+            Dim objParamName As String = objParams(1).Name
+            If objParamName = "e" Then
+                objParamName = DynamicControlAdapter.EventArgsVarName
+            End If
+            parameters(objParamName) = e
             controlAdapter.ProcessStep(parameters, Nothing, Me.GetStep(), False)
         End Sub
 
@@ -215,6 +237,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Function
 
+        Public Function Downgrade() As DynamicHandlerSettings
+            Dim toReturn As New DynamicHandlerSettings()
+            ReflectionHelper.MergeObjects(Me, toReturn)
+            Return toReturn
+        End Function
 
     End Class
 End Namespace
