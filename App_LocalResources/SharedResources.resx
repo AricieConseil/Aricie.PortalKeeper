@@ -5925,4 +5925,19 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SimpleExpression`1_Expression.Required" xml:space="preserve">
     <value>A non empty Expression is required</value>
   </data>
+  <data name="FleeExpressionInfo`1_OverrideOwner.Help" xml:space="preserve">
+    <value>The Flee Compiler used for code expressions has the underlying concept of an &lt;a href="http://flee.codeplex.com/wikipage?title=ExpressionOwner&amp;referringTitle=Examples" &gt; Expression Owner&lt;/a&gt;. By default, the current instance of PortalKeeperContext is passed as an expression owner of all expressions. You can alternatively supply a simple expression that resolves into the desired context owner. One big advantage is the posibility to access private members without relying on time consuming Reflection operations.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_OverrideOwner.Text" xml:space="preserve">
+    <value>Override Expression Owner</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_NamingContainer.Help" xml:space="preserve">
+    <value>This is the name of the entity your profile property belongs to </value>
+  </data>
+  <data name="ProfileActionProviderBase`1_NamingContainer.Required" xml:space="preserve">
+    <value>You must enter a naming container</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_NamingContainer.Text" xml:space="preserve">
+    <value>Naming Container</value>
+  </data>
 </root>
