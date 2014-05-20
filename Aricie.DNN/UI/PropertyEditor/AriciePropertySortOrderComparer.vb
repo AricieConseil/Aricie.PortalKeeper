@@ -74,12 +74,19 @@ Namespace UI.WebControls
                 Return order - order2
                 'End If
             End If
-            Dim type1 As Type = info.GetAccessors.First.GetBaseDefinition.DeclaringType
-            Dim type2 As Type = info2.GetAccessors.First.GetBaseDefinition.DeclaringType
-            If Not type1.Equals(type2) Then
-                If type1.IsSubclassOf(type2) Then
+
+            Dim type1 As Type = info.DeclaringType
+            Dim type2 As Type = info2.DeclaringType
+            If type1 IsNot type2 Then
+                Dim baseType1 As Type = info.GetAccessors.First.GetBaseDefinition.DeclaringType
+                Dim baseType2 As Type = info2.GetAccessors.First.GetBaseDefinition.DeclaringType
+                If baseType1.IsSubclassOf(baseType2) Then
                     Return 1
-                ElseIf type2.IsSubclassOf(type1) Then
+                ElseIf baseType2.IsSubclassOf(baseType1) Then
+                    Return -1
+                ElseIf type1.IsSubclassOf(type2) Then
+                    Return 1
+                Else
                     Return -1
                 End If
             End If
