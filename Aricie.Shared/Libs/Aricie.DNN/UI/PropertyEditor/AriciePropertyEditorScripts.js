@@ -57,58 +57,63 @@ function initialisePropertyEditorsScripts() {
     // accordion
     selector = ".aricie_pe_accordion" + "-" + AriciePropertyEditorScripts.get_clientId();
     cookieAccName = 'cookieAccordion' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-    var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
-    if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
-        cookieVal = false;
-    } else {
-    cookieVal = parseInt(cookieVal);
-    }
 
     // on fait l'évaluation du noeud un minimum
-    var selectedNode = jQuery(selector);
+    var selectedNodes = jQuery(selector);
+    if (selectedNodes.length > 0) {
+        jQuery.each(selectedNodes, function (i, selectedNodeDom) {
+            var selectedNode = jQuery(selectedNodeDom);
+            var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
+            if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
+                cookieVal = false;
+            } else {
+                cookieVal = parseInt(cookieVal);
+            }
+            selectedNode.accordion(
+            {
+                active: cookieVal,
+                heightStyle: "content",
+                clearStyle: true,
+                autoHeight: false,
+                collapsible: true
+            });
 
-    selectedNode.accordion(
-    {
-        active: cookieVal,
-        heightStyle: "content",
-        clearStyle: true,
-        autoHeight: false,
-        collapsible: true
-    });
+            jQuery('> h3.ui-accordion-header>a', selectedNode).click(function () {
+                var h3 = jQuery(this).parent();
+                var index = h3.parent().children('h3.ui-accordion-header').index(h3);
+                var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
 
-    jQuery('> h3.ui-accordion-header>a', selectedNode).click(function () {
-        var h3 = jQuery(this).parent();
-        var index = h3.parent().children('h3.ui-accordion-header').index(h3);
-        var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
-       
-        if (cookieVal === index) {
-            
-            setAdvanceVariableValue(cookieAccName, null);
-        } else {
-            
-            setAdvanceVariableValue(cookieAccName, index);
-        }
-    });
+                if (cookieVal === index) {
 
-    jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
-        jQuery.each(jQuery(h3).data("events") || jQuery._data(h3, "events"), function (j, event) {
-            jQuery.each(event, function (k, h) {
-                if (h.type === 'click') {
-                    jQuery(h3).unbind(h.type, h.handler);
-                    jQuery(h3).children("a").click(function () {
-                        jQuery(this).parent().bind(h.type, h.handler);
-                        jQuery(this).parent().triggerHandler(h.type);
-                        jQuery(this).parent().unbind(h.type, h.handler);
-                    });
+                    setAdvanceVariableValue(cookieAccName, null);
+                } else {
+
+                    setAdvanceVariableValue(cookieAccName, index);
                 }
             });
+
+            jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
+                jQuery.each(jQuery(h3).data("events") || jQuery._data(h3, "events"), function (j, event) {
+                    jQuery.each(event, function (k, h) {
+                        if (h.type === 'click') {
+                            jQuery(h3).unbind(h.type, h.handler);
+                            jQuery(h3).children("a").click(function () {
+                                jQuery(this).parent().bind(h.type, h.handler);
+                                jQuery(this).parent().triggerHandler(h.type);
+                                jQuery(this).parent().unbind(h.type, h.handler);
+                            });
+                        }
+                    });
+                });
+            });
+
         });
-    });
+    }
 
     // tabs
     selector = ".aricie_pe_tabs" + "-" + AriciePropertyEditorScripts.get_clientId();
     cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-   // var lis = jQuery(selector).find('ul').eq(0).find('li');
+    // var lis = jQuery(selector).find('ul').eq(0).find('li');
     jQuery(selector).tabs({
         /*cookie: { name: cookieTabName, expires: 1 },*/
         select: function (event, ui) {
@@ -146,7 +151,7 @@ function initJSON() {
             if (t === "string") { obj = '"' + obj + '"'; }
             return String(obj);
 
-        }else {
+        } else {
 
             // recurse array or object
             var n, v, json = [], arr = (obj && obj.constructor == Array);
@@ -156,7 +161,7 @@ function initJSON() {
 
                 if (t === "string") {
                     v = '"' + v + '"';
-                }else {
+                } else {
                     if (t == "object" && v !== null) {
                         v = JSON.stringify(v);
                     }
@@ -205,10 +210,10 @@ function setAdvanceVariableValue(key, value) {
             AdvObj = eval(Adv);
         }
     } else {
-    AdvObj = {};
+        AdvObj = {};
     }
-AdvObj[key] = value;
-Adv = JSON.stringify(AdvObj);
+    AdvObj[key] = value;
+    Adv = JSON.stringify(AdvObj);
     dnn.setVar("AdvVar", Adv);
 }
 function performASPNetValidation() {
@@ -253,7 +258,7 @@ function get_cookies_array() {
 function SelectAndActivateParentHeader(src) {
     var targetItem = jQuery(src).parent().parent().find(">a");
     targetItem.attr('onclick', '');
-     targetItem.click();
+    targetItem.click();
     //return false;
     window.location.hash = targetItem.attr("href");
 }
