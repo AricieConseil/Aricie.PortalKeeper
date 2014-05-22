@@ -188,9 +188,17 @@ a.caldisabled, a.caldisabled:link, a.caldisabled:hover, a.caldisabled:visited {
     background: #fff;
 }
 
-    .aricieAction.aspNetDisabled {
-        cursor: not-allowed;
-    }
+.aricieAction.aspNetDisabled {
+    cursor: not-allowed;
+}
+
+.aricieAction.selected {
+    color: #2e971a;
+}
+
+.aricieAction.child {
+    color: #ff5e00;
+}
 
 .dnnForm .dnnFormItem:after {
     clear: both;

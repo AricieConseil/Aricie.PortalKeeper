@@ -192,14 +192,23 @@ Namespace UI.WebControls
             End Get
         End Property
 
+        Private _IsRoot As Nullable(Of Boolean)
+
+        Public ReadOnly Property IsRoot As Boolean
+            Get
+                If Not _IsRoot.HasValue Then
+                    _IsRoot = RootEditor Is Me
+                End If
+                Return _IsRoot.Value
+            End Get
+        End Property
+
         Public ReadOnly Property RootEditor As AriciePropertyEditorControl
             Get
                 Dim objParentEditor As AriciePropertyEditorControl = Me
-                If objParentEditor IsNot Nothing Then
-                    While objParentEditor.ParentAricieEditor IsNot Nothing
-                        objParentEditor = objParentEditor.ParentAricieEditor
-                    End While
-                End If
+                While objParentEditor.ParentAricieEditor IsNot Nothing
+                    objParentEditor = objParentEditor.ParentAricieEditor
+                End While
                 Return objParentEditor
             End Get
         End Property
@@ -343,6 +352,10 @@ Namespace UI.WebControls
 
 
         Protected Overrides Sub OnInit(ByVal e As System.EventArgs)
+            If Not Me.Page.IsPostBack Then
+                Me.ParseQueryString()
+            End If
+            MyBase.OnInit(e)
             ' SB: rajout destiné à fournir le style correct à DNN pour les popups d'aide
             If NukeHelper.DnnVersion.Major >= 6 Then
                 ' rien à faire pour l'instant
@@ -350,12 +363,11 @@ Namespace UI.WebControls
             Else
                 HelpStyle.CssClass += " Help"
             End If
-
-            MyBase.OnInit(e)
         End Sub
 
         Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
             MyBase.OnLoad(e)
+
             '    If Me.ParentModule IsNot Nothing Then
             '        Me.ParentModule.AdvancedCounter(Me, LOAD_COUNTER) += 1
             '    End If
@@ -701,32 +713,32 @@ Namespace UI.WebControls
         Private Sub ProcessSubPath()
             If Me.DataSource IsNot Nothing AndAlso Me.PropertyDepth = 0 Then
                 If Not String.IsNullOrEmpty(Me.SubEditorFullPath) Then
-                    If Me.Page.IsPostBack Then
-                        If Not Me.DataSource.GetType() Is GetType(SubPathContainer) Then
-                            Dim newContainerEntity As New SubPathContainer()
-                            newContainerEntity.OriginalEntity = Me.DataSource
-                            newContainerEntity.OriginalPath = SubEditorFullPath
-                            newContainerEntity.Path = SubEditorPath
-                            'If Not String.IsNullOrEmpty(SubEditorPath) Then
-                            '    newContainerEntity.Path = SubEditorPath
-                            'Else
-                            '    newContainerEntity.Path = newContainerEntity.OriginalPath
-                            'End If
-                            Me.DataSource = newContainerEntity
-                            Me._FieldsDictionary = Nothing
-                        Else
-                            Dim newPath As String = DirectCast(Me.DataSource, SubPathContainer).Path
-                            If newPath <> Me.SubEditorPath Then
-                                If Not String.IsNullOrEmpty(SubEditorPath) Then
-                                    Me._FieldsDictionary = Nothing
-                                End If
-                                Me.SubEditorPath = newPath
-                            End If
-                        End If
+                    'If Me.Page.IsPostBack Then
+                    If Not Me.DataSource.GetType() Is GetType(SubPathContainer) Then
+                        Dim newContainerEntity As New SubPathContainer()
+                        newContainerEntity.OriginalEntity = Me.DataSource
+                        newContainerEntity.OriginalPath = SubEditorFullPath
+                        newContainerEntity.Path = SubEditorPath
+                        'If Not String.IsNullOrEmpty(SubEditorPath) Then
+                        '    newContainerEntity.Path = SubEditorPath
+                        'Else
+                        '    newContainerEntity.Path = newContainerEntity.OriginalPath
+                        'End If
+                        Me.DataSource = newContainerEntity
+                        Me._FieldsDictionary = Nothing
                     Else
-                        Me.SubEditorFullPath = ""
-                        Me.SubEditorPath = ""
+                        Dim newPath As String = DirectCast(Me.DataSource, SubPathContainer).Path
+                        If newPath <> Me.SubEditorPath Then
+                            If Not String.IsNullOrEmpty(SubEditorPath) Then
+                                Me._FieldsDictionary = Nothing
+                            End If
+                            Me.SubEditorPath = newPath
+                        End If
                     End If
+                    'Else
+                    '    Me.SubEditorFullPath = ""
+                    '    Me.SubEditorPath = ""
+                    'End If
                 Else
                     CloseSubEditor()
                 End If
@@ -798,7 +810,9 @@ Namespace UI.WebControls
             nbControls += AddColumns(objElement, objElement.Container, keepHidden)
             nbControls += AddSections(objElement, objElement.Container, keepHidden)
             nbControls += AddTabs(objElement, keepHidden)
-            nbControls += AddActionButtons(objElement, keepHidden)
+            If Me.EditMode = PropertyEditorMode.Edit Then
+                nbControls += AddActionButtons(objElement, keepHidden)
+            End If
 
             Return nbControls
         End Function
@@ -1357,6 +1371,15 @@ Namespace UI.WebControls
             Return toReturn
         End Function
 
+        Private Sub ParseQueryString()
+            If Me.IsRoot Then
+                Dim pathQuery As String = Me.Context.Request.QueryString(SubPathQuery)
+                If Not String.IsNullOrEmpty(pathQuery) Then
+                    Me.SubEditorFullPath = pathQuery
+                End If
+            End If
+        End Sub
+
 #End Region
 
 #Region "IScriptControl"
@@ -1703,6 +1726,7 @@ Namespace UI.WebControls
 #End Region
 
 
+        Public Const SubPathQuery As String = "SubPath"
 
     End Class
 

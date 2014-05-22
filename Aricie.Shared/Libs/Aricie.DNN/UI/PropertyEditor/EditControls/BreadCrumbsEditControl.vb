@@ -54,16 +54,29 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Private Sub SetCurrentLevel()
+
             For Each objButton As WebControl In _Buttons.Values
                 objButton.Enabled = True
             Next
             If Value IsNot Nothing Then
                 Dim objButton As WebControl = Nothing
                 If _Buttons.TryGetValue(Value.ToString, objButton) Then
+                    objButton.CssClass &= " selected"
                     objButton.Enabled = False
-                    objButton.CssClass &= " Selected"
+                    Dim iconButton = TryCast(objButton, IconActionButton)
+                    If iconButton IsNot Nothing Then
+                        iconButton.ActionItem.IconOptions = iconButton.ActionItem.IconOptions Or IconOptions.Large
+                    End If
                 End If
             End If
+            Dim selectedPassed As Boolean
+            For Each objButton As WebControl In _Buttons.Values
+                If Not objButton.Enabled Then
+                    selectedPassed = True
+                ElseIf selectedPassed Then
+                    objButton.CssClass &= " child"
+                End If
+            Next
         End Sub
 
 

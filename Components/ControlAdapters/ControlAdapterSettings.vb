@@ -15,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         UnTyped
     End Enum
 
-    '<DefaultProperty("FriendlyName")> _
+    <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
     <Serializable()> _
     Public Class ControlAdapterSettings
         Inherits NamedConfig
@@ -93,8 +93,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("AdapterMode", False, True, AdapterControlMode.Type)> _
         Public Property AdapterControlType As New DotNetType()
 
-        <ConditionalVisible("AdapterMode", False, True, AdapterControlMode.DynamicAdapter)> _
-        Public Property HandlersRegistrationStep As HandlersRegistrationStep = HandlersRegistrationStep.OnInit
+
 
         <ProvidersSelector("Text", "Value")> _
         <ConditionalVisible("AdapterMode", False, True, AdapterControlMode.DynamicAdapter)> _

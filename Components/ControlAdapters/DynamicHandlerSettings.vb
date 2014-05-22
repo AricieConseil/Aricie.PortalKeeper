@@ -7,6 +7,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -145,7 +146,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return toReturn
             End Get
         End Property
-        
+
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
             Dim toReturn As New ListItemCollection()
@@ -173,12 +174,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-        
+
 
 
     End Class
 
 
+    <ActionButton(IconName.CodeFork, IconOptions.Normal)> _
     <Serializable()> _
     Public Class DynamicHandlerSettings
         Inherits SimpleRuleEngine
@@ -194,6 +196,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
         Public Overridable Property ControlEventName As String = String.Empty
 
+        <ConditionalVisible("MainControlStep", False, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
+        Public Property HandlerRegistrationStep As HandlersRegistrationStep = HandlersRegistrationStep.OnInit
+
+        <ConditionalVisible("MainControlStep", True, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
+        Public Property BaseHandlerMode As ControlBaseHandlerMode = ControlBaseHandlerMode.Before
+
+        Public Property NotOnFirstLoad As Boolean
+        Public Property NotOnPostBacks As Boolean
 
         Private _EventInfo As EventInfo
 
@@ -204,9 +214,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return _EventInfo
             End Get
         End Property
-
-        <ConditionalVisible("MainControlStep", True, True, ControlStep.ControlEvent, ControlStep.ChildControlEvent)>
-        Public Property BaseHandlerMode As ControlBaseHandlerMode = ControlBaseHandlerMode.Before
 
 
         Public Sub RegisterEvent(objCtl As Control)

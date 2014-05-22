@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RuleEngineSettings`1_Rules.Header" xml:space="preserve">
-    <value>Rules</value>
+    <value>Runtime</value>
   </data>
   <data name="ValueList_AddNew.Text" xml:space="preserve">
     <value>Add new Value</value>
@@ -2125,7 +2125,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Action Providers</value>
   </data>
   <data name="ActionProviderSettings`1_RuleSettings.Header" xml:space="preserve">
-    <value>Rule</value>
+    <value>Runtime</value>
   </data>
   <data name="ActionProviderSettings`1_TechnicalSettings.Header" xml:space="preserve">
     <value>Technical Settings</value>
@@ -4756,13 +4756,13 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Dynamic Handler</value>
   </data>
   <data name="DynamicMethods_AddNew.Text" xml:space="preserve">
-    <value>Add new Dynamic method</value>
+    <value>Add New Method</value>
   </data>
   <data name="DynamicMethods_Export.Text" xml:space="preserve">
-    <value>Export Dynamic Methods</value>
+    <value>Export Methods</value>
   </data>
   <data name="DynamicMethods_Import.Text" xml:space="preserve">
-    <value>Import Dynamic Methods</value>
+    <value>Import Methods</value>
   </data>
   <data name="PortalKeeperConfig_RestServices.Header" xml:space="preserve">
     <value>Web services</value>
@@ -5682,11 +5682,11 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ControlAdapterSettings_DynamicHandlers.Text" xml:space="preserve">
     <value>Dynamic Handlers</value>
   </data>
-  <data name="ControlAdapterSettings_HandlersRegistrationStep.Help" xml:space="preserve">
-    <value>If some your dynamic handlers are hooked to control or child controls events, you need to specify when to register those event handlers, according to when the controls are available for hooking.</value>
+  <data name="DynamicHandlerSettings_HandlerRegistrationStep.Help" xml:space="preserve">
+    <value>If some your dynamic handlers are hooked to control or child controls events, you need to specify when to register those event handlers, depending on when the controls are available for hooking.</value>
   </data>
-  <data name="ControlAdapterSettings_HandlersRegistrationStep.Text" xml:space="preserve">
-    <value>Event Handlers Registration Step</value>
+  <data name="DynamicHandlerSettings_HandlerRegistrationStep.Text" xml:space="preserve">
+    <value>Event Handler Registration Step</value>
   </data>
   <data name="ControlEvent.Text" xml:space="preserve">
     <value>Control Event</value>
@@ -5722,19 +5722,19 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Handler Step</value>
   </data>
   <data name="DynamicHandlers_AddNew.Text" xml:space="preserve">
-    <value>Add New Dynamic Handler</value>
+    <value>Add New Handler</value>
   </data>
   <data name="DynamicHandlers_Copy.Text" xml:space="preserve">
-    <value>Copy Dynamic Handlers</value>
+    <value>Copy Handlers</value>
   </data>
   <data name="DynamicHandlers_Export.Text" xml:space="preserve">
-    <value>Export Dynamic Handlers</value>
+    <value>Export Handlers</value>
   </data>
   <data name="DynamicHandlers_Import.Text" xml:space="preserve">
-    <value>Import Dynamic Handlers</value>
+    <value>Import Handlers</value>
   </data>
   <data name="DynamicHandlers_Paste.Text" xml:space="preserve">
-    <value>Paste Dynamic Handlers</value>
+    <value>Paste Handlers</value>
   </data>
   <data name="OnInit.Text" xml:space="preserve">
     <value>OnInit</value>
@@ -5990,5 +5990,38 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="Variables_AddDelegates.Text" xml:space="preserve">
     <value>Include Delegates</value>
+  </data>
+  <data name="WebProxyInfo_VirtualProxy.Help" xml:space="preserve">
+    <value>When checked, ServicePoint.m_ProxyServicePoint is set to false by reflection, and the host header is kept as if no proxy were used.</value>
+  </data>
+  <data name="WebProxyInfo_VirtualProxy.Text" xml:space="preserve">
+    <value>Virtual Proxy</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpAllVars.Help" xml:space="preserve">
+    <value>When checked, all the variables computed during the bot's execution are dumped.</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpAllVars.Text" xml:space="preserve">
+    <value>Dump all variables</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpVariables.Help" xml:space="preserve">
+    <value>Enter here a comma separated list of variable names or Flee expressions, to be included in the run dumps</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpVariables.Text" xml:space="preserve">
+    <value>Dump Variables</value>
+  </data>
+  <data name="DynamicHandlerSettings_NotOnFirstLoad.Help" xml:space="preserve">
+    <value>Check to prevent the dynamic handler to be executed on first page load</value>
+  </data>
+  <data name="DynamicHandlerSettings_NotOnFirstLoad.Text" xml:space="preserve">
+    <value>Disable On First Load</value>
+  </data>
+  <data name="DynamicHandlerSettings_NotOnPostBacks.Help" xml:space="preserve">
+    <value>Check to prevent the dynamic handler to be executed on subsequent postbacks</value>
+  </data>
+  <data name="DynamicHandlerSettings_NotOnPostBacks.Text" xml:space="preserve">
+    <value>Disable On Postbacks</value>
+  </data>
+  <data name="WebProxyInfo_Address.Required" xml:space="preserve">
+    <value>Proxy Address is required</value>
   </data>
 </root>
