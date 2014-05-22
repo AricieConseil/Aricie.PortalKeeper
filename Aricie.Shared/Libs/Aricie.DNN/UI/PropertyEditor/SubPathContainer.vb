@@ -107,9 +107,10 @@ Namespace UI.WebControls
                     For i As Integer = LBound(split) To UBound(split) Step 1
                         Try
                             Dim segment As String = split(i)
-                            Dim itemIcone = New IconActionInfo()
+                            Dim itemIcon = New IconActionInfo()
                             dicoBuilder.Append(segment)
                             Dim subPath As String = dicoBuilder.ToString()
+                            Dim skip As Boolean
                             If segment.Contains("["c) Then
 
                                 Dim entity As Object = GetSubEntity(subPath)
@@ -118,7 +119,7 @@ Namespace UI.WebControls
                                     Dim entityButton As ActionButtonInfo = ActionButtonInfo.FromMember(entity.GetType)
                                     'Dim include As Boolean
                                     If entityButton IsNot Nothing Then
-                                        itemIcone = entityButton.IconAction
+                                        itemIcon = entityButton.IconAction
                                         'include = True
                                     End If
 
@@ -131,11 +132,14 @@ Namespace UI.WebControls
                                     'If include Then
 
                                     'End If
-
+                                Else
+                                    skip = True
                                 End If
                             End If
+                            If Not skip Then
+                                toReturn.Add(New KeyValuePair(Of String, IconInfo)(subPath, New IconInfo() With {.Text = segment, .Icon = itemIcon}))
+                            End If
 
-                            toReturn.Add(New KeyValuePair(Of String, IconInfo)(subPath, New IconInfo() With {.Text = segment, .Icon = itemIcone}))
                             If i <> UBound(split) Then
                                 dicoBuilder.Append("."c)
                             End If

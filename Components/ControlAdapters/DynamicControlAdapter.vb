@@ -98,9 +98,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnInit(e)
                                                                    End Sub), New DynamicHandlerStep(ControlStep.OnInit), False)
-                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnInit Then
-                    Me.RegisterEventHandlers()
-                End If
+                Me.RegisterEventHandlers(HandlersRegistrationStep.OnInit)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
@@ -112,9 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.CreateChildControls()
                                                                    End Sub), New DynamicHandlerStep(ControlStep.CreateChildControls), False)
-                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.CreateChildControls Then
-                    Me.RegisterEventHandlers()
-                End If
+                Me.RegisterEventHandlers(HandlersRegistrationStep.CreateChildControls)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
@@ -130,9 +126,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnLoad(e)
                                                                    End Sub), New DynamicHandlerStep(ControlStep.OnLoad), False)
-                If Me.Settings.HandlersRegistrationStep = HandlersRegistrationStep.OnLoad Then
-                    Me.RegisterEventHandlers()
-                End If
+                Me.RegisterEventHandlers(HandlersRegistrationStep.OnLoad)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
@@ -202,9 +196,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     baseHandler.Invoke()
                 End If
                 If dynamicHandler IsNot Nothing AndAlso dynamicHandler.Enabled Then
-                    parameters.Add("Adapter", Me)
-                    keeperContext.Init(dynamicHandler, parameters)
-                    dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, endSequence)
+                    If (Not Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnFirstLoad) OrElse (Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnPostBacks) Then
+                        parameters.Add("Adapter", Me)
+                        keeperContext.Init(dynamicHandler, parameters)
+                        dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, endSequence)
+                    End If
                     If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
                         baseHandler.Invoke()
                     End If
@@ -214,30 +210,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Private Sub RegisterEventHandlers()
+        Private Sub RegisterEventHandlers(objStep As HandlersRegistrationStep)
             For Each objDynamicHandler As DynamicHandlerSettings In Me.Settings.DynamicHandlers
-                If objDynamicHandler.Enabled AndAlso objDynamicHandler.MainControlStep = ControlStep.ControlEvent OrElse objDynamicHandler.MainControlStep = ControlStep.ChildControlEvent Then
-                    Dim ctrl As Control = Me.Control
-                    If Not String.IsNullOrEmpty(objDynamicHandler.ChildControlId) Then
-                        ctrl = ctrl.FindControl(objDynamicHandler.ChildControlId)
-                    End If
-                    If ctrl IsNot Nothing Then
-                        If objDynamicHandler.EventInfo Is Nothing Then
-                            objDynamicHandler.RegisterEvent(ctrl)
+                If objDynamicHandler.Enabled AndAlso (objDynamicHandler.MainControlStep = ControlStep.ControlEvent OrElse objDynamicHandler.MainControlStep = ControlStep.ChildControlEvent) Then
+                    If objDynamicHandler.HandlerRegistrationStep = objStep Then
+                        Dim ctrl As Control = Me.Control
+                        If Not String.IsNullOrEmpty(objDynamicHandler.ChildControlId) Then
+                            ctrl = ctrl.FindControl(objDynamicHandler.ChildControlId)
                         End If
-                        If objDynamicHandler.EventInfo IsNot Nothing Then
-                            Dim closureHandler As DynamicHandlerSettings = objDynamicHandler
+                        If ctrl IsNot Nothing Then
+                            If objDynamicHandler.EventInfo Is Nothing Then
+                                objDynamicHandler.RegisterEvent(ctrl)
+                            End If
+                            If objDynamicHandler.EventInfo IsNot Nothing Then
+                                Dim closureHandler As DynamicHandlerSettings = objDynamicHandler
 
-                            Dim dynamicEventHandler As New EventHandler(Of EventArgs)(Sub(sender As Object, ea As EventArgs)
-                                                                                          closureHandler.DynamicEventHandler(Me, sender, ea)
-                                                                                      End Sub)
+                                Dim dynamicEventHandler As New EventHandler(Of EventArgs)(Sub(sender As Object, ea As EventArgs)
+                                                                                              closureHandler.DynamicEventHandler(Me, sender, ea)
+                                                                                          End Sub)
 
-                            ReflectionHelper.AddEventHandler(Of EventArgs)(objDynamicHandler.EventInfo, ctrl, dynamicEventHandler)
+                                ReflectionHelper.AddEventHandler(Of EventArgs)(objDynamicHandler.EventInfo, ctrl, dynamicEventHandler)
+                            Else
+                                Throw New ApplicationException(String.Format("Control Event was not found for dynamic handler {0}", objDynamicHandler.GetStep().ToString()))
+                            End If
                         Else
-                            Throw New ApplicationException(String.Format("Control Event was not found for dynamic handler {0}", objDynamicHandler.GetStep().ToString()))
+                            Throw New ApplicationException(String.Format("Control was not found for dynamic handler {0}", objDynamicHandler.GetStep().ToString()))
                         End If
-                    Else
-                        Throw New ApplicationException(String.Format("Control was not found for dynamic handler {0}", objDynamicHandler.GetStep().ToString()))
                     End If
                 End If
             Next
