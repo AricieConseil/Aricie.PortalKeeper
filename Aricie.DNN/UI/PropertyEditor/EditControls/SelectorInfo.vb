@@ -109,7 +109,7 @@ Namespace UI.WebControls.EditControls
                 toReturn = DirectCast(ReflectionHelper.CreateObject(Me._SelectorTypeName), SelectorControl)
             ElseIf Me._IsIselector Then
                 Dim enumerable As IList = DirectCast(parentField.DataSource, ISelector).GetSelector(parentField.DataField)
-                If Not enumerable Is Nothing Then
+                If enumerable IsNot Nothing Then
                     toReturn = New AutoSelectorControl(enumerable)
                 Else
                     Throw New Exception(String.Format("Selector Content not found for property {0}.", parentField.DataField))

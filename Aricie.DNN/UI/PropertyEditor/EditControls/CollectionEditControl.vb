@@ -828,6 +828,9 @@ Namespace UI.WebControls.EditControls
         End Sub
 
 
+
+
+
         Private Sub AddItemButtons(actionContainer As Control, headerLink As Control, commandIndex As Integer)
 
             If Me.EditMode = PropertyEditorMode.Edit Then
@@ -839,6 +842,30 @@ Namespace UI.WebControls.EditControls
                 Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
                 'SubPropertyEditor button
                 If headerLink IsNot Nothing Then
+
+                    Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
+                    If toEditor IsNot Nothing Then
+                        Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex)).Replace("SubEntity.", "").Replace("SubEntity", "")
+                        If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
+                            path = toEditor.SubEditorPath & "."c & path
+                        End If
+
+                        Dim newUrl As New UriBuilder(Me.Context.Request.Url)
+                        Dim query As NameValueCollection = HttpUtility.ParseQueryString(newUrl.Query)
+                        query(SubPathQuery) = path
+                        newUrl.Query = query.ToString()
+
+                        Dim cmdLink As New IconActionControl()
+                        plAction.Controls.Add(cmdLink)
+                        With cmdLink
+                            .CssClass = "aricieAction"
+                            .ActionItem.IconName = IconName.Link
+                            .Url = newUrl.ToString()
+                        End With
+                    End If
+
+
+
 
                     Dim cmdFocus As New IconActionButton
                     plAction.Controls.Add(cmdFocus)

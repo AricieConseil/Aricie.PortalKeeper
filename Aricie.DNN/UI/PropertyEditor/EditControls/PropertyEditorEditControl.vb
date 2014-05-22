@@ -68,7 +68,7 @@ Namespace UI.WebControls.EditControls
             If Me.Value IsNot Nothing Then
                 Me._InnerEditor = GetNewEditor()
                 If TypeOf Me._InnerEditor Is AriciePropertyEditorControl Then
-                    Dim aEditor As AriciePropertyEditorControl = DirectCast(Me._InnerEditor, AriciePropertyEditorControl)
+                    Dim aEditor As AriciePropertyEditorControl = TryCast(Me._InnerEditor, AriciePropertyEditorControl)
                     If Me.ParentAricieField IsNot Nothing Then
                         If Me.ParentAricieField.IsHidden Then
                             aEditor.IsHidden = True
