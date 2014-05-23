@@ -5,18 +5,25 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
-Imports System.Runtime.Remoting.Messaging
+Imports System.Reflection
 
 Namespace ComponentModel
 
     Public Enum TypeSelector
         CommonTypes
+        BrowseHierarchy
         NewType
     End Enum
 
     <Serializable()> _
     Public Class DotNetType
+        Implements ISelector
         Implements ISelector(Of DotNetType)
+        Implements ISelector(Of AssemblyName)
+        Implements ISelector(Of String)
+
+
+
 
         Private _TypeName As String = ""
 
@@ -72,7 +79,7 @@ Namespace ComponentModel
                 If Not _TypeSelector.HasValue Then
                     Dim targetType As Type = Nothing
                     If Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing Then
-                        Return TypeSelector.NewType
+                        Return TypeSelector.BrowseHierarchy
                     Else
                         Return TypeSelector.CommonTypes
                     End If
@@ -101,6 +108,36 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <Selector("Name", "FullName", False, True, "<Select an Assembly>", "", False, False)> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <XmlIgnore()> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        Public Property AssemblyNameSelect As String = ""
+
+        <AutoPostBack()> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <XmlIgnore()> _
+        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        Public Property NamespaceSelect As String = ""
+
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+          <Selector("Name", "TypeName", False, False, "", "", False, False)> _
+        <XmlIgnore()> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        Public Property TypeNameSelect As String
+            Get
+                Return _TypeName
+            End Get
+            Set(value As String)
+                If Me._TypeName <> value Then
+                    Me.TypeName = value
+                End If
+            End Set
+        End Property
+
+
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
         <IsReadOnly(True)> _
@@ -112,6 +149,12 @@ Namespace ComponentModel
                 If _TypeName <> value Then
                     Me._TypeName = AddCommonType(value)
                     Me._EditableTypeName = Me._TypeName
+                    Me._Type = Nothing
+                    Dim objType As Type = Me.GetDotNetType(_TypeName, False)
+                    If objType IsNot Nothing Then
+                        Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
+                        Me.NamespaceSelect = objType.Namespace
+                    End If
                 End If
             End Set
         End Property
@@ -158,17 +201,43 @@ Namespace ComponentModel
         End Function
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
-            Dim toReturn As List(Of DotNetType) = DirectCast(GetSelectorG(propertyName), List(Of DotNetType))
+            Dim toReturn As IList = Nothing
+            Select Case propertyName
+                Case "CommonType"
+                    toReturn = DirectCast(GetSelectorG(propertyName), List(Of DotNetType))
+                Case "AssemblyNameSelect"
+                    toReturn = DirectCast(GetSelectorG1(propertyName), List(Of AssemblyName))
+                Case "NamespaceSelect"
+                    toReturn = DirectCast(GetSelectorG2(propertyName), List(Of String))
+                Case "TypeNameSelect"
+                    toReturn = DirectCast(GetSelectorG(propertyName), List(Of DotNetType))
+            End Select
             Return toReturn
         End Function
 
         Public Function GetSelectorG(propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
-            If _CommonTypes.Count = 0 Then
-                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Object)))
-                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
-                AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
-            End If
-            Return (From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)).OrderBy(Function(objDotNetType) objDotNetType.GetDotNetType().Name).ToList()
+            Dim toReturn As New List(Of DotNetType)
+            Select Case propertyName
+                Case "CommonType"
+                    If _CommonTypes.Count = 0 Then
+                        AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Object)))
+                        AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
+                        AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
+                    End If
+                    toReturn.AddRange((From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)))
+                Case "TypeNameSelect"
+                    If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
+                        Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
+                        If objAssembly IsNot Nothing Then
+                            For Each objType As Type In objAssembly.GetTypes()
+                                If objType.Namespace = Me.NamespaceSelect Then
+                                    toReturn.Add(New DotNetType(objType.AssemblyQualifiedName))
+                                End If
+                            Next
+                        End If
+                    End If
+            End Select
+            Return toReturn.OrderBy(Function(objDotNetType) objDotNetType.GetDotNetType().Name).ToList()
         End Function
 
         'Public Overrides Function Equals(ByVal obj As Object) As Boolean
@@ -181,6 +250,42 @@ Namespace ComponentModel
         'Public Overrides Function GetHashCode() As Integer
         '    Return Me.TypeName.GetHashCode()
         'End Function
+
+        Public Function GetSelectorG1(propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
+            Dim toReturn As New List(Of AssemblyName)
+            For Each objAssembly As Assembly In AppDomain.CurrentDomain.GetAssemblies()
+                Try
+                    Dim objTypes As Type() = objAssembly.GetTypes()
+                    Dim toAdd As AssemblyName = objAssembly.GetName()
+                    If Not (toAdd.Name.StartsWith("App_") OrElse toAdd.Name.StartsWith("Microsoft.GeneratedCode")) Then
+                        toReturn.Add(toAdd)
+                    End If
+
+                Catch
+                End Try
+            Next
+            toReturn.Sort(Function(objAssemblyName1, objAssemblyName2) String.Compare(objAssemblyName1.FullName, objAssemblyName2.FullName, StringComparison.InvariantCultureIgnoreCase))
+            Return toReturn
+        End Function
+
+        Public Function GetSelectorG2(propertyName As String) As IList(Of String) Implements ISelector(Of String).GetSelectorG
+            Dim toReturnSet As New HashSet(Of String)
+            If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
+                Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
+                If objAssembly IsNot Nothing Then
+                    For Each objType As Type In objAssembly.GetTypes()
+                        If Not String.IsNullOrEmpty(objType.Namespace) Then
+                            If Not toReturnSet.Contains(objType.Namespace) Then
+                                toReturnSet.Add(objType.Namespace)
+                            End If
+                        End If
+                    Next
+                End If
+            End If
+            Dim toReturn As List(Of String) = toReturnSet.ToList()
+            toReturn.Sort()
+            Return toReturn
+        End Function
     End Class
 
     'Public Class DotNetType(Of TVariable As {IProviderSettings})

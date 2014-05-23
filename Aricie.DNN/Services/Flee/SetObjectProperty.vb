@@ -96,6 +96,7 @@ Namespace Services.Flee
                     toReturn.Add(objProperty)
                 End If
             Next
+            toReturn.Sort(Function(objProp1, objProp2) String.Compare(objProp1.Name, objProp2.Name, StringComparison.InvariantCultureIgnoreCase))
             Return toReturn
         End Function
     End Class

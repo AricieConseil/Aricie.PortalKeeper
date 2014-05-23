@@ -18,6 +18,7 @@ Namespace Services.Flee
         Protected _ExpressionTypes As New List(Of DotNetType)
         Private Shared ReadOnly _GenerictypeLessTypeSetProp As Type = GetType(SetObjectProperty(Of ))
         Private Shared ReadOnly _GenerictypeLessTypeCallMethod As Type = GetType(CallObjectMethod(Of ))
+        Private Shared ReadOnly _GenerictypeLessTypeAddHandler As Type = GetType(AddEventHandler(Of ))
 
         ''' <summary>
         ''' Run flee actions
@@ -50,6 +51,8 @@ Namespace Services.Flee
                     toReturn.Add(toAdd.Name, toAdd)
                    
                     toAdd = New DotNetType(Of ObjectAction)(_GenerictypeLessTypeCallMethod, simpleDotNetType)
+                    toReturn.Add(toAdd.Name, toAdd)
+                    toAdd = New DotNetType(Of ObjectAction)(_GenerictypeLessTypeAddHandler, simpleDotNetType)
                     toReturn.Add(toAdd.Name, toAdd)
                 End If
             Next
