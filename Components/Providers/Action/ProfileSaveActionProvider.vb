@@ -17,7 +17,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Property Value As New FleeExpressionInfo(Of String)
+        Public Property Value As New FleeExpressionInfo(Of Object)
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             Dim objUser = Me.GetUser(actionContext)

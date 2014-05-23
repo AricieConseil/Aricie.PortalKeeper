@@ -95,14 +95,15 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of System.Reflection.MethodInfo) Implements ComponentModel.ISelector(Of System.Reflection.MethodInfo).GetSelectorG
             Dim toReturn As New List(Of MethodInfo)
-            For Each objMember As MemberInfo In ReflectionHelper.GetMembersDictionary(Of TObjectType)().Values
+            For Each objMember As MemberInfo In ReflectionHelper.GetMembersDictionary(GetType(TObjectType), True, False).Values
                 If TypeOf objMember Is MethodInfo Then
                     toReturn.Add(DirectCast(objMember, MethodInfo))
                 End If
             Next
+            toReturn.Sort(Function(objMember1, objMember2) String.Compare(objMember1.Name, objMember2.Name, StringComparison.InvariantCultureIgnoreCase))
             Return toReturn
         End Function
 
 
     End Class
-End NameSpace
+End Namespace

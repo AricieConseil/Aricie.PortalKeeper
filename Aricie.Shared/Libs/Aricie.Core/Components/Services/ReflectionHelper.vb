@@ -173,7 +173,10 @@ Namespace Services
             If objType IsNot Nothing Then
                 If objType.IsGenericType Then
                     Dim toReturn As String = objType.Name
-                    toReturn = toReturn.Substring(0, toReturn.IndexOf("`"c)) & "["c
+                    If toReturn.IndexOf("`"c) > 0 Then
+                        toReturn = toReturn.Substring(0, toReturn.IndexOf("`"c))
+                    End If
+                    toReturn &= "["c
                     Dim genTypes As Type() = objType.GetGenericArguments
                     For Each genType As Type In genTypes
                         toReturn &= "["c & GetSimpleTypeName(genType) & "],"
@@ -1251,7 +1254,6 @@ Namespace Services
         End Sub
 
         Public Shared Function GetFriendlyName(value As Object) As String
-
             Dim toReturn As String = String.Empty
             If value IsNot Nothing Then
                 Dim valueType As Type = value.GetType

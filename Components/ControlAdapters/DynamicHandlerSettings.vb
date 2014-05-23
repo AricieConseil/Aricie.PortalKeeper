@@ -8,6 +8,7 @@ Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -149,7 +150,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
-            Dim toReturn As New ListItemCollection()
+
+            Dim itemlist As New List(Of String)
             Select Case propertyName
                 Case "SelectedChildControlId"
                     Dim objField As FieldInfo
@@ -157,7 +159,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     For Each objMembersByName As KeyValuePair(Of String, MemberInfo) In typeMembers
                         objField = TryCast(objMembersByName.Value, FieldInfo)
                         If objField IsNot Nothing AndAlso GetType(Control).IsAssignableFrom(objField.FieldType) Then
-                            toReturn.Add(objField.Name)
+                            itemlist.Add(objField.Name)
                         End If
                     Next
                 Case "SelectedControlEventName"
@@ -167,10 +169,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     For Each objMembersByName As KeyValuePair(Of String, MemberInfo) In typeMembers
                         objEvent = TryCast(objMembersByName.Value, EventInfo)
                         If objEvent IsNot Nothing Then
-                            toReturn.Add(objEvent.Name)
+                            itemlist.Add(objEvent.Name)
                         End If
                     Next
             End Select
+            itemlist.Sort()
+            Dim toReturn As New ListItemCollection()
+            toReturn.AddRange(itemlist.Select(Function(item) New ListItem(item)).ToArray())
             Return toReturn
         End Function
 

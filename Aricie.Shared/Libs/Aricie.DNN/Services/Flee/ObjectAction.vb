@@ -80,7 +80,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("Parameters")> _
-        Public Property Parameters() As New Variables
+        Public Overridable Property Parameters() As New Variables
 
     End Class
 End Namespace
