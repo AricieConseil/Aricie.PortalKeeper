@@ -286,6 +286,7 @@
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
     <Compile Include="Services\Filtering\XPathInfo.vb" />
+    <Compile Include="Services\Flee\AddEventHandler.vb" />
     <Compile Include="Services\Flee\CallObjectMethod.vb" />
     <Compile Include="Services\Flee\CtorVariableInfo.vb" />
     <Compile Include="Services\Flee\DelegateVariableInfo.vb" />

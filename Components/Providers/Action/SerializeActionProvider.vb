@@ -33,14 +33,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-
-
-
-        'Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
-        '    Return Serialize(actionContext)
-        'End Function
-
         Public Overrides Function GetContent(actionContext As PortalKeeperContext(Of TEngineEvents)) As Object
             Return _inputExpression.Evaluate(actionContext, actionContext)
         End Function

@@ -380,7 +380,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Components\Entities\" />
     <Folder Include="Providers\BotProviders\" />
   </ItemGroup>
   <ItemGroup>

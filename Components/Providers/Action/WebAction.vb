@@ -26,34 +26,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class WebAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
-
-
-
-
         Private _WebRequest As New WebRequestInfo(Of TEngineEvents)
-        ''Private _WebRequests As New SimpleList(Of WebRequestInfo(Of TEngineEvents, TContext))
 
 
         Private _InputParameters As New Variables(Of String)
         Private _HeaderParameters As New Variables(Of String)
 
-        ''<Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        ''       <LabelMode(LabelMode.Top)> _
-        ''       <ExtendedCategory("WebRequests")> _
-        ''       <MainCategory()> _
-        ''Public Property WebRequests() As SimpleList(Of WebRequestInfo(Of TEngineEvents, TContext))
-        ''    Get
-        ''        Return _WebRequests
-        ''    End Get
-        ''    Set(ByVal value As SimpleList(Of WebRequestInfo(Of TEngineEvents, TContext)))
-        ''        _WebRequests = value
-        ''    End Set
-        ''End Property
+        Private _IncludePostData As Boolean
+        Private _PostDataVar As String = "postData"
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-               <LabelMode(LabelMode.Top)> _
-               <ExtendedCategory("WebRequest")> _
-               <MainCategory()> _
+
+        <ExtendedCategory("WebRequest")> _
         Public Property WebRequest() As WebRequestInfo(Of TEngineEvents)
             Get
                 Return _WebRequest
@@ -64,10 +47,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ExtendedCategory("Parameters")> _
-        Public Property InputParameters() As Variables(Of String)
+        <ExtendedCategory("Parameters")> _
+            Public Property InputParameters() As Variables(Of String)
             Get
                 Return _InputParameters
             End Get
@@ -76,10 +57,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-          <LabelMode(LabelMode.Top)> _
-          <ExtendedCategory("Parameters")> _
-        Public Property HeaderParameters() As Variables(Of String)
+        <ExtendedCategory("Parameters")> _
+          Public Property HeaderParameters() As Variables(Of String)
             Get
                 Return _HeaderParameters
             End Get
@@ -88,12 +67,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        Private _IncludePostData As Boolean
-        Private _PostDataVar As String = "postData"
-
-
-
-
+      
         <ExtendedCategory("Parameters")> _
         Public Property IncludePostData() As Boolean
             Get
@@ -128,10 +102,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim headers As SerializableDictionary(Of String, String) = Me._HeaderParameters.EvaluateGeneric(actionContext, headersLookup)
 
             Return Me._WebRequest.Run(actionContext, params, headers)
-
-            '         HMACSHA512 hmac = new HMACSHA512(Convert.FromBase64String(secret));
-            'String sign = Convert.ToBase64String(hmac.ComputeHash(Encoding.UTF8.GetBytes(post_data)), Base64FormattingOptions.None);
-
 
         End Function
 

@@ -6024,4 +6024,25 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="WebProxyInfo_Address.Required" xml:space="preserve">
     <value>Proxy Address is required</value>
   </data>
+  <data name="BrowseHierarchy.Text" xml:space="preserve">
+    <value>Browse Available Types</value>
+  </data>
+  <data name="DotNetType_AssemblyNameSelect.Help" xml:space="preserve">
+    <value>Here is a filtered list of assemblies loaded in the AppDomain. Select an assembly to browse the namespace and types it contains.</value>
+  </data>
+  <data name="DotNetType_AssemblyNameSelect.Text" xml:space="preserve">
+    <value>Assembly</value>
+  </data>
+  <data name="DotNetType_NamespaceSelect.Help" xml:space="preserve">
+    <value>This is the sorted list of namespaces contained in the selected assembly. Select a namespace to display matching types.</value>
+  </data>
+  <data name="DotNetType_NamespaceSelect.Text" xml:space="preserve">
+    <value>Namespace</value>
+  </data>
+  <data name="DotNetType_TypeNameSelect.Help" xml:space="preserve">
+    <value>This is a list of types contained in the selected assembly and namespace. Change those values to search for a specific type. </value>
+  </data>
+  <data name="DotNetType_TypeNameSelect.Text" xml:space="preserve">
+    <value>Type</value>
+  </data>
 </root>

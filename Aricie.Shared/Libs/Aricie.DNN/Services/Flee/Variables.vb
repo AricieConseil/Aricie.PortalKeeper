@@ -67,8 +67,9 @@ Namespace Services.Flee
         <Category("")> _
         Public Property ShowAvailableTypes() As Boolean
 
+        <AutoPostBack()> _
         <ConditionalVisible("ShowAvailableTypes", False, True)> _
-          Public Property AddDelegates As Boolean
+        Public Property AddDelegates As Boolean
 
         ''' <summary>
         ''' Gets or sets expression types
