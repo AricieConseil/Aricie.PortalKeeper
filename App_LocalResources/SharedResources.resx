@@ -6045,4 +6045,28 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="DotNetType_TypeNameSelect.Text" xml:space="preserve">
     <value>Type</value>
   </data>
+  <data name="DotNetType_CurrentlySelectedTypeName.Help" xml:space="preserve">
+    <value>This is the selected type accounting for open or closed generic parameters </value>
+  </data>
+  <data name="DotNetType_CurrentlySelectedTypeName.Text" xml:space="preserve">
+    <value>Currently Selected Type</value>
+  </data>
+  <data name="DotNetType_GenericTypes.Help" xml:space="preserve">
+    <value>Those are the generic argument to close the open generic type definition selected above. You can leave the type empty for open / semi-open definition</value>
+  </data>
+  <data name="DotNetType_GenericTypes.Text" xml:space="preserve">
+    <value>Generic Parameter Types</value>
+  </data>
+  <data name="DotNetType_Refresh.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="AssemblyNameSelect.NullSelect" xml:space="preserve">
+    <value>No Assembly Selected</value>
+  </data>
+  <data name="CommonType.NullSelect" xml:space="preserve">
+    <value>No Type Selected</value>
+  </data>
+  <data name="TypeNameSelect.NullSelect" xml:space="preserve">
+    <value>No Typename Selected</value>
+  </data>
 </root>

@@ -4,6 +4,7 @@ Imports System.Web.UI
 Imports Aricie.Web.UI
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Localization
+Imports Aricie.Services
 
 Namespace UI.WebControls
     Public MustInherit Class SelectorControl
@@ -33,6 +34,7 @@ Namespace UI.WebControls
 
         Private _BoundItems As IList
         Private _PreviousSelectedObject As Object
+        Private _LocaleResourceKeyPrefix As String
 
 
 #Region "Public Properties"
@@ -63,7 +65,7 @@ Namespace UI.WebControls
         Public Property ExclusiveScopeControl() As Control 'Implements 'ISelectorControl.ExclusiveScopeControl
             Get
                 If Me._ExclusiveScopeControl Is Nothing Then
-					Me._ExclusiveScopeControl = Web.UI.ControlHelper.FindControl(Me, Me.ExclusiveScopeControlId)
+                    Me._ExclusiveScopeControl = Web.UI.ControlHelper.FindControl(Me, Me.ExclusiveScopeControlId)
                 End If
                 Return _ExclusiveScopeControl
             End Get
@@ -76,7 +78,7 @@ Namespace UI.WebControls
 
             Get
                 If Me._AllItemsScopeId = "" Then
-                    Me._AllItemsScopeId = "Aricie.Selector-" & Me.GetType().Name
+                    Me._AllItemsScopeId = "Aricie.Selector-" & Me.LocaleResourceKeyPrefix
                 End If
                 Return Me._AllItemsScopeId
             End Get
@@ -97,10 +99,19 @@ Namespace UI.WebControls
 
         Public Overridable ReadOnly Property AllItems() As IList
             Get
-                If Not Me.Context.Items.Contains(AllItemsScopeId) Then
-                    Me.Context.Items(AllItemsScopeId) = Me.GetEntities
+                Dim toReturn As IList
+
+                If Me.GetType() Is GetType(AutoSelectorControl) Then
+                    toReturn = TryCast(Me.GetEntities(), IList)
+                Else
+                    toReturn = TryCast(Me.Context.Items(AllItemsScopeId), IList)
+                    If toReturn Is Nothing Then
+                        toReturn = TryCast(Me.GetEntities(), IList)
+                        Me.Context.Items(AllItemsScopeId) = toReturn
+                    End If
                 End If
-                Return DirectCast(Me.Context.Items(AllItemsScopeId), IList)
+                
+                Return toReturn
             End Get
         End Property
 
@@ -122,7 +133,8 @@ Namespace UI.WebControls
 
         Public Property SelectedObject() As Object
             Get
-                If Me.SelectedIndex >= GetNullBias() Then
+                If Me.SelectedIndex >= GetNullBias() AndAlso Me.BoundItems.Count > Me.SelectedIndex - GetNullBias() Then
+
                     Return Me.BoundItems(Me.SelectedIndex - GetNullBias())
                 End If
                 Return Nothing
@@ -222,6 +234,19 @@ Namespace UI.WebControls
             End Get
             Set(ByVal value As Boolean)
                 _LocalizeItems = value
+            End Set
+        End Property
+
+
+        Public Property LocaleResourceKeyPrefix As String
+            Get
+                If String.IsNullOrEmpty(_LocaleResourceKeyPrefix) Then
+                    _LocaleResourceKeyPrefix = ReflectionHelper.GetSimpleTypeName(Me.GetType())
+                End If
+                Return _LocaleResourceKeyPrefix
+            End Get
+            Set(value As String)
+                _LocaleResourceKeyPrefix = value
             End Set
         End Property
 
@@ -350,11 +375,13 @@ Namespace UI.WebControls
             RaiseEvent SelectedItemChanged(Me, New ChangedEventArgs(oldValue, Me.SelectedObject))
         End Sub
 
+
         Protected Sub DoLocalizeItems()
-            Dim typeName As String = Me.GetType.Name & "."
+            Dim resourceKey As String = LocaleResourceKeyPrefix
+            resourceKey &= "."
             Dim localText As String
             For i As Integer = 0 To Me.Items.Count - 1
-                localText = Localization.GetString(typeName & Me.Items(i).Value, Me.LocalResourceFile)
+                localText = Localization.GetString(resourceKey & Me.Items(i).Value, Me.LocalResourceFile)
                 If Not String.IsNullOrEmpty(localText) Then
                     Me.Items(i).Text = localText
                 End If
@@ -363,12 +390,12 @@ Namespace UI.WebControls
 
         Protected Sub DoLocalizeNull(ByVal nullItem As ListItem)
             Dim localText As String
-
-            localText = Localization.GetString(Me.GetType.Name & ".NullSelect", Me.LocalResourceFile)
+            Dim resourceKey As String = LocaleResourceKeyPrefix
+            resourceKey &= ".NullSelect"
+            localText = Localization.GetString(resourceKey, Me.LocalResourceFile)
             If Not String.IsNullOrEmpty(localText) Then
                 nullItem.Text = localText
             End If
-
         End Sub
 
 

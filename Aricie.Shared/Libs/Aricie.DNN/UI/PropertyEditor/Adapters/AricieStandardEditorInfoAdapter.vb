@@ -5,6 +5,7 @@ Imports Aricie.Services
 Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports System.Globalization
+Imports Aricie.DNN.UI.WebControls.EditorInfos
 
 Namespace UI.WebControls
 
@@ -154,7 +155,7 @@ Namespace UI.WebControls
 
             Dim objType As Type = Me.DataSource.GetType
 
-            Dim editInfo As New EditorInfo
+            Dim editInfo As New AricieEditorInfo()
 
             'Get the Name of the property
             editInfo.Name = _CurrentProperty.Name()

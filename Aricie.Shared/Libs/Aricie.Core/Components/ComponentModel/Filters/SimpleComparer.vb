@@ -7,6 +7,8 @@ Namespace Business.Filters
     Public Class SimpleComparer(Of T)
         Inherits SimpleComparer
         Implements IComparer(Of T)
+        Implements IEqualityComparer(Of T)
+
 
         Public Sub New(ByVal propName As IConvertible, _
                       ByVal direction As ListSortDirection, Optional ByVal isHybrid As Boolean = False)
@@ -18,6 +20,19 @@ Namespace Business.Filters
 
         Public Function Compare1(ByVal x As T, ByVal y As T) As Integer Implements System.Collections.Generic.IComparer(Of T).Compare
             Return MyBase.Compare(x, y)
+        End Function
+
+        Public Function Equals1(x As T, y As T) As Boolean Implements IEqualityComparer(Of T).Equals
+            Return Me.Compare1(x, y) = 0
+        End Function
+
+        Public Function GetHashCode1(obj As T) As Integer Implements IEqualityComparer(Of T).GetHashCode
+            Me.SetUp(obj)
+            If Me.PropInfo Is Nothing Then
+                Return DirectCast(obj, IConvertible).GetHashCode()
+            Else
+                Return DirectCast(PropInfo.GetValue(obj, Nothing), IConvertible).GetHashCode()
+            End If
         End Function
     End Class
 
@@ -66,27 +81,40 @@ Namespace Business.Filters
             End Set
         End Property
 
+        Public Property PropInfo As PropertyInfo
+            Get
+                Return _PropInfo
+            End Get
+            Set(value As PropertyInfo)
+                _PropInfo = value
+            End Set
+        End Property
+
 
 #End Region
+
+        Protected Sub SetUp(x As Object)
+            If Me._IsHybrid OrElse Me.PropInfo Is Nothing Then
+                Dim objType As Type = x.GetType()
+                Dim props As Dictionary(Of String, PropertyInfo) = Aricie.Services.ReflectionHelper.GetPropertiesDictionary(objType)
+                props.TryGetValue(Me.PropertyName.ToString(CultureInfo.InvariantCulture), Me.PropInfo)
+            End If
+        End Sub
 
 
 #Region "IComparer implem"
 
+
+
         Public Function Compare(ByVal x As Object, ByVal y As Object) As Integer Implements System.Collections.IComparer.Compare
             Dim toReturn As Integer = 0
             Dim invertCoef As Integer = CType(IIf(Me.SortDirection = ListSortDirection.Ascending, 1, -1), Integer)
-            If Me._IsHybrid OrElse Me._PropInfo Is Nothing Then
-                Dim objType As Type = x.GetType
-                Dim props As Dictionary(Of String, PropertyInfo) = Aricie.Services.ReflectionHelper.GetPropertiesDictionary(objType)
-                props.TryGetValue(Me.PropertyName.ToString(CultureInfo.InvariantCulture), Me._PropInfo)
-            End If
-            If Me._PropInfo Is Nothing Then
+            SetUp(x)
+            If Me.PropInfo Is Nothing Then
                 toReturn = DirectCast(x, IComparable).CompareTo(y)
             Else
-                toReturn = DirectCast(Me._PropInfo.GetValue(x, Nothing), IComparable).CompareTo(Me._PropInfo.GetValue(y, Nothing))
+                toReturn = DirectCast(Me.PropInfo.GetValue(x, Nothing), IComparable).CompareTo(Me.PropInfo.GetValue(y, Nothing))
             End If
-
-
             Return invertCoef * toReturn
         End Function
 

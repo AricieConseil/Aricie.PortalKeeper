@@ -53,6 +53,7 @@ Namespace UI.Attributes
             Me._ItemsReadOnly = itemsReadOnly
         End Sub
 
+        Public Property NoDeletion As Boolean
         Public Property NoAdd As Boolean
         Public Property ShowAddItem As Boolean
         Public Property Ordered As Boolean = True

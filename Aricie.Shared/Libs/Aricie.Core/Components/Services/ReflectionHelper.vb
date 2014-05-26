@@ -149,12 +149,21 @@ Namespace Services
 
 
         Public Shared Function GetSafeTypeName(ByVal objType As Type) As String
+            If objType Is Nothing Then
+                'Throw New ArgumentException("Type parameter cannot be null", "objType")
+                Return String.Empty
+            End If
+            If objType.IsGenericParameter Then
+                'Throw New ArgumentException(String.Format("Type parameter {0} has null assemblyqualifiedname", objType.ToString()), "objType")
+                Return objType.Name
+            End If
             Return GetSafeTypeName(objType.AssemblyQualifiedName)
         End Function
 
         Public Shared Function GetSafeTypeName(ByVal objAssemblyQualifiedName As String) As String
-            Dim toReturn As String = Nothing
-            If Not _SafeTypeNames.TryGetValue(objAssemblyQualifiedName, toReturn) Then
+
+            Dim toReturn As String = ""
+            If Not String.IsNullOrEmpty(objAssemblyQualifiedName) AndAlso Not _SafeTypeNames.TryGetValue(objAssemblyQualifiedName, toReturn) Then
                 toReturn = _RegexSafeTypeName.Replace(objAssemblyQualifiedName, "$1")
                 Try
                     ReflectionHelper.CreateType(toReturn)
@@ -233,7 +242,7 @@ Namespace Services
                     objetType = collectionType.GetElementType
                 End If
                 If objetType Is Nothing Then
-                    Throw New ArgumentException("type is not an array or a generic list ", "collectionType")
+                    Throw New ArgumentException("type is not an array or a generic list ", "collection")
                 End If
             End If
 

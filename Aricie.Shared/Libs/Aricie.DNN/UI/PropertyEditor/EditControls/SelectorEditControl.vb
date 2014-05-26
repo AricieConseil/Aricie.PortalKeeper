@@ -124,7 +124,8 @@ Namespace UI.WebControls.EditControls
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) As Boolean
             If Me.Value Is Nothing Then
-                Throw New ApplicationException(String.Format("value of property {0} can't be null", Me.ParentField.DataField))
+                'Throw New ApplicationException(String.Format("value of property {0} can't be null", Me.ParentField.DataField))
+                Return True
             End If
             Dim objOldValue As Object = Me.Value
             'Dim toReturn As Boolean = MyBase.LoadPostData(postDataKey, postCollection)
