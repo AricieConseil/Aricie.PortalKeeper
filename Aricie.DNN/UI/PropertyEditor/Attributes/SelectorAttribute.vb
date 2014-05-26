@@ -9,11 +9,11 @@ Namespace UI.Attributes
         Inherits SelectorAttribute
 
         Public Sub New(nameFieldName As String, valueFieldName As String)
-            MyBase.New(nameFieldName, valueFieldName, False, False, "", "", True, False)
+            MyBase.New(nameFieldName, valueFieldName, False, False, "", "", False, False)
         End Sub
 
         Public Sub New(ByVal nameFieldName As String)
-            MyBase.New(nameFieldName, nameFieldName, False, False, "", "", True, False)
+            MyBase.New(nameFieldName, nameFieldName, False, False, "", "", False, False)
         End Sub
 
         Public Sub New()
@@ -46,6 +46,9 @@ Namespace UI.Attributes
         '    Me.New("", dataTextField, dataValueField, exclusive, addNullItem, nullItemName, nullItemValue, localizeItems, localizeNull)
         '    Me._enumerableType = enumerableType
         'End Sub
+
+        Public Sub New()
+        End Sub
 
 
         '<Obsolete("Use overload with type instead of string type")> _

@@ -4,10 +4,12 @@
 
         Private _Enumerable As IList
 
-        Public Sub New(ByVal enumarable As IList)
-            Me._Enumerable = enumarable
+        Public Sub New(ByVal enumerable As IList)
+            Me._Enumerable = enumerable
             Me.ExclusiveSelector = False
         End Sub
+
+
 
         Public Overrides ReadOnly Property AllItems() As System.Collections.IList
             Get
@@ -26,8 +28,8 @@
 
         Private _Enumerable As IEnumerable(Of T)
 
-        Public Sub New(ByVal enumarable As IList(Of T))
-            Me._Enumerable = enumarable
+        Public Sub New(ByVal enumerable As IList(Of T))
+            Me._Enumerable = enumerable
         End Sub
 
         Public Overrides Function GetEntitiesG() As System.Collections.Generic.IList(Of T)
