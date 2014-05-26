@@ -97,8 +97,8 @@ Namespace Services
 
                     If _dicoReadFilters.ContainsKey(fileExtension) Then
                         toReturn = _dicoReadFilters(fileExtension).GetDocumentText(_fileName)
-                    Else
-                        Exceptions.LogException(New Exception("Error trying reading file content, Filter for " + _fileName + " doesn't exist"))
+                        'Else
+                        'Exceptions.LogException(New Exception("Error trying reading file content, Filter for " + _fileName + " doesn't exist"))
                     End If
 
                 End If
