@@ -54,6 +54,8 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
+        Private Delegate Function ComparerTest() As IEqualityComparer(Of DotNetType)
+
         ''' <summary>
         ''' Returns the available providers for the variables
         ''' </summary>
@@ -64,7 +66,9 @@ Namespace Services.Flee
                 Me._ExpressionTypes.AddRange(GetInitialTypes())
             End If
 
-            Return (From simpleDotNetType In Me._ExpressionTypes From objKeyPair In Me.Genericize(simpleDotNetType) Select objKeyPair).ToDictionary(Function(objKeyPair) objKeyPair.Key, Function(objKeyPair) objKeyPair.Value)
+            Return (From simpleDotNetType In Me._ExpressionTypes.Distinct(New Aricie.Business.Filters.SimpleComparer(Of DotNetType)("TypeName", System.ComponentModel.ListSortDirection.Descending)) _
+                    From objKeyPair In Me.Genericize(simpleDotNetType) _
+                    Select objKeyPair).ToDictionary(Function(objKeyPair) objKeyPair.Key, Function(objKeyPair) objKeyPair.Value)
         End Function
 
 

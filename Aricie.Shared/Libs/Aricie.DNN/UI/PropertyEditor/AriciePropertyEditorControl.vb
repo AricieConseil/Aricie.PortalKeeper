@@ -21,6 +21,7 @@ Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
 Imports System.Globalization
+Imports DotNetNuke.Security
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -56,7 +57,7 @@ Namespace UI.WebControls
 
         Private _ParentEditControl As EditControl
         Private _EnabledOnDemandSections As Boolean = True
-        Private _RestrictedFields As New Dictionary(Of AricieFieldEditorControl, TrialLimitedAttribute)
+        Private _RestrictedFields As New Dictionary(Of AricieFieldEditorControl, LimitationAttribute)
         Private _FieldsDictionary As FieldsHierarchy
         Private _Validated As Boolean = False
         Private _IsValid As Boolean = True
@@ -1126,20 +1127,18 @@ Namespace UI.WebControls
 
                 Me.AddEditorCtl(container, objPropertyInfo.Name, New AricieStandardEditorInfoAdapter(Me.DataSource, objPropertyInfo.Name), keepHidden)
                 Dim customAttributes As Object()
-                If Me._TrialStatus.IsLimited Then
-                    customAttributes = objPropertyInfo.GetCustomAttributes(GetType(TrialLimitedAttribute), True)
-                    If (customAttributes.Length > 0) Then
-                        Dim objAttr As TrialLimitedAttribute = Nothing
-                        objAttr = DirectCast(customAttributes(0), TrialLimitedAttribute)
-                        If objAttr IsNot Nothing Then
-                            Dim objField As AricieFieldEditorControl = DirectCast(Me.Fields(Me.Fields.Count - 1), AricieFieldEditorControl)
-                            Me._RestrictedFields(objField) = objAttr
 
-                        End If
+                customAttributes = objPropertyInfo.GetCustomAttributes(True).Where(Function(objAttribute) TypeOf objAttribute Is LimitationAttribute).ToArray()
+                If (customAttributes.Length > 0) Then
+                    Dim objAttr As LimitationAttribute = DirectCast(customAttributes(0), LimitationAttribute)
+                    If objAttr.IsLimited(Me) Then
+                        Dim objField As AricieFieldEditorControl = DirectCast(Me.Fields(Me.Fields.Count - 1), AricieFieldEditorControl)
+                        Me._RestrictedFields(objField) = objAttr
                     End If
                 End If
+
             Catch ex As Exception
-                ProcessModuleLoadException("Empty Reference Property: " & objPropertyInfo.Name, Me, ex)
+                Me.ProcessException(ex)
             End Try
 
         End Sub
@@ -1250,13 +1249,13 @@ Namespace UI.WebControls
                 warningMessage = TrialLimitedAttribute.TrialModeLimitedKey
             End If
 
-            For Each restrictedField As KeyValuePair(Of AricieFieldEditorControl, TrialLimitedAttribute) In Me._RestrictedFields
-                Dim objAttr As TrialLimitedAttribute = restrictedField.Value
+            For Each restrictedField As KeyValuePair(Of AricieFieldEditorControl, LimitationAttribute) In Me._RestrictedFields
+                Dim objAttr As LimitationAttribute = restrictedField.Value
                 Dim objField As AricieFieldEditorControl = restrictedField.Key
 
                 If TypeOf objField.Editor Is UserControlEditControl Then
                     ' si c'est un contrôle utilisateur dans le propety editor, on lui passe juste l'information nécessaire
-                    DirectCast(objField.Editor, UserControlEditControl).TrialMode = New UserControlEditControl.TrialModeInformation() With {.CurrentTrialMode = objAttr.TrialPropertyMode, .Message = warningMessage}
+                    DirectCast(objField.Editor, UserControlEditControl).TrialMode = New UserControlEditControl.TrialModeInformation() With {.CurrentTrialMode = objAttr.LimitationMode, .Message = warningMessage}
                 Else
                     'sinon on effectue le traitement classique
                     objField.ToolTip = warningMessage ' on fixe le tooltip sur toute la ligne
@@ -1268,19 +1267,19 @@ Namespace UI.WebControls
                     End If
 
 
-                    If (objAttr.TrialPropertyMode And TrialPropertyMode.Hide) = TrialPropertyMode.Hide Then
+                    If (objAttr.LimitationMode And TrialPropertyMode.Hide) = TrialPropertyMode.Hide Then
                         objField.Visible = False
-                    ElseIf (objAttr.TrialPropertyMode And TrialPropertyMode.Disable) = TrialPropertyMode.Disable Then
+                    ElseIf (objAttr.LimitationMode And TrialPropertyMode.Disable) = TrialPropertyMode.Disable Then
                         objField.Enabled = False
                         objField.EditMode = PropertyEditorMode.View
                         objField.Editor.EditMode = PropertyEditorMode.View
                         objField.Editor.Required = False
                     Else
-                        If (objAttr.TrialPropertyMode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd _
-                                OrElse (objAttr.TrialPropertyMode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
+                        If (objAttr.LimitationMode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd _
+                                OrElse (objAttr.LimitationMode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
 
                             If TypeOf objField.Editor Is AricieEditControl Then
-                                DirectCast(objField.Editor, AricieEditControl).EnforceTrialMode(objAttr.TrialPropertyMode)
+                                DirectCast(objField.Editor, AricieEditControl).EnforceTrialMode(objAttr.LimitationMode)
                             End If
                         End If
                     End If

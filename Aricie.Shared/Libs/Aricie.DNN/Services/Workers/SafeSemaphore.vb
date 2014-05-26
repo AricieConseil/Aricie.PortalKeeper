@@ -3,6 +3,12 @@ Imports System.Threading
 Imports Aricie.Services
 
 Namespace Services.Workers
+
+    ''' <summary>
+    ''' That class was introduced because native cross process Semaphore are unsafe and the safe light Semaphore is cross threads only. 
+    ''' It is a costly and a naïve implementation but should be safe as Mutexes are
+    ''' </summary>
+    ''' <remarks></remarks>
     <HostProtection(SecurityAction.LinkDemand, Synchronization:=True, ExternalThreading:=True)>
     Public Class SafeSemaphore
         Implements IDisposable
@@ -109,7 +115,7 @@ Namespace Services.Workers
         Protected Overridable Sub Dispose(disposing As Boolean)
             If Not Me.disposedValue Then
                 If disposing Then
-                    
+
                     ' TODO: dispose managed state (managed objects).
                 End If
                 ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
@@ -135,4 +141,4 @@ Namespace Services.Workers
 #End Region
 
     End Class
-End NameSpace
+End Namespace

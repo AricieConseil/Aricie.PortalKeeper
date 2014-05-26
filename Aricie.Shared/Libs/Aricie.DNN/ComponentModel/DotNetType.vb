@@ -15,6 +15,8 @@ Namespace ComponentModel
         NewType
     End Enum
 
+    <ActionButton(IconName.PuzzlePiece, IconOptions.Normal)> _
+    <DefaultProperty("Name")> _
     <Serializable()> _
     Public Class DotNetType
         Implements ISelector
@@ -58,8 +60,12 @@ Namespace ComponentModel
         End Sub
 
         Public Sub New(ByVal objType As Type)
-            Me.New(ReflectionHelper.GetSafeTypeName(objType))
+            If Not objType.IsGenericParameter Then
+                Me.SetTypeName(ReflectionHelper.GetSafeTypeName(objType))
+            End If
         End Sub
+
+
 
 
         <Browsable(False)> _
@@ -78,7 +84,7 @@ Namespace ComponentModel
             Get
                 If Not _TypeSelector.HasValue Then
                     Dim targetType As Type = Nothing
-                    If Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing Then
+                    If Not String.IsNullOrEmpty(_TypeName) AndAlso (Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing) Then
                         Return TypeSelector.BrowseHierarchy
                     Else
                         Return TypeSelector.CommonTypes
@@ -94,7 +100,7 @@ Namespace ComponentModel
 
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
-        <Selector("Name", "TypeName", False, False, "", "", False, False)> _
+        <Selector("Name", "TypeName", False, True, "<Select Type By Name>", "", False, True)> _
         <AutoPostBack> _
         <XmlIgnore()> _
         Public Property CommonType() As String
@@ -103,60 +109,118 @@ Namespace ComponentModel
             End Get
             Set(value As String)
                 If Me._TypeName <> value Then
-                    Me.TypeName = value
+                    Me.SetTypeName(value)
                 End If
             End Set
         End Property
-
-        <Selector("Name", "FullName", False, True, "<Select an Assembly>", "", False, False)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <XmlIgnore()> _
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-        Public Property AssemblyNameSelect As String = ""
-
-        <AutoPostBack()> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <XmlIgnore()> _
-        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-        Public Property NamespaceSelect As String = ""
-
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
-          <Selector("Name", "TypeName", False, False, "", "", False, False)> _
-        <XmlIgnore()> _
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-        Public Property TypeNameSelect As String
-            Get
-                Return _TypeName
-            End Get
-            Set(value As String)
-                If Me._TypeName <> value Then
-                    Me.TypeName = value
-                End If
-            End Set
-        End Property
-
 
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
-        <IsReadOnly(True)> _
+       <IsReadOnly(True)> _
         Public Property TypeName() As String
             Get
                 Return _TypeName
             End Get
             Set(ByVal value As String)
                 If _TypeName <> value Then
-                    Me._TypeName = AddCommonType(value)
-                    Me._EditableTypeName = Me._TypeName
-                    Me._Type = Nothing
-                    Dim objType As Type = Me.GetDotNetType(_TypeName, False)
+                    Me.SetTypeName(AddCommonType(value))
+                End If
+            End Set
+        End Property
+
+
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <Selector("Name", "FullName", False, True, "<Select an Assembly>", "", False, True)> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <XmlIgnore()> _
+        Public Property AssemblyNameSelect As String = ""
+
+        <ConditionalVisible("IsGenericParameter", True, True)> _
+         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <SelectorAttribute("", "", False, True, "<Select Namespace>", "", False, True)> _
+        <AutoPostBack()> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <XmlIgnore()> _
+        Public Property NamespaceSelect As String = ""
+
+
+        <AutoPostBack()> _
+        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <Selector("Name", "TypeName", False, True, "<Select a Type by Name>", "", False, True)> _
+        <XmlIgnore()> _
+        Public Property TypeNameSelect As String
+            Get
+                Return _TypeNameSelect
+            End Get
+            Set(value As String)
+                If _TypeNameSelect <> value Then
+                    _TypeNameSelect = value
+                    Dim objType As Type = Me.GetDotNetType(_TypeNameSelect, False)
                     If objType IsNot Nothing Then
-                        Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
-                        Me.NamespaceSelect = objType.Namespace
+                        If objType.IsGenericType Then
+                            PrepareGenericType(objType)
+                        End If
                     End If
                 End If
             End Set
+        End Property
+
+        <Browsable(False)> _
+        Public ReadOnly Property IsSelectedGeneric As Boolean
+            Get
+                'Return Me.TypeNameSelect.Contains("[")
+                Return GenericTypes.Count > 0
+            End Get
+        End Property
+
+        ' <ConditionalVisible("IsGenericParameter", True, True)> _
+        ' <XmlIgnore()> _
+        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        '<ConditionalVisible("IsSelectedGeneric", False, True, TypeSelector.BrowseHierarchy)> _
+        ' Public Property IncludeGenericTypes As Boolean
+
+        <ConditionalVisible("IsSelectedGeneric", False, True)> _
+        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+        <XmlIgnore()> _
+      <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+      <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=False, _
+          ItemsReadOnly:=False, MaxItemNb:=-1, NoAdd:=True, NoDeletion:=True, Ordered:=False, Paged:=False, ShowAddItem:=False)> _
+        Public Property GenericTypes As New List(Of DotNetType)
+
+        <Browsable(False)> _
+        Public ReadOnly Property CurrentlySelectedType As Type
+            Get
+                Dim toReturn As Type = Nothing
+                If Not String.IsNullOrEmpty(TypeNameSelect) Then
+                    toReturn = Me.GetDotNetType(TypeNameSelect, False)
+                    If toReturn IsNot Nothing AndAlso toReturn.IsGenericTypeDefinition Then
+                        Dim genParams As Type() = toReturn.GetGenericArguments()
+                        Dim passedParams As New List(Of Type)
+                        For i As Integer = 0 To genParams.Count - 1
+                            Dim genericParam As Type = Nothing
+                            If Me.GenericTypes.Count > i Then
+                                genericParam = Me.GenericTypes(i).GetDotNetType()
+                            End If
+                            If genericParam Is Nothing Then
+                                genericParam = genParams(i)
+                            End If
+                            passedParams.Add(genericParam)
+                        Next
+                        toReturn = toReturn.MakeGenericType(passedParams.ToArray())
+                    End If
+                End If
+                Return toReturn
+            End Get
+        End Property
+
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        Public ReadOnly Property CurrentlySelectedTypeName As String
+            Get
+                Return ReflectionHelper.GetSafeTypeName(CurrentlySelectedType)
+            End Get
         End Property
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
@@ -168,15 +232,30 @@ Namespace ComponentModel
         Public Property EditableTypeName As String
 
 
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
+        End Sub
+
+
+
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
         <ActionButton("~/images/action_import.gif")> _
         Public Sub ValidateNewType(ByVal pe As AriciePropertyEditorControl)
             Try
-                Dim objType As Type = Me.GetDotNetType(EditableTypeName, True)
+                Dim objType As Type = Nothing
+                Select Case Me.TypeSelector
+                    Case ComponentModel.TypeSelector.NewType
+                        objType = Me.GetDotNetType(EditableTypeName, True)
+                    Case ComponentModel.TypeSelector.BrowseHierarchy
+                        objType = CurrentlySelectedType
+                End Select
                 If objType IsNot Nothing Then
-                    Me.TypeName = ReflectionHelper.GetSafeTypeName(objType)
+                    Me.SetTypeName(AddCommonType(ReflectionHelper.GetSafeTypeName(objType)))
                     Me.TypeSelector = ComponentModel.TypeSelector.CommonTypes
-                    Me.EditableTypeName = ""
+                    pe.DisplayMessage("Type correctly validated", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+                Else
+                    pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
                 End If
             Catch ex As Exception
                 Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
@@ -184,10 +263,13 @@ Namespace ComponentModel
             End Try
         End Sub
 
+
+
         Private _Type As Type
+        Private _TypeNameSelect As String
 
         Public Function GetDotNetType() As Type
-            If _Type Is Nothing Then
+            If _Type Is Nothing AndAlso Not String.IsNullOrEmpty(Me._TypeName) Then
                 _Type = Me.GetDotNetType(Me._TypeName, False)
             End If
             Return _Type
@@ -215,6 +297,9 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
+
+
+
         Public Function GetSelectorG(propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
             Dim toReturn As New List(Of DotNetType)
             Select Case propertyName
@@ -224,16 +309,12 @@ Namespace ComponentModel
                         AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
                         AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
                     End If
-                    toReturn.AddRange((From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Select New DotNetType(tmpType)))
+                    toReturn.AddRange((From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Order By tmpType.Assembly.GetName().Name Select New DotNetType(tmpType)))
                 Case "TypeNameSelect"
                     If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                         Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
                         If objAssembly IsNot Nothing Then
-                            For Each objType As Type In objAssembly.GetTypes()
-                                If objType.Namespace = Me.NamespaceSelect Then
-                                    toReturn.Add(New DotNetType(objType.AssemblyQualifiedName))
-                                End If
-                            Next
+                            toReturn.AddRange(From objType In objAssembly.GetTypes() Where objType.Namespace = Me.NamespaceSelect AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) Select New DotNetType(objType))
                         End If
                     End If
             End Select
@@ -260,7 +341,6 @@ Namespace ComponentModel
                     If Not (toAdd.Name.StartsWith("App_") OrElse toAdd.Name.StartsWith("Microsoft.GeneratedCode")) Then
                         toReturn.Add(toAdd)
                     End If
-
                 Catch
                 End Try
             Next
@@ -286,9 +366,38 @@ Namespace ComponentModel
             toReturn.Sort()
             Return toReturn
         End Function
+
+
+        Private Sub SetTypeName(value As String)
+            Me._TypeName = value
+            Me._EditableTypeName = Me._TypeName
+            Me._Type = Nothing
+            Dim objType As Type = Me.GetDotNetType(_TypeName, False)
+            If objType IsNot Nothing Then
+                Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
+                Me.NamespaceSelect = objType.Namespace
+                If objType.IsGenericType Then
+                    Me.TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
+                    PrepareGenericType(objType)
+                Else
+                    Me.TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType)
+                End If
+            End If
+        End Sub
+
+        Private Sub PrepareGenericType(objType As Type)
+            Dim argTypes As Type() = objType.GetGenericArguments()
+            If argTypes.Count > 0 Then
+                Me.GenericTypes.Clear()
+                For Each argType As Type In argTypes
+                    Me.GenericTypes.Add(New DotNetType(argType))
+                Next
+            End If
+        End Sub
+
+
     End Class
 
-    'Public Class DotNetType(Of TVariable As {IProviderSettings})
     Public Class DotNetType(Of TVariable)
         Inherits DotNetType
         Implements IProviderConfig(Of IGenericizer(Of TVariable))

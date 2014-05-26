@@ -111,6 +111,7 @@ Namespace UI.WebControls.EditControls
                 Dim enumerable As IList = DirectCast(parentField.DataSource, ISelector).GetSelector(parentField.DataField)
                 If enumerable IsNot Nothing Then
                     toReturn = New AutoSelectorControl(enumerable)
+                    toReturn.LocaleResourceKeyPrefix = parentField.DataField
                 Else
                     Throw New Exception(String.Format("Selector Content not found for property {0}.", parentField.DataField))
                 End If
@@ -141,6 +142,8 @@ Namespace UI.WebControls.EditControls
             Else
                 toReturn.InsertNullItem = False
             End If
+            toReturn.LocalizeNull = Me.LocalizeNull
+            toReturn.LocalizeItems = Me.LocalizeItems
             Return toReturn
         End Function
 

@@ -62,6 +62,7 @@ Namespace UI.WebControls.EditControls
         Private _Ordered As Boolean = True
         Private _AddEntry As Object
         Private _NoAddition As Boolean
+        Private _NoDeletion As Boolean
         Private _MaxItemNb As Integer
         Private _AddNewEntry As Boolean
         Private _EnableExport As Boolean = True
@@ -266,6 +267,7 @@ Namespace UI.WebControls.EditControls
                         Me._AddNewEntry = collecAttribute.ShowAddItem
                         Me._Ordered = collecAttribute.Ordered
                         Me._NoAddition = collecAttribute.NoAdd
+                        Me._NoDeletion = collecAttribute.NoDeletion
                         Me._MaxItemNb = collecAttribute.MaxItemNb
                         Me._EnableExport = collecAttribute.EnableExport
                         Me._Paged = collecAttribute.Paged
@@ -943,18 +945,20 @@ Namespace UI.WebControls.EditControls
                     End If
 
                 End If
-
-                Dim cmdDelete As New IconActionButton
-                plAction.Controls.Add(cmdDelete)
-                With cmdDelete
-                    .ActionItem.IconName = IconName.TrashO
-                    .CommandName = "Delete"
-                    .CommandArgument = commandIndex.ToString()
-                End With
-                AddHandler cmdDelete.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                sm.RegisterPostBackControl(cmdDelete)
-                DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
-                Me._DeleteControls.Add(cmdDelete)
+                If Not Me._NoDeletion Then
+                    Dim cmdDelete As New IconActionButton
+                    plAction.Controls.Add(cmdDelete)
+                    With cmdDelete
+                        .ActionItem.IconName = IconName.TrashO
+                        .CommandName = "Delete"
+                        .CommandArgument = commandIndex.ToString()
+                    End With
+                    AddHandler cmdDelete.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    sm.RegisterPostBackControl(cmdDelete)
+                    DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
+                    Me._DeleteControls.Add(cmdDelete)
+                End If
+                
 
             End If
 

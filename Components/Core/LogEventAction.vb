@@ -33,7 +33,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("Specifics")> _
          <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-           <Selector(GetType(LogTypeSelector), "LogTypeFriendlyName", "LogTypeKey", False, False, "", "", False, False)> _
+           <Selector(GetType(LogTypeSelector), "LogTypeFriendlyName", "LogTypeKey", False, False, "", "", True, False)> _
         Public Property LogTypeKey() As String
             Get
                 Return _LogTypeKey
