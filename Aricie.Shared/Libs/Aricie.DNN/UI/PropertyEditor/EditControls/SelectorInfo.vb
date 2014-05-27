@@ -122,7 +122,7 @@ Namespace UI.WebControls.EditControls
             End If
 
 
-            toReturn.ID = "ddl" & toReturn.GetType.Name
+            toReturn.ID = "ddl" & parentField.DataField 'toReturn.GetType.Name
             '_selector.Enabled = (Me.EditMode = PropertyEditorMode.Edit)
 
 

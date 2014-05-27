@@ -275,7 +275,9 @@ Public Class AricieFieldEditorControl
 
 
     Public Overrides Sub Validate()
-        Me._IsValid = Me.Editor.IsValid
+        If Me.Editor IsNot Nothing Then
+            Me._IsValid = Me.Editor.IsValid
+        End If
         If Me._IsValid Then
             'Dim enumerator As IEnumerator = Me.Validators.GetEnumerator
             'For Each myValidator As System.Web.UI.IValidator In Me.Validators
