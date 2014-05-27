@@ -226,7 +226,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Configuration")> _
             <ConditionalVisible("HasEntities", False, False)> _
             <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(True, False, False, False, 11, CollectionDisplayStyle.Accordion, False)> _
+            <CollectionEditor(NoAdd:=True, NoDeletion:=True, ShowAddItem:=False, Ordered:=False, Paged:=False, DisplayStyle:=CollectionDisplayStyle.Accordion, EnableExport:=True)> _
             <LabelMode(LabelMode.Top)> _
         Public Property Entities() As SerializableList(Of Object)
             Get

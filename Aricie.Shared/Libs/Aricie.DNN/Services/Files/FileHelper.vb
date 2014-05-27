@@ -8,10 +8,39 @@ Imports System.Drawing
 Imports System.Globalization
 Imports Aricie.Services
 Imports System.Reflection
+Imports System.Web.Hosting
 
 Namespace Services
 
     Public Module FileHelper
+
+        Public Function GetPathFromMapPath(strMapPath As String) As String
+            Return strMapPath.Replace(NukeHelper.ApplicationMapPath, "~").Replace("\"c, "/"c)
+        End Function
+
+        Public Function LoadFiles(extensions As String) As IEnumerable(Of String)
+            Return LoadFiles(extensions, [String].Empty, True)
+        End Function
+
+        Public Function LoadFiles(extensions As String, folder As String, recursive As Boolean) As IEnumerable(Of String)
+            Dim toReturn As New List(Of String)
+            LoadFiles(extensions, folder, recursive, toReturn)
+            Return toReturn
+        End Function
+
+        Public Sub LoadFiles(extensions As String, folder As String, recursive As Boolean, objList As List(Of String))
+            If [String].IsNullOrEmpty(folder) Then
+                folder = NukeHelper.ApplicationMapPath
+            End If
+            Dim files = Directory.GetFiles(folder, extensions)
+            objList.AddRange(files)
+            If recursive Then
+                For Each objFolder In Directory.GetDirectories(folder)
+                    LoadFiles(extensions, objFolder, True, objList)
+                Next
+            End If
+        End Sub
+
 
         ''' <summary>
         ''' Upload un fichier

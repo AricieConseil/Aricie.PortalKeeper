@@ -6069,4 +6069,46 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="TypeNameSelect.NullSelect" xml:space="preserve">
     <value>No Typename Selected</value>
   </data>
+  <data name="ControlAdapterSettings_AdatedPathMode.Help" xml:space="preserve">
+    <value>You can choose to manually enter a relative path to a control to be adapted, or to select amongst a selection of files</value>
+  </data>
+  <data name="ControlAdapterSettings_AdatedPathMode.Text" xml:space="preserve">
+    <value>Path Mode</value>
+  </data>
+  <data name="ControlAdapterSettings_ResolvedAdaptedControlTypeName.Help" xml:space="preserve">
+    <value>This is the dot net type for the adapted control resolved from the configuration above. Note that if you use a user control path, the adapted control is the server generated class inheriting the codebehind class rather than the codebehind itself.</value>
+  </data>
+  <data name="ControlAdapterSettings_ResolvedAdaptedControlTypeName.Text" xml:space="preserve">
+    <value>Resolved Adapted Control Type</value>
+  </data>
+  <data name="ControlAdapterSettings_ResolvedAdapterControlTypeName.Help" xml:space="preserve">
+    <value>This is the dot net type for the adapter control resolved from the configuration above. It can be a typed adapter or a dynamic adapter.</value>
+  </data>
+  <data name="ControlAdapterSettings_ResolvedAdapterControlTypeName.Text" xml:space="preserve">
+    <value>Resolved Adapter Control Type</value>
+  </data>
+  <data name="EnterPath.Text" xml:space="preserve">
+    <value>Enter Path</value>
+  </data>
+  <data name="SelectedFile.NullSelect" xml:space="preserve">
+    <value>No File Selected</value>
+  </data>
+  <data name="SelectPath.Text" xml:space="preserve">
+    <value>Select Path</value>
+  </data>
+  <data name="AdaptedSelectedPath.NullSelect" xml:space="preserve">
+    <value>No Path Selected</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedControlPath.Required" xml:space="preserve">
+    <value>You must enter a control path to be adapted</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedSelectedPath.Help" xml:space="preserve">
+    <value>This is a selection of all ascx user control and aspx pages found in the Application </value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedSelectedPath.Required" xml:space="preserve">
+    <value>You must select a control path to be adapted</value>
+  </data>
+  <data name="ControlAdapterSettings_AdaptedSelectedPath.Text" xml:space="preserve">
+    <value>Select Path</value>
+  </data>
 </root>
