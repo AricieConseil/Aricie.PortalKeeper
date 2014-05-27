@@ -438,6 +438,9 @@ Namespace UI.WebControls
         Protected Overrides Sub ListItemChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
             MyBase.ListItemChanged(sender, e)
             ItemChanged = True
+            If Me.ParentAricieEditor IsNot Nothing Then
+                Me.ParentAricieEditor.ItemChanged = True
+            End If
         End Sub
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
@@ -1178,37 +1181,37 @@ Namespace UI.WebControls
             'myCtDiv.EnableViewState = False
             myCtDiv.Attributes.Add("class", "fieldC")
             container.Controls.Add(myCtDiv)
-            Dim control As New AricieFieldEditorControl
+            Dim fieldControl As New AricieFieldEditorControl
             'control.ID = "field" + name
             'control.ID = name.Substring(0, 3) & name.Substring(name.Length - 2)
-            control.ID = name ' la méthode au dessus ne marche pas, EnableTheseSettings et EnableTheseOtherSettings provoque une collision
-            control.IsHidden = keepHidden
-            control.DataSource = Me.DataSource
-            control.EditorInfoAdapter = editorAdapter
-            control.DataField = name
-            control.EditorDisplayMode = Me.DisplayMode
-            control.EnableClientValidation = Me.EnableClientValidation
-            control.EditMode = Me.EditMode
-            control.HelpDisplayMode = Me.HelpDisplayMode
-            control.LabelWidth = Me.LabelWidth
-            control.LabelMode = LabelMode.Left
-            control.LabelStyle.CopyFrom(Me.LabelStyle)
-            control.HelpStyle.CopyFrom(Me.HelpStyle)
-            control.ErrorStyle.CopyFrom(Me.ErrorStyle)
-            control.VisibilityStyle.CopyFrom(Me.VisibilityStyle)
-            control.EditControlStyle.CopyFrom(Me.EditControlStyle)
-            control.EditControlWidth = Me.EditControlWidth
-            control.LocalResourceFile = Me.LocalResourceFile
-            control.RequiredUrl = Me.RequiredUrl
-            control.ShowRequired = Me.ShowRequired
-            control.ShowVisibility = Me.ShowVisibility
-            AddHandler control.ItemChanged, New DotNetNuke.UI.WebControls.PropertyChangedEventHandler(AddressOf Me.ListItemChanged)
-            AddHandler control.ItemCreated, New EditorCreatedEventHandler(AddressOf Me.EditorItemCreated)
+            fieldControl.ID = name ' la méthode au dessus ne marche pas, EnableTheseSettings et EnableTheseOtherSettings provoque une collision
+            fieldControl.IsHidden = keepHidden
+            fieldControl.DataSource = Me.DataSource
+            fieldControl.EditorInfoAdapter = editorAdapter
+            fieldControl.DataField = name
+            fieldControl.EditorDisplayMode = Me.DisplayMode
+            fieldControl.EnableClientValidation = Me.EnableClientValidation
+            fieldControl.EditMode = Me.EditMode
+            fieldControl.HelpDisplayMode = Me.HelpDisplayMode
+            fieldControl.LabelWidth = Me.LabelWidth
+            fieldControl.LabelMode = LabelMode.Left
+            fieldControl.LabelStyle.CopyFrom(Me.LabelStyle)
+            fieldControl.HelpStyle.CopyFrom(Me.HelpStyle)
+            fieldControl.ErrorStyle.CopyFrom(Me.ErrorStyle)
+            fieldControl.VisibilityStyle.CopyFrom(Me.VisibilityStyle)
+            fieldControl.EditControlStyle.CopyFrom(Me.EditControlStyle)
+            fieldControl.EditControlWidth = Me.EditControlWidth
+            fieldControl.LocalResourceFile = Me.LocalResourceFile
+            fieldControl.RequiredUrl = Me.RequiredUrl
+            fieldControl.ShowRequired = Me.ShowRequired
+            fieldControl.ShowVisibility = Me.ShowVisibility
+            AddHandler fieldControl.ItemChanged, New DotNetNuke.UI.WebControls.PropertyChangedEventHandler(AddressOf Me.ListItemChanged)
+            AddHandler fieldControl.ItemCreated, New EditorCreatedEventHandler(AddressOf Me.EditorItemCreated)
 
 
-            Me.Fields.Add(control)
-            myCtDiv.Controls.Add(control)
-            control.DataBind()
+            Me.Fields.Add(fieldControl)
+            myCtDiv.Controls.Add(fieldControl)
+            fieldControl.DataBind()
 
         End Sub
 
