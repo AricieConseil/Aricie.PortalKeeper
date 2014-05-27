@@ -157,6 +157,26 @@ Namespace Services
                 'Throw New ArgumentException(String.Format("Type parameter {0} has null assemblyqualifiedname", objType.ToString()), "objType")
                 Return objType.Name
             End If
+            If String.IsNullOrEmpty(objType.AssemblyQualifiedName) AndAlso objType.IsGenericType Then
+                Dim objGenParams As Type() = objType.GetGenericArguments()
+                Dim toReturn As String = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
+
+                Dim paramsString As String = String.Empty
+                For Each objGenParam As Type In objGenParams
+                    If Not objGenParam.IsGenericParameter Then
+                        paramsString &= "["c & ReflectionHelper.GetSafeTypeName(objGenParam) & "]"c
+                    Else
+                        paramsString &= "[]"
+                    End If
+                Next
+                Dim split As String() = toReturn.Split(","c)
+                If split.Length > 1 Then
+                    toReturn = String.Format("{0}[{1}],{2}", split(0), paramsString, split(1))
+                Else
+                    toReturn = String.Format("{0}[{1}]", split(0), paramsString)
+                End If
+                Return toReturn
+            End If
             Return GetSafeTypeName(objType.AssemblyQualifiedName)
         End Function
 
