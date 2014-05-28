@@ -164,11 +164,12 @@ Namespace Services
                 Dim paramsString As String = String.Empty
                 For Each objGenParam As Type In objGenParams
                     If Not objGenParam.IsGenericParameter Then
-                        paramsString &= "["c & ReflectionHelper.GetSafeTypeName(objGenParam) & "]"c
+                        paramsString &= "["c & ReflectionHelper.GetSafeTypeName(objGenParam) & "],"
                     Else
-                        paramsString &= "[]"
+                        paramsString &= "[],"
                     End If
                 Next
+                paramsString = paramsString.TrimEnd(","c)
                 Dim split As String() = toReturn.Split(","c)
                 If split.Length > 1 Then
                     toReturn = String.Format("{0}[{1}],{2}", split(0), paramsString, split(1))
