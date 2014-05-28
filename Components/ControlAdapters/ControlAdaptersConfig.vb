@@ -1,6 +1,7 @@
 Imports Aricie.DNN.ComponentModel
 Imports System.Xml.Serialization
 Imports System.ComponentModel
+Imports Aricie.Collections
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -9,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property Enabled As Boolean Implements IEnabled.Enabled
 
-        Public Property Adapters As New List(Of ControlAdapterSettings)
+        Public Property Adapters As New SerializableList(Of ControlAdapterSettings)
 
         Private _AdaptersDictionary As Dictionary(Of Type, ControlAdapterSettings)
 
