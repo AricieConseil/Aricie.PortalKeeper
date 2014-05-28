@@ -634,7 +634,7 @@ Namespace UI.WebControls.EditControls
                     Dim accordion As New HtmlGenericControl("div")
                     accordion.Attributes.Add("class", "aricie_pe_accordion-" & Me.ParentEditor.ClientID)
                     accordion.Attributes.Add("hash", Me.ParentEditor.ClientID.GetHashCode().ToString())
-
+                    accordion.Attributes.Add("data-entitypath", GetPath(Me.PagedCollection))
                     Me.Controls.Add(accordion)
                     accordion.Controls.Add(Me.rpContentList)
                 Else
@@ -710,17 +710,22 @@ Namespace UI.WebControls.EditControls
             Next
 
             toReturn.Append(Me.ParentAricieField.DataField)
-            toReturn.Append("["c)
-            If TypeOf Me.CollectionValue Is IDictionary Then
-                toReturn.Append(ReflectionHelper.GetProperty(dataItem, "Key").ToString())
-            Else
-                toReturn.Append(index)
-            End If
-            toReturn.Append("]"c)
 
+            If (TypeOf Me.CollectionValue Is IDictionary OrElse index >= 0) Then
+                toReturn.Append("["c)
+                If TypeOf Me.CollectionValue Is IDictionary Then
+                    toReturn.Append(ReflectionHelper.GetProperty(dataItem, "Key").ToString())
+                Else
+                    toReturn.Append(index)
+                End If
+                toReturn.Append("]"c)
+            End If
             Return toReturn.ToString
         End Function
 
+        Private Function GetPath(dataItem As Object) As String
+            Return GetSubPath(-1, dataItem)
+        End Function
 
 
         Private Sub DisplayListItem(item As RepeaterItem)
@@ -796,7 +801,7 @@ Namespace UI.WebControls.EditControls
             'If cookie IsNot Nothing Then
             '    Integer.TryParse(cookie.Value, cookieValue)
             'End If
-            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(Me.ParentAricieEditor, "cookieAccordion")
+            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(Me.ParentAricieEditor, String.Format("{0}-cookieAccordion", GetPath(Me.PagedCollection)))
             If (Not String.IsNullOrEmpty(advStringValue)) Then
                 Integer.TryParse(advStringValue, cookieValue)
             End If
@@ -917,7 +922,7 @@ Namespace UI.WebControls.EditControls
                     Dim firstItem As Boolean = (commandIndex = 0)
                     Dim lastItem As Boolean = (commandIndex = CollectionValue.Count - 1)
 
-                    
+
 
                     If Not lastItem Then
                         Dim cmdDown As New IconActionButton
