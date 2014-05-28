@@ -232,10 +232,10 @@ Namespace ComponentModel
         Public Property EditableTypeName As String
 
 
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
-        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
-        Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
-        End Sub
+        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
+        '<ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        'Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
+        'End Sub
 
 
 
@@ -257,6 +257,7 @@ Namespace ComponentModel
                 Else
                     pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
                 End If
+                pe.ItemChanged = True
             Catch ex As Exception
                 Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
                 Throw newEx
