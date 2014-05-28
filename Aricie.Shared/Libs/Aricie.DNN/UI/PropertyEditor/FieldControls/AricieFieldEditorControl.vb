@@ -179,6 +179,14 @@ Public Class AricieFieldEditorControl
 
     Protected Overrides Sub ValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
         MyBase.ValueChanged(sender, e)
+        If Me.IsDirty Then
+            Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
+            If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
+                If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                End If
+            End If
+        End If
     End Sub
 
     Protected Overrides Sub RenderChildren(ByVal writer As HtmlTextWriter)

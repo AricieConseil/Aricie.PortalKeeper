@@ -8,6 +8,16 @@ Imports System.Xml.Serialization
 Imports Aricie.Services
 
 Namespace Services.Flee
+
+
+
+
+   
+
+
+
+
+
     ''' <summary>
     ''' Runs method as flee action
     ''' </summary>
@@ -66,11 +76,16 @@ Namespace Services.Flee
                                 candidateEvent.AddEventHandler(target, objDelegate)
                             End If
                         End If
+                    Else
+                        Throw New Exception(String.Format("Instance Expression {0} returned a null instance while adding event handler {1}  in type {2}", Me.Instance.Expression, candidateEventMember.ToString(), Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
                     End If
-                    Exit Sub
+                Else
+                    Throw New Exception(String.Format("Candidate Member {0} could not be converted to event {1} in type {2}", candidateEventMember.ToString(), Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
                 End If
+            Else
+                Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
             End If
-            Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
+
         End Sub
     End Class
-End NameSpace
+End Namespace
