@@ -63,7 +63,8 @@ function initialisePropertyEditorsScripts() {
     if (selectedNodes.length > 0) {
         jQuery.each(selectedNodes, function (i, selectedNodeDom) {
             var selectedNode = jQuery(selectedNodeDom);
-            var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
+          var accordionPath= selectedNode.data('entitypath');
+          var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); //eval(jQuery.cookie(cookieAccName));
             if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
                 cookieVal = false;
             } else {
@@ -81,14 +82,14 @@ function initialisePropertyEditorsScripts() {
             jQuery('> h3.ui-accordion-header>a', selectedNode).click(function () {
                 var h3 = jQuery(this).parent();
                 var index = h3.parent().children('h3.ui-accordion-header').index(h3);
-                var cookieVal = getAdvanceVariableValue(cookieAccName); //eval(jQuery.cookie(cookieAccName));
+                var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); //eval(jQuery.cookie(cookieAccName));
 
                 if (cookieVal === index) {
 
-                    setAdvanceVariableValue(cookieAccName, null);
+                    setAdvanceVariableValue(accordionPath + "-" + cookieAccName, null);
                 } else {
 
-                    setAdvanceVariableValue(cookieAccName, index);
+                    setAdvanceVariableValue(accordionPath + "-" + cookieAccName, index);
                 }
             });
 
