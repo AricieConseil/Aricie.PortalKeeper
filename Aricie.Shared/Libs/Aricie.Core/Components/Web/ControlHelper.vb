@@ -51,17 +51,28 @@ Namespace Web.UI
             End If
         End Function
 
+        <ObsoleteAttribute("Obsolete, use FindParentControlRecursive instead")>
         Public Function FindControlRecursive(ByVal objControl As Control, ByVal ParamArray parentTypes() As Type) As Control
-            If objControl.Parent Is Nothing Then
-                Return Nothing
-            Else
-                If parentTypes.Any(Function(candidateParentType) candidateParentType.IsInstanceOfType(objControl.Parent)) Then
-                    Return objControl.Parent
-                End If
-            End If
-            Return FindControlRecursive(objControl.Parent, parentTypes)
+            Return FindParentControlRecursive(objControl, parentTypes)
         End Function
 
+        ''' <summary>
+        ''' Find the first of the parent controls matching with the types specified in parameters
+        ''' </summary>
+        ''' <param name="startControl">control to start the search for parent controls</param>
+        ''' <param name="parentTypes">types of the parent controls to find</param>
+        ''' <returns>First Matching Parent, nothing if not found</returns>
+        ''' <remarks></remarks>
+        Public Function FindParentControlRecursive(ByVal startControl As Control, ByVal ParamArray parentTypes() As Type) As Control
+            If startControl.Parent Is Nothing Then
+                Return Nothing
+            Else
+                If parentTypes.Any(Function(candidateParentType) candidateParentType.IsInstanceOfType(startControl.Parent)) Then
+                    Return startControl.Parent
+                End If
+            End If
+            Return FindParentControlRecursive(startControl.Parent, parentTypes)
+        End Function
         ''' <summary>
         ''' Recherche un controle par son id dans toute l'arborescence enfant de startingControl
         ''' </summary>

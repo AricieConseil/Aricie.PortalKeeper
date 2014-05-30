@@ -634,7 +634,7 @@ Namespace UI.WebControls.EditControls
                     Dim accordion As New HtmlGenericControl("div")
                     accordion.Attributes.Add("class", "aricie_pe_accordion-" & Me.ParentEditor.ClientID)
                     accordion.Attributes.Add("hash", Me.ParentEditor.ClientID.GetHashCode().ToString())
-                    accordion.Attributes.Add("data-entitypath", GetPath(Me.PagedCollection))
+                    accordion.Attributes.Add("data-entitypath", GetPath())
                     Me.Controls.Add(accordion)
                     accordion.Controls.Add(Me.rpContentList)
                 Else
@@ -723,8 +723,22 @@ Namespace UI.WebControls.EditControls
             Return toReturn.ToString
         End Function
 
-        Private Function GetPath(dataItem As Object) As String
-            Return GetSubPath(-1, dataItem)
+        Public Function GetPath() As String
+            'Return GetSubPath(-1, dataItem)
+            Dim toReturn As String
+            Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
+            If (Not parentCt Is Nothing) Then
+                If TypeOf parentCt Is AriciePropertyEditorControl Then
+                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
+                Else
+                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
+                End If
+
+            Else
+                toReturn = Me.ParentAricieField.DataField
+            End If
+
+            Return toReturn
         End Function
 
 
@@ -801,7 +815,7 @@ Namespace UI.WebControls.EditControls
             'If cookie IsNot Nothing Then
             '    Integer.TryParse(cookie.Value, cookieValue)
             'End If
-            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(Me.ParentAricieEditor, String.Format("{0}-cookieAccordion", GetPath(Me.PagedCollection)))
+            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(Me.ParentAricieEditor, String.Format("{0}-cookieAccordion", Me.GetPath()))
             If (Not String.IsNullOrEmpty(advStringValue)) Then
                 Integer.TryParse(advStringValue, cookieValue)
             End If
