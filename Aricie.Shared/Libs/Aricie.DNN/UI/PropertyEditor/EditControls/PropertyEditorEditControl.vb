@@ -61,7 +61,7 @@ Namespace UI.WebControls.EditControls
         Protected Overridable Function GetNewEditor() As PropertyEditorControl
             Return New AriciePropertyEditorControl()
         End Function
-
+      
         Protected Overrides Sub CreateChildControls()
             MyBase.CreateChildControls()
 

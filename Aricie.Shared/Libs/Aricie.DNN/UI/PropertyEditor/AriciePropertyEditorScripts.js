@@ -63,7 +63,7 @@ function initialisePropertyEditorsScripts() {
     if (selectedNodes.length > 0) {
         jQuery.each(selectedNodes, function (i, selectedNodeDom) {
             var selectedNode = jQuery(selectedNodeDom);
-          var accordionPath= selectedNode.data('entitypath');
+          var accordionPath = selectedNode.data('entitypath');
           var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); //eval(jQuery.cookie(cookieAccName));
             if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
                 cookieVal = false;
@@ -112,27 +112,38 @@ function initialisePropertyEditorsScripts() {
     }
 
     // tabs
-    selector = ".aricie_pe_tabs" + "-" + AriciePropertyEditorScripts.get_clientId();
+    selector = ".aricie_pe_tabs-" + AriciePropertyEditorScripts.get_clientId();
     cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
     // var lis = jQuery(selector).find('ul').eq(0).find('li');
-    jQuery(selector).tabs({
-        /*cookie: { name: cookieTabName, expires: 1 },*/
-        select: function (event, ui) {
-            //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
-            setAdvanceVariableValue(cookieTabName, ui.index); //lis.index(ui.newTab) -->newTab=undefined
-            var resultat = performASPNetValidation();
-            return resultat;
-        },
-        activate: function (e, ui) {
-            //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
-            var currentIndex = ui.newTab.parent().find("li").index(ui.newTab);
-            setAdvanceVariableValue(cookieTabName, currentIndex); //lis.index(ui.newTab) -->newTab=undefined
-            var resultat = performASPNetValidation();
-            return resultat;
-        },
-        active: (parseInt(getAdvanceVariableValue(cookieTabName)) || 0),
-        selected: (parseInt(getAdvanceVariableValue(cookieTabName)) || 0)
-    });
+    var tabsItemCt = jQuery(selector);
+    if (tabsItemCt.length > 0) {
+        jQuery.each(tabsItemCt, function (i, tabItem) {
+            var selectedNode = jQuery(tabItem);
+
+            var tabPath = selectedNode.data('entitypath');
+            //  var cookieVal = getAdvanceVariableValue(tabPath + "-" + cookieTabName);
+            var localCookieTabName = tabPath + "-" + cookieTabName;
+            selectedNode.tabs({
+                /*cookie: { name: cookieTabName, expires: 1 },*/
+                select: function (event, ui) {
+                    //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
+                    setAdvanceVariableValue(localCookieTabName, ui.index); //lis.index(ui.newTab) -->newTab=undefined
+                    var resultat = performASPNetValidation();
+                    return resultat;
+                },
+                activate: function (e, ui) {
+                    //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
+                    var currentIndex = ui.newTab.parent().find("li").index(ui.newTab);
+                    setAdvanceVariableValue(localCookieTabName, currentIndex); //lis.index(ui.newTab) -->newTab=undefined
+                    var resultat = performASPNetValidation();
+                    return resultat;
+                },
+                active: (parseInt(getAdvanceVariableValue(localCookieTabName)) || 0),
+                selected: (parseInt(getAdvanceVariableValue(localCookieTabName)) || 0)
+            });
+        });
+        
+        }
     /*if (parseFloat(jQuery.ui.version) > 1.8) {
         jQuery(selector).tabs("option", "active", parseInt(getAdvanceVariableValue(cookieTabName)) || 0);
     } else {
