@@ -417,7 +417,7 @@ Namespace UI.WebControls
                         'cookie.HttpOnly = False
                         'cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
                         'HttpContext.Current.Response.Cookies.Add(cookie)
-                        Dim clientVarName As String = "cookieTab" '& Me.ClientID.GetHashCode()
+                        Dim clientVarName As String = Me.GetPath() + "-cookieTab" '& Me.ClientID.GetHashCode()
                         Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(Me, clientVarName)
                         DnnContext.Current.AdvancedClientVariable(Me, clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
 
@@ -839,7 +839,7 @@ Namespace UI.WebControls
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
                 ' Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
-                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me, "cookieTab")
+                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me, Me.GetPath + "-cookieTab")
 
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
@@ -859,7 +859,7 @@ Namespace UI.WebControls
 
                 tabsContainer.Attributes.Add("class", "aricie_pe_tabs-" & Me.ClientID)
                 tabsContainer.Attributes.Add("hash", Me.ClientID.GetHashCode().ToString())
-
+                tabsContainer.Attributes.Add("data-entitypath", GetPath())
                 objElement.Container.Controls.Add(tabsContainer)
                 tabsContainer.Controls.Add(tabsHeader)
                 Dim tabIshidden As Boolean
@@ -931,7 +931,27 @@ Namespace UI.WebControls
             Return nbControls
 
         End Function
+        Public Function GetPath() As String
+            'Return GetSubPath(-1, dataItem)
+            Dim toReturn As String
+            Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
+            If (Not parentCt Is Nothing) Then
+                If TypeOf parentCt Is AriciePropertyEditorControl Then
+                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
+                Else
+                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
+                End If
 
+            Else
+                If (Me.ParentAricieField Is Nothing) Then
+                    toReturn = Me.FriendlyName
+                Else
+                    toReturn = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
+                End If
+            End If
+
+            Return toReturn
+        End Function
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
             Dim nbControls As Integer
