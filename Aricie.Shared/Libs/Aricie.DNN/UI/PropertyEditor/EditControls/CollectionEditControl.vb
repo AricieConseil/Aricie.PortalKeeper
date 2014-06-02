@@ -753,7 +753,7 @@ Namespace UI.WebControls.EditControls
                 oddCss = "ItemOdd"
                 evenCSS = "ItemEven"
             End If
-            plItemContainer.Attributes.Add("class", "ItemContainer " & IIf((item.ItemIndex Mod 2) = 0, oddCss, evenCSS).ToString())
+            plItemContainer.Attributes.Add("class", "ListItem ItemContainer " & IIf((item.ItemIndex Mod 2) = 0, oddCss, evenCSS).ToString())
             item.Controls.Add(plItemContainer)
 
             Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
