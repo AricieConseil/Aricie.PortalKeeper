@@ -6,6 +6,7 @@ Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls.EditorInfos
+Imports Aricie.DNN.Services
 
 Namespace UI.WebControls
 
@@ -91,16 +92,24 @@ Namespace UI.WebControls
         Public Function UpdateValue(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateValue
             If e.Value IsNot Nothing Then
                 If (Not (e.Value Is e.OldValue)) Or e.Changed Then
-                    Dim eType As Type = e.Value.GetType
-                    Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType
-                    If Not eType.Equals(propType) Then
-                        Dim objConverter As TypeConverter = TypeDescriptor.GetConverter(propType)
-                        If objConverter.CanConvertFrom(eType) Then
-                            e.Value = objConverter.ConvertFrom(e.Value)
+                    Try
+                        Dim eType As Type = e.Value.GetType
+                        Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType
+                        If Not eType.Equals(propType) Then
+                            Dim objConverter As TypeConverter = TypeDescriptor.GetConverter(propType)
+                            If objConverter.CanConvertFrom(eType) Then
+                                e.Value = objConverter.ConvertFrom(e.Value)
+                            End If
                         End If
-                    End If
-                    _CurrentProperty.SetValue(DataSource, e.Value, Nothing)
-                    Return True
+
+
+
+                        _CurrentProperty.SetValue(DataSource, e.Value, Nothing)
+                        Return True
+                    Catch ex As Exception
+                        Throw New ApplicationException(String.Format("Could not assignate value {0} to property {1} in datasource {2}", e.Value.ToString(), _
+                                                                    _CurrentProperty.DeclaringType.Name & "."c & _CurrentProperty.Name, ReflectionHelper.GetFriendlyName(DataSource)), ex)
+                    End Try
                 End If
             End If
             Return False

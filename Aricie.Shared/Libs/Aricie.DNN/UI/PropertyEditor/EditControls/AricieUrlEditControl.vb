@@ -57,6 +57,7 @@ Namespace UI.WebControls.EditControls
             If Not Page Is Nothing And Me.EditMode = PropertyEditorMode.Edit Then
                 Me.Page.RegisterRequiresPostBack(Me)
                 Dim parentModule As AriciePortalModuleBase = Me.ParentAricieModule
+
                 If parentModule IsNot Nothing Then
                     AddHandler parentModule.PreRenderComplete, AddressOf PreRenderComplete
                 Else

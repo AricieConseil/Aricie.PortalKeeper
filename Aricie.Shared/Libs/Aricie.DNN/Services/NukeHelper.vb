@@ -1,4 +1,6 @@
 Imports System.Xml
+Imports Aricie.Security.Cryptography
+Imports System.Web.Configuration
 Imports DotNetNuke.Common
 Imports DotNetNuke.Entities.Modules.Definitions
 Imports DotNetNuke.Entities.Modules
@@ -24,6 +26,8 @@ Imports System.Threading
 '-------------------------------------------------------------------------------
 Imports DotNetNuke.Services.Personalization
 Imports DotNetNuke.Entities.Profile
+Imports System.Security
+Imports System.Text
 
 Namespace Services
     Public Module NukeHelper
@@ -92,6 +96,11 @@ Namespace Services
         End Property
 
 #Region "web.config"
+
+
+
+
+
         ''' <summary>
         ''' Gets current web.config
         ''' </summary>
@@ -111,6 +120,28 @@ Namespace Services
                 Return toReturn
             End Get
         End Property
+
+
+        Private _DecryptionKey As SecureString
+
+        Public ReadOnly Property DecryptionKey As SecureString
+            Get
+                If _DecryptionKey Is Nothing Then
+                    _DecryptionKey = New SecureString()
+                    Try
+                        _DecryptionKey = NukeHelper.WebConfigDocument.SelectSingleNode("configuration/system.web/machineKey").Attributes("decryptionKey").Value.WriteSecureString(True)
+                    Catch ex As Exception
+                        'Dim objMachine As MachineKeySection = New MachineKeySection
+
+                        _DecryptionKey = Globals.GetHostPortalSettings().GUID.ToByteArray().WriteSecureString(True, Encoding.UTF8, True)
+                    End Try
+                End If
+                Return _DecryptionKey
+            End Get
+        End Property
+
+
+
 
         ''' <summary>
         ''' Gets current connection string
@@ -305,7 +336,7 @@ Namespace Services
             End Get
         End Property
 
-
+        Private _PortalSettingsDebug As Boolean
 
         ''' <summary>
         ''' Gets current portal settings
@@ -319,8 +350,12 @@ Namespace Services
                     Return DotNetNuke.Common.Globals.GetPortalSettings()
                 Catch ex As Exception
                     'todo: hacker le bug dnn ou isoler les versions incriminées
-                    'DotNetNuke.Services.Exceptions.LogException(ex)
-                    Return New PortalSettings()
+                    If Not _PortalSettingsDebug Then
+                        _PortalSettingsDebug = True
+                        ExceptionHelper.LogException(ex)
+                    End If
+
+                    Return Globals.GetHostPortalSettings()
                 End Try
             End Get
         End Property

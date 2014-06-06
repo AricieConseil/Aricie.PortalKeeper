@@ -257,7 +257,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         runContext.Enabled = True
                         runContext.Events = events
                         runContext.History = history
-                        AddHandler runContext.Finalize, AddressOf webBot.SaveHistory
+                        AddHandler runContext.Finish, AddressOf webBot.SaveHistory
                         If webBot.RunBot(runContext, forceRun) Then
                             toreturn += 1
                         End If

@@ -112,7 +112,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function DeSerialize(input As String) As IEnumerable
 
-            Dim objRecordType As Type
+            Dim objRecordType As Type = Nothing
             If Me.RecordsMode = RecordsMode.StaticType Then
                 objRecordType = Me.RecordType.GetDotNetType
             Else

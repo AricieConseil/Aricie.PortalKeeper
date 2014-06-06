@@ -16,6 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
 
+        <AutoPostBack()> _
         <SortOrder(900)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property UseTaskQueue() As Boolean
@@ -28,7 +29,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <ConditionalVisible("UseTaskQueue", False, True)> _
         Public Property TaskQueueInfo() As TaskQueueInfo
             Get
-                Return _TaskQueueInfo
+                If UseTaskQueue Then
+                    Return _TaskQueueInfo
+                End If
+                Return Nothing
             End Get
             Set(ByVal value As TaskQueueInfo)
                 _TaskQueueInfo = value

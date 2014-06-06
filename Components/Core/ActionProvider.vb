@@ -20,6 +20,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits ActionProviderSettings(Of TEngineEvents)
         Implements IActionProvider(Of TEngineEvents)
 
+        Private _Condition As New KeeperCondition(Of TEngineEvents)
+        Private _AlternateAction As New KeeperAction(Of TEngineEvents)
 
         <ExtendedCategory("TechnicalSettings")> _
      <SortOrder(950)> _
@@ -52,7 +54,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
 
 
-
+        <AutoPostBack()> _
         <ExtendedCategory("ConditonalSettings")> _
         <SortOrder(500)> _
         Public Property ConditionalAction() As Boolean
@@ -62,18 +64,35 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
         <LabelMode(LabelMode.Top)> _
         <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
-        <SortOrder(500)> _
-        Public Property Condition() As New KeeperCondition(Of TEngineEvents)
+        <SortOrder(500)>
+        Public Property Condition() As KeeperCondition(Of TEngineEvents)
+            Get
+                If Me.ConditionalAction Then
+                    Return _Condition
+                End If
+                Return Nothing
+            End Get
+            Set(value As KeeperCondition(Of TEngineEvents))
+                _Condition = value
+            End Set
+        End Property
 
         <ExtendedCategory("ConditonalSettings")> _
         <ConditionalVisible("ConditionalAction", False, True, True)> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
         <LabelMode(LabelMode.Top)> _
-        <SortOrder(500)> _
-        Public Property AlternateAction() As New KeeperAction(Of TEngineEvents)
-
-
-
+        <SortOrder(500)>
+        Public Property AlternateAction() As KeeperAction(Of TEngineEvents)
+            Get
+                If Me.ConditionalAction Then
+                    Return _AlternateAction
+                End If
+                Return Nothing
+            End Get
+            Set(value As KeeperAction(Of TEngineEvents))
+                _AlternateAction = value
+            End Set
+        End Property
 
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(1000)> _

@@ -26,7 +26,7 @@ Namespace Services.Flee
         <ExtendedCategory("Instance")> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ProvidersSelector()> _
-        Public Property PropertyName() As String = string.Empty
+        Public Property PropertyName() As String = String.Empty
 
         ''' <summary>
         ''' Gets or sets the value of the property
@@ -36,7 +36,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <ExtendedCategory("Instance")> _
         <LabelMode(LabelMode.Top)> _
-        Public Property Value() As new FleeExpressionInfo(Of Object)
+        Public Property Value() As New FleeExpressionInfo(Of Object)
 
         ''' <summary>
         ''' Runs the evaluation against an object
@@ -100,4 +100,4 @@ Namespace Services.Flee
             Return toReturn
         End Function
     End Class
-End NameSpace
+End Namespace

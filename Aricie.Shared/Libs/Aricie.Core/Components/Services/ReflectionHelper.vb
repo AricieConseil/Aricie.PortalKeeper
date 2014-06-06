@@ -297,6 +297,13 @@ Namespace Services
             Return True
         End Function
 
+        Public Shared Function MakeGenerics(genericsDefinitionType As Type, parameterTypes As IEnumerable(Of Type)) As Type
+            If parameterTypes IsNot Nothing AndAlso parameterTypes.Count > 0 Then
+                Return genericsDefinitionType.MakeGenericType(parameterTypes.ToArray)
+            End If
+            Return genericsDefinitionType
+        End Function
+
 
 #End Region
 
@@ -849,9 +856,7 @@ Namespace Services
 
         End Function
 
-        Public Function GetDebugType(originalTypeName As String) As String
 
-        End Function
 
 
 #End Region
@@ -921,6 +926,18 @@ Namespace Services
 
         End Sub
 
+        Public Shared Function SerializeToBytes(objObject As Object, ByVal omitDeclaration As Boolean) As Byte()
+
+            Using objStream As New MemoryStream()
+                Using objWriter As New StreamWriter(objStream)
+                    Serialize(objObject, omitDeclaration, DirectCast(objWriter, TextWriter))
+                End Using
+                Return objStream.ToArray()
+            End Using
+
+        End Function
+
+
 #End Region
 
 
@@ -935,18 +952,13 @@ Namespace Services
 
         End Function
 
-        Public Shared Function Deserialize(ByVal mainType As Type, ByVal objString As String) As Object
+
+        Public Shared Function Deserialize(Of T)(ByVal objBytes As Byte()) As T
+
+            Dim objType As Type = GetType(T)
 
 
-            Using textReader As New StringReader(objString)
-                'Try
-
-                Return Deserialize(mainType, textReader)
-                'Finally
-                '    textReader.Close()
-                'End Try
-            End Using
-
+            Return DirectCast(Deserialize(objType, objBytes), T)
 
         End Function
 
@@ -956,6 +968,38 @@ Namespace Services
 
 
             Return DirectCast(Deserialize(objType, reader), T)
+
+        End Function
+
+        Public Shared Function Deserialize(Of T)(ByVal reader As XmlReader) As T
+
+            Dim objType As Type = GetType(T)
+
+
+            Return DirectCast(Deserialize(objType, reader), T)
+
+        End Function
+
+        Public Shared Function Deserialize(ByVal mainType As Type, ByVal objString As String) As Object
+
+
+            Using textReader As New StringReader(objString)
+
+                Return Deserialize(mainType, textReader)
+
+            End Using
+
+
+        End Function
+
+
+        Public Shared Function Deserialize(ByVal mainType As Type, ByVal objBytes As Byte()) As Object
+
+            Using objInputStram As New MemoryStream(objBytes)
+                Using textReader As New StreamReader(objInputStram)
+                    Return Deserialize(mainType, textReader)
+                End Using
+            End Using
 
         End Function
 
@@ -976,14 +1020,7 @@ Namespace Services
 
         End Function
 
-        Public Shared Function Deserialize(Of T)(ByVal reader As XmlReader) As T
-
-            Dim objType As Type = GetType(T)
-
-
-            Return DirectCast(Deserialize(objType, reader), T)
-
-        End Function
+      
 
         Public Shared Function Deserialize(ByVal mainType As Type, ByVal reader As XmlReader) As Object
 

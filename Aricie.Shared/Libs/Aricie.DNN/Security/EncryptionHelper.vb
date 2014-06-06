@@ -1,4 +1,5 @@
 ﻿Imports System.Security.Cryptography
+Imports Aricie.Security.Cryptography
 Imports DotNetNuke
 Imports DotNetNuke.Security
 Imports System.Web.Configuration
@@ -11,12 +12,8 @@ Imports Aricie.Services
 
 Namespace Security
 
-
-    ''' <summary>
-    ''' Helper for encryption/decryption routines
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Class EncryptionHelper
+    <Obsolete("Use Aricie.Security.CryptoHelper From Aricie.Core")> _
+   Public Class EncryptionHelper
 
         Private Const defaultKey As String = "Emergence"
         Private Const defaultSalt As String = "Serendipity"
@@ -53,12 +50,13 @@ Namespace Security
 
         Public Shared Sub AddRandomDelay()
 
-            Common.AddRandomDelay()
+            CryptoHelper.AddRandomDelay()
+
 
         End Sub
 
         Public Shared Function GetNewSalt(ByVal length As Integer) As Byte()
-            Return Common.GetNewSalt(length)
+            Return CryptoHelper.GetNewSalt(length)
 
         End Function
 

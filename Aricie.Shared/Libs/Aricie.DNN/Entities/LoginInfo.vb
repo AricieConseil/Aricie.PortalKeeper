@@ -1,9 +1,11 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
+Imports Aricie.Security.Cryptography
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports System.Security
+Imports System.Text
 
 Namespace Entities
     <Serializable()> _
@@ -12,7 +14,7 @@ Namespace Entities
 
 
         Private _UserName As String = ""
-        Private _Password As String = ""
+        Private _Password As New SecureString()
 
         Public Sub New()
 
@@ -20,7 +22,7 @@ Namespace Entities
 
         Sub New(username As String, password As String)
             Me._UserName = username
-            Me._Password = password
+            Me._Password = password.WriteSecureString(True)
         End Sub
 
 
@@ -41,20 +43,25 @@ Namespace Entities
         Public Property DisplayPasswordChars As Boolean
 
         <Browsable(False)> _
-        Public Property XmlPassword() As String
+        Public Property PasswordSalt As Byte() = New Byte() {}
+
+        <Browsable(False)> _
+        Public Property EncryptedPassword() As Byte()
             Get
-                If Not String.IsNullOrEmpty(Me._Password) Then
-                    Return Aricie.Common.Encrypt(Me._Password, Me._UserName)
+                If Me._Password.Length > 0 Then
+                    Return Me._Password.ReadSecureStringToBytes(Encoding.UTF8).Encrypt(Encoding.UTF8.GetBytes(Me._UserName), Nothing, Me.PasswordSalt)
                 End If
-                Return ""
+                Return New Byte() {}
             End Get
-            Set(ByVal value As String)
-                If Not String.IsNullOrEmpty(value) Then
+            Set(ByVal value As Byte())
+                If value.Length <> 0 Then
                     Try
-                        _Password = Aricie.Common.Decrypt(value, Me._UserName)
+                        _Password = value.Decrypt(Encoding.UTF8.GetBytes(Me._UserName), Nothing, Me.PasswordSalt).WriteSecureString(True, Encoding.UTF8, True)
                     Catch ex As Exception
                         Aricie.Services.ExceptionHelper.LogException(ex)
                     End Try
+                Else
+                    _Password.Clear()
                 End If
             End Set
         End Property
@@ -67,12 +74,12 @@ Namespace Entities
           <XmlIgnore()> _
         Public Property Password() As String
             Get
-                Return _Password
+                Return _Password.ReadSecureString()
             End Get
             Set(ByVal value As String)
-                If value <> _Password Then
+                If value <> _Password.ReadSecureString() Then
                     Disabled = False
-                    _Password = value
+                    _Password = value.WriteSecureString(True)
                 End If
             End Set
         End Property
@@ -105,16 +112,12 @@ Namespace Entities
         <XmlIgnore()> _
         Public ReadOnly Property Enabled() As Boolean
             Get
-                Return Not Disabled AndAlso Not String.IsNullOrEmpty(Me._UserName) AndAlso Not String.IsNullOrEmpty(Me._Password)
+                Return Not Disabled AndAlso Not String.IsNullOrEmpty(Me._UserName) AndAlso Not Me._Password.Length = 0
             End Get
         End Property
 
         Public Function GetPasswordAsSecureString() As SecureString
-            Dim toReturn As New SecureString
-            For Each objChar As Char In _Password
-                toReturn.AppendChar(objChar)
-            Next
-            Return toReturn
+            Return _Password
         End Function
 
 

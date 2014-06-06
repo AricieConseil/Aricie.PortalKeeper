@@ -41,6 +41,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, DotNetType(Of ObjectAction))
             Dim toReturn As New Dictionary(Of String, DotNetType(Of ObjectAction))
+            toReturn.Add(ReflectionHelper.GetSimpleTypeName(GetType(GeneralObjectAction)), New DotNetType(Of ObjectAction)(GetType(GeneralObjectAction)))
             If Me._ExpressionTypes.Count = 0 Then
                 Me._ExpressionTypes.AddRange(GetInitialTypes())
             End If
@@ -56,6 +57,7 @@ Namespace Services.Flee
                     toReturn.Add(toAdd.Name, toAdd)
                 End If
             Next
+
             Return toReturn
         End Function
 

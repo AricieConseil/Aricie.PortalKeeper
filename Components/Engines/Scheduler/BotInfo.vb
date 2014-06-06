@@ -304,10 +304,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public methods"
 
-        Public Function RunBot(ByVal botContext As BotRunContext(Of TEngineEvent), ByVal forceRun As Boolean) As Boolean
+        Public Function RunBot(ByVal botContext As BotRunContext(Of TEngineEvent), ByVal isForcedRun As Boolean) As Boolean
             Dim toReturn As Boolean
             If Me.MatchServer Then
-                Dim cloneContext As BotRunContext(Of TEngineEvent)
+                Dim cloneContext As BotRunContext(Of TEngineEvent) = Nothing
                 Dim instanceNb = 1
                 If Me.RunSeveralInstances Then
                     instanceNb = Me.InstanceNumber
@@ -321,18 +321,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             cloneContext = ReflectionHelper.CloneObject(Of BotRunContext(Of TEngineEvent))(botContext)
                         End If
                     End If
-                    'Dim asyncbotLocks As Dictionary(Of Integer, String) = AsyncLockBot
-                    'If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                    If (forceRun AndAlso Me._ForceRun) _
-                    OrElse (Not forceRun AndAlso Me.Enabled AndAlso botContext.NextSchedule <= Now) Then
-                        'Dim runUnlocked As Boolean
-                        'SyncLock _AsyncLocks
-                        '    If Not asyncbotLocks.ContainsKey(botContext.AsyncLockId) Then
-                        '        asyncbotLocks(botContext.AsyncLockId) = botContext.Id
-                        '        runUnlocked = True
-                        '    End If
-                        'End SyncLock
-                        'If runUnlocked Then
+                    If (isForcedRun AndAlso Me._ForceRun) _
+                    OrElse (Not isForcedRun AndAlso Me.Enabled AndAlso botContext.NextSchedule <= Now) Then
                         If Not Me._UseTaskQueue Then
                             toReturn = Me.InternalRun(botContext)
                         Else
@@ -341,9 +331,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             End SyncLock
                             toReturn = True
                         End If
-                        'End If
                     End If
-                    'End If
                 Next
             End If
             Return toReturn

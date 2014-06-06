@@ -39,7 +39,7 @@ Namespace UI.WebControls.EditControls
         Public ReadOnly Property ParentModule() As PortalModuleBase
             Get
                 If _ParentModule Is Nothing Then
-                    _ParentModule = Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(Me)
+                    _ParentModule = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PortalModuleBase)(Me)
                 End If
                 Return _ParentModule
             End Get
@@ -69,8 +69,8 @@ Namespace UI.WebControls.EditControls
         Public ReadOnly Property ParentEditor() As PropertyEditorControl
             Get
                 If Me._ParentEditor Is Nothing Then
-                    Dim parentControl As PropertyEditorControl = Web.UI.ControlHelper.FindControlRecursive(Of PropertyEditorControl)(Me)
-                    If Not parentControl Is Nothing Then
+                    Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PropertyEditorControl)(Me)
+                    If parentControl IsNot Nothing Then
                         Me._ParentEditor = parentControl
                     End If
                 End If
@@ -92,8 +92,8 @@ Namespace UI.WebControls.EditControls
         Public ReadOnly Property ParentField() As FieldEditorControl
             Get
                 If Me._ParentField Is Nothing Then
-                    Dim parentControl As FieldEditorControl = Web.UI.ControlHelper.FindControlRecursive(Of FieldEditorControl)(Me)
-                    If Not parentControl Is Nothing Then
+                    Dim parentControl As FieldEditorControl = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of FieldEditorControl)(Me)
+                    If parentControl IsNot Nothing Then
                         Me._ParentField = parentControl
                     End If
                 End If
@@ -127,7 +127,7 @@ Namespace UI.WebControls.EditControls
 
 
         Protected Overrides Sub OnAttributesChanged()
-            If (Not CustomAttributes Is Nothing) Then
+            If (CustomAttributes IsNot Nothing) Then
                 For Each objAttribute As Attribute In CustomAttributes
                     If TypeOf objAttribute Is InnerEditorAttribute Then
                         Dim key As String = ""

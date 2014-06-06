@@ -77,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 #Region "Private methods"
 
         Private Sub SaveSettings()
-            Dim resultSettings As KeeperModuleSettings
+            Dim resultSettings As KeeperModuleSettings = Nothing
             If ctS.DataSource IsNot Nothing Then
                 If TypeOf ctS.DataSource Is KeeperModuleSettings Then
                     resultSettings = DirectCast(Me.ctS.DataSource, KeeperModuleSettings)

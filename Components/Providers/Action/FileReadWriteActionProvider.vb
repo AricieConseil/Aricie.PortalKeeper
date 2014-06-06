@@ -80,7 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 RWLock.ReleaseReaderLock()
             End Try
             If Me.UseCompression AndAlso Not String.IsNullOrEmpty(toReturn) Then
-                toReturn = DoDeCompress(toReturn, CompressionMethod.Deflate)
+                toReturn = Decompress(toReturn, CompressionMethod.Deflate)
             End If
             'End Select
             Return toReturn

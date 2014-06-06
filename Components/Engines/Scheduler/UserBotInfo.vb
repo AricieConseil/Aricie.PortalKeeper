@@ -221,21 +221,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <XmlIgnore()> _
+        '<Editor(GetType(ListEditControl), GetType(EditControl))> _
+
         <OnDemand(False)> _
         <ExtendedCategory("Configuration")> _
             <ConditionalVisible("HasEntities", False, False)> _
-            <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <CollectionEditor(NoAdd:=True, NoDeletion:=True, ShowAddItem:=False, Ordered:=False, Paged:=False, DisplayStyle:=CollectionDisplayStyle.Accordion, EnableExport:=True)> _
             <LabelMode(LabelMode.Top)> _
+            <XmlIgnore()> _
         Public Property Entities() As SerializableList(Of Object)
             Get
                 Dim toReturn As New SerializableList(Of Object)
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
-                    If userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso Not userParameter.IsReadOnly Then
-                        toReturn.Add(Me._Entities(userParameter.Name))
-                    End If
-                Next
+                toReturn.AddRange(From userParameter In Me._UserParameters.Instances _
+                                  Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso Not userParameter.IsReadOnly _
+                                  Select Me._Entities(userParameter.Name))
                 Return toReturn
             End Get
             Set(ByVal value As SerializableList(Of Object))

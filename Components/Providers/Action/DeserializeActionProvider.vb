@@ -84,7 +84,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim bytes As Byte() = Encoding.UTF8.GetBytes(serializedValue)
             If Me.UseCompression Then
-                bytes = DoDeCompress(bytes, CompressionMethod.Deflate)
+                bytes = Decompress(bytes, CompressionMethod.Deflate)
             End If
             Dim additionalTypes As New List(Of Type)
             For Each addDNT As DotNetType In Me._AdditionalTypes

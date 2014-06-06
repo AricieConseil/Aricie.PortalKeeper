@@ -49,7 +49,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End Select
                     Dim bytes As Byte() = memStream.ToArray
                     If Me.UseCompression Then
-                        bytes = DoCompress(bytes, CompressionMethod.Deflate)
+                        bytes = Compress(bytes, CompressionMethod.Deflate)
                     End If
                     toReturn = Encoding.UTF8.GetString(memStream.ToArray)
                 Else

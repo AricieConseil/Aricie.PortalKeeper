@@ -40,7 +40,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim contents As String = Me.GetContent(actionContext)
                 Dim objEncoding As Encoding = GetEncoding(Me.Encoding)
                 If Me.UseCompression Then
-                    contents = DoCompress(contents, CompressionMethod.Deflate)
+                    contents = Compress(contents, CompressionMethod.Deflate)
                 End If
 
                 If AppendContent Then

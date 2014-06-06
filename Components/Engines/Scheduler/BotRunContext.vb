@@ -21,7 +21,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Event Init As EventHandler(Of GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
 
-        Public Event Finalize As EventHandler(Of GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
+        Public Event Finish As EventHandler(Of GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
 
         'Private Sub New()
         '    Me.AsyncLockId = -1
@@ -63,7 +63,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Sub OnFinalize()
-            RaiseEvent Finalize(Me, New GenericEventArgs(Of BotRunContext(Of TEngineEvent))(Me))
+            RaiseEvent Finish(Me, New GenericEventArgs(Of BotRunContext(Of TEngineEvent))(Me))
         End Sub
 
 

@@ -109,7 +109,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Next
                     Else
                         Dim objSkin As Skin = actionContext.DnnContext.CurrentSkin
-                        Dim done As Boolean
                         If objSkin IsNot Nothing Then
                             AddHandler objSkin.Load, AddressOf Skin_Display
                             AddHandler objSkin.DataBinding, AddressOf Skin_Display
