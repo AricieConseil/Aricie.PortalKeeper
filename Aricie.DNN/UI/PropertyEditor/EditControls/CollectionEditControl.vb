@@ -686,7 +686,7 @@ Namespace UI.WebControls.EditControls
             Dim objParent As Control = Me
             Dim parents As New List(Of Control)
             Do
-                objParent = Aricie.Web.UI.ControlHelper.FindControlRecursive(objParent, GetType(CollectionEditControl), GetType(PropertyEditorEditControl))
+                objParent = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(objParent, GetType(CollectionEditControl), GetType(PropertyEditorEditControl))
                 If objParent IsNot Nothing Then
                     parents.Add(objParent)
                 End If
@@ -1009,7 +1009,7 @@ Namespace UI.WebControls.EditControls
                         pnAdd.Controls.Add(cmdAddButton)
                         cmdAddButton.ActionItem.IconName = IconName.Magic
                         cmdAddButton.Text = "Add " & Name
-                        cmdAddButton.ResourceKey = Me.Name + "_AddNew"
+                        cmdAddButton.ResourceKey = "AddNew.Command"
                         cmdAddButton.Visible = Not HideAddButton
 
 
@@ -1029,7 +1029,7 @@ Namespace UI.WebControls.EditControls
                             pnAdd.Controls.Add(cmdCopyButton)
                             cmdCopyButton.ActionItem.IconName = IconName.FilesO
                             cmdCopyButton.Text = "Copy " & Name
-                            cmdCopyButton.ResourceKey = Me.Name + "_Copy"
+                            cmdCopyButton.ResourceKey = "Copy.Command"
                             AddHandler cmdCopyButton.Click, AddressOf CopyClick
                             RegisterControlForPostbackManagement(cmdCopyButton)
                         End If
@@ -1040,7 +1040,7 @@ Namespace UI.WebControls.EditControls
                             pnAdd.Controls.Add(cmdPasteButton)
                             cmdPasteButton.ActionItem.IconName = IconName.Clipboard
                             cmdPasteButton.Text = "Paste " & Name
-                            cmdPasteButton.ResourceKey = Me.Name + "_Paste"
+                            cmdPasteButton.ResourceKey = "Paste.Command"
                             AddHandler cmdPasteButton.Click, AddressOf PasteClick
                             RegisterControlForPostbackManagement(cmdPasteButton)
                         End If
@@ -1051,7 +1051,7 @@ Namespace UI.WebControls.EditControls
                         pnAdd.Controls.Add(cmdExportButton)
                         cmdExportButton.ActionItem.IconName = IconName.Download
                         cmdExportButton.Text = "Export " & Name
-                        cmdExportButton.ResourceKey = Me.Name + "_Export"
+                        cmdExportButton.ResourceKey = "Export.Command"
                         AddHandler cmdExportButton.Click, AddressOf ExportClick
                         RegisterControlForPostbackManagement(cmdExportButton)
 
@@ -1066,7 +1066,7 @@ Namespace UI.WebControls.EditControls
                         pnAdd.Controls.Add(cmdImportButton)
                         cmdImportButton.ActionItem.IconName = IconName.Upload
                         cmdImportButton.Text = "Import " & Name
-                        cmdImportButton.ResourceKey = Me.Name + "_Import"
+                        cmdImportButton.ResourceKey = "Import.Command"
                         AddHandler cmdImportButton.Click, AddressOf ImportClick
 
                         RegisterControlForPostbackManagement(cmdImportButton)

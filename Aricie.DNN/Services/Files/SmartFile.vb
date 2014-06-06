@@ -4,6 +4,8 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.Web.Configuration
 Imports Aricie.ComponentModel
 Imports Aricie.Cryptography
+Imports Aricie.Security.Cryptography
+Imports Aricie.DNN.Security.Cryptography
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
@@ -24,7 +26,7 @@ Namespace Services.Files
 
     Public Enum PayLoadFormat
         None
-        [String]
+        UTF8String
         Bytes
         Base64String
     End Enum
@@ -34,8 +36,8 @@ Namespace Services.Files
         'Inherits SmartFileInfo
 
         Private _encrypter As IEncrypter
-        Protected _SaltBytes As Byte()
-        Private _PayLoad As New CData("")
+        Protected _SaltBytes As Byte() = {}
+        Private _PayLoad As Byte()
         Private _DNNFile As DotNetNuke.Services.FileSystem.FileInfo
 
 
@@ -88,10 +90,10 @@ Namespace Services.Files
         <IsReadOnly(True)> _
         Public Property Encrypted As Boolean
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Encrypted", False, True)> _
-        <IsReadOnly(True)> _
-        Public Property HasCustomEncryption As Boolean
+        '<ExtendedCategory("Content")> _
+        '<ConditionalVisible("Encrypted", False, True)> _
+        '<IsReadOnly(True)> _
+        'Public Property HasCustomEncryption As Boolean
 
         <Browsable(False)> _
         <XmlIgnore()>
@@ -148,69 +150,111 @@ Namespace Services.Files
         Public Property EditPayload(format As PayLoadFormat) As String
             Get
                 Select Case format
-                    Case PayLoadFormat.String
-                        Return _PayLoad.Value
+                    Case PayLoadFormat.UTF8String
+                        Return Encoding.UTF8.GetString(_PayLoad)
                     Case PayLoadFormat.Bytes
-                        Return BitConverter.ToString(Encoding.UTF8.GetBytes(_PayLoad.Value))
+                        Return BitConverter.ToString(_PayLoad)
                     Case PayLoadFormat.Base64String
-                        Return Common.GetBase64FromUtf8(_PayLoad.Value)
+                        Return Convert.ToBase64String(_PayLoad)
                     Case Else
                         Return String.Empty
                 End Select
             End Get
             Set(value As String)
                 If format <> PayLoadFormat.None Then
-                    Dim newValue As String
+                    Dim newValue As Byte() = {}
                     Select Case format
-                        Case PayLoadFormat.String
-                            newValue = value
+                        Case PayLoadFormat.UTF8String
+                            newValue = Encoding.UTF8.GetBytes(value)
                         Case PayLoadFormat.Bytes
                             'newValue = Encoding.UTF8.GetString(Common.StringToByteArray(value))
-                            newValue = Encoding.UTF8.GetString(Common.BitConverterStringToByteArray(value))
+                            newValue = Common.BitConverterStringToByteArray(value)
                         Case PayLoadFormat.Base64String
-                            newValue = Common.GetUtf8FromBase64(value)
+                            newValue = Convert.FromBase64String(value)
                     End Select
-                    _PayLoad.Value = newValue
+                    _PayLoad = newValue
                 End If
             End Set
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)>
-        Public Property PayLoad As CData
+        Public Property PayLoad As Byte()
             Get
                 Return _PayLoad
             End Get
-            Set(value As CData)
+            Set(value As Byte())
                 _PayLoad = value
             End Set
         End Property
 
-        <Browsable(False)> _
-        Public ReadOnly Property PayLoadBytes As Byte()
+
+
+        <Browsable(False)>
+        Public Property StoreBinPayload As Byte()
             Get
-                Return Encoding.UTF8.GetBytes(Me._PayLoad.Value)
+                If (Me.Compressed OrElse Me.Encrypted) Then
+                    Return _PayLoad
+                End If
+                Return Nothing
             End Get
+            Set(value As Byte())
+                Me._PayLoad = value
+            End Set
+        End Property
+
+
+        <Browsable(False)>
+        Public Property StorePlainPayload As CData
+            Get
+                If Not (Me.Compressed OrElse Me.Encrypted) Then
+                    Return Encoding.UTF8.GetString(_PayLoad)
+                End If
+                Return Nothing
+            End Get
+            Set(value As CData)
+                Me._PayLoad = Encoding.UTF8.GetBytes(value)
+            End Set
+        End Property
+
+
+        <Browsable(False)> _
+       <XmlIgnore()> _
+        Public Property PayLoadAsXmlDocument As XmlDocument
+            Get
+                Using inputStream As New MemoryStream(Me._PayLoad)
+                    Dim doc = New XmlDocument()
+                    doc.Load(inputStream)
+                    Return doc
+                End Using
+            End Get
+            Set(value As XmlDocument)
+                Using outStream As New MemoryStream()
+                    value.Save(outStream)
+                    _PayLoad = outStream.ToArray()
+                End Using
+            End Set
         End Property
 
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property Size As Integer
             Get
-                Return Me.PayLoadBytes.Length
+                Return Me._PayLoad.Length
             End Get
         End Property
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property MD5Checksum As String
             Get
-                Return Common.Hash(Me.PayLoad, HashProvider.MD5)
+                Return Me._PayLoad.Hash(HashProvider.MD5)
             End Get
         End Property
 
         <ExtendedCategory("Content")> _
         Public ReadOnly Property Sha256Checksum As String
             Get
-                Return Common.Hash(Me.PayLoad, HashProvider.SHA256)
+                Return Me._PayLoad.Hash(HashProvider.SHA256)
             End Get
         End Property
 
@@ -225,6 +269,7 @@ Namespace Services.Files
 
 
 #Region "Public Methods"
+
 
 
         <ExtendedCategory("Content")> _
@@ -278,6 +323,9 @@ Namespace Services.Files
       <ActionButton(IconName.Compress, IconOptions.Normal)> _
         Public Sub Compress(ape As AriciePropertyEditorControl)
             Me.Compress()
+            If Me.EditPayLoadFormat = PayLoadFormat.UTF8String Then
+                Me.EditPayLoadFormat = PayLoadFormat.Base64String
+            End If
             ape.ItemChanged = True
             Dim message As String = Localization.GetString("SmartFileCompressed.Message", ape.LocalResourceFile)
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -309,6 +357,9 @@ Namespace Services.Files
        <ActionButton(IconName.Lock, IconOptions.Normal)> _
         Public Sub Encrypt(ape As AriciePropertyEditorControl)
             Me.Encrypt()
+            If Me.EditPayLoadFormat = PayLoadFormat.UTF8String Then
+                Me.EditPayLoadFormat = PayLoadFormat.Base64String
+            End If
             ape.ItemChanged = True
             Dim message As String = Localization.GetString("SmartFileEncrypted.Message", ape.LocalResourceFile)
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -319,13 +370,13 @@ Namespace Services.Files
         Public Sub Decrypt()
             Try
                 If Me.Encrypted Then
-                    Dim newPayLoad As String
+                    Dim newPayLoad As Byte()
                     If UseCustomEncryption Then
-                        newPayLoad = Me.CustomEncryption.Decrypt(Me.PayLoad, Me._SaltBytes)
+                        newPayLoad = Me.CustomEncryption.Decrypt(Me._PayLoad, Me._SaltBytes)
                     ElseIf _encrypter IsNot Nothing Then
-                        newPayLoad = _encrypter.Decrypt(Me.PayLoad, Me._SaltBytes)
+                        newPayLoad = _encrypter.Decrypt(Me._PayLoad, Me._SaltBytes)
                     Else
-                        newPayLoad = Common.Decrypt(Me.PayLoad, GetDefaultKey(), "", Me._SaltBytes)
+                        newPayLoad = Me._PayLoad.Decrypt(GetDefaultKey(), {}, Me._SaltBytes)
                     End If
                     Me.DecryptInternal(newPayLoad)
                 End If
@@ -338,15 +389,15 @@ Namespace Services.Files
         Public Sub Encrypt()
             If Not Me.Encrypted Then
                 Dim objSalt As Byte() = Nothing
-                Dim newPayload As String
+                Dim newPayload As Byte()
                 If UseCustomEncryption Then
                     newPayload = Me.CustomEncryption.DoEncrypt(Me.PayLoad, objSalt)
                     Me.Encrypt(newPayload, objSalt)
                 ElseIf _encrypter IsNot Nothing Then
-                    newPayload = _encrypter.Encrypt(Me.PayLoad, objSalt)
+                    newPayload = _encrypter.Encrypt(Me._PayLoad, objSalt)
                     Me.Encrypt(newPayload, objSalt)
                 Else
-                    newPayload = Common.Encrypt(Me.PayLoad, GetDefaultKey(), "", objSalt)
+                    newPayload = _PayLoad.Encrypt(GetDefaultKey(), {}, objSalt)
                     Me.EncryptInternal(newPayload, objSalt)
                 End If
             End If
@@ -360,15 +411,18 @@ Namespace Services.Files
             End If
             If Not Me.Signed Then
                 SyncLock Me
+                    Dim objEncrypter As IEncrypter
                     If UseCustomEncryption Then
-                        PayLoad = Aricie.DNN.Security.EncryptionHelper.SignXmlString(Me.PayLoad, Me.CustomEncryption)
-                        Me.Signed = True
+                        objEncrypter = Me.CustomEncryption
                     ElseIf Me._encrypter IsNot Nothing Then
-                        PayLoad = Aricie.DNN.Security.EncryptionHelper.SignXmlString(Me.PayLoad, _encrypter)
-                        Me.Signed = True
+                        objEncrypter = _encrypter
                     Else
                         Throw New ApplicationException("Cannot sign a smart file without an ecrypter")
                     End If
+                    Dim tempDoc As XmlDocument = Me.PayLoadAsXmlDocument
+                    objEncrypter.Sign(tempDoc)
+                    Me.PayLoadAsXmlDocument = tempDoc
+                    Me.Signed = True
                 End SyncLock
             End If
         End Sub
@@ -377,19 +431,20 @@ Namespace Services.Files
             If Not Me.Signed Then
                 Throw New ApplicationException("Unsigned document cannot be verified")
             Else
-                Dim doc As New XmlDocument()
                 SyncLock Me
-                    doc.LoadXml(Me.PayLoad)
+                    Dim objEncrypter As IEncrypter
                     If UseCustomEncryption Then
-                        Return Me.CustomEncryption.Verify(doc)
+                        objEncrypter = Me.CustomEncryption
                     ElseIf Me._encrypter IsNot Nothing Then
-                        Return _encrypter.Verify(doc)
+                        objEncrypter = _encrypter
                     Else
                         Throw New ApplicationException("Cannot verify a smart file without an ecrypter")
                     End If
+                    Return objEncrypter.Verify(Me.PayLoadAsXmlDocument)
                 End SyncLock
             End If
         End Function
+
 
 
 
@@ -398,7 +453,9 @@ Namespace Services.Files
                 Throw New ApplicationException("Unsigned document cannot have signature removed")
             Else
                 SyncLock Me
-                    PayLoad = Aricie.DNN.Security.EncryptionHelper.RemoveSignatureFromXmlString(Me.PayLoad)
+                    Dim tempDoc As XmlDocument = Me.PayLoadAsXmlDocument
+                    CryptoHelper.RemoveSignatureFromXmlDocument(tempDoc)
+                    Me.PayLoadAsXmlDocument = tempDoc
                     Me.Signed = False
                 End SyncLock
             End If
@@ -410,7 +467,7 @@ Namespace Services.Files
             End If
             If Not Me.Compressed Then
                 SyncLock Me
-                    PayLoad = Common.DoCompress(PayLoad, CompressionMethod.Gzip)
+                    _PayLoad = _PayLoad.Compress(CompressionMethod.Gzip)
                     Me.Compressed = True
                 End SyncLock
             End If
@@ -422,15 +479,16 @@ Namespace Services.Files
             End If
             If Me.Compressed Then
                 SyncLock Me
-                    PayLoad = Common.DoDeCompress(PayLoad, CompressionMethod.Gzip)
+
+                    _PayLoad = _PayLoad.Decompress(CompressionMethod.Gzip)
                     Me.Compressed = False
                 End SyncLock
             End If
         End Sub
 
 
-        Public Function GetDefaultKey() As String
-            Return New MachineKeySection().DecryptionKey
+        Public Function GetDefaultKey() As Byte()
+            Return Encoding.UTF8.GetBytes(New MachineKeySection().DecryptionKey())
         End Function
 
 
@@ -442,17 +500,15 @@ Namespace Services.Files
         '    End If
         'End Function
 
-        Public Sub Decrypt(newPayload As String)
+        Public Sub Decrypt(newPayload As Byte())
             SyncLock Me
                 Me.DecryptInternal(newPayload)
-                Me.HasCustomEncryption = True
             End SyncLock
         End Sub
 
-        Public Sub Encrypt(ByVal newPayLoad As String, ByVal salt As Byte())
+        Public Sub Encrypt(ByVal newPayLoad As Byte(), ByVal objSalt As Byte())
             SyncLock Me
-                Me.EncryptInternal(newPayLoad, salt)
-                Me.HasCustomEncryption = True
+                Me.EncryptInternal(newPayLoad, objSalt)
             End SyncLock
         End Sub
 
@@ -467,10 +523,10 @@ Namespace Services.Files
         End Sub
 
         Public Sub Wrap(settings As SmartFileInfo)
-            If settings.Sign AndAlso Me._encrypter IsNot Nothing Then
+            If settings.Sign AndAlso Not Me.Signed AndAlso Not Me.Compressed AndAlso Not Me.Encrypted AndAlso Me._encrypter IsNot Nothing Then
                 Me.Sign()
             End If
-            If settings.Compress Then
+            If settings.Compress AndAlso Not Me.Compressed AndAlso Not Me.Encrypted Then
                 Me.Compress()
             End If
             If settings.Encrypt Then
@@ -512,23 +568,21 @@ Namespace Services.Files
         Public Shared Function LoadSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo) As SmartFile(Of T)
             Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
             Dim toReturn As SmartFile(Of T) = LoadSmartFile(Of T)(objFileInfo)
-            If Not settings.CheckSmartFile(toReturn) Then
-                Throw New ApplicationException(String.Format("smart file for key {0} at path {1} didn't match security settings", key.ToString(), objFileInfo.PhysicalPath))
+            If toReturn IsNot Nothing Then
+                If Not settings.CheckSmartFile(toReturn) Then
+                    Throw New ApplicationException(String.Format("smart file for key {0} at path {1} didn't match security settings", key.ToString(), objFileInfo.PhysicalPath))
+                End If
+                toReturn.SetEncrypter(settings.Encryption)
             End If
-            toReturn.SetEncrypter(settings.Encryption)
             Return toReturn
         End Function
 
         Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile(Of T)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
-                Using ms As New MemoryStream(content)
-                    Using reader As XmlReader = XmlReader.Create(ms)
-                        Dim toReturn As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(reader)
-                        toReturn._DNNFile = objFileInfo
-                        Return toReturn
-                    End Using
-                End Using
+                Dim toReturn As SmartFile(Of T) = ReflectionHelper.Deserialize(Of SmartFile(Of T))(content)
+                toReturn._DNNFile = objFileInfo
+                Return toReturn
             End If
             Return Nothing
         End Function
@@ -557,13 +611,7 @@ Namespace Services.Files
                         objFileInfo = New DotNetNuke.Services.FileSystem.FileInfo() With {.FileName = System.IO.Path.GetFileName(objPath), .ContentType = "text/xml", .FolderId = objFolderInfo.FolderID, .PortalId = value.Key.PortalId, .StorageLocation = 2}
                     End If
                     Dim content As Byte()
-                    Using ms As New MemoryStream()
-                        Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                        Using writer As XmlWriter = XmlWriter.Create(ms, objXmlSettings)
-                            ReflectionHelper.Serialize(value, writer)
-                        End Using
-                        content = ms.ToArray()
-                    End Using
+                    content = ReflectionHelper.SerializeToBytes(value, False)
                     Dim result As Integer = ObsoleteDNNProvider.Instance.AddOrUpdateFile(objFileInfo, content, False)
                     If result < 0 Then
                         Throw New ApplicationException("Save failed, DNN returned " & result.ToString(CultureInfo.InvariantCulture))
@@ -633,19 +681,19 @@ Namespace Services.Files
 #Region "Private Methods"
 
 
-        Private Sub EncryptInternal(ByVal newPayLoad As String, ByVal salt As Byte())
+        Private Sub EncryptInternal(ByVal newPayLoad As Byte(), ByVal objSalt As Byte())
             SyncLock Me
-                Me.PayLoad = newPayLoad
-                Me._SaltBytes = salt
+                Me._PayLoad = newPayLoad
+                Me._SaltBytes = objSalt
                 Me.Encrypted = True
             End SyncLock
         End Sub
 
-        Private Sub DecryptInternal(newPayload As String)
+        Private Sub DecryptInternal(newPayload As Byte())
             SyncLock Me
-                Me.PayLoad = newPayload
+                Me._PayLoad = newPayload
                 Me.Encrypted = False
-                Me.Salt = ""
+                Me._SaltBytes = {}
             End SyncLock
         End Sub
 
@@ -659,7 +707,7 @@ Namespace Services.Files
     Public Class SmartFile(Of T)
         Inherits SmartFile
 
-        Private _Value As T
+        Private _TypedValue As T
 
         Public Sub New()
         End Sub
@@ -667,7 +715,7 @@ Namespace Services.Files
 
         Public Sub New(key As EntityKey, value As T, settings As SmartFileInfo)
             MyBase.New(key, settings.Encryption)
-            Me.Value = value
+            Me.TypedValue = value
             Me.Wrap(settings)
         End Sub
 
@@ -678,18 +726,19 @@ Namespace Services.Files
         <ExtendedCategory("Value")> _
         <XmlIgnore()> _
         <ConditionalVisible("ShowValue", False, True)> _
-        Public Property Value As T
+        Public Property TypedValue As T
             Get
-                If _Value Is Nothing Then
+                If _TypedValue Is Nothing Then
                     Me.UnWrap()
-                    If Not String.IsNullOrEmpty(Me.PayLoad) Then
-                        _Value = Aricie.Services.ReflectionHelper.Deserialize(Of T)(Me.PayLoad)
+                    If Not Me.PayLoad.Length = 0 Then
+
+                        _TypedValue = Aricie.Services.ReflectionHelper.Deserialize(Of T)(Me.PayLoad)
                     End If
                 End If
-                Return _Value
+                Return _TypedValue
             End Get
             Set(value As T)
-                _Value = value
+                _TypedValue = value
                 Me.UpdatePayload()
             End Set
         End Property
@@ -704,17 +753,10 @@ Namespace Services.Files
         End Sub
 
         Public Sub UpdatePayload()
-            If _Value IsNot Nothing Then
-                Dim sb As New StringBuilder()
-                Using sw As New StringWriter(sb)
-                    Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                    Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                        ReflectionHelper.Serialize(_Value, writer)
-                    End Using
-                End Using
-                Me.PayLoad = sb.ToString()
+            If _TypedValue IsNot Nothing Then
+                PayLoad = ReflectionHelper.SerializeToBytes(Me._TypedValue, True)
             Else
-                Me.PayLoad = ""
+                Me.PayLoad = {}
             End If
         End Sub
 

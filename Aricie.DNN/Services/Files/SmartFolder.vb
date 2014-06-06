@@ -53,7 +53,7 @@ Namespace Services.Files
                     If Not String.IsNullOrEmpty(SelectedFile) Then
 
                         Dim intFileId As Integer = Integer.Parse(Me.SelectedFile)
-                        Dim objFile As SmartFile(Of T)
+                        Dim objFile As SmartFile(Of T) = Nothing
                         If Not NoCache Then
                             objFile = CacheHelper.GetGlobal(Of SmartFile(Of T))(intFileId.ToString(CultureInfo.InvariantCulture))
                         End If

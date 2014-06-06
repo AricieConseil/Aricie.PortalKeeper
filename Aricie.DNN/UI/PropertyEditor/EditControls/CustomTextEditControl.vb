@@ -6,6 +6,18 @@ Imports System.Globalization
 Imports System.Web
 
 Namespace UI.WebControls.EditControls
+
+
+
+    Public Class WriteAndReadCustomTextEditControl
+        Inherits CustomTextEditControl
+
+        Protected Overrides Sub RenderViewMode(writer As HtmlTextWriter)
+            RenderMode(writer, True)
+        End Sub
+
+
+    End Class
     Public Class CustomTextEditControl
         Inherits TextEditControl
 
@@ -32,32 +44,45 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
+
+
         ' Methods
         Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)
+            Me.RenderMode(writer, False)
+        End Sub
+
+        Protected Overridable Sub RenderMode(ByVal writer As HtmlTextWriter, makeReadonly As Boolean)
             MyBase.ControlStyle.AddAttributesToRender(writer)
             writer.AddAttribute(HtmlTextWriterAttribute.Type, "text")
-            If (size > Null.NullInteger) Then
-                writer.AddAttribute(HtmlTextWriterAttribute.Size, _
-                                     size.ToString(CultureInfo.InvariantCulture))
+            If makeReadonly Then
+                writer.AddAttribute(HtmlTextWriterAttribute.ReadOnly, "true")
             End If
-            If (maxLength > Null.NullInteger) Then
+            If (Size > Null.NullInteger) Then
+                writer.AddAttribute(HtmlTextWriterAttribute.Size, _
+                                     Size.ToString(CultureInfo.InvariantCulture))
+            End If
+            If (MaxLength > Null.NullInteger) Then
                 writer.AddAttribute(HtmlTextWriterAttribute.Maxlength, _
-                                     maxLength.ToString(CultureInfo.InvariantCulture))
+                                     MaxLength.ToString(CultureInfo.InvariantCulture))
             End If
             If (WidthPx > Null.NullInteger) Then
                 writer.AddAttribute(HtmlTextWriterAttribute.Style, ("width: " & WidthPx & "px"))
             End If
             writer.AddAttribute(HtmlTextWriterAttribute.Name, Me.UniqueID)
-            If (lineCount = 1) Then
+            If (LineCount = 1) Then
                 'writer.AddAttribute(HtmlTextWriterAttribute.Value, HttpUtility.HtmlEncode(Me.StringValue))
                 writer.AddAttribute(HtmlTextWriterAttribute.Value, Me.StringValue)
                 writer.RenderBeginTag(HtmlTextWriterTag.Input)
             Else
-                writer.AddAttribute(HtmlTextWriterAttribute.Rows, lineCount.ToString(CultureInfo.InvariantCulture))
+                writer.AddAttribute(HtmlTextWriterAttribute.Rows, LineCount.ToString(CultureInfo.InvariantCulture))
                 writer.RenderBeginTag(HtmlTextWriterTag.Textarea)
                 writer.Write(Me.StringValue)
             End If
             writer.RenderEndTag()
         End Sub
+
+
+
+
     End Class
 End Namespace

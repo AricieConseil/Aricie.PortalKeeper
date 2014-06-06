@@ -160,7 +160,7 @@ Namespace UI.WebControls
         Public ReadOnly Property ParentModule() As PortalModuleBase
             Get
                 If _ParentModule Is Nothing Then
-                    _ParentModule = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(Me)
+                    _ParentModule = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PortalModuleBase)(Me)
                 End If
                 Return _ParentModule
             End Get
@@ -175,7 +175,7 @@ Namespace UI.WebControls
         Public ReadOnly Property ParentEditor() As PropertyEditorControl
             Get
                 If Me._ParentEditor Is Nothing Then
-                    Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of PropertyEditorControl)(Me)
+                    Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PropertyEditorControl)(Me)
                     If Not parentControl Is Nothing Then
                         Me._ParentEditor = parentControl
                     End If
@@ -217,7 +217,7 @@ Namespace UI.WebControls
         Public ReadOnly Property ParentAricieField As AricieFieldEditorControl
             Get
                 If _ParentField Is Nothing Then
-                    _ParentField = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of AricieFieldEditorControl)(Me)
+                    _ParentField = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of AricieFieldEditorControl)(Me)
                 End If
                 Return _ParentField
             End Get
@@ -228,7 +228,7 @@ Namespace UI.WebControls
         Public ReadOnly Property ParentEditControl As EditControl
             Get
                 If _ParentEditControl Is Nothing Then
-                    _ParentEditControl = Aricie.Web.UI.ControlHelper.FindControlRecursive(Of EditControl)(Me)
+                    _ParentEditControl = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of EditControl)(Me)
                 End If
                 Return _ParentEditControl
             End Get
@@ -611,6 +611,14 @@ Namespace UI.WebControls
             RaiseEvent Debug(Me, New DebugEventArgs())
         End Sub
 
+        Public Sub DisplayLocalizedMessage(strKey As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
+            Dim localized As String = Localization.GetString(strKey, Me.LocalResourceFile)
+            Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, localized, messageType)
+            moduleMessage.EnableViewState = False
+            _headerControl.Controls.Add(moduleMessage)
+        End Sub
+
+
         Public Sub DisplayMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
             Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
             moduleMessage.EnableViewState = False
@@ -811,11 +819,27 @@ Namespace UI.WebControls
 
 
             Dim nbControls As Integer
-            nbControls += AddColumns(objElement, objElement.Container, keepHidden)
-            nbControls += AddSections(objElement, objElement.Container, keepHidden)
-            nbControls += AddTabs(objElement, keepHidden)
+            Try
+                nbControls += AddColumns(objElement, objElement.Container, keepHidden)
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            End Try
+            Try
+                nbControls += AddSections(objElement, objElement.Container, keepHidden)
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            End Try
+            Try
+                nbControls += AddTabs(objElement, keepHidden)
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            End Try
             If Me.EditMode = PropertyEditorMode.Edit Then
-                nbControls += AddActionButtons(objElement, keepHidden)
+                Try
+                    nbControls += AddActionButtons(objElement, keepHidden)
+                Catch ex As Exception
+                    Me.ProcessException(ex)
+                End Try
             End If
 
             Return nbControls
@@ -1057,7 +1081,7 @@ Namespace UI.WebControls
 
         Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
 
-            Dim btn As WebControl
+            Dim btn As WebControl = Nothing
             Select Case objButtonInfo.Mode
                 Case ActionButtonMode.CommandButton
                     Dim cmdbtn As New CommandButton()
@@ -1111,7 +1135,7 @@ Namespace UI.WebControls
             If TypeOf Me.DataSource Is SubPathContainer Then
                 Dim objContainer As SubPathContainer = DirectCast(Me.DataSource, SubPathContainer)
                 Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
-                If Not targetType Is GetType(SubPathContainer) Then
+                If targetType IsNot GetType(SubPathContainer) Then
                     targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
                     For Each objEntity As Object In objContainer.GetParentEntities().Values.Reverse()
                         If targetType.IsInstanceOfType(objEntity) Then

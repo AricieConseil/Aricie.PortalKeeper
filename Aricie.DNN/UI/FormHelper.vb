@@ -66,7 +66,7 @@ Namespace UI
 
 
         Public Function GetParentModuleBase(ByVal objControl As Control) As PortalModuleBase
-            Return Web.UI.ControlHelper.FindControlRecursive(Of PortalModuleBase)(objControl)
+            Return Web.UI.ControlHelper.FindParentControlRecursive(Of PortalModuleBase)(objControl)
         End Function
 
 

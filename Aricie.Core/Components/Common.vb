@@ -15,6 +15,9 @@ Imports System.Security.Cryptography.X509Certificates
 Imports System.Security.Cryptography.Xml
 Imports Aricie.Cryptography
 Imports System.Linq
+Imports System.Security
+Imports System.Runtime.InteropServices
+Imports Aricie.Security.Cryptography
 
 
 ''' <summary>
@@ -72,6 +75,64 @@ Public Module Common
 
 #Region "String methods "
 
+
+    Public Function StringToByteArray(hexInput As String) As Byte()
+        Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
+    End Function
+
+    Public Function BitConverterStringToByteArray(hexBitConverter As String) As Byte()
+        Dim hexInput As String = hexBitConverter.Replace("-"c, "").Trim()
+        Return StringToByteArray(hexInput)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
+        Return Convert.ToBase64String(Encoding.UTF8.GetBytes(strUtf8))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetUtf8FromBase64(ByVal strBase64 As String) As String
+        Return Encoding.UTF8.GetString(Convert.FromBase64String(strBase64))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetUtf8FromBase64(objBytes As Byte()) As Byte()
+        Return Encoding.UTF8.GetBytes(Convert.ToBase64String(objBytes))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetBase64FromUtf8(objBytes As Byte()) As Byte()
+        Return Convert.FromBase64String(Encoding.UTF8.GetString(objBytes))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function ToBase64(objBytes As Byte()) As String
+        Return Convert.ToBase64String(objBytes)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function FromBase64(value As String) As Byte()
+        Return Convert.FromBase64String(value)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function FromUTF8(objBytes As Byte()) As String
+        Return Encoding.UTF8.GetString(objBytes)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function ToUTF8(value As String) As Byte()
+        Return Encoding.UTF8.GetBytes(value)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function AppendBytes(first As Byte(), second As Byte()) As Byte()
+        Dim ret As Byte() = New Byte(first.Length + (second.Length - 1)) {}
+        Buffer.BlockCopy(first, 0, ret, 0, first.Length)
+        Buffer.BlockCopy(second, 0, ret, first.Length, second.Length)
+        Return ret
+    End Function
+
     Public Function OnlyAlphaNumericChars(ByVal objString As String) As String
 
         objString = Trim(objString)
@@ -92,10 +153,12 @@ Public Module Common
 
     End Function
 
+    <System.Runtime.CompilerServices.Extension> _
     Public Function IsAlphaNumeric(ByVal sChr As String) As Boolean
         IsAlphaNumeric = sChr Like "[0-9A-Za-z ]"
     End Function
 
+    <System.Runtime.CompilerServices.Extension> _
     Public Function IsNumber(ByVal sChr As String) As Boolean
         For i As Integer = 0 To sChr.Length - 1
             If Not Char.IsDigit(sChr, i) Then
@@ -106,416 +169,23 @@ Public Module Common
     End Function
 
 
-#Region "Crypto"
 
-
-    Public Function StringToByteArray(hexInput As String) As Byte()
-        Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
-    End Function
-
-    Public Function BitConverterStringToByteArray(hexBitConverter As String) As Byte()
-        Dim hexInput As String = hexBitConverter.Replace("-"c, "").Trim()
-        Return StringToByteArray(hexInput)
-    End Function
-
-
-    Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
-        Return Convert.ToBase64String(Encoding.UTF8.GetBytes(strUtf8))
-    End Function
-
-    Public Function GetUtf8FromBase64(ByVal strBase64 As String) As String
-        Return Encoding.UTF8.GetString(Convert.FromBase64String(strBase64))
-    End Function
-
-
-    Public Sub AddRandomDelay()
-
-        Thread.Sleep(GetNewSalt(0)(0))
-
-    End Sub
-
-    Public Function GetNewSalt(ByVal length As Integer) As Byte()
-        ' Create a buffer
-        Dim randBytes() As Byte
-
-        If length >= 1 Then
-            randBytes = New Byte(length) {}
-        Else
-            randBytes = New Byte(0) {}
-        End If
-
-        ' Create a new RNGCryptoServiceProvider.
-        Dim rand As New RNGCryptoServiceProvider()
-
-        ' Fill the buffer with random bytes.
-        rand.GetBytes(randBytes)
-
-        Dim disposable As IDisposable = TryCast(rand, IDisposable)
-        If Not disposable Is Nothing Then
-            disposable.Dispose()
-        End If
-
-
-        Return randBytes
-
-    End Function
-
-
-
-
-
-    <Obsolete("Use version with byref byte array salt")>
-    Public Function Encrypt(ByVal plainText As String, _
-                         ByVal key As String, _
-                               Optional ByVal initVector As String = defaultInitVector, _
-                              Optional ByVal salt As String = defaultSalt) _
-                       As String
-
-
-        Dim saltValueBytes As Byte()
-        saltValueBytes = Encoding.Unicode.GetBytes(salt)
-
-        Return Encrypt(plainText, key, initVector, saltValueBytes)
-
-    End Function
-
-
-    Public Function Encrypt(ByVal plainText As String, ByVal key As String, ByVal initVector As String, ByRef salt As Byte()) As String
-
-        If salt Is Nothing OrElse salt.Length = 0 Then
-            salt = GetNewSalt(30)
-        End If
-
-        Dim password As New Rfc2898DeriveBytes(initVector, salt, 10)
-        Dim initVectorBytes As Byte() = password.GetBytes(16)
-        'initVectorBytes = Encoding.ASCII.GetBytes(initVector)
-
-        ' Convert our plaintext into a byte array.
-        ' Let us assume that plaintext contains UTF8-encoded characters.
-        Dim plainTextBytes As Byte()
-        plainTextBytes = Encoding.Unicode.GetBytes(plainText)
-
-        ' First, we must create a password, from which the key will be derived.
-        ' This password will be generated from the specified passphrase and 
-        ' salt value. The password will be created using the specified hash 
-        ' algorithm. Password creation can be done in several iterations.
-        password = New Rfc2898DeriveBytes(key, salt, 10)
-
-        ' Use the password to generate pseudo-random bytes for the encryption
-        ' key. Specify the size of the key in bytes (instead of bits).
-        Dim keyBytes As Byte()
-        keyBytes = password.GetBytes(CInt(256 / 8))
-
-        ' Create uninitialized Rijndael encryption object.
-        Dim symmetricKey As RijndaelManaged
-        symmetricKey = New RijndaelManaged()
-
-        ' It is reasonable to set encryption mode to Cipher Block Chaining
-        ' (CBC). Use default options for other symmetric key parameters.
-        symmetricKey.Mode = CipherMode.CBC
-
-        ' Generate encryptor from the existing key bytes and initialization 
-        ' vector. Key size will be defined based on the number of the key 
-        ' bytes.
-        Dim encryptor As ICryptoTransform
-        encryptor = symmetricKey.CreateEncryptor(keyBytes, initVectorBytes)
-
-        ' Define memory stream which will be used to hold encrypted data.
-        Dim memoryStream As MemoryStream
-        memoryStream = New MemoryStream()
-
-        ' Define cryptographic stream (always use Write mode for encryption).
-        Dim cryptoStream As CryptoStream
-        cryptoStream = New CryptoStream(memoryStream, _
-                                        encryptor, _
-                                        CryptoStreamMode.Write)
-        ' Start encrypting.
-        cryptoStream.Write(plainTextBytes, 0, plainTextBytes.Length)
-
-        ' Finish encrypting.
-        cryptoStream.FlushFinalBlock()
-
-        ' Convert our encrypted data from a memory stream into a byte array.
-        Dim cipherTextBytes As Byte()
-        cipherTextBytes = memoryStream.ToArray()
-
-        ' Close both streams.
-        memoryStream.Close()
-        cryptoStream.Close()
-
-        ' Convert encrypted data into a base64-encoded string.
-        Dim cipherText As String
-        cipherText = Convert.ToBase64String(cipherTextBytes)
-
-        ' Return encrypted string.
-        Return cipherText
-    End Function
-
-    'Public Sub SignDocument(doc As XmlDocument, cert As RSACryptoServiceProvider, referencePath As String)
-    '    Dim objSignedXml As New SignedXml(doc)
-    '    objSignedXml.SignedInfo.CanonicalizationMethod = SignedXml.XmlDsigExcC14NTransformUrl
-    '    objSignedXml.SigningKey = cert
-
-    '    ' Retrieve the value of the "ID" attribute on the root assertion element.
-    '    Dim reference As New Reference(referencePath)
-
-    '    reference.AddTransform(New XmlDsigEnvelopedSignatureTransform())
-    '    reference.AddTransform(New XmlDsigExcC14NTransform())
-
-    '    objSignedXml.AddReference(reference)
-
-    '    ' Include the public key of the certificate in the assertion.
-    '    objSignedXml.KeyInfo = New KeyInfo()
-    '    objSignedXml.KeyInfo.AddClause(New RSAKeyValue(cert))
-
-    '    objSignedXml.ComputeSignature()
-    '    ' Append the computed signature. The signature must be placed as the sibling of the Issuer element.
-    '    Dim nodes As XmlNodeList = doc.DocumentElement.GetElementsByTagName("Issuer", Saml20Constants.ASSERTION)
-    '    ' doc.DocumentElement.InsertAfter(doc.ImportNode(signedXml.GetXml(), true), nodes[0]);            
-    '    nodes(0).ParentNode.InsertAfter(doc.ImportNode(objSignedXml.GetXml(), True), nodes(0))
-    'End Sub
-
-
-
-
-    Public Function GetRSAProvider(privateKey As String) As RSACryptoServiceProvider
-        Dim toReturn As New RSACryptoServiceProvider()
-        toReturn.ImportCspBlob(Convert.FromBase64String(privateKey))
-        Return toReturn
-    End Function
-
-
-
-
-
-
-
-    ''' <summary>
-    ''' SIGN AN XML DOCUMENT USING THE PRIVATE KEY
-    ''' </summary>
-    ''' <param name="Doc">XML DOCUMENT TO BE SHOULD SIGNED</param>
-    ''' <param name="PrivateKey">PRIVATE RSA KEY USED TO SIGN XML</param>
-    Public Sub SignXml(doc As XmlDocument, privateKey As AsymmetricAlgorithm, ParamArray paths As String())
-
-        'VERIFY ALL ARGUMENTS HAVE BEEN PASSED IN
-        If doc Is Nothing Then
-            Throw New ArgumentException("Doc")
-        End If
-        If privateKey Is Nothing Then
-            Throw New ArgumentException("privateKey")
-        End If
-
-        'CREATE A SIGNED XML DOCUMENT
-        Dim signedXml As New SignedXml(doc)
-        signedXml.SignedInfo.CanonicalizationMethod = signedXml.XmlDsigExcC14NTransformUrl
-
-        'ADD THE RSA KEY TO THE SIGNED DOCUMENT
-        signedXml.SigningKey = privateKey
-
-        If paths Is Nothing OrElse paths.Length = 0 Then
-            paths = {""}
-        End If
-
-        'CREATE A REFERENCE TO BE SIGNED
-        For Each objPath As String In paths
-            Dim reference As New Reference()
-            'If Not String.IsNullOrEmpty(objPath) Then
-            reference.Uri = objPath
-            'End If
-
-            ''CREATE AN ENVELOPED SIGNATURE WHICH
-            Dim env As New XmlDsigEnvelopedSignatureTransform()
-            reference.AddTransform(env)
-            'reference.AddTransform(New XmlDsigExcC14NTransform())
-
-            'ADD THE REFERENCE TO THE SIGNED DOCUMENT
-            signedXml.AddReference(reference)
-        Next
-
-
-        'COMPUTE THE DOCUMENTS SIGNATURE
-        signedXml.ComputeSignature()
-
-        'RETRIEVE THE XML SIGNATURE FROM THE DOCUMENT
-        Dim xmlDigitalSignature As XmlElement = signedXml.GetXml()
-
-        'APPEND THE SIGNATURE TO THE END OF THE DOCUMENT
-        'Doc.DocumentElement.AppendChild(Doc.ImportNode(xmlDigitalSignature, true));
-        doc.DocumentElement.AppendChild(doc.ImportNode(xmlDigitalSignature, True))
-    End Sub
-
-    ''' <summary>
-    ''' VERIFY A SIGNED XML DOCUMENT
-    ''' </summary>
-    ''' <param name="Doc">SIGNED XML DOCUMENT</param>
-    ''' <param name="PublicKey">PUBLIC KEY TO VERIFY SIGNATURE AGAINST</param>
-    ''' <returns></returns>
-    Public Function VerifyXml(doc As XmlDocument, publicKey As AsymmetricAlgorithm) As Boolean
-
-        'VERIFY ALL ARGUMENTS HAVE BEEN PASSED IN
-        If doc Is Nothing Then
-            Throw New ArgumentException("Doc")
-        End If
-        If publicKey Is Nothing Then
-            Throw New ArgumentException("Key")
-        End If
-
-        'HOLD THE SIGNED DOCUMENT
-        Dim signedXml As New SignedXml(doc)
-
-        'LOCATE THE SIGNATURE NODE IN THE DOCUMENT
-        Dim nodeList As XmlNodeList = doc.GetElementsByTagName("Signature")
-
-        'IF WE CANT FIND THE NODE THEN THIS DOCUMENT IS NOT SIGNED
-        If nodeList.Count <= 0 Then
-            Throw New CryptographicException("Verification failed: No Signature was found in the document.")
-        End If
-
-        'IF THERE ARE MORE THEN ONE SIGNATURES THEN FAIL
-        If nodeList.Count >= 2 Then
-            Throw New CryptographicException("Verification failed: More that one signature was found for the document.")
-        End If
-
-        'LOAD THE SIGNATURE NODE INTO THE SIGNEDXML DOCUMENT
-        signedXml.LoadXml(DirectCast(nodeList(0), XmlElement))
-
-        'CHECK THE SIGNATURE AND SEND THE RESULT
-        Return signedXml.CheckSignature(publicKey)
-    End Function
-
-
-
-
-
-    <Obsolete("Use version with byte array salt")>
-    Public Function Decrypt(ByVal encryptedText As String, _
-                                Optional ByVal key As String = defaultKey, _
-                                Optional ByVal initVector As String = defaultInitVector, _
-                                Optional ByVal salt As String = defaultSalt) As String
-
-
-        Dim saltValueBytes As Byte()
-        saltValueBytes = Encoding.Unicode.GetBytes(salt)
-
-        Return Decrypt(encryptedText, key, initVector, saltValueBytes)
-
-    End Function
-
-    Public Function Decrypt(ByVal encryptedText As String, ByVal key As String, ByVal initVector As String, ByVal salt As Byte()) As String
-
-        ' Convert strings defining encryption key characteristics into byte
-        ' arrays. Let us assume that strings only contain ASCII codes.
-        ' If strings include Unicode characters, use Unicode, UTF7, or UTF8
-        ' encoding.
-
-
-        Dim password As New Rfc2898DeriveBytes(initVector, salt, 10)
-        Dim initVectorBytes As Byte() = password.GetBytes(16)
-
-        ' Convert our ciphertext into a byte array.
-        Dim cipherTextBytes As Byte()
-        cipherTextBytes = Convert.FromBase64String(encryptedText)
-
-        ' First, we must create a password, from which the key will be 
-        ' derived. This password will be generated from the specified 
-        ' passphrase and salt value. The password will be created using
-        ' the specified hash algorithm. Password creation can be done in
-        ' several iterations.
-        password = New Rfc2898DeriveBytes(key, salt, 10)
-
-        ' Use the password to generate pseudo-random bytes for the encryption
-        ' key. Specify the size of the key in bytes (instead of bits).
-        Dim keyBytes As Byte()
-        keyBytes = password.GetBytes(CInt(256 / 8))
-
-        ' Create uninitialized Rijndael encryption object.
-        Dim symmetricKey As RijndaelManaged
-        symmetricKey = New RijndaelManaged()
-
-        ' It is reasonable to set encryption mode to Cipher Block Chaining
-        ' (CBC). Use default options for other symmetric key parameters.
-        symmetricKey.Mode = CipherMode.CBC
-
-        ' Generate decryptor from the existing key bytes and initialization 
-        ' vector. Key size will be defined based on the number of the key 
-        ' bytes.
-        Dim decryptor As ICryptoTransform
-        decryptor = symmetricKey.CreateDecryptor(keyBytes, initVectorBytes)
-
-        ' Define memory stream which will be used to hold encrypted data.
-        Dim memoryStream As MemoryStream
-        memoryStream = New MemoryStream(cipherTextBytes)
-
-        ' Define memory stream which will be used to hold encrypted data.
-        Dim cryptoStream As CryptoStream
-        cryptoStream = New CryptoStream(memoryStream, _
-                                        decryptor, _
-                                        CryptoStreamMode.Read)
-
-        ' Since at this point we don't know what the size of decrypted data
-        ' will be, allocate the buffer long enough to hold ciphertext;
-        ' plaintext is never longer than ciphertext.
-        Dim plainTextBytes As Byte()
-        ReDim plainTextBytes(cipherTextBytes.Length)
-
-        ' Start decrypting.
-        Dim decryptedByteCount As Integer
-        decryptedByteCount = cryptoStream.Read(plainTextBytes, _
-                                               0, _
-                                               plainTextBytes.Length)
-
-        ' Close both streams.
-        memoryStream.Close()
-        cryptoStream.Close()
-
-        ' Convert decrypted data into a string. 
-        ' Let us assume that the original plaintext string was UTF8-encoded.
-        Dim plainText As String
-        plainText = Encoding.Unicode.GetString(plainTextBytes, _
-                                            0, _
-                                            decryptedByteCount)
-
-        ' Return decrypted string.
-        Return plainText
-    End Function
-
-
-
-
-    Public Function Hash(s As [String], hashProvider As HashProvider) As String
-        Dim objBuffer As Byte() = Encoding.UTF8.GetBytes(s)
-        Select Case hashProvider
-            Case hashProvider.MD5
-                Using hasher As MD5 = MD5.Create()
-                    Dim strHash As Byte() = hasher.ComputeHash(objBuffer)
-                    Return BitConverter.ToString(strHash).Replace("-", "").ToLowerInvariant().Trim()
-                End Using
-            Case hashProvider.SHA256
-                Using hasher As New SHA256CryptoServiceProvider()
-                    Dim strHash As Byte() = hasher.ComputeHash(objBuffer)
-                    Return BitConverter.ToString(strHash).Replace("-", "").ToLowerInvariant().Trim()
-                End Using
-        End Select
-        Return Nothing
-    End Function
-
-#End Region
-
-
-
-    Public Function DoCompress(ByVal source As String, ByVal method As CompressionMethod) As String
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Compress(ByVal source As String, ByVal method As CompressionMethod) As String
         Dim sourceBytes As Byte() = System.Text.Encoding.UTF8.GetBytes(source)
-        Dim returnBytes As Byte() = DoCompress(sourceBytes, method)
+        Dim returnBytes As Byte() = Compress(sourceBytes, method)
         Return System.Convert.ToBase64String(returnBytes)
     End Function
 
-    Public Function DoDeCompress(ByVal source As String, ByVal method As CompressionMethod) As String
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Decompress(ByVal source As String, ByVal method As CompressionMethod) As String
         Dim sourceBytes As Byte() = System.Convert.FromBase64String(source)
-        Dim returnBytes As Byte() = DoDeCompress(sourceBytes, method)
+        Dim returnBytes As Byte() = Decompress(sourceBytes, method)
         Return Encoding.UTF8.GetString(returnBytes)
     End Function
 
-    Public Function DoCompress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Compress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
         Using ms As MemoryStream = New MemoryStream
             Select Case method
                 Case CompressionMethod.Deflate
@@ -533,7 +203,8 @@ Public Module Common
         End Using
     End Function
 
-    Public Function DoDecompress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Decompress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
         Dim toReturn As Byte() = Nothing
         Using ms As MemoryStream = New MemoryStream(bytes, False)
             Select Case method
@@ -601,7 +272,58 @@ Public Module Common
     End Function
 
 
+
+
+
 #End Region
+
+
+#Region "Crypto"
+
+
+
+    <Obsolete("Use methods in the CryptoHelper module")>
+    Public Function Encrypt(ByVal plainText As String, _
+                         ByVal key As String, _
+                               Optional ByVal initVector As String = defaultInitVector, _
+                              Optional ByVal salt As String = defaultSalt) _
+                       As String
+
+
+        Dim saltValueBytes As Byte()
+        saltValueBytes = Encoding.Unicode.GetBytes(salt)
+
+        Return Convert.ToBase64String(CryptoHelper.Encrypt(Encoding.UTF8.GetBytes(plainText), Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(initVector), saltValueBytes))
+
+    End Function
+
+
+
+    <Obsolete("Use methods in the CryptoHelper module")>
+    Public Function Decrypt(ByVal encryptedText As String, _
+                                Optional ByVal key As String = defaultKey, _
+                                Optional ByVal initVector As String = defaultInitVector, _
+                                Optional ByVal salt As String = defaultSalt) As String
+
+
+        Dim saltValueBytes As Byte()
+        saltValueBytes = Encoding.Unicode.GetBytes(salt)
+
+
+
+        Return Encoding.UTF8.GetString(CryptoHelper.Decrypt(Convert.FromBase64String(encryptedText), Encoding.UTF8.GetBytes(key), Encoding.UTF8.GetBytes(initVector), saltValueBytes))
+
+    End Function
+
+
+
+
+
+
+
+#End Region
+
+
 
 #Region "Date / TimeSpan methods"
 

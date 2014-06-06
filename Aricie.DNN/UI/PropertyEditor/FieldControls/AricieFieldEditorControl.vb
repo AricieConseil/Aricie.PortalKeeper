@@ -9,6 +9,9 @@ Imports Aricie.Web.UI
 Imports System.Web.UI.HtmlControls
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Services.Localization
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Entities.Modules
+Imports DotNetNuke.Services.Exceptions
 
 
 Public Class AricieFieldEditorControl
@@ -36,6 +39,8 @@ Public Class AricieFieldEditorControl
     Private _Validated As Boolean
     Private _Validators As ValidatorCollection
     Private _Editor As EditControl
+    Private _ParentEditor As PropertyEditorControl
+    Private _ParentModule As PortalModuleBase
 
 #Region "Properties"
 
@@ -99,6 +104,36 @@ Public Class AricieFieldEditorControl
         End Set
     End Property
 
+    Public ReadOnly Property ParentModule() As PortalModuleBase
+        Get
+            If _ParentModule Is Nothing Then
+                _ParentModule = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PortalModuleBase)(Me)
+            End If
+            Return _ParentModule
+        End Get
+    End Property
+
+
+    Public ReadOnly Property ParentEditor() As PropertyEditorControl
+        Get
+            If Me._ParentEditor Is Nothing Then
+                Dim parentControl As PropertyEditorControl = ControlHelper.FindParentControlRecursive(Of PropertyEditorControl)(Me)
+                If parentControl IsNot Nothing Then
+                    Me._ParentEditor = parentControl
+                End If
+            End If
+            Return Me._ParentEditor
+        End Get
+    End Property
+
+    Public ReadOnly Property ParentAricieEditor() As AriciePropertyEditorControl
+        Get
+            If TypeOf Me.ParentEditor Is AriciePropertyEditorControl Then
+                Return DirectCast(ParentEditor, AriciePropertyEditorControl)
+            End If
+            Return Nothing
+        End Get
+    End Property
 
 #End Region
 
@@ -178,15 +213,23 @@ Public Class AricieFieldEditorControl
 #Region "Events"
 
     Protected Overrides Sub ValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
-        MyBase.ValueChanged(sender, e)
-        If Me.IsDirty Then
-            Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
-            If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
-                If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+        Try
+            MyBase.ValueChanged(sender, e)
+            If Me.IsDirty Then
+                Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
+                If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
+                    If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                        ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                    End If
                 End If
             End If
-        End If
+        Catch ex As Exception
+            If Me.ParentAricieEditor IsNot Nothing Then
+                Me.ParentAricieEditor.ProcessException(ex)
+            Else
+                Exceptions.ProcessModuleLoadException(Me.ParentModule, ex)
+            End If
+        End Try
     End Sub
 
     Protected Overrides Sub RenderChildren(ByVal writer As HtmlTextWriter)
@@ -201,7 +244,7 @@ Public Class AricieFieldEditorControl
 
     Public Shared Function CreateEditControl(ByVal editorInfo As EditorInfo, ByVal fieldCtl As AricieFieldEditorControl, Optional ByVal container As Control = Nothing) As EditControl
 
-        Dim propEditor As EditControl
+        Dim objEditControl As EditControl
 
         If editorInfo.Editor = "UseSystemType" Then
             Dim objType As Type = ReflectionHelper.CreateType(editorInfo.Type)
@@ -209,11 +252,11 @@ Public Class AricieFieldEditorControl
 
             Select Case objType.FullName
                 Case "System.DateTime"
-                    propEditor = New DateTimeEditControl
+                    objEditControl = New DateTimeEditControl
                 Case "System.Boolean"
-                    propEditor = New CheckEditControl
+                    objEditControl = New CheckEditControl
                 Case "System.Int32", "System.Int16"
-                    propEditor = New IntegerEditControl
+                    objEditControl = New IntegerEditControl
 
                 Case "System.String"
                     'If editorInfo.Value IsNot Nothing AndAlso editorInfo.Value.ToString.Length > 16 Then
@@ -221,50 +264,55 @@ Public Class AricieFieldEditorControl
                     'Else
                     '    propEditor = New TextEditControl()
                     'End If
-                    propEditor = New CustomTextEditControl()
+                    objEditControl = New CustomTextEditControl()
 
                 Case Else
                     If objType.IsEnum Then
-                        propEditor = New EnumEditControl(editorInfo.Type)
+                        objEditControl = New EnumEditControl(editorInfo.Type)
                     ElseIf editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
                         editorInfo.LabelMode = LabelMode.Top
                         If objType.GetInterface("ICollection") IsNot Nothing Then
                             If objType.GetInterface("IDictionary") IsNot Nothing Then
-                                propEditor = New DictionaryEditControl()
+                                objEditControl = New DictionaryEditControl()
                             Else
-                                propEditor = New ListEditControl()
+                                objEditControl = New ListEditControl()
                             End If
                         ElseIf objType.GetInterface("IDictionary") IsNot Nothing Then
-                            propEditor = New DictionaryEditControl()
+                            objEditControl = New DictionaryEditControl()
                         Else
-                            propEditor = New PropertyEditorEditControl()
+                            objEditControl = New PropertyEditorEditControl()
                         End If
                     Else
-                        propEditor = New TextEditControl(editorInfo.Type)
+                        objEditControl = New TextEditControl(editorInfo.Type)
                     End If
             End Select
         Else
             'Use Editor
             Dim editType As Type = ReflectionHelper.CreateType(editorInfo.Editor)
-            propEditor = CType(Activator.CreateInstance(editType), EditControl)
+            objEditControl = CType(Activator.CreateInstance(editType), EditControl)
         End If
 
 
-        'propEditor.ID = editorInfo.Name
-        propEditor.ID = editorInfo.Name.Substring(0, 3) & editorInfo.Name.Substring(editorInfo.Name.Length - 2)
-        propEditor.Name = editorInfo.Name
+        If editorInfo.Name.Length > 5 Then
+            objEditControl.ID = editorInfo.Name.Substring(0, 3) & editorInfo.Name.Substring(editorInfo.Name.Length - 2)
+        Else
+            objEditControl.ID = editorInfo.Name
+        End If
 
-        propEditor.EditMode = editorInfo.EditMode
-        propEditor.Required = editorInfo.Required
 
-        propEditor.Value = editorInfo.Value
-        propEditor.OldValue = editorInfo.Value
+        objEditControl.Name = editorInfo.Name
 
-        propEditor.CustomAttributes = editorInfo.Attributes
-        propEditor.CssClass = "NormalTextBox"
+        objEditControl.EditMode = editorInfo.EditMode
+        objEditControl.Required = editorInfo.Required
+
+        objEditControl.Value = editorInfo.Value
+        objEditControl.OldValue = editorInfo.Value
+
+        objEditControl.CustomAttributes = editorInfo.Attributes
+        objEditControl.CssClass = "NormalTextBox"
 
         'AddHandler propEditor.PreRender, AddressOf propEditor_PreRender
-        Dim myValidators As IList(Of BaseValidator) = BuildValidators(editorInfo, propEditor.ID, fieldCtl)
+        Dim myValidators As IList(Of BaseValidator) = BuildValidators(editorInfo, objEditControl.ID, fieldCtl)
         For Each item As BaseValidator In myValidators
             If container Is Nothing Then
                 fieldCtl.Validators.Add(item)
@@ -277,7 +325,7 @@ Public Class AricieFieldEditorControl
         'Next
 
 
-        Return propEditor
+        Return objEditControl
 
     End Function
 
