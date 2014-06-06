@@ -140,6 +140,8 @@
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />
     <Compile Include="Components\ComponentModel\GenericEventArgs.vb" />
+    <Compile Include="Components\Security\CertificateException.vb" />
+    <Compile Include="Components\Security\CryptoHelper.vb" />
     <Compile Include="Components\Security\HashProvider.vb" />
     <Compile Include="Components\Providers\ConverterProviderBase.vb" />
     <Compile Include="Components\Providers\DefaultServiceProvider.vb" />
@@ -147,7 +149,10 @@
     <Compile Include="Components\Providers\SimpleTypeConverter.vb" />
     <Compile Include="Components\Providers\SystemServiceProvider.vb" />
     <Compile Include="Components\Collections\SerializableDictionary.vb" />
+    <Compile Include="Components\Security\ReadOnlyContentException.vb" />
     <Compile Include="Components\Security\Saml20Constants.vb" />
+    <Compile Include="Components\Security\SecurityExtensions.vb" />
+    <Compile Include="Components\Security\SerializableSecureString.vb" />
     <Compile Include="Components\Services\Caching\CacheHelper.vb" />
     <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Components\Services\ExceptionHelper.vb" />

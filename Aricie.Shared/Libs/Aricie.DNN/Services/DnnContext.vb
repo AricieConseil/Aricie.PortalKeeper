@@ -591,7 +591,11 @@ Namespace Services
         End Sub
 
         Public Sub AddModuleMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
-            DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me.CurrentModule, heading, strMessage, messageType)
+            If Me.CurrentModule IsNot Nothing Then
+                DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me.CurrentModule, heading, strMessage, messageType)
+            Else
+                Me.AddPageMessage(strMessage, messageType, heading)
+            End If
         End Sub
 
         Public Function GetModuleMessageControl(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "") As ModuleMessage

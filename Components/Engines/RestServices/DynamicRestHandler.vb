@@ -41,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Private Function ProcessRequest(method As HttpMethod) As OperationResult
-            Dim toReturn As OperationResult
+            Dim toReturn As OperationResult = New OperationResult.OK()
             Try
 
 

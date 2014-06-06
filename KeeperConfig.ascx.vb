@@ -2,6 +2,10 @@ Imports Aricie.DNN.UI.Controls
 Imports Aricie.DNN.Settings
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.Collections
+Imports Aricie.DNN.Security.Cryptography
+Imports Aricie.Security.Cryptography
+Imports System.Security.Cryptography
+Imports System.Diagnostics
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Services.Exceptions
@@ -15,10 +19,17 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Collections.Generic
 Imports System.Xml
 Imports Aricie.DNN.Security
+Imports System.Linq
+Imports System.IO
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
         Inherits AriciePortalModuleBase
+
+
+
+
+
 
         Public Sub New()
             MyBase.New()
@@ -419,23 +430,38 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 #End Region
 
+
 #Region "Debug"
 
         Private Sub OnCmdDebug()
 
             Try
 
-                AddNewProviders()
+                Dim RSAalg As New RSACryptoServiceProvider(2048)
+                DnnContext.Instance.AddModuleMessage(String.Format("KeySize: {0}", RSAalg.KeySize.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
+                Dim monTexte As String = CryptoHelper.GetNewSalt(10000).ToBase64()
+                DnnContext.Instance.AddModuleMessage(String.Format("Texte: {0}", monTexte), ModuleMessage.ModuleMessageType.GreenSuccess)
 
 
-                'Me.AddModuleMessage(HttpUtility.HtmlEncode(unsigned), ModuleMessage.ModuleMessageType.GreenSuccess)
+                Dim sw As New Stopwatch()
+                sw.Start()
+
+                'Dim test As String = "test".ToUTF8().WriteSecureString(True, Encoding.UTF8, True).ReadSecureStringToBytes(Encoding.UTF8).FromUTF8()
+
+                For i As Integer = 0 To 0
+
+                    Dim processed As Byte() = RSAalg.EncryptByBlocks(monTexte.FromBase64())
+                    'DnnContext.Instance.AddModuleMessage(String.Format("Encrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
+                    processed = RSAalg.DecryptBlocks(processed)
+                    'DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
+                Next
+
+
+                DnnContext.Instance.AddModuleMessage(String.Format("Time Elapsed: {0}", Common.FormatTimeSpan(sw.Elapsed)), ModuleMessage.ModuleMessageType.GreenSuccess)
+
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try
-
-
-
-
         End Sub
 
 
@@ -448,82 +474,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
-        Private Sub AddNewProviders()
-
-            Dim conditionProviders As New List(Of Type)
-            For Each objType As Type In GetType(PortalKeeperConfig).Assembly.GetTypes()
-                If Not objType.IsAbstract Then
-                    If Aricie.Common.IsAssignableToGenericType(objType, GetType(IConditionProvider(Of ))) AndAlso objType IsNot GetType(ConditionProvider(Of )) Then
-                        If objType.IsGenericType Then
-                            objType = objType.MakeGenericType(GetType(Boolean))
-                        End If
-                        If objType.GetInterfaces().Contains(GetType(IConditionProvider(Of Boolean))) Then
-                            Me.AddModuleMessage(objType.AssemblyQualifiedName, ModuleMessage.ModuleMessageType.GreenSuccess)
-                        Else
-                            Me.AddModuleMessage(objType.AssemblyQualifiedName, ModuleMessage.ModuleMessageType.YellowWarning)
-                        End If
-
-                    End If
-                End If
-            Next
-
-
-
-
-
-
-
-
-
-
-
-            'Dim newScheduleProviders As New List(Of ActionProviderConfig(Of ScheduleEvent))
-            'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(ExecuteSqlAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
-            'newScheduleProviders.Add(New ActionProviderConfig(Of ScheduleEvent)(GetType(RunProgramAction(Of ScheduleEvent)), ScheduleEvent.Init, ScheduleEvent.Unload, ScheduleEvent.Default))
-
-
-            'For Each prov As ActionProviderConfig(Of ScheduleEvent) In newScheduleProviders
-
-
-
-            '    For Each objBot As BotInfo(Of ScheduleEvent) In Me.KeeperConfig.SchedulerFarm.Bots.Instances
-            '        Dim found As Boolean
-            '        For Each existing As ActionProviderConfig(Of ScheduleEvent) In objBot.ActionProviders
-            '            If existing.Name = prov.Name Then
-            '                found = True
-            '            End If
-            '        Next
-            '        If Not found Then
-            '            objBot.ActionProviders.Add(prov)
-            '        End If
-            '    Next
-            'Next
-
-            'Dim newRequestProviders As New List(Of ActionProviderConfig(Of RequestEvent))
-            'newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(ExecuteSqlAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
-            'newRequestProviders.Add(New ActionProviderConfig(Of RequestEvent)(GetType(RunProgramAction(Of RequestEvent)), RequestEvent.BeginRequest, RequestEvent.EndRequest, RequestEvent.Default))
-
-            'For Each prov As ActionProviderConfig(Of RequestEvent) In newRequestProviders
-            '    Dim found As Boolean
-            '    For Each existing As ActionProviderConfig(Of RequestEvent) In Me.KeeperConfig.FirewallConfig.ActionProviders
-            '        If existing.Name = prov.Name Then
-            '            found = True
-            '        End If
-            '    Next
-            '    If Not found Then
-            '        Me.KeeperConfig.FirewallConfig.ActionProviders.Add(prov)
-            '    End If
-            'Next
-
-
-
-            'Me.BindSettings()
-
-        End Sub
-
 
 #End Region
-
 
     End Class
 End Namespace

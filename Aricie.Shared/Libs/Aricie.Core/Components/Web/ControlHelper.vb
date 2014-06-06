@@ -34,11 +34,17 @@ Namespace Web.UI
             Return toReturn
         End Function
 
-        Public Function FindControlRecursive(Of T As {Control})(ByVal objControl As Control) As T
-            Return DirectCast(FindControlRecursive(objControl, GetType(T)), T)
+        Public Function FindParentControlRecursive(Of T As {Control})(ByVal objControl As Control) As T
+            Return DirectCast(FindParentControlRecursive(objControl, GetType(T)), T)
         End Function
 
-        Public Function FindControlRecursive(ByVal objControl As Control, ByVal parentType As Type) As Control
+        <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
+        Public Function FindControlRecursive(Of T As {Control})(ByVal objControl As Control) As T
+            Return DirectCast(FindParentControlRecursive(objControl, GetType(T)), T)
+        End Function
+
+
+        Public Function FindParentControlRecursive(ByVal objControl As Control, ByVal parentType As Type) As Control
             If objControl.Parent Is Nothing Then
                 Return Nothing
             Else
@@ -46,12 +52,17 @@ Namespace Web.UI
                    Or objControl.Parent.GetType.IsSubclassOf(parentType) Then
                     Return objControl.Parent
                 Else
-                    Return FindControlRecursive(objControl.Parent, parentType)
+                    Return FindParentControlRecursive(objControl.Parent, parentType)
                 End If
             End If
         End Function
 
-        <ObsoleteAttribute("Obsolete, use FindParentControlRecursive instead")>
+        <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
+        Public Function FindControlRecursive(ByVal objControl As Control, ByVal parentType As Type) As Control
+            Return FindParentControlRecursive(objControl, parentType)
+        End Function
+
+        <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
         Public Function FindControlRecursive(ByVal objControl As Control, ByVal ParamArray parentTypes() As Type) As Control
             Return FindParentControlRecursive(objControl, parentTypes)
         End Function
@@ -73,6 +84,8 @@ Namespace Web.UI
             End If
             Return FindParentControlRecursive(startControl.Parent, parentTypes)
         End Function
+
+
         ''' <summary>
         ''' Recherche un controle par son id dans toute l'arborescence enfant de startingControl
         ''' </summary>
@@ -102,20 +115,25 @@ Namespace Web.UI
             Return found
         End Function
 
+        <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
         Public Function FindControlRecursive(ByVal objControl As Control, ByVal parentType As Type, ByVal controlId As String) As Control
+            Return FindParentControlRecursive(objControl, parentType, controlId)
+        End Function
+
+        Public Function FindParentControlRecursive(ByVal objControl As Control, ByVal parentType As Type, ByVal controlId As String) As Control
             If objControl.Parent Is Nothing Then
                 Return Nothing
             Else
-                If (objControl.Parent.GetType Is parentType Or objControl.Parent.GetType.IsSubclassOf(parentType)) And objControl.Parent.ID = controlID Then
+                If parentType.IsInstanceOfType(objControl.Parent) AndAlso objControl.Parent.ID = controlId Then
                     Return objControl.Parent
                 Else
-                    Return FindControlRecursive(objControl.Parent, parentType)
+                    Return FindParentControlRecursive(objControl.Parent, parentType, controlId)
                 End If
             End If
         End Function
 
         Public Function FindNearbyControl(Of T As Control)(ByVal control As Control, ByVal controlId As String) As T
-            Dim toReturn As Control = FindControl(control, controlID)
+            Dim toReturn As Control = FindControl(control, controlId)
             If toReturn IsNot Nothing AndAlso TypeOf toReturn Is T Then
                 Return DirectCast(toReturn, T)
             End If
@@ -135,7 +153,7 @@ Namespace Web.UI
                 Loop
                 Return toReturn
             End If
-            Return control.FindControl(controlID)
+            Return control.FindControl(controlId)
         End Function
 
     End Module

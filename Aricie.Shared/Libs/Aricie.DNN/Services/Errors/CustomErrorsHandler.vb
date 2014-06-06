@@ -2,6 +2,7 @@
 Imports System.Web.Configuration
 Imports Aricie.DNN.Entities
 Imports System.Web
+Imports Aricie.Security.Cryptography
 Imports DotNetNuke.Entities.Portals
 
 Namespace Services.Errors
@@ -59,7 +60,7 @@ Namespace Services.Errors
         ''' <remarks></remarks>
         Protected Overridable Overloads Sub ProcessRequest(ByVal context As HttpContext, ByVal objCustomErrors As VirtualCustomErrorsInfo)
             If objCustomErrors.IncludeRandomDelay Then
-                Aricie.Common.AddRandomDelay()
+                CryptoHelper.AddRandomDelay()
             End If
             Dim targetStatus As Integer = 0
             If context.Error IsNot Nothing AndAlso TypeOf context.Error Is HttpException Then

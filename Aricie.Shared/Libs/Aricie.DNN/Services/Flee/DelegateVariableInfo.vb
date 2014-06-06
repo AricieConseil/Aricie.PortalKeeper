@@ -18,9 +18,8 @@ Namespace Services.Flee
         Public Property MethodName As String
 
         Public Function GetMethodInfo() As MethodInfo
-            Dim toReturn As MethodInfo
+            Dim toReturn As MethodInfo = Nothing
             Dim potentialsMembers As List(Of MemberInfo) = Nothing
-            Dim targetMethod As MethodInfo
             If ReflectionHelper.GetFullMembersDictionary(GetType(TParentType)).TryGetValue(Me._MethodName, potentialsMembers) Then
                 Dim index As Integer = 0
                 For Each potentialMember As MemberInfo In potentialsMembers
@@ -49,7 +48,7 @@ Namespace Services.Flee
         End Property
 
         <ConditionalVisible("RequiresInstance", False, True)>
-        Public Property Instance As New SimpleExpression(Of Object)
+        Public Property TargetInstance As New SimpleExpression(Of Object)
 
         Public Overrides Function EvaluateOnce(owner As Object, globalVars As IContextLookup) As Object
             Dim toReturn As [Delegate]
@@ -57,7 +56,7 @@ Namespace Services.Flee
             Dim targetMethod As MethodInfo = Me.GetMethodInfo()
             If targetMethod IsNot Nothing Then
                 If RequiresInstance Then
-                    Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                    Dim target As Object = Me.TargetInstance.Evaluate(owner, globalVars)
                     toReturn = [Delegate].CreateDelegate(GetType(TParentType), target, targetMethod)
                 Else
                     toReturn = [Delegate].CreateDelegate(GetType(TParentType), targetMethod)

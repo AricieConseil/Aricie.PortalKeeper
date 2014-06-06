@@ -883,10 +883,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Background Threads</value>
   </data>
   <data name="TaskQueueInfo_NbThreads.Help" xml:space="preserve">
-    <value>number of threads pooled to process the task queue</value>
+    <value>number of threads pooled to process the task queue. The task queue engine leverages the powerful&lt;a href="https://github.com/amibar/SmartThreadPool" &gt;SmartThreadPool&lt;/a&gt; library with self adapting pools for optimal resource consumption. Windows performance counters are also available thanks to that library, and provide a precise monitoring of asynchrounous operations (each taskqueue can be monitored as an independant collector, see technical settings) </value>
   </data>
   <data name="TaskQueueInfo_NbThreads.Text" xml:space="preserve">
-    <value>Nb Threads</value>
+    <value>Max Nb Threads</value>
   </data>
   <data name="TaskQueueInfo_TaksWaitTime.Help" xml:space="preserve">
     <value>Time duration before each queue item is processed</value>
@@ -5029,13 +5029,13 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Save your Bot</value>
   </data>
   <data name="EncryptionInfo_EncryptedKey.Help" xml:space="preserve">
-    <value>Your symmetrical key was encrypted using the current dotnetnuke instance decryption key. Use the reset keys button to change it to a new or a known version</value>
+    <value>Your symmetric key was encrypted using the current dotnetnuke instance decryption key. Use the reset keys button to change it to a new or a known version</value>
   </data>
   <data name="EncryptionInfo_EncryptedKey.Text" xml:space="preserve">
-    <value>Encrypted Symmetrical Key</value>
+    <value>Encrypted Symmetric Key</value>
   </data>
   <data name="EncryptionInfo_EncryptedPrivateKey.Help" xml:space="preserve">
-    <value>Your asymmetrical private key was encrypted using the current encryption key. Use the reset keys button to change it to a new or a known version</value>
+    <value>Your asymmetric private key was encrypted using the current encryption key. Use the reset keys button to change it to a new or a known version</value>
   </data>
   <data name="EncryptionInfo_EncryptedPrivateKey.Text" xml:space="preserve">
     <value>Encrypted Asymmetrical Private Key</value>
@@ -5044,13 +5044,13 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>This is your main password, from which your symmpetrical encryption key</value>
   </data>
   <data name="EncryptionInfo_EncryptionKey.Text" xml:space="preserve">
-    <value>Symmetrical Key</value>
+    <value>Symmetric Key</value>
   </data>
   <data name="EncryptionInfo_EncryptionPrivateKey.Help" xml:space="preserve">
     <value>Those are the parameters used to derive an asymetrical RSA private key</value>
   </data>
   <data name="EncryptionInfo_EncryptionPrivateKey.Text" xml:space="preserve">
-    <value>Asymmetrical Private Key</value>
+    <value>Asymmetric Private Key</value>
   </data>
   <data name="EncryptionInfo_InitVector.Help" xml:space="preserve">
     <value>This is an auto-generated string that serves customizing the encryption process</value>
@@ -5058,7 +5058,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="EncryptionInfo_InitVector.Text" xml:space="preserve">
     <value>Init Vector</value>
   </data>
-  <data name="EncryptionInfo_ResetEncryptionKey.Text" xml:space="preserve">
+  <data name="EncryptionInfo_ResetEncryptionKeys.Text" xml:space="preserve">
     <value>Reset Encryption Keys</value>
   </data>
   <data name="EncryptionInfo_Salt.Help" xml:space="preserve">
@@ -6110,5 +6110,293 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="ControlAdapterSettings_AdaptedSelectedPath.Text" xml:space="preserve">
     <value>Select Path</value>
+  </data>
+  <data name="AddEventHandler.Text" xml:space="preserve">
+    <value>Add Event Handler</value>
+  </data>
+  <data name="CallMethod.Text" xml:space="preserve">
+    <value>Call Method</value>
+  </data>
+  <data name="GeneralObjectAction_ActionMode.Help" xml:space="preserve">
+    <value>There are 3 types of object action you can perform on an object: Set a property, call a method or add an event handler. Corresponding controls should appear according to you selection.</value>
+  </data>
+  <data name="GeneralObjectAction_ActionMode.Text" xml:space="preserve">
+    <value>Action Mode</value>
+  </data>
+  <data name="GeneralObjectAction_DelegateExpression.Help" xml:space="preserve">
+    <value>This is an expression that resolved into an object of type Delegate. You can create Delegates when defining variables. For now, you should make sure the target delegate and even handler's signatures do match.</value>
+  </data>
+  <data name="GeneralObjectAction_DelegateExpression.Text" xml:space="preserve">
+    <value>Delegate</value>
+  </data>
+  <data name="GeneralObjectAction_DotNetType.Help" xml:space="preserve">
+    <value>Select a type of object, on which you want to perform an action</value>
+  </data>
+  <data name="GeneralObjectAction_DotNetType.Text" xml:space="preserve">
+    <value>Object Type</value>
+  </data>
+  <data name="GeneralObjectAction_EventName.Help" xml:space="preserve">
+    <value>Select an event amongst those declared on the target object type</value>
+  </data>
+  <data name="GeneralObjectAction_EventName.Text" xml:space="preserve">
+    <value>Event Name</value>
+  </data>
+  <data name="GeneralObjectAction_Instance.Help" xml:space="preserve">
+    <value>This is an expression for the object on which you wish to perform an action. Typically a local variable, leave empty if you want to access a static member</value>
+  </data>
+  <data name="GeneralObjectAction_Instance.Text" xml:space="preserve">
+    <value>Target Object</value>
+  </data>
+  <data name="GeneralObjectAction_Parameters.Help" xml:space="preserve">
+    <value>Add the .Net types corresponding to the choosen constructor parameters first.</value>
+  </data>
+  <data name="GeneralObjectAction_Parameters.Text" xml:space="preserve">
+    <value>Enter the parameters to pass to your method or in case of an indexed property</value>
+  </data>
+  <data name="GeneralObjectAction_PropertyName.Help" xml:space="preserve">
+    <value>This is the name of the property to be set (readonly properties are filtered out)</value>
+  </data>
+  <data name="GeneralObjectAction_PropertyName.Text" xml:space="preserve">
+    <value>Property Name</value>
+  </data>
+  <data name="GeneralObjectAction_PropertyValue.Help" xml:space="preserve">
+    <value>Enter an object expression for the value to set. As it is passed as an object by reflection, you must ensure type safety by yourself</value>
+  </data>
+  <data name="GeneralObjectAction_PropertyValue.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SetProperty.Text" xml:space="preserve">
+    <value>Set Property</value>
+  </data>
+  <data name="Asymmetric.Text" xml:space="preserve">
+    <value>Asymmetric</value>
+  </data>
+  <data name="CallObjectMethod`1_MethodIndex.Help" xml:space="preserve">
+    <value>When several signatures exist for the method you selected, enter the base-1 index for the target method</value>
+  </data>
+  <data name="CallObjectMethod`1_MethodIndex.Text" xml:space="preserve">
+    <value>Method Index</value>
+  </data>
+  <data name="CSPBlob.Text" xml:space="preserve">
+    <value>CSP Blob</value>
+  </data>
+  <data name="EncryptionInfo_EditInitVector.Help" xml:space="preserve">
+    <value>This an auto generated Init Vector Bytes for symmetrical encryption and addtional entropy, base64 encoded. </value>
+  </data>
+  <data name="EncryptionInfo_EditInitVector.Text" xml:space="preserve">
+    <value>Init Vector</value>
+  </data>
+  <data name="EncryptionInfo_IsSealApplicationEncrypted.Help" xml:space="preserve">
+    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the application which encrypts the private key with the main application decryption key. Only the same application will be able to recover the key at runtime. </value>
+  </data>
+  <data name="EncryptionInfo_IsSealApplicationEncrypted.Text" xml:space="preserve">
+    <value>Has Application Seal</value>
+  </data>
+  <data name="EncryptionInfo_IsSealDataProtected.Help" xml:space="preserve">
+    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the machine which encrypts the private key using the native ProtectedData methods. Only the same system will be able to recover the key at runtime. </value>
+  </data>
+  <data name="EncryptionInfo_IsSealDataProtected.Text" xml:space="preserve">
+    <value>Has Data Protection Seal</value>
+  </data>
+  <data name="EncryptionInfo_IsSealInKeyContainer.Help" xml:space="preserve">
+    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the host operating system with the creation of a dedicated CSPContainer Key which encrypts the private key . Only the same system will be able to recover the key at runtime. </value>
+  </data>
+  <data name="EncryptionInfo_IsSealInKeyContainer.Text" xml:space="preserve">
+    <value>Has Key Container Seal</value>
+  </data>
+  <data name="EncryptionInfo_ProtectInMemory.Help" xml:space="preserve">
+    <value>The encryption key is stored encrypted, but it is kept in memory at runtime for better performances. you can choose to obfuscate the live memory objects at a mitigated cost by enabling that option.</value>
+  </data>
+  <data name="EncryptionInfo_ProtectInMemory.Text" xml:space="preserve">
+    <value>Protect In Memory</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsCSPBlob.Help" xml:space="preserve">
+    <value>This is the base64 representation of a CSP Blob export for the public key derived from the asymmetrical private key.</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsCSPBlob.Text" xml:space="preserve">
+    <value>Public Key as CSP Blob</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsRSAParameters.Help" xml:space="preserve">
+    <value>This is the base64 representation of an instance of the RSAParameters structure, from an export from the public key derived from the asymmetrical private key.</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsRSAParameters.Text" xml:space="preserve">
+    <value>Public Key as RSA Parameters</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsXml.Help" xml:space="preserve">
+    <value>This is the Xml string format of the public key derived from the asymmetrical private key as returned by AsymmetricalAlgorithm.ExportXml(false)</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyAsXml.Text" xml:space="preserve">
+    <value>Public Key as Xml</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyDisplay.Help" xml:space="preserve">
+    <value>You can choose to display the public key in various format: Xml parameters, CspBlob or RSAParameters</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeyDisplay.Text" xml:space="preserve">
+    <value>Public Key Format</value>
+  </data>
+  <data name="EncryptionInfo_SealInApplication.Text" xml:space="preserve">
+    <value>Seal in Application</value>
+  </data>
+  <data name="EncryptionInfo_SealInCSP.Text" xml:space="preserve">
+    <value>Seal in Key Container</value>
+  </data>
+  <data name="EncryptionInfo_SealProtectData.Text" xml:space="preserve">
+    <value>Seal with Protected Data</value>
+  </data>
+  <data name="EncryptionInfo_SelectedEncryptionType.Help" xml:space="preserve">
+    <value>Your encryption manger can perform symmetric encryption, asymmetric encryption or both. symmetric encryption uses salted RijndaelManaged, Asymmetric Encryption uses a RsaCryptoProvider</value>
+  </data>
+  <data name="EncryptionInfo_SelectedEncryptionType.Text" xml:space="preserve">
+    <value>Encryption Type</value>
+  </data>
+  <data name="GeneralObjectAction_MethodIndex.Help" xml:space="preserve">
+    <value>When several signatures exist for the method you selected, enter the base-1 index for the target method</value>
+  </data>
+  <data name="GeneralObjectAction_MethodIndex.Text" xml:space="preserve">
+    <value>Method Index</value>
+  </data>
+  <data name="GeneralObjectAction_MethodName.Help" xml:space="preserve">
+    <value>Select the name of the method you want to call on the target object</value>
+  </data>
+  <data name="GeneralObjectAction_MethodName.Text" xml:space="preserve">
+    <value>Method Name</value>
+  </data>
+  <data name="NamespaceSelect.NullSelect" xml:space="preserve">
+    <value>&lt;Select a Namespace&gt;</value>
+  </data>
+  <data name="RSAParameters.Text" xml:space="preserve">
+    <value>RSA Parameters</value>
+  </data>
+  <data name="RSAParametersInfo_D.Help" xml:space="preserve">
+    <value>Represents the D parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_D.Text" xml:space="preserve">
+    <value>D</value>
+  </data>
+  <data name="RSAParametersInfo_DP.Help" xml:space="preserve">
+    <value>Represents the DP parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_DP.Text" xml:space="preserve">
+    <value>DP</value>
+  </data>
+  <data name="RSAParametersInfo_DQ.Help" xml:space="preserve">
+    <value>Represents the DQ parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_DQ.Text" xml:space="preserve">
+    <value>DQ</value>
+  </data>
+  <data name="RSAParametersInfo_Exponent.Help" xml:space="preserve">
+    <value>Represents the Exponent parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_Exponent.Text" xml:space="preserve">
+    <value>Exponent</value>
+  </data>
+  <data name="RSAParametersInfo_InverseQ.Help" xml:space="preserve">
+    <value>Represents the InverseQ parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_InverseQ.Text" xml:space="preserve">
+    <value>InverseQ</value>
+  </data>
+  <data name="RSAParametersInfo_Modulus.Help" xml:space="preserve">
+    <value>Represents the Modulus parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_Modulus.Text" xml:space="preserve">
+    <value>Modulus</value>
+  </data>
+  <data name="RSAParametersInfo_P.Help" xml:space="preserve">
+    <value>Represents the P parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_P.Text" xml:space="preserve">
+    <value>P</value>
+  </data>
+  <data name="RSAParametersInfo_Q.Help" xml:space="preserve">
+    <value>Represents the Q parameter for the RSA algorithm.</value>
+  </data>
+  <data name="RSAParametersInfo_Q.Text" xml:space="preserve">
+    <value>Q</value>
+  </data>
+  <data name="Symmetric.Text" xml:space="preserve">
+    <value>Symmetric</value>
+  </data>
+  <data name="SymmetricAndAsymmetric.Text" xml:space="preserve">
+    <value>Symmetric and Asymmetric</value>
+  </data>
+  <data name="TaskQueueInfo_ThreadPriority.Help" xml:space="preserve">
+    <value>This is the priority that will be assigned to the threads processing the queue. The wait time can also help defining priority hierarchies between concurrent operations </value>
+  </data>
+  <data name="UTF8String.Text" xml:space="preserve">
+    <value>UTF8 String</value>
+  </data>
+  <data name="AddNew.Command" xml:space="preserve">
+    <value>Add New</value>
+  </data>
+  <data name="AsymmetricByBlock.Text" xml:space="preserve">
+    <value>Asymmetric by Block</value>
+  </data>
+  <data name="AsymmetricKeyExchange.Text" xml:space="preserve">
+    <value>Key Exchange</value>
+  </data>
+  <data name="Copy.Command" xml:space="preserve">
+    <value>Copy</value>
+  </data>
+  <data name="EncryptionInfo_AsymmetricKeySize.Help" xml:space="preserve">
+    <value>This is the size of the RSACryptoServiceProvider's key used for asymmetric encryption</value>
+  </data>
+  <data name="EncryptionInfo_AsymmetricKeySize.Text" xml:space="preserve">
+    <value>Asymmetric Key Size</value>
+  </data>
+  <data name="EncryptionInfo_DNNSalt.Help" xml:space="preserve">
+    <value>This is the salt that was generated upon application level sealing</value>
+  </data>
+  <data name="EncryptionInfo_DNNSalt.Text" xml:space="preserve">
+    <value>DNN Salt</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionTypes.Help" xml:space="preserve">
+    <value>You can perform several round of encryption using your asymmetric and symmetric keys. Beware of size limitation and performance costs of asymmetric encryption</value>
+  </data>
+  <data name="EncryptionInfo_EncryptionTypes.Text" xml:space="preserve">
+    <value>Encryption Sequence</value>
+  </data>
+  <data name="EncryptionInfo_SymmetricKeySize.Help" xml:space="preserve">
+    <value>This is the size of the RijndelManaged's key used for symmetric encryption</value>
+  </data>
+  <data name="EncryptionInfo_SymmetricKeySize.Text" xml:space="preserve">
+    <value>Symmetric Key Size</value>
+  </data>
+  <data name="Export.Command" xml:space="preserve">
+    <value>Export File</value>
+  </data>
+  <data name="Import.Command" xml:space="preserve">
+    <value>Import File</value>
+  </data>
+  <data name="Key1024.Text" xml:space="preserve">
+    <value>1024 bits</value>
+  </data>
+  <data name="Key128.Text" xml:space="preserve">
+    <value>128 bits</value>
+  </data>
+  <data name="Key16384.Text" xml:space="preserve">
+    <value>16384 bits</value>
+  </data>
+  <data name="Key2048.Text" xml:space="preserve">
+    <value>2048 bits</value>
+  </data>
+  <data name="Key256.Text" xml:space="preserve">
+    <value>256 bits</value>
+  </data>
+  <data name="Key384.Text" xml:space="preserve">
+    <value>384 bits</value>
+  </data>
+  <data name="Key4096.Text" xml:space="preserve">
+    <value>4096 bits</value>
+  </data>
+  <data name="Key512.Text" xml:space="preserve">
+    <value>512 bits</value>
+  </data>
+  <data name="Key8192.Text" xml:space="preserve">
+    <value>8192 bits</value>
+  </data>
+  <data name="Paste.Command" xml:space="preserve">
+    <value>Paste</value>
   </data>
 </root>

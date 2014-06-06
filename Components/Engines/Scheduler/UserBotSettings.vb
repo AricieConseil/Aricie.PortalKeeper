@@ -360,7 +360,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 'runContext.UserParams = userBotInfo.GetParameterValues(objUser)
                 Dim persister As New UserBotPersister(Me, objUser)
                 AddHandler runContext.Init, AddressOf persister.InitBot
-                AddHandler runContext.Finalize, AddressOf persister.SaveBot
+                AddHandler runContext.Finish, AddressOf persister.SaveBot
 
                 toreturn = Me.Bot.RunBot(runContext, forceRun)
             End If
@@ -417,21 +417,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 userDataFormat = ReflectionHelper.Deserialize(Of UserBotFormat)(strUserDataFormat)
                             End If
 
-                            Dim userData As String = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name), String)
-                            If String.IsNullOrEmpty(userData) AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
-                                userData = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName), String)
+                            Dim userData As Byte() = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name), Byte())
+                            If userData.Length > 0 AndAlso Not String.IsNullOrEmpty(Me._FormerName) Then
+                                userData = DirectCast(Personalization.GetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName), Byte())
                                 If Not String.IsNullOrEmpty(Me._FormerName) Then
                                     Personalization.SetProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me.Name, userData)
                                     Personalization.RemoveProfile(pInfo, "Aricie.PortalKeeper.UserBot", Me._FormerName)
                                 End If
                             End If
-                            If Not String.IsNullOrEmpty(userData) Then
+                            If userData.Length > 0 Then
                                 If userDataFormat.Encrypted Then
-                                    Dim tempData As String = Me.StorageSettings.Encryption.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user)))
+                                    Dim tempData As Byte() = Me.StorageSettings.Encryption.Decrypt(userData, Encoding.Unicode.GetBytes(GetSalt(user)))
                                     userData = tempData
                                 End If
                                 If userDataFormat.Compressed Then
-                                    Dim tempData As String = DoDeCompress(userData, CompressionMethod.Gzip)
+                                    Dim tempData As Byte() = Decompress(userData, CompressionMethod.Gzip)
                                     userData = tempData
                                 End If
                                 userBot = ReflectionHelper.Deserialize(Of UserBotInfo)(userData)
@@ -446,7 +446,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             'pid, PortalKeeperConfig.Instance.GetModuleName(), user.Username, "UserBots/" & Me.Name, "")
                             Dim sf As SmartFile(Of UserBotInfo) = SmartFile.LoadSmartFile(Of UserBotInfo)(key, Me.StorageSettings)
                             If sf IsNot Nothing AndAlso Me.StorageSettings.CheckSmartFile(sf) Then
-                                userBot = sf.Value
+                                userBot = sf.TypedValue
                             End If
 
                     End Select
@@ -490,19 +490,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Me.SetDefaultParameters(objUserBotInfo)
                         Dim objUserBotFormat As New UserBotFormat
 
-                        Dim sb As New StringBuilder()
-                        Using sw As New StringWriter(sb)
-                            Dim objXmlSettings As XmlWriterSettings = ReflectionHelper.GetStandardXmlWriterSettings()
-                            Using writer As XmlWriter = XmlWriter.Create(sw, objXmlSettings)
-                                ReflectionHelper.Serialize(objUserBotInfo, writer)
-                            End Using
-                        End Using
-
-                        Dim userData As String = sb.ToString()
+                        Dim userData As Byte() = ReflectionHelper.SerializeToBytes(objUserBotInfo, False)
 
                         If Me.StorageSettings.Compress Then
                             objUserBotFormat.Compressed = True
-                            userData = DoCompress(userData, CompressionMethod.Gzip)
+                            userData = Compress(userData, CompressionMethod.Gzip)
                         Else
                             objUserBotFormat.Compressed = False
                         End If

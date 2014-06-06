@@ -1,4 +1,4 @@
-<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" Codefile="KeeperConfig.ascx.vb" %>
+<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" CodeFile="KeeperConfig.ascx.vb" %>
 <%@ Register Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
 <div class="divPKP">

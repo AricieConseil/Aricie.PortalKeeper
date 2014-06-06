@@ -31,8 +31,8 @@ Namespace UI.Controls
         Public ReadOnly Property ParentSkinBase() As SkinObjectBase
             Get
                 If Me._ParentSkinBase Is Nothing Then
-					Dim parentControl As Control = Web.UI.ControlHelper.FindControlRecursive(Me, GetType(SkinObjectBase))
-                    If Not parentControl Is Nothing Then
+                    Dim parentControl As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(SkinObjectBase))
+                    If parentControl IsNot Nothing Then
                         Me._ParentSkinBase = CType(parentControl, SkinObjectBase)
                     End If
                 End If

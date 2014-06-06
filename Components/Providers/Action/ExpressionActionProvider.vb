@@ -12,7 +12,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <DisplayName("Expression Action Provider")> _
         <Description("This provider runs by evaluating a boolean expression and returning the result. The current PortalKeeperContext can be used as a dedicated variable")> _
     Public Class ExpressionActionProvider(Of TEngineEvents As IConvertible)
-        Inherits ActionProvider(Of TEngineEvents)
+        Inherits AsyncEnabledActionProvider(Of TEngineEvents)
+
 
 
 
@@ -22,11 +23,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Specifics")> _
         Public Property ContextVarName As String = "Context"
 
-        Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+
+        Protected Overloads Overrides Function Run(actionContext As PortalKeeperContext(Of TEngineEvents), aSync As Boolean) As Boolean
             Dim newLookup As New SimpleContextLookup(actionContext)
             newLookup.Items(Me.ContextVarName) = actionContext
             Return Me._FleeExpression.Evaluate(actionContext, newLookup)
         End Function
-
     End Class
 End Namespace

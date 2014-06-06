@@ -146,7 +146,7 @@ Namespace UI.WebControls.EditControls
                     For Each rawObj As Object In rawList
 
                         Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(rawObj.GetType())
-                        Dim key As IconInfo
+                        Dim key As New IconInfo()
 
                         Dim objValue As String = rawObj.ToString()
                         Dim prop As PropertyInfo = Nothing
@@ -177,6 +177,7 @@ Namespace UI.WebControls.EditControls
                         '    objActionButton = New ActionButtonInfo
                         'End If
                         _ValueKeys(objValue) = key
+
                     Next
 
 
