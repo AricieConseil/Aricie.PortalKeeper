@@ -62,7 +62,7 @@ Namespace Security.Cryptography
         Private _DnnDecrypter As ICryptoTransform
         Private _ProtectInMemory As Boolean
         Private _SealType As KeyProtectionMode
-        Private _EncryptionTypes As New List(Of EncryptionType)
+        Private _EncryptionTypes As New List(Of EncryptionType)()
 
 
         'Public ReadOnly Property SymmetricAlgo As SymmetricAlgorithm
@@ -96,15 +96,15 @@ Namespace Security.Cryptography
             End Get
         End Property
 
-        Public ReadOnly Property IsSealDataProtected As Boolean
-            Get
-                Return (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData
-            End Get
-        End Property
-
         Public ReadOnly Property IsSealInKeyContainer As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.KeyContainer) = KeyProtectionMode.KeyContainer
+            End Get
+        End Property
+
+        Public ReadOnly Property IsSealDataProtected As Boolean
+            Get
+                Return (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData
             End Get
         End Property
 
@@ -115,12 +115,12 @@ Namespace Security.Cryptography
         <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, showAddItem:=True)> _
         Public Property EncryptionTypes As List(Of EncryptionType)
             Get
-                If _EncryptionTypes.Count = 0 Then
-                    _EncryptionTypes.Add(EncryptionType.Symmetric)
-                End If
                 Return _EncryptionTypes
             End Get
             Set(value As List(Of EncryptionType))
+                If value.Count = 0 Then
+                    value.Add(EncryptionType.Symmetric)
+                End If
                 _EncryptionTypes = value
             End Set
         End Property
@@ -450,7 +450,7 @@ Namespace Security.Cryptography
                 Dim tmpRsa As New RSACryptoServiceProvider(CInt(AsymmetricKeySize))
                 objBytes = tmpRsa.EncryptByBlocks(objBytes)
                 Dim containerName = GetCspContainerName(objBytes.ToBase64())
-                CSPImportFromXml(containerName, tmpRsa.ToXmlString(True), True)
+                CSPImportFromXml(containerName, Me.AsymmetricKeySize, tmpRsa.ToXmlString(True), True)
                 tmpRsa.Clear()
                 Me._EncryptedPrivateKey = objBytes
                 Me.SealType = Me.SealType Or KeyProtectionMode.KeyContainer
@@ -512,7 +512,7 @@ Namespace Security.Cryptography
                     objBytes = DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).EncryptByBlocks(objBytes)
                 End If
                 If (objEncryptionType And EncryptionType.AsymmetricKeyExchange) = EncryptionType.AsymmetricKeyExchange Then
-                    objBytes = DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).EncryptByBlocks(objBytes)
+                    objBytes = DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).EncryptByKeyExchange(objBytes)
                 End If
             Next
             
