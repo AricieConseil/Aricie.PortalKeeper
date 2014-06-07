@@ -163,10 +163,12 @@ Namespace ComponentModel
             If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
                 pe.ItemChanged = True
                 pe.DataSource = Instance
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                pe.DisplayLocalizedMessage("BackupRestored.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Else
                 pe.ItemChanged = True
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupNotRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.RedError)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupNotRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.RedError)
+                pe.DisplayLocalizedMessage("BackupNotRestored.Message", ModuleMessage.ModuleMessageType.RedError)
             End If
         End Sub
 
@@ -176,7 +178,8 @@ Namespace ComponentModel
             If pe.IsValid Then
                 SharedLocationSettings(True, False) = LocationSettings
                 _LocationSettings = Nothing
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("LocationSettingsSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                pe.DisplayLocalizedMessage("LocationSettingsSaved.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("LocationSettingsSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Save(pe)
             End If
         End Sub
@@ -223,9 +226,11 @@ Namespace ComponentModel
                 Me.Save(Identity.GetModuleName(), SharedLocationSettings(True, False), False)
                 ReflectionHelper.MergeObjects(Instance, Me)
                 pe.ItemChanged = True
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                pe.DisplayLocalizedMessage("ModuleConfigSaved.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Else
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.RedError)
+                pe.DisplayLocalizedMessage("ModuleConfigInvalid.Message", ModuleMessage.ModuleMessageType.RedError)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigInvalid.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.RedError)
             End If
         End Sub
 
@@ -245,7 +250,8 @@ Namespace ComponentModel
             Try
                 ReflectionHelper.MergeObjects(Instance, Me)
                 pe.ItemChanged = True
-                DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                pe.DisplayLocalizedMessage("ModuleConfigReset.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("ModuleConfigReset.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
                 pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
