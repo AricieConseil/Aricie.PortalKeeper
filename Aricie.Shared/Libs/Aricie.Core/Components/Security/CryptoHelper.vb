@@ -557,7 +557,8 @@ Namespace Security.Cryptography
             If Not String.IsNullOrEmpty(keyContainerName) Then
                 cspp.KeyContainerName = keyContainerName
             ElseIf ephemeral Then
-                cspp.KeyContainerName = CryptoHelper.GetNewSalt(20).Hash(HashProvider.SHA256)
+                'cspp.KeyContainerName = CryptoHelper.GetNewSalt(20).Hash(HashProvider.SHA256)
+                cspp.KeyContainerName = Nothing
             End If
             If notExportable Then
                 cspp.Flags = cspp.Flags Or CspProviderFlags.UseNonExportableKey
@@ -572,6 +573,29 @@ Namespace Security.Cryptography
             End Using
             Return cspp
         End Function
+
+        Public Sub CSPDeleteKeyInCSP(keyContainerName As String)
+            ' Create a new instance of CspParameters.  Pass 
+            ' 13 to specify a DSA container or 1 to specify 
+            ' an RSA container.  The default is 1.
+            Dim cspParams As New CspParameters()
+
+            ' Specify the container name using the passed variable.
+            cspParams.KeyContainerName = keyContainerName
+
+            'Create a new instance of RSACryptoServiceProvider.  
+            'Pass the CspParameters class to use the  
+            'key in the container.
+            Using RSAalg As New RSACryptoServiceProvider(cspParams)
+                'Explicitly set the PersistKeyInCsp property to false 
+                'to delete the key entry in the container.
+                RSAalg.PersistKeyInCsp = False
+
+                'Call Clear to release resources and delete the key from the container.
+                RSAalg.Clear()
+            End Using
+
+        End Sub
 
         ''' <summary>
         ''' Exports the key/pair specified.
@@ -609,7 +633,7 @@ Namespace Security.Cryptography
         ''' generator of the key.
         ''' </summary>
         ''' <param name="keyContainerName">The key container name to inject this key into.</param>
-        Public Sub CSPImportFromXml(keyContainerName As String, xml As String, notExportable As Boolean)
+        Public Sub CSPImportFromXml(keyContainerName As String, keySize As RsaKeySize, xml As String, notExportable As Boolean)
             Dim cspp As New CspParameters()
             If Not String.IsNullOrEmpty(keyContainerName) Then
                 cspp.KeyContainerName = keyContainerName
@@ -620,12 +644,12 @@ Namespace Security.Cryptography
             cspp.Flags = CspProviderFlags.NoPrompt Or CspProviderFlags.UseMachineKeyStore
             If notExportable Then
                 cspp.Flags = cspp.Flags Or CspProviderFlags.UseNonExportableKey
-            Else
-                cspp.Flags = cspp.Flags Or CspProviderFlags.UseArchivableKey
+                'Else
+                '    cspp.Flags = cspp.Flags Or CspProviderFlags.UseArchivableKey
             End If
-            Using rsa As New RSACryptoServiceProvider(cspp)
-                rsa.FromXmlString(xml)
+            Using rsa As New RSACryptoServiceProvider(CInt(keySize), cspp)
                 rsa.PersistKeyInCsp = True
+                rsa.FromXmlString(xml)
             End Using
         End Sub
 
@@ -641,6 +665,9 @@ Namespace Security.Cryptography
             ' key container which contains our public/private key pair
             Dim csp As New CspParameters()
             csp.KeyContainerName = keyContainerName
+
+            csp.Flags = CspProviderFlags.NoPrompt Or CspProviderFlags.UseMachineKeyStore Or CspProviderFlags.UseExistingKey
+
 
             ' Create an instance of the RSA encryption algorithm
             ' and perform the actual encryption
@@ -670,6 +697,8 @@ Namespace Security.Cryptography
             ' key container which contains our public/private key pair
             Dim csp As New CspParameters()
             csp.KeyContainerName = keyContainerName
+
+            csp.Flags = CspProviderFlags.NoPrompt Or CspProviderFlags.UseMachineKeyStore Or CspProviderFlags.UseExistingKey
 
             ' Create an instance of the RSA encryption algorithm
             ' and perform the actual decryption

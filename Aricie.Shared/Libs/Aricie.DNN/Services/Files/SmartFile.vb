@@ -381,7 +381,7 @@ Namespace Services.Files
                     Me.DecryptInternal(newPayLoad)
                 End If
             Catch ex As Exception
-                Throw New ApplicationException("Value was encrypted with a distinct key or encrypted bytes were corrupted.")
+                Throw New ApplicationException("Value was encrypted with a distinct key or encrypted bytes were corrupted.", ex)
             End Try
         End Sub
 

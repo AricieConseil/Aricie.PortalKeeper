@@ -6399,4 +6399,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Paste.Command" xml:space="preserve">
     <value>Paste</value>
   </data>
+  <data name="SealInKeyContainer.Alert" xml:space="preserve">
+    <value>Warning: You are about to seal your encryption keys. Make sure you have a copy of them, since they won't be available through the UI nor the API anymore. </value>
+  </data>
+  <data name="SealInKeyContainer.Completed" xml:space="preserve">
+    <value>Your keys were sealed in a local key container. Don't forget to save your new configuration. If you want to move your data to a new DotNetNuke instance, you will need to reset and manually restore the previous keys in order for the existing data to be properly processed.</value>
+  </data>
+  <data name="SealProtectData.Alert" xml:space="preserve">
+    <value>Warning: You are about to seal your encryption keys. Make sure you have a copy of them, since they won't be available through the UI nor the API anymore.</value>
+  </data>
+  <data name="SealProtectData.Completed" xml:space="preserve">
+    <value>Your keys were sealed with local cryptoapis through ProtectedData methods. Don't forget to save your new configuration. If you want to move your data to a new DotNetNuke instance, you will need to reset and manually restore the previous keys in order for the existing data to be properly processed.</value>
+  </data>
 </root>
