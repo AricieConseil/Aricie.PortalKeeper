@@ -6067,7 +6067,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>No Type Selected</value>
   </data>
   <data name="TypeNameSelect.NullSelect" xml:space="preserve">
-    <value>No Typename Selected</value>
+    <value>&lt;Select a Type Name&gt;</value>
   </data>
   <data name="ControlAdapterSettings_AdatedPathMode.Help" xml:space="preserve">
     <value>You can choose to manually enter a relative path to a control to be adapted, or to select amongst a selection of files</value>
@@ -6190,25 +6190,25 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the application which encrypts the private key with the main application decryption key. Only the same application will be able to recover the key at runtime. </value>
   </data>
   <data name="EncryptionInfo_IsSealApplicationEncrypted.Text" xml:space="preserve">
-    <value>Has Application Seal</value>
+    <value>Has Application Seal (Rijndael Managed)</value>
   </data>
   <data name="EncryptionInfo_IsSealDataProtected.Help" xml:space="preserve">
-    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the machine which encrypts the private key using the native ProtectedData methods. Only the same system will be able to recover the key at runtime. </value>
+    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the machine which encrypts the private key using the native ProtectedData methods. Only the same system and impersonated user will be able to recover the key at runtime. </value>
   </data>
   <data name="EncryptionInfo_IsSealDataProtected.Text" xml:space="preserve">
-    <value>Has Data Protection Seal</value>
+    <value>Has Data Protection Seal (DAPI)</value>
   </data>
   <data name="EncryptionInfo_IsSealInKeyContainer.Help" xml:space="preserve">
     <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the host operating system with the creation of a dedicated CSPContainer Key which encrypts the private key . Only the same system will be able to recover the key at runtime. </value>
   </data>
   <data name="EncryptionInfo_IsSealInKeyContainer.Text" xml:space="preserve">
-    <value>Has Key Container Seal</value>
+    <value>Has Key Container Seal (CSP - RSA)</value>
   </data>
   <data name="EncryptionInfo_ProtectInMemory.Help" xml:space="preserve">
-    <value>The encryption key is stored encrypted, but it is kept in memory at runtime for better performances. you can choose to obfuscate the live memory objects at a mitigated cost by enabling that option.</value>
+    <value />
   </data>
   <data name="EncryptionInfo_ProtectInMemory.Text" xml:space="preserve">
-    <value>Protect In Memory</value>
+    <value>Protect In Memory (DAPI)</value>
   </data>
   <data name="EncryptionInfo_PublicKeyAsCSPBlob.Help" xml:space="preserve">
     <value>This is the base64 representation of a CSP Blob export for the public key derived from the asymmetrical private key.</value>
@@ -6410,5 +6410,83 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="SealProtectData.Completed" xml:space="preserve">
     <value>Your keys were sealed with local cryptoapis through ProtectedData methods. Don't forget to save your new configuration. If you want to move your data to a new DotNetNuke instance, you will need to reset and manually restore the previous keys in order for the existing data to be properly processed.</value>
+  </data>
+  <data name="EncryptionInfo_EditProtectedDataEntropy.Help" xml:space="preserve">
+    <value>A data protection seal relies on a call to Micrososft's DAPI attached to the impersonated user. That encrypted blob adds additional entropy for offuscation from distinct apps.</value>
+  </data>
+  <data name="EncryptionInfo_EditProtectedDataEntropy.Text" xml:space="preserve">
+    <value>DAPI Entropy</value>
+  </data>
+  <data name="GeneralVariableInfo_DotNetType.Help" xml:space="preserve">
+    <value>Select a .Net type for your variable.</value>
+  </data>
+  <data name="GeneralVariableInfo_DotNetType.Text" xml:space="preserve">
+    <value>Variable Type</value>
+  </data>
+  <data name="Constructor.Text" xml:space="preserve">
+    <value>Constructor</value>
+  </data>
+  <data name="Delegate.Text" xml:space="preserve">
+    <value>Delegate</value>
+  </data>
+  <data name="GeneralVariableInfo_AdvancedExpression.Help" xml:space="preserve">
+    <value>Check to display advanced parameters</value>
+  </data>
+  <data name="GeneralVariableInfo_AdvancedExpression.Text" xml:space="preserve">
+    <value>Advanced Expression</value>
+  </data>
+  <data name="GeneralVariableInfo_AsCompiledExpression.Help" xml:space="preserve">
+    <value>If your variable is only to be used in subsequent Flee Expression, you can choose to postpone its evaluation and pass the compiled expression for direct integration in a wrapping expression, in order to optimize the resulting performances</value>
+  </data>
+  <data name="GeneralVariableInfo_AsCompiledExpression.Text" xml:space="preserve">
+    <value>As Compiled Expression</value>
+  </data>
+  <data name="GeneralVariableInfo_Evaluation.Header" xml:space="preserve">
+    <value>Evaluation Parameters</value>
+  </data>
+  <data name="GeneralVariableInfo_FleeExpression.Help" xml:space="preserve">
+    <value>The expression should account for the delcared variable type. You may use in turn sub-variables, to be evaluated once as constants or to be chained to the current expression. In such a case, sub-expressions are cloned for better performances.</value>
+  </data>
+  <data name="GeneralVariableInfo_FleeExpression.Text" xml:space="preserve">
+    <value>Enter here the Flee Expression to initiate the variable</value>
+  </data>
+  <data name="GeneralVariableInfo_Instance.Help" xml:space="preserve">
+    <value>Edit the entity's properties directly below</value>
+  </data>
+  <data name="GeneralVariableInfo_Instance.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="GeneralVariableInfo_InstanceMode.Help" xml:space="preserve">
+    <value>Instance mode lets your save and edit a version of the expression result obtained by evaluating the expression once. You can either choose to immediately evaluate the current variable with a default context, or to leave to evaluate in context, refresh the form to display the saved entity and save the form together with the new entity.</value>
+  </data>
+  <data name="GeneralVariableInfo_InstanceMode.Text" xml:space="preserve">
+    <value>Instance Mode</value>
+  </data>
+  <data name="GeneralVariableInfo_Parameters.Help" xml:space="preserve">
+    <value>Define here the parameters to be passed to the constructor. Static evaluation is forced. </value>
+  </data>
+  <data name="GeneralVariableInfo_Parameters.Text" xml:space="preserve">
+    <value>Constructor Parameters</value>
+  </data>
+  <data name="GeneralVariableInfo_SimpleExpression.Help" xml:space="preserve">
+    <value>The simple display lets you edit the expression text only</value>
+  </data>
+  <data name="GeneralVariableInfo_SimpleExpression.Text" xml:space="preserve">
+    <value>Simple Display</value>
+  </data>
+  <data name="GeneralVariableInfo_UseClone.Help" xml:space="preserve">
+    <value>If checked, a clone of the variable is returned instead of the variable itself. This allows for subsequent modifications without the original variable being affected.</value>
+  </data>
+  <data name="GeneralVariableInfo_UseClone.Text" xml:space="preserve">
+    <value>Use Clone</value>
+  </data>
+  <data name="GeneralVariableInfo_VariableMode.Help" xml:space="preserve">
+    <value>There are 4 ways to define your variable:</value>
+  </data>
+  <data name="GeneralVariableInfo_VariableMode.Text" xml:space="preserve">
+    <value>Variable Mode</value>
+  </data>
+  <data name="Instance.Text" xml:space="preserve">
+    <value>Instance</value>
   </data>
 </root>

@@ -18,7 +18,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         Protected Overrides Function GetDefaultInstanceMode() As InstanceMode
-            Return Flee.InstanceMode.Off
+            Return InstanceMode.Off
         End Function
 
 

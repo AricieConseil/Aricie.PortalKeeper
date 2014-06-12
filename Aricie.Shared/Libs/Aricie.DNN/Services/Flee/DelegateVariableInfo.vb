@@ -34,7 +34,7 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
-        Public MethodIndex As Integer = 1
+        Public Property MethodIndex As Integer = 1
 
         <Browsable(False)> _
         Public ReadOnly Property RequiresInstance As Boolean

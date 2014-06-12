@@ -7,9 +7,6 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
-
-
-
     ''' <summary>
     ''' Variable information
     ''' </summary>
@@ -20,7 +17,7 @@ Namespace Services.Flee
         Inherits NamedEntity
         Implements IProviderSettings
 
-        Protected VarConstant As Object
+        Private _VarConstant As Object
 
         ''' <summary>
         ''' Gets the variable type as string
@@ -77,10 +74,10 @@ Namespace Services.Flee
             Dim toReturn As Object
             Select Case Me._EvaluationMode
                 Case VarEvaluationMode.Constant
-                    If VarConstant Is Nothing Then
-                        VarConstant = Me.EvaluateOnce(owner, globalVars)
+                    If _VarConstant Is Nothing Then
+                        _VarConstant = Me.EvaluateOnce(owner, globalVars)
                     End If
-                    toReturn = VarConstant
+                    toReturn = _VarConstant
                 Case Else
                     toReturn = Me.EvaluateOnce(owner, globalVars)
             End Select
@@ -90,16 +87,6 @@ Namespace Services.Flee
             Return toReturn
         End Function
     End Class
-
-    ''' <summary>
-    ''' Instance modes types
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Enum InstanceMode
-        Off
-        ContextLess
-        InContextEval
-    End Enum
 
 
     ''' <summary>
@@ -121,7 +108,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         Protected Overridable Function GetDefaultInstanceMode() As InstanceMode
-            Return Flee.InstanceMode.ContextLess
+            Return InstanceMode.ContextLess
         End Function
 
         ''' <summary>
@@ -203,7 +190,7 @@ Namespace Services.Flee
                 End If
             End If
             Dim toReturn As Object = MyBase.Evaluate(owner, globalVars)
-            If Me._InstanceMode = Flee.InstanceMode.InContextEval Then
+            If Me._InstanceMode = InstanceMode.InContextEval Then
                 Me._Instance = DirectCast(toReturn, TResult)
             End If
             If _UseClone Then

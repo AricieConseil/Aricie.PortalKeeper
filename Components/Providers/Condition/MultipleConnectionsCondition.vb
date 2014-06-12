@@ -175,9 +175,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         ''' <remarks></remarks>
         Private Sub SetUserLock(ByVal userId As Integer, ByVal key As String)
             SyncLock objLocksLock
-                Dim tempUserLocks As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) = UserLocks
-                tempUserLocks(userId) = New KeyValuePair(Of String, DateTime)(key, Now.Add(Me._LockDuration.Value))
-                UserLocks = tempUserLocks
+                If userId > -1 AndAlso Not key.IsNullOrEmpty() Then
+                    Dim tempUserLocks As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) = UserLocks
+                    tempUserLocks(userId) = New KeyValuePair(Of String, DateTime)(key, Now.Add(Me._LockDuration.Value))
+                    UserLocks = tempUserLocks
+                End If
             End SyncLock
         End Sub
 
