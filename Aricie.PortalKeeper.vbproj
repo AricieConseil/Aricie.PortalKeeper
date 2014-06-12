@@ -401,7 +401,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Providers\BotProviders\" />
+    <Folder Include="Libraries\Bitcoin\" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

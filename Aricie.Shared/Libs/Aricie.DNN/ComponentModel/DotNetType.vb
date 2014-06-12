@@ -62,9 +62,9 @@ Namespace ComponentModel
         End Function
 
 
-        'Public Sub New(ByVal typeName As String)
-        '    Me.TypeName = typeName
-        'End Sub
+        Public Sub New(ByVal typeName As String)
+            Me.SetTypeName(typeName)
+        End Sub
 
         Public Sub New(ByVal objType As Type)
             If Not objType.IsGenericParameter Then
