@@ -248,7 +248,9 @@ Public Class AricieFieldEditorControl
 
         If editorInfo.Editor = "UseSystemType" Then
             Dim objType As Type = ReflectionHelper.CreateType(editorInfo.Type)
-            'Use System Type
+            If editorInfo.Value IsNot Nothing Then
+                objType = editorInfo.Value.GetType()
+            End If
 
             Select Case objType.FullName
                 Case "System.DateTime"
@@ -267,23 +269,27 @@ Public Class AricieFieldEditorControl
                     objEditControl = New CustomTextEditControl()
 
                 Case Else
+                    
                     If objType.IsEnum Then
-                        objEditControl = New EnumEditControl(editorInfo.Type)
-                    ElseIf editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
-                        editorInfo.LabelMode = LabelMode.Top
-                        If objType.GetInterface("ICollection") IsNot Nothing Then
-                            If objType.GetInterface("IDictionary") IsNot Nothing Then
+                        objEditControl = New EnumEditControl(objType.AssemblyQualifiedName)
+                    Else
+
+                        If editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
+                            editorInfo.LabelMode = LabelMode.Top
+                            If objType.GetInterface("ICollection") IsNot Nothing Then
+                                If objType.GetInterface("IDictionary") IsNot Nothing Then
+                                    objEditControl = New DictionaryEditControl()
+                                Else
+                                    objEditControl = New ListEditControl()
+                                End If
+                            ElseIf objType.GetInterface("IDictionary") IsNot Nothing Then
                                 objEditControl = New DictionaryEditControl()
                             Else
-                                objEditControl = New ListEditControl()
+                                objEditControl = New PropertyEditorEditControl()
                             End If
-                        ElseIf objType.GetInterface("IDictionary") IsNot Nothing Then
-                            objEditControl = New DictionaryEditControl()
                         Else
-                            objEditControl = New PropertyEditorEditControl()
+                            objEditControl = New TextEditControl(editorInfo.Type)
                         End If
-                    Else
-                        objEditControl = New TextEditControl(editorInfo.Type)
                     End If
             End Select
         Else
