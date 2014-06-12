@@ -75,6 +75,10 @@ Public Module Common
 
 #Region "String methods "
 
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function IsNullOrEmpty(value As String) As Boolean
+        Return String.IsNullOrEmpty(value)
+    End Function
 
     Public Function StringToByteArray(hexInput As String) As Byte()
         Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()

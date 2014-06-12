@@ -27,7 +27,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Protected Overrides Function GetInitialTypes() As System.Collections.Generic.IList(Of ComponentModel.DotNetType)
             Dim toReturn As New List(Of DotNetType)
-            toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(TResult))))
+            toReturn.Add(New DotNetType(GetType(TResult)))
             Return toReturn
         End Function
 
@@ -97,8 +97,8 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Protected Overrides Function GetInitialTypes() As IList(Of DotNetType)
             Dim toReturn As New List(Of DotNetType)
-            toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(String))))
-            toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(Boolean))))
+            toReturn.Add(New DotNetType(GetType(String)))
+            toReturn.Add(New DotNetType(GetType(Boolean)))
             Return toReturn
         End Function
 

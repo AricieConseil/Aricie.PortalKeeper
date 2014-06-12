@@ -194,7 +194,7 @@ Namespace Security.Cryptography
             End Set
         End Property
 
-
+       
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
        <LineCount(36)> _
       <Width(500)> _
@@ -223,6 +223,20 @@ Namespace Security.Cryptography
                 End If
             End Set
         End Property
+
+        <LineCount(4)> _
+      <Width(500)> _
+       <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+       <ConditionalVisible("SealType", False, True, KeyProtectionMode.ProtectData)> _
+        Public ReadOnly Property EditProtectedDataEntropy As String
+            Get
+                Return Me.ProtectedDataEntropy.ToBase64()
+            End Get
+        End Property
+
+        <Browsable(False)> _
+        Public Property ProtectedDataEntropy As Byte() = New Byte() {}
+
 
         <LineCount(36)> _
       <Width(500)> _
@@ -268,7 +282,7 @@ Namespace Security.Cryptography
                         Dim objBytes As Byte() = Me._EncryptedPrivateKey
 
                         If (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData Then
-                            objBytes = ProtectedData.Unprotect(objBytes, Me.InitVector, DataProtectionScope.CurrentUser)
+                            objBytes = ProtectedData.Unprotect(objBytes, Me.GetProtectedDataEntropy(), DataProtectionScope.CurrentUser)
                         End If
                         If (Me.SealType And KeyProtectionMode.KeyContainer) = KeyProtectionMode.KeyContainer Then
                             Dim containerName As String = GetCspContainerName(objBytes.ToBase64())
@@ -292,38 +306,6 @@ Namespace Security.Cryptography
             End Get
         End Property
 
-        Public Property PublicKeyDisplay As PublicKeyDisplay
-
-        <Width(500)> _
-        <LineCount(10)> _
-     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.Xml)> _
-        Public ReadOnly Property PublicKeyAsXml As String
-            Get
-                Return Me.AsymmetricAlgo.ToXmlString(False)
-            End Get
-        End Property
-
-        <Width(500)> _
-        <LineCount(10)> _
-     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.CSPBlob)> _
-        Public ReadOnly Property PublicKeyAsCSPBlob As String
-            Get
-                Return Convert.ToBase64String(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportCspBlob(False))
-            End Get
-        End Property
-
-
-        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)> _
-        <LabelMode(LabelMode.Top)> _
-        Public ReadOnly Property PublicKeyAsRSAParameters As RSAParametersInfo
-            Get
-                Return New RSAParametersInfo(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportParameters(False))
-            End Get
-        End Property
-
-
 
         Private ReadOnly Property DnnEncrypter() As ICryptoTransform
             Get
@@ -345,7 +327,7 @@ Namespace Security.Cryptography
             End Get
         End Property
 
-       
+
 
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
         <LineCount(3)> _
@@ -413,6 +395,43 @@ Namespace Security.Cryptography
             End Set
         End Property
 
+
+
+        Public Property PublicKeyDisplay As PublicKeyDisplay
+
+        <Width(500)> _
+        <LineCount(10)> _
+     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.Xml)> _
+        Public ReadOnly Property PublicKeyAsXml As String
+            Get
+                Return Me.AsymmetricAlgo.ToXmlString(False)
+            End Get
+        End Property
+
+        <Width(500)> _
+        <LineCount(10)> _
+     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.CSPBlob)> _
+        Public ReadOnly Property PublicKeyAsCSPBlob As String
+            Get
+                Return Convert.ToBase64String(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportCspBlob(False))
+            End Get
+        End Property
+
+
+        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)> _
+        <LabelMode(LabelMode.Top)> _
+        Public ReadOnly Property PublicKeyAsRSAParameters As RSAParametersInfo
+            Get
+                Return New RSAParametersInfo(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportParameters(False))
+            End Get
+        End Property
+
+
+
+
+
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
         <ActionButton(IconName.Lock, IconOptions.Normal, "SealEncryptionKey.Alert")>
         Public Sub SealInApplication(ape As AriciePropertyEditorControl)
@@ -469,7 +488,7 @@ Namespace Security.Cryptography
                 Else
                     objBytes = _EncryptedPrivateKey
                 End If
-                objBytes = ProtectedData.Protect(objBytes, Me.InitVector, DataProtectionScope.CurrentUser)
+                objBytes = ProtectedData.Protect(objBytes, Me.GetProtectedDataEntropy(), DataProtectionScope.CurrentUser)
                 Me._EncryptedPrivateKey = objBytes
 
                 Me.SealType = Me.SealType Or KeyProtectionMode.ProtectData
@@ -566,6 +585,7 @@ Namespace Security.Cryptography
             CryptoHelper.GetNewRijndaelManaged(Me.SymmetricKeySize, Me._EncryptionKey, Me.InitVector)
             'Dim ephemeral As CspParameters = CryptoHelper.CSPCreateNewKey(String.Empty, AsymmetricKeySize, False, True)
             Me._AsymmetricAlgo = New RSACryptoServiceProvider(CInt(AsymmetricKeySize))
+            Me.ProtectedDataEntropy = {}
         End Sub
 
         'Private Function GetEncryptedKey() As String
@@ -590,7 +610,14 @@ Namespace Security.Cryptography
         End Function
 
 
-
+        Private Function GetProtectedDataEntropy() As Byte()
+            If ProtectedDataEntropy.Length = 0 Then
+                Me.ProtectedDataEntropy = ProtectedData.Protect(CryptoHelper.GetNewSalt(30), Me.InitVector, DataProtectionScope.CurrentUser)
+            End If
+            Dim toReturn As Byte() = DirectCast(Me.ProtectedDataEntropy.Clone(), Byte())
+            ProtectedData.Unprotect(toReturn, Me.InitVector, DataProtectionScope.CurrentUser)
+            Return toReturn
+        End Function
 
 
 

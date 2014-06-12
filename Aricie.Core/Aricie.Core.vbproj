@@ -136,6 +136,7 @@
     <Compile Include="Components\ComponentModel\Filters\SimpleFilter.vb" />
     <Compile Include="Components\Common.vb" />
     <Compile Include="Components\ComponentModel\RegexMapping.vb" />
+    <Compile Include="Components\ComponentModel\Serializable.vb" />
     <Compile Include="Components\ComponentModel\VariableStrategy.vb" />
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />

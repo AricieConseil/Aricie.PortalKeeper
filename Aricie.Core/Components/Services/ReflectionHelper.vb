@@ -1046,8 +1046,10 @@ Namespace Services
         Public Shared Function CanCreateObject(objectType As Type) As Boolean
             Dim toReturn As Boolean
             If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
-                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse HasDefaultConstructor(objectType)
-                _CanCreateTypes(objectType) = toReturn
+                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse (Not objectType.IsAbstract() AndAlso (HasDefaultConstructor(objectType) OrElse objectType.IsArray))
+                SyncLock _CanCreateTypes
+                    _CanCreateTypes(objectType) = toReturn
+                End SyncLock
             End If
             Return toReturn
         End Function
@@ -1061,7 +1063,11 @@ Namespace Services
             Dim toReturn As Object
 
             If ReflectionHelper.IsTrueReferenceType(objectType) Then
-                toReturn = Activator.CreateInstance(objectType)
+                If objectType.IsArray Then
+                    toReturn = Activator.CreateInstance(objectType, New Object() {1})
+                Else
+                    toReturn = Activator.CreateInstance(objectType)
+                End If
             Else
                 If objectType Is GetType(String) Then
                     toReturn = ""

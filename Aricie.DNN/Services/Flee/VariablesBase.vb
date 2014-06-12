@@ -16,6 +16,7 @@ Namespace Services.Flee
 
 
         Protected _ExpressionTypes As New List(Of DotNetType)
+
         Private Shared ReadOnly _GenerictypeLessTypeExpressionVar As Type = GetType(ExpressionVariableInfo(Of ))
         Private Shared ReadOnly _GenerictypeLessTypeCTorVar As Type = GetType(CtorVariableInfo(Of ))
         Private Shared ReadOnly _GenerictypeLessTypeVar As Type = GetType(VariableInfo(Of ))
@@ -66,14 +67,21 @@ Namespace Services.Flee
                 Me._ExpressionTypes.AddRange(GetInitialTypes())
             End If
 
-            Return (From simpleDotNetType In Me._ExpressionTypes.Distinct(New Aricie.Business.Filters.SimpleComparer(Of DotNetType)("TypeName", System.ComponentModel.ListSortDirection.Descending)) _
-                    From objKeyPair In Me.Genericize(simpleDotNetType) _
-                    Select objKeyPair).ToDictionary(Function(objKeyPair) objKeyPair.Key, Function(objKeyPair) objKeyPair.Value)
+            Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
+            Dim objGeneralDotNetType As New DotNetType(Of VariableInfo)(GetType(GeneralVariableInfo))
+            toReturn.Add(ReflectionHelper.GetSimpleTypeName(GetType(GeneralVariableInfo)), objGeneralDotNetType)
+            toReturn = toReturn.Union(From simpleDotNetType In Me._ExpressionTypes.Distinct(New Aricie.Business.Filters.SimpleComparer(Of DotNetType)("TypeName", System.ComponentModel.ListSortDirection.Descending)) _
+            From objKeyPair In Me.Genericize(simpleDotNetType) _
+            Select objKeyPair).ToDictionary(Function(objKeyPair) objKeyPair.Key, Function(objKeyPair) objKeyPair.Value)
+
+
+            Return toReturn
         End Function
 
 
         Protected Overridable Function Genericize(simpleDotNetType As DotNetType) As Dictionary(Of String, DotNetType(Of VariableInfo))
             Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
+
             Dim toAddVar As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeVar, simpleDotNetType)
             toReturn.Add(toAddVar.Name, toAddVar)
             Dim simpleType As Type = simpleDotNetType.GetDotNetType
@@ -97,7 +105,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Protected Overridable Function GetInitialTypes() As IList(Of DotNetType)
             Dim toReturn As New List(Of DotNetType)
-            toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(Object))))
+            toReturn.Add(New DotNetType(GetType(Object)))
             Return toReturn
         End Function
 

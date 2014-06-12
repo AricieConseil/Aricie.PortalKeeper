@@ -27,37 +27,44 @@ Namespace ComponentModel
 
 
 
-        Private _TypeName As String = ""
 
+        Private _TypeName As String = ""
+        Private _Type As Type
+        Private _TypeNameSelect As String = ""
 
 
         Public Sub New()
 
         End Sub
 
-        Private Shared _CommonTypes As New Dictionary(Of String, Type)
+
+        Private Shared _CommonTypes As New Dictionary(Of String, DotNetType)
 
 
         Private Function AddCommonType(strType As String) As String
             Dim tmpType As Type = Nothing
-            If Not _CommonTypes.TryGetValue(strType, tmpType) Then
+            Dim tmpDNT As DotNetType = Nothing
+            If Not _CommonTypes.TryGetValue(strType, tmpDNT) Then
                 If Not String.IsNullOrEmpty(strType) Then
                     tmpType = ReflectionHelper.CreateType(strType, False)
                     If tmpType IsNot Nothing Then
                         strType = ReflectionHelper.GetSafeTypeName(tmpType)
+                        tmpDNT = New DotNetType(tmpType)
                     End If
+                Else
+                    tmpDNT = New DotNetType()
                 End If
                 SyncLock _CommonTypes
-                    _CommonTypes(strType) = tmpType
+                    _CommonTypes(strType) = tmpDNT
                 End SyncLock
             End If
             Return strType
         End Function
 
 
-        Public Sub New(ByVal typeName As String)
-            Me.TypeName = typeName
-        End Sub
+        'Public Sub New(ByVal typeName As String)
+        '    Me.TypeName = typeName
+        'End Sub
 
         Public Sub New(ByVal objType As Type)
             If Not objType.IsGenericParameter Then
@@ -83,7 +90,7 @@ Namespace ComponentModel
         Public Property TypeSelector As TypeSelector
             Get
                 If Not _TypeSelector.HasValue Then
-                    Dim targetType As Type = Nothing
+                    Dim targetType As DotNetType = Nothing
                     If Not String.IsNullOrEmpty(_TypeName) AndAlso (Not _CommonTypes.TryGetValue(_TypeName, targetType) OrElse targetType Is Nothing) Then
                         Return TypeSelector.BrowseHierarchy
                     Else
@@ -149,7 +156,7 @@ Namespace ComponentModel
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <Selector("Name", "TypeName", False, True, "<Select a Type by Name>", "", False, True)> _
+        <Selector("Name", "TypeName", False, True, "<No Typename Selected>", "", False, True)> _
         <XmlIgnore()> _
         Public Property TypeNameSelect As String
             Get
@@ -157,13 +164,14 @@ Namespace ComponentModel
             End Get
             Set(value As String)
                 If _TypeNameSelect <> value Then
-                    _TypeNameSelect = value
-                    Dim objType As Type = Me.GetDotNetType(_TypeNameSelect, False)
-                    If objType IsNot Nothing Then
-                        If objType.IsGenericType Then
-                            PrepareGenericType(objType)
-                        End If
-                    End If
+                    '_TypeNameSelect = value
+                    'Dim objType As Type = Me.GetDotNetType(_TypeNameSelect, False)
+                    'If objType IsNot Nothing Then
+                    '    If objType.IsGenericType Then
+                    '        PrepareGenericType(objType)
+                    '    End If
+                    'End If
+                    Me.SetTypeName(value)
                 End If
             End Set
         End Property
@@ -172,7 +180,7 @@ Namespace ComponentModel
         Public ReadOnly Property IsSelectedGeneric As Boolean
             Get
                 'Return Me.TypeNameSelect.Contains("[")
-                Return GenericTypes.Count > 0
+                Return CurrentlySelectedType IsNot Nothing AndAlso CurrentlySelectedType.IsGenericType
             End Get
         End Property
 
@@ -266,8 +274,7 @@ Namespace ComponentModel
 
 
 
-        Private _Type As Type
-        Private _TypeNameSelect As String
+       
 
         Public Function GetDotNetType() As Type
             If _Type Is Nothing AndAlso Not String.IsNullOrEmpty(Me._TypeName) Then
@@ -310,7 +317,7 @@ Namespace ComponentModel
                         AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(String)))
                         AddCommonType(ReflectionHelper.GetSafeTypeName(GetType(Integer)))
                     End If
-                    toReturn.AddRange((From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing Order By tmpType.Assembly.GetName().Name Select New DotNetType(tmpType)))
+                    toReturn.AddRange(From tmpType In _CommonTypes.Values.Distinct() Where tmpType IsNot Nothing)
                 Case "TypeNameSelect"
                     If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                         Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
@@ -378,10 +385,10 @@ Namespace ComponentModel
                 Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
                 Me.NamespaceSelect = objType.Namespace
                 If objType.IsGenericType Then
-                    Me.TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
+                    Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
                     PrepareGenericType(objType)
                 Else
-                    Me.TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType)
+                    Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType)
                 End If
             End If
         End Sub
@@ -396,6 +403,19 @@ Namespace ComponentModel
             End If
         End Sub
 
+
+        Public Overrides Function Equals(obj As Object) As Boolean
+            If obj IsNot Nothing Then
+                If TypeOf obj Is DotNetType Then
+                    Return Me.TypeName = DirectCast(obj, DotNetType).TypeName
+                End If
+            End If
+            Return False
+        End Function
+
+        Public Overrides Function GetHashCode() As Integer
+            Return Me.TypeName.GetHashCode()
+        End Function
 
     End Class
 

@@ -68,7 +68,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Protected Overridable Function GetInitialTypes() As IList(Of DotNetType)
             Dim toReturn As New List(Of DotNetType)
-            toReturn.Add(New DotNetType(ReflectionHelper.GetSafeTypeName(GetType(Object))))
+            toReturn.Add(New DotNetType(GetType(Object)))
             Return toReturn
         End Function
 
