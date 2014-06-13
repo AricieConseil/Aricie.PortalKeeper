@@ -437,9 +437,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
             Try
 
-                Dim RSAalg As New RSACryptoServiceProvider(2048)
-                DnnContext.Instance.AddModuleMessage(String.Format("KeySize: {0}", RSAalg.KeySize.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
-                Dim monTexte As String = CryptoHelper.GetNewSalt(10000).ToBase64()
+                'Dim RSAalg As New RSACryptoServiceProvider(2048)
+                'DnnContext.Instance.AddModuleMessage(String.Format("KeySize: {0}", RSAalg.KeySize.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
+                Dim monTexte As String = CryptoHelper.GetNewSalt(1000).ToBase64()
                 DnnContext.Instance.AddModuleMessage(String.Format("Texte: {0}", monTexte), ModuleMessage.ModuleMessageType.GreenSuccess)
 
 
@@ -450,10 +450,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
                 For i As Integer = 0 To 0
 
-                    Dim processed As Byte() = RSAalg.EncryptByBlocks(monTexte.FromBase64())
+                    'Dim processed As Byte() = RSAalg.EncryptByBlocks(monTexte.FromBase64())
                     'DnnContext.Instance.AddModuleMessage(String.Format("Encrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
-                    processed = RSAalg.DecryptBlocks(processed)
-                    'DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
+                    'processed = RSAalg.DecryptBlocks(processed)
+                    Dim processed As String = CryptoHelper.WriteSecureString(monTexte, True).ReadSecureString()
+
+                    DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", processed), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Next
 
 

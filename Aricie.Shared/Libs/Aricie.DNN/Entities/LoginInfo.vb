@@ -43,13 +43,14 @@ Namespace Entities
         Public Property DisplayPasswordChars As Boolean
 
         <Browsable(False)> _
-        Public Property PasswordSalt As Byte() = New Byte() {}
+        Public Property PasswordSalt As Byte() = CryptoHelper.GetNewSalt(20)
 
         <Browsable(False)> _
         Public Property EncryptedPassword() As Byte()
             Get
                 If Me._Password.Length > 0 Then
                     Return Me._Password.ReadSecureStringToBytes(Encoding.UTF8).Encrypt(Encoding.UTF8.GetBytes(Me._UserName), Nothing, Me.PasswordSalt)
+
                 End If
                 Return New Byte() {}
             End Get

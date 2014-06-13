@@ -6489,4 +6489,19 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Instance.Text" xml:space="preserve">
     <value>Instance</value>
   </data>
+  <data name="LoginInfo_Password.Help" xml:space="preserve">
+    <value>This is the unofuscate password. You should avoid to display it after it has been set.</value>
+  </data>
+  <data name="LoginInfo_Password.Required" xml:space="preserve">
+    <value>Password is required</value>
+  </data>
+  <data name="LoginInfo_Password.Text" xml:space="preserve">
+    <value>Clear Password</value>
+  </data>
+  <data name="WebRequestInfo`1_LogRequest.Help" xml:space="preserve">
+    <value>You can choose to add a DNN event log for each call with the target url and response content</value>
+  </data>
+  <data name="WebRequestInfo`1_LogRequest.Text" xml:space="preserve">
+    <value>Log Request</value>
+  </data>
 </root>

@@ -33,7 +33,7 @@ Namespace Services
         Implements IContextLookup
 
         Public Sub New()
-            Me._Items = New SerializableDictionary(Of String, Object)
+            Me._Items = New SerializableDictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase)
         End Sub
 
         Public Sub New(existingLookup As IContextLookup)
