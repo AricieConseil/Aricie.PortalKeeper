@@ -95,8 +95,10 @@ Namespace Services.Flee
         <Browsable(False)> _
         Public Property SerializableInstance() As Serializable(Of Object)
             Get
-
-                Return New Serializable(Of Object)(Instance)
+                If Me.VariableMode = Flee.VariableMode.Instance OrElse Me.InstanceMode <> Flee.InstanceMode.Off Then
+                    Return New Serializable(Of Object)(Instance)
+                End If
+                Return Nothing
             End Get
             Set(ByVal value As Serializable(Of Object))
                 Me.Instance = value.Value
