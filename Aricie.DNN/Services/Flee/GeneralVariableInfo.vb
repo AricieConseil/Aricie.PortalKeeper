@@ -88,9 +88,7 @@ Namespace Services.Flee
                 Return Me._Instance
             End Get
             Set(value As Object)
-                If Me._InstanceMode <> Flee.InstanceMode.Off Then
-                    _Instance = value
-                End If
+                _Instance = value
             End Set
         End Property
 
@@ -211,25 +209,25 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             Dim toReturn As Object
-            Select Case Me.VariableMode
-                Case Flee.VariableMode.Constructor, Flee.VariableMode.Expression, Flee.VariableMode.Delegate
-                    If Me._Instance IsNot Nothing Then
-                        If Me._InstanceMode <> Flee.InstanceMode.Off Then
-                            If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
-                                globalVars.Items(Me.Name) = Me._Instance
-                            End If
-                            Return Me._Instance
-                        Else
-                            Me._Instance = Nothing
-                        End If
+            'Select Case Me.VariableMode
+            '    Case Flee.VariableMode.Constructor, Flee.VariableMode.Expression, Flee.VariableMode.Delegate
+            If Me._Instance IsNot Nothing Then
+                If Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode <> Flee.InstanceMode.Off Then
+                    If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
+                        globalVars.Items(Me.Name) = Me._Instance
                     End If
-                    toReturn = MyBase.Evaluate(owner, globalVars)
-                    If Me._InstanceMode = InstanceMode.InContextEval Then
-                        Me._Instance = toReturn
-                    End If
-                Case Else
-                    toReturn = MyBase.Evaluate(owner, globalVars)
-            End Select
+                    Return Me._Instance
+                Else
+                    Me._Instance = Nothing
+                End If
+            End If
+            toReturn = MyBase.Evaluate(owner, globalVars)
+            If Me._InstanceMode = InstanceMode.InContextEval Then
+                Me._Instance = toReturn
+            End If
+            'Case Else
+            'toReturn = MyBase.Evaluate(owner, globalVars)
+            'End Select
             If _UseClone Then
                 Return ReflectionHelper.CloneObject(toReturn)
             End If
