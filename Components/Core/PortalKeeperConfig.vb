@@ -18,6 +18,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _RestServices As New RestServicesSettings
 
+        <ExtendedCategory("Scheduler")> _
+        Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
+
         <ExtendedCategory("RestServices")> _
         Public Property RestServices() As RestServicesSettings
             Get
@@ -39,8 +42,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property ControlAdapters As New ControlAdaptersConfig
 
 
-        <ExtendedCategory("Scheduler")> _
-        Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
+     
 
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
             Dim toReturn As New List(Of RuleEngineSettings(Of TEngineEvents))
