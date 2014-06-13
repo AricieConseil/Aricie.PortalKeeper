@@ -26,7 +26,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         OrElse (element.LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = "Default" _
                                 AndAlso (prov.Config.DefaultTEngineEvents.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
                                          OrElse (prov.Config.DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = "Default" _
-                                                 AndAlso actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent))) Then
+                                                 AndAlso (actionContext.CurrentRule Is Nothing _
+                                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent)))) Then
 
                     Try
                         If intCurrEvent > 0 AndAlso prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _
