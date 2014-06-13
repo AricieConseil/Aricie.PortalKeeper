@@ -94,7 +94,8 @@
     <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\Newtonsoft.Json.5.0.8\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <HintPath>external\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="OpenRasta, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -276,6 +277,8 @@
     <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
     <Compile Include="Components\Engines\Scheduler\ScheduleEvent.vb" />
     <Compile Include="Components\DNN\TrialProvider.vb" />
+    <Content Include="external\JsonNet\Newtonsoft.Json.dll" />
+    <Content Include="external\JsonNet\Newtonsoft.Json.pdb" />
     <Content Include="js\Payment.js" />
     <Content Include="KeeperConfig.ascx.designer.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
@@ -334,20 +337,6 @@
     <None Include="external\OpenRasta\OpenRasta.Testing.dll" />
     <None Include="external\OpenRasta\OpenWrap.dll" />
     <None Include="external\OpenRasta\OpenWrap.Testing.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net20\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net20\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net35\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net35\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net40\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\netcore45\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\netcore45\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\portable-net40+sl4+wp7+win8\Newtonsoft.Json.xml" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\portable-net45+wp80+win8\Newtonsoft.Json.dll" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\lib\portable-net45+wp80+win8\Newtonsoft.Json.xml" />
     <Content Include="PKP-Logo.png" />
     <Content Include="ReleaseNotes.html" />
     <Content Include="Settings.ascx" />
@@ -379,11 +368,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Content Include="PAs\Aricie.PortalKeeper_Install_01.01.00.zip" />
-    <Content Include="packages.config" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\Newtonsoft.Json.5.0.8.nupkg" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\Newtonsoft.Json.5.0.8.nuspec" />
-    <Content Include="packages\Newtonsoft.Json.5.0.8\tools\install.ps1" />
-    <Content Include="packages\repositories.config" />
     <Content Include="Packages.dgml" />
   </ItemGroup>
   <ItemGroup>
