@@ -18,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Using sw As New System.IO.StringWriter(toReturn, CultureInfo.InvariantCulture)
             Using memStream As New MemoryStream
                 Dim value As Object = GetContent(actionContext)  '= _inputExpression.Evaluate(actionContext, actionContext)
-                If Not value Is Nothing Then
+                If value IsNot Nothing Then
                     Select Case Me.SerializationType
                         Case SerializationType.Xml
                             Using xw As New XmlTextWriter(memStream, Encoding.UTF8)
@@ -35,7 +35,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Using sw As New StreamWriter(memStream, Encoding.UTF8)
                                 Dim jsonSettings As New JsonSerializerSettings()
                                 Using jw As New JsonTextWriter(sw)
-                                    Dim serializer As JsonSerializer = JsonSerializer.CreateDefault(jsonSettings)
+                                    Dim serializer As JsonSerializer = JsonSerializer.Create(jsonSettings)
                                     serializer.Serialize(jw, value)
                                 End Using
                             End Using

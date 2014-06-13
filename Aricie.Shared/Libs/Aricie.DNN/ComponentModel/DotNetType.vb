@@ -6,6 +6,8 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
+Imports System.IO
+Imports System.Text
 
 Namespace ComponentModel
 
@@ -322,7 +324,27 @@ Namespace ComponentModel
                     If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                         Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
                         If objAssembly IsNot Nothing Then
-                            toReturn.AddRange(From objType In objAssembly.GetTypes() Where objType.Namespace = Me.NamespaceSelect AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) Select New DotNetType(objType))
+                            Try
+                                toReturn.AddRange(From objType In objAssembly.GetTypes() Where objType.Namespace = Me.NamespaceSelect AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) Select New DotNetType(objType))
+                            Catch ex As ReflectionTypeLoadException
+                                Dim sb As New StringBuilder()
+                                For Each exSub As Exception In ex.LoaderExceptions
+                                    sb.AppendLine(exSub.Message)
+                                    Dim exFileNotFound As FileNotFoundException = TryCast(exSub, FileNotFoundException)
+                                    If exFileNotFound IsNot Nothing Then
+                                        If Not String.IsNullOrEmpty(exFileNotFound.FusionLog) Then
+                                            sb.AppendLine("Fusion Log:")
+                                            sb.AppendLine(exFileNotFound.FusionLog)
+                                        End If
+                                    End If
+                                    sb.AppendLine()
+                                Next
+                                'Display or log the error based on your application.
+                                Dim errorMessage As String = sb.ToString()
+                                Dim exc As New ApplicationException("Assembly Load Exception. Fusion Log: " & errorMessage, ex)
+                                ExceptionHelper.LogException(exc)
+                            End Try
+
                         End If
                     End If
             End Select
@@ -343,14 +365,11 @@ Namespace ComponentModel
         Public Function GetSelectorG1(propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
             Dim toReturn As New List(Of AssemblyName)
             For Each objAssembly As Assembly In AppDomain.CurrentDomain.GetAssemblies()
-                Try
-                    Dim objTypes As Type() = objAssembly.GetTypes()
-                    Dim toAdd As AssemblyName = objAssembly.GetName()
-                    If Not (toAdd.Name.StartsWith("App_") OrElse toAdd.Name.StartsWith("Microsoft.GeneratedCode")) Then
-                        toReturn.Add(toAdd)
-                    End If
-                Catch
-                End Try
+                Dim toAdd As AssemblyName = objAssembly.GetName()
+                'Dim objTypes As Type() = objAssembly.GetTypes()
+                If Not (toAdd.Name.StartsWith("Anonymously Hosted") OrElse toAdd.Name.StartsWith("App_") OrElse toAdd.Name.StartsWith("Microsoft.GeneratedCode")) Then
+                    toReturn.Add(toAdd)
+                End If
             Next
             toReturn.Sort(Function(objAssemblyName1, objAssemblyName2) String.Compare(objAssemblyName1.FullName, objAssemblyName2.FullName, StringComparison.InvariantCultureIgnoreCase))
             Return toReturn
@@ -361,13 +380,32 @@ Namespace ComponentModel
             If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                 Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
                 If objAssembly IsNot Nothing Then
-                    For Each objType As Type In objAssembly.GetTypes()
-                        If Not String.IsNullOrEmpty(objType.Namespace) Then
-                            If Not toReturnSet.Contains(objType.Namespace) Then
-                                toReturnSet.Add(objType.Namespace)
+                    Try
+                        For Each objType As Type In objAssembly.GetTypes()
+                            If Not String.IsNullOrEmpty(objType.Namespace) Then
+                                If Not toReturnSet.Contains(objType.Namespace) Then
+                                    toReturnSet.Add(objType.Namespace)
+                                End If
                             End If
-                        End If
-                    Next
+                        Next
+                    Catch ex As ReflectionTypeLoadException
+                        Dim sb As New StringBuilder()
+                        For Each exSub As Exception In ex.LoaderExceptions
+                            sb.AppendLine(exSub.Message)
+                            Dim exFileNotFound As FileNotFoundException = TryCast(exSub, FileNotFoundException)
+                            If exFileNotFound IsNot Nothing Then
+                                If Not String.IsNullOrEmpty(exFileNotFound.FusionLog) Then
+                                    sb.AppendLine("Fusion Log:")
+                                    sb.AppendLine(exFileNotFound.FusionLog)
+                                End If
+                            End If
+                            sb.AppendLine()
+                        Next
+                        'Display or log the error based on your application.
+                        Dim errorMessage As String = sb.ToString()
+                        Dim exc As New ApplicationException("Assembly Load Exception. Fusion Log: " & errorMessage, ex)
+                        ExceptionHelper.LogException(exc)
+                    End Try
                 End If
             End If
             Dim toReturn As List(Of String) = toReturnSet.ToList()

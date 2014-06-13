@@ -109,7 +109,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         'Next
                         Using reader As New StreamReader(memStream, Encoding.UTF8)
                             Using jsonR As New JsonTextReader(reader)
-                                Dim serializer As JsonSerializer = JsonSerializer.CreateDefault(jsonSettings)
+                                Dim serializer As JsonSerializer = JsonSerializer.Create(jsonSettings)
                                 toReturn = serializer.Deserialize(jsonR, Me._OutputType.GetDotNetType)
                             End Using
                         End Using
