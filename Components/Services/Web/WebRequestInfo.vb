@@ -148,6 +148,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <ExtendedCategory("Request")> _
+        Public Property LogRequest() As Boolean
 
         Private Function GetParamQueryString(ByVal inputParams As Dictionary(Of String, String)) As String
             Dim toReturn As String = ""
@@ -277,6 +279,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim responseBeginning As New KeyValuePair(Of String, String)("Response First 10000 chars", toReturn.ToString(CultureInfo.InvariantCulture).Substring(0, Math.Min(toReturn.Length, 10000)))
                 Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - End: " & targetUrl, WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, responseLengthPair, responseBeginning)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+
+            If LogRequest Then
+                Dim objUrl As New KeyValuePair(Of String, String)("Url", targetUrl)
+                Dim objResponse As New KeyValuePair(Of String, String)("Response", toReturn)
+                Dim objDebug As New DebugInfo(Debug.PKPDebugType, "Web Request: " & targetUrl, objUrl, objResponse)
+                SimpleDebugLogger.Instance.AddDebugInfo(objDebug)
             End If
 
 

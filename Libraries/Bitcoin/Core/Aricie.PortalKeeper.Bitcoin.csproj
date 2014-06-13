@@ -55,7 +55,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Exchanges\CryptsySupportClasses.cs" />
+    <Compile Include="APIs\BlockChainInfoSupportClasses.cs" />
+    <Compile Include="APIs\CryptsySupportClasses.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <AutoGen>false</AutoGen>
       <DesignTimeSharedInput>false</DesignTimeSharedInput>

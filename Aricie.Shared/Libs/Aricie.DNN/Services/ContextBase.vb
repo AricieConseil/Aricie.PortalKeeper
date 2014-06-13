@@ -23,7 +23,7 @@ Namespace Services
 
 
         Private _DnnContext As DnnContext
-        Private _Items As New SerializableDictionary(Of String, Object)
+        Private _Items As New SerializableDictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase)
         Private _Services As New Dictionary(Of Type, Object)
 
         Private Shared _DumbInstance As TContext

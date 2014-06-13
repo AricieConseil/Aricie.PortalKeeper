@@ -275,8 +275,19 @@ Public Module Common
         Return fieldNames
     End Function
 
-
-
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Beautify(doc As XmlDocument) As String
+        Dim sb As New StringBuilder()
+        Dim settings As New XmlWriterSettings()
+        settings.Indent = True
+        settings.IndentChars = "  "
+        settings.NewLineChars = vbCr & vbLf
+        settings.NewLineHandling = NewLineHandling.Replace
+        Using writer As XmlWriter = XmlWriter.Create(sb, settings)
+            doc.Save(writer)
+        End Using
+        Return sb.ToString()
+    End Function
 
 
 #End Region

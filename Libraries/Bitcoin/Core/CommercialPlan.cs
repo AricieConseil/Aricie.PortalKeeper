@@ -7,6 +7,10 @@ using System.Diagnostics;
 
 namespace Aricie.DNN.Modules.PortalKeeper.BitCoin
 {
+
+
+
+
 	[Serializable]
 	public class CommercialPlan : NamedConfig
 	{

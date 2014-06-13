@@ -252,7 +252,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If Not webBot.MasterBotDisabled Then 'AndAlso Not webBot.AsyncLockBot.ContainsKey(-1)
                     Dim history = webBot.BotHistory
                     Dim nextSchedule As DateTime = history.LastRun.Add(webBot.Schedule.Value)
-                    If nextSchedule <= Now Then
+                    If nextSchedule <= Now OrElse forceRun AndAlso webBot.ForceRun Then
                         Dim runContext As New BotRunContext(Of TEngineEvent)(webBot, nextSchedule)
                         runContext.Enabled = True
                         runContext.Events = events

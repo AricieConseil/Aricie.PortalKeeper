@@ -172,6 +172,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Friend Property CurrentRule As KeeperRule(Of TEngineEvents)
 
+        Public Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
+
 #End Region
 
 #Region "Shared Properties"
@@ -230,6 +232,53 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
         End Sub
 
+        Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
+            If Me._CurrentEngine IsNot configRules Then
+                Me._CurrentEngine = configRules
+            End If
+            Dim objEnableStopWatch As Boolean = Me.EnableStopWatch
+            If objEnableStopWatch Then
+                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
+                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+            Me.CurrentEventStep = objEvent
+
+            If configRules.Mode = RuleEngineMode.Rules Then
+                For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
+                    matchedRule.RunActions(Me)
+                Next
+            Else
+                configRules.Actions.Run(Me)
+            End If
+
+
+            If objEnableStopWatch Then
+
+                Dim objStep As StepInfo
+                If endSequence AndAlso Me._CurrentEngine.LogDump Then
+
+                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
+                    Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
+                    For Each objItem As KeyValuePair(Of String, Object) In dump
+                        If objItem.Value IsNot Nothing Then
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
+                        Else
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
+                        End If
+                    Next
+
+                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
+                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                Else
+                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
+                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId)
+                End If
+
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+        End Sub
+
         Public Function MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents))) As List(Of KeeperRule(Of TEngineEvents))
             Dim toReturn As New List(Of KeeperRule(Of TEngineEvents))
             Dim objRule As KeeperRule(Of TEngineEvents)
@@ -262,55 +311,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         'Private _CurrentEngine As RuleEngineSettings(Of TEngineEvents)
 
-        Public Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
+
         
 
-        Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
-            If Not Me._CurrentEngine Is configRules Then
-                Me._CurrentEngine = configRules
-            End If
-            Dim enableStopWatch As Boolean = Me.EnableStopWatch
-            If enableStopWatch Then
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
-            Me.CurrentEventStep = objEvent
-
-            If configRules.Mode = RuleEngineMode.Rules Then
-                For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
-                    matchedRule.RunActions(Me)
-                Next
-            Else
-                configRules.Actions.Run(Me)
-            End If
-
-            
-            If enableStopWatch Then
-
-                Dim objStep As StepInfo
-                If endSequence AndAlso Me._CurrentEngine.LogDump Then
-
-                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
-                    Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
-                    For Each objItem As KeyValuePair(Of String, Object) In dump
-                        If objItem.Value IsNot Nothing Then
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
-                        Else
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                        End If
-                    Next
-
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
-                Else
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId)
-                End If
-
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
-        End Sub
+      
 
 
         Public Overrides Function GetInstance() As PortalKeeperContext(Of TEngineEvents)

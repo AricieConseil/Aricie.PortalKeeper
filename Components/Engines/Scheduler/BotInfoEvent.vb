@@ -5,6 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Filtering
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -102,11 +103,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <Width(500)> _
+        <LineCount(50)> _
+        <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
         <XmlIgnore()> _
         <LabelMode(LabelMode.Top)> _
         Public ReadOnly Property PayLoad() As String
             Get
-                Return HtmlEncode(ReflectionHelper.Serialize(_VariablesDump).OuterXml)
+                Return ReflectionHelper.Serialize(_VariablesDump).Beautify()
             End Get
         End Property
 

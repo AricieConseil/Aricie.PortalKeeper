@@ -60,9 +60,14 @@ Namespace Collections
                 Next
             Catch ex As Exception
                 SystemServiceProvider.Instance.LogException(ex)
-                While reader.Depth > depth
+                Dim limitCount As Integer = 0
+                While reader.Depth > depth AndAlso limitCount < 100000
                     reader.Skip()
+                    limitCount += 1
                 End While
+                If limitCount >= 100000 Then
+                    Throw
+                End If
             Finally
                 reader.ReadEndElement()
             End Try

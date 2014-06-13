@@ -390,7 +390,6 @@
     <Content Include="Aricie.PortalKeeper.dnn">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Aricie.PortalKeeper.dnn.Merge.Xml" />
     <Content Include="Aricie.PortalKeeper.dnn5">
       <SubType>Designer</SubType>
     </Content>

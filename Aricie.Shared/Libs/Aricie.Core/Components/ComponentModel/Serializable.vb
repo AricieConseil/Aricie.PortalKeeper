@@ -29,8 +29,9 @@ Namespace ComponentModel
             Dim isEmptyElement As [Boolean] = reader.IsEmptyElement
             reader.ReadStartElement()
             If Not isEmptyElement Then
-
-                ReadXmlObjectProperty(reader, "Value", DirectCast(Value, Object))
+                Dim readObject As Object
+                ReadXmlObjectProperty(reader, "Value", readObject)
+                Value = DirectCast(readObject, T)
                 reader.ReadEndElement()
             End If
         End Sub
@@ -40,8 +41,8 @@ Namespace ComponentModel
             WriteXmlObjectProperty(writer, "Value", Value)
         End Sub
 
-        Public Shared Function ReadXmlObjectProperty(reader As XmlReader, name As String, ByRef value As Object) As Boolean
-            value = Nothing
+        Public Shared Function ReadXmlObjectProperty(reader As XmlReader, name As String, ByRef objValue As Object) As Boolean
+            objValue = Nothing
 
             ' Moves to the element
             While Not reader.IsStartElement(name)
@@ -59,30 +60,30 @@ Namespace ComponentModel
                     ' Deserialize it
                     'Dim serializer As New XmlSerializer(objType)
                     'value = serializer.Deserialize(reader)
-                    value = ReflectionHelper.Deserialize(objType, reader)
+                    objValue = ReflectionHelper.Deserialize(objType, reader)
                 Else
                     ' Type not found within this namespace: get the raw string!
                     Dim xmlTypeName As String = typeName.Substring(typeName.LastIndexOf("."c) + 1)
-                    value = reader.ReadElementString(xmlTypeName)
+                    objValue = reader.ReadElementString(xmlTypeName)
                 End If
                 reader.ReadEndElement()
             End If
 
             Return True
         End Function
-        Public Shared Sub WriteXmlObjectProperty(writer As XmlWriter, name As String, value As Object)
-            If value IsNot Nothing Then
-                Dim valueType As Type = value.[GetType]()
+        Public Shared Sub WriteXmlObjectProperty(writer As XmlWriter, name As String, objValue As Object)
+            If objValue IsNot Nothing Then
+                Dim valueType As Type = objValue.[GetType]()
                 writer.WriteStartElement(name)
                 writer.WriteAttributeString("Type", ReflectionHelper.GetSafeTypeName(valueType))
-                writer.WriteRaw(ToXmlString(value, valueType))
+                writer.WriteRaw(ToXmlString(objValue, valueType))
                 writer.WriteFullEndElement()
             End If
         End Sub
 
         Public Shared Function ToXmlString(item As Object, type As Type) As String
 
-            Return ReflectionHelper.Serialize(item).OuterXml
+            Return ReflectionHelper.Serialize(item, True).OuterXml
 
         End Function
 
