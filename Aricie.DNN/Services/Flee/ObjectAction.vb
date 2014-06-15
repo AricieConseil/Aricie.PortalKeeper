@@ -12,7 +12,9 @@ Namespace Services.Flee
     <ActionButton(IconName.Wrench, IconOptions.Normal)> _
     <Serializable()> _
     Public MustInherit Class ObjectAction
-        Inherits NamedConfig
+        Implements IEnabled
+
+        Public Property Enabled As Boolean = True Implements IEnabled.Enabled
 
         Public Property LockTarget As Boolean = True
 
@@ -28,7 +30,9 @@ Namespace Services.Flee
             End Get
         End Property
 
-        Public MustOverride Sub Run(ByVal owner As Object, ByVal globalVars As IContextLookup)
+        Public MustOverride Function Run(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
+
+
     End Class
 
 

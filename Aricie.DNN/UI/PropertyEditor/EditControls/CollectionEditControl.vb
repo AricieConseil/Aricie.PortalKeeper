@@ -2,6 +2,7 @@
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Collections.Specialized
@@ -73,7 +74,7 @@ Namespace UI.WebControls.EditControls
         Private _Paged As Boolean = True
         Private _PageSize As Integer = 30
 
-        Private _DisplayStyle As CollectionDisplayStyle = CollectionDisplayStyle.Accordion
+        Private _DisplayStyle As Nullable(Of CollectionDisplayStyle)
         Private _PageIndex As Integer = -1
 
         'Private _IsPageRequest As Boolean
@@ -227,7 +228,7 @@ Namespace UI.WebControls.EditControls
 
         Public ReadOnly Property DisplayStyle As CollectionDisplayStyle
             Get
-                Return _DisplayStyle
+                Return _DisplayStyle.Value
             End Get
         End Property
 
@@ -303,6 +304,14 @@ Namespace UI.WebControls.EditControls
 
         Protected Overrides Sub CreateChildControls()
 
+            If Not _DisplayStyle.HasValue Then
+                Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue)
+                If ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
+                    Me._DisplayStyle = CollectionDisplayStyle.Accordion
+                Else
+                    Me._DisplayStyle = CollectionDisplayStyle.List
+                End If
+            End If
             Select Case Me._DisplayStyle
                 Case CollectionDisplayStyle.Accordion
 

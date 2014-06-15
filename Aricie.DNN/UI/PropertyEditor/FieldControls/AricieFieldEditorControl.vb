@@ -1,4 +1,5 @@
 ﻿Imports Aricie.DNN.UI.Attributes
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports System.Web.UI
@@ -284,6 +285,11 @@ Public Class AricieFieldEditorControl
                                 End If
                             ElseIf objType.GetInterface("IDictionary") IsNot Nothing Then
                                 objEditControl = New DictionaryEditControl()
+                            ElseIf objType Is GetType(CData) Then
+                                Dim ctc As New CustomTextEditControl()
+                                ctc.Width = 650
+                                ctc.LineCount = 3
+                                objEditControl = ctc
                             Else
                                 objEditControl = New PropertyEditorEditControl()
                             End If

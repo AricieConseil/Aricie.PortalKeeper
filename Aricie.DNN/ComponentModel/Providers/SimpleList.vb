@@ -9,6 +9,16 @@ Namespace ComponentModel
     <Serializable()> _
     Public Class SimpleList(Of TItem)
 
+
+        Public Sub New()
+
+        End Sub
+
+        Public Sub New(existing As IEnumerable(Of TItem))
+            Me._Instances = New SerializableList(Of TItem)(existing)
+        End Sub
+
+
         Private _Instances As New SerializableList(Of TItem)
         'Private _NewElementProviderName As String = ""
 
@@ -42,7 +52,7 @@ Namespace ComponentModel
             End Set
         End Property
 
-       
+
 
 
         Protected Overridable Sub OnCollectionChange()

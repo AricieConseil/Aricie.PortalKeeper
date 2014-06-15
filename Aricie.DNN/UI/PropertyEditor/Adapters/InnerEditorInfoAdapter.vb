@@ -136,11 +136,12 @@ Namespace UI.WebControls
                 End If
             Next
             If editInfo.Editor = "" Then
-                If ReflectionHelper.IsTrueReferenceType(Me.Value.GetType) Then
-                    editInfo.Editor = ReflectionHelper.GetSafeTypeName(GetType(PropertyEditorEditControl)) '"Aricie.DNN.UI.WebControls.EditControls.PropertyEditorEditControl, Aricie.DNN"
-                Else
-                    editInfo.Editor = "UseSystemType"
-                End If
+                'If ReflectionHelper.IsTrueReferenceType(Me.Value.GetType) Then
+                '    editInfo.Editor = ReflectionHelper.GetSafeTypeName(GetType(PropertyEditorEditControl)) '"Aricie.DNN.UI.WebControls.EditControls.PropertyEditorEditControl, Aricie.DNN"
+                'Else
+                '    editInfo.Editor = "UseSystemType"
+                'End If
+                editInfo.Editor = "UseSystemType"
             End If
             'If Not String.IsNullOrEmpty(EditorType) Then
             '    editInfo.Editor = EditorType

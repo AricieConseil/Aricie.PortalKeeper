@@ -29,7 +29,7 @@ Namespace ComponentModel
             Dim isEmptyElement As [Boolean] = reader.IsEmptyElement
             reader.ReadStartElement()
             If Not isEmptyElement Then
-                Dim readObject As Object
+                Dim readObject As Object = Nothing
                 ReadXmlObjectProperty(reader, "Value", readObject)
                 Value = DirectCast(readObject, T)
                 reader.ReadEndElement()
