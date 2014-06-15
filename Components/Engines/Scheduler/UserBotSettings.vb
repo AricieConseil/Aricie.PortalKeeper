@@ -20,13 +20,6 @@ Imports System.IO
 Imports System.Xml
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-    Public Enum UserBotStorage
-        SmartFiles
-        Personalisation
-    End Enum
-
-
     <ActionButton(IconName.Users, IconOptions.Normal)> _
     <Serializable()> _
         <XmlInclude(GetType(UserVariableInfo))> _
@@ -103,9 +96,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-      
 
-      
+
+
         '<ExtendedCategory("Parameters")> _
         'Public Property Compress() As Boolean
         '    Get

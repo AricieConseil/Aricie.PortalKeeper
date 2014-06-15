@@ -15,9 +15,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aricie.PortalKeeper.Bitcoin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aricie.PortalKeeper.Bitcoin.Strategies", "Libraries\Bitcoin\Strategies\Aricie.PortalKeeper.Bitcoin.Strategies.csproj", "{DF49A3B3-AFC1-48E4-AC3D-5A434A23ECD6}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aricie.PortalKeeper.Reddit", "Libraries\Reddit\Aricie.PortalKeeper.Reddit.csproj", "{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedditSharpNet35", "Libraries\Reddit\external\RedditSharpNet35\RedditSharpNet35.csproj", "{A368CB75-75F0-4489-904D-B5CEBB0FE624}"
+EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Flee", "Aricie.Shared\Libs\Aricie.DNN\external\Flee\Flee.vbproj", "{28334152-7FB7-46A5-8639-68EB84A99BE0}"
+EndProject
 Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 7
+		SccNumberOfProjects = 10
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
 		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs36
 		SccLocalPath0 = .
@@ -38,6 +44,15 @@ Global
 		SccProjectUniqueName6 = Libraries\\Bitcoin\\Strategies\\Aricie.PortalKeeper.Bitcoin.Strategies.csproj
 		SccProjectName6 = Libraries/Bitcoin/Strategies
 		SccLocalPath6 = Libraries\\Bitcoin\\Strategies
+		SccProjectUniqueName7 = Libraries\\Reddit\\Aricie.PortalKeeper.Reddit.csproj
+		SccProjectName7 = Libraries/Reddit
+		SccLocalPath7 = Libraries\\Reddit
+		SccProjectUniqueName8 = Libraries\\Reddit\\external\\RedditSharpNet35\\RedditSharpNet35.csproj
+		SccProjectName8 = Libraries/Reddit/external/RedditSharpNet35
+		SccLocalPath8 = Libraries\\Reddit\\external\\RedditSharpNet35
+		SccProjectUniqueName9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee\\Flee.vbproj
+		SccProjectName9 = Aricie.Shared/Libs/Aricie.DNN/external/Flee
+		SccLocalPath9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Trial|Any CPU = Debug Trial|Any CPU
@@ -94,6 +109,30 @@ Global
 		{DF49A3B3-AFC1-48E4-AC3D-5A434A23ECD6}.Release Trial|Any CPU.Build.0 = Release|Any CPU
 		{DF49A3B3-AFC1-48E4-AC3D-5A434A23ECD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DF49A3B3-AFC1-48E4-AC3D-5A434A23ECD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4BE8FBBF-81C9-4AC8-8381-0AFEAB85435C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A368CB75-75F0-4489-904D-B5CEBB0FE624}.Release|Any CPU.Build.0 = Release|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{28334152-7FB7-46A5-8639-68EB84A99BE0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

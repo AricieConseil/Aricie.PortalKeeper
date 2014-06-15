@@ -17,6 +17,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
+        <Required(True)> _
+        Public Property Title As String = ""
 
         'Private _SaveAfterRun As Boolean
 

@@ -147,6 +147,10 @@
     <Compile Include="Components\Engines\ControlAdapters\DynamicHandlerStep.vb" />
     <Compile Include="Components\Core\ActionCommand.vb" />
     <Compile Include="Components\Core\ActionTree.vb" />
+    <Compile Include="Components\Engines\Scheduler\UserBotStorage.vb" />
+    <Compile Include="Components\Engines\Scheduler\UserParameterWrapper.vb" />
+    <Compile Include="Components\Providers\Action\DefineVariableActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\GeneralObjectActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileActionProviderBase.vb" />
     <Compile Include="Components\Providers\Action\ProfileLoadActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileSaveActionProvider.vb" />
@@ -166,7 +170,7 @@
     <Compile Include="Components\Engines\RestServices\RestService.vb" />
     <Compile Include="Components\Engines\RestServices\RestServicesConfiguration.vb" />
     <Compile Include="Components\Engines\RestServices\RestServicesSettings.vb" />
-    <Compile Include="Components\Core\KeeperModuleSettings.vb" />
+    <Compile Include="Components\DNN\KeeperModuleSettings.vb" />
     <Compile Include="Components\Core\ParametersMode.vb" />
     <Compile Include="Components\Engines\Scheduler\BotRunContext.vb" />
     <Compile Include="Components\Engines\Scheduler\GeneralPropertyDefinition.vb">

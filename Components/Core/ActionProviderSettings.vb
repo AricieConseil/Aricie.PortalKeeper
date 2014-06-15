@@ -79,14 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overridable Function GetAdvancedTokenReplace(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As AdvancedTokenReplace
-            Dim objTokenReplace As New AdvancedTokenReplace()
-            objTokenReplace.SetObjectReplace(actionContext, "Context")
-            objTokenReplace.SetObjectReplace(actionContext.Items, "Items")
-            If actionContext.CurrentRule IsNot Nothing Then
-                objTokenReplace.SetObjectReplace(actionContext.CurrentRule, "Rule")
-            End If
-
-            Return objTokenReplace
+            Return actionContext.GetAdvancedTokenReplace()
         End Function
 
 

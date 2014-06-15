@@ -1,0 +1,121 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{A368CB75-75F0-4489-904D-B5CEBB0FE624}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>RedditSharp</RootNamespace>
+    <AssemblyName>RedditSharp</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>True</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>False</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>True</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup />
+  <ItemGroup>
+    <Reference Include="HtmlAgilityPack, Version=1.4.0.0, Culture=neutral, PublicKeyToken=bd319b19eaf3b43a, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\HtmlAgilityPack.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AuthenticatedUser.cs" />
+    <Compile Include="AuthProvider.cs" />
+    <Compile Include="Captcha.cs" />
+    <Compile Include="CaptchaFailedException.cs" />
+    <Compile Include="CaptchaResponse.cs" />
+    <Compile Include="ConsoleCaptchaSolver.cs" />
+    <Compile Include="DuplicateLinkException.cs" />
+    <Compile Include="ICaptchaSolver.cs" />
+    <Compile Include="Comment.cs" />
+    <Compile Include="CreatedThing.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="FlairTemplate.cs" />
+    <Compile Include="IWebAgent.cs" />
+    <Compile Include="LinkData.cs" />
+    <Compile Include="Listing.cs" />
+    <Compile Include="ModeratorPermission.cs" />
+    <Compile Include="ModeratorUser.cs" />
+    <Compile Include="MultipartFormBuilder.cs" />
+    <Compile Include="FlairType.cs" />
+    <Compile Include="Post.cs" />
+    <Compile Include="PrivateMessage.cs" />
+    <Compile Include="Reddit.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedditAPINameAttribute.cs" />
+    <Compile Include="RedditException.cs" />
+    <Compile Include="RedditUser.cs" />
+    <Compile Include="SubmitData.cs" />
+    <Compile Include="Subreddit.cs" />
+    <Compile Include="SubredditImage.cs" />
+    <Compile Include="SubredditSettings.cs" />
+    <Compile Include="SubredditStyle.cs" />
+    <Compile Include="TextData.cs" />
+    <Compile Include="Thing.cs" />
+    <Compile Include="UnixTimeStamp.cs" />
+    <Compile Include="UnixTimestampConverter.cs" />
+    <Compile Include="UrlParser.cs" />
+    <Compile Include="VotableThing.cs" />
+    <Compile Include="RateLimitException.cs" />
+    <Compile Include="WebAgent.cs" />
+    <Compile Include="Wiki.cs" />
+    <Compile Include="WikiPage.cs" />
+    <Compile Include="WikiPageRevision.cs" />
+    <Compile Include="WikiPageSettings.cs" />
+    <Compile Include="Domain.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="external\HtmlAgilityPack.dll" />
+    <Content Include="external\Newtonsoft.Json.dll" />
+    <Content Include="external\Newtonsoft.Json.pdb" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
+      <Name>Aricie.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

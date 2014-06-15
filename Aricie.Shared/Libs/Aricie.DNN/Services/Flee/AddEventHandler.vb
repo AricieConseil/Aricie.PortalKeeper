@@ -59,7 +59,7 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
-        Public Overrides Sub Run(owner As Object, globalVars As IContextLookup)
+        Public Overrides Function Run(owner As Object, globalVars As IContextLookup) As Object
             Dim candidateEventMember As MemberInfo = ReflectionHelper.GetMember(GetType(TObjectType), EventName, True, True)
             If candidateEventMember IsNot Nothing Then
                 Dim candidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
@@ -85,7 +85,7 @@ Namespace Services.Flee
             Else
                 Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
             End If
-
-        End Sub
+            Return Nothing
+        End Function
     End Class
 End Namespace
