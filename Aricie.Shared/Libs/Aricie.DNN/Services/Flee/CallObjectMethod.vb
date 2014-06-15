@@ -40,7 +40,8 @@ Namespace Services.Flee
         ''' <param name="owner"></param>
         ''' <param name="globalVars"></param>
         ''' <remarks></remarks>
-        Public Overrides Sub Run(ByVal owner As Object, ByVal globalVars As IContextLookup)
+        Public Overrides Function Run(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
+            Dim toReturn As Object = Nothing
             Dim args As New List(Of Object)
             For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
                 args.Add(objParam.Value)
@@ -61,13 +62,13 @@ Namespace Services.Flee
                                     Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
                                     If Me.LockTarget Then
                                         SyncLock target
-                                            targetMethod.Invoke(target, args.ToArray)
+                                            toReturn = targetMethod.Invoke(target, args.ToArray)
                                         End SyncLock
                                     Else
-                                        targetMethod.Invoke(target, args.ToArray)
+                                        toReturn = targetMethod.Invoke(target, args.ToArray)
                                     End If
                                 End If
-                                Exit Sub
+                                Return toReturn
                             End If
                         End If
                     End If
@@ -75,7 +76,7 @@ Namespace Services.Flee
 
             End If
             Throw New Exception(String.Format("Method {0} with {2} parameters was not found in type {1}", Me._MethodName, args.Count, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
-        End Sub
+        End Function
 
         ''' <summary>
         ''' Returns a list of the methods on the generic type

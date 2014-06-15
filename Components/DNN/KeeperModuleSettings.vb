@@ -41,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '<ProvidersSelector()> _
         <ExtendedCategory("UserBots")> _
            <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-           <Selector("Name", "Name", False, True, "No UserBot assigned", "", True, True)> _
+           <Selector("Name", "Name", False, True, "<Select a User Bot>", "", False, True)> _
         <AutoPostBack()> _
         Public Property UserBotName() As String
             Get

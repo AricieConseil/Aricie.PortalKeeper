@@ -3,8 +3,14 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports System.Web.UI.WebControls
+Imports System.Globalization
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Services.Localization
+Imports System.Xml.Serialization
 
 Namespace Services.Flee
 
@@ -33,15 +39,18 @@ Namespace Services.Flee
         End Property
 
         <Browsable(False)> _
+         Public ReadOnly Property HasConcreteType As Boolean
+            Get
+                Return HasType AndAlso Not Me.DotNetType.GetDotNetType().IsAbstract
+            End Get
+        End Property
+
+        <Browsable(False)> _
         Public Overrides ReadOnly Property ObjectType As String
             Get
                 Return DotNetType.TypeName
             End Get
         End Property
-
-        <ConditionalVisible("HasType", False, True)> _
-        Public Property ActionMode As ObjectActionMode
-
 
         ''' <summary>
         ''' Instance of the generic type
@@ -49,8 +58,12 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
+        <ConditionalVisible("HasConcreteType", False, True)> _
         Public Property Instance() As New FleeExpressionInfo(Of Object)
+
+
+        <ConditionalVisible("HasType", False, True)> _
+        Public Property ActionMode As ObjectActionMode
 
 
         ''' <summary>
@@ -60,10 +73,18 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ProvidersSelector()> _
-        Public Property PropertyName() As String = String.Empty
+        <Selector("Name", "Name", False, True, "<Select a Member Name>", "", False, True)> _
+        <AutoPostBack()> _
+        Public Property MemberName() As String = String.Empty
+
+
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+       <ConditionalVisible("HasType", False, True)> _
+        <ConditionalVisible("MemberName", True, True, "")> _
+       <ProvidersSelector("Key", "Value")> _
+        Public Property MemberIndex As Integer = 1
+
 
         ''' <summary>
         ''' Gets or sets the value of the property
@@ -77,22 +98,19 @@ Namespace Services.Flee
         Public Property PropertyValue() As New FleeExpressionInfo(Of Object)
 
 
-        ''' <summary>
-        ''' Gets or sets the method name
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.CallMethod)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ProvidersSelector()> _
-        Public Property MethodName() As String = String.Empty
-
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.CallMethod)> _
-        Public Property MethodIndex As Integer = 1
-
+        <Browsable(False)> _
+        Public ReadOnly Property HasParameters As Boolean
+            Get
+                If Me.SelectedMember IsNot Nothing Then
+                    If TypeOf SelectedMember Is PropertyInfo Then
+                        Return DirectCast(SelectedMember, PropertyInfo).GetIndexParameters().Length > 0
+                    ElseIf TypeOf SelectedMember Is MethodInfo Then
+                        Return DirectCast(SelectedMember, MethodInfo).GetParameters().Length > 0
+                    End If
+                End If
+                Return False
+            End Get
+        End Property
 
         ''' <summary>
         ''' Parameters for the object
@@ -101,15 +119,9 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty, ObjectActionMode.CallMethod)> _
+        <ConditionalVisible("HasParameters", False, True)> _
         Public Overridable Property Parameters() As New Variables
 
-
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ProvidersSelector()> _
-        Public Property EventName As String
 
 
 
@@ -118,46 +130,46 @@ Namespace Services.Flee
         Public Overridable Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
 
 
+       
 
-        '<XmlIgnore()> _
-        '<Browsable(False)> _
-        'Public Overrides Property Parameters As Variables
-        '    Get
-        '        Return Nothing
-        '    End Get
-        '    Set(value As Variables)
-        '        'do nothing
-        '    End Set
-        'End Property
+       
+      
 
-        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
-            Select Case propertyName
-                Case "EventName"
-                    Return DirectCast(GetSelectorEvents(propertyName), IList)
-                Case "MethodName"
-                    Return DirectCast(GetSelectorMethods(propertyName), IList)
-                Case "PropertyName"
-                    Return DirectCast(GetSelectorProperties(propertyName), IList)
-            End Select
-            Return Nothing
-        End Function
-
-
-
-        Public Overrides Sub Run(owner As Object, globalVars As IContextLookup)
-            If Not Me.HasType Then
-                Throw New ApplicationException("GeneralObjectAction has no Type Defined")
+       
+        <ConditionalVisible("HasParameters", False, True)> _
+        <ActionButton(IconName.Key, IconOptions.Normal)> _
+        Public Sub SetParameters(ape As AriciePropertyEditorControl)
+            If Me.SelectedMember IsNot Nothing Then
+                Dim objParameters As ParameterInfo() = {}
+                If TypeOf SelectedMember Is PropertyInfo Then
+                    objParameters = DirectCast(SelectedMember, PropertyInfo).GetIndexParameters()
+                ElseIf TypeOf SelectedMember Is MethodInfo Then
+                    objParameters = DirectCast(SelectedMember, MethodInfo).GetParameters()
+                End If
+                Me.Parameters = Variables.GetFromParameters(objParameters)
+                ape.ItemChanged = True
+                Dim message As String = Localization.GetString("ParametersCreated.Message", ape.LocalResourceFile)
+                ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
             End If
-            Select Case Me.ActionMode
-                Case Flee.ObjectActionMode.SetProperty
-                    Dim args As New List(Of Object)
-                    For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                        args.Add(objParam.Value)
-                    Next
-                    Dim potentialsMembers As List(Of MemberInfo) = Nothing
-                    Dim targetProp As PropertyInfo
-                    If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._PropertyName, potentialsMembers) Then
-                        For Each potentialMember As MemberInfo In potentialsMembers
+        End Sub
+
+
+        Public Overrides Function Run(owner As Object, globalVars As IContextLookup) As Object
+            Dim toReturn As Object = Nothing
+            If Me.Enabled Then
+                If Not Me.HasType Then
+                    Throw New ApplicationException("GeneralObjectAction has no Type Defined")
+                End If
+                Select Case Me.ActionMode
+                    Case Flee.ObjectActionMode.SetProperty
+                        Dim args As New List(Of Object)
+                        For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
+                            args.Add(objParam.Value)
+                        Next
+                        'Dim potentialsMembers As List(Of MemberInfo) = Nothing
+                        Dim targetProp As PropertyInfo
+                        'If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._PropertyName, potentialsMembers) Then
+                        For Each potentialMember As MemberInfo In Me.SelectedMembers
                             If TypeOf potentialMember Is PropertyInfo Then
                                 targetProp = DirectCast(potentialMember, PropertyInfo)
                                 If targetProp.GetIndexParameters.Length = args.Count Then
@@ -170,29 +182,29 @@ Namespace Services.Flee
                                     Else
                                         targetProp.SetValue(Me.Instance.Evaluate(owner, globalVars), objValue, args.ToArray)
                                     End If
-                                    Exit Sub
+                                    Return toReturn
                                 End If
                             End If
                         Next
-                    End If
-                    Throw New Exception(String.Format("Property {0} with {2} parameters was not found in type {1}", _
-                                                      Me._PropertyName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
-                Case Flee.ObjectActionMode.CallMethod
-                    Dim args As New List(Of Object)
-                    For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                        args.Add(objParam.Value)
-                    Next
-                    Dim potentialsMembers As List(Of MemberInfo) = Nothing
-                    Dim targetMethod As MethodInfo
-                    Dim found As Boolean
-                    If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._MethodName, potentialsMembers) Then
+                        'End If
+                        Throw New Exception(String.Format("Property {0} with {2} parameters was not found in type {1}", _
+                                                          Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                    Case Flee.ObjectActionMode.CallMethod
+                        Dim args As New List(Of Object)
+                        For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
+                            args.Add(objParam.Value)
+                        Next
+                        'Dim potentialsMembers As List(Of MemberInfo) = Nothing
+                        Dim targetMethod As MethodInfo
+                        Dim found As Boolean
+                        'If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._MethodName, potentialsMembers) Then
                         Dim index As Integer = 0
-                        For Each potentialMember As MemberInfo In potentialsMembers
+                        For Each potentialMember As MemberInfo In SelectedMembers
                             If TypeOf potentialMember Is MethodInfo Then
                                 targetMethod = DirectCast(potentialMember, MethodInfo)
                                 If targetMethod.GetParameters.Length = args.Count Then
                                     index += 1
-                                    If index = MethodIndex Then
+                                    If index = MemberIndex Then
                                         found = True
                                         If targetMethod.IsStatic Then
                                             targetMethod.Invoke(Nothing, args.ToArray)
@@ -200,10 +212,10 @@ Namespace Services.Flee
                                             Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
                                             If Me.LockTarget Then
                                                 SyncLock target
-                                                    targetMethod.Invoke(target, args.ToArray)
+                                                    toReturn = targetMethod.Invoke(target, args.ToArray)
                                                 End SyncLock
                                             Else
-                                                targetMethod.Invoke(target, args.ToArray)
+                                                toReturn = targetMethod.Invoke(target, args.ToArray)
                                             End If
                                         End If
 
@@ -211,34 +223,36 @@ Namespace Services.Flee
                                 End If
                             End If
                         Next
-                    End If
-                    If Not found Then
-                        Throw New Exception(String.Format("Method {0} with {2} parameters was not found in type {1}", _
-                                                          Me._MethodName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
-                    End If
-                Case Flee.ObjectActionMode.AddEventHandler
-                    Dim candidateEventMember As MemberInfo = ReflectionHelper.GetMember(Me.DotNetType.GetDotNetType(), EventName, True, True)
-                    If candidateEventMember IsNot Nothing Then
-                        Dim candidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
-                        If candidateEvent IsNot Nothing Then
-                            Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                            If target IsNot Nothing Then
-                                AddEventHandler(owner, globalVars, target, candidateEvent)
+                        'End If
+                        If Not found Then
+                            Throw New Exception(String.Format("Method {0} with {2} parameters was not found in type {1}", _
+                                                              Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                        End If
+                    Case Flee.ObjectActionMode.AddEventHandler
+                        Dim candidateEventMember As MemberInfo = Me.SelectedMembers(0)
+                        If candidateEventMember IsNot Nothing Then
+                            Dim candidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
+                            If candidateEvent IsNot Nothing Then
+                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                If target IsNot Nothing Then
+                                    AddEventHandler(owner, globalVars, target, candidateEvent)
+                                Else
+                                    Throw New Exception(String.Format( _
+                                        "Instance Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
+                                        Me.Instance.Expression, candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
+                                End If
                             Else
                                 Throw New Exception(String.Format( _
-                                    "Instance Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
-                                    Me.Instance.Expression, candidateEventMember.ToString(), Me.EventName, Me.DotNetType.GetDotNetType()))
+                                    "Candidate Member {0} could not be converted to event {1} in type {2}", _
+                                    candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
                             End If
                         Else
-                            Throw New Exception(String.Format( _
-                                "Candidate Member {0} could not be converted to event {1} in type {2}", _
-                                candidateEventMember.ToString(), Me.EventName, Me.DotNetType.GetDotNetType()))
+                            Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.MemberName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                         End If
-                    Else
-                        Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.EventName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
-                    End If
-            End Select
-        End Sub
+                End Select
+            End If
+            Return toReturn
+        End Function
 
 
         Protected Overridable Sub AddEventHandler(owner As Object, globalVars As IContextLookup, target As Object, candidateEvent As EventInfo)
@@ -254,11 +268,60 @@ Namespace Services.Flee
             Else
                 Throw New Exception(String.Format( _
                     "Delegate Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
-                    Me.DelegateExpression.Expression, candidateEvent.ToString(), Me.EventName, Me.DotNetType.GetDotNetType()))
+                    Me.DelegateExpression.Expression, candidateEvent.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
             End If
         End Sub
 
+        <xmlIgnore()> _
+        <Browsable(False)> _
+        Public ReadOnly Property SelectedMembers As List(Of MemberInfo)
+            Get
 
+                Dim toReturn As List(Of MemberInfo) = Nothing
+                If Me.DotNetType.GetDotNetType() Is Nothing OrElse Not ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me.MemberName, toReturn) Then
+                    toReturn = New List(Of MemberInfo)
+                End If
+                Return toReturn
+            End Get
+        End Property
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public ReadOnly Property SelectedMember As MemberInfo
+            Get
+                Dim tmpMembers As List(Of MemberInfo) = SelectedMembers
+                If tmpMembers.Count >= MemberIndex Then
+                    Return SelectedMembers(MemberIndex - 1)
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
+            Select Case propertyName
+                Case "MemberName"
+                    Select Case Me.ActionMode
+                        Case ObjectActionMode.SetProperty
+                            Return DirectCast(GetSelectorProperties(propertyName), IList)
+                        Case ObjectActionMode.CallMethod
+                            Return DirectCast(GetSelectorMethods(propertyName), IList)
+                        Case ObjectActionMode.AddEventHandler
+                            Return DirectCast(GetSelectorEvents(propertyName), IList)
+
+                    End Select
+                Case "MemberIndex"
+                    Dim toReturn As New Dictionary(Of String, Integer)
+                    If Not Me.MemberName.IsNullOrEmpty() Then
+                        Dim index As Integer = 1
+                        For Each objMember As MemberInfo In Me.SelectedMembers
+                            toReturn.Add(ReflectionHelper.GetMemberSignature(objMember), index)
+                            index += 1
+                        Next
+                    End If
+                    Return toReturn.ToList()
+            End Select
+            Return Nothing
+        End Function
 
         Public Function GetSelectorProperties(propertyName As String) As IList(Of PropertyInfo) Implements ISelector(Of PropertyInfo).GetSelectorG
             Dim toReturn As New List(Of PropertyInfo)()

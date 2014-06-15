@@ -44,7 +44,7 @@ Namespace Services.Flee
         ''' <param name="owner"></param>
         ''' <param name="globalVars"></param>
         ''' <remarks></remarks>
-        Public Overrides Sub Run(ByVal owner As Object, ByVal globalVars As IContextLookup)
+        Public Overrides Function Run(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             Dim args As New List(Of Object)
             For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
                 args.Add(objParam.Value)
@@ -65,13 +65,13 @@ Namespace Services.Flee
                             Else
                                 targetProp.SetValue(Me.Instance.Evaluate(owner, globalVars), objValue, args.ToArray)
                             End If
-                            Exit Sub
+                            Return Nothing
                         End If
                     End If
                 Next
             End If
             Throw New Exception(String.Format("Property {0} with {2} parameters was not found in type {1}", Me._PropertyName, args.Count, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
-        End Sub
+        End Function
 
         ''' <summary>
         ''' Returns values for the generic Type properties that are writable

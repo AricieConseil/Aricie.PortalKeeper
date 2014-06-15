@@ -8,6 +8,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls
+Imports System.Reflection
 
 Namespace Services.Flee
 
@@ -62,6 +63,18 @@ Namespace Services.Flee
     Public Class Variables
         Inherits VariablesBase
 
+        Public Shared Function GetFromParameters(objParameters As ParameterInfo()) As Variables
+            Dim toReturn As New Variables()
+            For Each objParameter As ParameterInfo In objParameters
+                Dim newVar As New GeneralVariableInfo()
+                newVar.Name = objParameter.Name
+                newVar.DotNetType = New DotNetType(objParameter.ParameterType)
+                toReturn.Instances.Add(newVar)
+            Next
+            Return toReturn
+        End Function
+
+
         Private Shared ReadOnly _GenerictypeLessTypeDelegateVar As Type = GetType(DelegateVariableInfo(Of ))
 
         <Category("")> _
@@ -77,10 +90,10 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-            <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
-            <LabelMode(LabelMode.Top)> _
-            <ConditionalVisible("ShowAvailableTypes", False, True)> _
+        <Editor(GetType(ListEditControl), GetType(EditControl))> _
+        <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
+        <LabelMode(LabelMode.Top)> _
+        <ConditionalVisible("ShowAvailableTypes", False, True)> _
         Public Property ExpressionTypes() As List(Of DotNetType)
             Get
                 Return _ExpressionTypes
@@ -113,7 +126,7 @@ Namespace Services.Flee
             End If
             Return toReturn
         End Function
-      
+
         <ConditionalVisible("ShowAvailableTypes", False, True)> _
         <ActionButton("~/images/action_refresh.gif")> _
         Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)

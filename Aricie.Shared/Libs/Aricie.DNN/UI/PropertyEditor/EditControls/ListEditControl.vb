@@ -1,4 +1,5 @@
 ﻿Imports System.Web.UI
+Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports Aricie.UI.WebControls.EditControls
@@ -109,7 +110,7 @@ Namespace UI.WebControls.EditControls
             'todo: should try with ReflectionHelper.CloneObject()
             Dim oldListValue As IList = New ArrayList(Me.ListValue)
 
-            Me.ListValue.Item(indexToEdit) = e.Value
+            Me.ListValue.Item(indexToEdit) = TypeDescriptor.GetConverter(ListValue.Item(indexToEdit).GetType()).ConvertFrom(e.Value)
 
             Dim newArgs As New PropertyEditorEventArgs(Me.Name, Me.ListValue, oldListValue)
             Me.OnValueChanged(newArgs)

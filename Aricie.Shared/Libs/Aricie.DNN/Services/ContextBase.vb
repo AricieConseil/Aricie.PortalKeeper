@@ -2,6 +2,7 @@
 Imports Aricie.Services
 Imports Aricie.Collections
 Imports System.Globalization
+Imports System.Xml.Serialization
 
 Namespace Services
 
@@ -35,6 +36,7 @@ Namespace Services
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <XmlIgnore()> _
         Public Property DnnContext() As DnnContext Implements IModuleContext.DnnContext
             Get
                 If _DnnContext Is Nothing Then

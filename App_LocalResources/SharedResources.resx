@@ -6504,4 +6504,187 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="WebRequestInfo`1_LogRequest.Text" xml:space="preserve">
     <value>Log Request</value>
   </data>
+  <data name="DefineVariableActionProvider`1_GetFromHistory.Help" xml:space="preserve">
+    <value>If Enabled, and if the variable is configured for history dump inclusion, any previous instance is restored.</value>
+  </data>
+  <data name="DefineVariableActionProvider`1_GetFromHistory.Text" xml:space="preserve">
+    <value>Get From History</value>
+  </data>
+  <data name="DefineVariableActionProvider`1_Variable.Help" xml:space="preserve">
+    <value>Enter the name (use single well formatted word for use in expressions) and other characteristics of your Variable</value>
+  </data>
+  <data name="DefineVariableActionProvider`1_Variable.Text" xml:space="preserve">
+    <value>Variable Definition</value>
+  </data>
+  <data name="DelegateExpression.Text" xml:space="preserve">
+    <value>Delegate Expression</value>
+  </data>
+  <data name="GeneralObjectActionProvider`1_Action.Header" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="GeneralObjectActionProvider`1_ObjectAction.Help" xml:space="preserve">
+    <value>This Action Provider lets you define a memory operation to an object in the form of setting one of its property, calling one its method or hooking a delegate to one of its events. </value>
+  </data>
+  <data name="GeneralObjectActionProvider`1_ObjectAction.Text" xml:space="preserve">
+    <value>Action Details</value>
+  </data>
+  <data name="GeneralObjectAction_MemberIndex.Help" xml:space="preserve">
+    <value>It might be that the target object type has several members with the same name. Choose from the available signatures.</value>
+  </data>
+  <data name="GeneralObjectAction_MemberIndex.Text" xml:space="preserve">
+    <value>Member Candidates</value>
+  </data>
+  <data name="GeneralObjectAction_MemberName.Help" xml:space="preserve">
+    <value>According to your action mode, choose the name of the property, method or event you want to access</value>
+  </data>
+  <data name="GeneralObjectAction_MemberName.Text" xml:space="preserve">
+    <value>Member Name</value>
+  </data>
+  <data name="GeneralObjectAction_SetParameters.Text" xml:space="preserve">
+    <value>Prepare Parameters</value>
+  </data>
+  <data name="GeneralVariableInfo_MethodIndex.Help" xml:space="preserve">
+    <value>It might be that the target object type has several constructors or methods with the same name. Choose from the available signatures.</value>
+  </data>
+  <data name="GeneralVariableInfo_MethodIndex.Text" xml:space="preserve">
+    <value>Method Candidates</value>
+  </data>
+  <data name="GeneralVariableInfo_MethodName.Help" xml:space="preserve">
+    <value>Select the method for which you wish to create a delegate from the variable instance</value>
+  </data>
+  <data name="GeneralVariableInfo_MethodName.Text" xml:space="preserve">
+    <value>Method Name</value>
+  </data>
+  <data name="GeneralVariableInfo_SetParameters.Text" xml:space="preserve">
+    <value>Set Parameters</value>
+  </data>
+  <data name="KeeperAction.Text" xml:space="preserve">
+    <value>Dynamic Action Sequence</value>
+  </data>
+  <data name="KeeperObjectAction`1_EventHandlerType.Help" xml:space="preserve">
+    <value>You can either provide an Expression which resolves into a delegate with the apropriate signature, or attach a custom series of actions.</value>
+  </data>
+  <data name="KeeperObjectAction`1_EventHandlerType.Text" xml:space="preserve">
+    <value>Event Handler Type</value>
+  </data>
+  <data name="KeeperObjectAction`1_KeeperAction.Help" xml:space="preserve">
+    <value>Enter a sequence of actions to be run when the event is fired.</value>
+  </data>
+  <data name="KeeperObjectAction`1_KeeperAction.Text" xml:space="preserve">
+    <value>Handler Actions</value>
+  </data>
+  <data name="MemberName.NullSelect" xml:space="preserve">
+    <value>&lt;Select a Member&gt;</value>
+  </data>
+  <data name="ObjectAction_Enabled.Help" xml:space="preserve">
+    <value>Uncheck to disable the action.</value>
+  </data>
+  <data name="ObjectAction_Enabled.Text" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="RedditCommand_Actions.Header" xml:space="preserve">
+    <value>Actions</value>
+  </data>
+  <data name="RedditCommand_AlternateAnwsers.Help" xml:space="preserve">
+    <value>Define several alternate answer messages here, and they will get picked at random.</value>
+  </data>
+  <data name="RedditCommand_AlternateAnwsers.Text" xml:space="preserve">
+    <value>Alternate Answers</value>
+  </data>
+  <data name="RedditCommand_Answers.Header" xml:space="preserve">
+    <value>Answers</value>
+  </data>
+  <data name="RedditCommand_CommandActions.Help" xml:space="preserve">
+    <value>Those are the actions performed when one of the regexes matches the input message. Any captured named group can be accessed through a variable of the same name.</value>
+  </data>
+  <data name="RedditCommand_CommandActions.Text" xml:space="preserve">
+    <value>Command Actions</value>
+  </data>
+  <data name="RedditCommand_CommandUsers.Help" xml:space="preserve">
+    <value>Those are the users to accept commands from and/or to check comments from.</value>
+  </data>
+  <data name="RedditCommand_CommandUsers.Text" xml:space="preserve">
+    <value>Reddit Usernames</value>
+  </data>
+  <data name="RedditCommand_EnableAllUsers.Help" xml:space="preserve">
+    <value>You can enable your command to all users (be careful money wise). Note that only specific users will be searched for comments.</value>
+  </data>
+  <data name="RedditCommand_EnableAllUsers.Text" xml:space="preserve">
+    <value>Enable All Users</value>
+  </data>
+  <data name="RedditCommand_EnableComments.Help" xml:space="preserve">
+    <value>Check to enable running commands from comments.</value>
+  </data>
+  <data name="RedditCommand_EnableComments.Text" xml:space="preserve">
+    <value>Enable Comments</value>
+  </data>
+  <data name="RedditCommand_EnablePrivateMessages.Help" xml:space="preserve">
+    <value>Check to enable running commands from direct messaging</value>
+  </data>
+  <data name="RedditCommand_EnablePrivateMessages.Text" xml:space="preserve">
+    <value>Enable Private Messages</value>
+  </data>
+  <data name="RedditCommand_EnableSubRedditPosts.Help" xml:space="preserve">
+    <value>Check to enable running commands from subreddit posts</value>
+  </data>
+  <data name="RedditCommand_EnableSubRedditPosts.Text" xml:space="preserve">
+    <value>Enable Subreddit Posts</value>
+  </data>
+  <data name="RedditCommand_MainAnswer.Help" xml:space="preserve">
+    <value>This is the main message the bot will answer. You can use Token Replaces as in other parts of the engine. You can also define alternate messages that will get picked at random. It is mandatory that each command has at least one answer as it is the way the bots keeps track of the conversations.</value>
+  </data>
+  <data name="RedditCommand_MainAnswer.Required" xml:space="preserve">
+    <value>It is mandatory that each command has at least one answer associated to it, as it is the way the bots keeps track of the conversations.</value>
+  </data>
+  <data name="RedditCommand_MainAnswer.Text" xml:space="preserve">
+    <value>Main Answer</value>
+  </data>
+  <data name="RedditCommand_Next.Header" xml:space="preserve">
+    <value>Following Commands</value>
+  </data>
+  <data name="RedditCommand_NextCommands.Help" xml:space="preserve">
+    <value>If the command requires several message exchange, you can enter here the following commands to act upon</value>
+  </data>
+  <data name="RedditCommand_NextCommands.Text" xml:space="preserve">
+    <value>Next Commands</value>
+  </data>
+  <data name="RedditCommand_Parsing.Header" xml:space="preserve">
+    <value>Parsing</value>
+  </data>
+  <data name="RedditCommand_Regexes.Help" xml:space="preserve">
+    <value>Enter a series of regular expressions with named captured groups. Captured groups will be available as String variables for subsequent actions.</value>
+  </data>
+  <data name="RedditCommand_Regexes.Text" xml:space="preserve">
+    <value>Regular Expressions</value>
+  </data>
+  <data name="RedditCommand_Scope.Header" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="UserBotName.NullSelect" xml:space="preserve">
+    <value>&lt;Select a User Bot&gt;</value>
+  </data>
+  <data name="UserParameterWrapper_Description.Help" xml:space="preserve">
+    <value>This is a description of what that parameter mean.</value>
+  </data>
+  <data name="UserParameterWrapper_Description.Text" xml:space="preserve">
+    <value>Parameter Description</value>
+  </data>
+  <data name="UserParameterWrapper_Instance.Help" xml:space="preserve">
+    <value>This is the value for your parameter. It is saved encrypted and can be read and updated by the bot engine.</value>
+  </data>
+  <data name="UserParameterWrapper_Instance.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="UserParameterWrapper_Title.Help" xml:space="preserve">
+    <value>This is a friendly name for your parameter. The bot has a variable name associated.</value>
+  </data>
+  <data name="UserParameterWrapper_Title.Text" xml:space="preserve">
+    <value>Title</value>
+  </data>
+  <data name="UserVariableInfo_Title.Help" xml:space="preserve">
+    <value>This is the title displayed to the user</value>
+  </data>
+  <data name="UserVariableInfo_Title.Text" xml:space="preserve">
+    <value>Parameter Title</value>
+  </data>
 </root>

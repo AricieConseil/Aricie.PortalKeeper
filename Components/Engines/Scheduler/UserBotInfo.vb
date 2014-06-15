@@ -26,7 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _NoOverride As Boolean
         Private _AnonymousRanking As Boolean
 
-        Private _UserParameters As New SimpleList(Of UserVariableInfo)
+        Private _UserParameters As New Dictionary(Of String, UserVariableInfo)
 
         Private _PropertyDefinitions As New Dictionary(Of String, GeneralPropertyDefinition)
         Private _Entities As New Dictionary(Of String, Object)
@@ -63,10 +63,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public Property UserParameters() As SimpleList(Of UserVariableInfo)
             Get
-                Return _UserParameters
+                Return New SimpleList(Of UserVariableInfo)(_UserParameters.Values)
             End Get
             Set(ByVal value As SimpleList(Of UserVariableInfo))
-                _UserParameters = value
+                _UserParameters = value.Instances.ToDictionary(Of String, UserVariableInfo)(Function(objUserVariable) objUserVariable.Name, Function(objUserVariable) objUserVariable)
             End Set
         End Property
 
@@ -99,7 +99,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property XmlParameters() As SerializableDictionary(Of String, Object)
             Get
                 Dim toReturn As New SerializableDictionary(Of String, Object)
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
+                For Each userParameter As UserVariableInfo In Me._UserParameters.Values
                     Select Case userParameter.Mode
                         Case UserParameterMode.PropertyDefinition
                             Dim propDef As GeneralPropertyDefinition = Nothing
@@ -160,7 +160,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Set(ByVal value As ProfilePropertyDefinitionCollection)
                 Me._PropertyDefinitions = New Dictionary(Of String, GeneralPropertyDefinition)
                 Dim index As Integer = 0
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
+                For Each userParameter As UserVariableInfo In Me._UserParameters.Values
                     If userParameter.Mode = UserParameterMode.PropertyDefinition Then
                         If index < value.Count Then
                             'Me._PropertyDefinitions(userParameter.Name) = DirectCast(value(index), GeneralPropertyDefinition)
@@ -200,7 +200,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public ReadOnly Property HasEntities() As Boolean
             Get
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
+                For Each userParameter As UserVariableInfo In Me._UserParameters.Values
                     If userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso Not userParameter.IsReadOnly Then
                         Return True
                     End If
@@ -212,7 +212,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public ReadOnly Property HasReadonlyEntities() As Boolean
             Get
-                For Each userParameter As UserVariableInfo In Me._UserParameters.Instances
+                For Each userParameter As UserVariableInfo In Me._UserParameters.Values
                     If userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly Then
                         Return True
                     End If
@@ -229,15 +229,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <CollectionEditor(NoAdd:=True, NoDeletion:=True, ShowAddItem:=False, Ordered:=False, Paged:=False, DisplayStyle:=CollectionDisplayStyle.Accordion, EnableExport:=True)> _
             <LabelMode(LabelMode.Top)> _
             <XmlIgnore()> _
-        Public Property Entities() As SerializableList(Of Object)
+        Public Property Entities() As SerializableList(Of UserParameterWrapper)
             Get
-                Dim toReturn As New SerializableList(Of Object)
-                toReturn.AddRange(From userParameter In Me._UserParameters.Instances _
+                Dim toReturn As New SerializableList(Of UserParameterWrapper)
+                toReturn.AddRange(From userParameter In Me._UserParameters.Values _
                                   Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso Not userParameter.IsReadOnly _
-                                  Select Me._Entities(userParameter.Name))
+                                  Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities(userParameter.Name)))
                 Return toReturn
             End Get
-            Set(ByVal value As SerializableList(Of Object))
+            Set(ByVal value As SerializableList(Of UserParameterWrapper))
                 ' on ne fait rien mais on laisse la propriété en read write pour le property editor
             End Set
         End Property
@@ -247,10 +247,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
        <ExtendedCategory("Configuration")> _
            <ConditionalVisible("HasReadonlyEntities", False, False)> _
            <CollectionEditor(True, False, False, False, 11, CollectionDisplayStyle.Accordion, False)> _
-        Public ReadOnly Property ReadonlyEntities() As SerializableList(Of Object)
+        Public ReadOnly Property ReadonlyEntities() As SerializableList(Of UserParameterWrapper)
             Get
-                Dim toReturn As New SerializableList(Of Object)
-                toReturn.AddRange(From userParameter In Me._UserParameters.Instances Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly Select Me._Entities(userParameter.Name))
+                Dim toReturn As New SerializableList(Of UserParameterWrapper)
+                toReturn.AddRange(From userParameter In Me._UserParameters.Values _
+                                  Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly _
+                                 Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities(userParameter.Name)))
                 Return toReturn
             End Get
         End Property

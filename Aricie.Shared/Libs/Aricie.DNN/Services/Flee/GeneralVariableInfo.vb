@@ -3,10 +3,13 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 Imports Aricie.ComponentModel
+Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Services.Localization
 
 Namespace Services.Flee
     Public Class GeneralVariableInfo
@@ -34,7 +37,7 @@ Namespace Services.Flee
         End Property
 
         <ConditionalVisible("HasType", False, True)> _
-        Public Property VariableMode As VariableMode = VariableMode.Instance
+        Public Property VariableMode As VariableMode = VariableMode.Expression
 
         <ExtendedCategory("", "Evaluation")> _
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
@@ -105,9 +108,7 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <ConditionalVisible("HasType", False, True)> _
-       <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
-        Public Property Parameters() As New Variables
+
 
 
         ''' <summary>
@@ -174,16 +175,20 @@ Namespace Services.Flee
         Public Property AsCompiledExpression() As Boolean
 
 
+        <AutoPostBack()> _
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-       <ProvidersSelector()> _
+        <Selector("Name", "Name", False, True, "<Select a Method Name>", "", False, True)> _
         Public Property MethodName As String = ""
 
        
 
+
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ProvidersSelector("Key", "Value")> _
         <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.Delegate)> _
         Public Property MethodIndex As Integer = 1
 
         <Browsable(False)> _
@@ -200,6 +205,23 @@ Namespace Services.Flee
         <ConditionalVisible("RequiresInstance", False, True)>
         Public Property TargetInstance As New SimpleExpression(Of Object)
 
+        <ConditionalVisible("HasType", False, True)> _
+<ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
+        Public Property Parameters() As New Variables
+
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
+       <ActionButton(IconName.Key, IconOptions.Normal)> _
+        Public Sub SetParameters(ape As AriciePropertyEditorControl)
+            If Me.VariableMode = VariableMode.Constructor Then
+                Dim objParameters As ParameterInfo()
+
+                objParameters = SelectedMember.GetParameters()
+                Me.Parameters = Variables.GetFromParameters(objParameters)
+                ape.ItemChanged = True
+                Dim message As String = Localization.GetString("ParametersCreated.Message", ape.LocalResourceFile)
+                ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+            End If
+        End Sub
 
 
         ''' <summary>
@@ -302,8 +324,60 @@ Namespace Services.Flee
 
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
-            Return DirectCast(GetSelectorG(propertyName), IList)
+            Select Case propertyName
+                Case "MethodIndex"
+                    Dim toReturn As New Dictionary(Of String, Integer)
+                    Dim index As Integer = 1
+                    For Each objMember As MemberInfo In Me.SelectedMembers
+                        toReturn.Add(ReflectionHelper.GetMemberSignature(objMember), index)
+                        index += 1
+                    Next
+                    If toReturn.Count = 0 Then
+                        toReturn.Add("", 1)
+                    End If
+                    Return toReturn.ToList()
+                Case "MethodName"
+                    Return DirectCast(GetSelectorG(propertyName), IList)
+            End Select
+            Return New ArrayList
         End Function
+
+
+        <XmlIgnore()> _
+       <Browsable(False)> _
+        Public ReadOnly Property SelectedMembers As List(Of MethodBase)
+            Get
+
+                Dim toReturn As New List(Of MethodBase)
+                If Me.DotNetType.GetDotNetType() IsNot Nothing Then
+                    Dim members As List(Of MemberInfo) = Nothing
+                    If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me.MethodName, members) Then
+                        For Each member As MemberInfo In members
+                            If TypeOf member Is MethodBase Then
+                                toReturn.Add(DirectCast(member, MethodBase))
+                            End If
+                        Next
+                    ElseIf Me.VariableMode = Flee.VariableMode.Constructor Then
+                        toReturn.AddRange(Me.DotNetType.GetDotNetType.GetConstructors())
+                    End If
+
+                End If
+
+                Return toReturn
+            End Get
+        End Property
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public ReadOnly Property SelectedMember As MethodBase
+            Get
+                Dim tmpMembers As List(Of MethodBase) = SelectedMembers
+                If tmpMembers.Count >= MethodIndex Then
+                    Return SelectedMembers(MethodIndex - 1)
+                End If
+                Return Nothing
+            End Get
+        End Property
 
         Public Function GetSelectorG(propertyName As String) As IList(Of MethodInfo) Implements ISelector(Of MethodInfo).GetSelectorG
             Dim toReturn As New List(Of MethodInfo)

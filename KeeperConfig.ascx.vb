@@ -21,6 +21,9 @@ Imports System.Xml
 Imports Aricie.DNN.Security
 Imports System.Linq
 Imports System.IO
+Imports Newtonsoft.Json
+Imports RedditSharp
+Imports System.Reflection
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
@@ -439,23 +442,47 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
                 'Dim RSAalg As New RSACryptoServiceProvider(2048)
                 'DnnContext.Instance.AddModuleMessage(String.Format("KeySize: {0}", RSAalg.KeySize.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
-                Dim monTexte As String = CryptoHelper.GetNewSalt(1000).ToBase64()
-                DnnContext.Instance.AddModuleMessage(String.Format("Texte: {0}", monTexte), ModuleMessage.ModuleMessageType.GreenSuccess)
+
+                'Dim monTexte As String = CryptoHelper.GetNewSalt(1000).ToBase64()
+                Dim message As String = ""
 
 
+                'If messages.Count > 0 Then
+                '    message = messages(0).Unread.ToJson()
+                'End If
+
+
+
+                'DnnContext.Instance.AddModuleMessage(String.Format("Texte: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Dim sw As New Stopwatch()
                 sw.Start()
 
                 'Dim test As String = "test".ToUTF8().WriteSecureString(True, Encoding.UTF8, True).ReadSecureStringToBytes(Encoding.UTF8).FromUTF8()
+
+
+
+
+
+
+
+
 
                 For i As Integer = 0 To 0
 
                     'Dim processed As Byte() = RSAalg.EncryptByBlocks(monTexte.FromBase64())
                     'DnnContext.Instance.AddModuleMessage(String.Format("Encrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
                     'processed = RSAalg.DecryptBlocks(processed)
-                    Dim processed As String = CryptoHelper.WriteSecureString(monTexte, True).ReadSecureString()
+                    'Dim processed As String = CryptoHelper.WriteSecureString(monTexte, True).ReadSecureString()
 
-                    DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", processed), ModuleMessage.ModuleMessageType.GreenSuccess)
+
+
+                    'objReddit.ComposePrivateMessage("Test Message", "Test Body", "Alfred_Centworth")
+                    'message = HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
+
+
+                   
+
+                    DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Next
 
 
@@ -476,6 +503,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
+        Private Function TestReddit() As String
+            Dim objReddit As New RedditSharp.Reddit(RedditSharp.WebAgent.RateLimitMode.Burst)
+            'objReddit.User = objReddit.LogIn("Jessynoo", "cetia540", True)
+            Dim toreturn As String = ""
+            Dim botName As String = "Alfred_Centworth"
+            objReddit.User = objReddit.LogIn(botName, "cetia540", True)
+
+
+            Dim messages As IEnumerable(Of Comment) = objReddit.GetUser("Jessynoo").Comments.Take(5)
+            'Dim messages As IEnumerable(Of Comment) = objReddit.User.Inbox()
+            For Each objMessage In messages
+                Dim answered As Boolean = objMessage.Comments.Any(Function(tmpMessage) tmpMessage.Author = botName)
+                If Not answered Then
+                    toreturn += HttpUtility.HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
+                End If
+                'objMessage.Reply("")
+            Next
+            Return toreturn
+        End Function
 
 #End Region
 

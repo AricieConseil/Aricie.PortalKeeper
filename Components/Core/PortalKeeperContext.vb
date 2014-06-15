@@ -174,6 +174,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
 
+        Public ReadOnly Property ActionContext As PortalKeeperContext(Of TEngineEvents)
+            Get
+                Return Me
+            End Get
+        End Property
+
+
 #End Region
 
 #Region "Shared Properties"
@@ -312,8 +319,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Private _CurrentEngine As RuleEngineSettings(Of TEngineEvents)
 
 
-        
 
+        Public Function GetAdvancedTokenReplace() As AdvancedTokenReplace
+            Dim objTokenReplace As New AdvancedTokenReplace()
+            objTokenReplace.SetObjectReplace(Me, "Context")
+            objTokenReplace.SetObjectReplace(Me.Items, "Items")
+            If ActionContext.CurrentRule IsNot Nothing Then
+                objTokenReplace.SetObjectReplace(Me.CurrentRule, "Rule")
+            End If
+            Return objTokenReplace
+        End Function
       
 
 

@@ -599,7 +599,172 @@ Namespace Services
 
 #End Region
 
+        ''' <summary>
+        ''' Return the member declaration as a string.
+        ''' </summary>
+        ''' <param name="member">The Member</param>
+        ''' <returns>Member signature</returns>
+        Public Shared Function GetMemberSignature(member As MemberInfo) As String
+            If TypeOf member Is MethodBase Then
+                Return GetSignature(DirectCast(member, MethodBase))
+            ElseIf TypeOf member Is PropertyInfo Then
+                Return GetPropertySignature(DirectCast(member, PropertyInfo))
+            ElseIf TypeOf member Is EventInfo Then
+                Return GetEventSignature(DirectCast(member, EventInfo))
+            End If
+            Return member.Name
+        End Function
+
+
 #Region "Methodinfos methods"
+
+        ''' <summary>
+        ''' Return the Event declaration as a string.
+        ''' </summary>
+        ''' <param name="objEvent">The Event</param>
+        ''' <returns>Event signature</returns>
+        Public Shared Function GetEventSignature(objEvent As EventInfo) As String
+
+            Dim sigBuilder = New StringBuilder()
+            sigBuilder.Append("public event")
+            
+            sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(objEvent.EventHandlerType))
+            sigBuilder.Append(" "c)
+            sigBuilder.Append(objEvent.Name)
+
+            Return sigBuilder.ToString()
+        End Function
+
+
+        ''' <summary>
+        ''' Return the Property signature as a string.
+        ''' </summary>
+        ''' <param name="prop">The Property</param>
+        ''' <param name="callable">Return as an callable string(public void a(string b) would return a(b))</param>
+        ''' <returns>Property signature</returns>
+        Public Shared Function GetPropertySignature(prop As PropertyInfo, Optional callable As Boolean = False) As String
+            Dim firstParam = True
+            Dim sigBuilder = New StringBuilder()
+            If callable = False Then
+                If prop.GetGetMethod().IsPublic Then
+                    sigBuilder.Append("public ")
+                ElseIf prop.GetGetMethod().IsPrivate Then
+                    sigBuilder.Append("private ")
+                ElseIf prop.GetGetMethod().IsAssembly Then
+                    sigBuilder.Append("internal ")
+                End If
+                If prop.GetGetMethod().IsFamily Then
+                    sigBuilder.Append("protected ")
+                End If
+                If prop.GetGetMethod().IsStatic Then
+                    sigBuilder.Append("static ")
+                End If
+                sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(prop.PropertyType))
+                sigBuilder.Append(" "c)
+            End If
+            sigBuilder.Append(prop.Name)
+
+            sigBuilder.Append("(")
+            firstParam = True
+            For Each param As ParameterInfo In prop.GetIndexParameters()
+                If firstParam Then
+                    firstParam = False
+                Else
+                    sigBuilder.Append(", ")
+                End If
+                If param.ParameterType.IsByRef Then
+                    sigBuilder.Append("ref ")
+                ElseIf param.IsOut Then
+                    sigBuilder.Append("out ")
+                End If
+                If Not callable Then
+                    sigBuilder.Append(TypeName(param.ParameterType))
+                    sigBuilder.Append(" "c)
+                End If
+                sigBuilder.Append(param.Name)
+            Next
+            sigBuilder.Append(")")
+            Return sigBuilder.ToString()
+        End Function
+
+
+
+        ''' <summary>
+        ''' Return the method signature as a string.
+        ''' </summary>
+        ''' <param name="method">The Method</param>
+        ''' <param name="callable">Return as an callable string(public void a(string b) would return a(b))</param>
+        ''' <returns>Method signature</returns>
+        Public Shared Function GetSignature(method As MethodBase, Optional callable As Boolean = False) As String
+            Dim firstParam = True
+            Dim sigBuilder = New StringBuilder()
+            If callable = False Then
+                If method.IsPublic Then
+                    sigBuilder.Append("public ")
+                ElseIf method.IsPrivate Then
+                    sigBuilder.Append("private ")
+                ElseIf method.IsAssembly Then
+                    sigBuilder.Append("internal ")
+                End If
+                If method.IsFamily Then
+                    sigBuilder.Append("protected ")
+                End If
+                If method.IsStatic Then
+                    sigBuilder.Append("static ")
+                End If
+                If TypeOf method Is MethodInfo Then
+                    sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(DirectCast(method, MethodInfo).ReturnType))
+                End If
+                sigBuilder.Append(" "c)
+            End If
+            sigBuilder.Append(method.Name)
+
+            ' Add method generics
+            If method.IsGenericMethod Then
+                sigBuilder.Append("<")
+                For Each g As Type In method.GetGenericArguments()
+                    If firstParam Then
+                        firstParam = False
+                    Else
+                        sigBuilder.Append(", ")
+                    End If
+                    sigBuilder.Append(TypeName(g))
+                Next
+                sigBuilder.Append(">")
+            End If
+            sigBuilder.Append("(")
+            firstParam = True
+            Dim secondParam = False
+            For Each param As ParameterInfo In method.GetParameters()
+                If firstParam Then
+                    firstParam = False
+                    If method.IsDefined(GetType(System.Runtime.CompilerServices.ExtensionAttribute), False) Then
+                        If callable Then
+                            secondParam = True
+                            Continue For
+                        End If
+                        sigBuilder.Append("this ")
+                    End If
+                ElseIf secondParam = True Then
+                    secondParam = False
+                Else
+                    sigBuilder.Append(", ")
+                End If
+                If param.ParameterType.IsByRef Then
+                    sigBuilder.Append("ref ")
+                ElseIf param.IsOut Then
+                    sigBuilder.Append("out ")
+                End If
+                If Not callable Then
+                    sigBuilder.Append(TypeName(param.ParameterType))
+                    sigBuilder.Append(" "c)
+                End If
+                sigBuilder.Append(param.Name)
+            Next
+            sigBuilder.Append(")")
+            Return sigBuilder.ToString()
+        End Function
+
 
 
         Public Shared Function CreateDelegate(Of T)(ByVal objDelegate As DelegateInfo(Of T)) As [Delegate]
@@ -1020,7 +1185,7 @@ Namespace Services
 
         End Function
 
-      
+
 
         Public Shared Function Deserialize(ByVal mainType As Type, ByVal reader As XmlReader) As Object
 
