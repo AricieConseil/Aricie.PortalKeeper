@@ -1,6 +1,7 @@
 ﻿Imports System.Reflection
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.Services
 
 Namespace ComponentModel
 
@@ -43,14 +44,14 @@ Namespace ComponentModel
 
         Public Shared Function FromMember(member As MemberInfo) As ExtendedCategory
             Dim toReturn As ExtendedCategory
-            Dim customAttributes As Object() = member.GetCustomAttributes(GetType(CategoryAttribute), True)
-            If customAttributes.Length > 0 Then
+            Dim customAttributes = ReflectionHelper.GetCustomAttributes(member).Where(Function(objAttribute) TypeOf objAttribute Is CategoryAttribute)
+            If customAttributes.Any Then
                 Dim categoryAttr As CategoryAttribute = DirectCast(customAttributes(0), CategoryAttribute)
                 toReturn = New ExtendedCategory
                 toReturn.SectionName = categoryAttr.Category
             Else
-                customAttributes = member.GetCustomAttributes(GetType(ExtendedCategoryAttribute), True)
-                If customAttributes.Length > 0 Then
+                customAttributes = ReflectionHelper.GetCustomAttributes(member).Where(Function(objAttribute) TypeOf objAttribute Is ExtendedCategoryAttribute)
+                If customAttributes.Any Then
                     toReturn = DirectCast(customAttributes(0), ExtendedCategoryAttribute).ExtendedCategory
                 Else
                     toReturn = New ExtendedCategory

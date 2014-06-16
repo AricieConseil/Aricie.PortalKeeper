@@ -1,6 +1,7 @@
 ﻿Imports System.Reflection
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.Services
 
 Namespace ComponentModel
 
@@ -29,13 +30,20 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
+
+        Private Shared _MemberActions As New Dictionary(Of MemberInfo, ActionButtonInfo)
+
+
         Public Shared Function FromMember(objMember As MemberInfo) As ActionButtonInfo
             Dim toReturn As ActionButtonInfo = Nothing
-            Dim attrs As Attribute() = DirectCast(objMember.GetCustomAttributes(GetType(ActionButtonAttribute), True), Attribute())
-            If attrs.Length > 0 Then
-
-                toReturn = FromAttribute(DirectCast(attrs(0), ActionButtonAttribute))
-
+            If Not _MemberActions.TryGetValue(objMember, toReturn) Then
+                Dim attrs = ReflectionHelper.GetCustomAttributes(objMember).Where(Function(objAttribute) TypeOf objAttribute Is ActionButtonAttribute)
+                If attrs.Any Then
+                    toReturn = FromAttribute(DirectCast(attrs(0), ActionButtonAttribute))
+                End If
+                SyncLock _MemberActions
+                    _MemberActions(objMember) = toReturn
+                End SyncLock
             End If
             Return toReturn
         End Function

@@ -62,6 +62,9 @@ Namespace Collections
                             Catch ex As Exception
                                 valueType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType))
                             End Try
+                            If valueType Is Nothing Then
+                                Throw New ApplicationException(String.Format("Type {0} could not be created while deserializing dictionary", strType))
+                            End If
                             reader.ReadEndElement()
                             If Not valueSerializers.TryGetValue(valueType, valueSerializer) Then
                                 valueSerializer = ReflectionHelper.GetSerializer(valueType)

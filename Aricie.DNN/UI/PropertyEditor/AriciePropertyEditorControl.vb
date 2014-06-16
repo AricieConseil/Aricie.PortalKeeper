@@ -955,26 +955,37 @@ Namespace UI.WebControls
             Return nbControls
 
         End Function
-        Public Function GetPath() As String
-            'Return GetSubPath(-1, dataItem)
-            Dim toReturn As String
-            Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
-            If (Not parentCt Is Nothing) Then
-                If TypeOf parentCt Is AriciePropertyEditorControl Then
-                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
-                Else
-                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
-                End If
 
-            Else
-                If (Me.ParentAricieField Is Nothing) Then
-                    toReturn = Me.FriendlyName
+        Private _CurrentPath As String = Nothing
+
+        Public Function GetPath() As String
+            If _CurrentPath Is Nothing Then
+                Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
+                If (parentCt IsNot Nothing) Then
+                    Dim parentPath As String
+                    If TypeOf parentCt Is AriciePropertyEditorControl Then
+                        parentPath = DirectCast(parentCt, AriciePropertyEditorControl).GetPath()
+                    Else
+                        parentPath = DirectCast(parentCt, CollectionEditControl).GetPath()
+                    End If
+                    If parentPath.IsNullOrEmpty() Then
+                        _CurrentPath = Me.ParentAricieField.DataField
+                    Else
+
+                        _CurrentPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
+                    End If
+
+
                 Else
-                    toReturn = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
+                    If (Me.ParentAricieField Is Nothing) Then
+                        _CurrentPath = String.Empty
+                    Else
+                        _CurrentPath = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
+                    End If
                 End If
             End If
 
-            Return toReturn
+            Return _CurrentPath
         End Function
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
@@ -1175,7 +1186,7 @@ Namespace UI.WebControls
                 Me.AddEditorCtl(container, objPropertyInfo.Name, New AricieStandardEditorInfoAdapter(Me.DataSource, objPropertyInfo.Name), keepHidden)
                 Dim customAttributes As Object()
 
-                customAttributes = objPropertyInfo.GetCustomAttributes(True).Where(Function(objAttribute) TypeOf objAttribute Is LimitationAttribute).ToArray()
+                customAttributes = ReflectionHelper.GetCustomAttributes(objPropertyInfo).Where(Function(objAttribute) TypeOf objAttribute Is LimitationAttribute).ToArray()
                 If (customAttributes.Length > 0) Then
                     Dim objAttr As LimitationAttribute = DirectCast(customAttributes(0), LimitationAttribute)
                     If objAttr.IsLimited(Me) Then
@@ -1434,10 +1445,11 @@ Namespace UI.WebControls
         Public Function GetScriptDescriptors() As System.Collections.Generic.IEnumerable(Of System.Web.UI.ScriptDescriptor) Implements System.Web.UI.IScriptControl.GetScriptDescriptors
 
             Dim toReturn As New List(Of ScriptDescriptor)
-            Dim descriptor As ScriptControlDescriptor = New ScriptControlDescriptor("Aricie.DNN.AriciePropertyEditorScripts", Me.ClientID)
+            Dim strId As String = ClientID
+            Dim descriptor As ScriptControlDescriptor = New ScriptControlDescriptor("Aricie.DNN.AriciePropertyEditorScripts", strId)
 
-            descriptor.AddProperty("clientId", Me.ClientID)
-            descriptor.AddProperty("hash", Me.ClientID.GetHashCode().ToString())
+            descriptor.AddProperty("clientId", strId)
+            descriptor.AddProperty("hash", strId.GetHashCode().ToString())
 
             toReturn.Add(descriptor)
 

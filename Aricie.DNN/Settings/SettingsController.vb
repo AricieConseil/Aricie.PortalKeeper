@@ -529,14 +529,14 @@ Namespace Settings
                         xmlGeneralSettings = FetchFromModuleSettings(scope, scopeid, strKey, moduleSettings)
 
                         'si on ne retrouve toujours pas la clé
-                        ''on remonte dans les fonctions qui cherchent des keys dans l'historique
-                        If xmlGeneralSettings = "" Then
-                            ''celle-ci est la dernière version trouvée dans l'historique
-                            strKey = Constants.GetKey1(Of T)()
-                            Dim strTerminator As String = Constants.Settings.GetXMLSettingsTerminator(Of T)()
-                            xmlGeneralSettings = FetchFromModuleSettings(scope, scopeid, strKey, strTerminator, moduleSettings)
+                        ' ''on remonte dans les fonctions qui cherchent des keys dans l'historique
+                        'If xmlGeneralSettings = "" Then
+                        '    ''celle-ci est la dernière version trouvée dans l'historique
+                        '    strKey = Constants.GetKey1(Of T)()
+                        '    Dim strTerminator As String = Constants.Settings.GetXMLSettingsTerminator(Of T)()
+                        '    xmlGeneralSettings = FetchFromModuleSettings(scope, scopeid, strKey, strTerminator, moduleSettings)
 
-                        End If
+                        'End If
 
                     End If
                 End If
