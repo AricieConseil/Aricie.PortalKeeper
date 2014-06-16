@@ -46,7 +46,7 @@ Namespace ComponentModel
         End Sub
 
         Public Sub New(ByVal objType As Type)
-            Me.New(GetDisplayName(objType), GetDescription(objType), objType)
+            Me.New(ReflectionHelper.GetDisplayName(objType), ReflectionHelper.GetDescription(objType), objType)
         End Sub
 
 
@@ -87,25 +87,7 @@ Namespace ComponentModel
 
 
         'todo: move to reflection helper
-        Public Shared Function GetDisplayName(ByVal objType As Type) As String
-            Dim attributes As Object()
-            attributes = objType.GetCustomAttributes(GetType(DisplayNameAttribute), False)
-            If attributes.Length > 0 Then
-                Return DirectCast(attributes(0), DisplayNameAttribute).DisplayName
-            Else
-                Return objType.Name
-            End If
-        End Function
-
-        Public Shared Function GetDescription(ByVal objType As Type) As String
-            Dim attributes As Object()
-            attributes = objType.GetCustomAttributes(GetType(DescriptionAttribute), False)
-            If attributes.Length > 0 Then
-                Return DirectCast(attributes(0), DescriptionAttribute).Description
-            Else
-                Return String.Empty
-            End If
-        End Function
+        
 
     End Class
 End Namespace

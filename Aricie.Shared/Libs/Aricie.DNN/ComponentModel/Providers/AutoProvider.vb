@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.Services
 
 Namespace ComponentModel
     <Serializable()> _
@@ -23,7 +24,7 @@ Namespace ComponentModel
             Get
                 Dim toReturn As String = MyBase._ProviderName
                 If String.IsNullOrEmpty(toReturn) Then
-                    toReturn = ProviderConfig(Of TProvider).GetDisplayName(Me.GetType)
+                    toReturn = ReflectionHelper.GetDisplayName(Me.GetType)
                     MyBase._ProviderName = toReturn
                 End If
                 Return toReturn

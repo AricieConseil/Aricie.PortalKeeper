@@ -21,8 +21,6 @@ namespace RedditSharp
         [JsonIgnore]
         private IWebAgent WebAgent { get; set; }
 
-        [JsonIgnore]
-        private Reddit Reddit { get; set; }
 
         public VotableThing()
         { }

@@ -56,7 +56,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits NamedConfig
 
         Public Sub New()
-            Me.ImportDefaultProviders()
+            'Me.ImportDefaultProviders()
         End Sub
 
         Public Overridable Property Mode As RuleEngineMode

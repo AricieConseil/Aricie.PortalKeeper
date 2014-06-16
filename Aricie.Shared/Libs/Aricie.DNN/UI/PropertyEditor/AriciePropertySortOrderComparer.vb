@@ -1,5 +1,7 @@
 ﻿Imports System.Reflection
+Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.Services
 
 Namespace UI.WebControls
     Public Class AriciePropertySortOrderComparer
@@ -23,9 +25,8 @@ Namespace UI.WebControls
             Dim order As Integer
             If Not _SortOrders.TryGetValue(objprop, order) Then
                 order = 100
-                Dim customAttributes As Object()
-                customAttributes = objprop.GetCustomAttributes(GetType(SortOrderAttribute), True)
-                If (customAttributes.Length > 0) Then
+                Dim customAttributes = ReflectionHelper.GetCustomAttributes(objprop).Where(Function(objAttribute) TypeOf objAttribute Is SortOrderAttribute)
+                If (customAttributes.Any) Then
                     order = DirectCast(customAttributes(0), SortOrderAttribute).Order
                 End If
                 SyncLock (_SortOrders)

@@ -98,10 +98,10 @@ Namespace Providers
                 End If
 
 
-                If Not absoluteExpiration.Equals(Constants.Cache.NoExpiration) Then
-                    DataCache.SetCache(key, value, objDependancy2, Now.Add(absoluteExpiration), Nothing)
-                Else
+                If absoluteExpiration.Equals(Constants.Cache.NoExpiration) OrElse absoluteExpiration.Equals(TimeSpan.Zero) Then
                     DataCache.SetCache(key, value, objDependancy2)
+                Else
+                    DataCache.SetCache(key, value, objDependancy2, Now.Add(absoluteExpiration), Nothing)
                 End If
 
             End If

@@ -1,5 +1,6 @@
 ﻿Imports System.Reflection
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.Services
 
 Namespace ComponentModel
     Public Class ConditionalVisibleInfo
@@ -87,7 +88,7 @@ Namespace ComponentModel
 
         Private Function HasMatchingValue(ByVal value As Object) As Boolean
             If _MatchingValues.Any(Function(objValue) objValue.Equals(value) OrElse (value.GetType().IsEnum AndAlso Convert.ToInt32(objValue) <> 0 _
-                                                                                     AndAlso value.GetType().GetCustomAttributes(GetType(FlagsAttribute), False).Any() _
+                                                                                     AndAlso ReflectionHelper.GetCustomAttributes(value.GetType()).Where(Function(objAttribute) TypeOf objAttribute Is FlagsAttribute).Any() _
                                                                                      AndAlso ((Convert.ToInt32(value) And Convert.ToInt32(objValue)) = Convert.ToInt32(objValue)))) Then
                 Return Not Me._MasterNegate
             End If
@@ -97,8 +98,8 @@ Namespace ComponentModel
 
         Public Shared Function FromMember(member As MemberInfo) As List(Of ConditionalVisibleInfo)
             Dim toReturn As New List(Of ConditionalVisibleInfo)
-            Dim customAttributes As Object() = member.GetCustomAttributes(GetType(ConditionalVisibleAttribute), True)
-            If customAttributes.Length > 0 Then
+            Dim customAttributes = ReflectionHelper.GetCustomAttributes(member).Where(Function(objAttribute) TypeOf objAttribute Is ConditionalVisibleAttribute)
+            If customAttributes.Any Then
                 For Each condAttribute As ConditionalVisibleAttribute In customAttributes
                     toReturn.Add(condAttribute.Value)
                 Next

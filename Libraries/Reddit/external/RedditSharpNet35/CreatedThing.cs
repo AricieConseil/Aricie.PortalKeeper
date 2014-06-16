@@ -7,7 +7,6 @@ namespace RedditSharp
     [Serializable()]
     public class CreatedThing : Thing
     {
-        private Reddit Reddit { get; set; }
 
         public CreatedThing() { }
 

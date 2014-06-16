@@ -164,30 +164,35 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property PropertyValue() As String
 
 
+
+       
+
         <Browsable(False)> _
         Public Property TypedValue As Object
             Get
-                Dim listEntry As ListEntryInfo = New ListController().GetListEntryInfo(Me._DataType)
-                If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
-                    Select Case listEntry.Value
-                        Case "Integer"
-                            Return Convert.ToInt32(Me._PropertyValue)
-                        Case "TrueFalse"
-                            Return Convert.ToBoolean(Me._PropertyValue)
-                        Case "Date", "DateTime"
-                            Return DateTime.Parse(Me._PropertyValue, CultureInfo.InvariantCulture, DateTimeStyles.None)
-                        Case "Locale"
-                            Return Localization.GetSupportedLocales.Item(Me._PropertyValue)
-                        Case "Page"
-                            Return TabController.GetTab(Convert.ToInt32(Me._PropertyValue), NukeHelper.PortalId, False)
-                        Case Else
-                            Return Me._PropertyValue
-                    End Select
+                If Me._DataType > -1 Then
+                    Dim listEntry As ListEntryInfo = NukeHelper.GetListEntrySingleton(Me._DataType)
+                    If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
+                        Select Case listEntry.Value
+                            Case "Integer"
+                                Return Convert.ToInt32(Me._PropertyValue)
+                            Case "TrueFalse"
+                                Return Convert.ToBoolean(Me._PropertyValue)
+                            Case "Date", "DateTime"
+                                Return DateTime.Parse(Me._PropertyValue, CultureInfo.InvariantCulture, DateTimeStyles.None)
+                            Case "Locale"
+                                Return Localization.GetSupportedLocales.Item(Me._PropertyValue)
+                            Case "Page"
+                                Return TabController.GetTab(Convert.ToInt32(Me._PropertyValue), NukeHelper.PortalId, False)
+                            Case Else
+                                Return Me._PropertyValue
+                        End Select
+                    End If
                 End If
                 Return Me._PropertyValue
             End Get
             Set(value As Object)
-                Dim listEntry As ListEntryInfo = New ListController().GetListEntryInfo(Me._DataType)
+                Dim listEntry As ListEntryInfo = NukeHelper.GetListEntrySingleton(Me._DataType)
                 If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
                     Select Case listEntry.Value
                         Case "Integer"

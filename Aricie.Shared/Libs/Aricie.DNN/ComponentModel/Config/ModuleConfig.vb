@@ -323,8 +323,16 @@ Namespace ComponentModel
             End Get
         End Property
 
+
+
+        Private _BackUpFiles As IList(Of FileInfo)
+
+
         Private Function GetBackupFiles() As IList(Of FileInfo)
-            Return SettingsController.GetBackups(GetFilePath(True))
+            If _BackUpFiles Is Nothing Then
+                _BackUpFiles = SettingsController.GetBackups(GetFilePath(True))
+            End If
+            Return _BackUpFiles
         End Function
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
