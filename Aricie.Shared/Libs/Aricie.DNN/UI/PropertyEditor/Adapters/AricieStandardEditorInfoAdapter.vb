@@ -176,13 +176,13 @@ Namespace UI.WebControls
             editInfo.Type = _CurrentProperty.PropertyType().AssemblyQualifiedName
 
             'Get the Custom Attributes for the property
-            Dim attrList As New List(Of Object)(_CurrentProperty.GetCustomAttributes(True))
+            Dim attrList As New List(Of Object)(ReflectionHelper.GetCustomAttributes(_CurrentProperty))
 
             If Me._AdditionalAttributes IsNot Nothing Then
                 attrList.AddRange(Me._AdditionalAttributes)
             End If
             'todo: is this ok?
-            attrList.AddRange(_CurrentProperty.PropertyType.GetCustomAttributes(True))
+            attrList.AddRange(ReflectionHelper.GetCustomAttributes(_CurrentProperty.PropertyType))
 
             editInfo.Attributes = attrList.ToArray()
 

@@ -100,7 +100,25 @@ Namespace Services
 
         'End Function
 
+        Public Shared Function GetDisplayName(ByVal objType As Type) As String
+            Dim attributes As Object()
+            attributes = ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttribute) TypeOf objAttribute Is DisplayNameAttribute).ToArray()
+            If attributes.Length > 0 Then
+                Return DirectCast(attributes(0), DisplayNameAttribute).DisplayName
+            Else
+                Return objType.Name
+            End If
+        End Function
 
+        Public Shared Function GetDescription(ByVal objType As Type) As String
+            Dim attributes As Object()
+            attributes = ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttribute) TypeOf objAttribute Is DescriptionAttribute).ToArray()
+            If attributes.Length > 0 Then
+                Return DirectCast(attributes(0), DescriptionAttribute).Description
+            Else
+                Return String.Empty
+            End If
+        End Function
 
 
         Public Shared Function CreateType(ByVal typeName As String) As Type
@@ -307,6 +325,371 @@ Namespace Services
 
 #End Region
 
+
+#Region "Objects manipulation"
+
+
+        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
+
+        Public Shared Function CanCreateObject(objectType As Type) As Boolean
+            Dim toReturn As Boolean
+            If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
+                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse (Not objectType.IsAbstract() AndAlso (HasDefaultConstructor(objectType) OrElse objectType.IsArray))
+                SyncLock _CanCreateTypes
+                    _CanCreateTypes(objectType) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
+        End Function
+
+        Public Shared Function CreateObject(ByVal objectType As Type) As Object
+
+            If Not CanCreateObject(objectType) Then
+                Throw New ApplicationException(String.Format("Cannot create object of Type {0}, because it has no default constructor", objectType.AssemblyQualifiedName))
+            End If
+
+            Dim toReturn As Object
+
+            If ReflectionHelper.IsTrueReferenceType(objectType) Then
+                If objectType.IsArray Then
+                    toReturn = Activator.CreateInstance(objectType, New Object() {1})
+                Else
+                    toReturn = Activator.CreateInstance(objectType)
+                End If
+            Else
+                If objectType Is GetType(String) Then
+                    toReturn = ""
+                ElseIf objectType Is GetType(DateTime) Then
+                    toReturn = DateTime.Now
+                Else
+                    toReturn = Convert.ChangeType(0, Type.GetTypeCode(objectType))
+                    'toReturn = Convert.ChangeType(0, objectType)
+                    If objectType.IsEnum Then
+                        toReturn = [Enum].Parse(objectType, toReturn.ToString)
+                    End If
+                End If
+            End If
+
+            Return toReturn
+
+        End Function
+
+        Public Shared Function CreateObject(ByVal typeName As String) As Object
+
+
+            Dim objectType As Type = ReflectionHelper.CreateType(typeName)
+
+            Return CreateObject(objectType)
+
+        End Function
+
+        Public Shared Function CreateObject(Of T)(ByVal typeName As String) As T
+            Return DirectCast(CreateObject(typeName), T)
+
+        End Function
+
+        Public Shared Function CreateObject(Of T)() As T
+            Return Activator.CreateInstance(Of T)()
+
+        End Function
+
+        Public Shared Sub MergeObjects(sourceObject As Object, targetObject As Object)
+            If sourceObject IsNot Nothing AndAlso targetObject IsNot Nothing Then
+                Dim objType As Type = sourceObject.GetType()
+                Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
+                Dim targetProps As Dictionary(Of String, PropertyInfo) = Nothing
+                If targetObject.GetType() IsNot objType Then
+                    targetProps = GetPropertiesDictionary(targetObject.GetType())
+                End If
+                Dim targetProp As PropertyInfo = Nothing
+
+                For Each propName As String In props.Keys
+                    Dim p As PropertyInfo = props(propName)
+
+                    If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 AndAlso (targetProps Is Nothing OrElse targetProps.TryGetValue(p.Name, targetProp)) Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
+                        Dim pSourceValue As Object = p.GetValue(sourceObject, Nothing)
+                        If targetProp IsNot Nothing Then
+                            targetProp.SetValue(targetObject, pSourceValue, Nothing)
+                        Else
+                            p.SetValue(targetObject, pSourceValue, Nothing)
+                        End If
+
+                    End If
+                Next
+            End If
+        End Sub
+
+        Public Shared Function CloneObject(Of T)(ByVal objectToClone As T) As T
+            Return CloneObject(Of T)(objectToClone, False)
+        End Function
+
+
+        Public Shared Function CloneObject(Of T)(ByVal objectToClone As T, useSerialization As Boolean) As T
+            If useSerialization Then
+                Dim striSerialized As String = ReflectionHelper.Serialize(objectToClone).OuterXml
+                Return ReflectionHelper.Deserialize(Of T)(striSerialized)
+            Else
+                Dim cloneDico As New Dictionary(Of Object, Object)
+                Return DirectCast(CloneObject(objectToClone, cloneDico), T)
+            End If
+        End Function
+
+
+        Public Shared Function CloneObject(ByVal objectToClone As Object) As Object
+            Dim cloneDico As New Dictionary(Of Object, Object)
+            Return CloneObject(objectToClone, cloneDico)
+        End Function
+
+
+
+        Private Shared Function CloneObject(ByVal objectToClone As Object, ByRef cloneDico As Dictionary(Of Object, Object)) As Object
+
+            'first check if we already cloned the object
+            If cloneDico.ContainsKey(objectToClone) Then
+                Return cloneDico(objectToClone)
+            End If
+
+            'check for null
+            If objectToClone Is Nothing Then
+                Return Nothing
+            End If
+
+            'SAMY: Contournement du problème de l'arrivée du TimeZoneInfo dans le monde de DNN.
+            'TODO: changer le fonctionnement du clonage...
+            If (TypeOf objectToClone Is TimeZoneInfo) Then
+                Return TimeZoneInfo.FromSerializedString(DirectCast(objectToClone, TimeZoneInfo).ToSerializedString())
+            End If
+
+
+            Dim objType As Type = objectToClone.GetType()
+
+
+            'if the object is a value type or a string, return it
+            If Not IsTrueReferenceType(objType) Then
+                Return objectToClone
+            End If
+
+            Dim toReturn As Object = Nothing
+
+            'if the object is an tractable enumerable, we can create a new object an feed it with inner clones 
+            '(we check that before ICloneable otherwise the inner objects won't be cloned)
+            Dim objIEnumerableType As Type = objType.GetInterface("IEnumerable", False)
+            If Not (objIEnumerableType Is Nothing) Then
+
+                If objType.IsArray Then
+                    Dim arrayToClone As Array = DirectCast(objectToClone, Array)
+                    toReturn = Array.CreateInstance(objType.GetElementType, arrayToClone.Length)
+                    cloneDico(objectToClone) = toReturn
+                    For i As Integer = 0 To arrayToClone.Length - 1
+                        Dim obj As Object = arrayToClone.GetValue(i)
+                        DirectCast(toReturn, Array).SetValue(CloneObject(obj, cloneDico), i)
+                    Next
+                Else
+
+
+
+                    Dim objIDicType As Type = objType.GetInterface("IDictionary", False)
+                    If Not (objIDicType Is Nothing) Then
+                        Dim origDic As IDictionary = CType(objectToClone, IDictionary)
+                        toReturn = ReflectionHelper.CreateObject(objType)
+                        cloneDico(objectToClone) = toReturn
+                        For Each key As Object In origDic.Keys
+                            DirectCast(toReturn, IDictionary)(ReflectionHelper.CloneObject(key, cloneDico)) = ReflectionHelper.CloneObject(origDic(key), cloneDico)
+                        Next
+
+                    Else
+                        Dim objIListType As Type = objType.GetInterface("IList", False)
+
+                        If Not (objIListType Is Nothing) Then
+                            Dim origList As IList = CType(objectToClone, IList)
+                            toReturn = ReflectionHelper.CreateObject(objType)
+                            cloneDico(objectToClone) = toReturn
+                            Dim obj As Object
+                            For j As Integer = 0 To origList.Count - 1
+                                obj = origList(j)
+                                DirectCast(toReturn, IList).Add(ReflectionHelper.CloneObject(obj, cloneDico))
+                            Next
+                        End If
+                    End If
+
+
+                End If
+
+            End If
+
+            If toReturn Is Nothing Then
+                'check if the object is cloneable
+                Dim objICloneType As Type = objType.GetInterface("ICloneable", False)
+
+                If Not (objICloneType Is Nothing) Then
+                    Dim objIClone As ICloneable = CType(objectToClone, ICloneable)
+
+                    If Not (objIClone Is Nothing) Then
+                        toReturn = objIClone.Clone()
+                        cloneDico(objectToClone) = toReturn
+                        'we don't need further action, return
+                        Return toReturn
+                    End If
+                End If
+            End If
+
+            If toReturn Is Nothing Then
+                If ReflectionHelper.CanCreateObject(objType) Then
+                    toReturn = ReflectionHelper.CreateObject(objType)
+                    cloneDico(objectToClone) = toReturn
+                Else
+                    toReturn = objectToClone
+                    cloneDico(objectToClone) = toReturn
+                    Return toReturn
+                End If
+            End If
+
+            'Finally, try to clone any writeable property (it may complete or even discard the ienumerable actions)
+            Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
+
+            For Each propName As String In props.Keys
+                Dim p As PropertyInfo = props(propName)
+
+                If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then ' AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0 (There are times when it is explicitally needed to overwrite such xmlignored properties )
+                    Dim pSourceValue As Object = p.GetValue(objectToClone, Nothing)
+                    If pSourceValue IsNot Nothing Then
+
+                        Dim pDestValue As Object = CloneObject(pSourceValue, cloneDico)
+
+                        p.SetValue(toReturn, pDestValue, Nothing)
+                    End If
+                End If
+            Next
+
+            Return toReturn
+
+        End Function
+
+
+
+
+        Public Shared Function BuildParameters(ByVal params As ParameterInfo(), ByVal values As List(Of String)) As Object()
+            Dim paramValues As New List(Of Object)
+            If params.Length > 0 Then
+                If params.Length > values.Count Then
+                    Throw New ArgumentException("invalid call to a method or indexed property takes more argument than supplied in " & String.Join(":", values.ToArray))
+                End If
+                'Dim objIndexParameter As ParameterInfo
+                Dim strParameterValue As String
+                For i As Integer = 0 To params.Length - 1
+                    Dim objIndexParameter As ParameterInfo = params(i)
+                    strParameterValue = values(i)
+                    Dim objParamValue As Object = Convert.ChangeType(strParameterValue, objIndexParameter.ParameterType, CultureInfo.InvariantCulture)
+                    paramValues.Add(objParamValue)
+                Next
+            End If
+
+            If paramValues.Count > 0 Then
+                Return paramValues.ToArray
+            End If
+            Return Nothing
+        End Function
+
+
+        Public Shared Function GetEventParameters(objEventInfo As EventInfo) As ParameterInfo()
+            Return objEventInfo.EventHandlerType.GetMethod("Invoke").GetParameters()
+        End Function
+
+        Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
+            Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
+            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+            Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
+
+            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters.ToArray())
+            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
+
+            objEventInfo.AddEventHandler(item, handler)
+        End Sub
+
+        Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
+            Dim parameters = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+
+            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
+
+            objEventInfo.AddEventHandler(item, handler)
+        End Sub
+
+
+        Private Shared _CustomAttributes As New Dictionary(Of MemberInfo, Object())
+        Private Shared _DefaultProperties As New Dictionary(Of Type, PropertyInfo)
+
+        Public Shared Function GetCustomAttributes(objMember As MemberInfo) As Object()
+            Dim toReturn As Object() = Nothing
+            If Not _CustomAttributes.TryGetValue(objMember, toReturn) Then
+                toReturn = objMember.GetCustomAttributes(True)
+                SyncLock _CustomAttributes
+                    _CustomAttributes(objMember) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
+        End Function
+
+        Public Shared Function GetDefaultProperty(objType As Type) As PropertyInfo
+            Dim toReturn As PropertyInfo = Nothing
+            If Not _DefaultProperties.TryGetValue(objType, toReturn) Then
+                For Each attr As Attribute In ReflectionHelper.GetCustomAttributes(objType)
+                    If TypeOf attr Is DefaultPropertyAttribute Then
+                        Dim defPropAttr As DefaultPropertyAttribute = DirectCast(attr, DefaultPropertyAttribute)
+                        toReturn = objType.GetProperty(defPropAttr.Name)
+                        SyncLock _DefaultProperties
+                            _DefaultProperties(objType) = toReturn
+                        End SyncLock
+                        Exit For
+                    End If
+                Next
+            End If
+            Return toReturn
+        End Function
+
+
+        Public Shared Function GetFriendlyName(value As Object) As String
+            Dim toReturn As String = String.Empty
+            If value IsNot Nothing Then
+                Dim valueType As Type = value.GetType
+                If valueType.GetInterface("IConvertible") IsNot Nothing Then
+                    toReturn = DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture)
+                Else
+                    Dim defProp As PropertyInfo = GetDefaultProperty(valueType)
+                    If defProp IsNot Nothing Then
+                        Dim subValue As Object = defProp.GetValue(value, Nothing)
+                        If subValue IsNot Nothing Then
+                            toReturn = GetFriendlyName(subValue)
+                        End If
+                    End If
+                    If toReturn.IsNullOrEmpty() Then
+                        Dim keyProp As PropertyInfo = Nothing
+                        Dim valueProp As PropertyInfo = Nothing
+                        If ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Key", keyProp) _
+                            AndAlso ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Value", valueProp) Then
+                            Dim keyValue As Object = keyProp.GetValue(value, Nothing)
+                            Dim keyName As String = GetFriendlyName(keyValue)
+                            Dim valueValue As Object = valueProp.GetValue(value, Nothing)
+                            Dim valueName As String = GetFriendlyName(valueValue)
+                            toReturn = String.Format("{0}  -  {1}", keyName, valueName)
+                        End If
+                    End If
+                    If toReturn.IsNullOrEmpty() Then
+                        toReturn = GetSimpleTypeName(valueType)
+                    End If
+                End If
+            End If
+            Return toReturn
+
+        End Function
+
+
+
+
+
+
+#End Region
+
+
 #Region "Singleton methods"
 
         Public Shared Function GetSingleton(Of T)() As T
@@ -378,6 +761,7 @@ Namespace Services
             Return GetMembersDictionary(objType, False, False)
         End Function
 
+
         Public Shared Function GetMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, MemberInfo)
 
 
@@ -391,7 +775,7 @@ Namespace Services
                     FillMembersDictionary(currentType, objMembers, includePrivateFields)
                     currentType = currentType.BaseType
                 Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
-                SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
             End If
 
             Return objMembers
@@ -432,7 +816,7 @@ Namespace Services
                     currentType = currentType.BaseType
                 Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
 
-                SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Cache.NoSlidingExpiration, objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
             End If
 
             Return objMembers
@@ -989,6 +1373,9 @@ Namespace Services
 
                 If Not Instance._XmlSerializers.TryGetValue(objType, tempDico) Then
                     tempDico = New Dictionary(Of String, XmlSerializer)
+                    SyncLock Instance._XmlSerializers
+                        Instance._XmlSerializers(objType) = tempDico
+                    End SyncLock
                 End If
                 Dim params As New List(Of String)
                 If extraTypes IsNot Nothing Then
@@ -1005,9 +1392,8 @@ Namespace Services
                 End If
                 If Not tempDico.TryGetValue(key, toReturn) Then
                     toReturn = BuildSerializer(objType, extraTypes, rootName)
-                    tempDico(key) = toReturn
-                    SyncLock Instance._XmlSerializers
-                        Instance._XmlSerializers(objType) = tempDico
+                    SyncLock tempDico
+                        tempDico(key) = toReturn
                     End SyncLock
                 End If
 
@@ -1202,340 +1588,6 @@ Namespace Services
 
 #End Region
 
-
-#Region "Objects manipulation"
-
-
-        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
-
-        Public Shared Function CanCreateObject(objectType As Type) As Boolean
-            Dim toReturn As Boolean
-            If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
-                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse (Not objectType.IsAbstract() AndAlso (HasDefaultConstructor(objectType) OrElse objectType.IsArray))
-                SyncLock _CanCreateTypes
-                    _CanCreateTypes(objectType) = toReturn
-                End SyncLock
-            End If
-            Return toReturn
-        End Function
-
-        Public Shared Function CreateObject(ByVal objectType As Type) As Object
-
-            If Not CanCreateObject(objectType) Then
-                Throw New ApplicationException(String.Format("Cannot create object of Type {0}, because it has no default constructor", objectType.AssemblyQualifiedName))
-            End If
-
-            Dim toReturn As Object
-
-            If ReflectionHelper.IsTrueReferenceType(objectType) Then
-                If objectType.IsArray Then
-                    toReturn = Activator.CreateInstance(objectType, New Object() {1})
-                Else
-                    toReturn = Activator.CreateInstance(objectType)
-                End If
-            Else
-                If objectType Is GetType(String) Then
-                    toReturn = ""
-                ElseIf objectType Is GetType(DateTime) Then
-                    toReturn = DateTime.Now
-                Else
-                    toReturn = Convert.ChangeType(0, Type.GetTypeCode(objectType))
-                    'toReturn = Convert.ChangeType(0, objectType)
-                    If objectType.IsEnum Then
-                        toReturn = [Enum].Parse(objectType, toReturn.ToString)
-                    End If
-                End If
-            End If
-
-            Return toReturn
-
-        End Function
-
-        Public Shared Function CreateObject(ByVal typeName As String) As Object
-
-
-            Dim objectType As Type = ReflectionHelper.CreateType(typeName)
-
-            Return CreateObject(objectType)
-
-        End Function
-
-        Public Shared Function CreateObject(Of T)(ByVal typeName As String) As T
-            Return DirectCast(CreateObject(typeName), T)
-
-        End Function
-
-        Public Shared Function CreateObject(Of T)() As T
-            Return Activator.CreateInstance(Of T)()
-
-        End Function
-
-        Public Shared Sub MergeObjects(sourceObject As Object, targetObject As Object)
-            If sourceObject IsNot Nothing AndAlso targetObject IsNot Nothing Then
-                Dim objType As Type = sourceObject.GetType()
-                Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
-                Dim targetProps As Dictionary(Of String, PropertyInfo) = Nothing
-                If targetObject.GetType() IsNot objType Then
-                    targetProps = GetPropertiesDictionary(targetObject.GetType())
-                End If
-                Dim targetProp As PropertyInfo = Nothing
-
-                For Each propName As String In props.Keys
-                    Dim p As PropertyInfo = props(propName)
-
-                    If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 AndAlso (targetProps Is Nothing OrElse targetProps.TryGetValue(p.Name, targetProp)) Then 'AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0
-                        Dim pSourceValue As Object = p.GetValue(sourceObject, Nothing)
-                        If targetProp IsNot Nothing Then
-                            targetProp.SetValue(targetObject, pSourceValue, Nothing)
-                        Else
-                            p.SetValue(targetObject, pSourceValue, Nothing)
-                        End If
-
-                    End If
-                Next
-            End If
-        End Sub
-
-        Public Shared Function CloneObject(Of T)(ByVal objectToClone As T) As T
-            Return CloneObject(Of T)(objectToClone, False)
-        End Function
-
-
-        Public Shared Function CloneObject(Of T)(ByVal objectToClone As T, useSerialization As Boolean) As T
-            If useSerialization Then
-                Dim striSerialized As String = ReflectionHelper.Serialize(objectToClone).OuterXml
-                Return ReflectionHelper.Deserialize(Of T)(striSerialized)
-            Else
-                Dim cloneDico As New Dictionary(Of Object, Object)
-                Return DirectCast(CloneObject(objectToClone, cloneDico), T)
-            End If
-        End Function
-
-
-        Public Shared Function CloneObject(ByVal objectToClone As Object) As Object
-            Dim cloneDico As New Dictionary(Of Object, Object)
-            Return CloneObject(objectToClone, cloneDico)
-        End Function
-
-
-
-        Private Shared Function CloneObject(ByVal objectToClone As Object, ByRef cloneDico As Dictionary(Of Object, Object)) As Object
-
-            'first check if we already cloned the object
-            If cloneDico.ContainsKey(objectToClone) Then
-                Return cloneDico(objectToClone)
-            End If
-
-            'check for null
-            If objectToClone Is Nothing Then
-                Return Nothing
-            End If
-
-            'SAMY: Contournement du problème de l'arrivée du TimeZoneInfo dans le monde de DNN.
-            'TODO: changer le fonctionnement du clonage...
-            If (TypeOf objectToClone Is TimeZoneInfo) Then
-                Return TimeZoneInfo.FromSerializedString(DirectCast(objectToClone, TimeZoneInfo).ToSerializedString())
-            End If
-
-
-            Dim objType As Type = objectToClone.GetType()
-
-
-            'if the object is a value type or a string, return it
-            If Not IsTrueReferenceType(objType) Then
-                Return objectToClone
-            End If
-
-            Dim toReturn As Object = Nothing
-
-            'if the object is an tractable enumerable, we can create a new object an feed it with inner clones 
-            '(we check that before ICloneable otherwise the inner objects won't be cloned)
-            Dim objIEnumerableType As Type = objType.GetInterface("IEnumerable", False)
-            If Not (objIEnumerableType Is Nothing) Then
-
-                If objType.IsArray Then
-                    Dim arrayToClone As Array = DirectCast(objectToClone, Array)
-                    toReturn = Array.CreateInstance(objType.GetElementType, arrayToClone.Length)
-                    cloneDico(objectToClone) = toReturn
-                    For i As Integer = 0 To arrayToClone.Length - 1
-                        Dim obj As Object = arrayToClone.GetValue(i)
-                        DirectCast(toReturn, Array).SetValue(CloneObject(obj, cloneDico), i)
-                    Next
-                Else
-
-
-
-                    Dim objIDicType As Type = objType.GetInterface("IDictionary", False)
-                    If Not (objIDicType Is Nothing) Then
-                        Dim origDic As IDictionary = CType(objectToClone, IDictionary)
-                        toReturn = ReflectionHelper.CreateObject(objType)
-                        cloneDico(objectToClone) = toReturn
-                        For Each key As Object In origDic.Keys
-                            DirectCast(toReturn, IDictionary)(ReflectionHelper.CloneObject(key, cloneDico)) = ReflectionHelper.CloneObject(origDic(key), cloneDico)
-                        Next
-
-                    Else
-                        Dim objIListType As Type = objType.GetInterface("IList", False)
-
-                        If Not (objIListType Is Nothing) Then
-                            Dim origList As IList = CType(objectToClone, IList)
-                            toReturn = ReflectionHelper.CreateObject(objType)
-                            cloneDico(objectToClone) = toReturn
-                            Dim obj As Object
-                            For j As Integer = 0 To origList.Count - 1
-                                obj = origList(j)
-                                DirectCast(toReturn, IList).Add(ReflectionHelper.CloneObject(obj, cloneDico))
-                            Next
-                        End If
-                    End If
-
-
-                End If
-
-            End If
-
-            If toReturn Is Nothing Then
-                'check if the object is cloneable
-                Dim objICloneType As Type = objType.GetInterface("ICloneable", False)
-
-                If Not (objICloneType Is Nothing) Then
-                    Dim objIClone As ICloneable = CType(objectToClone, ICloneable)
-
-                    If Not (objIClone Is Nothing) Then
-                        toReturn = objIClone.Clone()
-                        cloneDico(objectToClone) = toReturn
-                        'we don't need further action, return
-                        Return toReturn
-                    End If
-                End If
-            End If
-
-            If toReturn Is Nothing Then
-                If ReflectionHelper.CanCreateObject(objType) Then
-                    toReturn = ReflectionHelper.CreateObject(objType)
-                    cloneDico(objectToClone) = toReturn
-                Else
-                    toReturn = objectToClone
-                    cloneDico(objectToClone) = toReturn
-                    Return toReturn
-                End If
-            End If
-
-            'Finally, try to clone any writeable property (it may complete or even discard the ienumerable actions)
-            Dim props As Dictionary(Of String, PropertyInfo) = GetPropertiesDictionary(objType)
-
-            For Each propName As String In props.Keys
-                Dim p As PropertyInfo = props(propName)
-
-                If p.CanWrite AndAlso Not p.GetIndexParameters.Length > 0 Then ' AndAlso p.GetCustomAttributes(GetType(XmlIgnoreAttribute), True).Length = 0 (There are times when it is explicitally needed to overwrite such xmlignored properties )
-                    Dim pSourceValue As Object = p.GetValue(objectToClone, Nothing)
-                    If pSourceValue IsNot Nothing Then
-
-                        Dim pDestValue As Object = CloneObject(pSourceValue, cloneDico)
-
-                        p.SetValue(toReturn, pDestValue, Nothing)
-                    End If
-                End If
-            Next
-
-            Return toReturn
-
-        End Function
-
-
-
-
-        Public Shared Function BuildParameters(ByVal params As ParameterInfo(), ByVal values As List(Of String)) As Object()
-            Dim paramValues As New List(Of Object)
-            If params.Length > 0 Then
-                If params.Length > values.Count Then
-                    Throw New ArgumentException("invalid call to a method or indexed property takes more argument than supplied in " & String.Join(":", values.ToArray))
-                End If
-                'Dim objIndexParameter As ParameterInfo
-                Dim strParameterValue As String
-                For i As Integer = 0 To params.Length - 1
-                    Dim objIndexParameter As ParameterInfo = params(i)
-                    strParameterValue = values(i)
-                    Dim objParamValue As Object = Convert.ChangeType(strParameterValue, objIndexParameter.ParameterType, CultureInfo.InvariantCulture)
-                    paramValues.Add(objParamValue)
-                Next
-            End If
-
-            If paramValues.Count > 0 Then
-                Return paramValues.ToArray
-            End If
-            Return Nothing
-        End Function
-
-
-        Public Shared Function GetEventParameters(objEventInfo As EventInfo) As ParameterInfo()
-            Return objEventInfo.EventHandlerType.GetMethod("Invoke").GetParameters()
-        End Function
-
-        Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
-            Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
-            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
-            Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
-
-            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters.ToArray())
-            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
-
-            objEventInfo.AddEventHandler(item, handler)
-        End Sub
-
-        Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
-            Dim parameters = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
-
-            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
-
-            objEventInfo.AddEventHandler(item, handler)
-        End Sub
-
-        Public Shared Function GetFriendlyName(value As Object) As String
-            Dim toReturn As String = String.Empty
-            If value IsNot Nothing Then
-                Dim valueType As Type = value.GetType
-                If valueType.GetInterface("IConvertible") IsNot Nothing Then
-                    toReturn = DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture)
-                Else
-                    For Each attr As Attribute In valueType.GetCustomAttributes(GetType(DefaultPropertyAttribute), True)
-                        Dim defPropAttr As DefaultPropertyAttribute = DirectCast(attr, DefaultPropertyAttribute)
-                        Dim defProp As PropertyInfo = valueType.GetProperty(defPropAttr.Name)
-                        If defProp IsNot Nothing Then
-                            Dim subValue As Object = defProp.GetValue(value, Nothing)
-                            If subValue IsNot Nothing Then
-                                toReturn = GetFriendlyName(subValue)
-                            End If
-                        Else
-                            Throw New NotImplementedException(String.Format("The type ""{0}"" doesn't have a property ""{1}"".", valueType.FullName, defPropAttr.Name))
-                        End If
-                        Exit For
-                    Next
-                    If toReturn = "" Then
-                        Dim keyProp As PropertyInfo = Nothing
-                        Dim valueProp As PropertyInfo = Nothing
-                        If ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Key", keyProp) _
-                            AndAlso ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Value", valueProp) Then
-                            Dim keyValue As Object = keyProp.GetValue(value, Nothing)
-                            Dim keyName As String = GetFriendlyName(keyValue)
-                            Dim valueValue As Object = valueProp.GetValue(value, Nothing)
-                            Dim valueName As String = GetFriendlyName(valueValue)
-                            toReturn = String.Format("{0}  -  {1}", keyName, valueName)
-                        End If
-                    End If
-                    If toReturn = "" Then
-                        toReturn = valueType.Name
-                        If valueType.IsGenericType Then
-                            toReturn &= String.Format("<{0}>", valueType.GetGenericArguments()(0).Name)
-                        End If
-                    End If
-                End If
-            End If
-            Return toReturn
-
-        End Function
-
-#End Region
 
 
 

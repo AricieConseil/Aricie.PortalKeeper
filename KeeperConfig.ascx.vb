@@ -49,11 +49,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             Get
 
                 If _KeeperConfig Is Nothing Then
-                    If Me.UserInfo.IsSuperUser Then
-                        If Not Me.IsPostBack OrElse Session("KeeperConfig") Is Nothing Then
-                            Session("KeeperConfig") = ReflectionHelper.CloneObject(Of PortalKeeperConfig)(PortalKeeperConfig.Instance)
+                    If Me.IsPostBack AndAlso Me.UserInfo.IsSuperUser Then
+                        If Session("KeeperConfig") Is Nothing Then
+                            _KeeperConfig = ReflectionHelper.CloneObject(Of PortalKeeperConfig)(PortalKeeperConfig.Instance)
+                            Session("KeeperConfig") = _KeeperConfig
                         End If
-                        _KeeperConfig = DirectCast(Session("KeeperConfig"), PortalKeeperConfig)
                     Else
                         _KeeperConfig = PortalKeeperConfig.Instance
                     End If

@@ -53,8 +53,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\DotNetNuke.dll" />
-    <Content Include="external\RedditSharp.dll" />
-    <Content Include="external\RedditSharp.pdb" />
+    <Content Include="external\RedditSharpNet35\bin\Release\RedditSharp.dll" />
+    <Content Include="external\RedditSharpNet35\bin\Release\RedditSharp.pdb" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aricie.PortalKeeper.vbproj">
@@ -69,18 +69,10 @@
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Bitcoin\Core\Aricie.PortalKeeper.Bitcoin.csproj">
-      <Project>{c57d2545-4ea4-48b3-a00e-e2eed4ced9ce}</Project>
-      <Name>Aricie.PortalKeeper.Bitcoin</Name>
-    </ProjectReference>
     <ProjectReference Include="external\RedditSharpNet35\RedditSharpNet35.csproj">
       <Project>{a368cb75-75f0-4489-904d-b5cebb0fe624}</Project>
       <Name>RedditSharpNet35</Name>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup />
-  <ItemGroup>
-    <None Include="Model.cd" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

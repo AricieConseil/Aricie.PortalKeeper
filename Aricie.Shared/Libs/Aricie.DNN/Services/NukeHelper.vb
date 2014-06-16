@@ -28,6 +28,7 @@ Imports DotNetNuke.Services.Personalization
 Imports DotNetNuke.Entities.Profile
 Imports System.Security
 Imports System.Text
+Imports DotNetNuke.Common.Lists
 
 Namespace Services
     Public Module NukeHelper
@@ -66,6 +67,7 @@ Namespace Services
         Public ModuleController As New ModuleController()
         Private _RoleController As RoleController
 
+        Public ListController As New ListController()
         Public FileController As New FileController()
         Public FolderController As New FolderController()
 
@@ -1172,6 +1174,21 @@ Namespace Services
             Return Nothing
 
         End Function
+
+
+        Private _SingletonListEntries As New Dictionary(Of Integer, ListEntryInfo)
+
+        Public Function GetListEntrySingleton(id As Integer) As ListEntryInfo
+            Dim toReturn As ListEntryInfo = Nothing
+            If Not _SingletonListEntries.TryGetValue(id, toReturn) Then
+                toReturn = ListController.GetListEntryInfo(id)
+                SyncLock _SingletonListEntries
+                    _SingletonListEntries(id) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
+        End Function
+
 
     End Module
 End Namespace

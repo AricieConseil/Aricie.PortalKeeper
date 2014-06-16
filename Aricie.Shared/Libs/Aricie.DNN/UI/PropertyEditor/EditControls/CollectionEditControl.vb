@@ -690,64 +690,44 @@ Namespace UI.WebControls.EditControls
             Return Me.GetSubPath(Me._ItemIndex, Me._DataItem)
         End Function
 
+
+        Private _CollectionSubPath As String = ""
+
+
         Private Function GetSubPath(index As Integer, dataItem As Object) As String
-            Dim toReturn As New StringBuilder()
-            Dim objParent As Control = Me
-            Dim parents As New List(Of Control)
-            Do
-                objParent = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(objParent, GetType(CollectionEditControl), GetType(PropertyEditorEditControl))
-                If objParent IsNot Nothing Then
-                    parents.Add(objParent)
-                End If
-            Loop Until (objParent Is Nothing OrElse TypeOf objParent Is CollectionEditControl)
-
-            Dim previousCol As Boolean
-            For i As Integer = parents.Count - 1 To 0 Step -1
-                objParent = parents(i)
-                If TypeOf objParent Is PropertyEditorEditControl Then
-                    If Not previousCol Then
-                        toReturn.Append(DirectCast(objParent, PropertyEditorEditControl).ParentAricieField.DataField)
-                        toReturn.Append(".")
-                    End If
-                    previousCol = False
-                Else
-                    Dim cec As CollectionEditControl = DirectCast(objParent, CollectionEditControl)
-                    toReturn.Append(cec.GetSubPath())
-                    toReturn.Append(".")
-                    previousCol = True
-                End If
-            Next
-
-            toReturn.Append(Me.ParentAricieField.DataField)
+            Dim objToReturn As String = GetPath()
 
             If (TypeOf Me.CollectionValue Is IDictionary OrElse index >= 0) Then
-                toReturn.Append("["c)
                 If TypeOf Me.CollectionValue Is IDictionary Then
-                    toReturn.Append(ReflectionHelper.GetProperty(dataItem, "Key").ToString())
+                    objToReturn &= String.Format("[{0}]", ReflectionHelper.GetProperty(dataItem, "Key").ToString())
                 Else
-                    toReturn.Append(index)
+                    objToReturn &= String.Format("[{0}]", index.ToString(CultureInfo.InvariantCulture))
                 End If
-                toReturn.Append("]"c)
             End If
-            Return toReturn.ToString
+
+            Return objToReturn
+
+           
         End Function
 
         Public Function GetPath() As String
-            'Return GetSubPath(-1, dataItem)
-            Dim toReturn As String
-            Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
-            If (Not parentCt Is Nothing) Then
-                If TypeOf parentCt Is AriciePropertyEditorControl Then
-                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
+            If _CollectionSubPath.IsNullOrEmpty Then
+               
+                Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
+                If (parentCt IsNot Nothing) Then
+                    If TypeOf parentCt Is AriciePropertyEditorControl Then
+                        _CollectionSubPath = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
+                    Else
+                        _CollectionSubPath = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
+                    End If
+
                 Else
-                    toReturn = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
+                    _CollectionSubPath = Me.ParentAricieField.DataField
                 End If
-
-            Else
-                toReturn = Me.ParentAricieField.DataField
             End If
+           
 
-            Return toReturn
+            Return _CollectionSubPath
         End Function
 
 
