@@ -60,29 +60,8 @@ namespace Aricie.PortalKeeper.Reddit
         [ExtendedCategory("Scope")]
         public List<String> CommandUsers { get; set; }
 
-        [Browsable(false)]
+        [ExtendedCategory("Scope")]
         public RedditCommandSource CommandSource { get; set; }
-
-        [ExtendedCategory("Scope")]
-        public Boolean EnablePrivateMessages
-        {
-            get { return (CommandSource & RedditCommandSource.PrivateMessage) == RedditCommandSource.PrivateMessage ; }
-            set { CommandSource = CommandSource | RedditCommandSource.PrivateMessage; }
-        }
-
-        [ExtendedCategory("Scope")]
-        public Boolean EnableComments
-        {
-            get { return (CommandSource & RedditCommandSource.Comment) == RedditCommandSource.Comment; }
-            set { CommandSource = CommandSource | RedditCommandSource.Comment; }
-        }
-
-        [ExtendedCategory("Scope")]
-        public Boolean EnableSubRedditPosts
-        {
-            get { return (CommandSource & RedditCommandSource.SubRedditPost) == RedditCommandSource.SubRedditPost; }
-            set { CommandSource = CommandSource | RedditCommandSource.SubRedditPost; }
-        }
 
       
 
@@ -217,7 +196,7 @@ namespace Aricie.PortalKeeper.Reddit
                                     candidateThings.AddRange(new List<PrivateMessage>( pm.Replies).FindAll((com) => com.Author == author).ToArray());
                                     break;
                                 case "Post":
-                                    var objPost = (Post)previousAnswer;
+                                    var objPost = (Comment)previousAnswer;
                                     candidateThings.AddRange(new List<Comment>(objPost.Comments).FindAll((com) => com.Author == author).ToArray());
                                     break;
                             }

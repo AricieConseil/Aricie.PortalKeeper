@@ -24,6 +24,15 @@ Imports Aricie.DNN.Security
 
 Namespace Services.Files
 
+    <Flags()> _
+    Public Enum SmartFileState
+        Clear = 0
+        Signed = 1
+        Compressed = 2
+        Encrypted = 4
+    End Enum
+
+
     Public Enum PayLoadFormat
         None
         UTF8String
@@ -67,11 +76,31 @@ Namespace Services.Files
 
         <ExtendedCategory("Content")> _
         <IsReadOnly(True)> _
-        Public Property Signed As Boolean
+        Public Property State As SmartFileState = SmartFileState.Clear
 
-        <ExtendedCategory("Content")> _
-        <IsReadOnly(True)> _
-        Public Property Compressed As Boolean
+
+
+        <Browsable(False)> _
+        Public ReadOnly Property Signed As Boolean
+            Get
+                Return (State And SmartFileState.Signed) = SmartFileState.Signed
+            End Get
+        End Property
+
+        <Browsable(False)> _
+        Public ReadOnly Property Compressed As Boolean
+            Get
+                Return (State And SmartFileState.Compressed) = SmartFileState.Compressed
+            End Get
+        End Property
+
+        <Browsable(False)> _
+        Public ReadOnly Property Encrypted As Boolean
+            Get
+                Return (State And SmartFileState.Encrypted) = SmartFileState.Encrypted
+            End Get
+        End Property
+
 
 
 
@@ -86,14 +115,6 @@ Namespace Services.Files
             _encrypter = encrypter
         End Sub
 
-        <ExtendedCategory("Content")> _
-        <IsReadOnly(True)> _
-        Public Property Encrypted As Boolean
-
-        '<ExtendedCategory("Content")> _
-        '<ConditionalVisible("Encrypted", False, True)> _
-        '<IsReadOnly(True)> _
-        'Public Property HasCustomEncryption As Boolean
 
         <Browsable(False)> _
         <XmlIgnore()>
@@ -422,7 +443,7 @@ Namespace Services.Files
                     Dim tempDoc As XmlDocument = Me.PayLoadAsXmlDocument
                     objEncrypter.Sign(tempDoc)
                     Me.PayLoadAsXmlDocument = tempDoc
-                    Me.Signed = True
+                    Me.State = Me.State Or SmartFileState.Signed
                 End SyncLock
             End If
         End Sub
@@ -456,7 +477,7 @@ Namespace Services.Files
                     Dim tempDoc As XmlDocument = Me.PayLoadAsXmlDocument
                     CryptoHelper.RemoveSignatureFromXmlDocument(tempDoc)
                     Me.PayLoadAsXmlDocument = tempDoc
-                    Me.Signed = False
+                    Me.State = (Me.State And Not SmartFileState.Signed)
                 End SyncLock
             End If
         End Sub
@@ -468,7 +489,7 @@ Namespace Services.Files
             If Not Me.Compressed Then
                 SyncLock Me
                     _PayLoad = _PayLoad.Compress(CompressionMethod.Gzip)
-                    Me.Compressed = True
+                    Me.State = Me.State Or SmartFileState.Compressed
                 End SyncLock
             End If
         End Sub
@@ -481,7 +502,7 @@ Namespace Services.Files
                 SyncLock Me
 
                     _PayLoad = _PayLoad.Decompress(CompressionMethod.Gzip)
-                    Me.Compressed = False
+                    Me.State = (Me.State And Not SmartFileState.Compressed)
                 End SyncLock
             End If
         End Sub
@@ -685,14 +706,14 @@ Namespace Services.Files
             SyncLock Me
                 Me._PayLoad = newPayLoad
                 Me._SaltBytes = objSalt
-                Me.Encrypted = True
+                Me.State = (Me.State Or SmartFileState.Encrypted)
             End SyncLock
         End Sub
 
         Private Sub DecryptInternal(newPayload As Byte())
             SyncLock Me
                 Me._PayLoad = newPayload
-                Me.Encrypted = False
+                Me.State = (Me.State And Not SmartFileState.Encrypted)
                 Me._SaltBytes = {}
             End SyncLock
         End Sub

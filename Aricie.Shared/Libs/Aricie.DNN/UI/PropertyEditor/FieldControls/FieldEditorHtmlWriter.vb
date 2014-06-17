@@ -22,10 +22,15 @@ Public Class FieldEditorHtmlWriter
     End Function
 
     Private Function AddPostBack(value As String) As String
+        Dim onClick As String = GetStringPostBackRefrence()
+        
         If Not String.IsNullOrEmpty(value) Then
+            If value.Contains(onClick) Then
+                Return value
+            End If
             value &= ";"c
         End If
-        Dim onClick As String = GetStringPostBackRefrence()
+
         value &= onClick
         Return value
     End Function

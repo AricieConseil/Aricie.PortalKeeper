@@ -6186,26 +6186,28 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="EncryptionInfo_EditInitVector.Text" xml:space="preserve">
     <value>Init Vector</value>
   </data>
-  <data name="EncryptionInfo_IsSealApplicationEncrypted.Help" xml:space="preserve">
-    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the application which encrypts the private key with the main application decryption key. Only the same application will be able to recover the key at runtime. </value>
+  <data name="EncryptionInfo_SealType.Text" xml:space="preserve">
+    <value>Encryption Seals</value>
   </data>
-  <data name="EncryptionInfo_IsSealApplicationEncrypted.Text" xml:space="preserve">
-    <value>Has Application Seal (Rijndael Managed)</value>
+  <data name="Application.Text" xml:space="preserve">
+    <value>Application (Rijndael Managed)</value>
   </data>
-  <data name="EncryptionInfo_IsSealDataProtected.Help" xml:space="preserve">
-    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the machine which encrypts the private key using the native ProtectedData methods. Only the same system and impersonated user will be able to recover the key at runtime. </value>
+  <data name="EncryptionInfo_SealType.Help" xml:space="preserve">
+    <value>The encryption keys are initially kept visible and editable. You can hide them by sealing them in 3 optional passes:
+&lt;ul&gt;&lt;li&gt;An Application level seal encrypts the private key with the main application decryption key. Only the same DNN application will be able to recover the key at runtime.&lt;/li&gt;
+&lt;li&gt;A Key Container seal creates a dedicated OS Level CSPContainer Key to encrypt the private key. Only the same system will be able to recover the key at runtime.&lt;/li&gt;
+&lt;li&gt;A Protected Data seal  encrypts the private key using the native ProtectedData methods from win32 DAPI.Only the same system and application pool identity  user will be able to recover the key at runtime.&lt;/li&gt;
+&lt;/ul&gt;
+In order to seal your keys, click one of the corresponding button at the bottom of this form, after having saved the original values. Note that if you need to move the application to a new environment, you won't be able to recover the keys unless you do a reset and manually enter the original values.</value>
   </data>
-  <data name="EncryptionInfo_IsSealDataProtected.Text" xml:space="preserve">
-    <value>Has Data Protection Seal (DAPI)</value>
+  <data name="ProtectData.Text" xml:space="preserve">
+    <value>Protected Data (DAPI)</value>
   </data>
-  <data name="EncryptionInfo_IsSealInKeyContainer.Help" xml:space="preserve">
-    <value>The encryption keys are initially kept visible and editable. You can choose to seal them into the host operating system with the creation of a dedicated CSPContainer Key which encrypts the private key . Only the same system will be able to recover the key at runtime. </value>
-  </data>
-  <data name="EncryptionInfo_IsSealInKeyContainer.Text" xml:space="preserve">
-    <value>Has Key Container Seal (CSP - RSA)</value>
+  <data name="KeyContainer.Text" xml:space="preserve">
+    <value>Key Container (CSP - RSA)</value>
   </data>
   <data name="EncryptionInfo_ProtectInMemory.Help" xml:space="preserve">
-    <value />
+    <value>Checking that option ofuscate the symmetric key in memory to avoid recollection from a dump.</value>
   </data>
   <data name="EncryptionInfo_ProtectInMemory.Text" xml:space="preserve">
     <value>Protect In Memory (DAPI)</value>
@@ -6686,5 +6688,26 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="UserVariableInfo_Title.Text" xml:space="preserve">
     <value>Parameter Title</value>
+  </data>
+  <data name="Comment.Text" xml:space="preserve">
+    <value>Comments</value>
+  </data>
+  <data name="PrivateMessage.Text" xml:space="preserve">
+    <value>Private Messages</value>
+  </data>
+  <data name="RedditCommand_CommandSource.Help" xml:space="preserve">
+    <value>Check the kind of message sources authorized for this command.</value>
+  </data>
+  <data name="RedditCommand_CommandSource.Text" xml:space="preserve">
+    <value>Command Sources</value>
+  </data>
+  <data name="SmartFile_State.Help" xml:space="preserve">
+    <value>A smart file can be signed, compressed and encrypted (in that order and reverse), manually or automatically according to the configuration. In order to decrypt a smart file on a distinct system, you need to enter the orginal key used for encryption.</value>
+  </data>
+  <data name="SmartFile_State.Text" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="SubRedditPost.Text" xml:space="preserve">
+    <value>Posts</value>
   </data>
 </root>

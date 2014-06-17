@@ -81,7 +81,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("MasterBot")> _
+        <Browsable(False)> _
         Public ReadOnly Property Bot() As BotInfo(Of TEngineEvent)
             Get
                 If _Bot Is Nothing Then

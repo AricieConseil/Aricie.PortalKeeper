@@ -63,13 +63,10 @@ Public Module Common
     End Function
 
     Public Function GetEnumMembers(Of T)() As List(Of T)
-        Dim toreturn As New List(Of T)
-        Dim stringEnums() As String = [Enum].GetNames(GetType(T))
-        For Each objEnum As String In stringEnums
-            toreturn.Add(GetEnum(Of T)(objEnum))
-        Next
-        Return toreturn
+        Return (From objEnum In [Enum].GetValues(GetType(T)) Select DirectCast(objEnum, T)).ToList()
     End Function
+
+   
 
 #End Region
 
