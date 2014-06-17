@@ -80,7 +80,7 @@ Namespace Security.Cryptography
 
 
 
-        <Browsable(False)>
+        <IsReadOnly(True)> _
         Public Property SealType As KeyProtectionMode
             Get
                 Return _SealType
@@ -90,18 +90,21 @@ Namespace Security.Cryptography
             End Set
         End Property
 
+        <Browsable(False)> _
         Public ReadOnly Property IsSealApplicationEncrypted As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.Application) = KeyProtectionMode.Application
             End Get
         End Property
 
+        <Browsable(False)> _
         Public ReadOnly Property IsSealInKeyContainer As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.KeyContainer) = KeyProtectionMode.KeyContainer
             End Get
         End Property
 
+        <Browsable(False)> _
         Public ReadOnly Property IsSealDataProtected As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData
@@ -112,7 +115,7 @@ Namespace Security.Cryptography
 
         Public Property SymmetricKeySize As RijndelKeySizes = RijndelKeySizes.Key256
 
-        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, showAddItem:=True)> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
         Public Property EncryptionTypes As List(Of EncryptionType)
             Get
                 Return _EncryptionTypes

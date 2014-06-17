@@ -977,11 +977,12 @@ Namespace UI.WebControls
 
 
                 Else
-                    If (Me.ParentAricieField Is Nothing) Then
-                        _CurrentPath = String.Empty
-                    Else
-                        _CurrentPath = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
-                    End If
+                    _CurrentPath = String.Empty
+                    'If (Me.ParentAricieField Is Nothing) Then
+                    '    _CurrentPath = String.Empty
+                    'Else
+                    '    _CurrentPath = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
+                    'End If
                 End If
             End If
 
