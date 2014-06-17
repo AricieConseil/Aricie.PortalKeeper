@@ -9,9 +9,9 @@ Imports System.Runtime.InteropServices
 ' Review the values of the assembly attributes
 <Assembly: AssemblyTitle("Aricie.PortalKeeper")> 
 <Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("Microsoft")> 
+<Assembly: AssemblyCompany("Aricie")> 
 <Assembly: AssemblyProduct("Aricie.PortalKeeper")> 
-<Assembly: AssemblyCopyright("Copyright © Microsoft 2009")> 
+<Assembly: AssemblyCopyright("Copyright © Aricie 2009")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)>
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("03.01.00")> 
-<Assembly: AssemblyFileVersion("03.01.00")> 
+<Assembly: AssemblyVersion("04.00.00")> 
+<Assembly: AssemblyFileVersion("04.00.00")> 
