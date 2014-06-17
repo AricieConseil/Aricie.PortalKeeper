@@ -715,12 +715,17 @@ Namespace UI.WebControls.EditControls
                
                 Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
                 If (parentCt IsNot Nothing) Then
+                    Dim parentPath As String
                     If TypeOf parentCt Is AriciePropertyEditorControl Then
-                        _CollectionSubPath = String.Format("{0}.{1}", DirectCast(parentCt, AriciePropertyEditorControl).GetPath(), Me.ParentAricieField.DataField)
+                        parentPath = DirectCast(parentCt, AriciePropertyEditorControl).GetPath()
                     Else
-                        _CollectionSubPath = String.Format("{0}.{1}", DirectCast(parentCt, CollectionEditControl).GetPath(), Me.ParentAricieField.DataField)
+                        parentPath = DirectCast(parentCt, CollectionEditControl).GetPath()
                     End If
-
+                    If parentPath.IsNullOrEmpty() Then
+                        _CollectionSubPath = ParentAricieField.DataField
+                    Else
+                        _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
+                    End If
                 Else
                     _CollectionSubPath = Me.ParentAricieField.DataField
                 End If
@@ -1004,7 +1009,7 @@ Namespace UI.WebControls.EditControls
 
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
-                        If Me._AddNewEntry Then
+                        If Me._AddNewEntry OrElse TypeOf Me.CollectionValue Is IDictionary Then
                             Me.ctlAddContainer = pnAdd
                             Me.CreateAddRow(pnAdd)
                         End If

@@ -37,18 +37,18 @@ Namespace Security.Cryptography
     End Enum
 
     Public Enum AsymmetricEncryptionType
-        Simple = 2
-        KeyExchange = 4
-        ByBlock = 8
+        Simple = 1
+        KeyExchange = 2
+        ByBlock = 4
     End Enum
 
 
     <Flags()> _
     Public Enum KeyProtectionMode
         None = 0
-        Application = 2
+        Application = 1
+        KeyContainer = 2
         ProtectData = 4
-        KeyContainer = 8
     End Enum
 
     Public Enum CryptoTransformDirection

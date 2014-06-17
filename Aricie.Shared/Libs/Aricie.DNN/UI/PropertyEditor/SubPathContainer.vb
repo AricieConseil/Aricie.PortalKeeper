@@ -7,6 +7,7 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.Services
 Imports System.Text
 Imports Aricie.Services
+Imports System.Web.UI
 
 Namespace UI.WebControls
     Public Class SubPathContainer
@@ -149,6 +150,9 @@ Namespace UI.WebControls
                     Next
             End Select
             Return toReturn
+
+
         End Function
+
     End Class
 End NameSpace
