@@ -281,6 +281,7 @@
     <Compile Include="Components\Providers\Condition\SubConditionsProvider.vb" />
     <Compile Include="Components\Engines\Scheduler\ScheduleEvent.vb" />
     <Compile Include="Components\DNN\TrialProvider.vb" />
+    <Content Include="Components\Engines\ControlAdapters\DefaultControlAdapters.xml" />
     <Content Include="external\JsonNet\Newtonsoft.Json.dll" />
     <Content Include="external\JsonNet\Newtonsoft.Json.pdb" />
     <Content Include="js\Payment.js" />

@@ -52,8 +52,8 @@ namespace RedditSharp
             }
         }
 
-        [JsonProperty("author")]
-        public string Author { get; set; }
+       
+
         [JsonProperty("banned_by")]
         public string BannedBy { get; set; }
         [JsonProperty("body")]
@@ -97,6 +97,17 @@ namespace RedditSharp
                     RedditSharp.WebAgent.Protocol, RedditSharp.WebAgent.RootDomain,
                     this.Subreddit, this.LinkId, this.Id);
             }
+        }
+
+        [JsonIgnore()]
+        public override Thing ParentThing
+        {
+            get { return Parent; }
+        }
+
+        public override IEnumerable<Thing> Children
+        {
+            get { return Comments.ToArray(); }
         }
 
         public Comment Reply(string message)

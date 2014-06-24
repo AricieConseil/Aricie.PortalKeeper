@@ -1,5 +1,6 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
+Imports Microsoft.VisualBasic.CompilerServices
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports System.Web.UI
@@ -249,7 +250,7 @@ Public Class AricieFieldEditorControl
 
         If editorInfo.Editor = "UseSystemType" Then
             Dim objType As Type = ReflectionHelper.CreateType(editorInfo.Type)
-            If editorInfo.Value IsNot Nothing Then
+            If editorInfo.Value IsNot Nothing Then 'AndAlso editorInfo.Value.GetType() IsNot objType AndAlso Not ReflectionHelper.CanConvert(objType, editorInfo.Value.GetType()) Then
                 objType = editorInfo.Value.GetType()
             End If
 
@@ -293,7 +294,7 @@ Public Class AricieFieldEditorControl
                             ElseIf objType Is GetType(CData) Then
                                 Dim ctc As New CustomTextEditControl()
                                 ctc.Width = 650
-                                ctc.LineCount = 3
+                                ctc.LineCount = Math.Max(3, Math.Min(Conversions.ToString(editorInfo.Value).Length \ 50, 200))
                                 objEditControl = ctc
                             Else
                                 objEditControl = New PropertyEditorEditControl()

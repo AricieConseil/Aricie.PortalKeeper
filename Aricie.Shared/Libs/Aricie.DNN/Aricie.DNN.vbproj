@@ -303,6 +303,7 @@
     <Compile Include="Services\Flee\SimpleExpression.vb" />
     <Compile Include="Services\Flee\SimpleOrExpression.vb" />
     <Compile Include="Services\Flee\SimpleOrExpressionMode.vb" />
+    <Compile Include="Services\Flee\SimpleOrSimpleExpression.vb" />
     <Compile Include="Services\Flee\VariablesBase.vb" />
     <Compile Include="Services\Flee\CultureInfoMode.vb" />
     <Compile Include="Services\Flee\ExpressionVariableInfo.vb" />

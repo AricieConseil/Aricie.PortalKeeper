@@ -10,6 +10,23 @@ Imports Aricie.ComponentModel
 
 Namespace Services.Filtering
 
+    <Serializable()> _
+    Public Class HtmlXPathInfo
+        Inherits XPathInfo
+
+        <Browsable(False)> _
+        Public Overrides Property IsHtmlContent As Boolean
+            Get
+                Return True
+            End Get
+            Set(value As Boolean)
+                'donothing
+            End Set
+        End Property
+
+    End Class
+
+
     ''' <summary>
     ''' xpath selection helper class
     ''' </summary>
@@ -53,7 +70,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("XPathSettings")> _
-        Public Property IsHtmlContent() As Boolean
+        Public Overridable Property IsHtmlContent() As Boolean
 
         ''' <summary>
         ''' Selection of whole tree
@@ -202,7 +219,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function GetNavigable(ByVal source As String) As IXPathNavigable
-            If _IsHtmlContent Then
+            If IsHtmlContent Then
                 Dim doc As New HtmlAgilityPack.HtmlDocument()
                 doc.LoadHtml(source)
                 Return doc

@@ -6,6 +6,7 @@ Imports Aricie.Services
 Imports System.Reflection
 Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Security
 
 Namespace Services.Flee
 

@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace RedditSharp
 {
     [Serializable()]
-    public class VotableThing : CreatedThing
+    public abstract class VotableThing : CreatedThing
     {
         public enum VoteType
         {

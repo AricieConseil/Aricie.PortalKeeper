@@ -35,9 +35,6 @@ namespace RedditSharp
         [JsonProperty("dest")]
         public string Destination { get; set; }
 
-        [JsonProperty("author")]
-        public string Author { get; set; }
-
         [JsonProperty("subreddit")]
         public string Subreddit { get; set; }
 
@@ -71,6 +68,17 @@ namespace RedditSharp
                 else
                     return firstMessage.Replies.First(x => x.FullName == ParentID);
             }
+        }
+
+        [JsonIgnore]
+        public override Thing ParentThing
+        {
+            get { return Parent; }
+        }
+
+        public override IEnumerable<Thing> Children
+        {
+            get { return this.Replies; }
         }
 
         public Listing<PrivateMessage> Thread
@@ -149,5 +157,7 @@ namespace RedditSharp
             var data = WebAgent.GetResponseString(response.GetResponseStream());
             var json = JObject.Parse(data);
         }
+
+
     }
 }

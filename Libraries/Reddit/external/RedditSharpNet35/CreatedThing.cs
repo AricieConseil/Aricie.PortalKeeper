@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 namespace RedditSharp
 {
     [Serializable()]
-    public class CreatedThing : Thing
+    public abstract class CreatedThing : Thing
     {
 
         public CreatedThing() { }
@@ -23,5 +23,6 @@ namespace RedditSharp
         [JsonProperty("created_utc")]
         [JsonConverter(typeof(UnixTimestampConverter))]
         public DateTime CreatedUTC { get; set; }
+
     }
 }

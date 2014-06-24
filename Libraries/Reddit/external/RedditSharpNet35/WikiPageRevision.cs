@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Collections.Generic;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 
@@ -20,8 +21,19 @@ namespace RedditSharp
         [JsonProperty("page")]
         public string Page { get; private set; }
 
-        [JsonIgnore]
-        public RedditUser Author { get; set; }
+        //[JsonIgnore]
+        //public RedditUser Author { get; set; }
+
+         [JsonIgnore()]
+         public override Thing ParentThing
+         {
+             get { return this; }
+         }
+
+         public override IEnumerable<Thing> Children
+         {
+             get { return new List<Thing>(); }
+         }
 
          public WikiPageRevision()
          {
@@ -30,7 +42,7 @@ namespace RedditSharp
         protected internal WikiPageRevision(Reddit reddit, JToken json, IWebAgent webAgent)
             : base(null)
         {
-            Author = new RedditUser(reddit, json["author"], webAgent);
+            //Author = new RedditUser(reddit, json["author"], webAgent);
             JsonConvert.PopulateObject(json.ToString(), this, reddit.JsonSerializerSettings);
         }
     }

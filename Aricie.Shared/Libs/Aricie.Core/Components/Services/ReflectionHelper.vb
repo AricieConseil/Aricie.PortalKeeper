@@ -323,6 +323,104 @@ Namespace Services
         End Function
 
 
+        Private Shared _Casts As New Dictionary(Of Type, List(Of Type))() From { _
+        {GetType(Decimal), New List(Of Type)() From { _
+            GetType(SByte), _
+            GetType(Byte), _
+            GetType(Short), _
+            GetType(UShort), _
+            GetType(Integer), _
+            GetType(UInteger), _
+            GetType(Long), _
+            GetType(ULong), _
+            GetType(Char) _
+        }}, _
+        {GetType(Double), New List(Of Type)() From { _
+            GetType(SByte), _
+            GetType(Byte), _
+            GetType(Short), _
+            GetType(UShort), _
+            GetType(Integer), _
+            GetType(UInteger), _
+            GetType(Long), _
+            GetType(ULong), _
+            GetType(Char), _
+            GetType(Single) _
+        }}, _
+        {GetType(Single), New List(Of Type)() From { _
+            GetType(SByte), _
+            GetType(Byte), _
+            GetType(Short), _
+            GetType(UShort), _
+            GetType(Integer), _
+            GetType(UInteger), _
+            GetType(Long), _
+            GetType(ULong), _
+            GetType(Char), _
+            GetType(Single) _
+        }}, _
+        {GetType(ULong), New List(Of Type)() From { _
+            GetType(Byte), _
+            GetType(UShort), _
+            GetType(UInteger), _
+            GetType(Char) _
+        }}, _
+        {GetType(Long), New List(Of Type)() From { _
+            GetType(SByte), _
+            GetType(Byte), _
+            GetType(Short), _
+            GetType(UShort), _
+            GetType(Integer), _
+            GetType(UInteger), _
+            GetType(Char) _
+        }}, _
+        {GetType(UInteger), New List(Of Type)() From { _
+            GetType(Byte), _
+            GetType(UShort), _
+            GetType(Char) _
+        }}, _
+        {GetType(Integer), New List(Of Type)() From { _
+            GetType(SByte), _
+            GetType(Byte), _
+            GetType(Short), _
+            GetType(UShort), _
+            GetType(Char) _
+        }}, _
+        {GetType(UShort), New List(Of Type)() From { _
+            GetType(Byte), _
+            GetType(Char) _
+        }}, _
+        {GetType(Short), New List(Of Type)() From { _
+            GetType(Byte) _
+        }} _
+    }
+        Public Shared Function CanConvert(fromType As Type, toType As Type) As Boolean
+           
+            Dim targetList As List(Of Type) = Nothing
+            If _Casts.TryGetValue(toType, targetList) AndAlso targetList.Contains(fromType) Then
+                Return True
+            Else
+                Dim castable As Boolean
+                If toType.IsAssignableFrom(fromType) Then
+                    castable = True
+                Else
+                    castable = fromType.GetMethods(BindingFlags.[Public] Or BindingFlags.[Static]).Any(Function(m) m.ReturnType.FullName = toType.FullName AndAlso (m.Name = "op_Implicit" OrElse m.Name = "op_Explicit")) _
+                  OrElse toType.GetMethods(BindingFlags.[Public] Or BindingFlags.[Static]).Any(Function(m) m.ReturnType.FullName = fromType.FullName AndAlso (m.Name = "op_Implicit" OrElse m.Name = "op_Explicit"))
+                End If
+                If castable Then
+                    If targetList Is Nothing Then
+                        targetList = New List(Of Type)
+                    End If
+                    targetList.Add(fromType)
+                    SyncLock _Casts
+                        _Casts(toType) = targetList
+                    End SyncLock
+                End If
+                Return castable
+            End If
+        End Function
+
+
 #End Region
 
 

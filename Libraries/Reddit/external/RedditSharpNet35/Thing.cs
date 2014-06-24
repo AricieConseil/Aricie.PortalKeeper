@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Xml.Serialization;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -6,11 +7,11 @@ using System;
 namespace RedditSharp
 {
     [Serializable()]
-    public class Thing
+    public abstract class Thing
     {
 
 
-        
+
 
         public static Thing Parse(Reddit reddit, JToken json, IWebAgent webAgent)
         {
@@ -38,7 +39,7 @@ namespace RedditSharp
             Thing result = Parse(reddit, json, webAgent);
             if (result == null)
             {
-                if (typeof(T) == typeof(WikiPageRevision))
+                if (typeof (T) == typeof (WikiPageRevision))
                 {
                     return new WikiPageRevision(reddit, json, webAgent);
                 }
@@ -48,7 +49,7 @@ namespace RedditSharp
 
         public Thing()
         {
-            
+
         }
 
         internal Thing(JToken json)
@@ -75,6 +76,22 @@ namespace RedditSharp
         public string Id { get; set; }
         public string FullName { get; set; }
         public string Kind { get; set; }
+
+        [JsonProperty("author")]
+        public string AuthorName { get; set; }
+
+        [JsonIgnore]
+        public RedditUser Author
+        {
+            get { return Reddit.GetUser(AuthorName); }
+        }
+
+        [JsonIgnore]
+        public abstract Thing ParentThing { get; }
+
+        [JsonIgnore]
+        public abstract IEnumerable<Thing> Children { get; }
+
 
         /// <summary>
         /// The time at which this object was fetched from reddit servers.

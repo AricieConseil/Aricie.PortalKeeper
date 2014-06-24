@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
 
@@ -148,6 +149,18 @@ namespace RedditSharp
         }
 
         #endregion Obsolete Getter Methods
+
+        public override Thing ParentThing
+        {
+            get { return this; }
+        }
+
+        
+        [JsonIgnore()]
+        public override IEnumerable<Thing> Children
+        {
+            get { return new List<Thing>(); }
+        }
     }
 
     public enum Sort

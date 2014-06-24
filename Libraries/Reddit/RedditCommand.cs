@@ -9,64 +9,47 @@ using Aricie.ComponentModel;
 using Aricie.DNN.ComponentModel;
 using Aricie.DNN.Entities;
 using Aricie.DNN.Modules.PortalKeeper;
+using Aricie.DNN.Services.Flee;
 using Aricie.DNN.UI.Attributes;
-using Aricie.DNN.UI.WebControls.EditControls;
 using Aricie.Security.Cryptography;
-using DotNetNuke.UI.WebControls;
 using RedditSharp;
 
 namespace Aricie.PortalKeeper.Reddit
 {
-
-    [Flags()]
-    public enum RedditCommandSource
-    {
-        None = 0,
-        PrivateMessage = 1,
-        Comment = 2,        
-        SubRedditPost = 4
-    }
-
-
-
-
     public class RedditCommand: NamedConfig
     {
+
+        private List<Regex> _BuiltRegexes;
 
         public RedditCommand()
         {
             CommandSource = RedditCommandSource.Comment;
             Regexes = new List<CData>();
-            CommandActions = new KeeperAction<ScheduleEvent>();
-            MainAnswer = "";
-            AlternateAnwsers = new List<CData>();
-            NextCommands = new List<RedditCommand>();
+            ParsingDepth = 1;
+            CommandUsers = new List<SimpleOrSimpleExpression<string>>();
+            RedditAnswers = new SerializableList<RedditAnswer>();
         }
 
         [ExtendedCategory("Parsing")]
         public List<CData> Regexes { get; set; }
 
-        [ExtendedCategory("Answers")]
-        [Required(true)]
-        public CData MainAnswer { get; set; }
+        [ExtendedCategory("Parsing")]
+        public int ParsingDepth { get; set; }
 
-        [ExtendedCategory("Answers")]
-        public List<CData> AlternateAnwsers { get; set; }
-
+        [ExtendedCategory("Scope")]
+        public RedditCommandSource CommandSource { get; set; }
 
         [ExtendedCategory("Scope")]
         public bool EnableAllUsers { get; set; }
 
         [ExtendedCategory("Scope")]
-        public List<String> CommandUsers { get; set; }
+        public List<SimpleOrSimpleExpression<String>> CommandUsers { get; set; }
 
-        [ExtendedCategory("Scope")]
-        public RedditCommandSource CommandSource { get; set; }
+        [ExtendedCategory("Actions")]
+        public SerializableList<RedditAnswer> RedditAnswers { get; set; }
 
-      
+       
 
-
-        private List<Regex> _BuiltRegexes;
         private List<Regex> BuiltRegexes
         {
             get
@@ -84,129 +67,62 @@ namespace Aricie.PortalKeeper.Reddit
             }
         }
 
-        [ExtendedCategory("Actions")]
-        public KeeperAction<ScheduleEvent> CommandActions { get; set; }
 
-        
 
-        [ExtendedCategory("Next")]
-        public List<RedditCommand> NextCommands { get; set; }
 
-        private Random _Random = new Random();
 
-        public bool ParseThing(Thing objThing, PortalKeeperContext<ScheduleEvent> actionContext) //where TEngineEvent : IConvertible
+        public IEnumerable<RedditAnswer> ParseThing(Thing objThing, PortalKeeperContext<ScheduleEvent> actionContext) //where TEngineEvent : IConvertible
         {
-            var toReturn = false;
-            string message = "";
-            string author= "";
+            var toReturn = new List<RedditAnswer>();
 
-            switch (objThing.Kind)
+
+            if (EnableAllUsers || SimpleOrExpression<String>.GetValues( CommandUsers.ToArray(), actionContext, actionContext).Contains(objThing.AuthorName))
             {
-                case "Comment":
-                    var comment = (Comment) objThing;
-                    message = comment.Body;
-                    author = comment.Author;
-                    break;
-                case "PrivateMessage":
-                    var pm = (PrivateMessage) objThing;
-                    message = pm.Body;
-                    author = pm.Author;
-                    break;
-                case "Post":
-                    var objPost = (Post) objThing;
-                    message = objPost.SelfText;
-                    author = objPost.Author.Name;
-                    break;
-            }
-            if (EnableAllUsers || CommandUsers.Contains(author))
-            {
-                actionContext.SetVar("Thing", objThing);
-                actionContext.SetVar("Message", message);
-                actionContext.SetVar("Author", message);
+                var parentsParsed = false;
+                var message = ParseThingVariables(objThing, actionContext, "",0);
+
                 foreach (var objRegex in BuiltRegexes)
                 {
                     var objMatch = objRegex.Match(message);
                     if (objMatch.Success)
                     {
-                        Thing previousAnswer = null;
-                        switch (objThing.Kind)
-                        {
-                            case "Comment":
-                                var comment = (Comment)objThing;
-                                previousAnswer = comment.Comments.First((com) => com.Author == objThing.Reddit.User.Name);
-                                break;
-                            case "PrivateMessage":
-                                var pm = (PrivateMessage)objThing;
-                                previousAnswer = pm.Replies.First((com) => com.Author == objThing.Reddit.User.Name);
-                                break;
-                            case "Post":
-                                var objPost = (Post)objThing;
-                                previousAnswer = objPost.Comments.First((com) => com.Author == objThing.Reddit.User.Name);
-                                break;
-                        }
+                        var previousAnswer = GetExistingAnswer(objThing);
+                        // We only proceed with messages we have not answered yet
                         if (previousAnswer ==  null)
                         {
+                            if (ParsingDepth > 0)
+                            {
+                                if (!parentsParsed)
+                                {
+                                    ParseThingVariables(objThing.ParentThing, actionContext, "Parent", ParsingDepth - 1);
+                                    parentsParsed = true;
+                                }
+                            }
                             foreach (string groupName in objRegex.GetGroupNames())
                             {
                                 actionContext.SetVar(groupName, objMatch.Groups[groupName].Value);
                             }
 
-
-                            toReturn = CommandActions.Run(actionContext);
-
-                            string reply = this.MainAnswer;
-                            if (this.AlternateAnwsers.Count > 0)
+                            foreach (var objRedditAction in RedditAnswers)
                             {
-                                int nextIdx = _Random.Next(this.AlternateAnwsers.Count);
-                                if (nextIdx > 0)
+                                if (objRedditAction.IsMatch(actionContext))
                                 {
-                                    reply = this.AlternateAnwsers[nextIdx];
+                                    toReturn.Add(objRedditAction);
                                 }
-                            }
-                            var atr = actionContext.GetAdvancedTokenReplace();
-                            reply = atr.ReplaceAllTokens(reply);
 
-                            switch (objThing.Kind)
-                            {
-                                case "Comment":
-                                    var comment = (Comment) objThing;
-                                    comment.Reply(reply);
-                                    break;
-                                case "PrivateMessage":
-                                    var pm = (PrivateMessage) objThing;
-                                    pm.Reply(reply);
-                                    break;
-                                case "Post":
-                                    var objPost = (Post) objThing;
-                                    objPost.Comment(reply);
-                                    break;
                             }
+                            
                         }
                         else
                         {
-                            var candidateThings = new List<Thing>();
-                            switch (previousAnswer.Kind)
-                            {
-                                case "Comment":
-                                    var comment = (Comment)previousAnswer;
-                                    candidateThings.AddRange(comment.Comments.FindAll((com) => com.Author == author).ToArray());
-                                    break;
-                                case "PrivateMessage":
-                                    var pm = (PrivateMessage) previousAnswer;
-                                    candidateThings.AddRange(new List<PrivateMessage>( pm.Replies).FindAll((com) => com.Author == author).ToArray());
-                                    break;
-                                case "Post":
-                                    var objPost = (Comment)previousAnswer;
-                                    candidateThings.AddRange(new List<Comment>(objPost.Comments).FindAll((com) => com.Author == author).ToArray());
-                                    break;
-                            }
-                            foreach (var candidateThing in candidateThings)
-                            {
-                                foreach (var command in NextCommands)
-                                {
-                                   toReturn = toReturn | command.ParseThing(candidateThing, actionContext);
-                                }    
-                            }
+                            //var candidateThings = previousAnswer.Children;
+                            //foreach (var candidateThing in candidateThings)
+                            //{
+                            //    foreach (var command in NextCommands)
+                            //    {
+                            //       toReturn = toReturn | command.ParseThing(candidateThing, actionContext);
+                            //    }    
+                            //}
                         }
 
                         return toReturn;
@@ -214,35 +130,69 @@ namespace Aricie.PortalKeeper.Reddit
 
                 }
             }
-          
-            return false;
+
+            return toReturn;
         }
 
+        private string ParseThingVariables(Thing objThing, PortalKeeperContext<ScheduleEvent> actionContext, string prefix, int depth)
+        {
+            string toReturn = "";
+            if (objThing != null && depth >= 0)
+            {
+                actionContext.SetVar(prefix + "Thing", objThing);
+                actionContext.SetVar(prefix + "AuthorName", objThing.AuthorName);
+                switch (objThing.Kind)
+                {
+                    case "Comment":
+                        var objComment = (Comment)objThing;
 
+                        actionContext.SetVar(prefix + "Comment", objComment);
+                        toReturn = objComment.Body;
+                        actionContext.SetVar(prefix + "Message", objComment.Body);
+
+                        break;
+                    case "PrivateMessage":
+                        var pm = (PrivateMessage)objThing;
+                        actionContext.SetVar(prefix + "PrivateMessage", pm);
+                        toReturn = pm.Body;
+                        actionContext.SetVar(prefix + "Message", pm.Body);
+                        break;
+                    case "Post":
+                        var objPost = (Post)objThing;
+                        actionContext.SetVar(prefix + "Post", objPost);
+                        toReturn = objPost.SelfText;
+                        actionContext.SetVar(prefix + "Message", objPost.SelfText);
+                        break;
+                }
+                if (depth > 0)
+                {
+                    ParseThingVariables(objThing.ParentThing, actionContext, "Parent" + prefix, depth - 1);
+                }
+            }
+            return toReturn;
+        }
+
+        private Thing GetExistingAnswer(Thing objThing)
+        {
+            Thing previousAnswer = null;
+            switch (objThing.Kind)
+            {
+                case "Comment":
+                    var comment = (Comment)objThing;
+                    previousAnswer = comment.Comments.First((com) => com.AuthorName == objThing.Reddit.User.Name);
+                    break;
+                case "PrivateMessage":
+                    var pm = (PrivateMessage)objThing;
+                    previousAnswer = pm.Replies.First((com) => com.AuthorName == objThing.Reddit.User.Name);
+                    break;
+                case "Post":
+                    var objPost = (Post)objThing;
+                    previousAnswer = objPost.Comments.First((com) => com.AuthorName == objThing.Reddit.User.Name);
+                    break;
+            }
+            return previousAnswer;
+        }
 
     }
 
-
-
-    //public class RedditBot
-    //{
-
-    //    public RedditBot()
-    //    {
-    //        BotUser = new LoginInfo();
-    //        WalletUser = new LoginInfo();
-    //        Commands = new List<RedditCommand>();
-    //    }
-
-    //    public LoginInfo BotUser { get; set; }
-
-        
-
-    //    public LoginInfo WalletUser { get; set; }
-
-    //    public List<RedditCommand> Commands { get; set; }
-
-
-
-    //}
 }
