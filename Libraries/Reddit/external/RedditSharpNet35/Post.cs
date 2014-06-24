@@ -37,17 +37,8 @@ namespace RedditSharp
             JsonConvert.PopulateObject(post["data"].ToString(), this, reddit.JsonSerializerSettings);
         }
 
-        [JsonProperty("author")]
-        public string AuthorName { get; set; }
-
-        [JsonIgnore]
-        public RedditUser Author
-        {
-            get
-            {
-                return Reddit.GetUser(AuthorName);
-            }
-        }
+        
+       
 
         public Comment[] Comments
         {
@@ -116,6 +107,17 @@ namespace RedditSharp
 
         [JsonProperty("subreddit")]
         public string Subreddit { get; set; }
+
+        [JsonIgnore()]
+        public override Thing ParentThing
+        {
+            get { return Reddit.GetSubreddit( Subreddit); }
+        }
+
+        public override IEnumerable<Thing> Children
+        {
+            get { return this.Comments; }
+        }
 
         [JsonProperty("thumbnail")]
         [JsonConverter(typeof(UrlParser))]
@@ -313,5 +315,7 @@ namespace RedditSharp
             var json = JToken.Parse(result);
             LinkFlairText = flairText;
         }
+
+        
     }
 }

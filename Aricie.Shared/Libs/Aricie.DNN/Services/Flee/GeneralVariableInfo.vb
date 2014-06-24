@@ -3,6 +3,7 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 Imports Aricie.ComponentModel
+Imports Microsoft.VisualBasic.CompilerServices
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
@@ -84,13 +85,18 @@ Namespace Services.Flee
         <XmlIgnore()> _
         Public Property Instance As Object
             Get
-                If Me.DotNetType.GetDotNetType() IsNot Nothing AndAlso (Me._Instance Is Nothing OrElse Me._Instance.GetType() IsNot Me.DotNetType.GetDotNetType()) _
-                    AndAlso (Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode = Flee.InstanceMode.ContextLess) Then
+                If Me.DotNetType.GetDotNetType() IsNot Nothing AndAlso (Me._Instance Is Nothing _
+                                                                            OrElse (Me._Instance.GetType() IsNot Me.DotNetType.GetDotNetType() _
+                                                                                    AndAlso Not ReflectionHelper.CanConvert(Me._Instance.GetType(), Me.DotNetType.GetDotNetType()))) _
+                                                                        AndAlso (Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode = Flee.InstanceMode.ContextLess) Then
                     Me._Instance = Me.EvaluateOnce(DnnContext.Current, DnnContext.Current)
                 End If
                 Return Me._Instance
             End Get
             Set(value As Object)
+                If value IsNot Nothing AndAlso value.GetType() IsNot Me.DotNetType.GetDotNetType() Then
+                    value = Conversions.ChangeType(value, Me.DotNetType.GetDotNetType())
+                End If
                 _Instance = value
             End Set
         End Property

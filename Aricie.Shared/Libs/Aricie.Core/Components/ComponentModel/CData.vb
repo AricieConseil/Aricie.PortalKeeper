@@ -31,7 +31,7 @@ Namespace ComponentModel
         End Sub
 
         Public Shared Widening Operator CType(ByVal element As CData) As String
-            If (Not element Is Nothing) Then
+            If (element IsNot Nothing) Then
                 Return element.Value
             End If
             Return String.Empty

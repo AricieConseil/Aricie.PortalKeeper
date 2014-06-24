@@ -515,7 +515,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             Dim messages As IEnumerable(Of Comment) = objReddit.GetUser("Jessynoo").Comments.Take(5)
             'Dim messages As IEnumerable(Of Comment) = objReddit.User.Inbox()
             For Each objMessage In messages
-                Dim answered As Boolean = objMessage.Comments.Any(Function(tmpMessage) tmpMessage.Author = botName)
+                Dim answered As Boolean = objMessage.Comments.Any(Function(tmpMessage) tmpMessage.Author.AuthorName = botName)
                 If Not answered Then
                     toreturn += HttpUtility.HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
                 End If

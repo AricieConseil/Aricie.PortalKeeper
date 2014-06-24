@@ -3,6 +3,7 @@ Imports Ciloci.Flee
 Imports Aricie.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Web
 Imports System.Globalization
@@ -13,6 +14,14 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Flee
 
+    Public Interface IExpressionVarsProvider
+
+        Sub AddVariables(ByVal currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Object))
+
+    End Interface
+
+
+
     ''' <summary>
     ''' Simple flee expression
     ''' </summary>
@@ -21,6 +30,11 @@ Namespace Services.Flee
     <ActionButton(IconName.Code, IconOptions.Normal)> _
     <Serializable()> _
     Public Class SimpleExpression(Of TResult)
+
+
+
+
+
         Private _Expression As String = ""
 
         Protected InternalStaticImports As New List(Of FleeImportInfo)
@@ -115,7 +129,22 @@ Namespace Services.Flee
 
         'Private Shared expWriterLock As New Object
 
+        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
+        <ActionButton(IconName.Question, IconOptions.Normal)> _
+        Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
+            Try
 
+                'If True Then
+                pe.DisplayMessage("Todo: Recursive Available Variables with IExpressionVarsProvider", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+                'Else
+                'pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
+                'End If
+                'pe.ItemChanged = True
+            Catch ex As Exception
+                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
+                Throw newEx
+            End Try
+        End Sub
 
 
         ''' <summary>

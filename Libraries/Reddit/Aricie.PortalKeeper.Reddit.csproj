@@ -49,7 +49,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RedditActionBase.cs" />
+    <Compile Include="RedditAnswer.cs" />
+    <Compile Include="RedditAnswerAction.cs" />
     <Compile Include="RedditCommand.cs" />
+    <Compile Include="RedditCommandSource.cs" />
+    <Compile Include="RedditDefineVariableAction.cs" />
+    <Compile Include="RedditOutputAction.cs" />
+    <Compile Include="RedditPaymentAction.cs" />
+    <Compile Include="RedditWebAction.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\DotNetNuke.dll" />

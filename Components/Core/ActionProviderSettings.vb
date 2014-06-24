@@ -6,6 +6,9 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+
+
     <Serializable()> _
     Public Class ActionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
@@ -49,9 +52,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property ExceptionVarName() As String = "ActionException"
 
-      
 
-        
+
+
 
 
         Protected Overrides Function CreateProvider() As IActionProvider(Of TEngineEvents)

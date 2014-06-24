@@ -83,6 +83,18 @@ namespace RedditSharp
         [JsonIgnore]
         public string Name { get; set; }
 
+        [JsonIgnore]
+        public override Thing ParentThing
+        {
+            get { return this; }
+        }
+
+         [JsonIgnore]
+        public override IEnumerable<Thing> Children
+        {
+            get { return this.Posts.Take(10).ToArray(); }
+        }
+
         public Listing<Post> Posts
         {
             get
@@ -642,5 +654,7 @@ namespace RedditSharp
         }
 
         #endregion Obsolete Getter Methods
+
+         
     }
 }
