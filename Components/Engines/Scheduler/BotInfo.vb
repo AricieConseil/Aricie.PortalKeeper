@@ -413,7 +413,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Sub InternalRunUnlocked(ByVal botContext As BotRunContext(Of TEngineEvent))
             Dim currentWebBotEvent As New BotInfoEvent
-            Dim objEnableStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
+            Dim objEnableLogsOrStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
             SyncLock botContext
                 botContext.OnInit()
                 If botContext.Enabled Then
@@ -423,12 +423,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
 
 
-                    If objEnableStopWatch Then
-                        'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                        Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Start", Me.Name), _
-                                                    WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
-                        PerformanceLogger.Instance.AddDebugInfo(objStep)
-                    End If
+                    'If objEnableStopWatch Then
+                    '    'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+                    '    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Start", Me.Name), _
+                    '                                WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
+                    '    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                    'End If
 
                     If botContext.History.BotCallHistory.Count > Me.RetainHistoryNb Then
                         botContext.History.BotCallHistory.RemoveRange(Me.RetainHistoryNb, botContext.History.BotCallHistory.Count - Me.RetainHistoryNb)
@@ -443,7 +443,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     End If
                 End If
-               
+
             End SyncLock
 
             If botContext.Enabled Then
@@ -505,7 +505,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                     If Not Me.NoSave Then
 
-                        If objEnableStopWatch Then
+                        If objEnableLogsOrStopWatch Then
                             Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Finalizing", Me.Name), _
                                                         WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
@@ -519,7 +519,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     'End If
 
 
-                    If objEnableStopWatch Then
+                    If objEnableLogsOrStopWatch Then
                         'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
                         Dim objStep As StepInfo
                         If Me.LogDump Then
