@@ -243,8 +243,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me._CurrentEngine IsNot configRules Then
                 Me._CurrentEngine = configRules
             End If
-            Dim objEnableStopWatch As Boolean = Me.EnableStopWatch
-            If objEnableStopWatch Then
+            Dim objEnableSimpleLogsOrStopWatch As Boolean = Me.EnableStopWatch OrElse configRules.EnableSimpleLogs
+            If objEnableSimpleLogsOrStopWatch Then
                 Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
                                             WorkingPhase.InProgress, False, False, -1, Me.FlowId)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
@@ -260,7 +260,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
 
 
-            If objEnableStopWatch Then
+            If objEnableSimpleLogsOrStopWatch Then
 
                 Dim objStep As StepInfo
                 If endSequence AndAlso Me._CurrentEngine.LogDump Then

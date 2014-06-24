@@ -234,7 +234,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 objParamName = DynamicControlAdapter.EventArgsVarName
             End If
             parameters(objParamName) = e
-            controlAdapter.ProcessStep(parameters, Nothing, Me.GetStep(), False)
+            controlAdapter.ProcessStep(parameters, Nothing, Me.GetStep(), True)
         End Sub
 
 

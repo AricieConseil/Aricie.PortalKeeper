@@ -1112,7 +1112,7 @@ Namespace Services
                     Else
                         sigBuilder.Append(", ")
                     End If
-                    sigBuilder.Append(TypeName(g))
+                    sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(g))
                 Next
                 sigBuilder.Append(">")
             End If
@@ -1140,7 +1140,7 @@ Namespace Services
                     sigBuilder.Append("out ")
                 End If
                 If Not callable Then
-                    sigBuilder.Append(TypeName(param.ParameterType))
+                    sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(param.ParameterType))
                     sigBuilder.Append(" "c)
                 End If
                 sigBuilder.Append(param.Name)

@@ -39,6 +39,9 @@ Namespace Services.Flee
         Protected InternalParseCultureMode As CultureInfoMode = CultureInfoMode.Invariant
         Protected InternalCustomCultureLocale As String = "en-US"
         Protected InternalRealLiteralDataType As RealLiteralDataType = RealLiteralDataType.Decimal
+        Protected InternalOwnerMemberAccess As Reflection.BindingFlags = Reflection.BindingFlags.Default _
+                                                                         Or Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance _
+                                                                         Or Reflection.BindingFlags.Static Or Reflection.BindingFlags.IgnoreCase 'or Reflection.BindingFlags.OptionalParamBinding or 
 
         Private Shared _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
 
@@ -108,9 +111,11 @@ Namespace Services.Flee
 
 
 
+
+
         'Private Shared expWriterLock As New Object
 
-      
+
 
 
         ''' <summary>
@@ -198,8 +203,9 @@ Namespace Services.Flee
                     If InternalOverrideOwner Then
                         Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
                         toReturn.Owner = newOwner
+                    Else
+                        toReturn.Owner = owner
                     End If
-                    toReturn.Owner = owner
                 Else
                     toReturn.Owner = DirectCast(owner, IContextOwnerProvider).ContextOwner
                 End If
@@ -228,7 +234,13 @@ Namespace Services.Flee
                     toReturn = New ExpressionContext(ownerProvider.ContextOwner)
                     _OwnerProviderSuplied = True
                 Else
-                    toReturn = New ExpressionContext(owner)
+                    If InternalOverrideOwner Then
+                        Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                        toReturn = New ExpressionContext(newOwner)
+                    Else
+                        toReturn = New ExpressionContext(owner)
+                    End If
+
                 End If
             Else
                 If InternalOverrideOwner Then
@@ -252,6 +264,7 @@ Namespace Services.Flee
                     toReturn.Options.ParseCulture = New CultureInfo(Me.InternalCustomCultureLocale)
             End Select
             toReturn.Options.RealLiteralDataType = Me.InternalRealLiteralDataType
+            toReturn.Options.OwnerMemberAccess = Me.InternalOwnerMemberAccess
             'If Me.InternalStaticImports.Count = 0 Then
             '    tempContext.Imports.AddType(GetType(System.Math), "")
             'Else
@@ -271,7 +284,11 @@ Namespace Services.Flee
 
             Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)
             For Each objVar As KeyValuePair(Of String, Object) In vars
-                toReturn.Variables.Add(objVar.Key, objVar.Value)
+                If (objVar.Value IsNot Nothing) Then
+                    toReturn.Variables.Add(objVar.Key, objVar.Value)
+                Else
+                    Throw New ApplicationException(String.Format("The var {0} value should not be null", objVar.Key))
+                End If
             Next
 
             Return toReturn
