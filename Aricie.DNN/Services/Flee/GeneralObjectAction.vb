@@ -210,12 +210,18 @@ Namespace Services.Flee
                                             targetMethod.Invoke(Nothing, args.ToArray)
                                         Else
                                             Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                            If Me.LockTarget Then
-                                                SyncLock target
-                                                    toReturn = targetMethod.Invoke(target, args.ToArray)
-                                                End SyncLock
+                                            If target Is Nothing Then
+                                                Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
                                             Else
-                                                toReturn = targetMethod.Invoke(target, args.ToArray)
+                                                If Me.LockTarget Then
+
+                                                    SyncLock target
+                                                        toReturn = targetMethod.Invoke(target, args.ToArray)
+                                                    End SyncLock
+
+                                                Else
+                                                    toReturn = targetMethod.Invoke(target, args.ToArray)
+                                                End If
                                             End If
                                         End If
 
@@ -314,7 +320,7 @@ Namespace Services.Flee
                     If Not Me.MemberName.IsNullOrEmpty() Then
                         Dim index As Integer = 1
                         For Each objMember As MemberInfo In Me.SelectedMembers
-                            toReturn.Add(ReflectionHelper.GetMemberSignature(objMember), index)
+                            toReturn(ReflectionHelper.GetMemberSignature(objMember)) = index
                             index += 1
                         Next
                     End If

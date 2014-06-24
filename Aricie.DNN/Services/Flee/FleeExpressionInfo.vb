@@ -102,6 +102,13 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
+        Public Function Format(ByVal tempalte As String, value As String) As String
+            Return String.Format(tempalte, value)
+        End Function
+
+        Public Function Format(ByVal tempalte As String, value1 As String, value2 As String) As String
+            Return String.Format(tempalte, value1, value2)
+        End Function
 
 
 
@@ -140,6 +147,17 @@ Namespace Services.Flee
                     End If
                 End If
                 InternalOverrideOwner = value
+            End Set
+        End Property
+
+        <ExtendedCategory("ExpressionOwner")> _
+        <ConditionalVisible("OverrideOwner", False, True)> _
+Public Property OwnerMemberAccess As BindingFlags
+            Get
+                Return InternalOwnerMemberAccess
+            End Get
+            Set(value As BindingFlags)
+                InternalOwnerMemberAccess = value
             End Set
         End Property
 
