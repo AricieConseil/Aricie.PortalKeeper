@@ -76,7 +76,8 @@ Namespace UI.WebControls.EditControls
             Else
                 writer.AddAttribute(HtmlTextWriterAttribute.Rows, LineCount.ToString(CultureInfo.InvariantCulture))
                 writer.RenderBeginTag(HtmlTextWriterTag.Textarea)
-                writer.Write(Me.StringValue)
+                writer.Write(HtmlEncode(Me.StringValue))
+
             End If
             writer.RenderEndTag()
         End Sub
