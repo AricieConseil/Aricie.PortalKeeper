@@ -107,6 +107,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("LogDump", False, True)> _
          <ConditionalVisible("DumpAllVars", True, True)> _
           <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(4), Width(500)> _

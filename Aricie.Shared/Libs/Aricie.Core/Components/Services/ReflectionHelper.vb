@@ -420,6 +420,21 @@ Namespace Services
             End If
         End Function
 
+        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
+
+        Public Shared Function CanCreateObject(objectType As Type) As Boolean
+            Dim toReturn As Boolean
+            If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
+                toReturn = Not (objectType.IsAbstract() _
+                                OrElse (objectType.IsInterface _
+                                         AndAlso Not ReflectionHelper.GetCustomAttributes(objectType).Where(Function(objAttr) (TypeOf objAttr Is System.Runtime.InteropServices.CoClassAttribute)).Any() _
+                                OrElse (ReflectionHelper.IsTrueReferenceType(objectType)) AndAlso Not HasDefaultConstructor(objectType) AndAlso Not objectType.IsArray))
+                SyncLock _CanCreateTypes
+                    _CanCreateTypes(objectType) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
+        End Function
 
 #End Region
 
@@ -427,18 +442,7 @@ Namespace Services
 #Region "Objects manipulation"
 
 
-        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
 
-        Public Shared Function CanCreateObject(objectType As Type) As Boolean
-            Dim toReturn As Boolean
-            If Not _CanCreateTypes.TryGetValue(objectType, toReturn) Then
-                toReturn = (Not ReflectionHelper.IsTrueReferenceType(objectType)) OrElse (Not objectType.IsAbstract() AndAlso (HasDefaultConstructor(objectType) OrElse objectType.IsArray))
-                SyncLock _CanCreateTypes
-                    _CanCreateTypes(objectType) = toReturn
-                End SyncLock
-            End If
-            Return toReturn
-        End Function
 
         Public Shared Function CreateObject(ByVal objectType As Type) As Object
 

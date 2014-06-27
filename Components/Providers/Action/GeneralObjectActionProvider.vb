@@ -12,7 +12,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits OutputAction(Of TEngineEvents)
 
        
-
         <ExtendedCategory("Action")> _
         Public Property ObjectAction As New KeeperObjectAction(Of TEngineEvents)
 

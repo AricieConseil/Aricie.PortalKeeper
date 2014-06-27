@@ -32,7 +32,15 @@ Namespace Services.Flee
     Public Class SimpleExpression(Of TResult)
 
 
-
+        Friend Const DefaultDateTimeFormat As String = "dd/MM/yyyy"
+        Friend Const DefaultRequireDigitsBeforeDecimalPoint As Boolean = False
+        Friend Const DefaultDecimalSeparator As Char = "."c
+        Friend Const DefaultFunctionArgumentSeparator As Char = ","c
+        Friend Const DefaultParseCultureMode As CultureInfoMode = CultureInfoMode.Invariant
+        Friend Const DefaultCustomCultureLocale As String = "en-US"
+        Friend Const DefaultRealLiteralDataType As RealLiteralDataType = RealLiteralDataType.Decimal
+        Friend Const DefaultOwnerMemberAccess As Reflection.BindingFlags = Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance _
+                                                                         Or Reflection.BindingFlags.Static Or Reflection.BindingFlags.IgnoreCase
 
 
         Private _Expression As String = ""
@@ -46,16 +54,14 @@ Namespace Services.Flee
         Protected InternalVariables As New Variables
 
 
-        Protected InternalDateTimeFormat As String = "dd/MM/yyyy"
-        Protected InternalRequireDigitsBeforeDecimalPoint As Boolean = False
-        Protected InternalDecimalSeparator As Char = "."c
-        Protected InternalFunctionArgumentSeparator As Char = ","c
-        Protected InternalParseCultureMode As CultureInfoMode = CultureInfoMode.Invariant
-        Protected InternalCustomCultureLocale As String = "en-US"
-        Protected InternalRealLiteralDataType As RealLiteralDataType = RealLiteralDataType.Decimal
-        Protected InternalOwnerMemberAccess As Reflection.BindingFlags = Reflection.BindingFlags.Default _
-                                                                         Or Reflection.BindingFlags.Public Or Reflection.BindingFlags.Instance _
-                                                                         Or Reflection.BindingFlags.Static Or Reflection.BindingFlags.IgnoreCase 'or Reflection.BindingFlags.OptionalParamBinding or 
+        Protected InternalDateTimeFormat As String = DefaultDateTimeFormat
+        Protected InternalRequireDigitsBeforeDecimalPoint As Boolean = DefaultRequireDigitsBeforeDecimalPoint
+        Protected InternalDecimalSeparator As Char = DefaultDecimalSeparator
+        Protected InternalFunctionArgumentSeparator As Char = DefaultFunctionArgumentSeparator
+        Protected InternalParseCultureMode As CultureInfoMode = DefaultParseCultureMode
+        Protected InternalCustomCultureLocale As String = DefaultCustomCultureLocale
+        Protected InternalRealLiteralDataType As RealLiteralDataType = DefaultRealLiteralDataType
+        Protected InternalOwnerMemberAccess As Reflection.BindingFlags = DefaultOwnerMemberAccess
 
         Private Shared _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
 

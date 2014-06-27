@@ -180,6 +180,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("History")> _
          <ConditionalVisible("AddDumpToHistory", False, True)> _
+          <ConditionalVisible("HistoryDumpAllVars", True, True)> _
           <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
             LineCount(4), Width(500)> _
         Public Property HistoryDumpVariables() As String = ""

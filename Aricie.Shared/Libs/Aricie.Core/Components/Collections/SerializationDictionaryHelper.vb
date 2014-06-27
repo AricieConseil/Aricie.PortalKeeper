@@ -50,29 +50,31 @@ Namespace Collections
                         End If
                         Dim key As TKey = DirectCast(keySerializer.Deserialize(reader), TKey)
                         reader.ReadEndElement()
-
-                        reader.ReadStartElement("value")
-                        valueSerializer = nativeValueSerializer
-                        If reader.IsStartElement("subtype") Then
-                            reader.ReadStartElement("subtype")
-                            Dim valueType As Type
-                            Dim strType As String = reader.ReadContentAsString
-                            Try
-                                valueType = ReflectionHelper.CreateType(strType)
-                            Catch ex As Exception
-                                valueType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType))
-                            End Try
-                            If valueType Is Nothing Then
-                                Throw New ApplicationException(String.Format("Type {0} could not be created while deserializing dictionary", strType))
+                        Dim value As TValue = Nothing
+                        If reader.IsStartElement("value") Then
+                            reader.ReadStartElement("value")
+                            valueSerializer = nativeValueSerializer
+                            If reader.IsStartElement("subtype") Then
+                                reader.ReadStartElement("subtype")
+                                Dim valueType As Type
+                                Dim strType As String = reader.ReadContentAsString
+                                Try
+                                    valueType = ReflectionHelper.CreateType(strType)
+                                Catch ex As Exception
+                                    valueType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType))
+                                End Try
+                                If valueType Is Nothing Then
+                                    Throw New ApplicationException(String.Format("Type {0} could not be created while deserializing dictionary", strType))
+                                End If
+                                reader.ReadEndElement()
+                                If Not valueSerializers.TryGetValue(valueType, valueSerializer) Then
+                                    valueSerializer = ReflectionHelper.GetSerializer(valueType)
+                                    valueSerializers(valueType) = valueSerializer
+                                End If
                             End If
+                            value = DirectCast(valueSerializer.Deserialize(reader), TValue)
                             reader.ReadEndElement()
-                            If Not valueSerializers.TryGetValue(valueType, valueSerializer) Then
-                                valueSerializer = ReflectionHelper.GetSerializer(valueType)
-                                valueSerializers(valueType) = valueSerializer
-                            End If
                         End If
-                        Dim value As TValue = DirectCast(valueSerializer.Deserialize(reader), TValue)
-                        reader.ReadEndElement()
                         dico.Add(key, value)
                     Catch ex As Exception
                         SystemServiceProvider.Instance.LogException(ex)
@@ -94,24 +96,23 @@ Namespace Collections
 
             Dim valueSerializers As New Dictionary(Of Type, XmlSerializer)
             Dim keySerializers As New Dictionary(Of Type, XmlSerializer)
-            Dim key As TKey
-            For Each key In dico.Keys
-                Dim value As TValue = dico.Item(key)
-                If value IsNot Nothing Then
-                    writer.WriteStartElement("item")
-                    writer.WriteStartElement("key")
-                    Dim keyType As Type = key.GetType
-                    If key.GetType.IsSubclassOf(GetType(TKey)) Then
-                        writer.WriteStartElement("subtype")
-                        writer.WriteValue(ReflectionHelper.GetSafeTypeName(keyType))
-                        writer.WriteEndElement()
-                    End If
-                    If Not keySerializers.TryGetValue(keyType, keySerializer) Then
-                        keySerializer = ReflectionHelper.GetSerializer(keyType)
-                        keySerializers(keyType) = keySerializer
-                    End If
-                    keySerializer.Serialize(writer, key)
+            For Each keyValue In dico
+                writer.WriteStartElement("item")
+                writer.WriteStartElement("key")
+                Dim keyType As Type = keyValue.Key.GetType()
+                If keyType.IsSubclassOf(GetType(TKey)) Then
+                    writer.WriteStartElement("subtype")
+                    writer.WriteValue(ReflectionHelper.GetSafeTypeName(keyType))
                     writer.WriteEndElement()
+                End If
+                If Not keySerializers.TryGetValue(keyType, keySerializer) Then
+                    keySerializer = ReflectionHelper.GetSerializer(keyType)
+                    keySerializers(keyType) = keySerializer
+                End If
+                keySerializer.Serialize(writer, keyValue.Key)
+                writer.WriteEndElement()
+                Dim value As TValue = keyValue.Value
+                If value IsNot Nothing Then
                     writer.WriteStartElement("value")
                     Dim valueType As Type = value.GetType
                     If value.GetType.IsSubclassOf(GetType(TValue)) Then
@@ -123,10 +124,15 @@ Namespace Collections
                         valueSerializer = ReflectionHelper.GetSerializer(valueType)
                         valueSerializers(valueType) = valueSerializer
                     End If
-                    valueSerializer.Serialize(writer, value)
-                    writer.WriteEndElement()
+                    Try
+                        valueSerializer.Serialize(writer, value)
+                    Catch ex As Exception
+                        LogException(ex)
+                    End Try
+
                     writer.WriteEndElement()
                 End If
+                writer.WriteEndElement()
             Next
         End Sub
 
