@@ -339,7 +339,7 @@ Namespace ComponentModel
             Select Case propertyName
                 Case "BackupToRestore"
                     Return (From backupfile In Me.GetBackupFiles().OrderBy(Function(objFile As FileInfo) objFile.LastAccessTime) _
-                    Select New ListItem(backupfile.Name, backupfile.Name)).ToList()
+                    Select New ListItem(backupfile.Name, backupfile.Name)).Reverse().ToList()
             End Select
             Return Nothing
         End Function

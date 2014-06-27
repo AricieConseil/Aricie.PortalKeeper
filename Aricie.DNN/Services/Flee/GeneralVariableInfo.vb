@@ -38,7 +38,7 @@ Namespace Services.Flee
         End Property
 
         <ConditionalVisible("HasType", False, True)> _
-        Public Property VariableMode As VariableMode = VariableMode.Expression
+        Public Property VariableMode As VariableMode = VariableMode.Instance
 
         <ExtendedCategory("", "Evaluation")> _
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
