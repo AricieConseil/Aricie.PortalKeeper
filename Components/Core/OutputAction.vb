@@ -27,7 +27,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <SortOrder(130)> _
+        <SortOrder(420)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property OutputName() As String
@@ -41,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _AddItems As Boolean
 
-        <SortOrder(131)> _
+        <SortOrder(421)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property AddItems() As Boolean
@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <SortOrder(132)> _
+        <SortOrder(422)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property Simulation() As Boolean
@@ -65,7 +65,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <SortOrder(133)> _
+        <SortOrder(423)> _
         <ExtendedCategory("Specifics")> _
             <Width(500)> _
             <LineCount(8)> _

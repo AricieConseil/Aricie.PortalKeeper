@@ -2,7 +2,6 @@
 Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.Services
 Imports System.Reflection
 Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
@@ -10,110 +9,8 @@ Imports DotNetNuke.Security
 
 Namespace Services.Flee
 
-    ''' <summary>
-    ''' Helper for flee manipulation
-    ''' </summary>
-    ''' <typeparam name="T"></typeparam>
-    ''' <remarks></remarks>
-    Public Class FleeHelper(Of T)
+   
 
-        ''' <summary>
-        ''' makes a dictionary from key values
-        ''' </summary>
-        ''' <param name="pairs"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function MakeDictionary(ByVal ParamArray pairs As KeyValuePair(Of Object, T)()) As IDictionary(Of Object, T)
-            Dim toReturn As New Dictionary(Of Object, T)
-            For Each objPair As KeyValuePair(Of Object, T) In pairs
-                toReturn(objPair.Key) = objPair.Value
-            Next
-            Return toReturn
-        End Function
-        ''' <summary>
-        ''' makes a dictionary from key values
-        ''' </summary>
-        ''' <param name="pairs"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function MakeDictionary(ByVal ParamArray pairs As KeyValuePair(Of String, T)()) As IDictionary(Of String, T)
-            Dim toReturn As New Dictionary(Of String, T)
-            For Each objPair As KeyValuePair(Of String, T) In pairs
-                toReturn(objPair.Key) = objPair.Value
-            Next
-            Return toReturn
-        End Function
-
-
-
-    End Class
-
-
-
-    Public Module FleeHelper
-
- 
-        ''' <summary>
-        ''' makes a dictionary from key values
-        ''' </summary>
-        ''' <param name="pairs"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function MakeDictionary(ByVal ParamArray pairs As KeyValuePair(Of Object, Object)()) As IDictionary
-            Dim toReturn As New Dictionary(Of Object, Object)
-            For Each objPair As KeyValuePair(Of Object, Object) In pairs
-                toReturn(objPair.Key) = objPair.Value
-            Next
-            Return toReturn
-        End Function
-
-        ''' <summary>
-        ''' Sets properties on an object through reflexion
-        ''' </summary>
-        ''' <param name="objTarget"></param>
-        ''' <param name="prop1"></param>
-        ''' <param name="obj1"></param>
-        ''' <param name="prop2"></param>
-        ''' <param name="obj2"></param>
-        ''' <param name="prop3"></param>
-        ''' <param name="obj3"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function SetProperties(ByVal objTarget As Object, ByVal prop1 As String, ByVal obj1 As Object, Optional ByVal prop2 As String = "", Optional ByVal obj2 As Object = Nothing, Optional ByVal prop3 As String = "", Optional ByVal obj3 As Object = Nothing) As Object
-            Dim toReturn As Object = objTarget
-            If toReturn IsNot Nothing Then
-                Dim propDico As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(toReturn.GetType)
-                Dim currentPropInfo As PropertyInfo = Nothing
-                If Not String.IsNullOrEmpty(prop1) Then
-                    If propDico.TryGetValue(prop1, currentPropInfo) Then
-                        currentPropInfo.SetValue(toReturn, obj1, Nothing)
-                    End If
-                End If
-                If Not String.IsNullOrEmpty(prop2) Then
-                    If propDico.TryGetValue(prop2, currentPropInfo) Then
-                        currentPropInfo.SetValue(toReturn, obj2, Nothing)
-                    End If
-                End If
-                If Not String.IsNullOrEmpty(prop3) Then
-                    If propDico.TryGetValue(prop3, currentPropInfo) Then
-                        currentPropInfo.SetValue(toReturn, obj3, Nothing)
-                    End If
-                End If
-            End If
-            Return toReturn
-        End Function
-
-        Public Function Format(ByVal tempalte As String, value As String) As String
-            Return String.Format(tempalte, value)
-        End Function
-
-        Public Function Format(ByVal tempalte As String, value1 As String, value2 As String) As String
-            Return String.Format(tempalte, value1, value2)
-        End Function
-
-
-
-    End Module
 
     ''' <summary>
     ''' Flee expression, wrapper around SimpleExpressionInfo
@@ -133,11 +30,34 @@ Namespace Services.Flee
             MyBase.New(expressionText)
         End Sub
 
+        
+
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalVariables
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("Variables")> _
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
+        <LabelMode(LabelMode.Top)> _
+        Public Property Variables() As Variables
+            Get
+                If InternalVariables.Instances.Count > 0 Then
+                    Return InternalVariables
+                End If
+                Return Nothing
+            End Get
+            Set(ByVal value As Variables)
+                InternalVariables = value
+            End Set
+        End Property
+
         <ExtendedCategory("ExpressionOwner")> _
         <AutoPostBack()> _
         Public Property OverrideOwner As Boolean
             Get
-                Return InternalOverrideOwner
+                Return InternalOverrideOwner 
             End Get
             Set(value As Boolean)
                 If value <> InternalOverrideOwner Then
@@ -153,12 +73,17 @@ Namespace Services.Flee
 
         <ExtendedCategory("ExpressionOwner")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
-Public Property OwnerMemberAccess As BindingFlags
+        Public Property OwnerMemberAccess As BindingFlags
             Get
+                If InternalOwnerMemberAccess = DefaultOwnerMemberAccess Then
+                    Return Nothing
+                End If
                 Return InternalOwnerMemberAccess
             End Get
             Set(value As BindingFlags)
-                InternalOwnerMemberAccess = value
+                If value <> BindingFlags.Default Then
+                    InternalOwnerMemberAccess = value
+                End If
             End Set
         End Property
 
@@ -172,26 +97,6 @@ Public Property OwnerMemberAccess As BindingFlags
                 InternalNewOwner = value
             End Set
         End Property
-       
-        ''' <summary>
-        ''' gets or sets SimpleExpressionInfo.InternalVariables
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("Variables")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
-        Public Property Variables() As Variables
-            Get
-                Return InternalVariables
-            End Get
-            Set(ByVal value As Variables)
-                InternalVariables = value
-            End Set
-        End Property
-
-
 
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalStaticImports
@@ -205,7 +110,10 @@ Public Property OwnerMemberAccess As BindingFlags
             <LabelMode(LabelMode.Top)> _
         Public Property StaticImports() As List(Of FleeImportInfo)
             Get
-                Return InternalStaticImports
+                If InternalStaticImports.Count > 0 Then
+                    Return InternalStaticImports
+                End If
+                Return Nothing
             End Get
             Set(ByVal value As List(Of FleeImportInfo))
                 InternalStaticImports = value
@@ -228,6 +136,9 @@ Public Property OwnerMemberAccess As BindingFlags
             End Set
         End Property
 
+
+
+
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalDateTimeFormat
         ''' </summary>
@@ -238,6 +149,9 @@ Public Property OwnerMemberAccess As BindingFlags
             <Required(True)> _
         Public Property DateTimeFormat() As String
             Get
+                If InternalDateTimeFormat = DefaultDateTimeFormat Then
+                    Return Nothing
+                End If
                 Return InternalDateTimeFormat
             End Get
             Set(ByVal value As String)
@@ -304,6 +218,9 @@ Public Property OwnerMemberAccess As BindingFlags
         <ExtendedCategory("TechnicalSettings")> _
         Public Property ParseCultureMode() As CultureInfoMode
             Get
+                If InternalParseCultureMode = DefaultParseCultureMode Then
+                    Return Nothing
+                End If
                 Return InternalParseCultureMode
             End Get
             Set(ByVal value As CultureInfoMode)
@@ -321,6 +238,9 @@ Public Property OwnerMemberAccess As BindingFlags
         <ConditionalVisible("ParseCultureMode", False, True, CultureInfoMode.Custom)> _
         Public Property CustomCultureLocale() As String
             Get
+                If InternalCustomCultureLocale = DefaultCustomCultureLocale Then
+                    Return Nothing
+                End If
                 Return InternalCustomCultureLocale
             End Get
             Set(ByVal value As String)

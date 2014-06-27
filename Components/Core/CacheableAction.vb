@@ -13,10 +13,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _CacheDuration As New STimeSpan(TimeSpan.FromSeconds(10))
         Private _CacheKeyFormat As String = "{0}"
 
-
+        <SortOrder(410)> _
         <ExtendedCategory("Specifics")>
         Public Property EnableCache As Boolean
 
+        <SortOrder(411)> _
         <ExtendedCategory("Specifics")> _
         <ConditionalVisible("EnableCache", False, True, True)> _
         <TrialLimited(TrialPropertyMode.Disable)>
@@ -29,16 +30,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <SortOrder(412)> _
         <ExtendedCategory("Specifics")> _
          <ConditionalVisible("EnableCache", False, True, True)> _
         Public Property ProcessTokens As Boolean
 
 
-
+        <SortOrder(413)> _
         <ConditionalVisible("EnableCache", False, True, True), ExtendedCategory("Specifics")>
         Public Property UseSingleton As Boolean
 
-
+        <SortOrder(414)> _
         <ExtendedCategory("Specifics")> _
         <ConditionalVisible("EnableCache", False, True, True)>
         Public Property CacheDuration() As STimeSpan

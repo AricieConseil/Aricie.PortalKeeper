@@ -655,7 +655,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Ban Action</value>
   </data>
   <data name="ModuleConfig`2_LocationSettings.Header" xml:space="preserve">
-    <value>Config Location</value>
+    <value>Configuration File</value>
   </data>
   <data name="LocationSettings_UserFile.Help" xml:space="preserve">
     <value>Check to switch to a host file persistence</value>
@@ -4717,7 +4717,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Http Status 503 - Service Unavailable</value>
   </data>
   <data name="CommonTypes.Text" xml:space="preserve">
-    <value>Select Common Type</value>
+    <value>Common Type</value>
   </data>
   <data name="DotNetType_CommonType.Help" xml:space="preserve">
     <value>Here is a list of common types used in other places and available for selection</value>
@@ -4738,7 +4738,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Type Selection</value>
   </data>
   <data name="DotNetType_ValidateNewType.Text" xml:space="preserve">
-    <value>Validate new type</value>
+    <value>Apply Selected Type</value>
   </data>
   <data name="NewType.Text" xml:space="preserve">
     <value>Enter New Type</value>
@@ -4837,7 +4837,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Backup Restoration</value>
   </data>
   <data name="ModuleConfig`2_SaveLocationSettings.Text" xml:space="preserve">
-    <value>Save New Location</value>
+    <value>Save New Configuration Settings</value>
   </data>
   <data name="DynamicRestMethod_HttpVerbs.Help" xml:space="preserve">
     <value>Select the Rest Http Verb(s) that this method respond to.</value>
@@ -5929,7 +5929,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Downgrade Dynamic Handlers</value>
   </data>
   <data name="ControlAdapterSettings_UpgradeDynamicHandlers.Text" xml:space="preserve">
-    <value>Update Dynamic Handlers</value>
+    <value>Upgrade to Typed Handlers</value>
   </data>
   <data name="FleeExpressionInfo`1_ExpressionOwner.Header" xml:space="preserve">
     <value>Expression Owner</value>
@@ -6709,5 +6709,11 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="SubRedditPost.Text" xml:space="preserve">
     <value>Posts</value>
+  </data>
+  <data name="GeneralObjectAction_Action.Header" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="ObjectAction_Instance.Header" xml:space="preserve">
+    <value>Object</value>
   </data>
 </root>

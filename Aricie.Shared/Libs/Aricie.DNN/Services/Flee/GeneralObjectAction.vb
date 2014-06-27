@@ -28,7 +28,7 @@ Namespace Services.Flee
 
 
 
-
+        <ExtendedCategory("Instance")> _
         Public Property DotNetType As New DotNetType()
 
         <Browsable(False)> _
@@ -59,10 +59,12 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ConditionalVisible("HasConcreteType", False, True)> _
+        <ExtendedCategory("Instance")> _
         Public Property Instance() As New FleeExpressionInfo(Of Object)
 
 
         <ConditionalVisible("HasType", False, True)> _
+        <ExtendedCategory("Action")> _
         Public Property ActionMode As ObjectActionMode
 
 
@@ -75,6 +77,7 @@ Namespace Services.Flee
         <ConditionalVisible("HasType", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <Selector("Name", "Name", False, True, "<Select a Member Name>", "", False, True)> _
+        <ExtendedCategory("Action")> _
         <AutoPostBack()> _
         Public Property MemberName() As String = String.Empty
 
@@ -83,6 +86,7 @@ Namespace Services.Flee
        <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("MemberName", True, True, "")> _
        <ProvidersSelector("Key", "Value")> _
+       <ExtendedCategory("Action")> _
         Public Property MemberIndex As Integer = 1
 
 
@@ -95,6 +99,7 @@ Namespace Services.Flee
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
         <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Action")> _
         Public Property PropertyValue() As New FleeExpressionInfo(Of Object)
 
 
@@ -120,11 +125,12 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("HasParameters", False, True)> _
+        <ExtendedCategory("Action")> _
         Public Overridable Property Parameters() As New Variables
 
 
 
-
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
         Public Overridable Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
@@ -135,7 +141,7 @@ Namespace Services.Flee
        
       
 
-       
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasParameters", False, True)> _
         <ActionButton(IconName.Key, IconOptions.Normal)> _
         Public Sub SetParameters(ape As AriciePropertyEditorControl)
