@@ -453,10 +453,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                 SyncLock botContext
 
-                    'botContext.EngineContext.Init(Me, botContext.UserParams)
-                    'For Each eventStep As TEngineEvent In botContext.Events
-                    '    Me.ProcessRules(botContext.EngineContext, eventStep, False)
-                    'Next
+                   
 
                     botContext.History.LastRun = currentWebBotEvent.Time
                     botContext.History.BotCallHistory.Insert(0, currentWebBotEvent)
@@ -467,20 +464,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         currentWebBotEvent.VariablesDump = dump
                     End If
 
-                    'currentWebBotEvent.PayLoad = HtmlEncode(ReflectionHelper.Serialize(dump).OuterXml)
-
+                   
 
 
                     currentWebBotEvent.Duration = Now.Subtract(currentWebBotEvent.Time)
                     currentWebBotEvent.Success = True
 
 
-                    'If Me.BotStatsInfo Is Nothing OrElse Me.BotStatsInfo.Count = 0 Then
-                    '    Me.BotStatsInfo = New List(Of WebBotStatInfo)
-                    '    currentStats = New WebBotStatInfo
-                    'Else
-                    '    currentStats = Me.BotStatsInfo(0)
-                    'End If
+                  
                     botContext.History.NumberOfBotCall += 1
                     If currentWebBotEvent.Success Then
                         botContext.History.NumberOfSucceedBotCall += 1
@@ -498,11 +489,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             botContext.History.MaxDuration.Value = currentWebBotEvent.Duration
                         End If
                     End If
-                    'If Me.BotStatsInfo.Count = 0 Then
-                    '    Me.BotStatsInfo.Add(currentStats)
-                    'End If
-
-                    'If botContext.RunEndDelegate IsNot Nothing Then
+                   
 
                     If Not Me.NoSave Then
 
@@ -514,34 +501,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                         botContext.OnFinalize()
 
-                        'botContext.RunEndDelegate.Invoke(botContext.History, botContext.EngineContext)
+
 
                     End If
-                    'End If
-
-
-                    If objEnableLogsOrStopWatch Then
-                        'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                        Dim objStep As StepInfo
-                        If Me.LogDump Then
-                            Dim dump As SerializableDictionary(Of String, Object) = botContext.EngineContext.GetDump()
-                            Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
-                            For Each objItem As KeyValuePair(Of String, Object) In dump
-                                If objItem.Value IsNot Nothing Then
-                                    tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
-                                Else
-                                    tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                                End If
-                            Next
-                            objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
-                                                        WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId, tempItems.ToArray)
-                        Else
-                            objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", Me.Name), _
-                                                        WorkingPhase.InProgress, True, False, -1, botContext.EngineContext.FlowId)
-                        End If
-
-                        PerformanceLogger.Instance.AddDebugInfo(objStep)
-                    End If
+                    
+                    botContext.EngineContext.LogEndEngine()
 
                 End SyncLock
 

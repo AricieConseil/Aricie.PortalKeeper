@@ -98,7 +98,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add(EventArgsVarName, e)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnInit(e)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnInit), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnInit))
                 Me.RegisterEventHandlers(HandlersRegistrationStep.OnInit)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
@@ -110,7 +110,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim parameters As New SerializableDictionary(Of String, Object)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.CreateChildControls()
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.CreateChildControls), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.CreateChildControls))
                 Me.RegisterEventHandlers(HandlersRegistrationStep.CreateChildControls)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
@@ -126,7 +126,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add(EventArgsVarName, e)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnLoad(e)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnLoad), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnLoad))
                 Me.RegisterEventHandlers(HandlersRegistrationStep.OnLoad)
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
@@ -140,7 +140,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add(EventArgsVarName, e)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnPreRender(e)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnPreRender), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnPreRender))
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
@@ -154,7 +154,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add("writer", writer)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.Render(writer)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.Render), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.Render))
 
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
@@ -168,7 +168,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add("writer", writer)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.RenderChildren(writer)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.RenderChildren), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.RenderChildren))
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
@@ -182,14 +182,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 parameters.Add(EventArgsVarName, e)
                 Me.ProcessStep(parameters, New ControlEventHandler(Sub()
                                                                        MyBase.OnUnload(e)
-                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnUnload), True)
+                                                                   End Sub), New DynamicHandlerStep(ControlStep.OnUnload))
             Catch ex As Exception
                 ExceptionHelper.LogException(ex)
             End Try
 
         End Sub
 
-        Public Sub ProcessStep(parameters As IDictionary(Of String, Object), ByVal baseHandler As ControlEventHandler, ByVal newStep As DynamicHandlerStep, ByVal endSequence As Boolean)
+        Public Sub ProcessStep(parameters As IDictionary(Of String, Object), ByVal baseHandler As ControlEventHandler, ByVal newStep As DynamicHandlerStep)
             Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
 
             If Not keeperContext.Disabled Then
@@ -201,34 +201,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     If (Not Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnFirstLoad) OrElse (Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnPostBacks) Then
                         parameters.Add("Adapter", Me)
                         keeperContext.Init(dynamicHandler, parameters)
-                        dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, endSequence)
+                        dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
                     End If
                     If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
                         baseHandler.Invoke()
                     End If
-                    'Else
-                    'If endSequence AndAlso (keeperContext.EnableStopWatch OrElse (keeperContext.CurrentEngine IsNot Nothing AndAlso keeperContext.CurrentEngine.EnableSimpleLogs)) Then
-                    '    Dim objStep As StepInfo
-                    '    If keeperContext.CurrentEngine IsNot Nothing AndAlso keeperContext.CurrentEngine.LogDump Then
-                    '        Dim dump As SerializableDictionary(Of String, Object) = keeperContext.GetDump()
-                    '        Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
-                    '        For Each objItem As KeyValuePair(Of String, Object) In dump
-                    '            If objItem.Value IsNot Nothing Then
-                    '                tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
-                    '            Else
-                    '                tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                    '            End If
-                    '        Next
-                    '        objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", keeperContext.CurrentEngine.Name), _
-                    '                                    WorkingPhase.InProgress, True, False, -1, keeperContext.FlowId, tempItems.ToArray)
-                    '    Else
-                    '        objStep = New StepInfo(Debug.PKPDebugType, String.Format("End {0}", keeperContext.CurrentEngine.Name), _
-                    '                                    WorkingPhase.InProgress, True, False, -1, keeperContext.FlowId)
-                    '    End If
-
-                    '    PerformanceLogger.Instance.AddDebugInfo(objStep)
                 End If
-
             End If
         End Sub
 

@@ -61,6 +61,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         'Private _EnableStopWatch As Nullable(Of Boolean)
 
+        Public ReadOnly Property EnableLogs As Boolean
+            Get
+                If Me._CurrentEngine IsNot Nothing Then
+                    Return Me._CurrentEngine.EnableStopWatch OrElse Me._CurrentEngine.EnableSimpleLogs
+                Else
+                    Return Me.CurrentFirewallConfig.EnableStopWatch OrElse Me.CurrentFirewallConfig.EnableSimpleLogs
+                End If
+            End Get
+        End Property
+
+
         Public ReadOnly Property EnableStopWatch() As Boolean
             Get
                 If Me._CurrentEngine IsNot Nothing Then
@@ -243,13 +254,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me._CurrentEngine IsNot configRules Then
                 Me._CurrentEngine = configRules
             End If
-            Dim objEnableSimpleLogsOrStopWatch As Boolean = Me.EnableStopWatch OrElse configRules.EnableSimpleLogs
-            If objEnableSimpleLogsOrStopWatch Then
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
             Me.CurrentEventStep = objEvent
+            Me.LogStartEventStep()
+
 
             If configRules.Mode = RuleEngineMode.Rules Then
                 For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
@@ -259,32 +266,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 configRules.Actions.Run(Me)
             End If
 
-
-            If objEnableSimpleLogsOrStopWatch Then
-
-                Dim objStep As StepInfo
-                If endSequence AndAlso Me._CurrentEngine.LogDump Then
-
-                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
-                    Dim tempItems As New List(Of KeyValuePair(Of String, String))(dump.Count)
-                    For Each objItem As KeyValuePair(Of String, Object) In dump
-                        If objItem.Value IsNot Nothing Then
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ReflectionHelper.Serialize(objItem.Value).InnerXml))
-                        Else
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                        End If
-                    Next
-
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
-                Else
-                    objStep = New StepInfo(Debug.PKPDebugType, String.Format("End - {0} - {1}", objEvent.ToString(CultureInfo.InvariantCulture), configRules.Name), _
-                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId)
-                End If
-
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
+            Me.LogEndEventStep(endSequence)
+           
         End Sub
+
+
+       
 
         Public Function MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents))) As List(Of KeeperRule(Of TEngineEvents))
             Dim toReturn As New List(Of KeeperRule(Of TEngineEvents))
@@ -335,6 +322,56 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overrides Function GetInstance() As PortalKeeperContext(Of TEngineEvents)
             Return DnnContext.Current.GetService(Of PortalKeeperContext(Of TEngineEvents))()
         End Function
+
+        Private Sub LogStartEventStep()
+            If Me.EnableLogs Then
+                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), _CurrentEngine.Name), _
+                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+        End Sub
+
+        Private Sub LogEndEventStep(ByVal endSequence As Boolean)
+            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence)
+        End Sub
+
+        Public Sub LogEndEngine()
+            Me.LogEnd(String.Empty, True)
+        End Sub
+
+        Private Sub LogEnd(eventStep As String, ByVal endSequence As Boolean)
+            If Me.EnableLogs Then
+                Dim tempItems As New List(Of KeyValuePair(Of String, String))()
+                If endSequence AndAlso Me._CurrentEngine.LogDump Then
+
+                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
+
+                    For Each objItem As KeyValuePair(Of String, Object) In dump
+                        If objItem.Value IsNot Nothing Then
+                            Dim serialized As String
+                            Try
+                                serialized = ReflectionHelper.Serialize(objItem.Value).InnerXml
+                            Catch ex As Exception
+                                serialized = ex.ToString()
+                            End Try
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, serialized))
+                        Else
+                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
+                        End If
+                    Next
+                End If
+                Dim logTitle As String
+                If eventStep.IsNullOrEmpty() Then
+                    logTitle = String.Format("End - {0}", _CurrentEngine.Name)
+                Else
+                    logTitle = String.Format("End - {0} - {1}", eventStep, _CurrentEngine.Name)
+                End If
+
+                Dim objStep As StepInfo = New StepInfo(Debug.PKPDebugType, logTitle, _
+                                          WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+        End Sub
 
 
         Public Function GetDump(dumpAllVars As Boolean, dumpaVarList As ICollection(Of String)) As SerializableDictionary(Of String, Object)
