@@ -45,7 +45,6 @@ namespace Aricie.PortalKeeper.Reddit
                     toReturn.Add(typeof(RedditWebAction).Name);
                     toReturn.Add(typeof(RedditPaymentAction).Name);
                     return toReturn;
-                    break;
             }
             return null;
         }
@@ -59,16 +58,12 @@ namespace Aricie.PortalKeeper.Reddit
                     {
                         case "RedditAnswerAction":
                             return new RedditAnswerAction();
-                            break;
                         case "RedditDefineVariableAction":
                             return new RedditDefineVariableAction();
-                            break;
                         case "RedditWebAction":
                             return new RedditWebAction();
-                            break;
                         case "RedditPaymentAction":
                             return new RedditPaymentAction();
-                            break;
                     }
                     break;
             }

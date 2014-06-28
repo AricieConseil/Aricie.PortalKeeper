@@ -38,7 +38,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 For Each objTypeAdapter As KeyValuePair(Of Type, ControlAdapterSettings) In Me.AdaptersDictionary
                     If objTypeAdapter.Value.Enabled Then
                         If Not browser.Adapters.Contains(objTypeAdapter.Key.AssemblyQualifiedName) Then
-                            browser.Adapters.Add(objTypeAdapter.Key.AssemblyQualifiedName, objTypeAdapter.Value.ResolvedAdapterControlType.AssemblyQualifiedName)
+                            SyncLock browser.Adapters
+                                If Not browser.Adapters.Contains(objTypeAdapter.Key.AssemblyQualifiedName) Then
+                                    browser.Adapters.Add(objTypeAdapter.Key.AssemblyQualifiedName, objTypeAdapter.Value.ResolvedAdapterControlType.AssemblyQualifiedName)
+                                End If
+                            End SyncLock
                         End If
                     End If
                 Next

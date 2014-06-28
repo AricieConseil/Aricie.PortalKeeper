@@ -122,13 +122,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If _DumpVarList Is Nothing Then
                     SyncLock _dumpVarLock
                         If _DumpVarList Is Nothing Then
-                            '_DumpVarList = New List(Of String)
-                            'Dim strVars As String() = Me._DumpVariables.Split(","c)
-                            'For Each strVar As String In strVars
-                            '    If strVar.Trim <> "" Then
-                            '        _DumpVarList.Add(strVar.Trim())
-                            '    End If
-                            'Next
                             _DumpVarList = ParseStringList(Me._DumpVariables)
                         End If
                     End SyncLock
