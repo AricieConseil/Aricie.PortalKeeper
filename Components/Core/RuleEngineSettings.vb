@@ -27,6 +27,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class SimpleRuleEngine
         Inherits RuleEngineSettings(Of SimpleEngineEvent)
 
+
+
         <XmlIgnore()> _
       <Browsable(False)> _
         Public Overrides Property Mode As RuleEngineMode
@@ -49,11 +51,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+       
     End Class
 
     <Serializable()> _
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
+        Implements IExpressionVarsProvider
 
         Public Sub New()
             'Me.ImportDefaultProviders()
@@ -265,7 +269,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            For Each objVar As VariableInfo In Me.Variables.Instances
+                existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
+            Next
+        End Sub
 
 
 

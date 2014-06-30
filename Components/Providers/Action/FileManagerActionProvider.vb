@@ -15,6 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class FileManagerActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileAccessActionProvider(Of TEngineEvents)
 
+
         <ExtendedCategory("File")> _
         Public Property Mode As FileManagerMode
 
@@ -82,6 +83,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
             End Select
             Return True
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Select Case Mode
+                Case FileManagerMode.GetFiles
+                    Return GetType(String())
+                Case FileManagerMode.GetDirectories
+                    Return GetType(String())
+                Case FileManagerMode.Delete
+                    Return GetType(Boolean)
+                Case FileManagerMode.Copy
+                   Return GetType(Boolean)
+                Case FileManagerMode.Move
+                   Return GetType(Boolean)
+            End Select
+            Return GetType(Boolean)
         End Function
     End Class
 End Namespace

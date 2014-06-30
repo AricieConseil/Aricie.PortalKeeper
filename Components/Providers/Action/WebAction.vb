@@ -26,6 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class WebAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
+
         Private _WebRequest As New WebRequestInfo(Of TEngineEvents)
 
 
@@ -48,7 +49,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("Parameters")> _
-            Public Property InputParameters() As Variables(Of String)
+        Public Property InputParameters() As Variables(Of String)
             Get
                 Return _InputParameters
             End Get
@@ -58,7 +59,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("Parameters")> _
-          Public Property HeaderParameters() As Variables(Of String)
+        Public Property HeaderParameters() As Variables(Of String)
             Get
                 Return _HeaderParameters
             End Get
@@ -67,7 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-      
+
         <ExtendedCategory("Parameters")> _
         Public Property IncludePostData() As Boolean
             Get
@@ -106,6 +107,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(String)
+        End Function
     End Class
 
 

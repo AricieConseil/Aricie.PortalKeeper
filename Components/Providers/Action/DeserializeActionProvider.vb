@@ -26,6 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits SerializationBaseActionProvider(Of TEngineEvents)
 
 
+
         Private _InputExpression As New FleeExpressionInfo(Of String)
 
         Private _OutputType As New DotNetType(GetType(Object))
@@ -125,5 +126,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
+        Protected Overrides Function GetOutputType() As Type
+            Return Me.OutputType.GetDotNetType()
+        End Function
     End Class
 End Namespace

@@ -1,6 +1,7 @@
 ﻿Imports System.Reflection
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
+Imports Microsoft.VisualBasic.CompilerServices
 
 Namespace ComponentModel
     Public Class ConditionalVisibleInfo
@@ -83,7 +84,7 @@ Namespace ComponentModel
         End Property
 
         Private Function DefaultPredicate(ByVal value As Object) As Boolean
-            Return CType(value, Boolean) Xor Me._MasterNegate
+            Return Conversions.ToBoolean(value) Xor Me._MasterNegate
         End Function
 
         Private Function HasMatchingValue(ByVal value As Object) As Boolean

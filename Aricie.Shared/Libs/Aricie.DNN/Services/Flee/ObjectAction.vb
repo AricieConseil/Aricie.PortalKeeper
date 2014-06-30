@@ -33,6 +33,10 @@ Namespace Services.Flee
 
         Public MustOverride Function Run(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
 
+        Public MustOverride Function GetOutputType() As Type
+
+
+
 
     End Class
 

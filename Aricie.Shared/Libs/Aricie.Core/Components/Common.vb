@@ -18,6 +18,7 @@ Imports System.Linq
 Imports System.Security
 Imports System.Runtime.InteropServices
 Imports Aricie.Security.Cryptography
+Imports System.Runtime.CompilerServices
 
 
 ''' <summary>
@@ -52,6 +53,11 @@ Public Module Common
         Return IsAssignableToGenericType(baseType, genericType)
     End Function
 
+
+    Public Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T
+        target = value
+        Return value
+    End Function
 
 #End Region
 
@@ -242,7 +248,17 @@ Public Module Common
         Return toReturn
     End Function
 
-
+    <Extension> _
+    Public Function LinesCount(s As String) As Integer
+        Dim count As Integer
+        Dim position As Integer
+        While (InlineAssignHelper(position, s.IndexOf(ControlChars.Lf, position))) <> -1
+            count += 1
+            ' Skip this occurrence!
+            position += 1
+        End While
+        Return count
+    End Function
 
     Public Function ParseStringList(ByVal listAsString As String, Optional ByVal separator As Char = ","c) As List(Of String)
         Dim strArray As String() = listAsString.Trim.Trim(separator).Split(New String() {separator}, StringSplitOptions.RemoveEmptyEntries)

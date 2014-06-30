@@ -8,6 +8,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ProfileLoadActionProvider(Of TEngineEvents As IConvertible)
         Inherits ProfileActionProviderBase(Of TEngineEvents)
 
+
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             Dim toReturn As Object = Nothing
             Dim objUser = Me.GetUser(actionContext)
@@ -26,5 +27,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
+        Protected Overrides Function GetOutputType() As Type
+            If AsString Then
+                Return GetType(String)
+            Else
+                Dim objDef As GeneralPropertyDefinition = GeneralPropertyDefinition.FromDNNProfileDefinition(DotNetNuke.Entities.Profile.ProfileController.GetPropertyDefinitionByName(NukeHelper.PortalId, PropertyName))
+                Return objDef.GetValueType()
+            End If
+        End Function
     End Class
 End NameSpace

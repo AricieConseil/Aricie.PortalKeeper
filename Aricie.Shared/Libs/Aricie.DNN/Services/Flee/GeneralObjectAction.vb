@@ -39,7 +39,7 @@ Namespace Services.Flee
         End Property
 
         <Browsable(False)> _
-         Public ReadOnly Property HasConcreteType As Boolean
+        Public ReadOnly Property HasConcreteType As Boolean
             Get
                 Return HasType AndAlso Not Me.DotNetType.GetDotNetType().IsAbstract
             End Get
@@ -136,10 +136,10 @@ Namespace Services.Flee
         Public Overridable Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
 
 
-       
 
-       
-      
+
+
+
 
         <ExtendedCategory("Action")> _
         <ConditionalVisible("HasParameters", False, True)> _
@@ -158,6 +158,10 @@ Namespace Services.Flee
                 ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
             End If
         End Sub
+
+
+
+
 
 
         Public Overrides Function Run(owner As Object, globalVars As IContextLookup) As Object
@@ -284,7 +288,7 @@ Namespace Services.Flee
             End If
         End Sub
 
-        <xmlIgnore()> _
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property SelectedMembers As List(Of MemberInfo)
             Get
@@ -379,5 +383,17 @@ Namespace Services.Flee
         End Function
 
 
+        Public Overrides Function GetOutputType() As Type
+            Select Case Me.ActionMode
+                Case Flee.ObjectActionMode.CallMethod
+                    For Each potentialMember As MemberInfo In SelectedMembers
+                        If TypeOf potentialMember Is MethodInfo Then
+                            Dim targetMethod As MethodInfo = DirectCast(potentialMember, MethodInfo)
+                            Return targetMethod.ReturnType
+                        End If
+                    Next
+            End Select
+            Return Nothing
+        End Function
     End Class
 End Namespace

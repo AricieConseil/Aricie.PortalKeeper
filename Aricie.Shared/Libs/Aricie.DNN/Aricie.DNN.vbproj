@@ -169,6 +169,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ComponentModel\Providers\NamedConfig.vb" />
+    <Compile Include="ComponentModel\Providers\NamedEntity.vb" />
     <Compile Include="ComponentModel\Providers\ProviderHost.vb" />
     <Compile Include="ComponentModel\Providers\ProviderSettings.vb" />
     <Compile Include="ComponentModel\Providers\ProviderConfig.vb" />

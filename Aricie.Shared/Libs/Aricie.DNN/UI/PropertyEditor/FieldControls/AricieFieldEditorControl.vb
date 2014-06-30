@@ -282,21 +282,28 @@ Public Class AricieFieldEditorControl
                     Else
 
                         If editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
-                            editorInfo.LabelMode = LabelMode.Top
                             If objType.GetInterface("ICollection") IsNot Nothing Then
+                                editorInfo.LabelMode = LabelMode.Top
                                 If objType.GetInterface("IDictionary") IsNot Nothing Then
                                     objEditControl = New DictionaryEditControl()
                                 Else
                                     objEditControl = New ListEditControl()
                                 End If
                             ElseIf objType.GetInterface("IDictionary") IsNot Nothing Then
+                                editorInfo.LabelMode = LabelMode.Top
                                 objEditControl = New DictionaryEditControl()
                             ElseIf objType Is GetType(CData) Then
                                 Dim ctc As New CustomTextEditControl()
-                                ctc.Width = 650
-                                ctc.LineCount = Math.Max(3, Math.Min(Conversions.ToString(editorInfo.Value).Length \ 50, 200))
+                                ctc.Width = 600
+                                Dim strValue = Conversions.ToString(editorInfo.Value)
+                                ctc.LineCount = Math.Max(3, _
+                                                         Math.Min( _
+                                                             Math.Max(strValue.Length \ 60, _
+                                                                      strValue.LinesCount()) _
+                                                            , 200))
                                 objEditControl = ctc
                             Else
+                                editorInfo.LabelMode = LabelMode.Top
                                 objEditControl = New PropertyEditorEditControl()
                             End If
                         Else

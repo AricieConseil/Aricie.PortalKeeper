@@ -14,7 +14,7 @@ Namespace Services.Flee
     <ActionButton(IconName.Cog, IconOptions.Normal)> _
     <Serializable()> _
     Public MustInherit Class VariableInfo
-        Inherits NamedEntity
+        Inherits NamedIdentifierEntity
         Implements IProviderSettings
 
         Private _VarConstant As Object

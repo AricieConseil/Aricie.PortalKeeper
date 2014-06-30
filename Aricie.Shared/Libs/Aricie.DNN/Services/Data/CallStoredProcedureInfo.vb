@@ -27,5 +27,19 @@ Namespace Services.Data
             Return toReturn
         End Function
 
+        Public Function GetOutputType() As Type
+            Select Case Me.StoredProcedureType
+                Case StoredProcedureType.NonQuery
+                    Return Nothing
+                Case StoredProcedureType.DataSet
+                    Return GetType(DataSet)
+                Case StoredProcedureType.IDataReader
+                    Return GetType(IDataReader)
+                Case StoredProcedureType.Scalar
+                    Return GetType(Object)
+            End Select
+            Return Nothing
+        End Function
+
     End Class
 End NameSpace

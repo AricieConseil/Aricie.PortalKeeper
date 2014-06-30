@@ -19,6 +19,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
+
         Private _InputExpression As New FleeExpressionInfo(Of String)
 
         'Private _InputEntityExpression As New FleeExpressionInfo(Of IEnumerable)
@@ -76,6 +77,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function GetContent(actionContext As PortalKeeperContext(Of TEngineEvents)) As String
             Return Me._InputExpression.Evaluate(actionContext, actionContext)
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(Boolean)
         End Function
     End Class
 End Namespace

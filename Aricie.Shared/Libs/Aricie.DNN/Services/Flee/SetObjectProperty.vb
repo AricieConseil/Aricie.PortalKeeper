@@ -99,5 +99,9 @@ Namespace Services.Flee
             toReturn.Sort(Function(objProp1, objProp2) String.Compare(objProp1.Name, objProp2.Name, StringComparison.InvariantCultureIgnoreCase))
             Return toReturn
         End Function
+
+        Public Overrides Function GetOutputType() As Type
+            Return Nothing
+        End Function
     End Class
 End Namespace

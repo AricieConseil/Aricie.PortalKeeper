@@ -164,6 +164,28 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property PropertyValue() As String
 
 
+        Public Function GetValueType() As Type
+            If Me._DataType > -1 Then
+                Dim listEntry As ListEntryInfo = NukeHelper.GetListEntrySingleton(Me._DataType)
+                If listEntry IsNot Nothing AndAlso listEntry.ListName = "DataType" Then
+                    Select Case listEntry.Value
+                        Case "Integer"
+                            Return GetType(Integer)
+                        Case "TrueFalse"
+                            Return GetType(Boolean)
+                        Case "Date", "DateTime"
+                            Return GetType(DateTime)
+                        Case "Locale"
+                            Return GetType(Locale)
+                        Case "Page"
+                            Return GetType(TabInfo)
+                        Case Else
+                            Return GetType(String)
+                    End Select
+                End If
+            End If
+            Return GetType(String)
+        End Function
 
        
 

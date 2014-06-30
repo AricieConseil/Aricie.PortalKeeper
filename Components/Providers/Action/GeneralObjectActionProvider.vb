@@ -11,7 +11,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class GeneralObjectActionProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
-       
+
+
         <ExtendedCategory("Action")> _
         Public Property ObjectAction As New KeeperObjectAction(Of TEngineEvents)
 
@@ -24,6 +25,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             Return Me.ObjectAction.Run(actionContext, actionContext)
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return ObjectAction.GetOutputType()
         End Function
     End Class
 End NameSpace
