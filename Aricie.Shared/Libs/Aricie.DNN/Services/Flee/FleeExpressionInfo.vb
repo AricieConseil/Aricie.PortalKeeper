@@ -6,6 +6,7 @@ Imports System.Reflection
 Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Security
+Imports Aricie.Services
 
 Namespace Services.Flee
 
@@ -21,6 +22,8 @@ Namespace Services.Flee
     <Serializable()> _
     Public Class FleeExpressionInfo(Of TResult)
         Inherits SimpleExpression(Of TResult)
+        Implements IExpressionVarsProvider
+
 
         Public Sub New()
             MyBase.New()
@@ -30,7 +33,7 @@ Namespace Services.Flee
             MyBase.New(expressionText)
         End Sub
 
-        
+
 
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalVariables
@@ -43,10 +46,7 @@ Namespace Services.Flee
         <LabelMode(LabelMode.Top)> _
         Public Property Variables() As Variables
             Get
-                If InternalVariables.Instances.Count > 0 Then
-                    Return InternalVariables
-                End If
-                Return Nothing
+                Return InternalVariables
             End Get
             Set(ByVal value As Variables)
                 InternalVariables = value
@@ -57,7 +57,7 @@ Namespace Services.Flee
         <AutoPostBack()> _
         Public Property OverrideOwner As Boolean
             Get
-                Return InternalOverrideOwner 
+                Return InternalOverrideOwner
             End Get
             Set(value As Boolean)
                 If value <> InternalOverrideOwner Then
@@ -75,9 +75,6 @@ Namespace Services.Flee
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property OwnerMemberAccess As BindingFlags
             Get
-                If InternalOwnerMemberAccess = DefaultOwnerMemberAccess Then
-                    Return Nothing
-                End If
                 Return InternalOwnerMemberAccess
             End Get
             Set(value As BindingFlags)
@@ -110,10 +107,7 @@ Namespace Services.Flee
             <LabelMode(LabelMode.Top)> _
         Public Property StaticImports() As List(Of FleeImportInfo)
             Get
-                If InternalStaticImports.Count > 0 Then
-                    Return InternalStaticImports
-                End If
-                Return Nothing
+                Return InternalStaticImports
             End Get
             Set(ByVal value As List(Of FleeImportInfo))
                 InternalStaticImports = value
@@ -149,9 +143,6 @@ Namespace Services.Flee
             <Required(True)> _
         Public Property DateTimeFormat() As String
             Get
-                If InternalDateTimeFormat = DefaultDateTimeFormat Then
-                    Return Nothing
-                End If
                 Return InternalDateTimeFormat
             End Get
             Set(ByVal value As String)
@@ -218,9 +209,6 @@ Namespace Services.Flee
         <ExtendedCategory("TechnicalSettings")> _
         Public Property ParseCultureMode() As CultureInfoMode
             Get
-                If InternalParseCultureMode = DefaultParseCultureMode Then
-                    Return Nothing
-                End If
                 Return InternalParseCultureMode
             End Get
             Set(ByVal value As CultureInfoMode)
@@ -238,9 +226,6 @@ Namespace Services.Flee
         <ConditionalVisible("ParseCultureMode", False, True, CultureInfoMode.Custom)> _
         Public Property CustomCultureLocale() As String
             Get
-                If InternalCustomCultureLocale = DefaultCustomCultureLocale Then
-                    Return Nothing
-                End If
                 Return InternalCustomCultureLocale
             End Get
             Set(ByVal value As String)
@@ -264,6 +249,13 @@ Namespace Services.Flee
             End Set
         End Property
 
+
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            For Each objVar As VariableInfo In Me.Variables.Instances
+                existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
+            Next
+        End Sub
 
 
     End Class

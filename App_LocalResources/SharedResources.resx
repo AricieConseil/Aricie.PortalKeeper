@@ -6716,4 +6716,73 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ObjectAction_Instance.Header" xml:space="preserve">
     <value>Object</value>
   </data>
+  <data name="CreateInstance.Text" xml:space="preserve">
+    <value>Create Instance</value>
+  </data>
+  <data name="DeclaredOnly.Text" xml:space="preserve">
+    <value>Declared Only</value>
+  </data>
+  <data name="ExactBinding.Text" xml:space="preserve">
+    <value>Exact Binding</value>
+  </data>
+  <data name="FlattenHierarchy.Text" xml:space="preserve">
+    <value>Flatten Hierarchy</value>
+  </data>
+  <data name="FleeExpressionInfo`1_OwnerMemberAccess.Help" xml:space="preserve">
+    <value>By default, an expression will only allow access to the public members of its owner. You can use that property to grant/deny access to the public and non-public members of the owner. See &lt;a href="https://flee.codeplex.com/wikipage?title=ExpressionOwner&amp;referringTitle=Examples"&gt; the official documentation&lt;/a&gt; for more information.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_OwnerMemberAccess.Text" xml:space="preserve">
+    <value>Owner Member Access</value>
+  </data>
+  <data name="GetField.Text" xml:space="preserve">
+    <value>Get Field</value>
+  </data>
+  <data name="GetProperty.Text" xml:space="preserve">
+    <value>Get Property</value>
+  </data>
+  <data name="IgnoreCase.Text" xml:space="preserve">
+    <value>Ignore Case</value>
+  </data>
+  <data name="IgnoreReturn.Text" xml:space="preserve">
+    <value>Ignore Return</value>
+  </data>
+  <data name="InvokeMethod.Text" xml:space="preserve">
+    <value>Invoke Method</value>
+  </data>
+  <data name="NamedEntity_Name.Validation" xml:space="preserve">
+    <value>The name must be a valid &lt;a href="http://msdn.microsoft.com/en-us/library/aa664670%28VS.71%29.aspx"&gt;Identifier &lt;/a&gt; (no space, start with a letter etc.)</value>
+  </data>
+  <data name="NonPublic.Text" xml:space="preserve">
+    <value>Non Public</value>
+  </data>
+  <data name="OptionalParamBinding.Text" xml:space="preserve">
+    <value>Optional Param Binding</value>
+  </data>
+  <data name="PutDispProperty.Text" xml:space="preserve">
+    <value>Put Disp Property</value>
+  </data>
+  <data name="PutRefDispProperty.Text" xml:space="preserve">
+    <value>Put Ref Disp Property</value>
+  </data>
+  <data name="SetField.Text" xml:space="preserve">
+    <value>Set Field</value>
+  </data>
+  <data name="SimpleExpression`1_DisplayAvailableVars.Text" xml:space="preserve">
+    <value>Display Available Variables</value>
+  </data>
+  <data name="SimpleExpression`1_Help.Header" xml:space="preserve">
+    <value>Expression Help</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedVariable.Help" xml:space="preserve">
+    <value>This is a list of the variables available for use in your expression. Select a variable an click the Insert button or simply manually type the variable name into the expression Text Area. You can also optionally select a member and a submember from the corresponding dropdownlists.</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedVariable.Text" xml:space="preserve">
+    <value>Available Variables</value>
+  </data>
+  <data name="Static.Text" xml:space="preserve">
+    <value>Static</value>
+  </data>
+  <data name="SuppressChangeType.Text" xml:space="preserve">
+    <value>Suppress Change Type</value>
+  </data>
 </root>

@@ -26,5 +26,17 @@ Namespace Services.Data
             Return toReturn
         End Function
 
+
+        Public Function GetOutputType() As Type
+            Select Case Me.StatementType
+                Case SqlStatementType.Script
+                    Return GetType(String)
+                Case SqlStatementType.IDataReader
+                    Return GetType(IDataReader)
+            End Select
+            Return Nothing
+        End Function
+
+
     End Class
 End NameSpace

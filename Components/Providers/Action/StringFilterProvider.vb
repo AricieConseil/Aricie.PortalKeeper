@@ -23,6 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class StringFilterProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
+
         Private _InputExpression As New FleeExpressionInfo(Of String)
 
         Private _FilterMode As StringFilterMode
@@ -122,5 +123,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(String)
+        End Function
     End Class
 End Namespace

@@ -4,13 +4,17 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Diagnostics
+Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public MustInherit Class OutputAction(Of TEngineEvents As IConvertible)
         Inherits CacheableAction(Of TEngineEvents)
+        Implements IExpressionVarsProvider
+
 
 
 
@@ -39,9 +43,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <SortOrder(421)> _
+      <ConditionalVisible("ShowOutput", False, True)> _
+      <ExtendedCategory("Specifics")> _
+        Public ReadOnly Property OutputType As DotNetType
+            Get
+                Dim objType As Type = Me.GetOutputType()
+                If objType IsNot Nothing Then
+                    Return New DotNetType(objType)
+                Else
+                    Return New DotNetType()
+                End If
+            End Get
+        End Property
+
+
+
         Private _AddItems As Boolean
 
-        <SortOrder(421)> _
+        <SortOrder(422)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property AddItems() As Boolean
@@ -53,7 +73,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <SortOrder(422)> _
+        <SortOrder(423)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
         Public Property Simulation() As Boolean
@@ -65,7 +85,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <SortOrder(423)> _
+        <SortOrder(424)> _
         <ExtendedCategory("Specifics")> _
             <Width(500)> _
             <LineCount(8)> _
@@ -141,5 +161,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Return True
         End Function
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            If Not Me.OutputName.IsNullOrEmpty() Then
+                existingVars.Add(Me.OutputName, GetOutputType())
+            End If
+        End Sub
+
+        Protected MustOverride Function GetOutputType() As Type
+
+
     End Class
 End Namespace

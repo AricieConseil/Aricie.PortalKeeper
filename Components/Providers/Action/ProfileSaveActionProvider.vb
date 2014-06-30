@@ -10,6 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ProfileSaveActionProvider(Of TEngineEvents As IConvertible)
         Inherits ProfileActionProviderBase(Of TEngineEvents)
 
+
         <Browsable(False)> _
         Public Overrides ReadOnly Property ShowOutput As Boolean
             Get
@@ -38,6 +39,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     UserController.UpdateUser(objUser.PortalID, objUser)
             End Select
             Return True
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(Boolean)
         End Function
     End Class
 End NameSpace

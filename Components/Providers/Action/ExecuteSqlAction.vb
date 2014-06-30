@@ -15,6 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits OutputAction(Of TEngineEvents)
 
 
+
         <ExtendedCategory("SqlSettings")> _
         Public Property SqlActionMode As SqlActionMode = SqlActionMode.CallStoredProcedure
 
@@ -55,10 +56,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Else
                         toReturn = Me.SqlStatement.Execute()
                     End If
-
             End Select
             Return toReturn
         End Function
 
+        Protected Overrides Function GetOutputType() As Type
+            Select Case SqlActionMode
+                Case SqlActionMode.CallStoredProcedure
+                    Return Me.CallStoredProcedure.GetOutputType()
+                Case SqlActionMode.SqlStatement
+                    Return Me.SqlStatement.GetOutputType()
+            End Select
+            Return Nothing
+        End Function
     End Class
 End Namespace

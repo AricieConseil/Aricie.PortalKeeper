@@ -16,6 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class RunProgramAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
+
         Public Property ProcessStart As New SimpleProcessStartInfo()
 
         Public Property UseTimeOut As Boolean
@@ -55,6 +56,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Using
 
             Return toReturn
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(String)
         End Function
     End Class
 End Namespace

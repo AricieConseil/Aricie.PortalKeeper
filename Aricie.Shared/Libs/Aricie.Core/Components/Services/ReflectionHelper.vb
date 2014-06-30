@@ -863,6 +863,27 @@ Namespace Services
             Return GetMembersDictionary(objType, False, False)
         End Function
 
+        Public Shared Function GetMemberReturnType(objMember As MemberInfo, Optional publicOnly As Boolean = False) As Type
+            Select Case objMember.MemberType
+                Case MemberTypes.Property
+                    Dim objGetMethod As MethodInfo = DirectCast(objMember, PropertyInfo).GetGetMethod()
+                    If objGetMethod IsNot Nothing AndAlso (Not publicOnly OrElse objGetMethod.IsPublic) Then
+                        Return objGetMethod.ReturnType
+                    End If
+                Case MemberTypes.Field
+                    If DirectCast(objMember, FieldInfo).IsPublic Then
+                        Return DirectCast(objMember, FieldInfo).FieldType
+                    End If
+                Case MemberTypes.Method
+                    Dim objMethod As MethodInfo = DirectCast(objMember, MethodInfo)
+                    If objMethod.ReturnType IsNot Nothing AndAlso (Not publicOnly OrElse objMethod.IsPublic) Then
+                        Return objMethod.ReturnType
+                    End If
+                Case Else
+                    Return Nothing
+            End Select
+            Return Nothing
+        End Function
 
         Public Shared Function GetMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, MemberInfo)
 

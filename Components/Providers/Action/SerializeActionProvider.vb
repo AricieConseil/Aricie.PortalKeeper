@@ -19,6 +19,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
+
         Private _inputExpression As New FleeExpressionInfo(Of Object)
 
         <ExtendedCategory("Serialization")> _
@@ -35,6 +36,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function GetContent(actionContext As PortalKeeperContext(Of TEngineEvents)) As Object
             Return _inputExpression.Evaluate(actionContext, actionContext)
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(String)
         End Function
     End Class
 End Namespace

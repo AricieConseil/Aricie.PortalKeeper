@@ -30,6 +30,7 @@ Namespace Services.Flee
         Implements ISelector(Of EventInfo)
 
 
+
         <ExtendedCategory("Instance")> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ProvidersSelector()> _
@@ -85,6 +86,10 @@ Namespace Services.Flee
             Else
                 Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.EventName, ReflectionHelper.GetSafeTypeName(GetType(TObjectType))))
             End If
+            Return Nothing
+        End Function
+
+        Public Overrides Function GetOutputType() As Type
             Return Nothing
         End Function
     End Class

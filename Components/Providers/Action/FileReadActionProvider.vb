@@ -15,10 +15,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
+
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), isAsync As Boolean) As Object
 
             Return Me.ReadResult(actionContext, isAsync)
 
+        End Function
+
+        Protected Overrides Function GetOutputType() As Type
+            Return GetType(String)
         End Function
     End Class
 

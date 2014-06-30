@@ -114,5 +114,19 @@ Namespace Services.Flee
         End Function
 
 
+        Public Overrides Function GetOutputType() As Type
+            Dim potentialsMembers As List(Of MemberInfo) = Nothing
+            Dim targetMethod As MethodInfo
+            If ReflectionHelper.GetFullMembersDictionary(GetType(TObjectType)).TryGetValue(Me._MethodName, potentialsMembers) Then
+                Dim index As Integer = 0
+                For Each potentialMember As MemberInfo In potentialsMembers
+                    If TypeOf potentialMember Is MethodInfo Then
+                        targetMethod = DirectCast(potentialMember, MethodInfo)
+                        Return targetMethod.ReturnType
+                    End If
+                Next
+            End If
+            Return Nothing
+        End Function
     End Class
 End Namespace
