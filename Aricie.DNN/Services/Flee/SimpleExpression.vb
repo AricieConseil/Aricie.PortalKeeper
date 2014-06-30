@@ -11,12 +11,14 @@ Imports Aricie.Services
 Imports System.Threading
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
+Imports System.Reflection
+Imports System.Web.UI.WebControls
 
 Namespace Services.Flee
 
     Public Interface IExpressionVarsProvider
 
-        Sub AddVariables(ByVal currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Object))
+        Sub AddVariables(ByVal currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
 
     End Interface
 
@@ -30,6 +32,8 @@ Namespace Services.Flee
     <ActionButton(IconName.Code, IconOptions.Normal)> _
     <Serializable()> _
     Public Class SimpleExpression(Of TResult)
+        Implements ISelector
+
 
 
         Friend Const DefaultDateTimeFormat As String = "dd/MM/yyyy"
@@ -63,7 +67,7 @@ Namespace Services.Flee
         Protected InternalRealLiteralDataType As RealLiteralDataType = DefaultRealLiteralDataType
         Protected InternalOwnerMemberAccess As Reflection.BindingFlags = DefaultOwnerMemberAccess
 
-        Private Shared _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
+        Private Shared ReadOnly _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
 
 
         Public Sub New()
@@ -84,7 +88,6 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ExtendedCategory("")> _
         Public ReadOnly Property ReturnType() As String
             Get
                 Return ReflectionHelper.GetSafeTypeName(GetType(TResult))
@@ -108,8 +111,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Required(True)> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        <LineCount(8), Width(500)> _
+        <LineCount(4), Width(500)> _
         Public Property Expression() As String
             Get
                 Return _Expression
@@ -119,23 +121,42 @@ Namespace Services.Flee
                     SyncLock Me
                         _Expression = value
                         If SlaveExpression IsNot Nothing Then
-                            Me.SlaveExpression.Expression = value
+                            SlaveExpression.Expression = value
                         End If
                     End SyncLock
                 End If
             End Set
         End Property
 
+        <Browsable(False)> _
+        Public ReadOnly Property HasVariableList As Boolean
+            Get
+                Return _AvailableVariables IsNot Nothing
+            End Get
+        End Property
 
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ProvidersSelector()> _
+        <ConditionalVisible("HasVariableList", False, True)> _
+        <ExtendedCategory("", "Help")> _
+        Public Property SelectedVariable As String = ""
 
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("SelectedVariable", False, True)> _
+        <ExtendedCategory("", "Help")> _
+        Public Property SelectedMember As String = ""
 
-
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("SelectedMember", False, True)> _
+        <ExtendedCategory("", "Help")> _
+        Public Property SelectedSubMember As String = ""
 
 
 
         'Private Shared expWriterLock As New Object
 
         '<ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
+        <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Question, IconOptions.Normal)> _
         Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
             Try
@@ -151,6 +172,54 @@ Namespace Services.Flee
                 Throw newEx
             End Try
         End Sub
+
+        <ConditionalVisible("HasVariableList", False, True)> _
+        <ExtendedCategory("", "Help")> _
+       <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
+        Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
+            Try
+
+                'If True Then
+                'pe.DisplayMessage("Todo: Recursive Available Variables with IExpressionVarsProvider", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+                'Else
+                'pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
+                'End If
+                'pe.ItemChanged = True
+            Catch ex As Exception
+                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
+                Throw newEx
+            End Try
+        End Sub
+
+
+        Private _AvailableVariables As IDictionary(Of String, Type)
+
+
+        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
+            Select Case propertyName
+                Case "SelectedVariable"
+                    Return (_AvailableVariables.Keys).Select(Function(objString) New ListItem(objString)).ToList()
+                Case "SelectedMember"
+                    Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
+                    Return ReflectionHelper.GetMembersDictionary(selectedVarType) _
+                                               .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
+                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).ToList()
+                Case "SelectedSubMember"
+                    Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
+                    Dim objMember As MemberInfo = Nothing
+                    ReflectionHelper.GetMembersDictionary(selectedVarType).TryGetValue(SelectedMember, objMember)
+                    If objMember IsNot Nothing Then
+                        Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, True)
+                        Return ReflectionHelper.GetMembersDictionary(objMemberType) _
+                                             .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
+                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).ToList()
+                    End If
+            End Select
+            Return Nothing
+        End Function
+
+
+
 
 
         ''' <summary>
@@ -433,5 +502,6 @@ Namespace Services.Flee
 
         End Class
 
+       
     End Class
 End Namespace

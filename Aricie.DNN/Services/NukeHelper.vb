@@ -61,23 +61,23 @@ Namespace Services
 
 #Region "instanciated controllers"
 
-        Public HostController As New HostSettingsController()
-        Public PortalController As New PortalController()
-        Public PortalAliasController As New PortalAliasController()
-        Public ModuleController As New ModuleController()
+        Public ReadOnly HostController As New HostSettingsController()
+        Public ReadOnly PortalController As New PortalController()
+        Public ReadOnly PortalAliasController As New PortalAliasController()
+        Public ReadOnly ModuleController As New ModuleController()
         Private _RoleController As RoleController
 
-        Public ListController As New ListController()
-        Public FileController As New FileController()
-        Public FolderController As New FolderController()
+        Public ReadOnly ListController As New ListController()
+        Public ReadOnly FileController As New FileController()
+        Public ReadOnly FolderController As New FolderController()
 
-        Public TabController As New TabController()
-        Public LogController As New EventLogController()
+        Public ReadOnly TabController As New TabController()
+        Public ReadOnly LogController As New EventLogController()
 
-        Public DesktopModuleController As New DesktopModuleController()
-        Public ModuleDefinitionController As New ModuleDefinitionController()
-        Public PersonnalizationController As New PersonalizationController()
-        Public ProfileController As New ProfileController()
+        Public ReadOnly DesktopModuleController As New DesktopModuleController()
+        Public ReadOnly ModuleDefinitionController As New ModuleDefinitionController()
+        Public ReadOnly PersonnalizationController As New PersonalizationController()
+        Public ReadOnly ProfileController As New ProfileController()
 
 #End Region
 

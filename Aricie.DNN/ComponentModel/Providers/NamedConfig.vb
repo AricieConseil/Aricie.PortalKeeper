@@ -1,61 +1,8 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.ComponentModel
-Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 
 Namespace ComponentModel
-
-    <Serializable()> _
-    <DefaultProperty("Name")> _
-    Public Class NamedEntity
-
-        Private _Name As String = ""
-
-        Private _Decription As CData = ""
-
-
-
-        Public Sub New()
-
-        End Sub
-
-        Public Sub New(ByVal name As String, ByVal description As String)
-            Me._Name = name
-            Me._Decription = description
-        End Sub
-
-        <ExtendedCategory("")> _
-                    <Required(True)> _
-            <MainCategory()> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <Width(300)> _
-        Public Overridable Property Name() As String
-            Get
-                Return _Name
-            End Get
-            Set(ByVal value As String)
-                _Name = value
-            End Set
-        End Property
-
-        '<Required(True)> _
-        <ExtendedCategory("")> _
-            <Width(400)> _
-            <LineCount(5)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        Public Overridable Property Decription() As CData
-            Get
-                Return _Decription
-            End Get
-            Set(ByVal value As CData)
-                _Decription = value
-            End Set
-        End Property
-
-    End Class
-
     Public Interface IEnabled
 
         Property Enabled() As Boolean
@@ -70,8 +17,6 @@ Namespace ComponentModel
         Inherits NamedEntity
         Implements IEnabled
 
-
-        Private _Enabled As Boolean = True
 
 
         Public Sub New()
@@ -94,16 +39,8 @@ Namespace ComponentModel
             End Get
         End Property
 
+        Public Overridable Property Enabled() As Boolean = True Implements IEnabled.Enabled
 
-        <ExtendedCategory("")> _
-        Public Overridable Property Enabled() As Boolean Implements IEnabled.Enabled
-            Get
-                Return _Enabled
-            End Get
-            Set(ByVal value As Boolean)
-                _Enabled = value
-            End Set
-        End Property
 
         Public Sub Disable()
             Me._Enabled = False
