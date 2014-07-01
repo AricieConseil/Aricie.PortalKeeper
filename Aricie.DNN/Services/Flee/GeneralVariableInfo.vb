@@ -16,6 +16,8 @@ Namespace Services.Flee
     Public Class GeneralVariableInfo
         Inherits VariableInfo
         Implements ISelector(Of MethodInfo)
+        Implements IExpressionVarsProvider
+
 
         Private _Instance As Object
         Private _SimpleExpression As SimpleExpression(Of Object)
@@ -188,7 +190,7 @@ Namespace Services.Flee
         <Selector("Name", "Name", False, True, "<Select a Method Name>", "", False, True)> _
         Public Property MethodName As String = ""
 
-       
+
 
 
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
@@ -395,5 +397,10 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            If VariableMode = VariableMode.Expression AndAlso AdvancedExpression Then
+                FleeExpression.AddVariables(currentProvider, existingVars)
+            End If
+        End Sub
     End Class
 End Namespace

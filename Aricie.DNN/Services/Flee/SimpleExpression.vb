@@ -135,60 +135,72 @@ Namespace Services.Flee
             End Get
         End Property
 
+        <AutoPostBack()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ProvidersSelector()> _
+        <Selector("Text", "Value", False, True, "<-- Select a Variable -->", "", False, True)> _
         <ConditionalVisible("HasVariableList", False, True)> _
         <ExtendedCategory("", "Help")> _
         Public Property SelectedVariable As String = ""
 
+        <AutoPostBack()> _
+        <Selector("Text", "Value", False, True, "<-- Select a Member -->", "", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ConditionalVisible("SelectedVariable", False, True)> _
+        <ConditionalVisible("SelectedVariable", True, True, "")> _
         <ExtendedCategory("", "Help")> _
         Public Property SelectedMember As String = ""
 
+        <AutoPostBack()> _
+        <Selector("Text", "Value", False, True, "<-- Select a SubMember -->", "", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ConditionalVisible("SelectedMember", False, True)> _
+        <ConditionalVisible("SelectedMember", True, True, "")> _
         <ExtendedCategory("", "Help")> _
         Public Property SelectedSubMember As String = ""
 
 
-
-        'Private Shared expWriterLock As New Object
-
-        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
+        <ConditionalVisible("HasVariableList", True, True)> _
         <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Question, IconOptions.Normal)> _
         Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
-            Try
+            Dim avVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
+            Dim currentPe As AriciePropertyEditorControl = pe
+            Dim currentProvider As IExpressionVarsProvider
+            Dim previousProvider As IExpressionVarsProvider = Nothing
+            Do
+                If TypeOf currentPe.DataSource Is IExpressionVarsProvider Then
+                    currentProvider = DirectCast(currentPe.DataSource, IExpressionVarsProvider)
+                    'If previousProvider Is Nothing Then
+                    '    previousProvider = currentProvider
+                    'End If
+                    currentProvider.AddVariables(previousProvider, avVars)
+                    previousProvider = currentProvider
+                End If
+                currentPe = currentPe.ParentAricieEditor
 
-                'If True Then
-                pe.DisplayMessage("Todo: Recursive Available Variables with IExpressionVarsProvider", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
-                'Else
-                'pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
-                'End If
-                'pe.ItemChanged = True
-            Catch ex As Exception
-                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
-                Throw newEx
-            End Try
+            Loop Until currentPe Is Nothing
+
+            Me._AvailableVariables = avVars
+            pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+            pe.ItemChanged = True
         End Sub
+
+
+        Private Function GetInsertString() As String
+            Dim toReturn As String = Me.SelectedVariable
+            If Not SelectedMember.IsNullOrEmpty() Then
+                toReturn &= "."c & Me.SelectedMember
+            End If
+            If Not SelectedSubMember.IsNullOrEmpty() Then
+                toReturn &= "."c & Me.SelectedSubMember
+            End If
+            Return toReturn
+        End Function
 
         <ConditionalVisible("HasVariableList", False, True)> _
         <ExtendedCategory("", "Help")> _
        <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
         Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
-            Try
-
-                'If True Then
-                'pe.DisplayMessage("Todo: Recursive Available Variables with IExpressionVarsProvider", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
-                'Else
-                'pe.DisplayMessage("Type did not validate", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
-                'End If
-                'pe.ItemChanged = True
-            Catch ex As Exception
-                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
-                Throw newEx
-            End Try
+            Me.Expression &= GetInsertString()
+            pe.ItemChanged = True
         End Sub
 
 
@@ -203,7 +215,7 @@ Namespace Services.Flee
                     Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
                     Return ReflectionHelper.GetMembersDictionary(selectedVarType) _
                                                .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
-                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).ToList()
+                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).OrderBy(Function(objListItem) objListItem.Text).ToList()
                 Case "SelectedSubMember"
                     Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
                     Dim objMember As MemberInfo = Nothing
@@ -212,7 +224,7 @@ Namespace Services.Flee
                         Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, True)
                         Return ReflectionHelper.GetMembersDictionary(objMemberType) _
                                              .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
-                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).ToList()
+                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).OrderBy(Function(objListItem) objListItem.Text).ToList()
                     End If
             End Select
             Return Nothing

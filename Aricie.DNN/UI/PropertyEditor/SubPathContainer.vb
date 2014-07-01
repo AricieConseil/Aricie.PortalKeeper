@@ -8,10 +8,13 @@ Imports Aricie.DNN.Services
 Imports System.Text
 Imports Aricie.Services
 Imports System.Web.UI
+Imports Aricie.DNN.Services.Flee
 
 Namespace UI.WebControls
     Public Class SubPathContainer
         Implements ISelector(Of KeyValuePair(Of String, IconInfo))
+        Implements IExpressionVarsProvider
+
 
         Private _SubEntities As New Dictionary(Of String, Object)
 
@@ -154,5 +157,16 @@ Namespace UI.WebControls
 
         End Function
 
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+
+            For Each objEntityPair In Me.GetParentEntities().Reverse
+                Dim parentProvider As IExpressionVarsProvider = TryCast(objEntityPair.Value, IExpressionVarsProvider)
+                If (parentProvider IsNot Nothing) Then
+                    parentProvider.AddVariables(currentProvider, existingVars)
+                    currentProvider = parentProvider
+                End If
+            Next
+
+        End Sub
     End Class
-End NameSpace
+End Namespace
