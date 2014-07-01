@@ -6,6 +6,7 @@ Imports System.ComponentModel
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -15,6 +16,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class KeeperCondition(Of TEngineEvents As IConvertible)
         Inherits ProviderHost(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))
+        Implements IExpressionVarsProvider
+
+
         'Implements IConditionProvider(Of TEngineEvents)
 
 
@@ -71,6 +75,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
             Return toReturn
         End Function
+
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            For Each objCondition As ConditionProviderSettings(Of TEngineEvents) In Me.Instances
+                Dim objConditionProvider As IExpressionVarsProvider = TryCast(objCondition, IExpressionVarsProvider)
+                If objConditionProvider IsNot Nothing Then
+                    If objConditionProvider Is currentProvider Then
+                        Exit For
+                    End If
+                    objConditionProvider.AddVariables(currentProvider, existingVars)
+                End If
+            Next
+        End Sub
 
 
     End Class

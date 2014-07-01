@@ -13,6 +13,8 @@ Namespace Services.Flee
     <Serializable()> _
     Public Class VariablesBase
         Inherits ProviderHost(Of DotNetType(Of VariableInfo), VariableInfo, IGenericizer(Of VariableInfo))
+        Implements IExpressionVarsProvider
+
 
 
         Protected _ExpressionTypes As New List(Of DotNetType)
@@ -109,7 +111,27 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
-       
 
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            Dim currentProviderAsVariable As VariableInfo = Nothing
+            If currentProvider IsNot Nothing Then
+                currentProviderAsVariable = TryCast(currentProvider, VariableInfo)
+            End If
+            For Each objVar As VariableInfo In Me.Instances
+                If objVar.Scope = VariableScope.Global _
+                        OrElse (objVar.Scope = VariableScope.LocalAndSiblings AndAlso currentProviderAsVariable IsNot Nothing AndAlso Me.Instances.Contains(currentProviderAsVariable)) _
+                        OrElse currentProvider Is Nothing Then
+                    existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
+                    Dim genVar As IExpressionVarsProvider = TryCast(objVar, IExpressionVarsProvider)
+                    If (genVar IsNot Nothing) Then
+                        If genVar Is currentProvider Then
+                            Exit For
+                        End If
+                        genVar.AddVariables(Me, existingVars)
+                    End If
+                End If
+            Next
+        End Sub
     End Class
 End Namespace

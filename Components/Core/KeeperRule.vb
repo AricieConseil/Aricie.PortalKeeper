@@ -12,6 +12,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.Security.Trial
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -20,6 +21,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class KeeperRule(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
+        Implements IExpressionVarsProvider
+
+
 
         Public Sub New()
 
@@ -61,6 +65,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             keeperContext.CurrentRule = Me
             Return Me.Action.Run(keeperContext)
         End Function
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            Me.Condition.AddVariables(currentProvider, existingVars)
+            Me.Action.AddVariables(currentProvider, existingVars)
+        End Sub
 
     End Class
 

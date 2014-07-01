@@ -13,6 +13,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
    <Serializable()> _
     Public Class FleeExpressionCondition(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)
+        Implements IExpressionVarsProvider
+
 
 
         Private _FleeExpression As New FleeExpressionInfo(Of Boolean)
@@ -34,5 +36,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            Me.FleeExpression.AddVariables(currentProvider, existingVars)
+        End Sub
     End Class
 End Namespace

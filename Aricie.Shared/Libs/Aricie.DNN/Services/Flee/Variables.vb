@@ -63,6 +63,7 @@ Namespace Services.Flee
     Public Class Variables
         Inherits VariablesBase
 
+
         Public Shared Function GetFromParameters(objParameters As ParameterInfo()) As Variables
             Dim toReturn As New Variables()
             For Each objParameter As ParameterInfo In objParameters

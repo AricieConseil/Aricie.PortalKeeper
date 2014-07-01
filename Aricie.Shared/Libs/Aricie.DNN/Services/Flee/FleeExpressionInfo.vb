@@ -252,9 +252,7 @@ Namespace Services.Flee
 
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
-            For Each objVar As VariableInfo In Me.Variables.Instances
-                existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
-            Next
+            Me.Variables.AddVariables(currentProvider, existingVars)
         End Sub
 
 

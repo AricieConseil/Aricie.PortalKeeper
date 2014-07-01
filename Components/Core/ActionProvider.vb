@@ -8,6 +8,7 @@ Imports System.Threading
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.Services
 Imports Aricie.DNN.Services.Workers
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -19,6 +20,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProviderSettings(Of TEngineEvents)
         Implements IActionProvider(Of TEngineEvents)
+        Implements IExpressionVarsProvider
+
 
         Private _Condition As New KeeperCondition(Of TEngineEvents)
         Private _AlternateAction As New KeeperAction(Of TEngineEvents)
@@ -185,6 +188,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return False
         End Function
 
+
+
+        Public Overridable Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            If Me.CaptureRunDuration Then
+                existingVars(Me.RunDurationVarName) = GetType(TimeSpan)
+            End If
+            If Me.ConditionalAction Then
+                Me.Condition.AddVariables(currentProvider, existingVars)
+                Me.AlternateAction.AddVariables(currentProvider, existingVars)
+            End If
+        End Sub
 
 
     End Class

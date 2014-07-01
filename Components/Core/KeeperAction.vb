@@ -5,6 +5,7 @@ Imports System.Globalization
 Imports Aricie.Services
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -12,6 +13,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class KeeperAction(Of TEngineEvents As IConvertible)
         Inherits ProviderHost(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
+        Implements IExpressionVarsProvider
+
+
 
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
@@ -95,5 +99,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
             Return toReturn
         End Function
+
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            For Each objAction As ActionProviderSettings(Of TEngineEvents) In Me.Instances
+                Dim objActionProvider As IExpressionVarsProvider = TryCast(objAction, IExpressionVarsProvider)
+                If objActionProvider IsNot Nothing Then
+                    If objActionProvider Is currentProvider Then
+                        Exit For
+                    End If
+                    objActionProvider.AddVariables(currentProvider, existingVars)
+                End If
+            Next
+        End Sub
+
+
     End Class
 End Namespace

@@ -269,7 +269,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+        Public Overridable Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
             For Each objVar As VariableInfo In Me.Variables.Instances
                 existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
             Next

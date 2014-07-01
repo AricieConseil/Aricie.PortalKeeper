@@ -18,7 +18,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits CacheableAction(Of TEngineEvents)
 
 
-
         Private _Variables As New Variables
 
         Private _GetFromHistory As Boolean
@@ -75,5 +74,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
             Return True
         End Function
+
+
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            Me.Variables.AddVariables(currentProvider, existingVars)
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
+
     End Class
 End Namespace
