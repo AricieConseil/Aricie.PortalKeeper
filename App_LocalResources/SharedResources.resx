@@ -6725,6 +6725,9 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ExactBinding.Text" xml:space="preserve">
     <value>Exact Binding</value>
   </data>
+  <data name="ExpressionHelper.Message" xml:space="preserve">
+    <value>Choose one of the available variables and click the insert button.</value>
+  </data>
   <data name="FlattenHierarchy.Text" xml:space="preserve">
     <value>Flatten Hierarchy</value>
   </data>
@@ -6764,6 +6767,15 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="PutRefDispProperty.Text" xml:space="preserve">
     <value>Put Ref Disp Property</value>
   </data>
+  <data name="SelectedMember.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Member --&gt;</value>
+  </data>
+  <data name="SelectedSubMember.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Sub Member --&gt;</value>
+  </data>
+  <data name="SelectedVariable.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Variable --&gt;</value>
+  </data>
   <data name="SetField.Text" xml:space="preserve">
     <value>Set Field</value>
   </data>
@@ -6773,8 +6785,23 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="SimpleExpression`1_Help.Header" xml:space="preserve">
     <value>Expression Help</value>
   </data>
+  <data name="SimpleExpression`1_InsertSelectedVar.Text" xml:space="preserve">
+    <value>Insert Selected Variable</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedMember.Help" xml:space="preserve">
+    <value>This is a list of the members available for the variable you selected. Select a Member and click the insert button or simply type the variable name and member into the expression Text Area. You can also optionally select a submember from the corresponding drop down list.</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedMember.Text" xml:space="preserve">
+    <value>Available Members</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedSubMember.Help" xml:space="preserve">
+    <value>This is a list of the sub members available for the variable and variable member you selected. Select a submember and click the insert button or simply type the variable name together with member and sub members.</value>
+  </data>
+  <data name="SimpleExpression`1_SelectedSubMember.Text" xml:space="preserve">
+    <value>Available Sub Members</value>
+  </data>
   <data name="SimpleExpression`1_SelectedVariable.Help" xml:space="preserve">
-    <value>This is a list of the variables available for use in your expression. Select a variable an click the Insert button or simply manually type the variable name into the expression Text Area. You can also optionally select a member and a submember from the corresponding dropdownlists.</value>
+    <value>This is a list of the variables available for use in your expression. Select a variable and click the Insert button or simply type the variable name into the expression Text Area. You can also optionally select a member and a submember from the corresponding drop down lists.</value>
   </data>
   <data name="SimpleExpression`1_SelectedVariable.Text" xml:space="preserve">
     <value>Available Variables</value>

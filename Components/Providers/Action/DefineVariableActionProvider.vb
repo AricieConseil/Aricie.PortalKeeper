@@ -10,6 +10,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Description("This provider allows to declare and instanciate a single variable, which will be stored in the context ""Item"" dictionary")> _
     Public Class DefineVariableActionProvider(Of TEngineEvents As IConvertible)
         Inherits CacheableAction(Of TEngineEvents)
+        Implements IExpressionVarsProvider
+
 
         Public Property Variable As New GeneralVariableInfo()
 
@@ -30,5 +32,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             actionContext.SetVar(Me.Variable.Name, cachedObject)
             Return True
         End Function
+
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            existingVars.Add(Me.Variable.Name, Me.Variable.DotNetType.GetDotNetType())
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
     End Class
 End NameSpace

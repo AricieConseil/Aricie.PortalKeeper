@@ -46,7 +46,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(421)> _
       <ConditionalVisible("ShowOutput", False, True)> _
       <ExtendedCategory("Specifics")> _
-        Public ReadOnly Property OutputType As DotNetType
+        Public ReadOnly Property OutputDotNetType As DotNetType
             Get
                 Dim objType As Type = Me.GetOutputType()
                 If objType IsNot Nothing Then
@@ -162,10 +162,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return True
         End Function
 
-        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
             If Not Me.OutputName.IsNullOrEmpty() Then
                 existingVars.Add(Me.OutputName, GetOutputType())
             End If
+            MyBase.AddVariables(currentProvider, existingVars)
         End Sub
 
         Protected MustOverride Function GetOutputType() As Type

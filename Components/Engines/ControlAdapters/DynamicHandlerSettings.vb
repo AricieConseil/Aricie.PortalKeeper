@@ -9,6 +9,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports System.Linq
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -16,6 +17,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class DynamicHandlerSettings(Of TAdaptedType)
         Inherits DynamicHandlerSettings
         Implements ISelector
+
 
         Public Sub New()
 
@@ -116,14 +118,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-
-
-        <LabelMode(LabelMode.Left)> _
+        <Browsable(False)> _
         <XmlIgnore()> _
-        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
-        Public ReadOnly Property AvailableParameters As SerializableDictionary(Of String, String)
+        Public ReadOnly Property AvailableParametersAndTypes As SerializableDictionary(Of String, Type)
             Get
-                Dim toReturn As New SerializableDictionary(Of String, String)
+                Dim toReturn As New SerializableDictionary(Of String, Type)
                 Select Case Me.MainControlStep
                     Case ControlStep.ControlEvent, ControlStep.ChildControlEvent
                         Dim objEvent As EventInfo = EventControlType.GetEvent(ControlEventName)
@@ -134,17 +133,29 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 If objParamName = "e" Then
                                     objParamName = DynamicControlAdapter.EventArgsVarName
                                 End If
-                                toReturn.Add(objParamName, ReflectionHelper.GetSafeTypeName(objParam.ParameterType))
+                                toReturn.Add(objParamName, objParam.ParameterType)
                             Next
                         End If
                     Case ControlStep.Render, ControlStep.RenderChildren
-                        toReturn.Add("writer", ReflectionHelper.GetSafeTypeName(GetType(HtmlTextWriter)))
+                        toReturn.Add("writer", GetType(HtmlTextWriter))
                     Case ControlStep.CreateChildControls
                         Exit Select
                     Case Else
-                        toReturn.Add(DynamicControlAdapter.EventArgsVarName, ReflectionHelper.GetSafeTypeName(GetType(EventArgs)))
+                        toReturn.Add(DynamicControlAdapter.EventArgsVarName, GetType(EventArgs))
                 End Select
                 Return toReturn
+            End Get
+        End Property
+
+
+
+
+        <LabelMode(LabelMode.Left)> _
+        <XmlIgnore()> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
+        Public ReadOnly Property AvailableParameters As Dictionary(Of String, String)
+            Get
+                Return AvailableParametersAndTypes.ToDictionary(Of String, String)(Function(objPair) objPair.Key, Function(objPair) ReflectionHelper.GetSafeTypeName(objPair.Value))
             End Get
         End Property
 
@@ -179,8 +190,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-
-
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            For Each objPair In Me.AvailableParametersAndTypes
+                existingVars.Add(objPair.Key, objPair.Value)
+            Next
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
 
     End Class
 

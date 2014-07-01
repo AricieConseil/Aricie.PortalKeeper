@@ -84,7 +84,14 @@ Namespace ComponentModel
         End Property
 
         Private Function DefaultPredicate(ByVal value As Object) As Boolean
-            Return Conversions.ToBoolean(value) Xor Me._MasterNegate
+            Dim baseResult As Boolean
+            If value IsNot Nothing Then
+                If value.ToString() = String.Empty Then
+                    value = Nothing
+                End If
+            End If
+            baseResult = CType(value, Boolean)
+            Return baseResult Xor Me._MasterNegate
         End Function
 
         Private Function HasMatchingValue(ByVal value As Object) As Boolean
