@@ -271,24 +271,29 @@ Namespace Services
                 enumTor.MoveNext()
                 objetType = enumTor.Current.GetType()
             Else
-                Dim collectionType As Type = collection.GetType
+                objetType = GetCollectionTypeElementType(collection.GetType)
 
-
-                If collectionType.IsGenericType Then
-                    Dim args As Type() = collectionType.GetGenericArguments()
-                    objetType = args(args.Length - 1)
-                Else
-                    objetType = collectionType.GetElementType
-                End If
-                If objetType Is Nothing Then
-                    Throw New ArgumentException("type is not an array or a generic list ", "collection")
-                End If
             End If
 
 
             Return objetType
 
         End Function
+
+        Public Shared Function GetCollectionTypeElementType(collectionType As Type) As Type
+            Dim objetType As Type
+            If collectionType.IsGenericType Then
+                Dim args As Type() = collectionType.GetGenericArguments()
+                objetType = args(args.Length - 1)
+            Else
+                objetType = collectionType.GetElementType()
+            End If
+            If objetType Is Nothing Then
+                Throw New ArgumentException("type is not an array or a generic list ", "collectionType")
+            End If
+            Return objetType
+        End Function
+
 
         Private Shared _TrueReferenceTypes As New Dictionary(Of Type, Boolean)
 
@@ -1111,13 +1116,13 @@ Namespace Services
         ''' </summary>
         ''' <param name="member">The Member</param>
         ''' <returns>Member signature</returns>
-        Public Shared Function GetMemberSignature(member As MemberInfo) As String
+        Public Shared Function GetMemberSignature(member As MemberInfo, Optional callable As Boolean = False) As String
             If TypeOf member Is MethodBase Then
-                Return GetSignature(DirectCast(member, MethodBase))
+                Return GetSignature(DirectCast(member, MethodBase), callable)
             ElseIf TypeOf member Is PropertyInfo Then
-                Return GetPropertySignature(DirectCast(member, PropertyInfo))
+                Return GetPropertySignature(DirectCast(member, PropertyInfo), callable)
             ElseIf TypeOf member Is EventInfo Then
-                Return GetEventSignature(DirectCast(member, EventInfo))
+                Return GetEventSignature(DirectCast(member, EventInfo), callable)
             End If
             Return member.Name
         End Function
@@ -1130,13 +1135,15 @@ Namespace Services
         ''' </summary>
         ''' <param name="objEvent">The Event</param>
         ''' <returns>Event signature</returns>
-        Public Shared Function GetEventSignature(objEvent As EventInfo) As String
+        Public Shared Function GetEventSignature(objEvent As EventInfo, Optional callable As Boolean = False) As String
 
             Dim sigBuilder = New StringBuilder()
-            sigBuilder.Append("public event")
+            If Not callable Then
+                sigBuilder.Append("public event")
+                sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(objEvent.EventHandlerType))
+                sigBuilder.Append(" "c)
+            End If
             
-            sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(objEvent.EventHandlerType))
-            sigBuilder.Append(" "c)
             sigBuilder.Append(objEvent.Name)
 
             Return sigBuilder.ToString()
@@ -1170,29 +1177,34 @@ Namespace Services
                 sigBuilder.Append(" "c)
             End If
             sigBuilder.Append(prop.Name)
-
-            sigBuilder.Append("(")
-            firstParam = True
-            For Each param As ParameterInfo In prop.GetIndexParameters()
-                If firstParam Then
-                    firstParam = False
-                Else
-                    sigBuilder.Append(", ")
-                End If
-                If param.ParameterType.IsByRef Then
-                    sigBuilder.Append("ref ")
-                ElseIf param.IsOut Then
-                    sigBuilder.Append("out ")
-                End If
-                If Not callable Then
-                    sigBuilder.Append(TypeName(param.ParameterType))
-                    sigBuilder.Append(" "c)
-                End If
-                sigBuilder.Append(param.Name)
-            Next
-            sigBuilder.Append(")")
+            Dim objParams As ParameterInfo() = prop.GetIndexParameters()
+            If objParams.Length > 0 Then
+                sigBuilder.Append("(")
+                firstParam = True
+                For Each param As ParameterInfo In objParams
+                    If firstParam Then
+                        firstParam = False
+                    Else
+                        sigBuilder.Append(", ")
+                    End If
+                    If param.ParameterType.IsByRef Then
+                        sigBuilder.Append("ref ")
+                    ElseIf param.IsOut Then
+                        sigBuilder.Append("out ")
+                    End If
+                    If Not callable Then
+                        sigBuilder.Append(TypeName(param.ParameterType))
+                        sigBuilder.Append(" "c)
+                    End If
+                    sigBuilder.Append(param.Name)
+                Next
+                sigBuilder.Append(")")
+            End If
+           
             Return sigBuilder.ToString()
         End Function
+
+       
 
 
 
@@ -1272,7 +1284,25 @@ Namespace Services
             Return sigBuilder.ToString()
         End Function
 
+        Public Shared Function GetMemberEnumerableSignature(objMember As MemberInfo) As String
 
+            Dim sigBuilder = New StringBuilder()
+            Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember)
+            If objMemberType IsNot Nothing AndAlso (objMemberType.IsArray OrElse objMemberType.GetInterface("ICollection") IsNot Nothing _
+                                                    OrElse objMemberType.GetInterface("ICollection`1") IsNot Nothing) Then
+                sigBuilder.Append("["c)
+                If objMemberType.GetInterface("IDictionary") IsNot Nothing OrElse objMemberType.GetInterface("IDictionary`2") IsNot Nothing Then
+                    sigBuilder.Append("key")
+                Else
+                    sigBuilder.Append("index")
+                End If
+
+                sigBuilder.Append("]"c)
+
+
+            End If
+            Return sigBuilder.ToString()
+        End Function
 
         Public Shared Function CreateDelegate(Of T)(ByVal objDelegate As DelegateInfo(Of T)) As [Delegate]
 
