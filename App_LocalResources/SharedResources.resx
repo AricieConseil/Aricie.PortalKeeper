@@ -6783,7 +6783,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Display Available Variables</value>
   </data>
   <data name="SimpleExpression`1_Help.Header" xml:space="preserve">
-    <value>Expression Help</value>
+    <value>Expression Builder</value>
   </data>
   <data name="SimpleExpression`1_InsertSelectedVar.Text" xml:space="preserve">
     <value>Insert Selected Variable</value>
