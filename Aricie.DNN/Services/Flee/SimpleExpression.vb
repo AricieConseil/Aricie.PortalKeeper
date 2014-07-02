@@ -213,24 +213,34 @@ Namespace Services.Flee
                     Return (_AvailableVariables.Keys).Select(Function(objString) New ListItem(objString)).ToList()
                 Case "SelectedMember"
                     Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
-                    Return ReflectionHelper.GetMembersDictionary(selectedVarType) _
-                                               .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
-                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).OrderBy(Function(objListItem) objListItem.Text).ToList()
+                    Return GetSubMembers(selectedVarType)
                 Case "SelectedSubMember"
                     Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
                     Dim objMember As MemberInfo = Nothing
                     ReflectionHelper.GetMembersDictionary(selectedVarType).TryGetValue(SelectedMember, objMember)
                     If objMember IsNot Nothing Then
                         Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, True)
-                        Return ReflectionHelper.GetMembersDictionary(objMemberType) _
-                                             .Where(Function(objMemberPair) ReflectionHelper.GetMemberReturnType(objMemberPair.Value, True) IsNot Nothing) _
-                                                .Select(Function(objMemberPair) New ListItem(objMemberPair.Key)).OrderBy(Function(objListItem) objListItem.Text).ToList()
+                        Return GetSubMembers(objMemberType)
                     End If
             End Select
             Return Nothing
         End Function
 
 
+
+        Private Function GetSubMembers(objType As Type) As List(Of ListItem)
+            Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType) _
+                                     .Where(Function(objMemberPair) _
+                                                objMemberPair.Value.Any(Function(objMemberInfo) _
+                                                                             ReflectionHelper.GetMemberReturnType(objMemberInfo, True) IsNot Nothing) _
+                                                          AndAlso Not objMemberPair.Key.StartsWith("get_") _
+                                                          AndAlso Not objMemberPair.Key.StartsWith("set_"))
+            Return (From objMemberListPair In objMembers _
+                                                 From objMemberInfo In objMemberListPair.Value _
+                                                 Select New ListItem(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo.Name)) _
+                                                .OrderBy(Function(objListItem) objListItem.Text) _
+                                                .ToList()
+        End Function
 
 
 
