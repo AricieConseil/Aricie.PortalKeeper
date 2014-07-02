@@ -2,7 +2,6 @@
 Imports Ciloci.Flee
 Imports Aricie.ComponentModel
 Imports System.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Web
@@ -11,19 +10,8 @@ Imports Aricie.Services
 Imports System.Threading
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
-Imports System.Reflection
-Imports System.Web.UI.WebControls
 
 Namespace Services.Flee
-
-    Public Interface IExpressionVarsProvider
-
-        Sub AddVariables(ByVal currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
-
-    End Interface
-
-
-
     ''' <summary>
     ''' Simple flee expression
     ''' </summary>
@@ -32,7 +20,7 @@ Namespace Services.Flee
     <ActionButton(IconName.Code, IconOptions.Normal)> _
     <Serializable()> _
     Public Class SimpleExpression(Of TResult)
-        Implements ISelector
+
 
 
 
@@ -129,37 +117,19 @@ Namespace Services.Flee
         End Property
 
         <Browsable(False)> _
-        Public ReadOnly Property HasVariableList As Boolean
+        Public ReadOnly Property HasExpressionBuilder As Boolean
             Get
-                Return _AvailableVariables IsNot Nothing
+                Return ExpressionBuilder IsNot Nothing
             End Get
         End Property
 
-        <AutoPostBack()> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <Selector("Text", "Value", False, True, "<-- Select a Variable -->", "", False, True)> _
-        <ConditionalVisible("HasVariableList", False, True)> _
-        <ExtendedCategory("", "Help")> _
-        Public Property SelectedVariable As String = ""
 
-        <AutoPostBack()> _
-        <Selector("Text", "Value", False, True, "<-- Select a Member -->", "", False, True)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ConditionalVisible("SelectedVariable", True, True, "")> _
         <ExtendedCategory("", "Help")> _
-        Public Property SelectedMember As String = ""
+        Public Property ExpressionBuilder As ExpressionBuilder
 
-        <AutoPostBack()> _
-        <Selector("Text", "Value", False, True, "<-- Select a SubMember -->", "", False, True)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ConditionalVisible("SelectedMember", True, True, "")> _
+        <ConditionalVisible("HasExpressionBuilder", True, True)> _
         <ExtendedCategory("", "Help")> _
-        Public Property SelectedSubMember As String = ""
-
-
-        <ConditionalVisible("HasVariableList", True, True)> _
-        <ExtendedCategory("", "Help")> _
-        <ActionButton(IconName.Question, IconOptions.Normal)> _
+        <ActionButton(IconName.Magic, IconOptions.Normal)> _
         Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
             Dim avVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
             Dim currentPe As AriciePropertyEditorControl = pe
@@ -178,69 +148,21 @@ Namespace Services.Flee
 
             Loop Until currentPe Is Nothing
 
-            Me._AvailableVariables = avVars
+            Me.ExpressionBuilder = New ExpressionBuilder(avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value)))
             pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             pe.ItemChanged = True
         End Sub
 
 
-        Private Function GetInsertString() As String
-            Dim toReturn As String = Me.SelectedVariable
-            If Not SelectedMember.IsNullOrEmpty() Then
-                toReturn &= "."c & Me.SelectedMember
-            End If
-            If Not SelectedSubMember.IsNullOrEmpty() Then
-                toReturn &= "."c & Me.SelectedSubMember
-            End If
-            Return toReturn
-        End Function
-
-        <ConditionalVisible("HasVariableList", False, True)> _
-        <ExtendedCategory("", "Help")> _
-       <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
+        <ConditionalVisible("HasExpressionBuilder", False, True)> _
+           <ExtendedCategory("", "Help")> _
+          <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
         Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
-            Me.Expression &= GetInsertString()
+            Me.Expression &= Me.ExpressionBuilder.GetInsertString()
             pe.ItemChanged = True
         End Sub
 
 
-        Private _AvailableVariables As IDictionary(Of String, Type)
-
-
-        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
-            Select Case propertyName
-                Case "SelectedVariable"
-                    Return (_AvailableVariables.Keys).Select(Function(objString) New ListItem(objString)).ToList()
-                Case "SelectedMember"
-                    Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
-                    Return GetSubMembers(selectedVarType)
-                Case "SelectedSubMember"
-                    Dim selectedVarType As Type = _AvailableVariables(SelectedVariable)
-                    Dim objMember As MemberInfo = Nothing
-                    ReflectionHelper.GetMembersDictionary(selectedVarType).TryGetValue(SelectedMember, objMember)
-                    If objMember IsNot Nothing Then
-                        Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, True)
-                        Return GetSubMembers(objMemberType)
-                    End If
-            End Select
-            Return Nothing
-        End Function
-
-
-
-        Private Function GetSubMembers(objType As Type) As List(Of ListItem)
-            Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType) _
-                                     .Where(Function(objMemberPair) _
-                                                objMemberPair.Value.Any(Function(objMemberInfo) _
-                                                                             ReflectionHelper.GetMemberReturnType(objMemberInfo, True) IsNot Nothing) _
-                                                          AndAlso Not objMemberPair.Key.StartsWith("get_") _
-                                                          AndAlso Not objMemberPair.Key.StartsWith("set_"))
-            Return (From objMemberListPair In objMembers _
-                                                 From objMemberInfo In objMemberListPair.Value _
-                                                 Select New ListItem(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo.Name)) _
-                                                .OrderBy(Function(objListItem) objListItem.Text) _
-                                                .ToList()
-        End Function
 
 
 
@@ -524,6 +446,6 @@ Namespace Services.Flee
 
         End Class
 
-       
+
     End Class
 End Namespace
