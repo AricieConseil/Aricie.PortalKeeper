@@ -16,6 +16,8 @@ Imports System.Runtime.CompilerServices
 Imports System.ComponentModel
 Imports System.Linq
 Imports System.Linq.Expressions
+Imports System.Web.UI.WebControls
+Imports Aricie.Business.Filters
 
 Namespace Services
 
@@ -854,7 +856,7 @@ Namespace Services
 #End Region
 
 
-#Region "Properties methods"
+#Region "Member methods"
 
         Public Shared Function GetPropertiesDictionary(Of T)() As Dictionary(Of String, PropertyInfo)
             Return GetPropertiesDictionary(GetType(T))
@@ -1109,7 +1111,25 @@ Namespace Services
             Return result
         End Function
 
-#End Region
+
+
+        Public Shared Function GetMemberNamefromSignature(sig As String) As String
+            Dim toReturn As String = sig
+            Dim trimIndex As Integer = toReturn.IndexOf("<"c)
+            If trimIndex > 0 Then
+                toReturn = Left(toReturn, trimIndex)
+            End If
+            trimIndex = toReturn.IndexOf("("c)
+            If trimIndex > 0 Then
+                toReturn = Left(toReturn, trimIndex).Trim()
+            End If
+            trimIndex = toReturn.IndexOf(" "c)
+            If trimIndex > 0 Then
+                toReturn = toReturn.Substring(trimIndex).Trim()
+            End If
+            Return toReturn
+        End Function
+
 
         ''' <summary>
         ''' Return the member declaration as a string.
@@ -1128,7 +1148,24 @@ Namespace Services
         End Function
 
 
-#Region "Methodinfos methods"
+        Public Shared Function GetReturnSubMembers(objType As Type) As IDictionary(Of String, MemberInfo)
+            Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType) _
+                                     .Where(Function(objMemberPair) _
+                                                objMemberPair.Value.Any(Function(objMemberInfo) _
+                                                                             ReflectionHelper.GetMemberReturnType(objMemberInfo, True) IsNot Nothing) _
+                                                          AndAlso Not objMemberPair.Key.StartsWith("get_") _
+                                                          AndAlso Not objMemberPair.Key.StartsWith("set_"))
+            Return (From objMemberListPair In objMembers _
+                        From objMemberInfo In objMemberListPair.Value _
+                            Select New KeyValuePair(Of String, MemberInfo)(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo)) _
+            .Distinct(New SimpleComparer(Of KeyValuePair(Of String, MemberInfo))(Function(objMemberPair1, objMemberPair2) _
+                                                                                     String.Compare(objMemberPair1.Key, objMemberPair2.Key, System.StringComparison.Ordinal), _
+                                                                                     Function(objMemberPair) objMemberPair.Key.GetHashCode())) _
+            .OrderBy(Function(objMemberInfoPair) objMemberInfoPair.Value.Name) _
+                                .ToDictionary(Function(objMemberInfoPair) objMemberInfoPair.Key, Function(objMemberInfoPair) objMemberInfoPair.Value)
+        End Function
+
+        '
 
         ''' <summary>
         ''' Return the Event declaration as a string.
@@ -1143,7 +1180,7 @@ Namespace Services
                 sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(objEvent.EventHandlerType))
                 sigBuilder.Append(" "c)
             End If
-            
+
             sigBuilder.Append(objEvent.Name)
 
             Return sigBuilder.ToString()
@@ -1200,11 +1237,11 @@ Namespace Services
                 Next
                 sigBuilder.Append(")")
             End If
-           
+
             Return sigBuilder.ToString()
         End Function
 
-       
+
 
 
 

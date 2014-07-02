@@ -293,9 +293,11 @@
     <Compile Include="Services\Flee\CallObjectMethod.vb" />
     <Compile Include="Services\Flee\CtorVariableInfo.vb" />
     <Compile Include="Services\Flee\DelegateVariableInfo.vb" />
+    <Compile Include="Services\Flee\ExpressionBuilder.vb" />
     <Compile Include="Services\Flee\FleeHelper.vb" />
     <Compile Include="Services\Flee\GeneralObjectAction.vb" />
     <Compile Include="Services\Flee\GeneralVariableInfo.vb" />
+    <Compile Include="Services\Flee\IExpressionVarsProvider.vb" />
     <Compile Include="Services\Flee\InstanceMode.vb" />
     <Compile Include="Services\Flee\ObjectAction.vb" />
     <Compile Include="Services\Flee\ObjectActionMode.vb" />
