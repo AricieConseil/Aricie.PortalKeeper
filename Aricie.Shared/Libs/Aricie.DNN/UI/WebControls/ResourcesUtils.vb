@@ -21,16 +21,29 @@ Namespace UI.WebControls
             If (page IsNot Nothing) AndAlso (page.Header IsNot Nothing) Then
                 Dim cid As String = String.Format("css_{0}", cssKey)
                 If page.Header.FindControl(cid) Is Nothing Then
-                    Dim lnk As New HtmlControls.HtmlLink
-                    lnk.ID = cid
-                    lnk.Href = page.ResolveUrl(url)
-                    lnk.Attributes.Add("type", "text/css")
-                    lnk.Attributes.Add("rel", "stylesheet")
-                    lnk.Attributes.Add("class", "Aricie_stylesheet")
-                    If beforeOthers Then
-                        page.Header.Controls.AddAt(0, lnk)
+                    Dim sm As ScriptManager = ScriptManager.GetCurrent(page)
+                    If sm.IsInAsyncPostBack Then
+                        '"if (jQuery("link#css_font-awesome").length==0)"
+                        Dim scriptBlock As String = String.Format("if (jQuery('link#{0}').length==0) {{ var fileref = document.createElement('link');" _
+                                                                                                             & "fileref.setAttribute('rel', 'stylesheet'); " _
+                                                                                                             & "fileref.setAttribute('type', 'text/css'); " _
+                                                                                                             & "fileref.setAttribute('href', '{1}'); " _
+                                                                                                             & "document.getElementsByTagName('head')[0].appendChild(fileref);}}", cid, page.ResolveUrl(url))
+                        ScriptManager.RegisterClientScriptBlock(page, page.GetType(), cid, scriptBlock, True)
+                        'DotNetNuke.UI.Utilities.ClientAPI.RegisterClientScriptBlock(page, cid,)
+
                     Else
-                        page.Header.Controls.Add(lnk)
+                        Dim lnk As New HtmlControls.HtmlLink
+                        lnk.ID = cid
+                        lnk.Href = page.ResolveUrl(url)
+                        lnk.Attributes.Add("type", "text/css")
+                        lnk.Attributes.Add("rel", "stylesheet")
+                        lnk.Attributes.Add("class", "Aricie_stylesheet")
+                        If beforeOthers Then
+                            page.Header.Controls.AddAt(0, lnk)
+                        Else
+                            page.Header.Controls.Add(lnk)
+                        End If
                     End If
                 End If
             End If
