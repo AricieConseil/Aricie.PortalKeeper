@@ -1,8 +1,14 @@
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports System.Linq
+Imports Aricie.Services
+Imports System.Text
+
+Namespace Web
+End Namespace
 
 Namespace Web.UI
+
 
     Public Module ControlHelper
 

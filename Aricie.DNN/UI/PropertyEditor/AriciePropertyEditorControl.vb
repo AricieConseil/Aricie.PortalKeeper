@@ -596,7 +596,7 @@ Namespace UI.WebControls
                 End If
             End If
             Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)
-            Return ComputeVisibility(condVisibles)
+            Return ComputeVisibility(condVisibles, member)
         End Function
 
         Public Sub OnDebug(sender As Object, e As DebugEventArgs)
@@ -1074,7 +1074,7 @@ Namespace UI.WebControls
             Dim buttonContainer As Panel = Nothing
             For Each buttonList As List(Of ActionButtonInfo) In element.ActionButtons
                 For Each objActionButton As ActionButtonInfo In buttonList
-                    If Me.ComputeVisibility(objActionButton.ConditionalVisibles) Then
+                    If Me.ComputeVisibility(objActionButton.ConditionalVisibles, objActionButton.Method) Then
                         If buttonContainer Is Nothing Then
                             buttonContainer = New Panel()
                             buttonContainer.EnableViewState = False
@@ -1395,14 +1395,14 @@ Namespace UI.WebControls
 
         End Function
 
-        Private Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo)) As Boolean
+        Private Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo), objMember As MemberInfo) As Boolean
             Dim toReturn As Boolean = True
             Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
             Dim objPropInfo As PropertyInfo = Nothing
             For Each condVisibility As ConditionalVisibleInfo In conditionalVisibles
                 If props.TryGetValue(condVisibility.MasterPropertyName, objPropInfo) Then
                     Dim subVis As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(objPropInfo)
-                    If subVis.Count > 0 AndAlso Not Me.GetRowVisibility(objPropInfo) Then
+                    If subVis.Count > 0 AndAlso objMember IsNot objPropInfo AndAlso Not Me.GetRowVisibility(objPropInfo) Then
                         toReturn = False
                     Else
                         Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)

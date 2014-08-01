@@ -125,31 +125,40 @@ Namespace Services.Flee
 
 
         <ExtendedCategory("", "Help")> _
-        Public Property ExpressionBuilder As ExpressionBuilder
+        Public Property ExpressionBuilder As FleeExpressionBuilder
 
-        <ConditionalVisible("HasExpressionBuilder", True, True)> _
+        '<ConditionalVisible("HasExpressionBuilder", True, True)> _
         <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Magic, IconOptions.Normal)> _
         Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
+
+            'Dim currentPe As AriciePropertyEditorControl = pe
+            'Dim currentProvider As IExpressionVarsProvider
+            'Dim previousProvider As IExpressionVarsProvider = Nothing
+            'Do
+            '    If TypeOf currentPe.DataSource Is IExpressionVarsProvider Then
+            '        currentProvider = DirectCast(currentPe.DataSource, IExpressionVarsProvider)
+            '        'If previousProvider Is Nothing Then
+            '        '    previousProvider = currentProvider
+            '        'End If
+            '        currentProvider.AddVariables(previousProvider, avVars)
+            '        previousProvider = currentProvider
+            '    End If
+            '    currentPe = currentPe.ParentAricieEditor
+
+            'Loop Until currentPe Is Nothing
+#If DEBUG Then
+            Me.ExpressionBuilder = DirectCast(ReflectionHelper.CreateObject(GetType(FleeExpressionBuilder).AssemblyQualifiedName), FleeExpressionBuilder)
+
+#Else
+            Me.ExpressionBuilder = New FleeExpressionBuilder()     
+#End If
             Dim avVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
-            Dim currentPe As AriciePropertyEditorControl = pe
-            Dim currentProvider As IExpressionVarsProvider
-            Dim previousProvider As IExpressionVarsProvider = Nothing
-            Do
-                If TypeOf currentPe.DataSource Is IExpressionVarsProvider Then
-                    currentProvider = DirectCast(currentPe.DataSource, IExpressionVarsProvider)
-                    'If previousProvider Is Nothing Then
-                    '    previousProvider = currentProvider
-                    'End If
-                    currentProvider.AddVariables(previousProvider, avVars)
-                    previousProvider = currentProvider
-                End If
-                currentPe = currentPe.ParentAricieEditor
+            avVars = ExpressionBuilder.GetAvailableVars(pe)
+            Me.ExpressionBuilder.AvailableVariables = avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value))
 
-            Loop Until currentPe Is Nothing
-
-            Me.ExpressionBuilder = New ExpressionBuilder(avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value)))
             pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+            'pe.DisplayMessage(Me.ExpressionBuilder.GetType.AssemblyQualifiedName, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             pe.ItemChanged = True
         End Sub
 
@@ -158,7 +167,7 @@ Namespace Services.Flee
            <ExtendedCategory("", "Help")> _
           <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
         Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
-            Me.Expression &= Me.ExpressionBuilder.GetInsertString()
+            Me.Expression &= Me.ExpressionBuilder.InsertString
             pe.ItemChanged = True
         End Sub
 

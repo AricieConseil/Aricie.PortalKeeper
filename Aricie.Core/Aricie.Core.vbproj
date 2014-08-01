@@ -161,6 +161,7 @@
     <Compile Include="Components\STimeSpan.vb" />
     <Compile Include="Components\Text\SimpleEncoding.vb" />
     <Compile Include="Components\TypeHandler.vb" />
+    <Compile Include="Components\Web\HttpInternals.vb" />
     <Compile Include="Components\Web\Proxy\PipeStream.vb" />
     <Compile Include="Components\Web\Proxy\PipeStreamBlock.vb" />
     <Compile Include="Components\Web\Proxy\ProxyHelpers.vb" />
