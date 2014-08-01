@@ -2005,7 +2005,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Add Additional Type</value>
   </data>
   <data name="Binary.Text" xml:space="preserve">
-    <value>Binary</value>
+    <value>... op Expression2</value>
   </data>
   <data name="OutputAction`1_Simulation.Header" xml:space="preserve">
     <value>Simulation</value>
@@ -2635,7 +2635,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Cancel Order Limit</value>
   </data>
   <data name="ActionProvider`1_AddSleepTime.Help" xml:space="preserve">
-    <value>You can optionally define a time span to wait after the action was performed. This is useful for instance if you're constrained by rate cap on external web requests</value>
+    <value>You can optionally define a time span to wait after the action was performed. This is useful for instance if you're constrained by rate cap on external web requests.</value>
   </data>
   <data name="ActionProvider`1_AddSleepTime.Text" xml:space="preserve">
     <value>Add Sleep Time</value>
@@ -3046,7 +3046,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Single Select</value>
   </data>
   <data name="XPathInfo_SubSelects.Help" xml:space="preserve">
-    <value>You can create subselects to be performed against the returned node from the main query, and associate each of them with a key in a dictionary</value>
+    <value>You can create subselects to be performed against the returned node from the main query, and associate each of them with a key in a dictionary.</value>
   </data>
   <data name="XPathInfo_SubSelects.Text" xml:space="preserve">
     <value>Sub Selects Dictionary</value>
@@ -4495,19 +4495,19 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Import Action Commands</value>
   </data>
   <data name="ActionCommand_ComputedVars.Help" xml:space="preserve">
-    <value>Enter here a semi-colon</value>
+    <value>Enter here a semi-colon separated list of variable expressions to be computed. </value>
   </data>
   <data name="ActionCommand_ComputedVars.Text" xml:space="preserve">
     <value>Result Variables</value>
   </data>
   <data name="ActionCommand_IconPath.Help" xml:space="preserve">
-    <value>Enter the relative path of the icon file for the command button</value>
+    <value>Enter the relative path of the icon file for the command button.</value>
   </data>
   <data name="ActionCommand_IconPath.Text" xml:space="preserve">
     <value>Icon Path</value>
   </data>
   <data name="ActionCommand_ResxKey.Help" xml:space="preserve">
-    <value>Enter the resource file key for the command button text</value>
+    <value>Enter the resource file key for the command button text.</value>
   </data>
   <data name="ActionCommand_ResxKey.Text" xml:space="preserve">
     <value>Resx Key</value>
@@ -6725,28 +6725,28 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ExactBinding.Text" xml:space="preserve">
     <value>Exact Binding</value>
   </data>
-  <data name="ExpressionBuilder_SelectedMember.Help" xml:space="preserve">
+  <data name="MemberDrillDown_SelectedMember.Help" xml:space="preserve">
     <value>This is a list of the members available for the variable you selected. Select a Member and click the insert button or simply type the variable name and member into the expression Text Area. You can also optionally select a submember from the corresponding drop down list.</value>
   </data>
-  <data name="ExpressionBuilder_SelectedMember.Text" xml:space="preserve">
-    <value>Available Members</value>
+  <data name="MemberDrillDown_SelectedMember.Text" xml:space="preserve">
+    <value>Selected Member</value>
   </data>
-  <data name="ExpressionBuilder_SelectedMemberSignature.Help" xml:space="preserve">
+  <data name="MemberDrillDown_SelectedMemberSignature.Help" xml:space="preserve">
     <value>The following may help you choose the apropriate variable and members according to the expected types</value>
   </data>
-  <data name="ExpressionBuilder_SelectedMemberSignature.Text" xml:space="preserve">
+  <data name="MemberDrillDown_SelectedMemberSignature.Text" xml:space="preserve">
     <value>Selected Member Signature</value>
   </data>
-  <data name="ExpressionBuilder_SelectedSubMember.Help" xml:space="preserve">
+  <data name="MemberDrillDown_SelectedSubMember.Help" xml:space="preserve">
     <value>This is a list of the sub members available for the variable and variable member you selected. Select a submember and click the insert button or simply type the variable name together with member and sub members.</value>
   </data>
-  <data name="ExpressionBuilder_SelectedSubMember.Text" xml:space="preserve">
-    <value>Available Sub Members</value>
+  <data name="MemberDrillDown_SelectedSubMember.Text" xml:space="preserve">
+    <value>Selected Sub-Members</value>
   </data>
-  <data name="ExpressionBuilder_SelectedVariable.Help" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SelectedVariable.Help" xml:space="preserve">
     <value>This is a list of the variables available for use in your expression. Select a variable and click the Insert button or simply type the variable name into the expression Text Area. You can also optionally select a member and a submember from the corresponding drop down lists.</value>
   </data>
-  <data name="ExpressionBuilder_SelectedVariable.Text" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SelectedVariable.Text" xml:space="preserve">
     <value>Available Variables</value>
   </data>
   <data name="ExpressionHelper.Message" xml:space="preserve">
@@ -6784,6 +6784,12 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="OptionalParamBinding.Text" xml:space="preserve">
     <value>Optional Param Binding</value>
+  </data>
+  <data name="OutputAction`1_OutputTypeName.Help" xml:space="preserve">
+    <value>This is the expected .Net type for the corresponding output variable.</value>
+  </data>
+  <data name="OutputAction`1_OutputTypeName.Text" xml:space="preserve">
+    <value>Output Type</value>
   </data>
   <data name="PutDispProperty.Text" xml:space="preserve">
     <value>Put Disp Property</value>
@@ -6823,5 +6829,107 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="SuppressChangeType.Text" xml:space="preserve">
     <value>Suppress Change Type</value>
+  </data>
+  <data name="FleeExpressionBuilderBase_InsertString.Help" xml:space="preserve">
+    <value>This is the resulting expression string to be inserted</value>
+  </data>
+  <data name="FleeExpressionBuilderBase_InsertString.Text" xml:space="preserve">
+    <value>Expression String</value>
+  </data>
+  <data name="FleeExpressionBuilder_EncloseInParenthesis.Help" xml:space="preserve">
+    <value>This will add parenthesis to the left and to the right of your expression.</value>
+  </data>
+  <data name="FleeExpressionBuilder_EncloseInParenthesis.Text" xml:space="preserve">
+    <value>Enclose with Parenthesis</value>
+  </data>
+  <data name="FleeExpressionBuilder_Negate.Help" xml:space="preserve">
+    <value>This will add the keyword "Not", which is to be interpreted as a boolean negation (should only be used on Boolean variable or members)</value>
+  </data>
+  <data name="FleeExpressionBuilder_Negate.Text" xml:space="preserve">
+    <value>Negate</value>
+  </data>
+  <data name="FleeExpressionBuilder_OperatorExpression.Help" xml:space="preserve">
+    <value>You can use available binary operators to build a compound expression</value>
+  </data>
+  <data name="FleeExpressionBuilder_OperatorExpression.Text" xml:space="preserve">
+    <value>Operator And Right</value>
+  </data>
+  <data name="FleeExpressionBuilder_OperatorExpressions.Help" xml:space="preserve">
+    <value>You can use available binary operators to build a compound expression</value>
+  </data>
+  <data name="FleeExpressionBuilder_OperatorExpressions.Text" xml:space="preserve">
+    <value>Operator Expressions</value>
+  </data>
+  <data name="FleeExpressionBuilder_ResultingTypeName.Help" xml:space="preserve">
+    <value>This is the .Net type of the resulting member and submember selection.</value>
+  </data>
+  <data name="FleeExpressionBuilder_ResultingTypeName.Text" xml:space="preserve">
+    <value>Resulting Type Name</value>
+  </data>
+  <data name="FleeExpressionBuilder_SelectedVariableTypeName.Help" xml:space="preserve">
+    <value>This is expected .Net type of the selected Variable.</value>
+  </data>
+  <data name="FleeExpressionBuilder_SelectedVariableTypeName.Text" xml:space="preserve">
+    <value>Selected Variable Type</value>
+  </data>
+  <data name="FleeExpressionBuilder_SelectMember.Help" xml:space="preserve">
+    <value>Check to select a member of the selected variable </value>
+  </data>
+  <data name="FleeExpressionBuilder_SelectMember.Text" xml:space="preserve">
+    <value>Select Member</value>
+  </data>
+  <data name="FleeExpressionBuilder_UseOperator.Help" xml:space="preserve">
+    <value>You can use available binary operators to build a compound expression</value>
+  </data>
+  <data name="FleeExpressionBuilder_UseOperator.Text" xml:space="preserve">
+    <value>Binary Expression</value>
+  </data>
+  <data name="FleeExpressionBuilder_VariableMember.Help" xml:space="preserve">
+    <value>You can optionally drill down the selected variable public properties fiels and functions to call that member.</value>
+  </data>
+  <data name="FleeExpressionBuilder_VariableMember.Text" xml:space="preserve">
+    <value>Variable Member (optional)</value>
+  </data>
+  <data name="MemberDrillDown_SelectSubMember.Help" xml:space="preserve">
+    <value>Check to drill down to a sub member of the selected member</value>
+  </data>
+  <data name="MemberDrillDown_SelectSubMember.Text" xml:space="preserve">
+    <value>Select Sub member</value>
+  </data>
+  <data name="OperatorExpression_SelectedOperator.Help" xml:space="preserve">
+    <value>Here is a list of binary operators available to build compound expressions. Check the &lt;a href="https://flee.codeplex.com/wikipage?title=LanguageReference"&gt; documentation &lt;/a&gt; for more details on how to use them.</value>
+  </data>
+  <data name="OperatorExpression_SelectedOperator.Text" xml:space="preserve">
+    <value>Binary Operator</value>
+  </data>
+  <data name="OperatorExpression_SubExpression.Help" xml:space="preserve">
+    <value>This is the sub expression to be inserted on the right of the selected binary operator. You should make sure that the resulting type is compatible with the operator used.</value>
+  </data>
+  <data name="OperatorExpression_SubExpression.Text" xml:space="preserve">
+    <value>Right Expression</value>
+  </data>
+  <data name="FleeExpressionBuilder_Features.Help" xml:space="preserve">
+    <value>Check here the desired expression features. The insert string will get updated accordingly</value>
+  </data>
+  <data name="FleeExpressionBuilder_Features.Text" xml:space="preserve">
+    <value>Features</value>
+  </data>
+  <data name="Cast.Text" xml:space="preserve">
+    <value>cast( ... , type)</value>
+  </data>
+  <data name="FleeExpressionInfo`1_Title.Text" xml:space="preserve">
+    <value>test 2</value>
+  </data>
+  <data name="Negate.Text" xml:space="preserve">
+    <value>Not ...</value>
+  </data>
+  <data name="Parenthesis.Text" xml:space="preserve">
+    <value>( ... )</value>
+  </data>
+  <data name="SubMember.Text" xml:space="preserve">
+    <value>.SubMember( ... )</value>
+  </data>
+  <data name="WebAction`1_WebRequest.Help" xml:space="preserve">
+    <value>You can specify various parameters defining how to build your web request, include parameters and/or use a web proxy.</value>
   </data>
 </root>

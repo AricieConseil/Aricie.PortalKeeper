@@ -1,8 +1,13 @@
 ﻿Imports DotNetNuke.Services.Log.EventLog
 Imports Aricie.Services
 Imports System.Globalization
+Imports System.Reflection
+Imports Aricie.Web
+Imports System.Web
 
 Namespace Diagnostics
+
+
 
     ''' <summary>
     ''' Lightweight structure to handle quantities of aggregations

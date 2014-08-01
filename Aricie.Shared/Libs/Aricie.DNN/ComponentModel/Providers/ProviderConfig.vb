@@ -80,7 +80,7 @@ Namespace ComponentModel
         Public Overridable Function GetProvider() As Object Implements IProviderConfig.GetProvider
             Dim provType As Type = Me.ProviderType
             If provType IsNot Nothing Then
-                Return ReflectionHelper.CreateObject(Me.ProviderType)
+                Return ReflectionHelper.CreateObject(Me.ProviderType.AssemblyQualifiedName)
             End If
             Return Nothing
         End Function

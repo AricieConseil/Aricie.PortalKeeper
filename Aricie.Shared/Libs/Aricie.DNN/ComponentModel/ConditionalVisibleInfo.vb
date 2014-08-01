@@ -95,7 +95,7 @@ Namespace ComponentModel
         End Function
 
         Private Function HasMatchingValue(ByVal value As Object) As Boolean
-            If _MatchingValues.Any(Function(objValue) objValue.Equals(value) OrElse (value.GetType().IsEnum AndAlso Convert.ToInt32(objValue) <> 0 _
+            If _MatchingValues.Any(Function(objValue) objValue.Equals(value) OrElse (value IsNot Nothing AndAlso value.GetType().IsEnum AndAlso Convert.ToInt32(objValue) <> 0 _
                                                                                      AndAlso ReflectionHelper.GetCustomAttributes(value.GetType()).Where(Function(objAttribute) TypeOf objAttribute Is FlagsAttribute).Any() _
                                                                                      AndAlso ((Convert.ToInt32(value) And Convert.ToInt32(objValue)) = Convert.ToInt32(objValue)))) Then
                 Return Not Me._MasterNegate

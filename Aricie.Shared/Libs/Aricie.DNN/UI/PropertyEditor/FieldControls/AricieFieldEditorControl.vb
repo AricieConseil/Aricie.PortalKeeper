@@ -220,9 +220,14 @@ Public Class AricieFieldEditorControl
             If Me.IsDirty Then
                 Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
                 If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
-                    If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                        ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
-                    End If
+                    ae.ParentAricieEditor.ItemChanged = True
+                    ae.ParentAricieEditor.RootEditor.ItemChanged = True
+                    'If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                    '    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                    '    If ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                    '        ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                    '    End If
+                    'End If
                 End If
             End If
         Catch ex As Exception
@@ -258,7 +263,11 @@ Public Class AricieFieldEditorControl
                 Case "System.DateTime"
                     objEditControl = New DateTimeEditControl
                 Case "System.Boolean"
+                    'If NukeHelper.DnnVersion.Major < 6 OrElse DnnVersion.Major = 7 AndAlso DnnVersion.Minor < 1 Then
+                    '    objEditControl = New TrueFalseEditControl()
+                    'Else
                     objEditControl = New CheckEditControl
+                    'End If
                 Case "System.Int32", "System.Int16"
                     objEditControl = New IntegerEditControl
 
@@ -271,7 +280,7 @@ Public Class AricieFieldEditorControl
                     objEditControl = New CustomTextEditControl()
 
                 Case Else
-                    
+
                     If objType.IsEnum Then
                         If ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttr) TypeOf objAttr Is FlagsAttribute).Any() Then
                             objEditControl = New AricieCheckBoxListEditControl()

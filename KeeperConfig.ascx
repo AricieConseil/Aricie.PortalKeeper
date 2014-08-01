@@ -1,7 +1,7 @@
 <%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" CodeFile="KeeperConfig.ascx.vb" %>
 <%@ Register Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
-<div class="divPKP">
+<div class="divPKP"> 
     <div id="divConfig" runat="server">
           <div class="divcenter" runat="server" visible="false" id="divDebug">
                 <dnn:CommandButton ID="cmdDebug" Visible="true" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
