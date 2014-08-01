@@ -273,6 +273,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             For Each objVar As VariableInfo In Me.Variables.Instances
                 existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
             Next
+            For Each objRule As KeeperRule(Of TEngineEvents) In Me.Rules
+                If objRule Is currentProvider Then
+                    Exit For
+                End If
+                objRule.AddVariables(currentProvider, existingVars)
+            Next
         End Sub
 
 

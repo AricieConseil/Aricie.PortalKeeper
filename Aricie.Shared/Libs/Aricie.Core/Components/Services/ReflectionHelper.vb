@@ -18,6 +18,8 @@ Imports System.Linq
 Imports System.Linq.Expressions
 Imports System.Web.UI.WebControls
 Imports Aricie.Business.Filters
+Imports Aricie.Collections
+Imports System.Reflection.Emit
 
 Namespace Services
 
@@ -85,13 +87,99 @@ Namespace Services
 
 #End Region
 
+
+#Region "Private members"
+
         Private Const glbDependency As String = Aricie.Constants.Cache.Dependency & "Reflection"
 
-        Private _Singletons As New Dictionary(Of Type, Object)
-        Private _XmlSerializers As New Dictionary(Of Type, Dictionary(Of String, XmlSerializer))
+        Private ReadOnly _Singletons As New Dictionary(Of Type, Object)
+        Private ReadOnly _XmlSerializers As New Dictionary(Of Type, Dictionary(Of String, XmlSerializer))
         Private Shared _XmlSerializerFactory As New XmlSerializerFactory
-        Private _TypesByTypeName As New Dictionary(Of String, Type)
-        Private _PropertiesByType As New Dictionary(Of Type, Dictionary(Of String, PropertyInfo))
+        Private ReadOnly _TypesByTypeName As New Dictionary(Of String, Type)
+        Private ReadOnly _PropertiesByType As New Dictionary(Of Type, Dictionary(Of String, PropertyInfo))
+
+        Private Shared _Casts As New Dictionary(Of Type, List(Of Type))() From { _
+  {GetType(Decimal), New List(Of Type)() From { _
+      GetType(SByte), _
+      GetType(Byte), _
+      GetType(Short), _
+      GetType(UShort), _
+      GetType(Integer), _
+      GetType(UInteger), _
+      GetType(Long), _
+      GetType(ULong), _
+      GetType(Char) _
+  }}, _
+  {GetType(Double), New List(Of Type)() From { _
+      GetType(SByte), _
+      GetType(Byte), _
+      GetType(Short), _
+      GetType(UShort), _
+      GetType(Integer), _
+      GetType(UInteger), _
+      GetType(Long), _
+      GetType(ULong), _
+      GetType(Char), _
+      GetType(Single) _
+  }}, _
+  {GetType(Single), New List(Of Type)() From { _
+      GetType(SByte), _
+      GetType(Byte), _
+      GetType(Short), _
+      GetType(UShort), _
+      GetType(Integer), _
+      GetType(UInteger), _
+      GetType(Long), _
+      GetType(ULong), _
+      GetType(Char), _
+      GetType(Single) _
+  }}, _
+  {GetType(ULong), New List(Of Type)() From { _
+      GetType(Byte), _
+      GetType(UShort), _
+      GetType(UInteger), _
+      GetType(Char) _
+  }}, _
+  {GetType(Long), New List(Of Type)() From { _
+      GetType(SByte), _
+      GetType(Byte), _
+      GetType(Short), _
+      GetType(UShort), _
+      GetType(Integer), _
+      GetType(UInteger), _
+      GetType(Char) _
+  }}, _
+  {GetType(UInteger), New List(Of Type)() From { _
+      GetType(Byte), _
+      GetType(UShort), _
+      GetType(Char) _
+  }}, _
+  {GetType(Integer), New List(Of Type)() From { _
+      GetType(SByte), _
+      GetType(Byte), _
+      GetType(Short), _
+      GetType(UShort), _
+      GetType(Char) _
+  }}, _
+  {GetType(UShort), New List(Of Type)() From { _
+      GetType(Byte), _
+      GetType(Char) _
+  }}, _
+  {GetType(Short), New List(Of Type)() From { _
+      GetType(Byte) _
+  }} _
+}
+
+
+        Private Shared ReadOnly _RegexSafeTypeName As New Regex("([^\[\]]+)(\,\sVersion\=[^\[\]]+)", RegexOptions.Compiled)
+        Private Shared ReadOnly _SafeTypeNames As New Dictionary(Of String, String)
+
+        Private Shared ReadOnly _CanCreateTypes As New Dictionary(Of Type, Boolean)
+
+        Private Shared ReadOnly _CustomAttributes As New Dictionary(Of MemberInfo, Object())
+        Private Shared ReadOnly _DefaultProperties As New Dictionary(Of Type, PropertyInfo)
+
+#End Region
 
 
 
@@ -128,43 +216,68 @@ Namespace Services
 
         End Function
 
+        Private Shared _DebugSurrogates As CreateInstanceCallBack
+
+        Public Shared Sub RegisterDebugSurrogate(callBack As CreateInstanceCallBack)
+
+            _DebugSurrogates = callBack
+        End Sub
+
+
+
         Public Shared Function CreateType(ByVal typeName As String, ByVal throwOnError As Boolean) As Type
             Dim toReturn As Type = Nothing
 
 
 
-            If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
+           
+
+
+
+
+#If DEBUG Then
+                toReturn = BuildManager.GetType(typeName, throwOnError, True)
+                If toReturn IsNot Nothing Then
+                    Dim debugType As Type = Nothing
+                    If _DebugSurrogates IsNot Nothing Then
+                        Dim dest As Object = _DebugSurrogates.Invoke(toReturn)
+                        If dest IsNot Nothing Then
+                            debugType = dest.GetType()
+                        End If
+                        'Else
+                        '    Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
+                        '    debugType = CreateType(debugTypeName, False)
+                    End If
+
+                    If debugType IsNot Nothing Then
+                        Return debugType
+                    End If
+                End If
+#Else
+             If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
 
 
 
                 ' use reflection to get the type of the class
                 toReturn = BuildManager.GetType(typeName, throwOnError, True)
-
-#If DEBUG Then
-                If toReturn IsNot Nothing Then
-                    Dim debugTypeName As String = toReturn.Namespace & ".Debug" & toReturn.Name
-                    Dim debugType As Type = CreateType(debugTypeName, False)
-                    If debugType IsNot Nothing Then
-                        toReturn = debugType
-                    End If
-                End If
-#End If
-
-                ' insert the type into the cache
                 SyncLock ReflectionHelper.Instance._TypesByTypeName
                     ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
                 End SyncLock
 
+
                 'CacheHelper.SetGlobal(Of Type)(toReturn, typeName)
 
             End If
+
+#End If
+
+            
             Return toReturn
 
         End Function
 
 
-        Private Shared _RegexSafeTypeName As New Regex("([^\[\]]+)(\,\sVersion\=[^\[\]]+)", RegexOptions.Compiled)
-        Private Shared _SafeTypeNames As New Dictionary(Of String, String)
+
 
 
 
@@ -245,42 +358,7 @@ Namespace Services
         End Function
 
 
-        Public Shared Function GetCollectionFileName(ByVal objCollection As ICollection) As String
-            Dim toReturn As String = "Collection"
-            If objCollection IsNot Nothing Then
-                Dim collecType As Type = objCollection.GetType()
-                toReturn = ReflectionHelper.GetSimpleTypeFileName(collecType)
-                If Not collecType.IsGenericType Then
-                    If objCollection.Count > 0 Then
-                        Dim collecEnum As IEnumerator = objCollection.GetEnumerator
-                        If collecEnum.MoveNext Then
-                            Dim itemType As Type = collecEnum.Current.GetType
-                            toReturn &= "_" & ReflectionHelper.GetSimpleTypeFileName(itemType)
-                        End If
-                    End If
-                End If
-            End If
-            Return toReturn
-        End Function
-
-
-        Public Shared Function GetCollectionElementType(ByVal collection As ICollection) As Type
-
-            Dim objetType As Type
-
-            If collection IsNot Nothing AndAlso collection.Count > 0 Then
-                Dim enumTor As IEnumerator = collection.GetEnumerator
-                enumTor.MoveNext()
-                objetType = enumTor.Current.GetType()
-            Else
-                objetType = GetCollectionTypeElementType(collection.GetType)
-
-            End If
-
-
-            Return objetType
-
-        End Function
+       
 
         Public Shared Function GetCollectionTypeElementType(collectionType As Type) As Type
             Dim objetType As Type
@@ -330,79 +408,9 @@ Namespace Services
         End Function
 
 
-        Private Shared _Casts As New Dictionary(Of Type, List(Of Type))() From { _
-        {GetType(Decimal), New List(Of Type)() From { _
-            GetType(SByte), _
-            GetType(Byte), _
-            GetType(Short), _
-            GetType(UShort), _
-            GetType(Integer), _
-            GetType(UInteger), _
-            GetType(Long), _
-            GetType(ULong), _
-            GetType(Char) _
-        }}, _
-        {GetType(Double), New List(Of Type)() From { _
-            GetType(SByte), _
-            GetType(Byte), _
-            GetType(Short), _
-            GetType(UShort), _
-            GetType(Integer), _
-            GetType(UInteger), _
-            GetType(Long), _
-            GetType(ULong), _
-            GetType(Char), _
-            GetType(Single) _
-        }}, _
-        {GetType(Single), New List(Of Type)() From { _
-            GetType(SByte), _
-            GetType(Byte), _
-            GetType(Short), _
-            GetType(UShort), _
-            GetType(Integer), _
-            GetType(UInteger), _
-            GetType(Long), _
-            GetType(ULong), _
-            GetType(Char), _
-            GetType(Single) _
-        }}, _
-        {GetType(ULong), New List(Of Type)() From { _
-            GetType(Byte), _
-            GetType(UShort), _
-            GetType(UInteger), _
-            GetType(Char) _
-        }}, _
-        {GetType(Long), New List(Of Type)() From { _
-            GetType(SByte), _
-            GetType(Byte), _
-            GetType(Short), _
-            GetType(UShort), _
-            GetType(Integer), _
-            GetType(UInteger), _
-            GetType(Char) _
-        }}, _
-        {GetType(UInteger), New List(Of Type)() From { _
-            GetType(Byte), _
-            GetType(UShort), _
-            GetType(Char) _
-        }}, _
-        {GetType(Integer), New List(Of Type)() From { _
-            GetType(SByte), _
-            GetType(Byte), _
-            GetType(Short), _
-            GetType(UShort), _
-            GetType(Char) _
-        }}, _
-        {GetType(UShort), New List(Of Type)() From { _
-            GetType(Byte), _
-            GetType(Char) _
-        }}, _
-        {GetType(Short), New List(Of Type)() From { _
-            GetType(Byte) _
-        }} _
-    }
+
         Public Shared Function CanConvert(fromType As Type, toType As Type) As Boolean
-           
+
             Dim targetList As List(Of Type) = Nothing
             If _Casts.TryGetValue(toType, targetList) AndAlso targetList.Contains(fromType) Then
                 Return True
@@ -427,7 +435,7 @@ Namespace Services
             End If
         End Function
 
-        Private Shared _CanCreateTypes As New Dictionary(Of Type, Boolean)
+
 
         Public Shared Function CanCreateObject(objectType As Type) As Boolean
             Dim toReturn As Boolean
@@ -447,9 +455,6 @@ Namespace Services
 
 
 #Region "Objects manipulation"
-
-
-
 
         Public Shared Function CreateObject(ByVal objectType As Type) As Object
 
@@ -488,6 +493,15 @@ Namespace Services
 
             Dim objectType As Type = ReflectionHelper.CreateType(typeName)
 
+#If DEBUG Then
+            If _DebugSurrogates IsNot Nothing Then
+                Dim dest As Object = _DebugSurrogates.Invoke(objectType)
+                If dest IsNot Nothing Then
+                    Return dest
+                End If
+            End If
+#End If
+
             Return CreateObject(objectType)
 
         End Function
@@ -501,6 +515,106 @@ Namespace Services
             Return Activator.CreateInstance(Of T)()
 
         End Function
+
+        Public Shared Function GetFriendlyName(value As Object) As String
+            Dim toReturn As String = String.Empty
+            If value IsNot Nothing Then
+                Dim valueType As Type = value.GetType
+                If valueType.GetInterface("IConvertible") IsNot Nothing Then
+                    toReturn = DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture)
+                Else
+                    Dim defProp As PropertyInfo = GetDefaultProperty(valueType)
+                    If defProp IsNot Nothing Then
+                        Dim subValue As Object = defProp.GetValue(value, Nothing)
+                        If subValue IsNot Nothing Then
+                            toReturn = GetFriendlyName(subValue)
+                        End If
+                    End If
+                    If toReturn.IsNullOrEmpty() Then
+                        Dim keyProp As PropertyInfo = Nothing
+                        Dim valueProp As PropertyInfo = Nothing
+                        If ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Key", keyProp) _
+                            AndAlso ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Value", valueProp) Then
+                            Dim keyValue As Object = keyProp.GetValue(value, Nothing)
+                            Dim keyName As String = GetFriendlyName(keyValue)
+                            Dim valueValue As Object = valueProp.GetValue(value, Nothing)
+                            Dim valueName As String = GetFriendlyName(valueValue)
+                            toReturn = String.Format("{0}  -  {1}", keyName, valueName)
+                        End If
+                    End If
+                    If toReturn.IsNullOrEmpty() Then
+                        toReturn = GetSimpleTypeName(valueType)
+                    End If
+                End If
+            End If
+            Return toReturn
+
+        End Function
+
+
+        Public Shared Function GetFields(value As Object, maxDepth As Integer) As Object
+            Dim visited As New HashSet(Of Object)
+            Return ReflectionHelper.GetFields(value, maxDepth, visited, 0)
+        End Function
+
+        Public Shared Function GetFields(value As Object, maxdepth As Integer, visited As HashSet(Of Object), depth As Integer) As Object
+            Dim toReturn As SerializableDictionary(Of String, Object)
+            If value IsNot Nothing Then
+                If depth < maxdepth Then
+                    toReturn = New SerializableDictionary(Of String, Object)
+                    Dim valueType As Type = value.GetType()
+                    If Not ReflectionHelper.IsTrueReferenceType(valueType) OrElse TypeOf value Is SignatureHelper OrElse TypeOf value Is Pointer Then
+                        Return value.ToString()
+                    Else
+                        If Not visited.Contains(value) Then
+                            visited.Add(value)
+                            Try
+                                Dim valueEnumerable As IEnumerable = TryCast(value, IEnumerable)
+                                If valueEnumerable IsNot Nothing Then
+                                    Dim valueDict As IDictionary = TryCast(value, IDictionary)
+                                    If valueDict IsNot Nothing Then
+                                        For Each objKey In valueDict.Keys
+
+                                            toReturn(objKey.ToString) = GetFields(valueDict(objKey), maxdepth, visited, depth + 1)
+                                        Next
+                                    Else
+                                        Dim idx As Integer = 0
+                                        For Each objItem In valueEnumerable
+                                            toReturn(idx.ToString(CultureInfo.InvariantCulture)) = GetFields(objItem, maxdepth, visited, depth + 1)
+                                            idx += 1
+                                        Next
+                                    End If
+                                Else
+                                    Dim objFields = ReflectionHelper.GetMembersDictionary(valueType, True, True).Values.OfType(Of FieldInfo)()
+                                    For Each objField As FieldInfo In objFields
+                                        Try
+                                            Dim objAddedValue As Object = Nothing
+                                            Dim fieldValue As Object = objField.GetValue(value)
+                                            If fieldValue IsNot Nothing Then
+                                                objAddedValue = GetFields(fieldValue, maxdepth, visited, depth + 1)
+                                            End If
+                                            toReturn(objField.Name) = objAddedValue
+                                        Catch ex As Exception
+                                            ExceptionHelper.LogException(ex)
+                                        End Try
+                                    Next
+                                End If
+                            Catch ex As Exception
+                                ExceptionHelper.LogException(ex)
+                            End Try
+                        Else
+                            Return Nothing
+                        End If
+                    End If
+                Else
+                    Return value.ToString
+                End If
+            End If
+            Return toReturn
+        End Function
+
+
+
 
         Public Shared Sub MergeObjects(sourceObject As Object, targetObject As Object)
             If sourceObject IsNot Nothing AndAlso targetObject IsNot Nothing Then
@@ -700,14 +814,12 @@ Namespace Services
         End Function
 
 
-        Public Shared Function GetEventParameters(objEventInfo As EventInfo) As ParameterInfo()
-            Return objEventInfo.EventHandlerType.GetMethod("Invoke").GetParameters()
-        End Function
+       
 
         Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
             Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
             Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
-            Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
+            'Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
 
             Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters.ToArray())
             Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
@@ -723,75 +835,59 @@ Namespace Services
             objEventInfo.AddEventHandler(item, handler)
         End Sub
 
+        Public Shared Function CombineDelegate(targetDelegate As [Delegate], newInvocation As [Delegate]) As MulticastDelegate
 
-        Private Shared _CustomAttributes As New Dictionary(Of MemberInfo, Object())
-        Private Shared _DefaultProperties As New Dictionary(Of Type, PropertyInfo)
+            Dim objInvoc As [Delegate]() = targetDelegate.GetInvocationList()
+            Dim handlerType As Type = targetDelegate.GetType()
+            Dim toReturn As MulticastDelegate = DirectCast([Delegate].Combine(objInvoc.Union({WrapDelegate(handlerType, newInvocation)}).ToArray()), MulticastDelegate)
 
-        Public Shared Function GetCustomAttributes(objMember As MemberInfo) As Object()
-            Dim toReturn As Object() = Nothing
-            If Not _CustomAttributes.TryGetValue(objMember, toReturn) Then
-                toReturn = objMember.GetCustomAttributes(True)
-                SyncLock _CustomAttributes
-                    _CustomAttributes(objMember) = toReturn
-                End SyncLock
-            End If
-            Return toReturn
-        End Function
-
-        Public Shared Function GetDefaultProperty(objType As Type) As PropertyInfo
-            Dim toReturn As PropertyInfo = Nothing
-            If Not _DefaultProperties.TryGetValue(objType, toReturn) Then
-                For Each attr As Attribute In ReflectionHelper.GetCustomAttributes(objType)
-                    If TypeOf attr Is DefaultPropertyAttribute Then
-                        Dim defPropAttr As DefaultPropertyAttribute = DirectCast(attr, DefaultPropertyAttribute)
-                        toReturn = objType.GetProperty(defPropAttr.Name)
-                        SyncLock _DefaultProperties
-                            _DefaultProperties(objType) = toReturn
-                        End SyncLock
-                        Exit For
-                    End If
-                Next
-            End If
             Return toReturn
         End Function
 
 
-        Public Shared Function GetFriendlyName(value As Object) As String
-            Dim toReturn As String = String.Empty
-            If value IsNot Nothing Then
-                Dim valueType As Type = value.GetType
-                If valueType.GetInterface("IConvertible") IsNot Nothing Then
-                    toReturn = DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture)
-                Else
-                    Dim defProp As PropertyInfo = GetDefaultProperty(valueType)
-                    If defProp IsNot Nothing Then
-                        Dim subValue As Object = defProp.GetValue(value, Nothing)
-                        If subValue IsNot Nothing Then
-                            toReturn = GetFriendlyName(subValue)
+        Public Shared Function WrapDelegate(targetDelegateType As Type, compatibleDelegate As [Delegate]) As [Delegate]
+            Dim objParameterInfos As ParameterInfo() = GetDelegateTypeParameters(targetDelegateType)
+            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(compatibleDelegate), "Invoke", Type.EmptyTypes, parameters.ToArray())
+            Return Expression.Lambda(targetDelegateType, callExpression, parameters).Compile()
+        End Function
+
+        Public Shared Function GetCollectionFileName(ByVal objCollection As ICollection) As String
+            Dim toReturn As String = "Collection"
+            If objCollection IsNot Nothing Then
+                Dim collecType As Type = objCollection.GetType()
+                toReturn = ReflectionHelper.GetSimpleTypeFileName(collecType)
+                If Not collecType.IsGenericType Then
+                    If objCollection.Count > 0 Then
+                        Dim collecEnum As IEnumerator = objCollection.GetEnumerator
+                        If collecEnum.MoveNext Then
+                            Dim itemType As Type = collecEnum.Current.GetType
+                            toReturn &= "_" & ReflectionHelper.GetSimpleTypeFileName(itemType)
                         End If
-                    End If
-                    If toReturn.IsNullOrEmpty() Then
-                        Dim keyProp As PropertyInfo = Nothing
-                        Dim valueProp As PropertyInfo = Nothing
-                        If ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Key", keyProp) _
-                            AndAlso ReflectionHelper.GetPropertiesDictionary(valueType).TryGetValue("Value", valueProp) Then
-                            Dim keyValue As Object = keyProp.GetValue(value, Nothing)
-                            Dim keyName As String = GetFriendlyName(keyValue)
-                            Dim valueValue As Object = valueProp.GetValue(value, Nothing)
-                            Dim valueName As String = GetFriendlyName(valueValue)
-                            toReturn = String.Format("{0}  -  {1}", keyName, valueName)
-                        End If
-                    End If
-                    If toReturn.IsNullOrEmpty() Then
-                        toReturn = GetSimpleTypeName(valueType)
                     End If
                 End If
             End If
             Return toReturn
-
         End Function
 
 
+        Public Shared Function GetCollectionElementType(ByVal collection As ICollection) As Type
+
+            Dim objetType As Type
+
+            If collection IsNot Nothing AndAlso collection.Count > 0 Then
+                Dim enumTor As IEnumerator = collection.GetEnumerator
+                enumTor.MoveNext()
+                objetType = enumTor.Current.GetType()
+            Else
+                objetType = GetCollectionTypeElementType(collection.GetType)
+
+            End If
+
+
+            Return objetType
+
+        End Function
 
 
 
@@ -825,7 +921,7 @@ Namespace Services
                 SyncLock _SingletonLock
                     If Not ReflectionHelper.Instance._Singletons.TryGetValue(objType, toReturn) Then
                         If objCreateInstanceCallBack Is Nothing Then
-                            toReturn = ReflectionHelper.CreateObject(objType)
+                            toReturn = ReflectionHelper.CreateObject(objType.AssemblyQualifiedName)
 
                         Else
                             toReturn = objCreateInstanceCallBack.Invoke(objType)
@@ -857,6 +953,37 @@ Namespace Services
 
 
 #Region "Member methods"
+
+        Public Shared Function GetDefaultProperty(objType As Type) As PropertyInfo
+            Dim toReturn As PropertyInfo = Nothing
+            If Not _DefaultProperties.TryGetValue(objType, toReturn) Then
+                For Each attr As Attribute In ReflectionHelper.GetCustomAttributes(objType)
+                    If TypeOf attr Is DefaultPropertyAttribute Then
+                        Dim defPropAttr As DefaultPropertyAttribute = DirectCast(attr, DefaultPropertyAttribute)
+                        toReturn = objType.GetProperty(defPropAttr.Name)
+                        SyncLock _DefaultProperties
+                            _DefaultProperties(objType) = toReturn
+                        End SyncLock
+                        Exit For
+                    End If
+                Next
+            End If
+            Return toReturn
+        End Function
+
+      
+        Public Shared Function GetCustomAttributes(objMember As MemberInfo) As Object()
+            Dim toReturn As Object() = Nothing
+            If Not _CustomAttributes.TryGetValue(objMember, toReturn) Then
+                toReturn = objMember.GetCustomAttributes(True)
+                SyncLock _CustomAttributes
+                    _CustomAttributes(objMember) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
+        End Function
+
+
 
         Public Shared Function GetPropertiesDictionary(Of T)() As Dictionary(Of String, PropertyInfo)
             Return GetPropertiesDictionary(GetType(T))
@@ -1111,6 +1238,20 @@ Namespace Services
             Return result
         End Function
 
+        Public Shared Function GetEventParameters(objEventInfo As EventInfo) As ParameterInfo()
+            Return GetDelegateTypeParameters(objEventInfo.EventHandlerType)
+        End Function
+
+        Public Shared Function GetDelegateParameters(objDelegate As [Delegate]) As ParameterInfo()
+            Return GetDelegateTypeParameters(objDelegate.GetType())
+        End Function
+
+
+        Public Shared Function GetDelegateTypeParameters(objDelegateType As Type) As ParameterInfo()
+            Return objDelegateType.GetMethod("Invoke").GetParameters()
+        End Function
+
+
 
 
         Public Shared Function GetMemberNamefromSignature(sig As String) As String
@@ -1151,10 +1292,13 @@ Namespace Services
         Public Shared Function GetReturnSubMembers(objType As Type) As IDictionary(Of String, MemberInfo)
             Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType) _
                                      .Where(Function(objMemberPair) _
-                                                objMemberPair.Value.Any(Function(objMemberInfo) _
-                                                                             ReflectionHelper.GetMemberReturnType(objMemberInfo, True) IsNot Nothing) _
-                                                          AndAlso Not objMemberPair.Key.StartsWith("get_") _
-                                                          AndAlso Not objMemberPair.Key.StartsWith("set_"))
+                                                objMemberPair.Value.Any(Function(objMemberInfo) As Boolean
+                                                                            Dim objReturnType = ReflectionHelper.GetMemberReturnType(objMemberInfo, True)
+                                                                            Return objReturnType IsNot Nothing _
+                                                                                    AndAlso objReturnType IsNot GetType(System.Void) _
+                                                                                    AndAlso Not objMemberPair.Key.StartsWith("get_") _
+                                                                                    AndAlso Not objMemberPair.Key.StartsWith("set_")
+                                                                        End Function))
             Return (From objMemberListPair In objMembers _
                         From objMemberInfo In objMemberListPair.Value _
                             Select New KeyValuePair(Of String, MemberInfo)(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo)) _
@@ -1165,7 +1309,9 @@ Namespace Services
                                 .ToDictionary(Function(objMemberInfoPair) objMemberInfoPair.Key, Function(objMemberInfoPair) objMemberInfoPair.Value)
         End Function
 
-        '
+
+      
+
 
         ''' <summary>
         ''' Return the Event declaration as a string.

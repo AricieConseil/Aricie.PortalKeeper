@@ -46,13 +46,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(421)> _
       <ConditionalVisible("ShowOutput", False, True)> _
       <ExtendedCategory("Specifics")> _
-        Public ReadOnly Property OutputDotNetType As DotNetType
+        Public ReadOnly Property OutputTypeName As String
             Get
                 Dim objType As Type = Me.GetOutputType()
                 If objType IsNot Nothing Then
-                    Return New DotNetType(objType)
+                    Return New DotNetType(objType).TypeName
                 Else
-                    Return New DotNetType()
+                    Return New DotNetType().TypeName
                 End If
             End Get
         End Property

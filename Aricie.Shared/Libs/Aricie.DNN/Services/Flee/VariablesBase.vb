@@ -119,18 +119,18 @@ Namespace Services.Flee
                 currentProviderAsVariable = TryCast(currentProvider, VariableInfo)
             End If
             For Each objVar As VariableInfo In Me.Instances
-                If objVar.Scope = VariableScope.Global _
-                        OrElse (objVar.Scope = VariableScope.LocalAndSiblings AndAlso currentProviderAsVariable IsNot Nothing AndAlso Me.Instances.Contains(currentProviderAsVariable)) _
-                        OrElse currentProvider Is Nothing Then
-                    existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
-                    Dim genVar As IExpressionVarsProvider = TryCast(objVar, IExpressionVarsProvider)
-                    If (genVar IsNot Nothing) Then
-                        If genVar Is currentProvider Then
-                            Exit For
-                        End If
-                        genVar.AddVariables(Me, existingVars)
+                'If objVar.Scope = VariableScope.Global _
+                '        OrElse (objVar.Scope = VariableScope.LocalAndSiblings AndAlso currentProviderAsVariable IsNot Nothing AndAlso Me.Instances.Contains(currentProviderAsVariable)) _
+                '        OrElse currentProvider Is Nothing Then
+                existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
+                Dim genVar As IExpressionVarsProvider = TryCast(objVar, IExpressionVarsProvider)
+                If (genVar IsNot Nothing) Then
+                    If genVar Is currentProvider Then
+                        Exit For
                     End If
+                    genVar.AddVariables(Me, existingVars)
                 End If
+                'End If
             Next
         End Sub
     End Class

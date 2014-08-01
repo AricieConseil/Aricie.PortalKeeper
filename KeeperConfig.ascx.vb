@@ -1,46 +1,51 @@
-Imports Aricie.DNN.UI.Controls
-Imports Aricie.DNN.Settings
-Imports Aricie.DNN.Security.Trial
-Imports Aricie.Collections
-Imports Aricie.DNN.Security.Cryptography
-Imports Aricie.Security.Cryptography
-Imports System.Security.Cryptography
 Imports System.Diagnostics
+Imports System.Collections.Generic
+Imports System.Reflection
+Imports System.Web.Compilation
+Imports Aricie.ComponentModel
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Services.Exceptions
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins
+Imports DotNetNuke.UI.WebControls
+Imports Aricie.Collections
+Imports Aricie.Services
+Imports Aricie.DNN.UI.Controls
+Imports Aricie.DNN.Settings
+Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.Services
-Imports Aricie.Services
 Imports Aricie.DNN.Diagnostics
-Imports DotNetNuke.UI.WebControls
-Imports System.Collections.Generic
-Imports System.Xml
-Imports Aricie.DNN.Security
-Imports System.Linq
-Imports System.IO
-Imports Newtonsoft.Json
+Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.Reflection.Emit
 Imports RedditSharp
-Imports System.Reflection
+Imports Aricie.Web
+Imports Aricie.DNN.UI.WebControls
+
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
     Partial Class KeeperConfig
         Inherits AriciePortalModuleBase
 
-
-
-
-
-
         Public Sub New()
             MyBase.New()
+
+
+
 #If DEBUG Then
             AddHandler DnnContext.Current.Debug, AddressOf Me.OnDebug
+            RegisterDebugSurrogates()
+
 #End If
+
         End Sub
 
+
+        'Private _TempBuilder As New Aricie.DNN.Modules.PortalKeeper.UI.FleeExpressionBuilder()
 
         Private _KeeperConfig As PortalKeeperConfig
         Private _KeeperSettings As FirewallSettings
@@ -50,13 +55,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
                 If _KeeperConfig Is Nothing Then
                     If Me.IsPostBack AndAlso Me.UserInfo.IsSuperUser Then
-                        _KeeperConfig = Session("KeeperConfig")
+                        _KeeperConfig = DirectCast(Session("KeeperConfig"), PortalKeeperConfig)
                         If _KeeperConfig Is Nothing Then
                             _KeeperConfig = ReflectionHelper.CloneObject(Of PortalKeeperConfig)(PortalKeeperConfig.Instance)
                             Session("KeeperConfig") = _KeeperConfig
                         End If
                     Else
                         _KeeperConfig = PortalKeeperConfig.Instance
+                        Session.Remove("KeeperConfig")
                     End If
                 End If
 
@@ -136,6 +142,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub Page_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
             Try
+
                 AddHandler Me.KC.Debug, AddressOf Me.OnDebug
                 If Not Me.IsPostBack Then
                     AssertInstalled()
@@ -391,6 +398,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
         Private Sub AssertInstalled()
+            'HttpContext.Current.Response.Write("test")
+
             If Me.UserInfo.IsSuperUser Then
                 Me.divInstall.Visible = True
                 Configuration.ConfigHelper.AssertIsInstalled(Me, New PortalKeeperConfigUpdate, Me.cmdInstall, New Control() {Me.cmdUninstall, Me.divConfig})
@@ -437,53 +446,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 #Region "Debug"
 
+
         Private Sub OnCmdDebug()
 
             Try
 
-                'Dim RSAalg As New RSACryptoServiceProvider(2048)
-                'DnnContext.Instance.AddModuleMessage(String.Format("KeySize: {0}", RSAalg.KeySize.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
 
-                'Dim monTexte As String = CryptoHelper.GetNewSalt(1000).ToBase64()
                 Dim message As String = ""
 
 
-                'If messages.Count > 0 Then
-                '    message = messages(0).Unread.ToJson()
-                'End If
-
-
-
-                'DnnContext.Instance.AddModuleMessage(String.Format("Texte: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Dim sw As New Stopwatch()
                 sw.Start()
 
-                'Dim test As String = "test".ToUTF8().WriteSecureString(True, Encoding.UTF8, True).ReadSecureStringToBytes(Encoding.UTF8).FromUTF8()
 
 
-
-
-
+                HttpInternals.Instance.StopDirectoryCriticalMonitoring("App_LocalResources")
+                'message = HttpUtility.HtmlEncode(message)
 
 
 
 
                 For i As Integer = 0 To 0
 
-                    'Dim processed As Byte() = RSAalg.EncryptByBlocks(monTexte.FromBase64())
-                    'DnnContext.Instance.AddModuleMessage(String.Format("Encrypted: {0}", processed.ToBase64()), ModuleMessage.ModuleMessageType.GreenSuccess)
-                    'processed = RSAalg.DecryptBlocks(processed)
-                    'Dim processed As String = CryptoHelper.WriteSecureString(monTexte, True).ReadSecureString()
 
 
 
-                    'objReddit.ComposePrivateMessage("Test Message", "Test Body", "Alfred_Centworth")
-                    'message = HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
-
-
-                   
-
-                    DnnContext.Instance.AddModuleMessage(String.Format("Decrypted: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
+                    DnnContext.Instance.AddModuleMessage(String.Format("Message: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Next
 
 
@@ -495,9 +483,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
+
         Private Sub OnDebug(sender As Object, e As DebugEventArgs)
             Try
-
+                OnCmdDebug()
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try
@@ -524,9 +513,38 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
             Return toreturn
         End Function
 
+        Private Sub RegisterDebugSurrogates()
+            ReflectionHelper.RegisterDebugSurrogate(AddressOf Me.SurrogateCallback)
+        End Sub
+        Public Function SurrogateCallback(objType As Type) As Object
+            Dim toReturn As Object = Nothing
+            Select Case objType.FullName
+                Case GetType(Aricie.DNN.Services.Flee.FleeExpressionBuilder).FullName
+                    toReturn = New Aricie.DNN.Modules.PortalKeeper.UI.FleeExpressionBuilder()
+            End Select
+            Return toReturn
+
+        End Function
+
+
+
 #End Region
 
+
+
+
+
     End Class
+
+
+
+    Public Class FleeExpressionBuilder
+        Inherits Aricie.DNN.Services.Flee.FleeExpressionBuilder
+
+
+
+    End Class
+
 End Namespace
 
 
