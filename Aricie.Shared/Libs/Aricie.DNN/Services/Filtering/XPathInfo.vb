@@ -212,6 +212,24 @@ Namespace Services.Filtering
             End If
         End Function
 
+
+        Public Function GetOutputType() As Type
+            If Not Me._SelectTree Then
+                If Not _SingleSelect Then
+                    Return GetType(List(Of String))
+                Else
+                    Return GetType(String)
+                End If
+            Else
+                If Not _SingleSelect Then
+                    Return GetType(List(Of SerializableDictionary(Of String, String)))
+                Else
+                    Return GetType(SerializableDictionary(Of String, String))
+                End If
+            End If
+        End Function
+
+
         ''' <summary>
         ''' Transforms the parameter string into a navigable xpath object
         ''' </summary>

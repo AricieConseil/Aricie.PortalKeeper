@@ -52,19 +52,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Shared Function FromDNNProfileDefinition(source As ProfilePropertyDefinition) As GeneralPropertyDefinition
             Dim toReturn As New GeneralPropertyDefinition
-            toReturn.DataType = source.DataType
-            toReturn.DefaultValue = source.DefaultValue
-            toReturn.Length = source.Length
-            toReturn.ModuleDefId = source.ModuleDefId
-            toReturn.PortalId = source.PortalId
-            toReturn.PropertyCategory = source.PropertyCategory
-            toReturn.PropertyDefinitionId = source.PropertyDefinitionId
-            toReturn.PropertyName = source.PropertyName
-            toReturn.PropertyValue = source.PropertyValue
-            toReturn.Required = source.Required
-            toReturn.ValidationExpression = source.ValidationExpression
-            toReturn.Visibility = source.Visibility
-            toReturn.Visible = source.Visible
+            If source IsNot Nothing Then
+                toReturn.DataType = source.DataType
+                toReturn.DefaultValue = source.DefaultValue
+                toReturn.Length = source.Length
+                toReturn.ModuleDefId = source.ModuleDefId
+                toReturn.PortalId = source.PortalId
+                toReturn.PropertyCategory = source.PropertyCategory
+                toReturn.PropertyDefinitionId = source.PropertyDefinitionId
+                toReturn.PropertyName = source.PropertyName
+                toReturn.PropertyValue = source.PropertyValue
+                toReturn.Required = source.Required
+                toReturn.ValidationExpression = source.ValidationExpression
+                toReturn.Visibility = source.Visibility
+                toReturn.Visible = source.Visible
+            End If
             Return toReturn
         End Function
 
