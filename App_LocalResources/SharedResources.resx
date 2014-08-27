@@ -6932,4 +6932,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="WebAction`1_WebRequest.Help" xml:space="preserve">
     <value>You can specify various parameters defining how to build your web request, include parameters and/or use a web proxy.</value>
   </data>
+  <data name="DefaultProvidersImported.Message" xml:space="preserve">
+    <value>{0} providers were imported. Don't forget to save your configuration before leaving the page.</value>
+  </data>
 </root>
