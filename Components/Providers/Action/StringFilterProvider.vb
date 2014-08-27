@@ -124,6 +124,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         Protected Overrides Function GetOutputType() As Type
+            Select Case Me._FilterMode
+                Case StringFilterMode.TransformsList
+                    Return GetType(String)
+                Case StringFilterMode.Xpath
+                    Return Me._XPath.GetOutputType()
+            End Select
             Return GetType(String)
         End Function
     End Class

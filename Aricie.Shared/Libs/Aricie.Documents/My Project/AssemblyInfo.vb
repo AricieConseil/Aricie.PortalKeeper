@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 <Assembly: AssemblyTitle("Aricie.Documents")> 
-<Assembly: AssemblyDescription("")> 
-<Assembly: AssemblyCompany("")> 
+<Assembly: AssemblyDescription("Shared core library for documents manipulation")> 
+<Assembly: AssemblyCompany("Aricie")> 
 <Assembly: AssemblyProduct("Aricie.Documents")> 
-<Assembly: AssemblyCopyright("Copyright ©  2010")> 
+<Assembly: AssemblyCopyright("Copyright © Aricie 2010")> 
 <Assembly: AssemblyTrademark("")> 
 
 <Assembly: ComVisible(False)> 
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("1.7.13")> 
-<Assembly: AssemblyFileVersion("1.7.13")> 
+<Assembly: AssemblyVersion("1.8.0")> 
+<Assembly: AssemblyFileVersion("1.8.0")> 
