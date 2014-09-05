@@ -6,6 +6,7 @@ Imports Aricie.DNN.Configuration
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -38,11 +39,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Firewall")> _
         Public Property FirewallConfig() As New FirewallConfig
 
+        <ExtendedCategory("HttpHandlers")> _
+        Public Property HttpHandlers As New HttpHandlersConfig
+
+
         <ExtendedCategory("ControlAdapters")> _
         Public Property ControlAdapters As New ControlAdaptersConfig
 
 
-     
+
 
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
             Dim toReturn As New List(Of RuleEngineSettings(Of TEngineEvents))
@@ -50,20 +55,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case GetType(RequestEvent).Name
                     toReturn.Add(DirectCast(DirectCast(Me.FirewallConfig, Object), RuleEngineSettings(Of TEngineEvents)))
                 Case GetType(ScheduleEvent).Name
-                    For Each objBot As BotInfo(Of ScheduleEvent) In Me.SchedulerFarm.Bots.Instances
-                        toReturn.Add(DirectCast(DirectCast(objBot, Object), RuleEngineSettings(Of TEngineEvents)))
-                    Next
+                    toReturn.AddRange(From objBot In Me.SchedulerFarm.Bots.Instances Select DirectCast(DirectCast(objBot, Object), RuleEngineSettings(Of TEngineEvents)))
                 Case GetType(SimpleEngineEvent).Name
-                    For Each objservice As RestService In Me.RestServices.Services.Instances
-                        For Each objDynamicMethod As DynamicRestMethod In objservice.DynamicMethods
-                            toReturn.Add(DirectCast(DirectCast(objDynamicMethod, Object), RuleEngineSettings(Of TEngineEvents)))
-                        Next
-                    Next
-                    For Each objAdapter As ControlAdapterSettings In Me.ControlAdapters.Adapters
-                        For Each objDynAdapter As DynamicHandlerSettings In objAdapter.DynamicHandlers
-                            toReturn.Add(DirectCast(DirectCast(objDynAdapter, Object), RuleEngineSettings(Of TEngineEvents)))
-                        Next
-                    Next
+                    toReturn.AddRange(From objservice In Me.RestServices.Services.Instances _
+                                        From objDynamicMethod In objservice.DynamicMethods _
+                                        Select DirectCast(DirectCast(objDynamicMethod, Object), RuleEngineSettings(Of TEngineEvents)))
+                    toReturn.AddRange(From objAdapter In Me.ControlAdapters.Adapters _
+                                        From objDynAdapter In objAdapter.DynamicHandlers _
+                                        Select DirectCast(DirectCast(objDynAdapter, Object), RuleEngineSettings(Of TEngineEvents)))
+                    toReturn.AddRange(From objHandler In Me.HttpHandlers.Handlers _
+                                        Where objHandler.HttpHandlerMode = HttpHandlerMode.DynamicHandler _
+                                        Select DirectCast(DirectCast(objHandler.DynamicHandler, Object), RuleEngineSettings(Of TEngineEvents)))
             End Select
             Return toReturn
         End Function
@@ -87,7 +89,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End If
         'End Function
 
-      
+
 
     End Class
 End Namespace

@@ -7,8 +7,12 @@ Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+
+
+
     <Serializable()> _
-    Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
+Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
 

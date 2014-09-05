@@ -270,15 +270,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overridable Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            existingVars(FleeExpressionBuilder.ExpressionOwnerVar) = GetType(PortalKeeperContext(Of TEngineEvents))
             For Each objVar As VariableInfo In Me.Variables.Instances
                 existingVars(objVar.Name) = ReflectionHelper.CreateType(objVar.VariableType)
             Next
-            For Each objRule As KeeperRule(Of TEngineEvents) In Me.Rules
-                If objRule Is currentProvider Then
-                    Exit For
-                End If
-                objRule.AddVariables(currentProvider, existingVars)
-            Next
+
+
+            If Me.Mode = RuleEngineMode.Rules Then
+                For Each objRule As KeeperRule(Of TEngineEvents) In Me.Rules
+                    If objRule Is currentProvider Then
+                        Exit For
+                    End If
+                    objRule.AddVariables(currentProvider, existingVars)
+                Next
+            ElseIf Me.Actions IsNot currentProvider Then
+                Me.Actions.AddVariables(currentProvider, existingVars)
+            End If
+
         End Sub
 
 
