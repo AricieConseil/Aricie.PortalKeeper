@@ -1,5 +1,6 @@
 ﻿Imports System.Xml
 Imports Aricie.DNN.Services
+Imports System.ComponentModel
 
 Namespace Configuration
     ''' <summary>
@@ -13,6 +14,7 @@ Namespace Configuration
 
         Protected MustOverride Function BuildAddNode(ByVal usePrecondition As Boolean) As WebServerAddInfo
 
+        <Browsable(False)> _
         Public Overridable ReadOnly Property OnlyIIS6() As Boolean
             Get
                 Return False
@@ -43,12 +45,16 @@ Namespace Configuration
         End Function
 
 
+        Public Sub New()
+
+        End Sub
+
         Public Sub New(ByVal name As String, ByVal moduleType As Type)
             MyBase.New(name, moduleType)
         End Sub
 
 
-
+        <Browsable(False)> _
         Public Property InsertBeforeKey() As String
             Get
                 Return _InsertBeforeKey
@@ -58,7 +64,7 @@ Namespace Configuration
             End Set
         End Property
 
-
+        <Browsable(False)> _
         Public Property InsertAfterKey() As String
             Get
                 Return _InsertAfterKey
@@ -68,6 +74,7 @@ Namespace Configuration
             End Set
         End Property
 
+        <Browsable(False)> _
         Public Property InsertBeforeKey6() As String
             Get
 
@@ -81,6 +88,7 @@ Namespace Configuration
             End Set
         End Property
 
+        <Browsable(False)> _
         Public Property InsertAfterKey6() As String
             Get
                 If Me._InsertAfterKeyIIS6 = "" Then
@@ -94,20 +102,23 @@ Namespace Configuration
         End Property
 
         Public Overrides Function IsInstalled(ByVal xmlConfig As XmlDocument) As Boolean
-            'Dim xmlConfig As XmlDocument = Config.Load()
-            Dim objNode As XmlNode
-            'DNN 7 is nolonger support IIS 6
-            'Changed in 18/01/2013 by Yi
+            If Me.Type IsNot Nothing Then
+                'Dim xmlConfig As XmlDocument = Config.Load()
+                Dim objNode As XmlNode
+                'DNN 7 is nolonger support IIS 6
+                'Changed in 18/01/2013 by Yi
 
-            If NukeHelper.DnnVersion.Major < 7 Then
-                objNode = xmlConfig.SelectSingleNode(NukeHelper.DefineWebServerElementPath("system.web") & "/" & sectionNameIIS6 & "/add[@" & keyNameIIS6 & "='" & Me.GetKeyIIS6 & "']")
+                If NukeHelper.DnnVersion.Major < 7 Then
+                    objNode = xmlConfig.SelectSingleNode(NukeHelper.DefineWebServerElementPath("system.web") & "/" & sectionNameIIS6 & "/add[@" & keyNameIIS6 & "='" & Me.GetKeyIIS6 & "']")
 
-            Else
-                objNode = xmlConfig.SelectSingleNode(NukeHelper.DefineWebServerElementPath("system.webServer") & "/" & sectionNameIIS7 & "/add[@" & keyNameIIS7 & "='" & Me.GetKeyIIS7 & "']")
+                Else
+                    objNode = xmlConfig.SelectSingleNode(NukeHelper.DefineWebServerElementPath("system.webServer") & "/" & sectionNameIIS7 & "/add[@" & keyNameIIS7 & "='" & Me.GetKeyIIS7 & "']")
 
+                End If
+
+                Return (Not objNode Is Nothing)
             End If
-
-            Return (Not objNode Is Nothing)
+            Return False
         End Function
 
 

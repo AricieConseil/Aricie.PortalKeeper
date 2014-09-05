@@ -40,7 +40,7 @@ Namespace Services.Filtering
         End Function
 
 
-        Public Sub PrepareTokenReplace(atr As AdvancedTokenReplace)
+        Public Sub PrepareTokenReplace(ByRef atr As AdvancedTokenReplace)
             If Me.EnableTokenReplace Then
                 If atr Is Nothing Then
                     atr = New AdvancedTokenReplace()

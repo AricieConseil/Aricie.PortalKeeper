@@ -358,9 +358,11 @@ Namespace Services
         End Function
 
 
-       
-
         Public Shared Function GetCollectionTypeElementType(collectionType As Type) As Type
+            Return GetCollectionTypeElementType(collectionType, True)
+        End Function
+
+        Public Shared Function GetCollectionTypeElementType(collectionType As Type, throwOnError As Boolean) As Type
             Dim objetType As Type
             If collectionType.IsGenericType Then
                 Dim args As Type() = collectionType.GetGenericArguments()
@@ -368,7 +370,7 @@ Namespace Services
             Else
                 objetType = collectionType.GetElementType()
             End If
-            If objetType Is Nothing Then
+            If throwOnError AndAlso objetType Is Nothing Then
                 Throw New ArgumentException("type is not an array or a generic list ", "collectionType")
             End If
             Return objetType
@@ -558,7 +560,7 @@ Namespace Services
         End Function
 
         Public Shared Function GetFields(value As Object, maxdepth As Integer, visited As HashSet(Of Object), depth As Integer) As Object
-            Dim toReturn As SerializableDictionary(Of String, Object)
+            Dim toReturn As SerializableDictionary(Of String, Object) = Nothing
             If value IsNot Nothing Then
                 If depth < maxdepth Then
                     toReturn = New SerializableDictionary(Of String, Object)
@@ -870,8 +872,11 @@ Namespace Services
             Return toReturn
         End Function
 
-
         Public Shared Function GetCollectionElementType(ByVal collection As ICollection) As Type
+            Return GetCollectionElementType(collection, True)
+        End Function
+
+        Public Shared Function GetCollectionElementType(ByVal collection As ICollection, throwOnerror As Boolean) As Type
 
             Dim objetType As Type
 
@@ -880,7 +885,7 @@ Namespace Services
                 enumTor.MoveNext()
                 objetType = enumTor.Current.GetType()
             Else
-                objetType = GetCollectionTypeElementType(collection.GetType)
+                objetType = GetCollectionTypeElementType(collection.GetType, throwOnerror)
 
             End If
 

@@ -123,7 +123,7 @@ Namespace Services.Flee
             End Get
         End Property
 
-
+        <XmlIgnore()> _
         <ExtendedCategory("", "Help")> _
         Public Property ExpressionBuilder As FleeExpressionBuilder
 

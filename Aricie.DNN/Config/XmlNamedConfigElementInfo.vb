@@ -1,4 +1,6 @@
-﻿Namespace Configuration
+﻿Imports DotNetNuke.UI.WebControls
+
+Namespace Configuration
     ''' <summary>
     ''' Base class for Xml nodes with a name attribute.
     ''' </summary>
@@ -19,6 +21,7 @@
             Me._Name = name
         End Sub
 
+        <Required(True)> _
         Public Property Name() As String
             Get
                 Return _Name
