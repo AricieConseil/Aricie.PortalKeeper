@@ -160,7 +160,7 @@
     <value>Run Forced Bots</value>
   </data>
   <data name="cmdDebug.Text" xml:space="preserve">
-    <value>Dev Command (Hide in Prod) *</value>
+    <value>Debug Test Command (Hide in Production) </value>
   </data>
   <data name="lblUserBot.Text" xml:space="preserve">
     <value>User Bot Settings</value>

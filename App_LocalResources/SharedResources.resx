@@ -5082,16 +5082,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SealEncryptionKey.Alert" xml:space="preserve">
     <value>Warning: You are about to seal your encryption keys. Make sure you have a copy of them, since they won't be available through the UI nor the API anymore. </value>
   </data>
-  <data name="SimpleOrExpression`1_Mode.Help" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`1_Mode.Help" xml:space="preserve">
     <value>You can choose to directly edit an object value or to enter an expression, which resolves at runtime into an object of the right type</value>
   </data>
-  <data name="SimpleOrExpression`1_Mode.Text" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`1_Mode.Text" xml:space="preserve">
     <value>Definition Mode</value>
   </data>
-  <data name="SimpleOrExpression`1_Simple.Help" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`1_Simple.Help" xml:space="preserve">
     <value>Enter here the direct value to be used</value>
   </data>
-  <data name="SimpleOrExpression`1_Simple.Text" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`1_Simple.Text" xml:space="preserve">
     <value>Value</value>
   </data>
   <data name="SmartFileInfo_Compress.Help" xml:space="preserve">
@@ -5982,7 +5982,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SimpleOrExpression`1_Expression.Text" xml:space="preserve">
     <value>Dynamic Expression</value>
   </data>
-  <data name="SimpleOrExpression`1_Simple.Required" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`1_Simple.Required" xml:space="preserve">
     <value>Simple value is required</value>
   </data>
   <data name="Variables_AddDelegates.Help" xml:space="preserve">
@@ -6934,5 +6934,101 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="DefaultProvidersImported.Message" xml:space="preserve">
     <value>{0} providers were imported. Don't forget to save your configuration before leaving the page.</value>
+  </data>
+  <data name="ConfigElementInstalled.Message" xml:space="preserve">
+    <value>Configuration node succesfully added in web.config file</value>
+  </data>
+  <data name="ConfigElementUninstalled.Message" xml:space="preserve">
+    <value>Configuration node succesfully removed from web.config file</value>
+  </data>
+  <data name="ConfigElementUpdated.Message" xml:space="preserve">
+    <value>Configuration element updated</value>
+  </data>
+  <data name="HttpHandlerInfo_HttpVerb.Help" xml:space="preserve">
+    <value>Check all Http Request verbs the handler should respond to.</value>
+  </data>
+  <data name="HttpHandlerInfo_HttpVerb.Text" xml:space="preserve">
+    <value>Accepted Verbs</value>
+  </data>
+  <data name="HttpHandlerInfo_Path.Help" xml:space="preserve">
+    <value>This is the path for your handler as a pattern to be registered in the web.config file (wildcards are available)</value>
+  </data>
+  <data name="HttpHandlerInfo_Path.Required" xml:space="preserve">
+    <value>a valid HttpHandler path is required</value>
+  </data>
+  <data name="HttpHandlerInfo_Path.Text" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="HttpHandlersConfig_Enabled.Help" xml:space="preserve">
+    <value>This is a global switch to enable or disable all dynamic handlers. Note that strongly typed handlers updated in web.config are not concerned by this switch and need to be uninstalled instead.</value>
+  </data>
+  <data name="HttpHandlersConfig_Enabled.Text" xml:space="preserve">
+    <value>Enable Dynamic Handlers</value>
+  </data>
+  <data name="HttpHandlersConfig_Handlers.Help" xml:space="preserve">
+    <value>You can start adding new handlers here and configure their various settings. A handler needs to be installed in web.config before it is available. Remembre to uninstall your handler before you delete it from the configuration.</value>
+  </data>
+  <data name="HttpHandlersConfig_Handlers.Text" xml:space="preserve">
+    <value>Add Handlers and Install/Uninstall them</value>
+  </data>
+  <data name="HttpHandlerSettings_DynamicHandler.Help" xml:space="preserve">
+    <value>Customize that dynamic rules engine to build your handler.</value>
+  </data>
+  <data name="HttpHandlerSettings_DynamicHandler.Text" xml:space="preserve">
+    <value>Dynamic Handler</value>
+  </data>
+  <data name="HttpHandlerSettings_HttpHandlerMode.Help" xml:space="preserve">
+    <value>There are 2 modes available: &lt;ul&gt;&lt;li&gt;&lt;strong&gt;Type&lt;/strong&gt; where you specify the usual  .Net type implementing IHttpHandler to be registered in web.config file&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Dynamic Http handler&lt;/strong&gt;, where a specific configurable type is registered instead and executes a dedicated rule engine that you can configure here.&lt;/lil&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="HttpHandlerSettings_HttpHandlerMode.Text" xml:space="preserve">
+    <value>Http Handler Mode</value>
+  </data>
+  <data name="HttpHandlerSettings_HttpHandlerType.Help" xml:space="preserve">
+    <value>Select a .Net type for your handler to register in web.config file (your type must implement IHttpHandler)</value>
+  </data>
+  <data name="HttpHandlerSettings_HttpHandlerType.Text" xml:space="preserve">
+    <value>Handler .Net Type </value>
+  </data>
+  <data name="PathInfo_CurrentMapPath.Help" xml:space="preserve">
+    <value>This is the resulting path from the parameters and relative path.</value>
+  </data>
+  <data name="PathInfo_CurrentMapPath.Text" xml:space="preserve">
+    <value>Computed Local Path</value>
+  </data>
+  <data name="PortalKeeperConfig_HttpHandlers.Header" xml:space="preserve">
+    <value>Http Handlers </value>
+  </data>
+  <data name="PortalKeeperConfig_HttpHandlers.Help" xml:space="preserve">
+    <value>You can choose to declare strongly typed handler or dynamic handlers with the help of a rule engine.</value>
+  </data>
+  <data name="PortalKeeperConfig_HttpHandlers.Text" xml:space="preserve">
+    <value>In this section, you can configure Http Handlers and update the web.config file to declare them.</value>
+  </data>
+  <data name="Trace.Text" xml:space="preserve">
+    <value>Trace</value>
+  </data>
+  <data name="XmlConfigElementInfo_Install.Text" xml:space="preserve">
+    <value>Install Http handler in web.config</value>
+  </data>
+  <data name="XmlConfigElementInfo_Installed.Help" xml:space="preserve">
+    <value>This indicates if the HttpHandler was registed in web.config. </value>
+  </data>
+  <data name="XmlConfigElementInfo_Installed.Text" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="XmlConfigElementInfo_Uninstall.Text" xml:space="preserve">
+    <value>Uninstall Http handler from web.config</value>
+  </data>
+  <data name="XmlConfigElementInfo_Update.Text" xml:space="preserve">
+    <value>Update web.config element with new values</value>
+  </data>
+  <data name="XmlNamedConfigElementInfo_Name.Help" xml:space="preserve">
+    <value>Enter a valid web.config name for your HttpHandler.</value>
+  </data>
+  <data name="XmlNamedConfigElementInfo_Name.Required" xml:space="preserve">
+    <value>a valid Name is required</value>
+  </data>
+  <data name="XmlNamedConfigElementInfo_Name.Text" xml:space="preserve">
+    <value>HttpHandler Name</value>
   </data>
 </root>

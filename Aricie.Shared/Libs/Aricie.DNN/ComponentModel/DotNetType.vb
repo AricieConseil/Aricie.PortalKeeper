@@ -325,7 +325,11 @@ Namespace ComponentModel
                         Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
                         If objAssembly IsNot Nothing Then
                             Try
-                                toReturn.AddRange(From objType In objAssembly.GetTypes() Where objType.Namespace = Me.NamespaceSelect AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) Select New DotNetType(objType))
+                                toReturn.AddRange(From objType In objAssembly.GetTypes() _
+                                                    Where objType.Namespace = Me.NamespaceSelect _
+                                                    AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) _
+                                                From objTypeOrChild In New Type() {objType}.Union(objType.GetNestedTypes())
+                                                Select New DotNetType(objTypeOrChild))
                             Catch ex As ReflectionTypeLoadException
                                 Dim sb As New StringBuilder()
                                 For Each exSub As Exception In ex.LoaderExceptions

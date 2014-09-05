@@ -282,6 +282,7 @@
     <Compile Include="Security\EncryptionInfo.vb" />
     <Compile Include="Services\Files\FilePathInfo.vb" />
     <Compile Include="Services\Files\FilePathMode.vb" />
+    <Compile Include="Services\Files\PathInfo.vb" />
     <Compile Include="Services\Files\SmartFile.vb" />
     <Compile Include="Services\Files\SmartFileInfo.vb" />
     <Compile Include="Services\Files\SmartFolder.vb" />

@@ -20,7 +20,7 @@ Namespace Services.Flee
 
 
         <XmlIgnore()> _
-        Public AvailableVariables As IDictionary(Of String, DotNetType)
+        Public AvailableVariables As New Dictionary(Of String, DotNetType)
 
         <ConditionalVisible("InsertString", True, True, "")>
         Public MustOverride ReadOnly Property InsertString As String
@@ -91,7 +91,7 @@ Namespace Services.Flee
 
         End Sub
 
-        Public Sub New(vars As IDictionary(Of String, DotNetType))
+        Public Sub New(vars As Dictionary(Of String, DotNetType))
             AvailableVariables = vars
         End Sub
 
@@ -205,7 +205,7 @@ Namespace Services.Flee
         Public Property SubExpression As FleeExpressionBuilder
 
 
-
+        Public Const ExpressionOwnerVar As String = "<Expression Owner>"
 
         <ConditionalVisible("SelectedVariable", True, True, "")> _
         Public Overrides ReadOnly Property InsertString As String
@@ -219,10 +219,19 @@ Namespace Services.Flee
                     If (Me.Features And ExpressionFeature.Negate) = ExpressionFeature.Negate Then
                         toReturn.Append("Not ")
                     End If
-                    toReturn.Append(Me.SelectedVariable)
-                    If Me.VariableMember IsNot Nothing Then
-                        toReturn.Append(Me.VariableMember.InsertString)
+                    If SelectedVariable = ExpressionOwnerVar Then
+                        If Me.VariableMember IsNot Nothing Then
+                            toReturn.Append(Me.VariableMember.InsertString.TrimStart("."c))
+                        End If
+                    Else
+
+                        toReturn.Append(Me.SelectedVariable)
+                        If Me.VariableMember IsNot Nothing Then
+                            toReturn.Append(Me.VariableMember.InsertString)
+                        End If
                     End If
+
+                    
                     If Not SelectedOperator.IsNullOrEmpty() Then
                         toReturn.Append(String.Format(" {0} {1}", SelectedOperator, SubExpression.InsertString)) 'OperatorExpression.InsertString)
                     End If

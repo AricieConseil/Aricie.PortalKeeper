@@ -305,8 +305,8 @@ Namespace UI.WebControls.EditControls
         Protected Overrides Sub CreateChildControls()
 
             If Not _DisplayStyle.HasValue Then
-                Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue)
-                If ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
+                Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue, False)
+                If objetType IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
                     Me._DisplayStyle = CollectionDisplayStyle.Accordion
                 Else
                     Me._DisplayStyle = CollectionDisplayStyle.List

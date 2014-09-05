@@ -1,5 +1,6 @@
 ﻿Imports System.Xml
 Imports System.ComponentModel
+Imports System.Xml.Serialization
 
 Namespace Configuration
 
@@ -13,15 +14,18 @@ Namespace Configuration
 
         Private _Type As Type
 
+        Public Sub New()
+
+        End Sub
 
         Public Sub New(ByVal name As String, ByVal objType As Type)
             MyBase.New(name)
-            Me._Type = objType
+            Me.Type = objType
         End Sub
 
-
+        <XmlIgnore()> _
         <Browsable(False)> _
-        Public Property Type() As Type
+        Public Overridable Property Type() As Type
             Get
                 Return _Type
             End Get
