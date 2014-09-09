@@ -164,7 +164,7 @@
     <Compile Include="Components\Engines\RestServices\OperationResultType.vb" />
     <Compile Include="Components\Engines\RestServices\RestHandlerType.vb" />
     <Compile Include="Components\Engines\RestServices\ReturnRestOperationAction.vb" />
-    <Compile Include="Components\Services\KeeperObjectAction.vb" />
+    <Compile Include="Components\Core\KeeperObjectAction.vb" />
     <Compile Include="Components\Services\Web\CompressionEnabledWebClient.vb">
       <SubType>Component</SubType>
     </Compile>

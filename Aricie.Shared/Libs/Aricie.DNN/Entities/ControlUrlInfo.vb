@@ -48,6 +48,7 @@ Namespace Entities
             Me.FilterMode = objMode
         End Sub
 
+
         Public Sub New(ByVal url As String, ByVal track As Boolean)
             Me._Url = url
             Me.Track = track
@@ -79,11 +80,14 @@ Namespace Entities
         End Property
 
         <Browsable(False)> _
-        Private ReadOnly Property ShowTrack As Boolean
+        Public ReadOnly Property ShowTrack As Boolean
             Get
                 Return ((Me.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
             End Get
         End Property
+
+
+        
 
         <ConditionalVisible("ShowTrack", False, True)> _
         Public Overridable Property Track() As Boolean
@@ -111,6 +115,15 @@ Namespace Entities
             'End Set
         End Property
 
+
+        <Browsable(False)> _
+        Public ReadOnly Property ShowRedirect As Boolean
+            Get
+                Return ((Me.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
+            End Get
+        End Property
+
+        <ConditionalVisible("ShowRedirect", False, True)> _
         Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
             Get
                 Return _RedirectMode
