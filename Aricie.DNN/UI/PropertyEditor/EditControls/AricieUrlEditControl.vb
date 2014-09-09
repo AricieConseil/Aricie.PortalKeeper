@@ -11,6 +11,7 @@ Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Exceptions
 Imports DotNetNuke.UI.Utilities
 Imports Aricie.DNN.Entities
+Imports System.Globalization
 
 Namespace UI.WebControls.EditControls
 
@@ -199,8 +200,28 @@ Namespace UI.WebControls.EditControls
                         Else
                             Dim postedFileId As String = postCollection(uid & "$cboFiles")
                             If Not String.IsNullOrEmpty(postedFileId) AndAlso postedUrlType = "F" Then
-                                Me.Value = "FileID=" & postedFileId
-                                UrlControl.Url = Me.Value.ToString
+                                Dim target As String = postCollection("__EVENTTARGET")
+                                Dim uidFolders As String = uid & "$cboFolders"
+                                If Not target.IsNullOrEmpty() AndAlso target = uidFolders Then
+                                    Dim postedFolderPath As String = postCollection(uidFolders)
+                                    If Not postedFolderPath.IsNullOrEmpty() Then
+                                        Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, postedFolderPath)
+                                        If objFolder IsNot Nothing Then
+                                            Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
+                                            If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
+                                                Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
+                                                UrlControl.Url = Me.Value.ToString
+                                            Else
+                                                Me.Value = ""
+                                                UrlControl.Url = ""
+                                            End If
+                                        End If
+                                    End If
+                                Else
+                                    Me.Value = "FileID=" & postedFileId
+                                    UrlControl.Url = Me.Value.ToString
+                                End If
+                                
                             End If
                         End If
                     End If
