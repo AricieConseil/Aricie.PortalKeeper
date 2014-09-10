@@ -392,7 +392,50 @@
             {IconName.XingSquare, "fa-xing-square"}, _
             {IconName.Youtube, "fa-youtube"}, _
             {IconName.YoutubePlay, "fa-youtube-play"}, _
-            {IconName.YoutubeSquare, "fa-youtube-square"}}
+            {IconName.YoutubeSquare, "fa-youtube-square"}, _
+            {IconName.Angellist, "fa-angellist"}, _
+{IconName.AreaChart, "fa-area-chart"}, _
+{IconName.At, "fa-at"}, _
+{IconName.BellSlash, "fa-bell-slash"}, _
+{IconName.BellSlashO, "fa-bell-slashO"}, _
+{IconName.Bicycle, "fa-bicycle"}, _
+{IconName.Binoculars, "fa-binoculars"}, _
+{IconName.BirthdayCake, "fa-birthday-cake"}, _
+{IconName.Bus, "fa-bus"}, _
+{IconName.Calculator, "fa-calculator"}, _
+{IconName.Cc, "fa-cc"}, _
+{IconName.CcAmex, "fa-cc-amex"}, _
+{IconName.CcDiscover, "fa-cc-discover"}, _
+{IconName.CcMastercard, "fa-cc-mastercard"}, _
+{IconName.CcPaypal, "fa-cc-paypal"}, _
+{IconName.CcStripe, "fa-cc-stripe"}, _
+{IconName.CcVisa, "fa-cc-visa"}, _
+{IconName.Copyright, "fa-copyright"}, _
+{IconName.Eyedropper, "fa-eyedropper"}, _
+{IconName.FutbolO, "fa-futbolO"}, _
+{IconName.GoogleWallet, "fa-google-wallet"}, _
+{IconName.Ils, "fa-ils"}, _
+{IconName.Ioxhost, "fa-ioxhost"}, _
+{IconName.Lastfm, "fa-lastfm"}, _
+{IconName.LastfmSquare, "fa-lastfm-square"}, _
+{IconName.LineChart, "fa-line-chart"}, _
+{IconName.Meanpath, "fa-meanpath"}, _
+{IconName.NewspaperO, "fa-newspaperO"}, _
+{IconName.PaintBrush, "fa-paint-brush"}, _
+{IconName.Paypal, "fa-paypal"}, _
+{IconName.PieChart, "fa-pie-chart"}, _
+{IconName.Plug, "fa-plug"}, _
+{IconName.ShekelAlias, "fa-shekel Alias"}, _
+{IconName.SheqelAlias, "fa-sheqel Alias"}, _
+{IconName.Slideshare, "fa-slideshare"}, _
+{IconName.SoccerBallOAlias, "fa-soccer-ballO Alias"}, _
+{IconName.ToggleOff, "fa-toggleOff"}, _
+{IconName.ToggleOn, "fa-toggleOn"}, _
+{IconName.Trash, "fa-trash"}, _
+{IconName.Tty, "fa-tty"}, _
+{IconName.Twitch, "fa-twitch"}, _
+{IconName.Wifi, "fa-wifi"}, _
+{IconName.Yelp, "fa-yelp"}}
 
     End Class
 End Namespace
