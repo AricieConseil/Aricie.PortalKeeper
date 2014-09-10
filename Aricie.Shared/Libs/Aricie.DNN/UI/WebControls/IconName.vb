@@ -1,6 +1,9 @@
 ﻿Namespace UI.WebControls
     Public Enum IconName
+        'update Font Awesome version 4.2.0'
         None
+        [Stop]
+        [Try]
         Adjust
         Adn
         AlignCenter
@@ -10,6 +13,7 @@
         Ambulance
         Anchor
         Android
+        Angellist
         AngleDoubleDown
         AngleDoubleLeft
         AngleDoubleRight
@@ -20,6 +24,7 @@
         AngleUp
         Apple
         Archive
+        AreaChart
         ArrowCircleDown
         ArrowCircleLeft
         ArrowCircleODown
@@ -31,12 +36,13 @@
         ArrowDown
         ArrowLeft
         ArrowRight
-        ArrowUp
         Arrows
         ArrowsAlt
         ArrowsH
         ArrowsV
+        ArrowUp
         Asterisk
+        At
         Backward
         Ban
         BarChartO
@@ -45,6 +51,11 @@
         Beer
         Bell
         BellO
+        BellSlash
+        BellSlashO
+        Bicycle
+        Binoculars
+        BirthdayCake
         Bitbucket
         BitbucketSquare
         Bold
@@ -58,6 +69,8 @@
         BuildingO
         Bullhorn
         Bullseye
+        Bus
+        Calculator
         Calendar
         CalendarO
         Camera
@@ -70,6 +83,13 @@
         CaretSquareORight
         CaretSquareOUp
         CaretUp
+        Cc
+        CcAmex
+        CcDiscover
+        CcMastercard
+        CcPaypal
+        CcStripe
+        CcVisa
         Certificate
         ChainBroken
         Check
@@ -104,6 +124,7 @@
         CommentsO
         Compass
         Compress
+        Copyright
         CreditCard
         Crop
         Crosshairs
@@ -129,6 +150,7 @@
         ExternalLink
         ExternalLinkSquare
         Eye
+        Eyedropper
         EyeSlash
         Facebook
         FacebookSquare
@@ -138,9 +160,9 @@
         FighterJet
         File
         FileO
+        FilesO
         FileText
         FileTextO
-        FilesO
         Film
         Filter
         Fire
@@ -159,6 +181,7 @@
         Forward
         Foursquare
         FrownO
+        FutbolO
         Gamepad
         Gavel
         Gbp
@@ -171,7 +194,7 @@
         Globe
         GooglePlus
         GooglePlusSquare
-        HSquare
+        GoogleWallet
         HandODown
         HandOLeft
         HandORight
@@ -182,24 +205,30 @@
         HeartO
         Home
         HospitalO
+        HSquare
         Html5
+        Ils
         Inbox
         Indent
         Info
         InfoCircle
         Inr
         Instagram
+        Ioxhost
         Italic
         Jpy
         Key
         KeyboardO
         Krw
         Laptop
+        Lastfm
+        LastfmSquare
         Leaf
         LemonO
         LevelDown
         LevelUp
         LightbulbO
+        LineChart
         Link
         Linkedin
         LinkedinSquare
@@ -220,6 +249,7 @@
         Male
         MapMarker
         Maxcdn
+        Meanpath
         Medkit
         MehO
         Microphone
@@ -232,22 +262,27 @@
         Money
         MoonO
         Music
+        NewspaperO
         Outdent
         Pagelines
+        PaintBrush
         Paperclip
         Pause
+        Paypal
         Pencil
         PencilSquare
         PencilSquareO
         Phone
         PhoneSquare
         PictureO
+        PieChart
         Pinterest
         PinterestSquare
         Plane
         Play
         PlayCircle
         PlayCircleO
+        Plug
         Plus
         PlusCircle
         PlusSquare
@@ -278,14 +313,18 @@
         Share
         ShareSquare
         ShareSquareO
+        ShekelAlias
+        SheqelAlias
         Shield
         ShoppingCart
+        Signal
         SignIn
         SignOut
-        Signal
         Sitemap
         Skype
+        Slideshare
         SmileO
+        SoccerBallOAlias
         Sort
         SortAlphaAsc
         SortAlphaDesc
@@ -307,7 +346,6 @@
         StepBackward
         StepForward
         Stethoscope
-        [Stop]
         Strikethrough
         Subscript
         Suitcase
@@ -325,23 +363,27 @@
         Th
         ThLarge
         ThList
-        ThumbTack
         ThumbsDown
         ThumbsODown
         ThumbsOUp
         ThumbsUp
+        ThumbTack
         Ticket
         Times
         TimesCircle
         TimesCircleO
         Tint
+        ToggleOff
+        ToggleOn
+        Trash
         TrashO
         Trello
         Trophy
         Truck
-        [Try]
+        Tty
         Tumblr
         TumblrSquare
+        Twitch
         Twitter
         TwitterSquare
         Umbrella
@@ -362,12 +404,16 @@
         VolumeUp
         Weibo
         Wheelchair
+        Wifi
         Windows
         Wrench
         Xing
         XingSquare
+        Yelp
         Youtube
         YoutubePlay
         YoutubeSquare
+
+
     End Enum
 End NameSpace
