@@ -173,6 +173,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Sub DowngradeDynamicHandlers(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
             SyncLock Me
                 Dim tempList As New SerializableList(Of DynamicHandlerSettings)
+
                 For Each objDynamicHandler As DynamicHandlerSettings In Me.DynamicHandlers
                     Dim objHandlerType As Type = objDynamicHandler.GetType()
                     If objHandlerType IsNot GetType(DynamicHandlerSettings) Then
@@ -181,6 +182,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         tempList.Add(objDynamicHandler)
                     End If
                 Next
+                tempList.Sort()
                 Me.DynamicHandlers = tempList
             End SyncLock
         End Sub
