@@ -154,6 +154,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim genericDynamicHandlerType As Type = Me.GetGenericDynamicHandlerType()
             SyncLock Me
                 Dim tempList As New SerializableList(Of DynamicHandlerSettings)
+
                 For Each objDynamicHandler As DynamicHandlerSettings In Me.DynamicHandlers
 
                     Dim objHandlerType As Type = objDynamicHandler.GetType()
@@ -164,6 +165,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         tempList.Add(objDynamicHandler)
                     End If
                 Next
+                tempList.Sort()
                 Me.DynamicHandlers = tempList
             End SyncLock
 
