@@ -1,8 +1,8 @@
 using Aricie.DNN.UI.Attributes;
 using Aricie.DNN.UI.WebControls.EditControls;
 using DotNetNuke.UI.WebControls;
-using Jayrock.Json;
-using Jayrock.Json.Conversion;
+//using Jayrock.Json;
+//using Jayrock.Json.Conversion;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -72,20 +72,22 @@ namespace Aricie.DNN.Modules.PortalKeeper.BitCoin
 		{
 			get
 			{
-				MarketDepth objMarketDepth;
-				TickerInfo objTickerInfo;
-				Jayrock.Json.Conversion.ImportContext impContext = new Jayrock.Json.Conversion.ImportContext();
-				impContext.Register(impContext.FindImporter(typeof(Ticker)));
-				using (StringReader reader = new StringReader(this._JsonTicker))
-				{
-					objTickerInfo = (TickerInfo)impContext.Import(typeof(TickerInfo), JsonText.CreateReader(reader));
-				}
-				impContext = new Jayrock.Json.Conversion.ImportContext();
-				using (StringReader reader = new StringReader(this._JsonMarketDepth))
-				{
-					objMarketDepth = (MarketDepth)impContext.Import(typeof(MarketDepth), JsonText.CreateReader(reader));
-				}
-				return new MarketInfo(objTickerInfo.ticker, objMarketDepth);
+                //todo: migrate the following to  Newtonsoft json.net
+                //MarketDepth objMarketDepth;
+                //TickerInfo objTickerInfo;
+                //Jayrock.Json.Conversion.ImportContext impContext = new Jayrock.Json.Conversion.ImportContext();
+                //impContext.Register(impContext.FindImporter(typeof(Ticker)));
+                //using (StringReader reader = new StringReader(this._JsonTicker))
+                //{
+                //    objTickerInfo = (TickerInfo)impContext.Import(typeof(TickerInfo), JsonText.CreateReader(reader));
+                //}
+                //impContext = new Jayrock.Json.Conversion.ImportContext();
+                //using (StringReader reader = new StringReader(this._JsonMarketDepth))
+                //{
+                //    objMarketDepth = (MarketDepth)impContext.Import(typeof(MarketDepth), JsonText.CreateReader(reader));
+                //}
+                //return new MarketInfo(objTickerInfo.ticker, objMarketDepth);
+                return new MarketInfo();
 			}
 		}
 
@@ -95,13 +97,14 @@ namespace Aricie.DNN.Modules.PortalKeeper.BitCoin
 		{
 			get
 			{
-				Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet toReturn;
-				Jayrock.Json.Conversion.ImportContext impContext = new Jayrock.Json.Conversion.ImportContext();
-				impContext.Register(impContext.FindImporter(typeof(List<Order>)));
-				using (StringReader reader = new StringReader(this._JsonWallet))
-				{
-					toReturn = (Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet)impContext.Import(typeof(Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet), JsonText.CreateReader(reader));
-				}
+                //todo: migrate the following to  Newtonsoft json.net
+				Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet toReturn = new Wallet();
+                //Jayrock.Json.Conversion.ImportContext impContext = new Jayrock.Json.Conversion.ImportContext();
+                //impContext.Register(impContext.FindImporter(typeof(List<Order>)));
+                //using (StringReader reader = new StringReader(this._JsonWallet))
+                //{
+                //    toReturn = (Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet)impContext.Import(typeof(Aricie.DNN.Modules.PortalKeeper.BitCoin.Wallet), JsonText.CreateReader(reader));
+                //}
 				return toReturn;
 			}
 		}

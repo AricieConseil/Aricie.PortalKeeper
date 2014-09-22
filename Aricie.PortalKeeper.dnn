@@ -6,7 +6,7 @@
       <foldername>Aricie.PortalKeeper</foldername>
       <modulename>Aricie.PortalKeeper</modulename>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
-      <version>03.01.00</version>
+      <version>04.00.00</version>
       <businesscontrollerclass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businesscontrollerclass>
       <resourcefile>Aricie.PortalKeeper_resources.zip</resourcefile>
       <modules>
@@ -29,6 +29,12 @@
         </module>
       </modules>
       <files>
+        <file>
+          <name>ReleaseNotes.html</name>
+        </file>
+        <file>
+          <name>PKP-Logo.png</name>
+        </file>
         <!-- Assemblies PKP -->
         <file>
           <name>Aricie.PortalKeeper.dll</name>
@@ -40,13 +46,13 @@
           <name>Aricie.PortalKeeper.Bitcoin.Strategies.dll</name>
         </file>
         <file>
-          <name>Jayrock.dll</name>
+          <name>Aricie.PortalKeeper.Reddit.dll</name>
         </file>
         <file>
-          <name>Jayrock.Json.dll</name>
+          <name>RedditSharp.dll</name>
         </file>
         <file>
-          <name>Jayrock.Sandbox.dll</name>
+          <name>Newtonsoft.Json.dll</name>
         </file>
         <file>
           <name>OpenRasta.dll</name>
@@ -56,6 +62,51 @@
         </file>
         <file>
           <name>FileHelpers.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.Web.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.Data.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.Data.Providers.Kml.dll</name>
+        </file>
+        <file>
+          <name>SharpKml.dll</name>
+        </file>
+        <file>
+          <name>SharpKml.Kmz.dll</name>
+        </file>
+        <file>
+          <name>GeoAPI.dll</name>
+        </file>
+        <file>
+          <name>GeoAPI.Extensions.dll</name>
+        </file>
+        <file>
+          <name>NetTopologySuite.dll</name>
+        </file>
+        <file>
+          <name>Common.Logging.dll</name>
+        </file>
+        <file>
+          <name>PowerCollections.dll</name>
+        </file>
+        <file>
+          <name>ProjNet.dll</name>
+        </file>
+        <file>
+          <name>BruTile.dll</name>
+        </file>
+        <file>
+          <name>BruTile.Serialization.dll</name>
+        </file>
+        <file>
+          <name>BruTile.Desktop.dll</name>
         </file>
       </files>
     </folder>

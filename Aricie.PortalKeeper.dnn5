@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="Aricie.PortalKeeper" type="Module" version="3.1.0">
+    <package name="Aricie.PortalKeeper" type="Module" version="4.0.0">
       <friendlyName>Aricie - PortalKeeper</friendlyName>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
       <owner>
@@ -70,6 +70,10 @@
           <assemblies>
             <basePath>bin</basePath>
             <assembly>
+              <name>Aricie.PortalKeeper.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.dll</sourceFileName>
+            </assembly>
+            <assembly>
               <name>Aricie.PortalKeeper.Bitcoin.dll</name>
               <sourceFileName>Aricie.PortalKeeper.Bitcoin.dll</sourceFileName>
             </assembly>
@@ -78,20 +82,16 @@
               <sourceFileName>Aricie.PortalKeeper.Bitcoin.Strategies.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>Aricie.PortalKeeper.dll</name>
-              <sourceFileName>Aricie.PortalKeeper.dll</sourceFileName>
+              <name>Aricie.PortalKeeper.Reddit.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.Reddit.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>Jayrock.dll</name>
-              <sourceFileName>Jayrock.dll</sourceFileName>
+              <name>RedditSharp.dll</name>
+              <sourceFileName>RedditSharp.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>Jayrock.Json.dll</name>
-              <sourceFileName>Jayrock.Json.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Jayrock.Sandbox.dll</name>
-              <sourceFileName>Jayrock.Sandbox.dll</sourceFileName>
+              <name>Newtonsoft.Json.dll</name>
+              <sourceFileName>Newtonsoft.Json.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>OpenRasta.dll</name>
@@ -105,7 +105,78 @@
               <name>FileHelpers.dll</name>
               <sourceFileName>FileHelpers.dll</sourceFileName>
             </assembly>
+            <assembly>
+              <name>SharpMap.dll</name>
+              <sourceFileName>SharpMap.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpMap.Web.dll</name>
+              <sourceFileName>SharpMap.Web.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpMap.Data.dll</name>
+              <sourceFileName>SharpMap.Data.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpMap.Data.Providers.Kml.dll</name>
+              <sourceFileName>SharpMap.Data.Providers.Kml.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpKml.dll</name>
+              <sourceFileName>SharpKml.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpKml.Kmz.dll</name>
+              <sourceFileName>SharpKml.Kmz.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>GeoAPI.dll</name>
+              <sourceFileName>GeoAPI.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>GeoAPI.Extensions.dll</name>
+              <sourceFileName>GeoAPI.Extensions.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>NetTopologySuite.dll</name>
+              <sourceFileName>NetTopologySuite.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Common.Logging.dll</name>
+              <sourceFileName>Common.Logging.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>PowerCollections.dll</name>
+              <sourceFileName>PowerCollections.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>ProjNet.dll</name>
+              <sourceFileName>ProjNet.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>BruTile.dll</name>
+              <sourceFileName>BruTile.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>BruTile.Serialization.dll</name>
+              <sourceFileName>BruTile.Serialization.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>BruTile.Desktop.dll</name>
+              <sourceFileName>BruTile.Desktop.dll</sourceFileName>
+            </assembly>
           </assemblies>
+        </component>
+        <component type="File">
+          <files>
+            <basePath>DesktopModules\Aricie.PortalKeeper</basePath>
+            <file>
+              <name>ReleaseNotes.html</name>
+            </file>
+            <file>
+              <name>PKP-Logo.png</name>
+            </file>
+          </files>
         </component>
         <component type="ResourceFile">
           <resourceFiles>

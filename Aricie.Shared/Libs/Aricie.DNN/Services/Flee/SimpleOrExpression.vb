@@ -42,6 +42,7 @@ Namespace Services.Flee
 
         Public Property Mode As SimpleOrExpressionMode
 
+        <Width(500)> _
         <Required(True)> _
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Simple)>
         Public Overridable Property Simple As T

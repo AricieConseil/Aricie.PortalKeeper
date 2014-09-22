@@ -24,7 +24,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 Next
                 If toReturn IsNot Nothing Then
-                    _CachedMappings(key) = toReturn
+                    SyncLock _CachedMappings
+                        _CachedMappings(key) = toReturn
+                    End SyncLock
                 End If
             End If
             Return toReturn

@@ -103,7 +103,7 @@ Namespace Entities
         End Property
 
         <IsReadOnly(True)> _
-        Public ReadOnly Property UrlPath() As String
+        Public Overridable ReadOnly Property UrlPath() As String
             Get
                 If String.IsNullOrEmpty(_UrlPath) Then
                     _UrlPath = Aricie.DNN.Services.NukeHelper.GetPathFromCtrUrl(NukeHelper.PortalId, Me._Url, Me._Track)
@@ -116,15 +116,7 @@ Namespace Entities
         End Property
 
 
-        <Browsable(False)> _
-        Public ReadOnly Property ShowRedirect As Boolean
-            Get
-                Return ((Me.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
-            End Get
-        End Property
-
-        <ConditionalVisible("ShowRedirect", False, True)> _
-        Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
+       Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
             Get
                 Return _RedirectMode
             End Get
