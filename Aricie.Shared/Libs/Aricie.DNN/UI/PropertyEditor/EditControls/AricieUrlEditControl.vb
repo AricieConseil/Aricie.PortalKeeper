@@ -113,7 +113,7 @@ Namespace UI.WebControls.EditControls
             Me.UrlControl.ShowTrack = False
             If TypeOf Me.ParentField.DataSource Is ControlUrlInfo Then
                 Dim objUrl As ControlUrlInfo = DirectCast(Me.ParentField.DataSource, ControlUrlInfo)
-                Me.UrlControl.ShowNone = ((objUrl.FilterMode And UrlControlMode.None) = UrlControlMode.None)
+                'Me.UrlControl.ShowNone = ((objUrl.FilterMode And UrlControlMode.None) = UrlControlMode.None)
                 Me.UrlControl.ShowUrls = ((objUrl.FilterMode And UrlControlMode.Url) = UrlControlMode.Url)
                 Me.UrlControl.ShowTabs = ((objUrl.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
                 Me.UrlControl.ShowFiles = ((objUrl.FilterMode And UrlControlMode.File) = UrlControlMode.File)
@@ -202,88 +202,31 @@ Namespace UI.WebControls.EditControls
                             If Not String.IsNullOrEmpty(postedFileId) AndAlso postedUrlType = "F" Then
                                 Dim target As String = postCollection("__EVENTTARGET")
                                 Dim uidFolders As String = uid & "$cboFolders"
-                                If Not target.IsNullOrEmpty() Then
-                                    If target = uidFolders Then
-                                        Dim postedFolderPath As String = postCollection(uidFolders)
-                                        If Not postedFolderPath.IsNullOrEmpty() Then
-                                            Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, postedFolderPath)
-                                            If objFolder IsNot Nothing Then
-                                                Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
-                                                If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
-                                                    Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
-                                                    UrlControl.Url = Me.Value.ToString
-                                                Else
-                                                    Me.Value = ""
-                                                    UrlControl.Url = ""
-                                                End If
+                                If Not target.IsNullOrEmpty() AndAlso target = uidFolders Then
+                                    Dim postedFolderPath As String = postCollection(uidFolders)
+                                    If Not postedFolderPath.IsNullOrEmpty() Then
+                                        Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, postedFolderPath)
+                                        If objFolder IsNot Nothing Then
+                                            Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
+                                            If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
+                                                Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
+                                                UrlControl.Url = Me.Value.ToString
+                                            Else
+                                                Me.Value = ""
+                                                UrlControl.Url = ""
                                             End If
                                         End If
-                                        'ElseIf target = uid & "$cmdUpload" Then
-                                        '    Dim cboFiles As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cboFiles")
-                                        '    cboFiles.Visible = False
-                                        '    Dim cmdUpload As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdUpload")
-                                        '    cmdUpload.Visible = False
-                                        '    Dim txtFile As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "txtFile")
-                                        '    txtFile.Visible = False
-                                        '    Dim cmdSave As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdSave")
-                                        '    cmdSave.Visible = False
-                                        '    Dim cmdCancel As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdCancel")
-                                        '    cmdCancel.Visible = False
                                     End If
+
                                 Else
                                     Me.Value = "FileID=" & postedFileId
                                     UrlControl.Url = Me.Value.ToString
                                 End If
-                                
                             End If
                         End If
                     End If
                 End If
             End If
-            
-
-
-            
-
-
-            'Dim opt As RadioButtonList = DirectCast(UrlControl.GetType().GetField("optType", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).GetValue(UrlControl), RadioButtonList)
-            'opt.SelectedValue = UrlControl.UrlType
-
-            'If CurrentUrlType = "T" Then
-            '    GetType(UrlControl).GetMethod("DoRenderTypeControls", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
-            '    Dim CurrentTab As String = postCollection(UrlControl.UniqueID & "$cboTabs")
-            '    Dim cboTabs As DropDownList = DirectCast(UrlControl.GetType().GetField("cboTabs", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).GetValue(UrlControl), DropDownList)
-            '    cboTabs.SelectedValue = CurrentTab
-            'End If
-
-            'Dim UrlControlViewState As StateBag = DirectCast(GetType(UrlControl).GetProperty("ViewState", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).GetValue(UrlControl, Nothing), StateBag)
-
-            'TODO: revenir supprimer cet affreux bloc de violence sur un UrlControl.
-
-            'If CurrentUrlType = "F" Then
-            '    ' on est obligé de lui donner le portail pour qu'il trouve les fichiers
-            '    UrlControl.GetType().BaseType.GetField("_objPortal", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, PortalInfo(PortalId))
-            '    GetType(UrlControl).GetMethod("DoRenderTypeControls", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
-            '    Dim CurrentFolder As String = postCollection(UrlControl.UniqueID & "$cboFolders")
-            '    Dim cboFolder As DropDownList = DirectCast(UrlControl.GetType().GetField("cboFolders", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).GetValue(UrlControl), DropDownList)
-            '    cboFolder.SelectedValue = CurrentFolder
-            '    UrlControlViewState("LastFolderPath") = CurrentFolder
-
-            '    'GetType(UrlControl).GetMethod("DoRenderTypeControls", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
-            '    Dim CurrentFile As String = postCollection(UrlControl.UniqueID & "$cboFiles")
-            '    Dim cboFiles As DropDownList = DirectCast(UrlControl.GetType().GetField("cboFiles", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).GetValue(UrlControl), DropDownList)
-            '    cboFiles.SelectedValue = CurrentFile
-            '    UrlControlViewState("LastFileName") = CurrentFile
-
-            '    If (Not String.IsNullOrEmpty(CurrentFolder) AndAlso String.IsNullOrEmpty(CurrentFile)) Then
-            '        ' CurrentInterestingFolder = CurrentFolder
-            '    End If
-
-            '    'GetType(UrlControl).GetMethod("DoRenderTypeControls", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
-            'End If
-
-            'UrlControlViewState("Url") = UrlControl.Url
-            'UrlControlViewState("UrlType") = UrlControl.UrlType
 
 
             Return True

@@ -126,7 +126,7 @@ Namespace Configuration
             Get
                 If _SuffixRegex Is Nothing Then
                     Dim pattern As String = Me.Path
-                    Dim regexOption As RegexOptions = RegexOptions.RightToLeft Or RegexOptions.Compiled
+                    Dim regexOption As RegexOptions = RegexOptions.RightToLeft
                     regexOption = regexOption Or RegexOptions.IgnoreCase Or RegexOptions.CultureInvariant
                     If metaRegex Is Nothing Then
                         metaRegex = New Regex("[\+\{\\\[\|\(\)\.\^\$]")

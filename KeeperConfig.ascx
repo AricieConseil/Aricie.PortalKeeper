@@ -79,7 +79,9 @@
 /*globals jQuery, window, Sys */
 (function ($, Sys) {
     function setupKeeperConfig() {
-        $('#<%= divInstall.ClientID%>').dnnTabs().dnnPanels();
+        if ($().dnnTabs != undefined) {
+            $('#<%= divInstall.ClientID%>').dnnTabs().dnnPanels();    
+        }
     }
 
     $(document).ready(function () {
