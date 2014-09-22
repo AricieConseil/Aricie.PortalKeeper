@@ -21,8 +21,8 @@ Namespace Services.Files
 
         Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 
-        <SortOrder(15)> _
-        Public ReadOnly Property CurrentMapPath As String
+
+        Public Overridable ReadOnly Property CurrentMapPath As String
             Get
                 Return GetMapPath()
             End Get
@@ -32,7 +32,7 @@ Namespace Services.Files
         End Function
 
 
-        Public Overloads Function GetMapPath(owner As Object, lookup As IContextLookup) As String
+        Public Overridable Overloads Function GetMapPath(owner As Object, lookup As IContextLookup) As String
             Dim expressionPath As String = Me.Path.GetValue(owner, lookup)
             Return GetMapPath(expressionPath)
         End Function

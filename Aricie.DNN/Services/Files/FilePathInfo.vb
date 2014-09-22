@@ -22,6 +22,54 @@ Namespace Services.Files
 
     End Class
 
+
+    <Serializable()>
+    Public Class SimpleFilePathInfo
+        Inherits FilePathInfo
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property ChooseDnnFile As Boolean
+            Get
+                Return True
+            End Get
+            Set(value As Boolean)
+                MyBase.ChooseDnnFile = value
+            End Set
+        End Property
+
+        <Browsable(False)> _
+        <XmlIgnore()> _
+        Public Overrides Property PathMode As FilePathMode
+            Get
+                Return MyBase.PathMode
+            End Get
+            Set(value As FilePathMode)
+                MyBase.PathMode = value
+            End Set
+        End Property
+
+        <Browsable(False)> _
+        <XmlIgnore()> _
+        Public Overrides Property Path As SimpleOrExpression(Of String)
+            Get
+                Return MyBase.Path
+            End Get
+            Set(value As SimpleOrExpression(Of String))
+                MyBase.Path = value
+            End Set
+        End Property
+
+        <Browsable(False)> _
+        Public Overrides ReadOnly Property CurrentMapPath As String
+            Get
+                Return MyBase.CurrentMapPath
+            End Get
+        End Property
+
+    End Class
+
+
     <Serializable()>
     Public Class FilePathInfo
         Inherits PathInfo
@@ -29,7 +77,7 @@ Namespace Services.Files
         Private _ChooseDnnFile As Boolean
 
         <SortOrder(0)>
-        Public Property ChooseDnnFile As Boolean
+        Public Overridable Property ChooseDnnFile As Boolean
             Get
                 Return _ChooseDnnFile
             End Get
@@ -46,11 +94,13 @@ Namespace Services.Files
                                     Me.Path.Simple = ""
                                 End If
                             End If
+                        Else
+                            Me.PathMode = FilePathMode.AdminPath
                         End If
                     Else
                         If Not Me.DnnFile.UrlPath.IsNullOrEmpty() Then
                             Me.PathMode = FilePathMode.AdminPath
-                            Me.Path.Simple = Me.DnnFile.UrlPath
+                            Me.Path.Simple = GetAdminPathFromControlUrl(Me.DnnFile.UrlPath)
                             Me.DnnFile.Url = ""
                         End If
                     End If
@@ -59,8 +109,13 @@ Namespace Services.Files
             End Set
         End Property
 
+
+        Private Function GetAdminPathFromControlUrl(ctrUrlPath As String) As String
+            Return ctrUrlPath.Replace(DnnContext.Current.Portal.HomeDirectory, "")
+        End Function
+
         <ConditionalVisible("ChooseDnnFile", False, True)> _
-        Public Property DnnFile As New ControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
+        Public Property DnnFile As New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
 
         <ConditionalVisible("ChooseDnnFile", True, True)> _
         Public Overrides Property PathMode As FilePathMode
@@ -76,7 +131,7 @@ Namespace Services.Files
         <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
-         Public Overrides Property PortalId As Integer
+        Public Overrides Property PortalId As Integer
             Get
                 Return MyBase.PortalId
             End Get
@@ -96,7 +151,13 @@ Namespace Services.Files
         End Property
 
 
-
+        Public Overrides Function GetMapPath(owner As Object, lookup As IContextLookup) As String
+            If Not ChooseDnnFile Then
+                Return MyBase.GetMapPath(owner, lookup)
+            Else
+                Return Me.GetMapPath(GetAdminPathFromControlUrl(Me.DnnFile.UrlPath))
+            End If
+        End Function
 
 
     End Class
