@@ -676,7 +676,7 @@ Namespace Services
         Private ReadOnly Property AdvancedClientVars() As SerializableDictionary(Of String, String)
             Get
                 'Dim toReturn As SerializableDictionary(Of String, String) = DnnContext.Current.GetItem(Of SerializableDictionary(Of String, String))(AdvancedVarKey)
-                If _AdvancedClientVars Is Nothing OrElse _AdvancedClientVars.Count = 0 Then
+                If _AdvancedClientVars Is Nothing Then
                     Dim dnnclientVar As String = ClientAPI.GetClientVariable(Me.DnnPage, AdvancedVarKey)
                     If (String.IsNullOrEmpty(dnnclientVar)) Then
                         'HACK the dnn process to get the dnnvariable (deserialisation pb) - check the HTTP Context
@@ -708,11 +708,11 @@ Namespace Services
 
         Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
             '  If Me.AdvancedClientVars.Count > 0 Then
+
             Dim dnnclientVar As String = String.Empty 'ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
             Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
             dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
             ClientAPI.RegisterClientVariable(Me.DnnPage, AdvancedVarKey, dnnclientVar, True)
-
             '  End If
         End Sub
 

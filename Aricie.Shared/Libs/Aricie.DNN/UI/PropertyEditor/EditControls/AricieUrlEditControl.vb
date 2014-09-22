@@ -113,7 +113,7 @@ Namespace UI.WebControls.EditControls
             Me.UrlControl.ShowTrack = False
             If TypeOf Me.ParentField.DataSource Is ControlUrlInfo Then
                 Dim objUrl As ControlUrlInfo = DirectCast(Me.ParentField.DataSource, ControlUrlInfo)
-
+                Me.UrlControl.ShowNone = ((objUrl.FilterMode And UrlControlMode.None) = UrlControlMode.None)
                 Me.UrlControl.ShowUrls = ((objUrl.FilterMode And UrlControlMode.Url) = UrlControlMode.Url)
                 Me.UrlControl.ShowTabs = ((objUrl.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
                 Me.UrlControl.ShowFiles = ((objUrl.FilterMode And UrlControlMode.File) = UrlControlMode.File)
@@ -202,20 +202,33 @@ Namespace UI.WebControls.EditControls
                             If Not String.IsNullOrEmpty(postedFileId) AndAlso postedUrlType = "F" Then
                                 Dim target As String = postCollection("__EVENTTARGET")
                                 Dim uidFolders As String = uid & "$cboFolders"
-                                If Not target.IsNullOrEmpty() AndAlso target = uidFolders Then
-                                    Dim postedFolderPath As String = postCollection(uidFolders)
-                                    If Not postedFolderPath.IsNullOrEmpty() Then
-                                        Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, postedFolderPath)
-                                        If objFolder IsNot Nothing Then
-                                            Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
-                                            If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
-                                                Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
-                                                UrlControl.Url = Me.Value.ToString
-                                            Else
-                                                Me.Value = ""
-                                                UrlControl.Url = ""
+                                If Not target.IsNullOrEmpty() Then
+                                    If target = uidFolders Then
+                                        Dim postedFolderPath As String = postCollection(uidFolders)
+                                        If Not postedFolderPath.IsNullOrEmpty() Then
+                                            Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, postedFolderPath)
+                                            If objFolder IsNot Nothing Then
+                                                Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
+                                                If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
+                                                    Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
+                                                    UrlControl.Url = Me.Value.ToString
+                                                Else
+                                                    Me.Value = ""
+                                                    UrlControl.Url = ""
+                                                End If
                                             End If
                                         End If
+                                        'ElseIf target = uid & "$cmdUpload" Then
+                                        '    Dim cboFiles As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cboFiles")
+                                        '    cboFiles.Visible = False
+                                        '    Dim cmdUpload As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdUpload")
+                                        '    cmdUpload.Visible = False
+                                        '    Dim txtFile As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "txtFile")
+                                        '    txtFile.Visible = False
+                                        '    Dim cmdSave As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdSave")
+                                        '    cmdSave.Visible = False
+                                        '    Dim cmdCancel As Control = Aricie.Web.UI.ControlHelper.FindControl(UrlControl, "cmdCancel")
+                                        '    cmdCancel.Visible = False
                                     End If
                                 Else
                                     Me.Value = "FileID=" & postedFileId

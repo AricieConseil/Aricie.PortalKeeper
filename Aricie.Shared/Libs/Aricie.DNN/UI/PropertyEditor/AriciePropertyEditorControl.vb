@@ -1,34 +1,27 @@
-﻿Imports Aricie.DNN.UI.Attributes
-Imports Aricie.Collections
-Imports Aricie.ComponentModel
-Imports Aricie.DNN.UI.Controls
-Imports Aricie.DNN.Diagnostics
-Imports DotNetNuke.UI.Skins.Controls
-Imports DotNetNuke.UI.WebControls
-Imports System.Web.UI.WebControls
-Imports System.Reflection
-Imports Aricie.Services
-Imports Aricie.DNN.Services
-Imports DotNetNuke.UI.Utilities
-Imports DotNetNuke.Services.Exceptions
-Imports System.Web
+﻿Imports System.Web
 Imports System.Web.UI
-Imports Aricie.DNN.Security.Trial
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.ComponentModel
+Imports System.Web.UI.WebControls
 Imports System.Web.UI.HtmlControls
+Imports System.Reflection
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
-Imports System.Globalization
-Imports DotNetNuke.Security
+Imports DotNetNuke.UI.Skins.Controls
+Imports DotNetNuke.UI.WebControls
+Imports DotNetNuke.UI.Utilities
+Imports Aricie.Services
+Imports Aricie.DNN.Services
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.Controls
+Imports Aricie.DNN.Diagnostics
+Imports Aricie.DNN.Security.Trial
+Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.ComponentModel
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
 
 Namespace UI.WebControls
-
-
 
 
     Public Class AriciePropertyEditorControl

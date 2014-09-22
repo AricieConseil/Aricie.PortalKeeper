@@ -44,9 +44,6 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
-    <Reference Include="Jayrock.Json">
-      <HintPath>.\Aricie.PortalKeeper.BitcoinReferences\Jayrock.Json.dll</HintPath>
-    </Reference>
     <Reference Include="FileHelpers">
       <HintPath>.\Aricie.PortalKeeper.BitcoinReferences\FileHelpers.dll</HintPath>
     </Reference>
