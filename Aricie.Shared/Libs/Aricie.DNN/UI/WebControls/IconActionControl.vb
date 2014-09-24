@@ -100,7 +100,7 @@ Namespace UI.WebControls
 
 
 
-                ResourcesUtils.registerStylesheet(Me.Page, "font-awesome", "//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css", False)
+                ResourcesUtils.registerStylesheet(Me.Page, "font-awesome", "//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css", False)
             End If
 
 
