@@ -864,7 +864,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="LogEventAction`1_MessageSettings.Header" xml:space="preserve">
     <value>Message Settings</value>
   </data>
-  <data name="TokenizedTextInfo_Text.Text" xml:space="preserve">
+  <data name="TokenizedTextInfo_Template.Text" xml:space="preserve">
     <value>Text</value>
   </data>
   <data name="TaskQueueInfo_AdvancedSettings.Header" xml:space="preserve">
@@ -1590,7 +1590,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Instances_Up.Text" xml:space="preserve">
     <value>Move Item Up</value>
   </data>
-  <data name="TokenizedTextInfo_Text.Help" xml:space="preserve">
+  <data name="TokenizedTextInfo_Template.Help" xml:space="preserve">
     <value>Enter here the text to be associated with the action. If enabled, you can use dynamic Tokens; an advanced token engine allows you to form complex expressions, leveraging object hierarchies, methods, arrays, indexed properties, conditional and loop tokens.  </value>
   </data>
   <data name="RequestsCaps_Delete.Text" xml:space="preserve">
@@ -7030,5 +7030,56 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="XmlNamedConfigElementInfo_Name.Text" xml:space="preserve">
     <value>HttpHandler Name</value>
+  </data>
+  <data name="HttpHandlersConfig_DefaultFiddle.Help" xml:space="preserve">
+    <value>A fiddle is a test environment for a handler. Dynamic Http Handlers support sub-handlers which can be of any kind such as an Html Page. When configuring a new handler, the use for a test page is not uncommon and provided by a command button available in the sub handlers menu. This is the template sub-handlers that the dedicated fiddle will be cloned from, and further customized.</value>
+  </data>
+  <data name="HttpHandlersConfig_DefaultFiddle.Text" xml:space="preserve">
+    <value>Default Fiddle</value>
+  </data>
+  <data name="HttpHandlerSettings_AddTestFiddle.Text" xml:space="preserve">
+    <value>Create a Test Fiddle</value>
+  </data>
+  <data name="HttpHandlerSettings_MainHandler.Header" xml:space="preserve">
+    <value>Main Handler</value>
+  </data>
+  <data name="HttpHandlerSettings_SubHandlers.Header" xml:space="preserve">
+    <value>Sub Handlers</value>
+  </data>
+  <data name="HttpHandlerSettings_SubHandlers.Help" xml:space="preserve">
+    <value>You can build compound handlers by refining verb and path selection, while setting intermediate parameters within the resulting decision tree. the "Create a Test Fiddle" button leverages that feature to create a test Html page to your handler with associated resources.</value>
+  </data>
+  <data name="HttpHandlerSettings_SubHandlers.Text" xml:space="preserve">
+    <value>Sub Handlers</value>
+  </data>
+  <data name="HttpSubHandlerSettings_InitParamsToSubHandler.Help" xml:space="preserve">
+    <value>By default, the params of the main dynamic handler engine are added to a sub handler params before it is run. Uncheck to remove the main handler parameters from the sub handler.</value>
+  </data>
+  <data name="HttpSubHandlerSettings_InitParamsToSubHandler.Text" xml:space="preserve">
+    <value>Include Main Handler Params</value>
+  </data>
+  <data name="HttpSubHandlerSettings_RunMainHandler.Help" xml:space="preserve">
+    <value>By default, if a sub handler matches the inbound request, the main handler is not run. Check if you want the main handler to run beforehand.</value>
+  </data>
+  <data name="HttpSubHandlerSettings_RunMainHandler.Text" xml:space="preserve">
+    <value>Run Main Handler</value>
+  </data>
+  <data name="Node.Text" xml:space="preserve">
+    <value>Node</value>
+  </data>
+  <data name="TokenizedTextInfo_AddNewTokenSources.Help" xml:space="preserve">
+    <value>You can add several kinds of token sources, generally associated to prefixes. Static Tokens are native to DNN and must be upper case underscore and digits only (no prefixing). Token Providers are self contained classes, the public members of which will be exposed. Conditional Tokens let you define token sources according to other tokens value. Tokens Variables are custom variables as instances or dynamic expressions, fed to the token replace component as with token providers.</value>
+  </data>
+  <data name="TokenizedTextInfo_AddNewTokenSources.Text" xml:space="preserve">
+    <value>Add Token Sources</value>
+  </data>
+  <data name="CacheableAction`1_SemaphoreAppliesToCache.Help" xml:space="preserve">
+    <value>By default, your semaphore only encompasses the non cached action, to control resource access. Check if it is intended to encompass the cached action as well, for instance to control the inner flow. </value>
+  </data>
+  <data name="CacheableAction`1_SemaphoreAppliesToCache.Text" xml:space="preserve">
+    <value>Semaphore includes Cache retrieval</value>
+  </data>
+  <data name="TestFiddleAdded.Message" xml:space="preserve">
+    <value>A test fiddle was added as a sub-handler to your handler, with a dedicated path. To test your sub-handler, look-up the corresponding sub-path to build the resulting url.</value>
   </data>
 </root>

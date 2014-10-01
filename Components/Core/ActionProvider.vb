@@ -115,7 +115,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
+        Public Overridable Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
             If Me.UseSemaphore Then
                 Dim owned As Boolean
                 'Dim semaphoreId As String = "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture)

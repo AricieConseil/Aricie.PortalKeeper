@@ -799,8 +799,9 @@ Namespace UI.WebControls
                 If ActionButton IsNot Nothing Then
                     Dim myPeIco As New IconActionControl()
                     myPeIco.ActionItem = _ActionButton.IconAction
-                    myPeIco.Text = Me.DataSource.GetType.Name
-                    myPeIco.ResourceKey = Me.DataSource.GetType.Name & "_Title"
+                    'todo: insert a text with apropriate format and layout.
+                    'myPeIco.Text = Me.DataSource.GetType.Name
+                    'myPeIco.ResourceKey = Me.DataSource.GetType.Name & "_Title"
                     ' myPeIco.CssClass = "aricieIcon"
                     Me._headerControl.Controls.Add(myPeIco)
                 End If

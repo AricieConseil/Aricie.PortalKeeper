@@ -1,15 +1,48 @@
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.Collections
+Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.ComponentModel
+Imports System.Xml.Serialization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <Serializable()> _
+    Public Class HttpSubHandlersConfig
+        Inherits HttpHandlersConfig
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property DefaultFiddle As SerializableList(Of HttpSubHandlerSettings)
+            Get
+                Return MyBase.DefaultFiddle
+            End Get
+            Set(value As SerializableList(Of HttpSubHandlerSettings))
+                MyBase.DefaultFiddle = value
+            End Set
+        End Property
+
+        Public Overrides Function GetNewItem(collectionPropertyName As String) As Object
+            Select Case collectionPropertyName
+                Case "Handlers"
+                    Return New HttpSubHandlerSettings()
+            End Select
+            Return Nothing
+        End Function
+
+    End Class
+
     <Serializable()> _
     Public Class HttpHandlersConfig
         Implements IEnabled
+        Implements ITypedContainer
+
 
         Public Property Enabled As Boolean Implements IEnabled.Enabled
 
         Public Property Handlers As New SerializableList(Of HttpHandlerSettings)
 
+
+        Public Overridable Property DefaultFiddle As New SerializableList(Of HttpSubHandlerSettings)
 
         Public Function MapDynamicHandler(context As HttpContext) As HttpHandlerSettings
             Dim toReturn As HttpHandlerSettings = Nothing
@@ -35,5 +68,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _CachedMappings As New Dictionary(Of String, HttpHandlerSettings)
 
 
+        Public Overridable Function GetNewItem(collectionPropertyName As String) As Object Implements ITypedContainer.GetNewItem
+            Select Case collectionPropertyName
+                Case "Handlers"
+                    Return New HttpHandlerSettings
+            End Select
+            Return Nothing
+        End Function
     End Class
 End Namespace

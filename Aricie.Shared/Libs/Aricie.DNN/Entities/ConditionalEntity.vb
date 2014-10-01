@@ -11,7 +11,7 @@ Namespace Entities
     ''' </summary>
     <Serializable()> _
     Public Class ConditionalEntity(Of T As {New})
-        Inherits NamedEntity
+        Inherits NamedConfig
 
 
 
@@ -46,7 +46,7 @@ Namespace Entities
 
         <Required(True)> _
            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-           <LineCount(7)> _
+           <LineCount(3)> _
            <Width(500)> _
            <LabelMode(LabelMode.Top)> _
         Public Property Condition() As String

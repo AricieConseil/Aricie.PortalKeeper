@@ -34,10 +34,10 @@ Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
         <Browsable(False)>
         Public Property Message() As String
             Get
-                Return Me.TokenizedText.Text
+                Return Me.TokenizedText.Template
             End Get
             Set(value As String)
-                Me.TokenizedText.Text = value
+                Me.TokenizedText.Template = value
             End Set
         End Property
 
@@ -66,13 +66,13 @@ Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
 
         Protected Overrides Function GetAdvancedTokenReplace(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As AdvancedTokenReplace
             Dim toReturn As AdvancedTokenReplace = MyBase.GetAdvancedTokenReplace(actionContext)
-            Me.TokenizedText.AdditionalTokenSource.SetTokens(toReturn)
+            Me.TokenizedText.AdditionalTokenSource.SetTokens(toReturn, actionContext, actionContext)
             Return toReturn
         End Function
 
         Protected Function GetMessage(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As String
 
-            Return Me.GetMessage(actionContext, Me.TokenizedText.Text)
+            Return Me.GetMessage(actionContext, Me.TokenizedText.Template)
 
         End Function
 

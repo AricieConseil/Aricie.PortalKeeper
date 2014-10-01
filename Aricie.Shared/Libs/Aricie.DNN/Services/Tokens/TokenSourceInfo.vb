@@ -32,6 +32,9 @@ Namespace Services.Filtering
             <CollectionEditor(False, True, True, True, 10)> _
         Public Property StaticTokens() As New SerializableDictionary(Of String, String)
 
+
+        Public Property TokenVariables As New Aricie.DNN.Services.Flee.Variables()
+
         ''' <summary>
         ''' List of tokens providers
         ''' </summary>
@@ -85,9 +88,36 @@ Namespace Services.Filtering
         ''' </summary>
         ''' <param name="atr"></param>
         ''' <remarks></remarks>
+        Public Sub SetTokens(ByVal atr As AdvancedTokenReplace, contextOwner As Object, contextLookup As IContextLookup)
+            If contextLookup IsNot Nothing Then
+                If Me.TokenVariables.Instances.Count > 0 Then
+                    Dim vars As SerializableDictionary(Of String, Object) = Me.TokenVariables.EvaluateVariables(contextOwner, contextLookup)
+                    For Each objVarPair As KeyValuePair(Of String, Object) In vars
+                        atr.SetObjectReplace(objVarPair.Value, objVarPair.Key)
+                    Next
+                End If
+            End If
+            Dim conditional As TokenSourceInfo = GetConditionalSource(atr)
+
+            If conditional IsNot Nothing Then
+                conditional.SetTokens(atr, contextOwner, contextLookup)
+            End If
+
+            Me.SetTokens(atr, False)
+        End Sub
+
+
+
+        ''' <summary>
+        ''' Sets the token from the source in the advanced token replace
+        ''' </summary>
+        ''' <param name="atr"></param>
+        ''' <remarks></remarks>
         Public Sub SetTokens(ByVal atr As AdvancedTokenReplace)
+            Me.SetTokens(atr, True)
+        End Sub
 
-
+        Public Sub SetTokens(ByVal atr As AdvancedTokenReplace, setConditional As Boolean)
             For Each key As String In Me.StaticTokens.Keys
                 atr.SimpleTokens(key) = Me.StaticTokens(key)
             Next
@@ -95,9 +125,21 @@ Namespace Services.Filtering
             For Each key As String In Me.ReflectedProviders.Keys
                 atr.SetObjectReplace(Me.ReflectedProviders(key), key)
             Next
+            If setConditional Then
+                Dim conditional As TokenSourceInfo = GetConditionalSource(atr)
 
+                If conditional IsNot Nothing Then
+                    conditional.SetTokens(atr)
+                End If
+            End If
+
+            atr.SetIsSet(Me)
+
+        End Sub
+
+        Private Function GetConditionalSource(ByVal atr As AdvancedTokenReplace) As TokenSourceInfo
             Dim tempValue, formattedToken As String
-
+            Dim subTokenSource As TokenSourceInfo = Nothing
             For Each token As ConditionalTokenInfo In Me.ConditionalTokens
 
 
@@ -105,17 +147,14 @@ Namespace Services.Filtering
                 formattedToken = FormatToken(token.Key)
                 tempValue = atr.ReplaceAllTokens(formattedToken)
 
-                Dim subTokenSource As TokenSourceInfo = Nothing
+
                 If conditional.ConditionalSources.TryGetValue(tempValue, subTokenSource) Then
-                    subTokenSource.SetTokens(atr)
+                    Return subTokenSource
                 End If
 
             Next
-            atr.SetIsSet(Me)
-
-
-        End Sub
-
+            Return Nothing
+        End Function
 
         ''' <summary>
         ''' Token format
@@ -146,7 +185,7 @@ Namespace Services.Filtering
 
             Public Function GetAttributes() As IEnumerable(Of Attribute) Implements IAttributesProvider.GetAttributes
                 Dim toReturn As New List(Of Attribute)
-                toReturn.Add(New WidthAttribute(100))
+                toReturn.Add(New WidthAttribute(200))
                 Return toReturn
             End Function
         End Class

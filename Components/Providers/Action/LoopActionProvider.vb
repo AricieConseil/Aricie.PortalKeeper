@@ -118,6 +118,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _StepsToLog As List(Of Integer)
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property StepsToLog As List(Of Integer)
             Get
