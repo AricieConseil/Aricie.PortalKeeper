@@ -19,7 +19,7 @@ Namespace Configuration
         Implements IConfigElementInfo
 
 
-        Public ReadOnly Property Installed As Boolean
+        Public Overridable ReadOnly Property Installed As Boolean
             Get
                 Return IsInstalled()
             End Get

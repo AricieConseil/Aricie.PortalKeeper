@@ -307,7 +307,7 @@ Public Class AricieFieldEditorControl
                                 Dim strValue = Conversions.ToString(editorInfo.Value)
                                 ctc.LineCount = Math.Max(3, _
                                                          Math.Min( _
-                                                             Math.Max(strValue.Length \ 60, _
+                                                             Math.Max(strValue.Length \ 50, _
                                                                       strValue.LinesCount()) _
                                                             , 200))
                                 objEditControl = ctc
