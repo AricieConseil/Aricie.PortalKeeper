@@ -1,4 +1,8 @@
+Imports Aricie.ComponentModel
+
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+   
     Public Class DynamicHttpHandler
         Implements IHttpHandler
 
@@ -11,6 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         Public Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
+
             Dim handlersConfig As HttpHandlersConfig = PortalKeeperConfig.Instance.HttpHandlers
             If Not handlersConfig.Enabled Then
                 Throw New HttpException(404, "Dynamic Http Handlers are disabled in Portal Keeper Configuration")
@@ -23,12 +28,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Throw New HttpException(403, "Dynamic Http Handler was disabled in Portal Keeper Configuration")
             End If
             Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
+            mappedHandler.ProcessRequest(keeperContext)
 
-            If Not keeperContext.Disabled Then
-                keeperContext.Init(mappedHandler.DynamicHandler)
-                mappedHandler.DynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
-            End If
 
         End Sub
     End Class
-End NameSpace
+End Namespace
