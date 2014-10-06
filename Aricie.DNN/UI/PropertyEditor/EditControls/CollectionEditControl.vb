@@ -23,9 +23,48 @@ Imports System.Text
 
 Namespace UI.WebControls.EditControls
 
+
+    Public Interface IPathProvider
+
+        Function GetPath() As String
+
+    End Interface
+
+
+    Public Class IndexedDiv
+        Inherits HtmlGenericControl
+        Implements IPathProvider
+
+        Private _Path As String = Nothing
+        Private _Index As String = ""
+
+        Public Sub New(index As String)
+            MyBase.New("div")
+            _Index = index
+        End Sub
+
+
+
+        Public Function GetPath() As String Implements IPathProvider.GetPath
+            If _Path Is Nothing Then
+                Dim parentPath As String = CollectionEditControl.GetParentPath(Me)
+                If Not parentPath.IsNullOrEmpty() Then
+                    Dim indexPath As String = CollectionEditControl.GetIndexPath(_Index)
+                    _Path = parentPath & indexPath
+                End If
+            End If
+            Return _Path
+        End Function
+
+
+
+
+    End Class
+
     Public MustInherit Class CollectionEditControl
         Inherits AricieEditControl
-        Implements INamingContainer, IPostBackEventHandler
+        Implements INamingContainer, IPostBackEventHandler, IPathProvider
+
 
 
         Private Const PAGE_INDEX_KEY As String = "PageIndex"
@@ -341,7 +380,7 @@ Namespace UI.WebControls.EditControls
             Me.BindData()
 
             AddFooter()
-           
+
         End Sub
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
@@ -384,10 +423,11 @@ Namespace UI.WebControls.EditControls
 
                 Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                 If toEditor IsNot Nothing Then
-                    Dim path As String = Me.GetSubPath(index, Me.PagedCollection(index)).Replace("SubEntity.", "").Replace("SubEntity", "")
-                    If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
-                        path = toEditor.SubEditorPath & "."c & path
-                    End If
+                    Dim path As String = Me.GetSubPath(index, Me.PagedCollection(index))
+                    '.Replace("SubEntity.", "").Replace("SubEntity", "")
+                    'If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
+                    '    path = toEditor.SubEditorPath & "."c & path
+                    'End If
                     toEditor.SubEditorFullPath = path
                 End If
                 toEditor.ItemChanged = True
@@ -696,49 +736,51 @@ Namespace UI.WebControls.EditControls
 
         Private Function GetSubPath(index As Integer, dataItem As Object) As String
             Dim objToReturn As String = GetPath()
-
-            If (TypeOf Me.CollectionValue Is IDictionary OrElse index >= 0) Then
-                If TypeOf Me.CollectionValue Is IDictionary Then
-                    objToReturn &= String.Format("[{0}]", ReflectionHelper.GetProperty(dataItem, "Key").ToString())
-                Else
-                    objToReturn &= String.Format("[{0}]", index.ToString(CultureInfo.InvariantCulture))
-                End If
-            End If
-
+            objToReturn &= GetIndexPath(GetIndexKey(index, dataItem))
             Return objToReturn
 
-           
         End Function
 
-        Public Function GetPath() As String
+        Public Shared Function GetIndexPath(index As String) As String
+            Return String.Format("[{0}]", index)
+        End Function
+
+
+        Private Function GetIndexKey(index As Integer, dataitem As Object) As String
+            If TypeOf Me.CollectionValue Is IDictionary Then
+                Return ReflectionHelper.GetProperty(dataitem, "Key").ToString()
+            Else
+                Return index.ToString(CultureInfo.InvariantCulture)
+            End If
+        End Function
+
+
+        Public Function GetPath() As String Implements IPathProvider.GetPath
             If _CollectionSubPath.IsNullOrEmpty Then
-               
-                Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
-                If (parentCt IsNot Nothing) Then
-                    Dim parentPath As String
-                    If TypeOf parentCt Is AriciePropertyEditorControl Then
-                        parentPath = DirectCast(parentCt, AriciePropertyEditorControl).GetPath()
-                    Else
-                        parentPath = DirectCast(parentCt, CollectionEditControl).GetPath()
-                    End If
-                    If parentPath.IsNullOrEmpty() Then
-                        _CollectionSubPath = ParentAricieField.DataField
-                    Else
-                        _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
-                    End If
+                Dim parentPath As String = GetParentPath(Me)
+                If parentPath.IsNullOrEmpty() Then
+                    _CollectionSubPath = ParentAricieField.DataField
                 Else
-                    _CollectionSubPath = Me.ParentAricieField.DataField
+                    _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
                 End If
             End If
-           
-
             Return _CollectionSubPath
+        End Function
+
+
+        Public Shared Function GetParentPath(ctl As Control) As String
+            Dim parentCt As IPathProvider = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of IPathProvider)(ctl)
+            If (parentCt IsNot Nothing) Then
+                Return parentCt.GetPath().Replace(".SubEntity", "").Replace("SubEntity", "")
+            End If
+            Return ""
         End Function
 
 
         Private Sub DisplayListItem(item As RepeaterItem)
 
-            Dim plItemContainer As New HtmlGenericControl("div")
+            Dim idxKey As String = Me.GetIndexKey(Me.ItemIndex(item.ItemIndex), item.DataItem)
+            Dim plItemContainer As New IndexedDiv(idxKey) 'New HtmlGenericControl("div")
             Dim oddCss, evenCSS As String
             If Me.ParentAricieEditor IsNot Nothing AndAlso Me.ParentAricieEditor.PropertyDepth Mod 2 = 0 Then
                 oddCss = "ItemEven"
@@ -760,7 +802,10 @@ Namespace UI.WebControls.EditControls
         Private Sub DisplayAccordionItem(item As RepeaterItem)
 
             Dim h3 As New HtmlGenericControl("h3")
-            Dim plItemContainer As New HtmlGenericControl("div")
+
+
+            Dim idxKey As String = Me.GetIndexKey(Me.ItemIndex(item.ItemIndex), item.DataItem)
+            Dim plItemContainer As New IndexedDiv(idxKey) 'New HtmlGenericControl("div")
             item.Controls.Add(h3)
 
             item.Controls.Add(plItemContainer)
@@ -809,7 +854,7 @@ Namespace UI.WebControls.EditControls
             'If cookie IsNot Nothing Then
             '    Integer.TryParse(cookie.Value, cookieValue)
             'End If
-            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(Me.ParentAricieEditor, String.Format("{0}-cookieAccordion", Me.GetPath()))
+            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(String.Format("{0}-cookieAccordion", Me.GetPath()))
             If (Not String.IsNullOrEmpty(advStringValue)) Then
                 Integer.TryParse(advStringValue, cookieValue)
             End If
@@ -860,10 +905,11 @@ Namespace UI.WebControls.EditControls
 
                     Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                     If toEditor IsNot Nothing Then
-                        Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex)).Replace("SubEntity.", "").Replace("SubEntity", "")
-                        If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
-                            path = toEditor.SubEditorPath & "."c & path
-                        End If
+                        Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex))
+                        '.Replace("SubEntity.", "").Replace("SubEntity", "")
+                        'If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
+                        '    path = toEditor.SubEditorPath & "."c & path
+                        'End If
 
                         Dim newUrl As New UriBuilder(Me.Context.Request.Url)
                         Dim query As NameValueCollection = HttpUtility.ParseQueryString(newUrl.Query)
@@ -971,7 +1017,7 @@ Namespace UI.WebControls.EditControls
                     DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
                     Me._DeleteControls.Add(cmdDelete)
                 End If
-                
+
 
             End If
 
@@ -1142,6 +1188,7 @@ Namespace UI.WebControls.EditControls
         '    Dim state As Pair = New Pair(MyBase.SaveControlState(), Me._PageIndex)
         '    Return state
         'End Function
+
 
     End Class
 End Namespace

@@ -168,6 +168,7 @@ Namespace Services.Flee
           <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
         Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
             Me.Expression &= Me.ExpressionBuilder.InsertString
+            Me.ExpressionBuilder = Nothing
             pe.ItemChanged = True
         End Sub
 

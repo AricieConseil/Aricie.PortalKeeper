@@ -101,8 +101,28 @@ Namespace Services.Flee
         Private _Features As ExpressionFeature
         Private _SelectedOperator As String
 
-        <ConditionalVisible("SelectedVariable", True, True, "")>
+       
+
+
+       
+
         <AutoPostBack()> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <Selector("Text", "Value", False, True, "<-- Select a Variable -->", "", False, True)>
+        Public Property SelectedVariable As String
+            Get
+                Return _SelectedVariable
+            End Get
+            Set(value As String)
+                If _SelectedVariable <> value Then
+                    _SelectedVariable = value
+                    VariableMember = Nothing
+                End If
+            End Set
+        End Property
+
+        <ConditionalVisible("SelectedVariable", True, True, "")>
+       <AutoPostBack()> _
         Public Property Features As ExpressionFeature
             Get
                 Return _Features
@@ -122,24 +142,6 @@ Namespace Services.Flee
                         Me.VariableMember = New MemberDrillDown(SelectedVariableType)
                     End If
                     _Features = value
-                End If
-            End Set
-        End Property
-
-
-       
-
-        <AutoPostBack()> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <Selector("Text", "Value", False, True, "<-- Select a Variable -->", "", False, True)>
-        Public Property SelectedVariable As String
-            Get
-                Return _SelectedVariable
-            End Get
-            Set(value As String)
-                If _SelectedVariable <> value Then
-                    _SelectedVariable = value
-                    VariableMember = Nothing
                 End If
             End Set
         End Property
@@ -276,7 +278,9 @@ Namespace Services.Flee
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
             Select Case propertyName
                 Case "SelectedVariable"
-                    Return (AvailableVariables.Keys).Select(Function(objString) New ListItem(objString)).ToList()
+                    Dim vars = (AvailableVariables.Keys).ToList()
+                    vars.Sort()
+                    Return vars.Select(Function(objString) New ListItem(objString & " ( " & ReflectionHelper.GetSimpleTypeName(AvailableVariables(objString).GetDotNetType()) & " )", objString)).ToList()
                 Case "SelectedOperator"
                     Return FleeBinaryOperators.Select(Function(objString) New ListItem(objString)).ToList()
             End Select
