@@ -40,8 +40,8 @@ Namespace Web.UI
             Return toReturn
         End Function
 
-        Public Function FindParentControlRecursive(Of T As {Control})(ByVal objControl As Control) As T
-            Return DirectCast(FindParentControlRecursive(objControl, GetType(T)), T)
+        Public Function FindParentControlRecursive(Of T)(ByVal objControl As Control) As T
+            Return DirectCast(DirectCast(FindParentControlRecursive(objControl, GetType(T)), Object), T)
         End Function
 
         <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
@@ -51,16 +51,17 @@ Namespace Web.UI
 
 
         Public Function FindParentControlRecursive(ByVal objControl As Control, ByVal parentType As Type) As Control
-            If objControl.Parent Is Nothing Then
-                Return Nothing
-            Else
-                If objControl.Parent.GetType Is parentType _
-                   Or objControl.Parent.GetType.IsSubclassOf(parentType) Then
-                    Return objControl.Parent
-                Else
-                    Return FindParentControlRecursive(objControl.Parent, parentType)
-                End If
-            End If
+            'If objControl.Parent Is Nothing Then
+            '    Return Nothing
+            'Else
+            '    If objControl.Parent.GetType Is parentType _
+            '       Or objControl.Parent.GetType.IsSubclassOf(parentType) Then
+            '        Return objControl.Parent
+            '    Else
+            '        Return FindParentControlRecursive(objControl.Parent, parentType)
+            '    End If
+            'End If
+            Return FindParentControlRecursive(objControl, {parentType})
         End Function
 
         <ObsoleteAttribute("Use FindParentControlRecursive for clearer naming")>
