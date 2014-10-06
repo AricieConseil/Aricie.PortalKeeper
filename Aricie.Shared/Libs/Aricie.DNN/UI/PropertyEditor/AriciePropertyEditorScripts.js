@@ -8,7 +8,7 @@ Aricie.DNN.AriciePropertyEditorScripts = function (element) {
 
     AriciePropertyEditorScripts = this;
     this._clientId = null;
-    this._hash = null;
+    //this._hash = null;
 };
 Aricie.DNN.AriciePropertyEditorScripts.prototype = {
 
@@ -34,21 +34,20 @@ Aricie.DNN.AriciePropertyEditorScripts.prototype = {
     },
 
     // Hash
-    get_hash: function () {
-        return this._hash;
-    },
+    //get_hash: function () {
+    //    return this._hash;
+    //},
 
-    set_hash: function (value) {
-        if (this._hash !== value) {
-            this._hash = value;
-            this.raisePropertyChanged('hash');
-        }
-    }
+    //set_hash: function (value) {
+    //    if (this._hash !== value) {
+    //        this._hash = value;
+    //        this.raisePropertyChanged('hash');
+    //    }
+    //}
 };
 
 function initialisePropertyEditorsScripts() {
 
-    //resetUnusedCookies();
     initJSON();
     var selector;
     var cookieAccName;
@@ -56,7 +55,8 @@ function initialisePropertyEditorsScripts() {
 
     // accordion
     selector = ".aricie_pe_accordion" + "-" + AriciePropertyEditorScripts.get_clientId();
-    cookieAccName = 'cookieAccordion' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
+    //cookieAccName = 'cookieAccordion' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
+    cookieAccName = 'cookieAccordion';
 
     // on fait l'évaluation du noeud un minimum
     var selectedNodes = jQuery(selector);
@@ -64,8 +64,8 @@ function initialisePropertyEditorsScripts() {
         jQuery.each(selectedNodes, function (i, selectedNodeDom) {
             var selectedNode = jQuery(selectedNodeDom);
           var accordionPath = selectedNode.data('entitypath');
-          var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); //eval(jQuery.cookie(cookieAccName));
-            if (cookieVal == undefined || cookieVal === -1) { // si on a pas de cookie décrivant l'état de cet accordéon, il est fermé
+          var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); 
+            if (cookieVal == undefined || cookieVal === -1) { 
                 cookieVal = false;
             } else {
                 cookieVal = parseInt(cookieVal);
@@ -113,28 +113,25 @@ function initialisePropertyEditorsScripts() {
 
     // tabs
     selector = ".aricie_pe_tabs-" + AriciePropertyEditorScripts.get_clientId();
-    cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-    // var lis = jQuery(selector).find('ul').eq(0).find('li');
+    //cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
+    cookieTabName = 'cookieTab';
     var tabsItemCt = jQuery(selector);
     if (tabsItemCt.length > 0) {
         jQuery.each(tabsItemCt, function (i, tabItem) {
             var selectedNode = jQuery(tabItem);
 
             var tabPath = selectedNode.data('entitypath');
-            //  var cookieVal = getAdvanceVariableValue(tabPath + "-" + cookieTabName);
+            
             var localCookieTabName = tabPath + "-" + cookieTabName;
             selectedNode.tabs({
-                /*cookie: { name: cookieTabName, expires: 1 },*/
                 select: function (event, ui) {
-                    //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
-                    setAdvanceVariableValue(localCookieTabName, ui.index); //lis.index(ui.newTab) -->newTab=undefined
+                    setAdvanceVariableValue(localCookieTabName, ui.index); 
                     var resultat = performASPNetValidation();
                     return resultat;
                 },
                 activate: function (e, ui) {
-                    //jQuery.cookie(cookieTabName, lis.index(ui.newTab));
                     var currentIndex = ui.newTab.parent().find("li").index(ui.newTab);
-                    setAdvanceVariableValue(localCookieTabName, currentIndex); //lis.index(ui.newTab) -->newTab=undefined
+                    setAdvanceVariableValue(localCookieTabName, currentIndex); 
                     var resultat = performASPNetValidation();
                     return resultat;
                 },
@@ -144,11 +141,7 @@ function initialisePropertyEditorsScripts() {
         });
         
         }
-    /*if (parseFloat(jQuery.ui.version) > 1.8) {
-        jQuery(selector).tabs("option", "active", parseInt(getAdvanceVariableValue(cookieTabName)) || 0);
-    } else {
-        jQuery(selector).tabs("option", "selected", parseInt(getAdvanceVariableValue(cookieTabName)) || 0);
-    }*/
+    
 }
 function initJSON() {
     window.JSON = JSON || {};
@@ -236,36 +229,6 @@ function performASPNetValidation() {
     return true;
 }
 
-/*function resetUnusedCookies() {
-    var cookies = get_cookies_array();
-
-    for (var cookieName in cookies) {
-        if (cookieName.toString().indexOf('cookieAccordion') === 0 || cookieName.toString().indexOf('cookieTab') === 0) {
-            var hash = cookieName.replace('cookieAccordion', '').replace('cookieTab', '');
-
-            if (jQuery('[hash="' + hash + '"]').length == 0) {
-                jQuery.removeCookie(cookieName);
-            }
-        }
-    }
-}
-
-function get_cookies_array() {
-
-    var cookies = {};
-
-    if (document.cookie && document.cookie != '') {
-        var split = document.cookie.split(';');
-        for (var i = 0; i < split.length; i++) {
-            var name_value = split[i].split("=");
-            name_value[0] = name_value[0].replace(/^ /, '');
-            cookies[decodeURIComponent(name_value[0])] = decodeURIComponent(name_value[1]);
-        }
-    }
-
-    return cookies;
-
-}*/
 
 function SelectAndActivateParentHeader(src) {
     var targetItem = jQuery(src).parent().parent().find(">a");

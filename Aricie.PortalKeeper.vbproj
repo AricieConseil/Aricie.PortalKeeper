@@ -348,6 +348,7 @@
     <None Include="external\OpenRasta\OpenRasta.Testing.dll" />
     <None Include="external\OpenRasta\OpenWrap.dll" />
     <None Include="external\OpenRasta\OpenWrap.Testing.dll" />
+    <Content Include="Libraries\MonoTorrent\MonoTorrent.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\BruTile.Desktop.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\BruTile.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\BruTile.Serialization.dll" />

@@ -489,11 +489,21 @@ Namespace Services
             End Get
         End Property
 
-
+        Public Property AdvancedClientVariable(ByVal localKey As String) As String
+            Get
+                Return AdvancedClientVariable(Nothing, localKey)
+            End Get
+            Set(ByVal value As String)
+                Me.AdvancedClientVariable(Nothing, localKey) = value
+            End Set
+        End Property
 
         Public Property AdvancedClientVariable(ByVal objControl As Control, ByVal localKey As String) As String
             Get
-                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
+                Dim varKey As String = localKey
+                If objControl IsNot Nothing Then
+                    varKey &= objControl.ClientID & objControl.ClientID.GetHashCode
+                End If
                 Dim toReturn As String = Nothing
                 If Me.AdvancedClientVars.TryGetValue(varKey, toReturn) Then
                     Return toReturn
@@ -502,7 +512,10 @@ Namespace Services
                 End If
             End Get
             Set(ByVal value As String)
-                Dim varKey As String = localKey & objControl.ClientID & objControl.ClientID.GetHashCode
+                Dim varKey As String = localKey
+                If objControl IsNot Nothing Then
+                    varKey &= objControl.ClientID & objControl.ClientID.GetHashCode
+                End If
                 Me.AdvancedClientVars(varKey) = value
             End Set
         End Property

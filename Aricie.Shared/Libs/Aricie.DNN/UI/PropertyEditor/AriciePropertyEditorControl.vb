@@ -3,6 +3,7 @@ Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports System.Web.UI.HtmlControls
 Imports System.Reflection
+Imports System.Runtime.CompilerServices
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
@@ -26,7 +27,7 @@ Namespace UI.WebControls
 
     Public Class AriciePropertyEditorControl
         Inherits PropertyEditorControl
-        Implements System.Web.UI.IPostBackEventHandler, System.Web.UI.IScriptControl
+        Implements IPostBackEventHandler, IScriptControl, IPathProvider
 
         Public Event Debug As EventHandler(Of DebugEventArgs)
 
@@ -321,6 +322,7 @@ Namespace UI.WebControls
             End Get
             Set(value As String)
                 DnnContext.Current.AdvancedClientVariable(Me, "SubEditorPath") = value
+                Me._CurrentPath = Nothing
             End Set
         End Property
 
@@ -399,20 +401,9 @@ Namespace UI.WebControls
                             _CurrentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & _CurrentTab.Name))
                         End If
 
-                        'SB: we set the value of the tab index in the cookie because further databindings may use this value from the 
-                        'Dim cookieName As String = "cookieTab" & Me.ClientID.GetHashCode()
-                        'Dim cookie As HttpCookie = Me.RetrieveCookieValue(cookieName)
-                        'If cookie IsNot Nothing Then
-                        '    Me.Page.Response.Cookies.Remove(cookieName)
-                        'End If
-                        '_CurrentTab = t
-                        'cookie = New HttpCookie(cookieName)
-                        'cookie.HttpOnly = False
-                        'cookie.Value = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
-                        'HttpContext.Current.Response.Cookies.Add(cookie)
-                        Dim clientVarName As String = Me.GetPath() + "-cookieTab" '& Me.ClientID.GetHashCode()
-                        Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(Me, clientVarName)
-                        DnnContext.Current.AdvancedClientVariable(Me, clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
+                        Dim clientVarName As String = Me.GetPath() + "-cookieTab"
+                        Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
+                        DnnContext.Current.AdvancedClientVariable(clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
 
                         Me.FieldsDictionary.HideAllTabs()
 
@@ -856,22 +847,19 @@ Namespace UI.WebControls
         Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
-                ' Dim cookie As HttpCookie = RetrieveCookieValue("cookieTab" & Me.ClientID.GetHashCode())
-                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me, Me.GetPath + "-cookieTab")
+
+                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me.GetPath() + "-cookieTab")
 
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
                 If (Not String.IsNullOrEmpty(advStr)) Then
                     Integer.TryParse(advStr, currentTabIndex)
                 End If
-                'If cookie IsNot Nothing Then
-                '    Integer.TryParse(cookie.Value, currentTabIndex)
-                'End If
+               
                 If currentTabIndex > objElement.Tabs.Count - 1 Then
                     currentTabIndex = 0
                 End If
                 Dim tabsContainer As New HtmlGenericControl("div")
-                'tabsContainer.EnableViewState = False
                 Dim tabsHeader As New HtmlGenericControl("ul")
                 tabsHeader.EnableViewState = False
 
@@ -881,7 +869,6 @@ Namespace UI.WebControls
                 objElement.Container.Controls.Add(tabsContainer)
                 tabsContainer.Controls.Add(tabsHeader)
                 Dim tabIshidden As Boolean
-                'Dim isFirstPass As Boolean = FormHelper.IsFirstPass(Me, Me.ParentModule)
 
                 For Each objTab As Tab In objElement.Tabs.Values
 
@@ -952,36 +939,36 @@ Namespace UI.WebControls
 
         Private _CurrentPath As String = Nothing
 
-        Public Function GetPath() As String
+        Public Function GetPath() As String Implements IPathProvider.GetPath
             If _CurrentPath Is Nothing Then
-                Dim parentCt As Control = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Me, GetType(CollectionEditControl), GetType(AriciePropertyEditorControl))
-                If (parentCt IsNot Nothing) Then
-                    Dim parentPath As String
-                    If TypeOf parentCt Is AriciePropertyEditorControl Then
-                        parentPath = DirectCast(parentCt, AriciePropertyEditorControl).GetPath()
+                Dim parentPath As String = CollectionEditControl.GetParentPath(Me)
+                If parentPath.IsNullOrEmpty() Then
+                    If Me.ParentAricieField Is Nothing Then
+                        If Me.IsRoot AndAlso Not Me.SubEditorPath.IsNullOrEmpty Then
+                            _CurrentPath = Me.SubEditorPath
+                        Else
+                            _CurrentPath = String.Empty
+                        End If
                     Else
-                        parentPath = DirectCast(parentCt, CollectionEditControl).GetPath()
+                        If Me.ParentAricieField.DataField <> "SubEntity" Then
+                            _CurrentPath = Me.ParentAricieField.DataField
+                        Else
+                            _CurrentPath = String.Empty
+                        End If
                     End If
-                    If parentPath.IsNullOrEmpty() Then
-                        _CurrentPath = Me.ParentAricieField.DataField
-                    Else
-
-                        _CurrentPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
-                    End If
-
-
                 Else
-                    _CurrentPath = String.Empty
-                    'If (Me.ParentAricieField Is Nothing) Then
-                    '    _CurrentPath = String.Empty
-                    'Else
-                    '    _CurrentPath = String.Format("{0}.{1}", Me.ParentAricieField.DataField, Me.FriendlyName)
-                    'End If
+                    If Me.ParentAricieField.DataField <> "SubEntity" Then
+                        _CurrentPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
+                    Else
+                        _CurrentPath = parentPath
+                    End If
                 End If
             End If
 
             Return _CurrentPath
         End Function
+
+        
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
             Dim nbControls As Integer
@@ -1444,7 +1431,8 @@ Namespace UI.WebControls
             Dim descriptor As ScriptControlDescriptor = New ScriptControlDescriptor("Aricie.DNN.AriciePropertyEditorScripts", strId)
 
             descriptor.AddProperty("clientId", strId)
-            descriptor.AddProperty("hash", strId.GetHashCode().ToString())
+            'descriptor.AddProperty("hash", strId.GetHashCode().ToString())
+            'descriptor.AddProperty("friendlyName", Me.FriendlyName)
 
             toReturn.Add(descriptor)
 

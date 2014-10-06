@@ -33,7 +33,7 @@ Namespace Services.Flee
 
 
         <AutoPostBack()> _
-        <ProvidersSelector("Text", "Value")> _
+        <Selector("Text", "Value", False, True, "<- Select a sub member ->", "", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         Public Property SelectedMember As String
             Get
@@ -67,28 +67,31 @@ Namespace Services.Flee
         '    End Get
         'End Property
 
-        <ConditionalVisible("SelectedMember", True, True, "")>
-        Public Property SelectSubMember As Boolean
-            Get
-                Return _SelectSubMember
-            End Get
-            Set(value As Boolean)
-                If Not value Then
-                    Me.SelectedSubMember = Nothing
-                End If
-                _SelectSubMember = value
-            End Set
-        End Property
+        '<ConditionalVisible("SelectedMember", True, True, "")>
+        'Public Property SelectSubMember As Boolean
+        '    Get
+        '        Return _SelectSubMember
+        '    End Get
+        '    Set(value As Boolean)
+        '        If Not value Then
+        '            Me.SelectedSubMember = Nothing
+        '        End If
+        '        _SelectSubMember = value
+        '    End Set
+        'End Property
 
+        '<ConditionalVisible("SelectSubMember", False, True)> _
         <ConditionalVisible("SelectedMember", True, True, "")> _
-        <ConditionalVisible("SelectSubMember", False, True)> _
         Public Property SelectedSubMember As MemberDrillDown
             Get
-                If _SelectedSubMember Is Nothing AndAlso Not SelectedMember.IsNullOrEmpty() Then
-                    Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(SelectedMemberInfo, True)
-                    _SelectedSubMember = New MemberDrillDown(objMemberType)
+                If Not SelectedMember.IsNullOrEmpty Then
+                    If _SelectedSubMember Is Nothing Then
+                        Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(SelectedMemberInfo, True)
+                        _SelectedSubMember = New MemberDrillDown(objMemberType)
+                    End If
+                    Return _SelectedSubMember
                 End If
-                Return _SelectedSubMember
+                Return Nothing
             End Get
             Set(value As MemberDrillDown)
                 _SelectedSubMember = value
@@ -109,7 +112,7 @@ Namespace Services.Flee
         <Browsable(False)> _
         Public ReadOnly Property ResultingMemberInfo As MemberInfo
             Get
-                If Me.SelectSubMember AndAlso SelectedSubMember IsNot Nothing AndAlso Not SelectedMember.IsNullOrEmpty() Then
+                If SelectedSubMember IsNot Nothing Then
                     Return SelectedSubMember.ResultingMemberInfo
                 End If
                 Return SelectedMemberInfo
@@ -120,7 +123,7 @@ Namespace Services.Flee
             Select Case propertyName
                 Case "SelectedMember"
                     Dim selectedVarType As Type = ParentType.GetDotNetType()
-                    Return ReflectionHelper.GetReturnSubMembers(selectedVarType).Select(Function(objMemberPair) New ListItem(ReflectionHelper.GetMemberSignature(objMemberPair.Value, False), objMemberPair.Key)).ToList()
+                    Return ReflectionHelper.GetReturnSubMembers(selectedVarType).Select(Function(objMemberPair) New ListItem(objMemberPair.Key & " ( " & ReflectionHelper.GetMemberSignature(objMemberPair.Value, False) & " ) ", objMemberPair.Key)).ToList()
                     'Case "SelectedSubMember"
                     '    Dim objMember As MemberInfo = SelectedMemberInfo
                     '    Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, True)

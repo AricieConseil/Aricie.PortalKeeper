@@ -2005,7 +2005,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Add Additional Type</value>
   </data>
   <data name="Binary.Text" xml:space="preserve">
-    <value>... op Expression2</value>
+    <value>Binary Expression</value>
   </data>
   <data name="OutputAction`1_Simulation.Header" xml:space="preserve">
     <value>Simulation</value>
@@ -6915,19 +6915,19 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Features</value>
   </data>
   <data name="Cast.Text" xml:space="preserve">
-    <value>cast( ... , type)</value>
+    <value>Cast</value>
   </data>
   <data name="FleeExpressionInfo`1_Title.Text" xml:space="preserve">
     <value>test 2</value>
   </data>
   <data name="Negate.Text" xml:space="preserve">
-    <value>Not ...</value>
+    <value>Negate</value>
   </data>
   <data name="Parenthesis.Text" xml:space="preserve">
-    <value>( ... )</value>
+    <value>Parenthesis</value>
   </data>
   <data name="SubMember.Text" xml:space="preserve">
-    <value>.SubMember( ... )</value>
+    <value>Sub Member</value>
   </data>
   <data name="WebAction`1_WebRequest.Help" xml:space="preserve">
     <value>You can specify various parameters defining how to build your web request, include parameters and/or use a web proxy.</value>
