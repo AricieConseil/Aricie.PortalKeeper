@@ -3,17 +3,34 @@ Imports Aricie.Web
 Imports System.ComponentModel
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
+Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 
 Namespace Configuration
 
 
+    
+
 
     ''' <summary>
     ''' Configuration element for an ASP.Net HttpHandler class
     ''' </summary>
+    <Serializable()> _
+    <DefaultProperty("FriendlyName")> _
     Public Class HttpHandlerInfo
         Inherits WebServerElementInfo
+
+
+        <Browsable(False)> _
+        Public Overridable ReadOnly Property FriendlyName As String
+            Get
+                If HasType Then
+                    Return String.Format("{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, Me.Name, Me.FriendlyPathsAndVerbs, IIf(Me.IsInstalled, "registered", "unregistered"))
+                End If
+                Return String.Format("{1}{0}{2}", UIConstants.TITLE_SEPERATOR, Me.Name, Me.FriendlyPathsAndVerbs)
+            End Get
+        End Property
+
 
         Public Sub New()
             MyBase.New()
@@ -48,6 +65,20 @@ Namespace Configuration
             End Set
         End Property
 
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyPathsAndVerbs As String
+            Get
+                Dim toReturn As String = Me.Path & " (" & Me.Verb & ")"
+                For Each objAlternate As HttpHandlerInfo In Me.AlternateRegistrations
+                    toReturn &= ", " & objAlternate.Path & " (" & objAlternate.Verb & ")"
+                Next
+                Return toReturn
+            End Get
+        End Property
+
+
+
+
         <XmlIgnore()> _
         Public Property HttpVerb As HttpVerb
             Get
@@ -78,6 +109,8 @@ Namespace Configuration
                 End If
             End Set
         End Property
+
+        Public Property AlternateRegistrations As New List(Of HttpHandlerInfo)
 
         Public Function GetHttpVerb(strVerb As String) As HttpVerb
             Dim toReturn As HttpVerb = HttpVerb.Unknown
@@ -153,6 +186,11 @@ Namespace Configuration
         End Function
 
         Public Function Matches(verb As String, path As String) As Boolean
+            For Each objAlternate As HttpHandlerInfo In Me.AlternateRegistrations
+                If objAlternate.Matches(verb, path) Then
+                    Return True
+                End If
+            Next
             Dim objHttpVerb As HttpVerb = GetHttpVerb(verb)
             If Not (objHttpVerb And Me.HttpVerb) = objHttpVerb Then
                 Return False
@@ -161,6 +199,13 @@ Namespace Configuration
         End Function
 
 
+        Public Overrides Sub AddConfigNodes(ByRef targetNodes As NodesInfo, actionType As ConfigActionType)
+            MyBase.AddConfigNodes(targetNodes, actionType)
+            For Each objAlternate In Me.AlternateRegistrations
+                objAlternate.Type = Me.Type
+                objAlternate.AddConfigNodes(targetNodes, actionType)
+            Next
+        End Sub
 
         Protected Overloads Overrides Function BuildAddNode(ByVal usePrecondition As Boolean) As WebServerAddInfo
             If usePrecondition Then

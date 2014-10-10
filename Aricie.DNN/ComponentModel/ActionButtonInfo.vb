@@ -2,6 +2,7 @@
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.Services
+Imports System.ComponentModel
 
 Namespace ComponentModel
 
@@ -37,9 +38,12 @@ Namespace ComponentModel
         Public Shared Function FromMember(objMember As MemberInfo) As ActionButtonInfo
             Dim toReturn As ActionButtonInfo = Nothing
             If Not _MemberActions.TryGetValue(objMember, toReturn) Then
-                Dim attrs = ReflectionHelper.GetCustomAttributes(objMember).Where(Function(objAttribute) TypeOf objAttribute Is ActionButtonAttribute)
-                If attrs.Any Then
-                    toReturn = FromAttribute(DirectCast(attrs(0), ActionButtonAttribute))
+                Dim custAttr = ReflectionHelper.GetCustomAttributes(objMember)
+                If Not custAttr.Any(Function(objAttribute) (TypeOf objAttribute Is BrowsableAttribute) AndAlso DirectCast(objAttribute, BrowsableAttribute).Browsable = False) Then
+                    Dim attrs = custAttr.Where(Function(objAttribute) TypeOf objAttribute Is ActionButtonAttribute)
+                    If attrs.Any Then
+                        toReturn = FromAttribute(DirectCast(attrs(0), ActionButtonAttribute))
+                    End If
                 End If
                 SyncLock _MemberActions
                     _MemberActions(objMember) = toReturn
