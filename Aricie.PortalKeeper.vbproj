@@ -152,6 +152,7 @@
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlerMode.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlersConfig.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlerSettings.vb" />
+    <Compile Include="Components\Engines\HttpHandlers\HttpSubHandlerSettings.vb" />
     <Compile Include="Components\Engines\Scheduler\UserBotStorage.vb" />
     <Compile Include="Components\Engines\Scheduler\UserParameterWrapper.vb" />
     <Compile Include="Components\Providers\Action\DefineVariableActionProvider.vb" />

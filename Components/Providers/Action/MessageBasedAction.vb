@@ -34,7 +34,7 @@ Public MustInherit Class MessageBasedAction(Of TEngineEvents As IConvertible)
         <Browsable(False)>
         Public Property Message() As String
             Get
-                Return Me.TokenizedText.Template
+                Return Nothing
             End Get
             Set(value As String)
                 Me.TokenizedText.Template = value

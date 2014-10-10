@@ -85,6 +85,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         Public Overrides Function Match(ByVal context As PortalKeeperContext(Of RequestEvent)) As Boolean
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
 
             Dim objUser As UserInfo = context.DnnContext.User
             If objUser IsNot Nothing AndAlso objUser.UserID <> -1 Then

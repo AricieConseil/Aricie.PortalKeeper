@@ -152,6 +152,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         ' End Property
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim toReturn As Boolean = True
 
             If Me.AgregateLogSteps Then

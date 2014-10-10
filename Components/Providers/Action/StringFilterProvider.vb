@@ -88,6 +88,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim input As String = Me._InputExpression.Evaluate(actionContext, actionContext)
             Select Case Me._FilterMode
                 Case StringFilterMode.Xpath

@@ -24,6 +24,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function GetCurrentValue(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Integer
+           
             Dim currentPage As TabInfo = context.DnnContext.Portal.ActiveTab
             If currentPage IsNot Nothing Then
                 Return currentPage.TabID

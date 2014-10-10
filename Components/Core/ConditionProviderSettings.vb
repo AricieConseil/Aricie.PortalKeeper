@@ -10,13 +10,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ConditionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))
 
-        <ExtendedCategory("")> _
-            <MainCategory()> _
         Public Property Negate() As Boolean
 
-        <ExtendedCategory("")> _
-            <MainCategory()> _
         Public Property IsMandatory() As Boolean
+
+        Public Property DebuggerBreak As Boolean
 
         Protected Overrides Function CreateProvider() As IConditionProvider(Of TEngineEvents)
             Dim toreturn As IConditionProvider(Of TEngineEvents)

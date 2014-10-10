@@ -38,7 +38,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
-
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
             Dim currentItem As Integer = Me.GetCurrentValue(context)
 
             If Me.Items.Contains(currentItem) Then

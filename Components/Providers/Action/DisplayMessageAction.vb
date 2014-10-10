@@ -94,25 +94,36 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             'Dim objLog As New LogInfo()
             If Not aSync Then
                 Dim dnnPage As CDefault = actionContext.DnnContext.DnnPage
                 If dnnPage IsNot Nothing Then
-                    Dim message As String = GetMessage(actionContext)
+                    Dim strMessage As String = GetMessage(actionContext)
                     If Me._ModuleId > 0 Then
                         Dim objModules As List(Of PortalModuleBase) = FindControlsRecursive(Of PortalModuleBase)(dnnPage)
                         For Each objModule As PortalModuleBase In objModules
                             If objModule.ModuleId = Me._ModuleId Then
-                                Skin.AddModuleMessage(objModule, Me._Heading, message, Me._ModuleMessageType)
+                                Skin.AddModuleMessage(objModule, Me._Heading, Message, Me._ModuleMessageType)
                                 Return True
                             End If
                         Next
                     Else
                         Dim objSkin As Skin = actionContext.DnnContext.CurrentSkin
                         If objSkin IsNot Nothing Then
-                            AddHandler objSkin.Load, AddressOf Skin_Display
-                            AddHandler objSkin.DataBinding, AddressOf Skin_Display
-                            AddHandler objSkin.PreRender, AddressOf Skin_Display
+                            Dim handlerTest = Sub(sender As Object, e As EventArgs)
+                                                  If DnnContext.Current.GetVar("SkinDisplay" & Me.Name) Is Nothing Then
+                                                      Dim objsenderSkin As Skin = DirectCast(sender, Skin)
+                                                      Skin.AddPageMessage(objsenderSkin, Me._Heading, strMessage, Me._ModuleMessageType)
+                                                      DnnContext.Current.SetVar("SkinDisplay" & Me.Name, True)
+                                                  End If
+                                              End Sub
+
+                            AddHandler objSkin.Load, handlerTest
+                            AddHandler objSkin.DataBinding, handlerTest
+                            AddHandler objSkin.PreRender, handlerTest
                             'Skin.AddPageMessage(objSkin, Me._Heading, message, Me._ModuleMessageType)
                             Return True
                         End If
@@ -122,13 +133,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return False
         End Function
 
-        Private Sub Skin_Display(ByVal sender As Object, ByVal e As EventArgs)
-            If DnnContext.Current.GetVar("SkinDisplay" & Me.Name) Is Nothing Then
-                Dim objSkin As Skin = DirectCast(sender, Skin)
-                Skin.AddPageMessage(objSkin, Me._Heading, Message, Me._ModuleMessageType)
-                DnnContext.Current.SetVar("SkinDisplay" & Me.Name, True)
-            End If
-            
-        End Sub
+        'Private Sub Skin_Display(ByVal sender As Object, ByVal e As EventArgs)
+        '    If DnnContext.Current.GetVar("SkinDisplay" & Me.Name) Is Nothing Then
+        '        Dim objSkin As Skin = DirectCast(sender, Skin)
+        '        Skin.AddPageMessage(objSkin, Me._Heading, Me.GetMessage(), Me._ModuleMessageType)
+        '        DnnContext.Current.SetVar("SkinDisplay" & Me.Name, True)
+        '    End If
+
+        'End Sub
     End Class
 End Namespace

@@ -24,6 +24,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Return Me.ObjectAction.Run(actionContext, actionContext)
         End Function
 

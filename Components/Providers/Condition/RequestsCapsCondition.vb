@@ -47,6 +47,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Public Overloads Overrides Function Match(ByVal context As PortalKeeperContext(Of RequestEvent), ByRef clue As Object, ByRef key As String) As Boolean
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
             For Each cap As RequestsCapInfo In Me._RequestsCaps
                 If Not cap.IsValid(context, clue, key) Then
                     Return True

@@ -17,7 +17,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Enum ControlStep
         OnInit
         CreateChildControls
+        'LoadPostData
         OnLoad
+        'RaisePostDataChangedEvent
         OnPreRender
         Render
         RenderChildren
@@ -75,6 +77,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     Public MustInherit Class DynamicControlAdapter
         Inherits ControlAdapter 'Base(Of T)
+        'Implements IPostBackDataHandler
+
 
         Public Const EventArgsVarName As String = "Eargs"
 
@@ -118,6 +122,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         End Sub
+
+        'Public Function LoadPostData(postDataKey As String, postCollection As NameValueCollection) As Boolean Implements IPostBackDataHandler.LoadPostData
+        '    Dim toReturn As Boolean
+        '    Try
+        '        Dim parameters As New SerializableDictionary(Of String, Object)
+        '        Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+        '                                                               MyBase.CreateChildControls()
+        '                                                           End Sub), New DynamicHandlerStep(ControlStep.LoadPostData))
+        '    Catch ex As Exception
+        '        ExceptionHelper.LogException(ex)
+        '    End Try
+        '    Return toReturn
+        'End Function
+
+        'Public Sub RaisePostDataChangedEvent() Implements IPostBackDataHandler.RaisePostDataChangedEvent
+        '    Try
+        '        Dim parameters As New SerializableDictionary(Of String, Object)
+        '        Me.ProcessStep(parameters, New ControlEventHandler(Sub()
+        '                                                               MyBase.CreateChildControls()
+        '                                                           End Sub), New DynamicHandlerStep(ControlStep.RaisePostDataChangedEvent))
+        '    Catch ex As Exception
+        '        ExceptionHelper.LogException(ex)
+        '    End Try
+        'End Sub
 
 
         Protected Overrides Sub OnLoad(e As EventArgs)
@@ -242,6 +270,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Next
         End Sub
 
+       
     End Class
 
 

@@ -25,6 +25,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overloads Overrides Function Run(actionContext As PortalKeeperContext(Of TEngineEvents), aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim newLookup As New SimpleContextLookup(actionContext)
             newLookup.Items(Me.ContextVarName) = actionContext
             Return Me._FleeExpression.Evaluate(actionContext, newLookup)

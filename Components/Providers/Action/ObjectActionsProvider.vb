@@ -36,6 +36,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overloads Overrides Function Run(actionContext As PortalKeeperContext(Of TEngineEvents), aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             'Return MyBase.Run(actionContext)
             Me._ObjectActions.Run(actionContext, actionContext)
             Return True

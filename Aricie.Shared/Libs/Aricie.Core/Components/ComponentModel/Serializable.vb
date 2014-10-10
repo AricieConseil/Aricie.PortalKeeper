@@ -83,7 +83,7 @@ Namespace ComponentModel
 
         Public Shared Function ToXmlString(item As Object, type As Type) As String
 
-            Return ReflectionHelper.Serialize(item, True).OuterXml
+            Return ReflectionHelper.Serialize(item, True).Beautify(True)
 
         End Function
 

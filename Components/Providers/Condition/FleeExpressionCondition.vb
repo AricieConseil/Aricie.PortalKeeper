@@ -32,6 +32,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
             Return Me._FleeExpression.Evaluate(context, context)
         End Function
 

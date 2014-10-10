@@ -41,7 +41,7 @@ Namespace Services.Flee
         <Browsable(False)> _
         Public ReadOnly Property HasConcreteType As Boolean
             Get
-                Return HasType AndAlso Not Me.DotNetType.GetDotNetType().IsAbstract
+                Return HasType AndAlso Not ReflectionHelper.IsStatic(Me.DotNetType.GetDotNetType())
             End Get
         End Property
 
@@ -197,7 +197,7 @@ Namespace Services.Flee
                             End If
                         Next
                         'End If
-                        Throw New Exception(String.Format("Property {0} with {2} parameters was not found in type {1}", _
+                        Throw New Exception(String.Format("Property {0} with {1} parameters was not found in type {2}", _
                                                           Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                     Case Flee.ObjectActionMode.CallMethod
                         Dim args As New List(Of Object)
@@ -241,7 +241,7 @@ Namespace Services.Flee
                         Next
                         'End If
                         If Not found Then
-                            Throw New Exception(String.Format("Method {0} with {2} parameters was not found in type {1}", _
+                            Throw New Exception(String.Format("Method {0} with {1} parameters was not found in type {2}", _
                                                               Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                         End If
                     Case Flee.ObjectActionMode.AddEventHandler

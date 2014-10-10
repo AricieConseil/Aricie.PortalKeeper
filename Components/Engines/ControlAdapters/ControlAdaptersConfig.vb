@@ -44,6 +44,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 End If
                             End SyncLock
                         End If
+                    Else
+                        If browser.Adapters.Contains(objTypeAdapter.Key.AssemblyQualifiedName) _
+                            AndAlso DirectCast(browser.Adapters(objTypeAdapter.Key.AssemblyQualifiedName), String) = objTypeAdapter.Value.ResolvedAdapterControlType.AssemblyQualifiedName Then
+                            browser.Adapters.Remove(objTypeAdapter.Key.AssemblyQualifiedName)
+                        End If
                     End If
                 Next
             End If

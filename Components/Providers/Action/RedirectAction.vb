@@ -55,6 +55,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             'actionContext.DnnContext.Response.Redirect(Me._Target.UrlPath, Me._EndResponse)
             Return Me._Target.Redirect(actionContext.DnnContext.HttpContext)
         End Function

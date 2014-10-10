@@ -11,62 +11,24 @@ Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-
-    <Serializable()> _
-    Public Class HttpSubHandlerSettings
-        Inherits HttpHandlerSettings
-
-        <Browsable(False)> _
-        Public Overrides ReadOnly Property Installed As Boolean
-            Get
-                Return True
-            End Get
-        End Property
-
-        Public Property RunMainHandler As Boolean
-
-        <ConditionalVisible("RunMainHandler", True, True)> _
-        Public Property InitParamsToSubHandler As Boolean = True
-
-        <Browsable(False)> _
-        Public Overrides Sub AddTestFiddle(pe As AriciePropertyEditorControl)
-            MyBase.AddTestFiddle(pe)
-        End Sub
-
-        <Browsable(False)> _
-        Public Overrides Sub Install(pe As AriciePropertyEditorControl)
-            MyBase.Install(pe)
-        End Sub
-
-        <Browsable(False)> _
-        Public Overrides Sub Uninstall(pe As AriciePropertyEditorControl)
-            MyBase.Uninstall(pe)
-        End Sub
-
-        <Browsable(False)> _
-        Public Overrides Sub Update(pe As AriciePropertyEditorControl)
-            MyBase.Update(pe)
-        End Sub
-
-    End Class
-
-
-
-    <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class HttpHandlerSettings
         Inherits HttpHandlerInfo
 
         <Browsable(False)> _
-        Public ReadOnly Property FriendlyName As String
+        Public Overrides ReadOnly Property FriendlyName As String
             Get
                 If HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler Then
-                    Return Me.DynamicHandler.Name
+                    Return String.Format("{1}{0}{2}{0}{3}{0}{4}", UIConstants.TITLE_SEPERATOR, Me.DynamicHandler.Name, Me.FriendlyPathsAndVerbs, _
+                                         IIf(Me.DynamicHandler.Enabled, "enabled", "disabled"), IIf(Me.IsInstalled, "registered", "unregistered"))
                 Else
-                    Return Me.Name
+                    Return MyBase.FriendlyName
                 End If
             End Get
         End Property
+
+
+
 
         <ExtendedCategory("MainHandler")> _
         Public Property HttpHandlerMode As HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler
@@ -102,7 +64,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-       
+
 
 
         '<CollectionEditor(False, True, False, True, 20, CollectionDisplayStyle.Accordion, True, 0, "Key")> _
@@ -147,6 +109,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
             End Select
         End Sub
+
+        '<Browsable(True)> _
+        'Public Overrides Sub Install(pe As AriciePropertyEditorControl)
+        '    MyBase.Install(pe)
+        'End Sub
+
+        '<Browsable(True)> _
+        'Public Overrides Sub Update(pe As AriciePropertyEditorControl)
+        '    MyBase.Update(pe)
+        'End Sub
+
 
         <ExtendedCategory("SubHandlers")> _
         <ActionButton(IconName.FloppyO, IconOptions.Normal)> _

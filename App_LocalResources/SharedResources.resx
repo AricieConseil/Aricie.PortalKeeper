@@ -5698,7 +5698,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Dynamic Adapter</value>
   </data>
   <data name="DynamicHandlerSettings_BaseHandlerMode.Help" xml:space="preserve">
-    <value>This indicates if the dynamic handler must be run before, after, the original handler, or if the original handler must be removed.</value>
+    <value>This indicates when the native handler should run before, after, the dynamic handler, or if the original handler must be removed (only available for overrides atm, but events shouldn't be too hard to support).</value>
   </data>
   <data name="DynamicHandlerSettings_BaseHandlerMode.Text" xml:space="preserve">
     <value>Base Handler Mode</value>
@@ -7081,5 +7081,44 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="TestFiddleAdded.Message" xml:space="preserve">
     <value>A test fiddle was added as a sub-handler to your handler, with a dedicated path. To test your sub-handler, look-up the corresponding sub-path to build the resulting url.</value>
+  </data>
+  <data name="ActionProvider`1_DebuggerBreak.Help" xml:space="preserve">
+    <value>Check to attach a debugger and break at the start of the action. This is useful if dnn event log does help with an issue.</value>
+  </data>
+  <data name="ActionProvider`1_DebuggerBreak.Text" xml:space="preserve">
+    <value>Break Debugger</value>
+  </data>
+  <data name="CacheableAction`1_PreCacheInsertActions.Help" xml:space="preserve">
+    <value>Enter a sequence of actions to be run before the result is inserted into the cache.</value>
+  </data>
+  <data name="CacheableAction`1_PreCacheInsertActions.Text" xml:space="preserve">
+    <value>Pre Insert Actions</value>
+  </data>
+  <data name="HttpHandlerInfo_AlternateRegistrations.Help" xml:space="preserve">
+    <value>You might want to declare several paths / verbs per handler. Add alternates here. Note that web.config file mandates that the name is unique.</value>
+  </data>
+  <data name="HttpHandlerInfo_AlternateRegistrations.Text" xml:space="preserve">
+    <value>Alternate Registrations</value>
+  </data>
+  <data name="RuleEngineSettings`1_InitialCondition.Help" xml:space="preserve">
+    <value>This is an optional initially condition to set the engine to run only in certain cases.</value>
+  </data>
+  <data name="RuleEngineSettings`1_InitialCondition.Text" xml:space="preserve">
+    <value>Initial Condition</value>
+  </data>
+  <data name="SimpleExpression`1_RemoveExpressionBuilder.Text" xml:space="preserve">
+    <value>Remove Expression Builder</value>
+  </data>
+  <data name="ActionProvider`1_DebuggerBreakEarly.Help" xml:space="preserve">
+    <value>By default, the debugger will break at the beginning of the specific provider code, at the discretion of the provider's developper. You can additionally choose to break earlier in the call to the base class Run.</value>
+  </data>
+  <data name="ActionProvider`1_DebuggerBreakEarly.Text" xml:space="preserve">
+    <value>Break Early</value>
+  </data>
+  <data name="ConditionProviderSettings`1_DebuggerBreak.Help" xml:space="preserve">
+    <value>Check to attach a debugger and break at the start of the condition. This is useful if dnn event log does help with an issue.</value>
+  </data>
+  <data name="ConditionProviderSettings`1_DebuggerBreak.Text" xml:space="preserve">
+    <value>Break Debugger</value>
   </data>
 </root>

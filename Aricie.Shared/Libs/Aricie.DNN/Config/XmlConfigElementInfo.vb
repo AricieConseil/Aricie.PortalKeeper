@@ -9,7 +9,8 @@ Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Configuration
 
-  
+
+    
     ''' <summary>
     ''' This is the base element for an Xml based installable component
     ''' </summary>
