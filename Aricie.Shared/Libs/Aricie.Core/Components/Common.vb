@@ -290,12 +290,18 @@ Public Module Common
 
     <System.Runtime.CompilerServices.Extension> _
     Public Function Beautify(doc As XmlDocument) As String
+        Return doc.Beautify(False)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function Beautify(doc As XmlDocument, omitDeclaration As Boolean) As String
         Dim sb As New StringBuilder()
         Dim settings As New XmlWriterSettings()
         settings.Indent = True
         settings.IndentChars = "  "
         settings.NewLineChars = vbCr & vbLf
         settings.NewLineHandling = NewLineHandling.Replace
+        settings.OmitXmlDeclaration = omitDeclaration
         Using writer As XmlWriter = XmlWriter.Create(sb, settings)
             doc.Save(writer)
         End Using

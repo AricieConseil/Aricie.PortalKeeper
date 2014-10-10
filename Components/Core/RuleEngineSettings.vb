@@ -79,6 +79,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1)> _
         Public Overridable Property Actions As New KeeperAction(Of TEngineEvents)
 
+
+        <ExtendedCategory("Rules")> _
+        <ConditionalVisible("Mode", False, True, RuleEngineMode.Actions)> _
+        <SortOrder(1)>
+        Public Property InitialCondition() As New KeeperCondition(Of TEngineEvents)
+           
+
         '<Editor(GetType(ListEditControl), GetType(EditControl))> _
         '<InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
         '<CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _

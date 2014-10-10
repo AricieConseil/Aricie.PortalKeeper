@@ -50,6 +50,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent)) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim ps As New PortalSecurity
             If actionContext.DnnContext.IsAuthenticated Then
                 ps.SignOut()

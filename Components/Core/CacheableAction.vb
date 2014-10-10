@@ -12,8 +12,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class CacheableAction(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
-        Private _CacheDuration As New STimeSpan(TimeSpan.FromSeconds(10))
-        Private _CacheKeyFormat As String = "{0}"
 
         <SortOrder(410)> _
         <ExtendedCategory("Specifics")>
@@ -28,36 +26,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Specifics")> _
         <ConditionalVisible("EnableCache", False, True, True)> _
         <TrialLimited(TrialPropertyMode.Disable)>
-        Public Property CacheKeyFormat() As String
-            Get
-                Return _CacheKeyFormat
-            End Get
-            Set(ByVal value As String)
-                _CacheKeyFormat = value
-            End Set
-        End Property
+        Public Property CacheKeyFormat() As String  = "{0}"
 
         <SortOrder(412)> _
         <ExtendedCategory("Specifics")> _
-         <ConditionalVisible("EnableCache", False, True, True)> _
+         <ConditionalVisible("EnableCache", False, True)> _
         Public Property ProcessTokens As Boolean
 
 
         <SortOrder(413)> _
-        <ConditionalVisible("EnableCache", False, True, True), ExtendedCategory("Specifics")>
+        <ConditionalVisible("EnableCache", False, True)> _
+        <ExtendedCategory("Specifics")>
         Public Property UseSingleton As Boolean
 
         <SortOrder(414)> _
         <ExtendedCategory("Specifics")> _
-        <ConditionalVisible("EnableCache", False, True, True)>
-        Public Property CacheDuration() As STimeSpan
-            Get
-                Return _CacheDuration
-            End Get
-            Set(ByVal value As STimeSpan)
-                _CacheDuration = value
-            End Set
-        End Property
+        <ConditionalVisible("EnableCache", False, True)>
+        <ConditionalVisible("UseSingleton", True, True)>
+        Public Property CacheDuration() As New STimeSpan(TimeSpan.FromSeconds(10))
+         
+        <SortOrder(415)> _
+        <ExtendedCategory("Specifics")> _
+        <ConditionalVisible("EnableCache", False, True)>
+        Public Property PreCacheInsertActions As New KeeperAction(Of TEngineEvents)
+
 
         '<ExtendedCategory("Specifics")> _
         '    <ConditionalVisible("EnableCache", False, True, True)> _
@@ -124,7 +116,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     returnResult = CacheHelper.GetCache(key)
                 End If
             End If
+            Dim shouldInsertInCache As Boolean
             If returnResult Is Nothing Then
+                If Me.EnableCache Then
+                    shouldInsertInCache = True
+                End If
                 If UseSemaphore AndAlso Not SemaphoreAppliesToCache Then
                     Dim owned As Boolean
                     'Dim semaphoreId As String = "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture)
@@ -139,7 +135,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             'objMutex.SetAccessControl(securitySettings)
                             If (Me.SynchronisationTimeout.Value <> TimeSpan.Zero AndAlso objSemaphore.Wait(Me.SynchronisationTimeout.Value)) OrElse (Me.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objSemaphore.Wait()) Then
                                 owned = True
-                                returnResult = BuildResultAndCache(actionContext, key, aSync)
+                                returnResult = BuildResult(actionContext, aSync)
                             Else
                                 Return False
                             End If
@@ -155,32 +151,39 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End Try
                     End Using
                 Else
-                    returnResult = BuildResultAndCache(actionContext, key, aSync)
+                    returnResult = BuildResult(actionContext, aSync)
                 End If
             End If
-            Return Me.RunFromObject(actionContext, aSync, returnResult)
+            Dim toReturn As Boolean = Me.RunFromObject(actionContext, aSync, returnResult)
+            If shouldInsertInCache AndAlso toReturn AndAlso returnResult IsNot Nothing Then
+                If _PreCacheInsertActions.Instances.Count > 0 Then
+                    _PreCacheInsertActions.Run(actionContext)
+                End If
+                InsertInCache(key, returnResult)
+            End If
+            Return toReturn
         End Function
 
-        Private Function BuildResultAndCache(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), key As String, ByVal async As Boolean) As Object
-            Dim returnResult As Object = Me.BuildResult(actionContext, async)
+        'Private Function BuildResultAndCache(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), key As String, ByVal async As Boolean) As Object
+        '    Dim returnResult As Object = Me.BuildResult(actionContext, async)
+
+        '    Return returnResult
+        'End Function
+
+
+
+
+        Private Sub InsertInCache(key As String, returnResult As Object)
             If Me.EnableCache Then
                 If Me.UseSingleton Then
                     SyncLock _Singletons
-                        Dim tempResult As Object = Nothing
-                        If Not _Singletons.TryGetValue(key, tempResult) Then
-                            _Singletons(key) = returnResult
-                        Else
-                            returnResult = tempResult
-                        End If
+                        _Singletons(key) = returnResult
                     End SyncLock
                 Else
                     SetCacheDependant(key, returnResult, Me._CacheDuration.Value)
                 End If
             End If
-            Return returnResult
-        End Function
-
-
+        End Sub
 
         Public MustOverride Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
 

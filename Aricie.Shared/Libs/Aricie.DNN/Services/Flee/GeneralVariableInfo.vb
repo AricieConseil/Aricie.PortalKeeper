@@ -40,7 +40,7 @@ Namespace Services.Flee
         End Property
 
         <ConditionalVisible("HasType", False, True)> _
-        Public Property VariableMode As VariableMode = VariableMode.Instance
+        Public Property VariableMode As VariableMode = VariableMode.Expression
 
         <ExtendedCategory("", "Evaluation")> _
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
@@ -241,8 +241,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             Dim toReturn As Object
-            'Select Case Me.VariableMode
-            '    Case Flee.VariableMode.Constructor, Flee.VariableMode.Expression, Flee.VariableMode.Delegate
+          
             If Me._Instance IsNot Nothing Then
                 If Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode <> Flee.InstanceMode.Off Then
                     If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
@@ -257,9 +256,7 @@ Namespace Services.Flee
             If Me._InstanceMode = InstanceMode.InContextEval Then
                 Me._Instance = toReturn
             End If
-            'Case Else
-            'toReturn = MyBase.Evaluate(owner, globalVars)
-            'End Select
+           
             If _UseClone Then
                 Return ReflectionHelper.CloneObject(toReturn)
             End If

@@ -25,6 +25,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property TimeOut As New STimeSpan(TimeSpan.FromMinutes(1))
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim toReturn As Object = Nothing
 
             Dim objProcessStart As ProcessStartInfo = Me.ProcessStart.GetProcessStartInfo(actionContext, actionContext)

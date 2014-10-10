@@ -50,6 +50,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim toReturn As SerializableDictionary(Of String, Object) = Me._Variables.EvaluateVariables(actionContext, actionContext)
             If Me._GetFromHistory Then
                 Dim newValue As Object = Nothing

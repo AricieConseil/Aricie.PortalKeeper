@@ -104,6 +104,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Public Overloads Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents), ByRef clue As Object, ByRef key As String) As Boolean
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
             clue = True
             Return MatchInternal(context, key)
         End Function

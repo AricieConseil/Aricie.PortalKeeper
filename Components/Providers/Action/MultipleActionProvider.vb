@@ -47,6 +47,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Select Case Me.MultipleActionMode
                 Case MultipleActionMode.Sequence
                     Return Me._KeeperAction.Run(actionContext)

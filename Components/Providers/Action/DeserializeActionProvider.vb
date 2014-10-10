@@ -78,6 +78,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property DefaultToNewEntity As Boolean
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim toReturn As Object = Nothing
             Dim serializedValue As String = Me._InputExpression.Evaluate(actionContext, actionContext)
             If String.IsNullOrEmpty(serializedValue) AndAlso Me.DefaultToNewEntity Then

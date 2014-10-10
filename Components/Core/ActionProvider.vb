@@ -110,6 +110,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property DisablePerformanceLogger() As Boolean
 
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1000)> _
+        Public Property DebuggerBreak As Boolean
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("DebuggerBreak", False, True)> _
+        <SortOrder(1000)> _
+        Public Property DebuggerBreakEarly As Boolean
+
+
 
 
 
@@ -155,6 +165,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Function RunAndSleepUnlocked(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+            If Me.DebuggerBreak AndAlso Me.DebuggerBreakEarly Then
+                CallDebuggerBreak()
+            End If
             If Me.DisablePerformanceLogger Then
                 PerformanceLogger.Instance.DisableLog(actionContext.FlowId)
             End If
@@ -181,7 +194,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
-
+        
 
 
         Public Overridable Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean

@@ -391,6 +391,12 @@ Namespace Services
             Return toReturn
         End Function
 
+
+        Public Shared Function IsStatic(ByVal objType As Type) As Boolean
+            Return objType.IsAbstract AndAlso objType.IsSealed
+        End Function
+
+
         Public Shared Function HasDefaultConstructor(ByVal obType As Type) As Boolean
             If obType.IsValueType Then
                 Return True
@@ -1381,7 +1387,7 @@ Namespace Services
                         sigBuilder.Append("out ")
                     End If
                     If Not callable Then
-                        sigBuilder.Append(TypeName(param.ParameterType))
+                        sigBuilder.Append(GetSimpleTypeName(param.ParameterType))
                         sigBuilder.Append(" "c)
                     End If
                     sigBuilder.Append(param.Name)

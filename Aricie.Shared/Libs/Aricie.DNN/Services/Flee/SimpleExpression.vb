@@ -127,7 +127,7 @@ Namespace Services.Flee
         <ExtendedCategory("", "Help")> _
         Public Property ExpressionBuilder As FleeExpressionBuilder
 
-        '<ConditionalVisible("HasExpressionBuilder", True, True)> _
+        <ConditionalVisible("HasExpressionBuilder", True, True)> _
         <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Magic, IconOptions.Normal)> _
         Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
@@ -159,6 +159,15 @@ Namespace Services.Flee
 
             pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             'pe.DisplayMessage(Me.ExpressionBuilder.GetType.AssemblyQualifiedName, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+            pe.ItemChanged = True
+        End Sub
+
+        <ConditionalVisible("HasExpressionBuilder", False, True)> _
+        <ExtendedCategory("", "Help")> _
+        <ActionButton(IconName.Undo, IconOptions.Normal)> _
+        Public Sub RemoveExpressionBuilder(ByVal pe As AriciePropertyEditorControl)
+
+            Me.ExpressionBuilder = Nothing
             pe.ItemChanged = True
         End Sub
 

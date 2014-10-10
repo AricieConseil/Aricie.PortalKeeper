@@ -71,7 +71,7 @@ Namespace ComponentModel
         Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of TConfig) Implements ISelector(Of TConfig).GetSelectorG
             Select Case propertyName
                 Case "Instances"
-                    Return New List(Of TConfig)(Me.GetAvailableProviders().Values)
+                    Return Me.GetAvailableProviders().Values.OrderBy(Function(objConfig As TConfig) ReflectionHelper.GetFriendlyName(objConfig)).ToList()
                 Case Else
                     Return Nothing
             End Select

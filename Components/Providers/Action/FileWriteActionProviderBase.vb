@@ -25,7 +25,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
-
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim mapPath As String = Me.GetFileMapPath(actionContext)
             Try
                 RWLock.AcquireWriterLock(LockTimeSpan)

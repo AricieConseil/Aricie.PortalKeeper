@@ -266,11 +266,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     matchedRule.RunActions(Me)
                 Next
             Else
-                configRules.Actions.Run(Me)
+                If configRules.InitialCondition.Instances.Count = 0 OrElse configRules.InitialCondition.Match(Me) Then
+                    configRules.Actions.Run(Me)
+                End If
             End If
 
             Me.LogEndEventStep(endSequence)
-           
+
         End Sub
 
 

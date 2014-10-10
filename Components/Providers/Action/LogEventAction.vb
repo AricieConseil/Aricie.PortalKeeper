@@ -50,6 +50,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
+            If Me.DebuggerBreak Then
+                Me.CallDebuggerBreak()
+            End If
             Dim objLog As New LogInfo()
             objLog.LogTypeKey = Me._LogTypeKey
             objLog.LogPortalID = actionContext.DnnContext.Portal.PortalId

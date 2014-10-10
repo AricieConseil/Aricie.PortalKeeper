@@ -71,6 +71,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
+            If Me.DebuggerBreak Then
+                CallDebuggerBreak()
+            End If
             Dim objUser As UserInfo = context.DnnContext.User
             context.Items("ClientUser") = objUser
             If Me._MatchSuperUsers AndAlso objUser.IsSuperUser Then
