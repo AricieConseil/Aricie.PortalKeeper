@@ -493,25 +493,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
 
-        Private Function TestReddit() As String
-            Dim objReddit As New RedditSharp.Reddit(RedditSharp.WebAgent.RateLimitMode.Burst)
-            'objReddit.User = objReddit.LogIn("Jessynoo", "cetia540", True)
-            Dim toreturn As String = ""
-            Dim botName As String = "Alfred_Centworth"
-            objReddit.User = objReddit.LogIn(botName, "cetia540", True)
+        'Private Function TestReddit() As String
+        '    Dim objReddit As New RedditSharp.Reddit(RedditSharp.WebAgent.RateLimitMode.Burst)
+        '    'objReddit.User = objReddit.LogIn("Jessynoo", "cetia540", True)
+        '    Dim toreturn As String = ""
+        '    Dim botName As String = "Alfred_Centworth"
+        '    objReddit.User = objReddit.LogIn(botName, "cetia540", True)
 
 
-            Dim messages As IEnumerable(Of Comment) = objReddit.GetUser("Jessynoo").Comments.Take(5)
-            'Dim messages As IEnumerable(Of Comment) = objReddit.User.Inbox()
-            For Each objMessage In messages
-                Dim answered As Boolean = objMessage.Comments.Any(Function(tmpMessage) tmpMessage.Author.AuthorName = botName)
-                If Not answered Then
-                    toreturn += HttpUtility.HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
-                End If
-                'objMessage.Reply("")
-            Next
-            Return toreturn
-        End Function
+        '    Dim messages As IEnumerable(Of Comment) = objReddit.GetUser("Jessynoo").Comments.Take(5)
+        '    'Dim messages As IEnumerable(Of Comment) = objReddit.User.Inbox()
+        '    For Each objMessage In messages
+        '        Dim answered As Boolean = objMessage.Comments.Any(Function(tmpMessage) tmpMessage.Author.AuthorName = botName)
+        '        If Not answered Then
+        '            toreturn += HttpUtility.HtmlEncode(ReflectionHelper.Serialize(messages).Beautify())
+        '        End If
+        '        'objMessage.Reply("")
+        '    Next
+        '    Return toreturn
+        'End Function
 
         Private Sub RegisterDebugSurrogates()
             ReflectionHelper.RegisterDebugSurrogate(AddressOf Me.SurrogateCallback)
