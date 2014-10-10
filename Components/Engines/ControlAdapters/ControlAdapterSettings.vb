@@ -183,7 +183,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         tempList.Add(objDynamicHandler)
                     End If
                 Next
-                tempList.Sort()
                 Me.DynamicHandlers = tempList
             End SyncLock
         End Sub
