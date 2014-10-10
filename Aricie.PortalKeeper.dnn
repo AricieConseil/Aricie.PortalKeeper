@@ -64,51 +64,9 @@
           <name>FileHelpers.dll</name>
         </file>
         <file>
-          <name>SharpMap.dll</name>
-        </file>
-        <file>
-          <name>SharpMap.Web.dll</name>
-        </file>
-        <file>
-          <name>SharpMap.Data.dll</name>
-        </file>
-        <file>
-          <name>SharpMap.Data.Providers.Kml.dll</name>
-        </file>
-        <file>
-          <name>SharpKml.dll</name>
-        </file>
-        <file>
-          <name>SharpKml.Kmz.dll</name>
-        </file>
-        <file>
-          <name>GeoAPI.dll</name>
-        </file>
-        <file>
-          <name>GeoAPI.Extensions.dll</name>
-        </file>
-        <file>
-          <name>NetTopologySuite.dll</name>
-        </file>
-        <file>
           <name>Common.Logging.dll</name>
         </file>
         <file>
-          <name>PowerCollections.dll</name>
-        </file>
-        <file>
-          <name>ProjNet.dll</name>
-        </file>
-        <file>
-          <name>BruTile.dll</name>
-        </file>
-        <file>
-          <name>BruTile.Serialization.dll</name>
-        </file>
-        <file>
-          <name>BruTile.Desktop.dll</name>
-        </file>
-      <file>
           <name>MonoTorrent.dll</name>
         </file>
       </files>
