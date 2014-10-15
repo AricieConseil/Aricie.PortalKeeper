@@ -91,31 +91,35 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub CreateChildControls()
-            Dim multiSelecType As Type = ReflectionHelper.CreateType(MultiSelectorType)
-            _multiSelector = DirectCast(ReflectionHelper.CreateObject(MultiSelectorType), MultiSelectorControlBase)
-            _multiSelector.EnableViewState = True
-            _multiSelector.ID = "ckl" & _multiSelector.GetType.Name
 
-            Controls.Add(_multiSelector)
+            Try
+                _multiSelector = DirectCast(ReflectionHelper.CreateObject(MultiSelectorType), MultiSelectorControlBase)
+                _multiSelector.EnableViewState = True
+                _multiSelector.ID = "ckl" & _multiSelector.GetType.Name
 
-            _multiSelector.DataTextField = TextField
-            _multiSelector.DataValueField = ValueField
+                Controls.Add(_multiSelector)
 
-            If ExclusiveScopeControlId <> String.Empty Then
-                _multiSelector.ExclusiveSelector = ExclusiveSelector
-                _multiSelector.InvertExclusion = InvertExclusion
-                _multiSelector.ExclusiveScopeControlId = ExclusiveScopeControlId
-            End If
+                _multiSelector.DataTextField = TextField
+                _multiSelector.DataValueField = ValueField
 
-            _multiSelector.DataBind()
+                If ExclusiveScopeControlId <> String.Empty Then
+                    _multiSelector.ExclusiveSelector = ExclusiveSelector
+                    _multiSelector.InvertExclusion = InvertExclusion
+                    _multiSelector.ExclusiveScopeControlId = ExclusiveScopeControlId
+                End If
 
-            _multiSelector.SelectedValues = DirectCast(Value, List(Of String))
+                _multiSelector.DataBind()
 
-            AddHandler _multiSelector.SelectedItemsChanged, AddressOf multiSelector_SelectedItemsChanged
+                _multiSelector.SelectedValues = DirectCast(Value, List(Of String))
 
-            _multiSelector.Enabled = (Me.EditMode = PropertyEditorMode.Edit)
+                AddHandler _multiSelector.SelectedItemsChanged, AddressOf multiSelector_SelectedItemsChanged
 
-            MyBase.CreateChildControls()
+                _multiSelector.Enabled = (Me.EditMode = PropertyEditorMode.Edit)
+
+            Finally
+                Me.ChildControlsCreated = True
+            End Try
+
         End Sub
 
         Private Sub multiSelector_SelectedItemsChanged(ByVal sender As Object, ByVal e As EventArgs)

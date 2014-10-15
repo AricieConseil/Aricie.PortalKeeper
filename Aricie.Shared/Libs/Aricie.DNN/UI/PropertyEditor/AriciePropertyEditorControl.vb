@@ -430,7 +430,7 @@ Namespace UI.WebControls
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             Try
 
-                If ItemChanged Or Me.IsDirty Then
+                If Me._ExceptionsToProcess.Count = 0 AndAlso (ItemChanged OrElse Me.IsDirty) Then
                     'quelle utilité ?
                     'Jesse: nécessaire pour prendre en compte les modifications postérieures aux event handlers
                     DataBind()
@@ -540,26 +540,28 @@ Namespace UI.WebControls
 
         Public Overrides Sub DataBind()
 
-            'Try
+
             'Invoke OnDataBinding so DataBinding Event is raised
             MyBase.OnDataBinding(EventArgs.Empty)
 
             'Clear Existing Controls
             Controls.Clear()
-
+            Me.ClearChildViewState()
 
             'Start Tracking ViewState
             TrackViewState()
+            Try
+                'Create the Editor
+                CreateEditor()
 
-            'Create the Editor
-            CreateEditor()
 
 
-            'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
-            ChildControlsCreated = True
-            'Catch ex As Exception
-            '    Me.ProcessException(ex)
-            'End Try
+            Catch ex As Exception
+                Me.ProcessException(ex)
+            Finally
+                'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
+                ChildControlsCreated = True
+            End Try
         End Sub
 
 #End Region
@@ -654,42 +656,39 @@ Namespace UI.WebControls
         End Function
 
         Protected Overrides Sub CreateEditor()
-            Try
-                Me.CssClass = String.Format("{0} dnnForm", Me.CssClass)
-                'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
-                If Not Me.AutoGenerate Then
-                    Dim mainC As New HtmlControls.HtmlGenericControl("div")
-                    mainC.ID = "main"
-                    'mainC.EnableViewState = False
-                    Me.AddCtFields(mainC)
-                    Me.Controls.Add(mainC)
-                Else
-                    Me.Fields.Clear()
-                    Me.LoadJQuery()
+            Me.CssClass = String.Format("{0} dnnForm", Me.CssClass)
+            'Me.CssClass &= " aricie_pe_depth" ' & PropertyDepth
+            If Not Me.AutoGenerate Then
+                Dim mainC As New HtmlControls.HtmlGenericControl("div")
+                mainC.ID = "main"
+                'mainC.EnableViewState = False
+                Me.AddCtFields(mainC)
+                Me.Controls.Add(mainC)
+            Else
+                Me.Fields.Clear()
+                Me.LoadJQuery()
 
-                    If (Page IsNot Nothing) AndAlso (Page.Header IsNot Nothing) AndAlso NukeHelper.DnnVersion.Major > 6 OrElse NukeHelper.DnnVersion.Major < 6 Then
-                        Dim cssId As String = "JqueryUiCss"
+                If (Page IsNot Nothing) AndAlso (Page.Header IsNot Nothing) AndAlso NukeHelper.DnnVersion.Major > 6 OrElse NukeHelper.DnnVersion.Major < 6 Then
+                    Dim cssId As String = "JqueryUiCss"
 
-                        If Page.Header.FindControl(cssId) Is Nothing Then
-                            Dim lnk As New HtmlControls.HtmlLink
-                            lnk.ID = cssId
-                            lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
-                            lnk.Attributes.Add("type", "text/css")
-                            lnk.Attributes.Add("rel", "stylesheet")
-                            Page.Header.Controls.Add(lnk)
-                        End If
-
+                    If Page.Header.FindControl(cssId) Is Nothing Then
+                        Dim lnk As New HtmlControls.HtmlLink
+                        lnk.ID = cssId
+                        lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
+                        lnk.Attributes.Add("type", "text/css")
+                        lnk.Attributes.Add("rel", "stylesheet")
+                        Page.Header.Controls.Add(lnk)
                     End If
-                    CreateHeader()
-                    ProcessSubPath()
-                    DisplayHierarchy()
 
                 End If
+                CreateHeader()
+                ProcessSubPath()
+                DisplayHierarchy()
 
-                Validate()
-            Catch ex As Exception
-                Me.ProcessException(ex)
-            End Try
+            End If
+
+            Validate()
+           
         End Sub
 
 

@@ -72,7 +72,32 @@ Public Module Common
         Return (From objEnum In [Enum].GetValues(GetType(T)) Select DirectCast(objEnum, T)).ToList()
     End Function
 
-   
+    Public Function GetNextCyclicFlag(Of T As {IConvertible})(current As T, availableValues As T) As T
+        Dim toReturn As T
+        Dim foundNext As Boolean = True
+        Dim foundBefore As Boolean = False
+        Dim firstAvailable As T
+        For Each flagOption As T In Common.GetEnumMembers(Of T)()
+            If Convert.ToInt32(flagOption) <> 0 Then
+                If Convert.ToInt32(current) < Convert.ToInt32(flagOption) Then
+                    If ((Convert.ToInt32(availableValues) And Convert.ToInt32(flagOption)) = Convert.ToInt32(flagOption)) Then
+                        foundNext = True
+                        toReturn = flagOption
+                        Exit For
+                    End If
+                ElseIf Not foundBefore Then
+                    If ((Convert.ToInt32(availableValues) And Convert.ToInt32(flagOption)) = Convert.ToInt32(flagOption)) Then
+                        firstAvailable = flagOption
+                        foundBefore = True
+                    End If
+                End If
+            End If
+        Next
+        If Not foundNext Then
+            toReturn = firstAvailable
+        End If
+        Return toReturn
+    End Function
 
 #End Region
 

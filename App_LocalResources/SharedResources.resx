@@ -1797,10 +1797,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="BotInfo`1_History.Header" xml:space="preserve">
     <value>History</value>
   </data>
-  <data name="BotInfo`1_Schedule.Help" xml:space="preserve">
-    <value>Enter the period to wait between each run</value>
+  <data name="BotInfo`1_BotSchedule.Help" xml:space="preserve">
+    <value>In this section, you can define a schedule for your bot. There are 2 modes. &lt;ul&gt;&lt;li&gt;Period will let you enter a time span.&lt;/li&gt;&lt;li&gt;Fixed times will let you choose fixed hours and date events&lt;/li&gt;&lt;/ul&gt;</value>
   </data>
-  <data name="BotInfo`1_Schedule.Text" xml:space="preserve">
+  <data name="BotInfo`1_BotSchedule.Text" xml:space="preserve">
     <value>Schedule</value>
   </data>
   <data name="BotInfo`1_RetainHistoryNb.Help" xml:space="preserve">
@@ -6896,16 +6896,16 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="MemberDrillDown_SelectSubMember.Text" xml:space="preserve">
     <value>Select Sub member</value>
   </data>
-  <data name="OperatorExpression_SelectedOperator.Help" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SelectedOperator.Help" xml:space="preserve">
     <value>Here is a list of binary operators available to build compound expressions. Check the &lt;a href="https://flee.codeplex.com/wikipage?title=LanguageReference"&gt; documentation &lt;/a&gt; for more details on how to use them.</value>
   </data>
-  <data name="OperatorExpression_SelectedOperator.Text" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SelectedOperator.Text" xml:space="preserve">
     <value>Binary Operator</value>
   </data>
-  <data name="OperatorExpression_SubExpression.Help" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SubExpression.Help" xml:space="preserve">
     <value>This is the sub expression to be inserted on the right of the selected binary operator. You should make sure that the resulting type is compatible with the operator used.</value>
   </data>
-  <data name="OperatorExpression_SubExpression.Text" xml:space="preserve">
+  <data name="FleeExpressionBuilder_SubExpression.Text" xml:space="preserve">
     <value>Right Expression</value>
   </data>
   <data name="FleeExpressionBuilder_Features.Help" xml:space="preserve">
@@ -7120,5 +7120,254 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="ConditionProviderSettings`1_DebuggerBreak.Text" xml:space="preserve">
     <value>Break Debugger</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NewOwnerType.Help" xml:space="preserve">
+    <value>In order to use an expression builder with the new expression owner, you must indicate what the expression owner's type is. The expression will work without that information though.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NewOwnerType.Text" xml:space="preserve">
+    <value>New Owner Type (optional)</value>
+  </data>
+  <data name="SelectedOperator.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a binary operator --&gt;</value>
+  </data>
+  <data name="April.Text" xml:space="preserve">
+    <value>April</value>
+  </data>
+  <data name="August.Text" xml:space="preserve">
+    <value>August</value>
+  </data>
+  <data name="Combined.Text" xml:space="preserve">
+    <value>Period + Fixed times</value>
+  </data>
+  <data name="December.Text" xml:space="preserve">
+    <value>December</value>
+  </data>
+  <data name="EightAM.Text" xml:space="preserve">
+    <value>8 am</value>
+  </data>
+  <data name="EightPM.Text" xml:space="preserve">
+    <value>8 pm</value>
+  </data>
+  <data name="ElevenAM.Text" xml:space="preserve">
+    <value>11 am</value>
+  </data>
+  <data name="ElevenPM.Text" xml:space="preserve">
+    <value>11 pm</value>
+  </data>
+  <data name="Every.Text" xml:space="preserve">
+    <value>Every</value>
+  </data>
+  <data name="February.Text" xml:space="preserve">
+    <value>February</value>
+  </data>
+  <data name="Fifth.Text" xml:space="preserve">
+    <value>Fifth</value>
+  </data>
+  <data name="FiveAM.Text" xml:space="preserve">
+    <value>5 am</value>
+  </data>
+  <data name="FivePM.Text" xml:space="preserve">
+    <value>5 pm</value>
+  </data>
+  <data name="FixedTimes.Text" xml:space="preserve">
+    <value>Fixed Times</value>
+  </data>
+  <data name="FourAM.Text" xml:space="preserve">
+    <value>4 am</value>
+  </data>
+  <data name="FourPM.Text" xml:space="preserve">
+    <value>4 pm</value>
+  </data>
+  <data name="Fourth.Text" xml:space="preserve">
+    <value>Fourth</value>
+  </data>
+  <data name="Friday.Text" xml:space="preserve">
+    <value>Friday</value>
+  </data>
+  <data name="January.Text" xml:space="preserve">
+    <value>January</value>
+  </data>
+  <data name="July.Text" xml:space="preserve">
+    <value>July</value>
+  </data>
+  <data name="June.Text" xml:space="preserve">
+    <value>June</value>
+  </data>
+  <data name="March.Text" xml:space="preserve">
+    <value>March</value>
+  </data>
+  <data name="May.Text" xml:space="preserve">
+    <value>May</value>
+  </data>
+  <data name="Midday.Text" xml:space="preserve">
+    <value>Midday</value>
+  </data>
+  <data name="Midnight.Text" xml:space="preserve">
+    <value>Midnight</value>
+  </data>
+  <data name="Monday.Text" xml:space="preserve">
+    <value>Monday</value>
+  </data>
+  <data name="NineAM.Text" xml:space="preserve">
+    <value>9 am</value>
+  </data>
+  <data name="NinePM.Text" xml:space="preserve">
+    <value>9 pm</value>
+  </data>
+  <data name="November.Text" xml:space="preserve">
+    <value>November</value>
+  </data>
+  <data name="October.Text" xml:space="preserve">
+    <value>October</value>
+  </data>
+  <data name="Once.Text" xml:space="preserve">
+    <value>Once</value>
+  </data>
+  <data name="OneAM.Text" xml:space="preserve">
+    <value>1 am</value>
+  </data>
+  <data name="OnePM.Text" xml:space="preserve">
+    <value>1 pm</value>
+  </data>
+  <data name="Period.Text" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="Saturday.Text" xml:space="preserve">
+    <value>Saturday</value>
+  </data>
+  <data name="ScheduleInfo_DayMode.Help" xml:space="preserve">
+    <value>There are 3 day modes available:&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Every&lt;/strong&gt; means the bot will run every day &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Once&lt;/strong&gt; means the bot will run one one day of a week at the first opportunity, without any retargeting &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Specifics&lt;/strong&gt;means you get to choose the scheduled week days&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ScheduleInfo_DayMode.Text" xml:space="preserve">
+    <value>Day Mode</value>
+  </data>
+  <data name="ScheduleInfo_FormattedValue.Help" xml:space="preserve">
+    <value>This is a summary of your current schedule. Note that you can see it abreviated in the Bot header link for concision.</value>
+  </data>
+  <data name="ScheduleInfo_FormattedValue.Text" xml:space="preserve">
+    <value>Formatted Value</value>
+  </data>
+  <data name="ScheduleInfo_FormattedValueShort.Help" xml:space="preserve">
+    <value>This is the short version that will be used as a shortcut in other place.</value>
+  </data>
+  <data name="ScheduleInfo_FormattedValueShort.Text" xml:space="preserve">
+    <value>Formatted Value (Short)</value>
+  </data>
+  <data name="ScheduleInfo_HourMode.Help" xml:space="preserve">
+    <value>There are 3 hours modes available:&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Every&lt;/strong&gt; means the bot will run every hour &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Once&lt;/strong&gt; means the bot will run once a day at the first opportunity, and retarget to the next day midnight. &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Specifics&lt;/strong&gt;means you get to choose the scheduled hours&lt;/li&gt;&lt;/ul&gt; </value>
+  </data>
+  <data name="ScheduleInfo_HourMode.Text" xml:space="preserve">
+    <value>Hour Mode</value>
+  </data>
+  <data name="ScheduleInfo_MonthMode.Help" xml:space="preserve">
+    <value>There are 3 Month modes available:&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Every&lt;/strong&gt; means the bot will run every month&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Once&lt;/strong&gt; means the bot will run on one month of the year at the first opportunity,  retargeting to next years's january.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Specifics&lt;/strong&gt;means you get to choose the scheduled month&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ScheduleInfo_MonthMode.Text" xml:space="preserve">
+    <value>Month Mode</value>
+  </data>
+  <data name="ScheduleInfo_Period.Help" xml:space="preserve">
+    <value>This is the target period between 2 runs of your bot.</value>
+  </data>
+  <data name="ScheduleInfo_Period.Text" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="ScheduleInfo_ScheduleType.Help" xml:space="preserve">
+    <value>There are 2 modes. &lt;ul&gt;&lt;li&gt;&lt;strong&gt;Period&lt;/strong&gt; will let you enter a time span.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Fixed times&lt;/strong&gt; will let you choose fixed hours and date events&lt;/li&gt;&lt;strong&gt;Combined&lt;/strong&gt;&lt;/li&gt; will run the bot on the periodic schedule within the fixed slots configured. This is meaningful with quite short periods&lt;/ul&gt;</value>
+  </data>
+  <data name="ScheduleInfo_ScheduleType.Text" xml:space="preserve">
+    <value>Schedule Type</value>
+  </data>
+  <data name="ScheduleInfo_SpecificDays.Help" xml:space="preserve">
+    <value>Choose here the specific hours when you want your bot to run.</value>
+  </data>
+  <data name="ScheduleInfo_SpecificDays.Text" xml:space="preserve">
+    <value>Specific Days</value>
+  </data>
+  <data name="ScheduleInfo_SpecificHours.Help" xml:space="preserve">
+    <value>Choose here the specific hours when you want your bot to run.</value>
+  </data>
+  <data name="ScheduleInfo_SpecificHours.Text" xml:space="preserve">
+    <value>Specific Hours</value>
+  </data>
+  <data name="ScheduleInfo_SpecificMonths.Help" xml:space="preserve">
+    <value>Choose here the specific months when you want your bot to run.</value>
+  </data>
+  <data name="ScheduleInfo_SpecificMonths.Text" xml:space="preserve">
+    <value>Specific Months</value>
+  </data>
+  <data name="ScheduleInfo_SpecificWeeks.Help" xml:space="preserve">
+    <value>Choose here the specific weeks of the month when you want your bot to run.</value>
+  </data>
+  <data name="ScheduleInfo_SpecificWeeks.Text" xml:space="preserve">
+    <value>Specific Weeks</value>
+  </data>
+  <data name="ScheduleInfo_SpecificYears.Help" xml:space="preserve">
+    <value>Manage here the specific years when you want your bot to run.</value>
+  </data>
+  <data name="ScheduleInfo_SpecificYears.Text" xml:space="preserve">
+    <value>Specific Years</value>
+  </data>
+  <data name="ScheduleInfo_WeekMode.Help" xml:space="preserve">
+    <value>There are 3 week modes available:&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Every&lt;/strong&gt; means the bot will run every week &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Once&lt;/strong&gt; means the bot will run on one week of the month at the first opportunity,  retargeting to the next month's first week.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Specifics&lt;/strong&gt;means you get to choose the scheduled month weeks&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ScheduleInfo_WeekMode.Text" xml:space="preserve">
+    <value>Week Mode</value>
+  </data>
+  <data name="ScheduleInfo_YearMode.Help" xml:space="preserve">
+    <value>There are 3 year modes available:&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Every&lt;/strong&gt; means the bot will run every year&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Once&lt;/strong&gt; means the bot will run only once. Any existing history will cause the bot  to stop running&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Specifics&lt;/strong&gt;means you get to choose the years by managing a list of integers.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="ScheduleInfo_YearMode.Text" xml:space="preserve">
+    <value>Year Mode</value>
+  </data>
+  <data name="September.Text" xml:space="preserve">
+    <value>September</value>
+  </data>
+  <data name="SevenAM.Text" xml:space="preserve">
+    <value>7 am</value>
+  </data>
+  <data name="SevenPM.Text" xml:space="preserve">
+    <value>7 pm</value>
+  </data>
+  <data name="SixAM.Text" xml:space="preserve">
+    <value>6 am</value>
+  </data>
+  <data name="SixPM.Text" xml:space="preserve">
+    <value>6 pm</value>
+  </data>
+  <data name="Specifics.Text" xml:space="preserve">
+    <value>Specifics</value>
+  </data>
+  <data name="Sunday.Text" xml:space="preserve">
+    <value>Sunday</value>
+  </data>
+  <data name="TenAM.Text" xml:space="preserve">
+    <value>10 am</value>
+  </data>
+  <data name="TenPM.Text" xml:space="preserve">
+    <value>10 pm</value>
+  </data>
+  <data name="Third.Text" xml:space="preserve">
+    <value>Third</value>
+  </data>
+  <data name="ThreeAM.Text" xml:space="preserve">
+    <value>3 am</value>
+  </data>
+  <data name="ThreePM.Text" xml:space="preserve">
+    <value>3 pm</value>
+  </data>
+  <data name="Thursday.Text" xml:space="preserve">
+    <value>Thursday</value>
+  </data>
+  <data name="Tuesday.Text" xml:space="preserve">
+    <value>Tuesday</value>
+  </data>
+  <data name="TwoAM.Text" xml:space="preserve">
+    <value>2 am</value>
+  </data>
+  <data name="TwoPM.Text" xml:space="preserve">
+    <value>2 pm</value>
+  </data>
+  <data name="Wednesday.Text" xml:space="preserve">
+    <value>Wednesday</value>
   </data>
 </root>

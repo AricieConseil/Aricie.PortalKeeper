@@ -27,54 +27,58 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub CreateChildControls()
-            MyBase.CreateChildControls()
+            Try
+                Dim divRoot As New HtmlControls.HtmlGenericControl("div")
+                divRoot.Attributes.Add("class", "ctLeft")
 
-            Dim divRoot As New HtmlControls.HtmlGenericControl("div")
-            divRoot.Attributes.Add("class", "ctLeft")
-
-            Dim fold As DirectoryInfo = Folder
-            If fold.Exists() Then
-                Dim listFiles As FileInfo() = fold.GetFiles()
-                If listFiles.Length > 0 Then
-                    Dim hasWriteLockFile As Boolean = False
-                    For Each file As FileInfo In listFiles
-                        If file.Name.ToLower = "write.lock" Then hasWriteLockFile = True
-                    Next
-
-                    If Not hasWriteLockFile Then
+                Dim fold As DirectoryInfo = Folder
+                If fold.Exists() Then
+                    Dim listFiles As FileInfo() = fold.GetFiles()
+                    If listFiles.Length > 0 Then
+                        Dim hasWriteLockFile As Boolean = False
                         For Each file As FileInfo In listFiles
-                            Dim divChild As New HtmlControls.HtmlGenericControl("div")
-                            Dim cmdDownloadFile As New LinkButton()
-                            cmdDownloadFile.ID = Me.ID & "cmdDownloadFile" & file.Name
-                            cmdDownloadFile.Text = file.Name
-                            cmdDownloadFile.CommandArgument = file.FullName
-                            AddHandler cmdDownloadFile.Click, AddressOf CmdDownloadFile_Click
-                            divChild.Controls.Add(cmdDownloadFile)
-                            divRoot.Controls.Add(divChild)
+                            If file.Name.ToLower = "write.lock" Then hasWriteLockFile = True
                         Next
-                    Else
-                        Dim lblWriteLock As New Label()
-                        lblWriteLock.ID = Me.ID & "lblWriteLock"
-                        lblWriteLock.Text = "Files are locked temporarily"
-                        lblWriteLock.Attributes.Add("Resourcekey", lblWriteLock.ID)
-                        divRoot.Controls.Add(lblWriteLock)
-                    End If
 
+                        If Not hasWriteLockFile Then
+                            For Each file As FileInfo In listFiles
+                                Dim divChild As New HtmlControls.HtmlGenericControl("div")
+                                Dim cmdDownloadFile As New LinkButton()
+                                cmdDownloadFile.ID = Me.ID & "cmdDownloadFile" & file.Name
+                                cmdDownloadFile.Text = file.Name
+                                cmdDownloadFile.CommandArgument = file.FullName
+                                AddHandler cmdDownloadFile.Click, AddressOf CmdDownloadFile_Click
+                                divChild.Controls.Add(cmdDownloadFile)
+                                divRoot.Controls.Add(divChild)
+                            Next
+                        Else
+                            Dim lblWriteLock As New Label()
+                            lblWriteLock.ID = Me.ID & "lblWriteLock"
+                            lblWriteLock.Text = "Files are locked temporarily"
+                            lblWriteLock.Attributes.Add("Resourcekey", lblWriteLock.ID)
+                            divRoot.Controls.Add(lblWriteLock)
+                        End If
+
+                    Else
+                        Dim lblNoFiles As New Label()
+                        lblNoFiles.ID = Me.ID & "lblNoFiles"
+                        lblNoFiles.Text = "No Files"
+                        lblNoFiles.Attributes.Add("Resourcekey", lblNoFiles.ID)
+                        divRoot.Controls.Add(lblNoFiles)
+                    End If
                 Else
-                    Dim lblNoFiles As New Label()
-                    lblNoFiles.ID = Me.ID & "lblNoFiles"
-                    lblNoFiles.Text = "No Files"
-                    lblNoFiles.Attributes.Add("Resourcekey", lblNoFiles.ID)
-                    divRoot.Controls.Add(lblNoFiles)
+                    Dim lblNoFolder As New Label()
+                    lblNoFolder.ID = Me.ID & "lblNoFolder"
+                    lblNoFolder.Text = "Folder doesn't exist yet"
+                    lblNoFolder.Attributes.Add("Resourcekey", lblNoFolder.ID)
+                    divRoot.Controls.Add(lblNoFolder)
                 End If
-            Else
-                Dim lblNoFolder As New Label()
-                lblNoFolder.ID = Me.ID & "lblNoFolder"
-                lblNoFolder.Text = "Folder doesn't exist yet"
-                lblNoFolder.Attributes.Add("Resourcekey", lblNoFolder.ID)
-                divRoot.Controls.Add(lblNoFolder)
-            End If
-            Me.Controls.Add(divRoot)
+                Me.Controls.Add(divRoot)
+            Finally
+                Me.ChildControlsCreated = True
+            End Try
+
+           
         End Sub
 
         Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)

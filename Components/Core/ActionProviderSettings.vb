@@ -42,11 +42,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property DontLogExceptions() As Boolean
 
+
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("DontLogExceptions", False, True)> _
         <SortOrder(1000)> _
         Public Property CaptureException() As Boolean
 
+        <Required(True)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("CaptureException", False, True)> _
         <SortOrder(1000)> _

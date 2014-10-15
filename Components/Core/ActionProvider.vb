@@ -41,6 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
          <SortOrder(950)> _
         Public Property UseSemaphore As Boolean
 
+        <Required(True)> _
         <SortOrder(950)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings")> _
@@ -101,6 +102,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property CaptureRunDuration() As Boolean
 
+        <Required(True)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("CaptureRunDuration", False, True)> _
         <SortOrder(1000)> _

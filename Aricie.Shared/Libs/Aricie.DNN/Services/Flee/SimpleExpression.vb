@@ -157,6 +157,10 @@ Namespace Services.Flee
             avVars = ExpressionBuilder.GetAvailableVars(pe)
             Me.ExpressionBuilder.AvailableVariables = avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value))
 
+            If Me.InternalOverrideOwner AndAlso ((Me.InternalOwnerMemberAccess And Reflection.BindingFlags.NonPublic) = Reflection.BindingFlags.NonPublic) Then
+                Me.ExpressionBuilder.ExpressionOwnerFullAccess = True
+            End If
+
             pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             'pe.DisplayMessage(Me.ExpressionBuilder.GetType.AssemblyQualifiedName, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             pe.ItemChanged = True

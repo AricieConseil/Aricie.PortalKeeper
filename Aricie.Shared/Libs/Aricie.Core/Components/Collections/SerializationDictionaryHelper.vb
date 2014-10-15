@@ -77,7 +77,7 @@ Namespace Collections
                         End If
                         dico.Add(key, value)
                     Catch ex As Exception
-                        SystemServiceProvider.Instance.LogException(ex)
+                        ExceptionHelper.LogException(ex)
                         While reader.Depth > depth
                             reader.Skip()
                         End While

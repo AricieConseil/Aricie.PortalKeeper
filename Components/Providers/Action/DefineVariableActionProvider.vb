@@ -2,6 +2,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Magic, IconOptions.Normal)> _
@@ -37,7 +38,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
-            existingVars.Add(Me.Variable.Name, Me.Variable.DotNetType.GetDotNetType())
+            existingVars(Me.Variable.Name) = Me.Variable.DotNetType.GetDotNetType()
             MyBase.AddVariables(currentProvider, existingVars)
         End Sub
     End Class

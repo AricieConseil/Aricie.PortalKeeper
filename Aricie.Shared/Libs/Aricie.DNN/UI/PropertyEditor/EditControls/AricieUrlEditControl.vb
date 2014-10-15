@@ -150,11 +150,13 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub CreateChildControls()
-            If Me.EditMode = PropertyEditorMode.Edit OrElse (Me.Required AndAlso OldValue.ToString = "") Then
-                Me.ResolveEditControl()
-            End If
-            MyBase.CreateChildControls()
-
+            Try
+                If Me.EditMode = PropertyEditorMode.Edit OrElse (Me.Required AndAlso OldValue.ToString = "") Then
+                    Me.ResolveEditControl()
+                End If
+            Finally
+                Me.ChildControlsCreated = True
+            End Try
         End Sub
 
         Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)

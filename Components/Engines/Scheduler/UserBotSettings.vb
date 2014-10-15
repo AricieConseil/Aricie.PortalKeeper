@@ -368,7 +368,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case UserBotStorage.Personalisation
                     Dim objUserBot As UserBotInfo = GetUserBotInfo(user, False)
                     If objUserBot IsNot Nothing AndAlso objUserBot.Enabled Then
-                        Return objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
+                        Return Me.Bot.BotSchedule.GetNextSchedule(objUserBot.BotHistory.LastRun) ' objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
                     Else
                         Return DateTime.MaxValue
                     End If
@@ -781,7 +781,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Public Sub InitBot(ByVal sender As Object, e As GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
                 Dim runContext = e.Item
                 Dim objUserBotInfo As UserBotInfo = Me.UserBotSettings.GetUserBotInfo(Me.User, False)
-                If objUserBotInfo.Enabled AndAlso objUserBotInfo.BotHistory.LastRun.Add(Me.UserBotSettings.Bot.Schedule.Value) <= Now Then
+                If objUserBotInfo.Enabled AndAlso Me.UserBotSettings.Bot.BotSchedule.GetNextSchedule(objUserBotInfo.BotHistory.LastRun) <= Now Then '.Add(Me.UserBotSettings.Bot.Schedule.Value) <= Now Then
                     runContext.Enabled = True
                     Me._UserBot = objUserBotInfo
                     runContext.History = Me._UserBot.BotHistory
