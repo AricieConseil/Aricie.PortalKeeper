@@ -102,7 +102,7 @@ Namespace Entities
             Select Case Me.ScheduleType
                 Case Aricie.ComponentModel.ScheduleType.Period
                     Return previousSchedule.Add(Me.Period.Value)
-                Case Aricie.ComponentModel.ScheduleType.FixedTimes
+                Case Aricie.ComponentModel.ScheduleType.FixedTimes, Aricie.ComponentModel.ScheduleType.Combined
                     Dim toReturn As DateTime = DateTime.MaxValue
                     Dim currentTarget As DateTime = previousSchedule
                     While currentTarget <> toReturn
