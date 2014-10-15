@@ -12,7 +12,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class AsyncEnabledActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)
 
-        Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(2000), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100))
+        Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
         <NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
 

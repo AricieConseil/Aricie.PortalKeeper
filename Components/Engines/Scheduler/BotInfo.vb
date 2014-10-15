@@ -16,6 +16,7 @@ Imports System.Threading
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Settings
 Imports System.Security.Principal
+Imports Aricie.DNN.Entities
 Imports FileHelper = Aricie.DNN.Services.FileHelper
 Imports Aricie.ComponentModel
 
@@ -87,7 +88,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     userString &= IIf(Me.Enabled AndAlso PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso targetUserBot.Enabled, " On", " Off").ToString
                 End If
                 Dim forcedString As String = IIf(Me._ForceRun, "Forced", "Unforced").ToString
-                Return String.Format("{0}{1}{2}{1}{3}{1}{4}{1}{5}", Me.Name.PadRight(50), ComponentModel.UIConstants.TITLE_SEPERATOR, enableString.PadRight(20), userString.PadRight(20), forcedString.PadRight(10), Me.Schedule.FormattedDuration)
+                Return String.Format("{0}{1}{2}{1}{3}{1}{4}{1}{5}", Me.Name.PadRight(50), ComponentModel.UIConstants.TITLE_SEPERATOR, enableString.PadRight(20), userString.PadRight(20), forcedString.PadRight(10), Me.BotSchedule.FormattedValueShort)
             End Get
         End Property
 
@@ -116,15 +117,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
         <ExtendedCategory("Schedule")> _
         <SortOrder(2)> _
+        Public Property BotSchedule As New ScheduleInfo()
+
+        'todo: obsolete then remove that property once migrated
+        <Browsable(False)> _
         Public Property Schedule() As STimeSpan
             Get
-                Return Me._Schedule
+                Return Nothing
             End Get
             Set(ByVal value As STimeSpan)
-                Me._Schedule = value
+                Me.BotSchedule.Period = value
             End Set
         End Property
 

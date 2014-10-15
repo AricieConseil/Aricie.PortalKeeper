@@ -72,9 +72,9 @@ Namespace Services.Flee
     <Flags()> _
     Public Enum ExpressionFeature
         None = 0
-        Negate = 1
-        Parenthesis = 2
-        SubMember = 4
+        SubMember = 1
+        Negate = 2
+        Parenthesis = 4
         Binary = 8
         Cast = 16
     End Enum
@@ -99,12 +99,11 @@ Namespace Services.Flee
 
         Private _SelectedVariable As String = ""
         Private _Features As ExpressionFeature
-        Private _SelectedOperator As String
+        Private _SelectedOperator As String = ""
 
-       
+        <Browsable(False)> _
+        Public Property ExpressionOwnerFullAccess As Boolean
 
-
-       
 
         <AutoPostBack()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
@@ -116,7 +115,11 @@ Namespace Services.Flee
             Set(value As String)
                 If _SelectedVariable <> value Then
                     _SelectedVariable = value
-                    VariableMember = Nothing
+                    If Not value.IsNullOrEmpty() AndAlso (Features And ExpressionFeature.SubMember) = ExpressionFeature.SubMember Then
+                        Me.VariableMember = New MemberDrillDown(SelectedVariableType, Me.ExpressionOwnerFullAccess)
+                    Else
+                        VariableMember = Nothing
+                    End If
                 End If
             End Set
         End Property
@@ -139,7 +142,7 @@ Namespace Services.Flee
                     If (value And ExpressionFeature.SubMember) <> ExpressionFeature.SubMember Then
                         Me.VariableMember = Nothing
                     ElseIf Me.VariableMember Is Nothing Then
-                        Me.VariableMember = New MemberDrillDown(SelectedVariableType)
+                        Me.VariableMember = New MemberDrillDown(SelectedVariableType, Me.ExpressionOwnerFullAccess)
                     End If
                     _Features = value
                 End If
@@ -157,7 +160,7 @@ Namespace Services.Flee
         End Property
 
 
-        <ConditionalVisible("SelectedVariable", True, True, "")>
+        <ConditionalVisible("Features", False, True, ExpressionFeature.SubMember)> _
         Public Property VariableMember As MemberDrillDown
 
 
@@ -166,7 +169,7 @@ Namespace Services.Flee
             Get
                 If Not SelectedVariable.IsNullOrEmpty() Then
 
-                    If VariableMember IsNot Nothing Then
+                    If VariableMember IsNot Nothing AndAlso Not Me.VariableMember.SelectedMember.IsNullOrEmpty() Then
                         Dim objResultingMember As MemberInfo = Me.VariableMember.ResultingMemberInfo
                         If objResultingMember IsNot Nothing Then
                             Return ReflectionHelper.GetMemberReturnType(objResultingMember).AssemblyQualifiedName
@@ -191,11 +194,6 @@ Namespace Services.Flee
             End Get
             Set(value As String)
                 If value <> _SelectedOperator Then
-                    If value.IsNullOrEmpty() Then
-                        Me.SubExpression = Nothing
-                    ElseIf Me.SubExpression Is Nothing Then
-                        CreateSubExpression()
-                    End If
                     _SelectedOperator = value
                 End If
             End Set
@@ -207,7 +205,7 @@ Namespace Services.Flee
         Public Property SubExpression As FleeExpressionBuilder
 
 
-        Public Const ExpressionOwnerVar As String = "<Expression Owner>"
+        Public Const ExpressionOwnerVar As String = "<-- Expression Owner -->"
 
         <ConditionalVisible("SelectedVariable", True, True, "")> _
         Public Overrides ReadOnly Property InsertString As String
@@ -234,7 +232,7 @@ Namespace Services.Flee
                     End If
 
                     
-                    If Not SelectedOperator.IsNullOrEmpty() Then
+                    If (Me.Features And ExpressionFeature.Binary) = ExpressionFeature.Binary Then
                         toReturn.Append(String.Format(" {0} {1}", SelectedOperator, SubExpression.InsertString)) 'OperatorExpression.InsertString)
                     End If
                     If (Me.Features And ExpressionFeature.Parenthesis) = ExpressionFeature.Parenthesis Then
@@ -248,22 +246,29 @@ Namespace Services.Flee
 
 
         Public Overridable Function GetAvailableVars(pe As AriciePropertyEditorControl) As Dictionary(Of String, Type)
-            Dim avVars As New Dictionary(Of String, Type)
+
             Dim currentPe As AriciePropertyEditorControl = pe
             Dim currentProvider As IExpressionVarsProvider
             Dim previousProvider As IExpressionVarsProvider = Nothing
+            Dim dicos As New List(Of IDictionary(Of String, Type))
             Do
                 If TypeOf currentPe.DataSource Is IExpressionVarsProvider Then
                     currentProvider = DirectCast(currentPe.DataSource, IExpressionVarsProvider)
                     'If previousProvider Is Nothing Then
                     '    previousProvider = currentProvider
                     'End If
-                    currentProvider.AddVariables(previousProvider, DirectCast(avVars, IDictionary(Of String, Type)))
+                    Dim tempVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
+                    currentProvider.AddVariables(previousProvider, tempVars)
+                    dicos.Add(tempVars)
                     previousProvider = currentProvider
                 End If
                 currentPe = currentPe.ParentAricieEditor
 
             Loop Until currentPe Is Nothing
+            Dim avVars As New Dictionary(Of String, Type)
+            For Each objPair As KeyValuePair(Of String, Type) In From objDico In Enumerable.Reverse(dicos) From objPair1 In objDico Select objPair1
+                avVars(objPair.Key) = objPair.Value
+            Next
             Return avVars
         End Function
 
@@ -271,6 +276,7 @@ Namespace Services.Flee
 
     Private Sub CreateSubExpression()
             Me.SubExpression = DirectCast(ReflectionHelper.CreateObject(GetType(FleeExpressionBuilder).AssemblyQualifiedName), FleeExpressionBuilder)
+            Me.SubExpression.ExpressionOwnerFullAccess = Me.ExpressionOwnerFullAccess
             Me.SubExpression.AvailableVariables = Me.AvailableVariables
         End Sub
 
@@ -279,8 +285,7 @@ Namespace Services.Flee
             Select Case propertyName
                 Case "SelectedVariable"
                     Dim vars = (AvailableVariables.Keys).ToList()
-                    vars.Sort()
-                    Return vars.Select(Function(objString) New ListItem(objString & " ( " & ReflectionHelper.GetSimpleTypeName(AvailableVariables(objString).GetDotNetType()) & " )", objString)).ToList()
+                    Return vars.Select(Function(objString) New ListItem(objString & " (" & ReflectionHelper.GetSimpleTypeName(AvailableVariables(objString).GetDotNetType()) & ")", objString)).ToList()
                 Case "SelectedOperator"
                     Return FleeBinaryOperators.Select(Function(objString) New ListItem(objString)).ToList()
             End Select

@@ -10,6 +10,11 @@ Imports System.Text
 Imports System.IO
 
 Namespace ComponentModel
+   
+
+
+
+
     ''' <summary>
     ''' A class to represent a bloc of CData while being serialize.
     ''' </summary>

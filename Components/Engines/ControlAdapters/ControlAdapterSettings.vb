@@ -10,6 +10,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.UI.WebControls
 Imports System.IO
 Imports System.Linq
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -28,6 +29,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ControlAdapterSettings
         Inherits NamedConfig
         Implements IProviderContainer
+        Implements IExpressionVarsProvider
+
+
 
 
         '<Browsable(False)> _
@@ -147,7 +151,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-       
+
 
         <ActionButton(IconName.Anchor, IconOptions.Normal)> _
         Public Sub UpgradeDynamicHandlers(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
@@ -261,5 +265,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return Nothing
         End Function
 
+       
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            existingVars.Add("Adapter", GetResolvedAdapterControlType())
+        End Sub
     End Class
+
 End Namespace

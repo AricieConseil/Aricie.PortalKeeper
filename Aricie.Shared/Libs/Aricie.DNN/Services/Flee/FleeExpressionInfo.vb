@@ -1,5 +1,6 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
+Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
@@ -24,6 +25,7 @@ Namespace Services.Flee
         Inherits SimpleExpression(Of TResult)
         Implements IExpressionVarsProvider
 
+        Private _NewOwnerType As DotNetType
 
         Public Sub New()
             MyBase.New()
@@ -94,6 +96,25 @@ Namespace Services.Flee
                 InternalNewOwner = value
             End Set
         End Property
+
+        <ExtendedCategory("ExpressionOwner")> _
+        <ConditionalVisible("OverrideOwner", False, True)> _
+        Public Property NewOwnerType As DotNetType
+            Get
+                If OverrideOwner Then
+                    If _NewOwnerType Is Nothing Then
+                        _NewOwnerType = New DotNetType(GetType(Object))
+                    End If
+                    Return _NewOwnerType
+                End If
+                Return Nothing
+            End Get
+            Set(value As DotNetType)
+                Me._NewOwnerType = value
+            End Set
+        End Property
+
+
 
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalStaticImports
@@ -253,6 +274,9 @@ Namespace Services.Flee
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
             Me.Variables.AddVariables(currentProvider, existingVars)
+            If Me.OverrideOwner Then
+                existingVars(FleeExpressionBuilder.ExpressionOwnerVar) = Me.NewOwnerType.GetDotNetType()
+            End If
         End Sub
 
 

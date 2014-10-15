@@ -19,6 +19,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Implements ISelector
 
 
+
         Public Sub New()
 
         End Sub
@@ -269,6 +270,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             ReflectionHelper.MergeObjects(Me, toReturn)
             Return toReturn
         End Function
+
+       
 
     End Class
 End Namespace
