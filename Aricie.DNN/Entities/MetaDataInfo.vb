@@ -4,7 +4,6 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
-
     ''' <summary>
     ''' General Entity class to hold common metadata
     ''' </summary>

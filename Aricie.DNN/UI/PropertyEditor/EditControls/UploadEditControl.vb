@@ -38,55 +38,57 @@ Namespace UI.WebControls.EditControls
 
         ' Methods
         Protected Overrides Sub CreateChildControls()
-            MyBase.CreateChildControls()
-
-            Me._downloadLink = New LinkButton
-            Me._downloadLink.CssClass = "Normal"
-            Me._downloadLink.CausesValidation = False
-            Me.Controls.Add(Me._downloadLink)
-            Me._fileImage = New Image
-            Me._fileImage.Visible = False
-            Me.Controls.Add(Me._fileImage)
-            Dim fileId As Integer
-            If (Not MyBase.Value Is Nothing AndAlso Not String.IsNullOrEmpty(MyBase.Value.ToString)) AndAlso Integer.TryParse(MyBase.Value.ToString, fileId) Then
-                Dim controller As New FileController
-                Dim currentPortalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-                Dim fileById As FileInfo = controller.GetFileById(fileId, currentPortalSettings.PortalId)
-                If (Not fileById Is Nothing) Then
-                    Me._downloadLink.Text = fileById.FileName
-                    Me.ShowImage(MyBase.Value.ToString)
+            Try
+                Me._downloadLink = New LinkButton
+                Me._downloadLink.CssClass = "Normal"
+                Me._downloadLink.CausesValidation = False
+                Me.Controls.Add(Me._downloadLink)
+                Me._fileImage = New Image
+                Me._fileImage.Visible = False
+                Me.Controls.Add(Me._fileImage)
+                Dim fileId As Integer
+                If (Not MyBase.Value Is Nothing AndAlso Not String.IsNullOrEmpty(MyBase.Value.ToString)) AndAlso Integer.TryParse(MyBase.Value.ToString, fileId) Then
+                    Dim controller As New FileController
+                    Dim currentPortalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
+                    Dim fileById As FileInfo = controller.GetFileById(fileId, currentPortalSettings.PortalId)
+                    If (Not fileById Is Nothing) Then
+                        Me._downloadLink.Text = fileById.FileName
+                        Me.ShowImage(MyBase.Value.ToString)
+                    End If
                 End If
-            End If
-            If (MyBase.EditMode = PropertyEditorMode.Edit) Then
-                Me._fileUpload = New FileUpload
-                Me._ckOverride = New CheckBox
-                Me._uploadLink = New ImageButton
-                Me._errorLabel = New Label
-                Me._InfoLabel = New Label
-                Me._fileUpload.ID = (Me.ID & "upload")
-                Me._ckOverride.Text = "Ecraser le fichier éxistant"
-                Me._ckOverride.CssClass = "Normal"
-                Me._uploadLink.ID = Me.ID & "uploadLink"
-                Me._uploadLink.ImageUrl = "~/images/up.gif"
-                Me._errorLabel.Text = String.Empty
-                Me._errorLabel.CssClass = "NormalRed"
-                Me._InfoLabel.CssClass = "Normal"
-                If (Me.extensions <> String.Empty) Then
-                    Me._InfoLabel.Text = (Me._InfoLabel.Text & "<br>Fichiers autorisés : " & Me.extensions & ". ")
+                If (MyBase.EditMode = PropertyEditorMode.Edit) Then
+                    Me._fileUpload = New FileUpload
+                    Me._ckOverride = New CheckBox
+                    Me._uploadLink = New ImageButton
+                    Me._errorLabel = New Label
+                    Me._InfoLabel = New Label
+                    Me._fileUpload.ID = (Me.ID & "upload")
+                    Me._ckOverride.Text = "Ecraser le fichier éxistant"
+                    Me._ckOverride.CssClass = "Normal"
+                    Me._uploadLink.ID = Me.ID & "uploadLink"
+                    Me._uploadLink.ImageUrl = "~/images/up.gif"
+                    Me._errorLabel.Text = String.Empty
+                    Me._errorLabel.CssClass = "NormalRed"
+                    Me._InfoLabel.CssClass = "Normal"
+                    If (Me.extensions <> String.Empty) Then
+                        Me._InfoLabel.Text = (Me._InfoLabel.Text & "<br>Fichiers autorisés : " & Me.extensions & ". ")
+                    End If
+                    If (Me.Size <> -1) Then
+                        Me._InfoLabel.Text = _
+                            (Me._InfoLabel.Text & "<br>Taille maximum autorisée : " & _
+                             Me.Size.ToString(CultureInfo.InvariantCulture) & "ko. ")
+                    End If
+                    Me.Controls.Add(Me._fileUpload)
+                    If Not autoErase Then
+                        Me.Controls.Add(Me._ckOverride)
+                    End If
+                    Me.Controls.Add(Me._uploadLink)
+                    Me.Controls.Add(Me._InfoLabel)
+                    Me.Controls.Add(Me._errorLabel)
                 End If
-                If (Me.Size <> -1) Then
-                    Me._InfoLabel.Text = _
-                        (Me._InfoLabel.Text & "<br>Taille maximum autorisée : " & _
-                         Me.Size.ToString(CultureInfo.InvariantCulture) & "ko. ")
-                End If
-                Me.Controls.Add(Me._fileUpload)
-                If Not autoErase Then
-                    Me.Controls.Add(Me._ckOverride)
-                End If
-                Me.Controls.Add(Me._uploadLink)
-                Me.Controls.Add(Me._InfoLabel)
-                Me.Controls.Add(Me._errorLabel)
-            End If
+            Finally
+                Me.ChildControlsCreated = True
+            End Try
         End Sub
 
         Private Sub downloadLink_Click(ByVal sender As Object, ByVal e As EventArgs)

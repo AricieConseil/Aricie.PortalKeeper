@@ -116,6 +116,7 @@
     <Compile Include="Components\Collections\Trie.vb" />
     <Compile Include="Components\CompareIPs.vb" />
     <Compile Include="Components\ComponentModel\CData.vb" />
+    <Compile Include="Components\ComponentModel\DateHelper.vb" />
     <Compile Include="Components\ComponentModel\IChildEntity.vb" />
     <Compile Include="Components\ComponentModel\IEncrypter.vb" />
     <Compile Include="Components\ComponentModel\IMergeable.vb" />

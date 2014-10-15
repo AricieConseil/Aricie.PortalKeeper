@@ -212,8 +212,10 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Private Sub ButtonClick(sender As Object, e As CommandEventArgs)
-            Me.Value = e.CommandArgument
-            OnDataChanged(EventArgs.Empty)
+            If Me.Page.IsValid Then
+                Me.Value = e.CommandArgument
+                OnDataChanged(EventArgs.Empty)
+            End If
         End Sub
 
         Protected Overrides Sub Render(ByVal writer As HtmlTextWriter)

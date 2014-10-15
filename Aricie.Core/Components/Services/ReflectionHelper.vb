@@ -172,6 +172,9 @@ Namespace Services
 
 
         Private Shared ReadOnly _RegexSafeTypeName As New Regex("([^\[\]]+)(\,\sVersion\=[^\[\]]+)", RegexOptions.Compiled)
+        'TODO: For some reason, System and System.XX core libraries require assembly qualified name unless we remove the assembly, in which case the buildmanager may find the target type, depending on the context.
+        Private Shared ReadOnly _RegexSafeTypeNameMinusSystem As New Regex("([^\[\]]+?)(\,\sSystem(?:[^\,]+)?)?(?:\,\sVersion\=[^\[\]]+)", RegexOptions.Compiled)
+
         Private Shared ReadOnly _SafeTypeNames As New Dictionary(Of String, String)
 
         Private Shared ReadOnly _CanCreateTypes As New Dictionary(Of Type, Boolean)
@@ -321,8 +324,13 @@ Namespace Services
                 toReturn = _RegexSafeTypeName.Replace(objAssemblyQualifiedName, "$1")
                 Try
                     ReflectionHelper.CreateType(toReturn)
-                Catch ex As Exception
-                    toReturn = objAssemblyQualifiedName
+                Catch
+                    toReturn = _RegexSafeTypeNameMinusSystem.Replace(objAssemblyQualifiedName, "$1")
+                    Try
+                        ReflectionHelper.CreateType(toReturn)
+                    Catch
+                        toReturn = objAssemblyQualifiedName
+                    End Try
                 End Try
                 SyncLock _SafeTypeNames
                     _SafeTypeNames(objAssemblyQualifiedName) = toReturn
@@ -1011,12 +1019,12 @@ Namespace Services
         Public Shared Function GetMemberReturnType(objMember As MemberInfo, Optional publicOnly As Boolean = False) As Type
             Select Case objMember.MemberType
                 Case MemberTypes.Property
-                    Dim objGetMethod As MethodInfo = DirectCast(objMember, PropertyInfo).GetGetMethod()
+                    Dim objGetMethod As MethodInfo = DirectCast(objMember, PropertyInfo).GetGetMethod(True)
                     If objGetMethod IsNot Nothing AndAlso (Not publicOnly OrElse objGetMethod.IsPublic) Then
                         Return objGetMethod.ReturnType
                     End If
                 Case MemberTypes.Field
-                    If DirectCast(objMember, FieldInfo).IsPublic Then
+                    If (Not publicOnly OrElse DirectCast(objMember, FieldInfo).IsPublic) Then
                         Return DirectCast(objMember, FieldInfo).FieldType
                     End If
                 Case MemberTypes.Method
@@ -1300,11 +1308,11 @@ Namespace Services
         End Function
 
 
-        Public Shared Function GetReturnSubMembers(objType As Type) As IDictionary(Of String, MemberInfo)
-            Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType) _
+        Public Shared Function GetReturnSubMembers(objType As Type, includePrivate As Boolean) As IDictionary(Of String, MemberInfo)
+            Dim objMembers = ReflectionHelper.GetFullMembersDictionary(objType, True, includePrivate) _
                                      .Where(Function(objMemberPair) _
                                                 objMemberPair.Value.Any(Function(objMemberInfo) As Boolean
-                                                                            Dim objReturnType = ReflectionHelper.GetMemberReturnType(objMemberInfo, True)
+                                                                            Dim objReturnType = ReflectionHelper.GetMemberReturnType(objMemberInfo, Not includePrivate)
                                                                             Return objReturnType IsNot Nothing _
                                                                                     AndAlso objReturnType IsNot GetType(System.Void) _
                                                                                     AndAlso Not objMemberPair.Key.StartsWith("get_") _
@@ -1351,22 +1359,36 @@ Namespace Services
         ''' <param name="callable">Return as an callable string(public void a(string b) would return a(b))</param>
         ''' <returns>Property signature</returns>
         Public Shared Function GetPropertySignature(prop As PropertyInfo, Optional callable As Boolean = False) As String
-            Dim firstParam = True
+
             Dim sigBuilder = New StringBuilder()
-            If callable = False Then
-                If prop.GetGetMethod().IsPublic Then
-                    sigBuilder.Append("public ")
-                ElseIf prop.GetGetMethod().IsPrivate Then
-                    sigBuilder.Append("private ")
-                ElseIf prop.GetGetMethod().IsAssembly Then
-                    sigBuilder.Append("internal ")
+            If Not callable Then
+                Dim accessMethod As MethodInfo = prop.GetGetMethod(True)
+                Dim readonlyWriteOnly As String = ""
+                If Not prop.CanRead Then
+                    readonlyWriteOnly = "writeonly "
+                    accessMethod = prop.GetSetMethod()
+                ElseIf Not prop.CanWrite Then
+                    readonlyWriteOnly = "readonly "
                 End If
-                If prop.GetGetMethod().IsFamily Then
+
+                If accessMethod.IsPublic Then
+                    sigBuilder.Append("public ")
+                ElseIf accessMethod.IsPrivate Then
+                    sigBuilder.Append("private ")
+                ElseIf accessMethod.IsAssembly Then
+                    sigBuilder.Append("internal ")
+                ElseIf accessMethod.IsFamily Then
                     sigBuilder.Append("protected ")
                 End If
-                If prop.GetGetMethod().IsStatic Then
+                
+                If accessMethod.IsStatic Then
                     sigBuilder.Append("static ")
                 End If
+
+                If Not readonlyWriteOnly.IsNullOrEmpty() Then
+                    sigBuilder.Append(readonlyWriteOnly)
+                End If
+
                 sigBuilder.Append(ReflectionHelper.GetSimpleTypeName(prop.PropertyType))
                 sigBuilder.Append(" "c)
             End If
@@ -1374,7 +1396,7 @@ Namespace Services
             Dim objParams As ParameterInfo() = prop.GetIndexParameters()
             If objParams.Length > 0 Then
                 sigBuilder.Append("(")
-                firstParam = True
+                Dim firstParam = True
                 For Each param As ParameterInfo In objParams
                     If firstParam Then
                         firstParam = False
@@ -1418,10 +1440,10 @@ Namespace Services
                     sigBuilder.Append("private ")
                 ElseIf method.IsAssembly Then
                     sigBuilder.Append("internal ")
-                End If
-                If method.IsFamily Then
+                ElseIf method.IsFamily Then
                     sigBuilder.Append("protected ")
                 End If
+
                 If method.IsStatic Then
                     sigBuilder.Append("static ")
                 End If
@@ -1481,7 +1503,7 @@ Namespace Services
         Public Shared Function GetMemberEnumerableSignature(objMember As MemberInfo) As String
 
             Dim sigBuilder = New StringBuilder()
-            Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember)
+            Dim objMemberType As Type = ReflectionHelper.GetMemberReturnType(objMember, False)
             If objMemberType IsNot Nothing AndAlso (objMemberType.IsArray OrElse objMemberType.GetInterface("ICollection") IsNot Nothing _
                                                     OrElse objMemberType.GetInterface("ICollection`1") IsNot Nothing) Then
                 sigBuilder.Append("["c)

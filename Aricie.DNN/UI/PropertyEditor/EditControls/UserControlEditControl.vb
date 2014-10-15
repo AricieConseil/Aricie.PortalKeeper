@@ -25,19 +25,19 @@ Public Class UserControlEditControl
     End Sub
 
     Protected Overrides Sub CreateChildControls()
-        MyBase.CreateChildControls()
+        Try
+            If Not String.IsNullOrEmpty(_userControlPath) Then
+                Dim uc As PropertyEditorUserControlBase = DirectCast(Me.Page.LoadControl(_userControlPath), PropertyEditorUserControlBase)
+                uc.EditControl = Me
+                uc.ID = "uc"
+                uc.EnableViewState = True
+                uc.Value = Me.Value
 
-
-        If Not String.IsNullOrEmpty(_userControlPath) Then
-            Dim uc As PropertyEditorUserControlBase = DirectCast(Me.Page.LoadControl(_userControlPath), PropertyEditorUserControlBase)
-            uc.EditControl = Me
-            uc.ID = "uc"
-            uc.EnableViewState = True
-            uc.Value = Me.Value
-
-            Me.Controls.Add(uc)
-        End If
-
+                Me.Controls.Add(uc)
+            End If
+        Finally
+            Me.ChildControlsCreated = True
+        End Try
     End Sub
 
     Protected Overrides Sub OnAttributesChanged()

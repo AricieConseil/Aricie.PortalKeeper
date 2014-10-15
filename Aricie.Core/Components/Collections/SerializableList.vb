@@ -59,7 +59,7 @@ Namespace Collections
                     Me.Add(objT)
                 Next
             Catch ex As Exception
-                SystemServiceProvider.Instance.LogException(ex)
+                ExceptionHelper.LogException(ex)
                 Dim limitCount As Integer = 0
                 While reader.Depth > depth AndAlso limitCount < 100000
                     reader.Skip()
