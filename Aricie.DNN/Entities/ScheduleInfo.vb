@@ -250,7 +250,7 @@ Namespace Entities
                     End If
                     Return toReturn.ToString()
                 Case Else
-                    Return "Every " & Me.Period.FormattedDuration
+                    Return Me.Period.FormattedDuration
             End Select
         End Function
 
