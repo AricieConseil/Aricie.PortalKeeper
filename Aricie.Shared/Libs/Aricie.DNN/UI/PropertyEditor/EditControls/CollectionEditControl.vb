@@ -1042,6 +1042,9 @@ Namespace UI.WebControls.EditControls
                                 Me.addSelector = ctrAddSelector
                                 pnAdd.Controls.Add(Me.addSelector)
                                 Me.addSelector.DataBind()
+                                If Me.addSelector.Items.Count < 2 Then
+                                    Me.addSelector.Visible = False
+                                End If
                             End If
                         End If
 

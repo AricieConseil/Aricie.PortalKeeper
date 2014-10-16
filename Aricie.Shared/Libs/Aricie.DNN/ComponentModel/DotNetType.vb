@@ -69,7 +69,7 @@ Namespace ComponentModel
         End Sub
 
         Public Sub New(ByVal objType As Type)
-            If Not objType.IsGenericParameter Then
+            If objType IsNot Nothing AndAlso Not objType.IsGenericParameter Then
                 Me.SetTypeName(ReflectionHelper.GetSafeTypeName(objType))
             End If
         End Sub
