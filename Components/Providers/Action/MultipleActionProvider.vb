@@ -63,5 +63,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Select
         End Function
 
+
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            Me.KeeperAction.AddVariables(currentProvider, existingVars)
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
+
+
     End Class
 End Namespace

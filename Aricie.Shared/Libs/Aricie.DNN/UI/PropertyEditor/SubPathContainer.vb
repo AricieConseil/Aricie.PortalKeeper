@@ -158,15 +158,20 @@ Namespace UI.WebControls
         End Function
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
-
+            Dim dicos As New List(Of IDictionary(Of String, Type))
             For Each objEntityPair In Me.GetParentEntities().Reverse
                 Dim parentProvider As IExpressionVarsProvider = TryCast(objEntityPair.Value, IExpressionVarsProvider)
                 If (parentProvider IsNot Nothing) Then
-                    parentProvider.AddVariables(currentProvider, existingVars)
+                    Dim tempVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
+                    parentProvider.AddVariables(currentProvider, tempVars)
+                    dicos.Add(tempVars)
+
                     currentProvider = parentProvider
                 End If
             Next
-
+            For Each objPair As KeyValuePair(Of String, Type) In From objDico In Enumerable.Reverse(dicos) From objPair1 In objDico Select objPair1
+                existingVars(objPair.Key) = objPair.Value
+            Next
         End Sub
     End Class
 End Namespace
