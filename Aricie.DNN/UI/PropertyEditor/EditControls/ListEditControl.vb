@@ -109,8 +109,12 @@ Namespace UI.WebControls.EditControls
 
             'todo: should try with ReflectionHelper.CloneObject()
             Dim oldListValue As IList = New ArrayList(Me.ListValue)
+            If Me.ListValue.Item(indexToEdit).GetType() Is e.Value.GetType() Then
+                Me.ListValue.Item(indexToEdit) = e.Value
+            Else
+                Me.ListValue.Item(indexToEdit) = TypeDescriptor.GetConverter(ListValue.Item(indexToEdit).GetType()).ConvertFrom(e.Value)
+            End If
 
-            Me.ListValue.Item(indexToEdit) = TypeDescriptor.GetConverter(ListValue.Item(indexToEdit).GetType()).ConvertFrom(e.Value)
 
             Dim newArgs As New PropertyEditorEventArgs(Me.Name, Me.ListValue, oldListValue)
             Me.OnValueChanged(newArgs)

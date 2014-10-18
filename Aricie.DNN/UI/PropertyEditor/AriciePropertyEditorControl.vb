@@ -1354,9 +1354,11 @@ Namespace UI.WebControls
             If Not DataSource Is Nothing Then
                 'TODO:  We need to add code to support using the cache in the future
 
-                Dim Bindings As BindingFlags = BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.Static
+                'Dim Bindings As BindingFlags = BindingFlags.Public Or BindingFlags.Instance Or BindingFlags.Static Or BindingFlags.FlattenHierarchy
 
-                Dim objProps As PropertyInfo() = DataSource.GetType().GetProperties(Bindings).Where(Function(objProp As PropertyInfo) objProp.GetIndexParameters().Length = 0).ToArray()
+                Dim objProps As PropertyInfo() = ReflectionHelper.GetPropertiesDictionary(DataSource.GetType()).Values.Where(Function(objProp As PropertyInfo) _
+                                                                                                                                 (Not objProp.GetAccessors(True)(0).IsStatic) _
+                                                                                                                                 AndAlso objProp.GetIndexParameters().Length = 0).ToArray()
 
                 'Apply sort method
                 Select Case SortMode
