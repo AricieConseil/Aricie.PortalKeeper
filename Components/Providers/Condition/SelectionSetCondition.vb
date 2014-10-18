@@ -23,7 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("Specifics")> _
             <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
-            <CollectionEditor(False, False, False, True, 10)> _
+            <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _
         Public Property Items() As List(Of Integer)
             Get
                 Return _Items

@@ -13,7 +13,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <DisplayName("Redirect Action")> _
         <Description("Redirect the current client to a specified url")> _
     Public Class RedirectAction
-        Inherits ActionProvider(Of RequestEvent)
+        Inherits RedirectAction(Of RequestEvent)
 
     End Class
 
@@ -25,33 +25,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class RedirectAction(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)
 
+        
 
-        Private _Target As New ControlUrlInfo
+        '<ExtendedCategory("Specifics")> _
+        Public Property Target() As New ControlUrlInfo
+           
 
-
-        Private _EndResponse As Boolean
-
-
-        <ExtendedCategory("Specifics")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        Public Property Target() As ControlUrlInfo
-            Get
-                Return _Target
-            End Get
-            Set(ByVal value As ControlUrlInfo)
-                _Target = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Specifics")> _
+        '<ExtendedCategory("Specifics")> _
         Public Property EndResponse() As Boolean
-            Get
-                Return _EndResponse
-            End Get
-            Set(ByVal value As Boolean)
-                _EndResponse = value
-            End Set
-        End Property
+            
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
@@ -59,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me.CallDebuggerBreak()
             End If
             'actionContext.DnnContext.Response.Redirect(Me._Target.UrlPath, Me._EndResponse)
-            Return Me._Target.Redirect(actionContext.DnnContext.HttpContext)
+            Return Me.Target.Redirect(actionContext.DnnContext.HttpContext)
         End Function
 
 

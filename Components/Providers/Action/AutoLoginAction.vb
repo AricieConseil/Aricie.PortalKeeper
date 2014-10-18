@@ -26,8 +26,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _AutoLoginUserName As String
 
         <ExtendedCategory("Specifics")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
         Public Property CurrentAutoLoginInfo() As AutoLoginInfo
             Get
                 Return _CurrentAutoLoginInfo
