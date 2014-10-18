@@ -28,7 +28,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _EncryptionKey As String = String.Empty
         Private _TicketAuthParamName As String = String.Empty
 
-        <ExtendedCategory("")> _
         Public Property AutoLoginMode() As AutoLoginModeType
             Get
                 Return _AutoLoginMode
@@ -38,8 +37,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-        <Category("Manual")> _
+        <ConditionalVisible("AutoLoginMode", False, True, AutoLoginModeType.Manual)> _
         Public Property AutoLoginUserName() As String
             Get
                 Return _AutoLoginUserName.Trim
@@ -59,8 +57,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Category("Manual")> _
-            <XmlIgnore()> _
+        <ConditionalVisible("AutoLoginMode", False, True, AutoLoginModeType.Manual)> _
+        <XmlIgnore()> _
         Public Property EditAutoLoginPassword() As String
             Get
 
@@ -77,8 +75,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Category("TicketAuth")> _
-  Public Property TicketAuthParamName() As String
+        <ConditionalVisible("AutoLoginMode", False, True, AutoLoginModeType.TicketAuth)> _
+        Public Property TicketAuthParamName() As String
             Get
                 Return _TicketAuthParamName
             End Get
@@ -87,7 +85,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Category("TicketAuth")> _
+        <ConditionalVisible("AutoLoginMode", False, True, AutoLoginModeType.TicketAuth)> _
         Public Property EncryptionKey() As String
             Get
                 Return _EncryptionKey
