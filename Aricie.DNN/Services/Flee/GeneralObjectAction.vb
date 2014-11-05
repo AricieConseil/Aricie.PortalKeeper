@@ -45,12 +45,17 @@ Namespace Services.Flee
             End Get
         End Property
 
+
+
         <Browsable(False)> _
         Public Overrides ReadOnly Property ObjectType As String
             Get
                 Return DotNetType.TypeName
             End Get
         End Property
+
+        <ExtendedCategory("Instance")> _
+        Public Property StaticCall As Boolean
 
         ''' <summary>
         ''' Instance of the generic type
@@ -59,6 +64,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ConditionalVisible("HasConcreteType", False, True)> _
+        <ConditionalVisible("StaticCall", True, True)> _
         <ExtendedCategory("Instance")> _
         Public Property Instance() As New FleeExpressionInfo(Of Object)
 
@@ -135,8 +141,29 @@ Namespace Services.Flee
         <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
         Public Overridable Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
 
+        Private _CandidateEvent As EventInfo
 
-
+        <Browsable(False)> _
+        Protected ReadOnly Property CandidateEvent As EventInfo
+            Get
+                If _CandidateEvent Is Nothing Then
+                    Dim candidateEventMember As MemberInfo = Me.SelectedMembers(0)
+                    If candidateEventMember IsNot Nothing Then
+                        Dim objCandidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
+                        If objCandidateEvent IsNot Nothing Then
+                            _CandidateEvent = objCandidateEvent
+                        Else
+                            Throw New Exception(String.Format( _
+                                "Candidate Member {0} could not be converted to event {1} in type {2}", _
+                                candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
+                        End If
+                    Else
+                        Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.MemberName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                    End If
+                End If
+                Return _CandidateEvent
+            End Get
+        End Property
 
 
 
@@ -184,13 +211,17 @@ Namespace Services.Flee
                                 targetProp = DirectCast(potentialMember, PropertyInfo)
                                 If targetProp.GetIndexParameters.Length = args.Count Then
                                     Dim objValue As Object = Me.PropertyValue.Evaluate(owner, globalVars)
-                                    Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                    If Me.LockTarget Then
-                                        SyncLock target
-                                            targetProp.SetValue(Me.Instance.Evaluate(owner, globalVars), objValue, args.ToArray)
-                                        End SyncLock
+                                    If Not (targetProp.GetGetMethod().IsStatic OrElse Me.StaticCall) Then
+                                        Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                        If Me.LockTarget Then
+                                            SyncLock target
+                                                targetProp.SetValue(target, objValue, args.ToArray())
+                                            End SyncLock
+                                        Else
+                                            targetProp.SetValue(target, objValue, args.ToArray())
+                                        End If
                                     Else
-                                        targetProp.SetValue(Me.Instance.Evaluate(owner, globalVars), objValue, args.ToArray)
+                                        targetProp.SetValue(Nothing, objValue, args.ToArray())
                                     End If
                                     Return toReturn
                                 End If
@@ -211,12 +242,13 @@ Namespace Services.Flee
                         Dim index As Integer = 0
                         For Each potentialMember As MemberInfo In SelectedMembers
                             If TypeOf potentialMember Is MethodInfo Then
+                                index += 1
                                 targetMethod = DirectCast(potentialMember, MethodInfo)
                                 If targetMethod.GetParameters.Length = args.Count Then
-                                    index += 1
+
                                     If index = MemberIndex Then
                                         found = True
-                                        If targetMethod.IsStatic Then
+                                        If targetMethod.IsStatic OrElse Me.StaticCall Then
                                             targetMethod.Invoke(Nothing, args.ToArray)
                                         Else
                                             Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
@@ -224,11 +256,9 @@ Namespace Services.Flee
                                                 Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
                                             Else
                                                 If Me.LockTarget Then
-
                                                     SyncLock target
                                                         toReturn = targetMethod.Invoke(target, args.ToArray)
                                                     End SyncLock
-
                                                 Else
                                                     toReturn = targetMethod.Invoke(target, args.ToArray)
                                                 End If
@@ -245,25 +275,13 @@ Namespace Services.Flee
                                                               Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                         End If
                     Case Flee.ObjectActionMode.AddEventHandler
-                        Dim candidateEventMember As MemberInfo = Me.SelectedMembers(0)
-                        If candidateEventMember IsNot Nothing Then
-                            Dim candidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
-                            If candidateEvent IsNot Nothing Then
-                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                If target IsNot Nothing Then
-                                    AddEventHandler(owner, globalVars, target, candidateEvent)
-                                Else
-                                    Throw New Exception(String.Format( _
-                                        "Instance Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
-                                        Me.Instance.Expression, candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
-                                End If
-                            Else
-                                Throw New Exception(String.Format( _
-                                    "Candidate Member {0} could not be converted to event {1} in type {2}", _
-                                    candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
-                            End If
+                        Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                        If target IsNot Nothing Then
+                            AddEventHandler(owner, globalVars, target)
                         Else
-                            Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.MemberName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                            Throw New Exception(String.Format( _
+                                "Instance Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
+                                Me.Instance.Expression, CandidateEvent.ToString(), Me.DotNetType.GetDotNetType()))
                         End If
                 End Select
             End If
@@ -271,7 +289,7 @@ Namespace Services.Flee
         End Function
 
 
-        Protected Overridable Sub AddEventHandler(owner As Object, globalVars As IContextLookup, target As Object, candidateEvent As EventInfo)
+        Protected Overridable Sub AddEventHandler(owner As Object, globalVars As IContextLookup, target As Object)
             Dim objDelegate As [Delegate] = Me.DelegateExpression.Evaluate(owner, globalVars)
             If objDelegate IsNot Nothing Then
                 If Me.LockTarget Then
@@ -284,7 +302,7 @@ Namespace Services.Flee
             Else
                 Throw New Exception(String.Format( _
                     "Delegate Expression {0} returned a null instance while adding event handler {1}  in type {2}", _
-                    Me.DelegateExpression.Expression, candidateEvent.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
+                    Me.DelegateExpression.Expression, CandidateEvent.ToString(), Me.DotNetType.GetDotNetType()))
             End If
         End Sub
 

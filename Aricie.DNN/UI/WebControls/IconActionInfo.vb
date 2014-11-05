@@ -193,6 +193,7 @@
             {IconName.Gittip, "fa-gittip"}, _
             {IconName.Glass, "fa-glass"}, _
             {IconName.Globe, "fa-globe"}, _
+            {IconName.Google, "fa-google"}, _
             {IconName.GooglePlus, "fa-google-plus"}, _
             {IconName.GooglePlusSquare, "fa-google-plus-square"}, _
             {IconName.HSquare, "fa-h-square"}, _

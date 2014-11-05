@@ -54,6 +54,13 @@ Namespace Services.Flee
         Protected InternalCustomCultureLocale As String = DefaultCustomCultureLocale
         Protected InternalRealLiteralDataType As RealLiteralDataType = DefaultRealLiteralDataType
         Protected InternalOwnerMemberAccess As Reflection.BindingFlags = DefaultOwnerMemberAccess
+        Protected InternalBreakOnException As Boolean
+        Protected InternalBreakAtCompileTime As Boolean
+        Protected InternalBreakAtEvaluateTime As Boolean
+        Protected InternalLogCompileExceptions As Boolean = True
+        Protected InternalLogEvaluateExceptions As Boolean
+        Protected InternalThrowCompileExceptions As Boolean
+        Protected InternalThrowEvaluateExceptions As Boolean = True
 
         Private Shared ReadOnly _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
 
@@ -186,7 +193,9 @@ Namespace Services.Flee
         End Sub
 
 
-
+        Public Function Evaluate(ByVal globalVars As IContextLookup) As TResult
+            Return Me.Evaluate(globalVars, globalVars)
+        End Function
 
 
         ''' <summary>
@@ -207,10 +216,24 @@ Namespace Services.Flee
                         AddHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
                         AddHandler clone.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
                         Try
+                            If Me.InternalBreakAtEvaluateTime Then
+                                Common.CallDebuggerBreak()
+                            End If
                             toReturn = clone.Evaluate()
                         Catch ex As Exception
+                            If Me.InternalBreakOnException Then
+                                Common.CallDebuggerBreak()
+                            End If
+
                             Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to run with the inner exception", Me.Expression), ex)
-                            Throw objFLeeException
+
+                            If Me.InternalLogEvaluateExceptions Then
+                                ExceptionHelper.LogException(objFLeeException)
+                            End If
+                            If Me.InternalThrowEvaluateExceptions Then
+                                Throw objFLeeException
+                            End If
+
                         Finally
                             RemoveHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
                             RemoveHandler clone.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
@@ -239,6 +262,10 @@ Namespace Services.Flee
                     'SyncLock expWriterLock
                     If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
 
+                        If Me.InternalBreakAtCompileTime Then
+                            Common.CallDebuggerBreak()
+                        End If
+
                         Dim context As ExpressionContext = Me.GetExpressionContext(owner, globalVars)
                         Dim onDemand As New OnDemandVariableLookup(globalVars)
                         AddHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
@@ -249,8 +276,16 @@ Namespace Services.Flee
                                 _CompiledExpressions(Me._Expression) = toReturn
                             End SyncLock
                         Catch ex As Ciloci.Flee.ExpressionCompileException
+                            If Me.InternalBreakOnException Then
+                                Common.CallDebuggerBreak()
+                            End If
                             Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to compile with the inner exception", Me.Expression), ex)
-                            ExceptionHelper.LogException(objFLeeException)
+                            If Me.InternalLogCompileExceptions Then
+                                ExceptionHelper.LogException(objFLeeException)
+                            End If
+                            If Me.InternalThrowCompileExceptions Then
+                                Throw objFLeeException
+                            End If
                             toReturn = Nothing
                         Finally
                             RemoveHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
@@ -343,6 +378,7 @@ Namespace Services.Flee
                 toReturn.Imports.ImportBuiltinTypes()
                 toReturn.Imports.AddType(GetType(System.Math), "")
                 toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "Enumerable")
+                toReturn.Imports.AddType(GetType(DateTime), "DateTime")
                 'toReturn.Imports.AddType(GetType(ReflectionHelper), "ReflectionHelper")
                 'toReturn.Imports.AddType(GetType(System.Linq.Expressions.Expression), "Expression")
             End If
@@ -407,10 +443,10 @@ Namespace Services.Flee
                     If obj IsNot Nothing Then
                         e.VariableType = obj.GetType
                     Else
-                        e.VariableType = GetType(Object)
+                        e.VariableType = GetType(TResult)
                     End If
                 Else
-                    e.VariableType = GetType(Object)
+                    e.VariableType = GetType(TResult)
                 End If
 
             End Sub

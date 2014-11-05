@@ -528,8 +528,7 @@ Namespace Services
         End Function
 
         Public Shared Function CreateObject(Of T)() As T
-            Return Activator.CreateInstance(Of T)()
-
+            Return DirectCast(CreateObject(GetType(T)), T)
         End Function
 
         Public Shared Function GetFriendlyName(value As Object) As String
@@ -555,7 +554,7 @@ Namespace Services
                             Dim keyName As String = GetFriendlyName(keyValue)
                             Dim valueValue As Object = valueProp.GetValue(value, Nothing)
                             Dim valueName As String = GetFriendlyName(valueValue)
-                            toReturn = String.Format("{0}  -  {1}", keyName, valueName)
+                            toReturn = String.Format("{0} {1} {2}", keyName, UIConstants.TITLE_SEPERATOR, valueName)
                         End If
                     End If
                     If toReturn.IsNullOrEmpty() Then
@@ -833,21 +832,26 @@ Namespace Services
        
 
         Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
-            Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
-            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
-            'Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
-
-            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters.ToArray())
-            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
-
+            Dim handler As [Delegate] = WrapDelegate(objEventInfo.EventHandlerType, action)
+            'Dim objParameterInfos As ParameterInfo() = GetEventParameters(objEventInfo)
+            'Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+            ''Dim parameterTypes As Type() = objParameterInfos.Select(Function(parameter) parameter.ParameterType).ToArray()
+            'Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes, parameters)
+            'Dim handler As [Delegate] = Expression.Lambda(objEventInfo.EventHandlerType, callExpression, parameters).Compile()
             objEventInfo.AddEventHandler(item, handler)
         End Sub
 
-        Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
-            Dim parameters = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
 
-            Dim handler = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
 
+        'Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, action As Action)
+        '    'Dim parameters As ParameterExpression() = GetEventParameters(objEventInfo).[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+        '    'Dim handler As [Delegate] = Expression.Lambda(objEventInfo.EventHandlerType, Expression.[Call](Expression.Constant(action), "Invoke", Type.EmptyTypes), parameters).Compile()
+        '    Dim handler As [Delegate] = WrapDelegate(objEventInfo.EventHandlerType, action)
+        '    objEventInfo.AddEventHandler(item, handler)
+        'End Sub
+
+        Public Shared Sub AddEventHandler(objEventInfo As EventInfo, item As Object, sourceHandler As [Delegate])
+            Dim handler As [Delegate] = WrapDelegate(objEventInfo.EventHandlerType, sourceHandler)
             objEventInfo.AddEventHandler(item, handler)
         End Sub
 
@@ -860,12 +864,40 @@ Namespace Services
             Return toReturn
         End Function
 
+        Private Shared _WrappedDelegates As New Dictionary(Of [Delegate], Dictionary(Of Type, [Delegate]))
 
         Public Shared Function WrapDelegate(targetDelegateType As Type, compatibleDelegate As [Delegate]) As [Delegate]
-            Dim objParameterInfos As ParameterInfo() = GetDelegateTypeParameters(targetDelegateType)
-            Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
-            Dim callExpression As MethodCallExpression = Expression.[Call](Expression.Constant(compatibleDelegate), "Invoke", Type.EmptyTypes, parameters.ToArray())
-            Return Expression.Lambda(targetDelegateType, callExpression, parameters).Compile()
+            If targetDelegateType.IsInstanceOfType(compatibleDelegate) Then
+                Return compatibleDelegate
+            End If
+            Dim targetDico As Dictionary(Of Type, [Delegate]) = Nothing
+            If Not _WrappedDelegates.TryGetValue(compatibleDelegate, targetDico) Then
+                targetDico = New Dictionary(Of Type, [Delegate])
+                SyncLock _WrappedDelegates
+                    _WrappedDelegates(compatibleDelegate) = targetDico
+                End SyncLock
+            End If
+            Dim toReturn As [Delegate] = Nothing
+            If Not targetDico.TryGetValue(targetDelegateType, toReturn) Then
+                Dim objParameterInfos As ParameterInfo() = GetDelegateTypeParameters(targetDelegateType)
+                Dim parameters As ParameterExpression() = objParameterInfos.[Select](Function(parameter) Expression.Parameter(parameter.ParameterType, parameter.Name)).ToArray()
+                Dim sourceParams As ParameterInfo() = GetDelegateParameters(compatibleDelegate)
+                Dim isParamArray As Boolean
+                If sourceParams.Length > 0 Then
+                    isParamArray = sourceParams(sourceParams.Length - 1).GetCustomAttributes(False).Any(Function(objAttribute) TypeOf objAttribute Is ParamArrayAttribute)
+                End If
+                Dim callExpression As MethodCallExpression
+                If isParamArray Then
+                    callExpression = Expression.[Call](Expression.Constant(compatibleDelegate), "Invoke", Type.EmptyTypes, parameters)
+                Else
+                    callExpression = Expression.[Call](Expression.Constant(compatibleDelegate), "Invoke", Type.EmptyTypes, parameters.Take(Math.Min(parameters.Length, sourceParams.Length)).ToArray())
+                End If
+                toReturn = Expression.Lambda(targetDelegateType, callExpression, parameters).Compile()
+                SyncLock targetDico
+                    targetDico(targetDelegateType) = toReturn
+                End SyncLock
+            End If
+            Return toReturn
         End Function
 
         Public Shared Function GetCollectionFileName(ByVal objCollection As ICollection) As String
@@ -1520,18 +1552,9 @@ Namespace Services
             Return sigBuilder.ToString()
         End Function
 
+        <Obsolete("Use Inner Method")> _
         Public Shared Function CreateDelegate(Of T)(ByVal objDelegate As DelegateInfo(Of T)) As [Delegate]
-
-            If objDelegate.InvocationList.Count = 0 Then
-                Return CreateDelegate(Of T)(objDelegate.TypeName, objDelegate.MethodName)
-            Else
-                Dim tempList As New List(Of [Delegate])(objDelegate.InvocationList.Count)
-                For Each subDelegate As DelegateInfo(Of T) In objDelegate.InvocationList
-                    tempList.Add(subDelegate.GetDelegate)
-                Next
-                Return [Delegate].Combine(tempList.ToArray)
-            End If
-
+            Return objDelegate.GetDelegate()
         End Function
 
         Public Shared Function CreateDelegate(Of T)(ByVal typeName As String, ByVal methodName As String) As [Delegate]

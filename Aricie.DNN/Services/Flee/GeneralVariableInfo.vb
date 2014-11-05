@@ -210,8 +210,9 @@ Namespace Services.Flee
             End Get
         End Property
 
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
         <ConditionalVisible("RequiresInstance", False, True)>
-        Public Property TargetInstance As New SimpleExpression(Of Object)
+         Public Property TargetInstance As New SimpleExpression(Of Object)
 
         <ConditionalVisible("HasType", False, True)> _
 <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
@@ -256,7 +257,6 @@ Namespace Services.Flee
             If Me._InstanceMode = InstanceMode.InContextEval Then
                 Me._Instance = toReturn
             End If
-           
             If _UseClone Then
                 Return ReflectionHelper.CloneObject(toReturn)
             End If
@@ -278,11 +278,8 @@ Namespace Services.Flee
                         toReturn = ReflectionHelper.CreateObject(Me.DotNetType.GetDotNetType())
                     End If
                 Case Flee.VariableMode.Constructor
-                    Dim args As New List(Of Object)
-                    For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                        args.Add(objParam.Value)
-                    Next
-                    toReturn = System.Activator.CreateInstance(Me.DotNetType.GetDotNetType(), args.ToArray)
+                    Dim args As Object() = (From objParam In Me.Parameters.EvaluateVariables(owner, globalVars) Select objParam.Value).ToArray()
+                    toReturn = System.Activator.CreateInstance(Me.DotNetType.GetDotNetType(), args)
                 Case Flee.VariableMode.Expression
                     If Me._AsCompiledExpression Then
                         toReturn = Me.FleeExpression.GetCompiledExpression(owner, globalVars)
@@ -299,7 +296,6 @@ Namespace Services.Flee
                         Else
                             toReturn = [Delegate].CreateDelegate(Me.DotNetType.GetDotNetType(), targetMethod)
                         End If
-
                     Else
                         Throw New Exception(String.Format("Can't create Delegate for method {0} in type {1}", targetMethod.Name, Me.DotNetType.GetDotNetType().FullName))
                     End If
@@ -356,18 +352,12 @@ Namespace Services.Flee
                 Dim toReturn As New List(Of MethodBase)
                 If Me.DotNetType.GetDotNetType() IsNot Nothing Then
                     Dim members As List(Of MemberInfo) = Nothing
-                    If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me.MethodName, members) Then
-                        For Each member As MemberInfo In members
-                            If TypeOf member Is MethodBase Then
-                                toReturn.Add(DirectCast(member, MethodBase))
-                            End If
-                        Next
-                    ElseIf Me.VariableMode = Flee.VariableMode.Constructor Then
+                    If Me.VariableMode = Flee.VariableMode.Constructor Then
                         toReturn.AddRange(Me.DotNetType.GetDotNetType.GetConstructors())
+                    ElseIf ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType(), True, False).TryGetValue(Me.MethodName, members) Then
+                        toReturn.AddRange(members.OfType (Of MethodBase)())
                     End If
-
                 End If
-
                 Return toReturn
             End Get
         End Property
@@ -385,13 +375,7 @@ Namespace Services.Flee
         End Property
 
         Public Function GetSelectorG(propertyName As String) As IList(Of MethodInfo) Implements ISelector(Of MethodInfo).GetSelectorG
-            Dim toReturn As New List(Of MethodInfo)
-            For Each objMember As MemberInfo In ReflectionHelper.GetMembersDictionary(Me.DotNetType.GetDotNetType()).Values
-                If TypeOf objMember Is MethodInfo Then
-                    toReturn.Add(DirectCast(objMember, MethodInfo))
-                End If
-            Next
-            Return toReturn
+            Return ReflectionHelper.GetMembersDictionary(Me.DotNetType.GetDotNetType()).Values.OfType(Of MethodInfo)().ToList()
         End Function
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables

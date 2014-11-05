@@ -27,6 +27,8 @@ Namespace Services.Flee
 
         Private _NewOwnerType As DotNetType
 
+
+
         Public Sub New()
             MyBase.New()
         End Sub
@@ -134,6 +136,82 @@ Namespace Services.Flee
                 InternalStaticImports = value
             End Set
         End Property
+
+        
+
+
+        <ExtendedCategory("Debug")> _
+        Public Property BreakOnException As Boolean
+            Get
+                Return InternalBreakOnException
+            End Get
+            Set(value As Boolean)
+                InternalBreakOnException = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property BreakAtCompileTime As Boolean
+            Get
+                Return InternalBreakAtCompileTime
+            End Get
+            Set(value As Boolean)
+                InternalBreakAtCompileTime = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property BreakAtEvaluateTime As Boolean
+            Get
+                Return InternalBreakAtEvaluateTime
+            End Get
+            Set(value As Boolean)
+                InternalBreakAtEvaluateTime = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property LogCompileExceptions As Boolean
+            Get
+                Return InternalLogCompileExceptions
+            End Get
+            Set(value As Boolean)
+                InternalLogCompileExceptions = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property ThrowCompileExceptions As Boolean
+            Get
+                Return InternalThrowCompileExceptions
+            End Get
+            Set(value As Boolean)
+                InternalThrowCompileExceptions = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property LogEvaluateExceptions As Boolean
+            Get
+                Return InternalLogEvaluateExceptions
+            End Get
+            Set(value As Boolean)
+                InternalLogEvaluateExceptions = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Debug")> _
+        Public Property ThrowEvaluateExceptions As Boolean
+            Get
+                Return InternalThrowEvaluateExceptions
+            End Get
+            Set(value As Boolean)
+                InternalThrowEvaluateExceptions = value
+            End Set
+        End Property
+
+
+
 
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalImportBuiltTypes

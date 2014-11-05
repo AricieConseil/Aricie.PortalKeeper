@@ -18,6 +18,7 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.Services.Flee
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -1071,6 +1072,24 @@ Namespace UI.WebControls
             Return nbControls
         End Function
 
+
+        Public Overridable Function GetContext(contextType As Type) As Object
+            Dim currentPe As AriciePropertyEditorControl = Me
+            Dim currentProvider As IContextProvider
+            Do
+                If TypeOf currentPe.DataSource Is IContextProvider Then
+                    currentProvider = DirectCast(currentPe.DataSource, IContextProvider)
+                    If currentProvider.HasContect(contextType) Then
+                        Return currentProvider.GetContext(contextType)
+                    End If
+                End If
+                currentPe = currentPe.ParentAricieEditor
+            Loop Until currentPe Is Nothing
+            Return Nothing
+        End Function
+
+
+
         Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
 
             Dim btn As WebControl = Nothing
@@ -1108,39 +1127,40 @@ Namespace UI.WebControls
                 End If
                 ClientAPI.AddButtonConfirm(btn, message)
             End If
-
-            Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
-            Dim paramInstances As New List(Of Object)
-            For Each objParam As ParameterInfo In params
-                If objParam.ParameterType Is GetType(AriciePortalModuleBase) Then
-                    paramInstances.Add(Me.ParentModule)
-                ElseIf objParam.ParameterType Is GetType(AriciePropertyEditorControl) Then
-                    paramInstances.Add(Me)
-                ElseIf objParam.ParameterType Is GetType(AricieFieldEditorControl) Then
-                    paramInstances.Add(Me.ParentAricieField)
-                Else
-                    paramInstances.Add(Nothing)
-                End If
-            Next
-            Dim targetEntity As Object = Me.DataSource
-
-            If TypeOf Me.DataSource Is SubPathContainer Then
-                Dim objContainer As SubPathContainer = DirectCast(Me.DataSource, SubPathContainer)
-                Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
-                If targetType IsNot GetType(SubPathContainer) Then
-                    targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
-                    For Each objEntity As Object In objContainer.GetParentEntities().Values.Reverse()
-                        If targetType.IsInstanceOfType(objEntity) Then
-                            targetEntity = objEntity
-                            Exit For
-                        End If
-                    Next
-                End If
-            End If
-
+            'todo: there is redundancy in the anonymous methods
             If TypeOf btn Is IconActionButton Then
                 AddHandler DirectCast(btn, IconActionButton).Click, Sub(s As Object, e As EventArgs)
                                                                         Try
+                                                                            Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
+                                                                            Dim paramInstances As New List(Of Object)
+                                                                            For Each objParam As ParameterInfo In params
+                                                                                Dim paramType As Type = objParam.ParameterType
+                                                                                If paramType Is GetType(AriciePortalModuleBase) Then
+                                                                                    paramInstances.Add(Me.ParentModule)
+                                                                                ElseIf paramType Is GetType(AriciePropertyEditorControl) Then
+                                                                                    paramInstances.Add(Me)
+                                                                                ElseIf paramType Is GetType(AricieFieldEditorControl) Then
+                                                                                    paramInstances.Add(Me.ParentAricieField)
+                                                                                Else
+                                                                                    Dim contextParam As Object = Me.GetContext(paramType)
+                                                                                    paramInstances.Add(contextParam)
+                                                                                End If
+                                                                            Next
+                                                                            Dim targetEntity As Object = Me.DataSource
+
+                                                                            If TypeOf Me.DataSource Is SubPathContainer Then
+                                                                                Dim objContainer As SubPathContainer = DirectCast(Me.DataSource, SubPathContainer)
+                                                                                Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
+                                                                                If targetType IsNot GetType(SubPathContainer) Then
+                                                                                    targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+                                                                                    For Each objEntity As Object In objContainer.GetParentEntities().Values.Reverse()
+                                                                                        If targetType.IsInstanceOfType(objEntity) Then
+                                                                                            targetEntity = objEntity
+                                                                                            Exit For
+                                                                                        End If
+                                                                                    Next
+                                                                                End If
+                                                                            End If
                                                                             objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
                                                                         Catch ex As Exception
                                                                             Me.ProcessException(ex)
@@ -1149,6 +1169,36 @@ Namespace UI.WebControls
             ElseIf TypeOf btn Is CommandButton Then
                 AddHandler DirectCast(btn, CommandButton).Click, Sub(s As Object, e As EventArgs)
                                                                      Try
+                                                                         Dim params As ParameterInfo() = objButtonInfo.Method.GetParameters()
+                                                                         Dim paramInstances As New List(Of Object)
+                                                                         For Each objParam As ParameterInfo In params
+                                                                             Dim paramType As Type = objParam.ParameterType
+                                                                             If paramType Is GetType(AriciePortalModuleBase) Then
+                                                                                 paramInstances.Add(Me.ParentModule)
+                                                                             ElseIf paramType Is GetType(AriciePropertyEditorControl) Then
+                                                                                 paramInstances.Add(Me)
+                                                                             ElseIf paramType Is GetType(AricieFieldEditorControl) Then
+                                                                                 paramInstances.Add(Me.ParentAricieField)
+                                                                             Else
+                                                                                 Dim contextParam As Object = Me.GetContext(paramType)
+                                                                                 paramInstances.Add(contextParam)
+                                                                             End If
+                                                                         Next
+                                                                         Dim targetEntity As Object = Me.DataSource
+
+                                                                         If TypeOf Me.DataSource Is SubPathContainer Then
+                                                                             Dim objContainer As SubPathContainer = DirectCast(Me.DataSource, SubPathContainer)
+                                                                             Dim targetType As Type = objButtonInfo.Method.GetBaseDefinition().DeclaringType
+                                                                             If targetType IsNot GetType(SubPathContainer) Then
+                                                                                 targetEntity = DirectCast(Me.DataSource, SubPathContainer).OriginalEntity
+                                                                                 For Each objEntity As Object In objContainer.GetParentEntities().Values.Reverse()
+                                                                                     If targetType.IsInstanceOfType(objEntity) Then
+                                                                                         targetEntity = objEntity
+                                                                                         Exit For
+                                                                                     End If
+                                                                                 Next
+                                                                             End If
+                                                                         End If
                                                                          objButtonInfo.Method.Invoke(targetEntity, paramInstances.ToArray)
                                                                      Catch ex As Exception
                                                                          Me.ProcessException(ex)

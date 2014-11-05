@@ -14,12 +14,16 @@ Namespace UI.WebControls
     Public Class SubPathContainer
         Implements ISelector(Of KeyValuePair(Of String, IconInfo))
         Implements IExpressionVarsProvider
+        Implements IContextProvider
+
+
 
 
         Private _SubEntities As New Dictionary(Of String, Object)
 
         <Browsable(False)> _
         Public Property OriginalPath As String = ""
+
 
         '<AutoPostBack()> _
         <LabelMode(LabelMode.Top)> _
@@ -38,6 +42,19 @@ Namespace UI.WebControls
             End Get
             Set(value As Object)
                 '_SubEntity = value
+            End Set
+        End Property
+
+        <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("")> _
+       <Editor(GetType(BreadCrumbsEditControl), GetType(EditControl))> _
+       <Selector("Key", "Value", False, True, "Root", "", True, True)> _
+        Public Property BottomPath As String
+            Get
+                Return Path
+            End Get
+            Set(value As String)
+                Path = value
             End Set
         End Property
 
@@ -107,7 +124,7 @@ Namespace UI.WebControls
             Dim dicoBuilder As New StringBuilder()
             Dim split As String() = Me.OriginalPath.Split("."c)
             Select Case propertyName
-                Case "Path"
+                Case "Path", "BottomPath"
                     For i As Integer = LBound(split) To UBound(split) Step 1
                         Try
                             Dim segment As String = split(i)
@@ -173,5 +190,17 @@ Namespace UI.WebControls
                 existingVars(objPair.Key) = objPair.Value
             Next
         End Sub
+
+        Public Function GetContext(objType As Type) As Object Implements IContextProvider.GetContext
+            Return (From objIContext In Me.GetParentEntities().Values.OfType(Of IContextProvider)() _
+                    Where objIContext.HasContect(objType) _
+                    Select objIContext.GetContext(objType)).FirstOrDefault()
+        End Function
+
+        Public Function HasContect(objType As Type) As Boolean Implements IContextProvider.HasContect
+            Return Me.GetParentEntities().Values.OfType(Of IContextProvider)() _
+                .Any(Function(contextProvider) _
+                         contextProvider.HasContect(objType))
+        End Function
     End Class
 End Namespace

@@ -22,7 +22,8 @@ Namespace Entities
         Member = 128
         Track = 256
         Log = 512 + 256
-        Normal = 512 + 256 + 256 + 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
+        NewWindow = 1024
+        Normal = 1024 + 512 + 256 + 256 + 128 + 64 + 32 + 16 + 8 + 4 + 2 + 1
     End Enum
 
 

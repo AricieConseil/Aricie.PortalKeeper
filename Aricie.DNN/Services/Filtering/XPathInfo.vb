@@ -7,6 +7,10 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Web.UI.WebControls
 Imports Aricie.ComponentModel
+Imports System.Web
+Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls
+Imports HtmlAgilityPack
 
 Namespace Services.Filtering
 
@@ -26,15 +30,47 @@ Namespace Services.Filtering
 
     End Class
 
+    Public Enum XPathMode
+        ReturnResults
+        UpdateResults
+    End Enum
+
+    Public Enum XPathUpdateOutput
+        DocumentString
+        SelectionString
+    End Enum
+
+    <Serializable()> _
+    Public Class UpdateXPathInfo
+        Inherits XPathInfo
+
+        <Browsable(False)> _
+        Public Overrides Property XPathMode As XPathMode
+            Get
+                Return Filtering.XPathMode.UpdateResults
+            End Get
+            Set(value As XPathMode)
+                'do nothing
+            End Set
+        End Property
+
+    End Class
+
 
     ''' <summary>
     ''' xpath selection helper class
     ''' </summary>
     ''' <remarks></remarks>
+    <ActionButton(IconName.Code, IconOptions.Normal)> _
+    <DefaultProperty("SelectExpression")> _
     <Serializable()> _
     Public Class XPathInfo
 
         Public Sub New()
+        End Sub
+
+        Public Sub New(objMode As XPathMode)
+            Me.XPathMode = objMode
         End Sub
 
         Public Sub New(selectExpression As String, isSingle As Boolean, isHtml As Boolean)
@@ -42,6 +78,12 @@ Namespace Services.Filtering
             Me._SingleSelect = isSingle
             Me._IsHtmlContent = isHtml
         End Sub
+
+
+        Public Overridable Property XPathMode As XPathMode = XPathMode.ReturnResults
+
+        <ConditionalVisible("XPathMode", False, True, XPathMode.UpdateResults)> _
+        Public Property OutputType As XPathUpdateOutput = XPathUpdateOutput.DocumentString
 
         ''' <summary>
         ''' XPath selection expression
@@ -52,7 +94,11 @@ Namespace Services.Filtering
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
            <LineCount(2)> _
            <Width(500)> _
+           <Required(True)> _
         Public Property SelectExpression() As String = ""
+
+        <ConditionalVisible("XPathMode", False, True, XPathMode.UpdateResults)> _
+        Public Property Filter As New ExpressionFilterInfo()
 
         ''' <summary>
         ''' Single node selection 
@@ -78,7 +124,7 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ExtendedCategory("SubSelects")> _
+        <ExtendedCategory("XPathSettings")> _
         Public Property SelectTree() As Boolean
 
         ''' <summary>
@@ -87,7 +133,7 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ExtendedCategory("SubSelects")> _
+        <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("SelectTree", False, True)> _
         <LabelMode(LabelMode.Top), Orientation(Orientation.Vertical)> _
         <CollectionEditor(False, True, True, True, 10)> _
@@ -100,7 +146,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("Simulation")> _
-                Public Property Simulation() As Boolean
+        Public Property Simulation() As Boolean
 
         ''' <summary>
         ''' Simulation data
@@ -150,7 +196,12 @@ Namespace Services.Filtering
         Public Function DoSelect(ByVal source As IXPathNavigable) As Object
             If source IsNot Nothing And Not String.IsNullOrEmpty(Me._SelectExpression) Then
                 Dim navigator As XPathNavigator = source.CreateNavigator()
-                Return Me.SelectNavigate(navigator)
+                Dim toReturn As Object = Me.SelectNavigate(navigator)
+                If Me.XPathMode = Filtering.XPathMode.UpdateResults AndAlso Me.OutputType = XPathUpdateOutput.DocumentString Then
+                    navigator.MoveToRoot()
+                    Return navigator.OuterXml
+                End If
+                Return toReturn
             End If
             Return Nothing
         End Function
@@ -162,9 +213,10 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function DoSelect(ByVal source As String) As Object
-            If Not String.IsNullOrEmpty(source) And Not String.IsNullOrEmpty(Me._SelectExpression) Then
-                Dim navigator As XPathNavigator = Me.GetNavigable(source).CreateNavigator
-                Return Me.SelectNavigate(navigator)
+
+            If Not String.IsNullOrEmpty(source) AndAlso Not String.IsNullOrEmpty(Me._SelectExpression) Then
+                Dim navigable As IXPathNavigable = Me.GetNavigable(source)
+                Return DoSelect(navigable)
             End If
             Return Nothing
         End Function
@@ -177,10 +229,17 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         Public Function SelectNavigate(ByVal navigator As XPathNavigator) As Object
             Dim results As XPathNodeIterator = navigator.Select(Me._SelectExpression)
+
             If Not Me._SelectTree Then
                 Dim multiString As New List(Of String)
                 For Each result As XPathNavigator In results
-                    multiString.Add(result.Value)
+                    If XPathMode = Filtering.XPathMode.UpdateResults Then
+                        result.SetValue(Me.Filter.Process(result.Value))
+                    End If
+                    multiString.Add(HttpUtility.HtmlDecode(result.Value))
+                    If SingleSelect Then
+                        Exit For
+                    End If
                 Next
                 If Not _SingleSelect Then
                     Return multiString
@@ -191,13 +250,14 @@ Namespace Services.Filtering
                 End If
             Else
                 Dim multiDico As New List(Of SerializableDictionary(Of String, String))
+
                 For Each result As XPathNavigator In results
                     Dim currentDico As New SerializableDictionary(Of String, String)
-                    For Each subSelect As KeyValuePair(Of String, XPathInfo) In Me._SubSelects
-                        Dim objSubResult As Object = subSelect.Value.SelectNavigate(result)
+                    For Each subSelectPair As KeyValuePair(Of String, XPathInfo) In Me._SubSelects
+                        Dim objSubResult As Object = subSelectPair.Value.SelectNavigate(result)
                         If objSubResult IsNot Nothing Then
                             Dim subResult As String = DirectCast(objSubResult, String)
-                            currentDico(subSelect.Key) = subResult
+                            currentDico(subSelectPair.Key) = subResult
                         End If
                     Next
                     multiDico.Add(currentDico)
@@ -214,19 +274,25 @@ Namespace Services.Filtering
 
 
         Public Function GetOutputType() As Type
-            If Not Me._SelectTree Then
-                If Not _SingleSelect Then
-                    Return GetType(List(Of String))
-                Else
+            Select Case XPathMode
+                Case Filtering.XPathMode.ReturnResults
+                    If Not Me._SelectTree Then
+                        If Not _SingleSelect Then
+                            Return GetType(List(Of String))
+                        Else
+                            Return GetType(String)
+                        End If
+                    Else
+                        If Not _SingleSelect Then
+                            Return GetType(List(Of SerializableDictionary(Of String, String)))
+                        Else
+                            Return GetType(SerializableDictionary(Of String, String))
+                        End If
+                    End If
+                Case Filtering.XPathMode.UpdateResults
                     Return GetType(String)
-                End If
-            Else
-                If Not _SingleSelect Then
-                    Return GetType(List(Of SerializableDictionary(Of String, String)))
-                Else
-                    Return GetType(SerializableDictionary(Of String, String))
-                End If
-            End If
+            End Select
+            Return GetType(String)
         End Function
 
 
@@ -238,7 +304,7 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         Public Function GetNavigable(ByVal source As String) As IXPathNavigable
             If IsHtmlContent Then
-                Dim doc As New HtmlAgilityPack.HtmlDocument()
+                Dim doc As New HtmlDocument()
                 doc.LoadHtml(source)
                 Return doc
             Else

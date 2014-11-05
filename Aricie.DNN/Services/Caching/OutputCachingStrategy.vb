@@ -4,6 +4,8 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports System.Web
 Imports System.Text
+Imports System.Globalization
+Imports Aricie.Services
 
 Namespace Services.Caching
     <Serializable()> _
@@ -17,7 +19,9 @@ Namespace Services.Caching
         Private _VaryByMode As VaryByMode = Caching.VaryByMode.AllButList
         Private _VaryByList As List(Of String)
         Private _VaryBy As String = ""
-        Private _VaryByBrowser As Boolean = True
+        Private _VaryByHeadersList As New List(Of String)
+        Private _VaryByHeaders As String = ""
+
         Private _Verbs As String = "get"
         Private _VerbsList As List(Of String)
 
@@ -32,6 +36,7 @@ Namespace Services.Caching
             End Set
         End Property
 
+        <Browsable(False)> _
         Public Property Mode() As OutputCacheMode
             Get
                 Return _Mode
@@ -55,6 +60,7 @@ Namespace Services.Caching
             End Get
         End Property
 
+        <ExtendedCategory("Scope")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(2), Width(400), LabelMode(LabelMode.Top)> _
         Public Property Verbs() As String
@@ -67,6 +73,7 @@ Namespace Services.Caching
             End Set
         End Property
 
+        <ExtendedCategory("Scope")> _
         Public Property EmptyPathInfoOnly() As Boolean
             Get
                 Return _EmptyPathInfoOnly
@@ -76,9 +83,8 @@ Namespace Services.Caching
             End Set
         End Property
 
-
-
-        Public Property EmptyQueryStringOnly() As Boolean
+        <ExtendedCategory("Scope")> _
+         Public Property EmptyQueryStringOnly() As Boolean
             Get
                 Return _EmptyQueryStringOnly
             End Get
@@ -87,7 +93,11 @@ Namespace Services.Caching
             End Set
         End Property
 
+        <ExtendedCategory("Policy")> _
+        Public Property Cacheability As HttpCacheability = HttpCacheability.Public
 
+
+        <ExtendedCategory("Policy")> _
         Public Property Duration() As STimeSpan
             Get
                 Return _Duration
@@ -98,17 +108,12 @@ Namespace Services.Caching
         End Property
 
 
-        Public Property VaryByMode() As VaryByMode
-            Get
-                Return _VaryByMode
-            End Get
-            Set(ByVal value As VaryByMode)
-                _VaryByMode = value
-            End Set
-        End Property
+        <ExtendedCategory("Policy")> _
+        Public Property VaryByStar As Boolean
+
 
         <Browsable(False)> _
-              Public ReadOnly Property VaryByList() As List(Of String)
+        Public ReadOnly Property VaryByList() As List(Of String)
             Get
                 If _VaryByList Is Nothing Then
                     SyncLock _VaryBy
@@ -121,9 +126,11 @@ Namespace Services.Caching
             End Get
         End Property
 
+        <ExtendedCategory("Policy")> _
+        <ConditionalVisible("VaryByStar", True, True)> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(3), Width(400), LabelMode(LabelMode.Top)> _
-        Public Property VaryBy() As String
+        Public Property VaryBy As String
             Get
                 Return _VaryBy
             End Get
@@ -133,14 +140,47 @@ Namespace Services.Caching
             End Set
         End Property
 
-        Public Property VaryByBrowser() As Boolean
+        <ExtendedCategory("Policy")> _
+        Public Property VaryByBrowser As Boolean = True
+       
+        <ExtendedCategory("Policy")> _
+        Public Property VaryByUserLanguage As Boolean
+
+        <ExtendedCategory("Policy")> _
+        Public Property VaryByUserAgent As Boolean
+
+        <ExtendedCategory("Policy")> _
+        Public Property VaryByUserCharSet As Boolean
+
+        <ExtendedCategory("Policy")> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+            <LineCount(3), Width(400), LabelMode(LabelMode.Top)> _
+        Public Property VaryByHeaders As String
             Get
-                Return _VaryByBrowser
+                Return _VaryByHeaders
             End Get
-            Set(ByVal value As Boolean)
-                _VaryByBrowser = value
+            Set(value As String)
+                _VaryByHeaders = value
+                _VaryByHeadersList = Nothing
             End Set
         End Property
+
+        <Browsable(False)> _
+        Public ReadOnly Property VaryByHeadersList() As List(Of String)
+            Get
+                If _VaryByList Is Nothing Then
+                    SyncLock _VaryBy
+                        If _VaryByHeadersList Is Nothing Then
+                            _VaryByHeadersList = Common.ParseStringList(_VaryByHeaders)
+                        End If
+                    End SyncLock
+                End If
+                Return _VaryByHeadersList
+            End Get
+        End Property
+
+        <ExtendedCategory("Policy")> _
+        Public Property ClearCookies As Boolean = True
 
 
         Public Function CalculateVaryByKey(ByVal request As HttpRequest) As String
@@ -160,6 +200,79 @@ Namespace Services.Caching
         End Function
 
 
+        Public Function MatchRequest(objContext As HttpContext) As Boolean
+            Dim currentVerb As String = objContext.Request.HttpMethod.ToUpperInvariant
+            If VerbsList.Any(Function(objVerb) objVerb.ToUpperInvariant = currentVerb) Then
+                If (Not EmptyQueryStringOnly) OrElse objContext.Request.Url.Query.IsNullOrEmpty() Then
+                    Return True
+                End If
+            End If
+            Return False
+        End Function
+
+        Public Sub SetCache(objContext As HttpContext)
+            Dim objResponse As HttpResponse = objContext.Response
+            If Me.ClearCookies Then
+                objResponse.Cookies.Clear()
+            End If
+            objResponse.Cache.SetCacheability(Me.Cacheability)
+            Dim timeStamp As DateTime = Now
+            Dim expiration As DateTime = timeStamp.Add(Me.Duration)
+            objResponse.Cache.SetExpires(expiration)
+
+            objResponse.Cache.SetValidUntilExpires(True)
+            If Me.VaryByStar Then
+                objResponse.Cache.VaryByParams("*") = True
+            Else
+                For Each objVaryBy As String In Me.VaryByList
+                    objResponse.Cache.VaryByParams(objVaryBy) = True
+                Next
+            End If
+            If VaryByUserLanguage Then
+                objResponse.Cache.VaryByHeaders.UserLanguage = True
+            End If
+            If VaryByUserAgent Then
+                objResponse.Cache.VaryByHeaders.UserAgent = True
+            End If
+            If VaryByUserCharSet Then
+                objResponse.Cache.VaryByHeaders.UserCharSet = True
+            End If
+            For Each objHeader As String In VaryByHeadersList
+                objResponse.Cache.VaryByHeaders(objHeader) = True
+            Next
+
+            If Me.VaryByBrowser Then
+                objResponse.Cache.SetVaryByCustom("browser")
+            End If
+
+            Dim callBackInfo As New ValidationCallBackInfo(timeStamp, True, expiration)
+
+            objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)
+
+
+        End Sub
+
+
+        Public Shared Sub ValidateCache(ByVal context As HttpContext, ByVal data As Object, ByRef status As HttpValidationStatus)
+            Try
+              
+                If context.Request.IsAuthenticated Then
+                    status = HttpValidationStatus.IgnoreThisRequest
+                Else
+                    Dim callBackInfo As ValidationCallBackInfo = DirectCast(data, ValidationCallBackInfo)
+                    If callBackInfo Is Nothing OrElse callBackInfo.ValidateCacheCallback(context) Then
+                        status = HttpValidationStatus.Valid
+                    Else
+                        status = HttpValidationStatus.IgnoreThisRequest
+                    End If
+                End If
+            Catch ex As Exception
+                status = HttpValidationStatus.IgnoreThisRequest
+                ExceptionHelper.LogException(ex)
+            End Try
+
+        End Sub
+
 
         Private Class VaryByListAttributes
             Implements IAttributesProvider
@@ -172,4 +285,80 @@ Namespace Services.Caching
         End Class
 
     End Class
+
+
+    Public Class ValidationCallBackInfo
+
+
+        Private Shared _HeaderSeparators() As Char = New Char() {","c, " "c}
+
+        Public Sub New(ByVal objTimestamp As DateTime, ByVal setExpiration As Boolean, ByVal objExpires As DateTime)
+            Me.Timestamp = objTimestamp
+            Me.Expiration = objExpires
+            Me.IsExpiresSet = setExpiration
+        End Sub
+
+        Public Property Timestamp As DateTime
+        Public Property IsExpiresSet As Boolean
+        Public Property Expiration As DateTime
+        'Public FriendlyUrl As String = ""
+
+
+
+        Public Function ValidateCacheCallback(ByVal context As HttpContext) As Boolean
+            Dim headerValues As String() = Nothing
+            Dim cacheControlHeader As String = context.Request.Headers.Item("Cache-Control")
+            If (cacheControlHeader IsNot Nothing) Then
+                headerValues = cacheControlHeader.Split(_HeaderSeparators)
+                Dim headerValue As String
+                For num As Integer = 0 To headerValues.Length - 1
+                    headerValue = headerValues(num)
+                    If headerValue = "no-cache" OrElse headerValue = "no-store" Then
+                        Return False
+                    End If
+                    If headerValue.StartsWith("max-age=") Then
+                        Dim maxAgeSeconds As Integer
+                        Try
+                            maxAgeSeconds = Convert.ToInt32(headerValue.Substring(8), CultureInfo.InvariantCulture)
+                        Catch
+                            maxAgeSeconds = -1
+                        End Try
+                        If (maxAgeSeconds >= 0) Then
+                            Dim currentAgeSeconds As Integer = CInt(((context.Timestamp.Ticks - Me.Timestamp.Ticks) \ 10000000))
+                            If (currentAgeSeconds >= maxAgeSeconds) Then
+                                Return False
+                            End If
+                        End If
+                    ElseIf headerValue.StartsWith("min-fresh=") Then
+                        Dim num5 As Integer
+                        Try
+                            num5 = Convert.ToInt32(headerValue.Substring(10), CultureInfo.InvariantCulture)
+                        Catch
+                            num5 = -1
+                        End Try
+                        If (num5 >= 0 AndAlso Me.IsExpiresSet) Then
+                            Dim num7 As Integer = CInt((Me.Expiration.Ticks - context.Timestamp.Ticks) \ 10000000)
+                            If (num7 < num5) Then
+                                Return False
+                            End If
+                        End If
+                    End If
+                Next
+            End If
+            Dim pragmaHeader As String = context.Request.Headers.Item("Pragma")
+            If (pragmaHeader IsNot Nothing) Then
+                headerValues = pragmaHeader.Split(_HeaderSeparators)
+                For num As Integer = 0 To headerValues.Length - 1
+                    If (headerValues(num) = "no-cache") Then
+                        Return False
+                    End If
+                Next
+            End If
+            Return True
+
+        End Function
+
+
+    End Class
+
 End Namespace

@@ -22,45 +22,6 @@ Imports System.Linq
 Imports System.Text
 
 Namespace UI.WebControls.EditControls
-
-
-    Public Interface IPathProvider
-
-        Function GetPath() As String
-
-    End Interface
-
-
-    Public Class IndexedDiv
-        Inherits HtmlGenericControl
-        Implements IPathProvider
-
-        Private _Path As String = Nothing
-        Private _Index As String = ""
-
-        Public Sub New(index As String)
-            MyBase.New("div")
-            _Index = index
-        End Sub
-
-
-
-        Public Function GetPath() As String Implements IPathProvider.GetPath
-            If _Path Is Nothing Then
-                Dim parentPath As String = CollectionEditControl.GetParentPath(Me)
-                If Not parentPath.IsNullOrEmpty() Then
-                    Dim indexPath As String = CollectionEditControl.GetIndexPath(_Index)
-                    _Path = parentPath & indexPath
-                End If
-            End If
-            Return _Path
-        End Function
-
-
-
-
-    End Class
-
     Public MustInherit Class CollectionEditControl
         Inherits AricieEditControl
         Implements INamingContainer, IPostBackEventHandler, IPathProvider
@@ -190,12 +151,15 @@ Namespace UI.WebControls.EditControls
             Get
                 EnsureChildControls()
                 If _PageIndex = -1 Then
-                    Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("pagerIndex" & Me.ClientID.GetHashCode())
+                    Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
+                    Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
                     If cookie IsNot Nothing Then
                         Integer.TryParse(cookie.Value, _PageIndex)
                     End If
                     If _PageIndex = -1 Then
                         _PageIndex = 0
+                    ElseIf _PageIndex > Me.CollectionValue.Count \ _PageSize Then
+                        Me.PageIndex = _PageIndex - 1
                     End If
                 End If
                 Return _PageIndex
@@ -816,9 +780,9 @@ Namespace UI.WebControls.EditControls
 
             Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
 
-            accordionHeaderText = String.Format("{0} {2} {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText, ComponentModel.UIConstants.TITLE_SEPERATOR)
+            accordionHeaderText = String.Format("{0} {2} {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText, UIConstants.TITLE_SEPERATOR)
             Dim accordeonSB = New StringBuilder()
-            Dim lstTerms() As String = accordionHeaderText.Split(New String() {ComponentModel.UIConstants.TITLE_SEPERATOR}, StringSplitOptions.None)
+            Dim lstTerms() As String = accordionHeaderText.Split(New String() {UIConstants.TITLE_SEPERATOR}, StringSplitOptions.None)
 
             For Each myAccordeonItem As String In lstTerms
                 accordeonSB.AppendFormat("<span>{0}</span>", myAccordeonItem.Trim())

@@ -36,8 +36,7 @@ Namespace ComponentModel
             End Select
         End Sub
 
-
-        Public Property TypeName() As String
+        Public Overridable Property TypeName() As String
             Get
                 Return _TypeName
             End Get
@@ -48,7 +47,7 @@ Namespace ComponentModel
 
 
 
-        Public Property MethodName() As String
+        Public Overridable Property MethodName() As String
             Get
                 Return _MethodName
             End Get
@@ -58,7 +57,17 @@ Namespace ComponentModel
         End Property
 
         Public Function GetDelegate() As [Delegate]
-            Return ReflectionHelper.CreateDelegate(Of T)(Me)
+            'Return ReflectionHelper.CreateDelegate(Of T)(Me)
+            If Me.InvocationList.Count = 0 Then
+                Return ReflectionHelper.CreateDelegate(Of T)(Me.TypeName, Me.MethodName)
+            Else
+                Dim tempList As New List(Of [Delegate])(Me.InvocationList.Count)
+                For Each subDelegate As DelegateInfo(Of T) In Me.InvocationList
+                    tempList.Add(subDelegate.GetDelegate())
+                Next
+                Return [Delegate].Combine(tempList.ToArray())
+            End If
+
         End Function
 
         <Browsable(False)> _
