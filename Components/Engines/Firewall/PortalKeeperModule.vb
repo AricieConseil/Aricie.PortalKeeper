@@ -16,12 +16,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Public Const DebugType As String = "PKP"
         Public Const PKPDebugType As String = "PKP"
 
-        Public Class TimingSteps
+        'Public Class TimingSteps
 
-            Public Const StartPKPFlow As String = "Start PKP FLow"
-            Public Const EndDoS As String = "End DoS Evaluation"
+        '    Public Const StartPKPFlow As String = "Start PKP FLow"
+        '    Public Const EndDoS As String = "End DoS Evaluation"
 
-        End Class
+        'End Class
 
     End Class
 
@@ -53,31 +53,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-
-
-
         Private Sub OnBeginRequest(ByVal sender As Object, ByVal e As EventArgs)
             Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
-            Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
 
-            Dim enableStopWatch As Boolean = keeperContext.EnableStopWatch
-            Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
-            If keeperContext.CurrentFirewallConfig.Enabled AndAlso Not requestOutInScope Then
+            Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
+            keeperContext.SetEngine(keeperContext.CurrentFirewallConfig)
+            'Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
+            If keeperContext.CurrentFirewallConfig.Enabled AndAlso Not keeperContext.RequestOutOfScope Then
                 If Not Me.SecondaryModule Then
-                    If enableStopWatch Then
+
+                    If keeperContext.LoggingLevel > LoggingLevel.None Then
                         Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
-                        Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.StartPKPFlow, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId, objPair)
-                        PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        keeperContext.LogStartEngine(objPair)
                     End If
                     keeperContext.Init(keeperContext.CurrentFirewallConfig)
                     Me.ProcessRecovery(keeperContext)
                     Dim dosMatched As Boolean = False
                     If keeperContext.CurrentFirewallConfig.DosSettings.Enabled Then
+                        keeperContext.LogStart("DoS Evaluation", False)
                         dosMatched = Me.ProcessDenialOfService(keeperContext)
-                        If enableStopWatch Then
+                        If keeperContext.LoggingLevel > LoggingLevel.Simple Then
                             Dim objPair As New KeyValuePair(Of String, String)("Dos Matched", dosMatched.ToString)
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
-                            PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            'Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
+                            'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            keeperContext.LogEnd("Dos Evaluation", False, False, objPair)
                         End If
                     End If
                     If Not dosMatched Then
@@ -190,12 +189,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Protected Sub ProcessStep(ByVal context As HttpContext, ByVal newStep As RequestEvent, ByVal endSequence As Boolean)
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
             If (Not keeperContext.Disabled AndAlso keeperContext.CurrentFirewallConfig.Enabled) AndAlso Not keeperContext.RequestOutOfScope Then
-
-                keeperContext.CurrentFirewallConfig.ProcessRules(keeperContext, newStep, endSequence)
-
+                keeperContext.CurrentFirewallConfig.ProcessRules(keeperContext, newStep, False)
+                If endSequence Then
+                    Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
+                    Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)
+                    keeperContext.LogEndEngine(objPair, objPair2)
+                End If
             End If
-
-
         End Sub
 
 

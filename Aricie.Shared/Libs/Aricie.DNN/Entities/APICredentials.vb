@@ -23,7 +23,7 @@ Namespace Entities
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <Required(True)> _
         <Width(500)> _
-        <DotNetNuke.UI.WebControls.MaxLength(256)> _
+        <MaxLength(256)> _
         Public Property Key() As String
             Get
                 Return _Key
@@ -41,7 +41,7 @@ Namespace Entities
         <Required(True)> _
         <LineCount(2)> _
         <Width(500)> _
-        <DotNetNuke.UI.WebControls.MaxLength(256)> _
+        <MaxLength(256)> _
         Public Property Secret() As String
             Get
                 Return _Secret
@@ -87,7 +87,7 @@ Namespace Entities
 
         <Browsable(False)> _
         <XmlIgnore()> _
-        Public ReadOnly Property Enabled() As Boolean
+        Public Overridable ReadOnly Property Enabled() As Boolean
             Get
                 Return Not _Disabled AndAlso Not String.IsNullOrEmpty(Me._Key) AndAlso Not String.IsNullOrEmpty(Me._Secret)
             End Get

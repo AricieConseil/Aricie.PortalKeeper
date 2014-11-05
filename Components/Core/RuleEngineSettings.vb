@@ -4,7 +4,6 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Diagnostics
-Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
@@ -54,10 +53,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
        
     End Class
 
+    Public Enum LoggingLevel
+        None = 0
+        Simple = 1
+        Steps = 1 + 2
+        Detailed = 1 + 2 + 4
+    End Enum
+
+
     <Serializable()> _
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
         Implements IExpressionVarsProvider
+        Implements IContextProvider
+
+
 
         Public Sub New()
             'Me.ImportDefaultProviders()
@@ -97,27 +107,33 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
-        Public Property EnableSimpleLogs() As Boolean
+        Public Property LoggingLevel As LoggingLevel = LoggingLevel.None
+
+        ' <SortOrder(1000)> _
+        ' <ExtendedCategory("TechnicalSettings")> _
+        ' Public Property EnableSimpleLogs() As Boolean
+
+
+        ' <SortOrder(1000)> _
+        ' <ExtendedCategory("TechnicalSettings")> _
+        '<ConditionalVisible("EnableSimpleLogs", False, True)> _
+        ' Public Property EnableStopWatch() As Boolean
 
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
-       <ConditionalVisible("EnableSimpleLogs", False, True)> _
-        Public Property EnableStopWatch() As Boolean
-
-
-        <SortOrder(1000)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <ConditionalVisible("EnableSimpleLogs", False, True)> _
+        <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
         Public Property LogDump As Boolean
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
         <ConditionalVisible("LogDump", False, True)> _
         Public Property DumpAllVars() As Boolean
 
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
         <ConditionalVisible("LogDump", False, True)> _
          <ConditionalVisible("DumpAllVars", True, True)> _
           <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
@@ -166,21 +182,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Providers")> _
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-        <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
-        <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Providers", "Condition")> _
         <SortOrder(900)> _
         <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
-        Public Property ConditionProviders() As ProviderList(Of ConditionProviderConfig(Of TEngineEvents)) = New ProviderList(Of ConditionProviderConfig(Of TEngineEvents))
+        Public Property ConditionProviders() As New ProviderList(Of ConditionProviderConfig(Of TEngineEvents))
 
-        <ExtendedCategory("Providers")> _
-                       <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(False, False, True, True, 10, CollectionDisplayStyle.Accordion, True)> _
-            <LabelMode(LabelMode.Top)> _
-            <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
+        <ExtendedCategory("Providers", "Action")> _
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         <SortOrder(900)> _
-        Public Property ActionProviders() As ProviderList(Of ActionProviderConfig(Of TEngineEvents)) = New ProviderList(Of ActionProviderConfig(Of TEngineEvents))
+        Public Property ActionProviders() As New ProviderList(Of ActionProviderConfig(Of TEngineEvents))
 
         <ExtendedCategory("Providers")> _
         <ActionButton(IconName.Repeat, IconOptions.Normal)>
@@ -223,6 +233,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If objInterfaces.Contains(GetType(IConditionProvider(Of TEngineEvents))) Then
                             If Me.ConditionProviders.Any(Function(objProvider) objProvider.ProviderType Is objType) Then
                                 found = True
+                            Else
+                                found = False
                             End If
                             If Not found Then
                                 Me.ConditionProviders.Add(New ConditionProviderConfig(Of TEngineEvents)(objType))
@@ -231,6 +243,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         ElseIf objInterfaces.Contains(GetType(IActionProvider(Of TEngineEvents))) Then
                             If Me.ActionProviders.Any(Function(objProvider) objProvider.ProviderType Is objType) Then
                                 found = True
+                            Else
+                                found = False
                             End If
                             If Not found Then
                                 Me.ActionProviders.Add(New ActionProviderConfig(Of TEngineEvents)(objType))
@@ -248,26 +262,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Function BatchRun(events As IEnumerable(Of TEngineEvents), userParams As IDictionary(Of String, Object)) As PortalKeeperContext(Of TEngineEvents)
-            Dim objEnableStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
 
-            Dim existingContext As New PortalKeeperContext(Of TEngineEvents)
-            If objEnableStopWatch Then
-                'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Init", Me.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, existingContext.FlowId)
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
-            existingContext.Init(Me, userParams)
-            If objEnableStopWatch Then
-                'Dim objStep As New StepInfo(Debug.RequestTiming, "Start " & configRules.Name & " " & objEvent.ToString(CultureInfo.InvariantCulture), WorkingPhase.InProgress, False, False, -1, Me.FlowId)
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End {0} Init", Me.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, existingContext.FlowId)
-                PerformanceLogger.Instance.AddDebugInfo(objStep)
-            End If
-            Me.BatchRun(events, existingContext)
+            Dim newContext As PortalKeeperContext(Of TEngineEvents) = Me.InitContext(userParams)
+          
+            Me.BatchRun(events, newContext)
 
-            Return existingContext
+            Return newContext
         End Function
+
+
+       
+
+        Public Function InitContext(Optional userParams As IDictionary(Of String, Object) = Nothing) As PortalKeeperContext(Of TEngineEvents)
+            Dim toReturn As New PortalKeeperContext(Of TEngineEvents)
+            toReturn.SetEngine(Me)
+            toReturn.LogStartEngine()
+            toReturn.Init(Me, userParams)
+           
+            Return toReturn
+        End Function
+
 
         Public Sub BatchRun(events As IEnumerable(Of TEngineEvents), ByRef existingContext As PortalKeeperContext(Of TEngineEvents))
             For Each eventStep As TEngineEvents In events
@@ -300,6 +314,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
+        Public Function HasContect(ByVal objType As Type) As Boolean Implements IContextProvider.HasContect
+            Return objType Is GetType(PortalKeeperContext(Of TEngineEvents))
+        End Function
 
+        Public Function GetContext(ByVal objType As Type) As Object Implements IContextProvider.GetContext
+
+            Return InitContext(Nothing)
+        End Function
     End Class
 End Namespace

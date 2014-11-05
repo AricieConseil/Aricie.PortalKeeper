@@ -94,7 +94,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim params As SerializableDictionary(Of String, String) = Me._InputParameters.EvaluateGeneric(actionContext, actionContext)
             Dim headersLookup As IContextLookup = actionContext

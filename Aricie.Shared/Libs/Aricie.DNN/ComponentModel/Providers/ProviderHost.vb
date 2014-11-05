@@ -27,7 +27,7 @@ Namespace ComponentModel
         <ProvidersSelector()> _
         <LabelMode(LabelMode.Top)> _
         <TrialLimited(Security.Trial.TrialPropertyMode.NoAdd Or Security.Trial.TrialPropertyMode.NoDelete)> _
-        Public Property Instances() As SerializableList(Of TSettings)
+        Public Overridable Property Instances() As SerializableList(Of TSettings)
             Get
                 Return _Instances
             End Get

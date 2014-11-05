@@ -6,8 +6,6 @@ Imports System.IO
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-
     <ActionButton(IconName.HddO, IconOptions.Normal)> _
    <DisplayName("File Manager Action")> _
    <Description("This provider allows to browse or delete files and folders, given a parent path by dynamic expressions")> _
@@ -34,7 +32,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim sourceMapPath As String = Me.GetFileMapPath(actionContext)
             Select Case Mode
@@ -97,9 +95,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case FileManagerMode.Delete
                     Return GetType(Boolean)
                 Case FileManagerMode.Copy
-                   Return GetType(Boolean)
+                    Return GetType(Boolean)
                 Case FileManagerMode.Move
-                   Return GetType(Boolean)
+                    Return GetType(Boolean)
             End Select
             Return GetType(Boolean)
         End Function

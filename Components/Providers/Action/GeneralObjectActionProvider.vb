@@ -25,7 +25,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Return Me.ObjectAction.Run(actionContext, actionContext)
         End Function
@@ -33,5 +33,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Protected Overrides Function GetOutputType() As Type
             Return ObjectAction.GetOutputType()
         End Function
+
+        Public Overrides Sub AddVariables(currentProvider As Services.Flee.IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            If Me.ObjectAction.ActionMode = Services.Flee.ObjectActionMode.AddEventHandler _
+                AndAlso ObjectAction.EventHandlerType = EventHandlerType.KeeperAction _
+                AndAlso ObjectAction.PassArguments Then
+                For Each objParam In ObjectAction.AvailableParametersAndTypes()
+                    existingVars(objParam.Key) = objParam.Value
+                Next
+            End If
+
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
+
     End Class
 End NameSpace

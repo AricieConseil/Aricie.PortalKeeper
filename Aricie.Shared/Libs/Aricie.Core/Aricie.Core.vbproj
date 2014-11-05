@@ -138,6 +138,7 @@
     <Compile Include="Components\Common.vb" />
     <Compile Include="Components\ComponentModel\RegexMapping.vb" />
     <Compile Include="Components\ComponentModel\Serializable.vb" />
+    <Compile Include="Components\ComponentModel\UIConstants.vb" />
     <Compile Include="Components\ComponentModel\VariableStrategy.vb" />
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />
@@ -168,6 +169,7 @@
     <Compile Include="Components\Web\Proxy\PipeStreamBlock.vb" />
     <Compile Include="Components\Web\Proxy\ProxyHelpers.vb" />
     <Compile Include="Components\Services\ReflectionHelper.vb" />
+    <Compile Include="Components\Web\Proxy\ResponseFilters.vb" />
     <Compile Include="Components\Web\Proxy\StreamingProxy.vb" />
     <Compile Include="Components\Web\WebControls\GridView\Fields\ForeignKeyBoundField.vb" />
     <Compile Include="Components\Web\WebControls\Pager.vb" />

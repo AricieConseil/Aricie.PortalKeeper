@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvent), ByVal aSync As Boolean) As Boolean
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim message As String = GetMessage(actionContext)
             Dim mailObject As String = GetMessage(actionContext, Me.EmailObject)

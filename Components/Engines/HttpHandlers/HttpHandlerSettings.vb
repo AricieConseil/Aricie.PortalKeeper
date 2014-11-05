@@ -7,7 +7,9 @@ Imports Aricie.DNN.Entities
 Imports Aricie.Collections
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -52,7 +54,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overrides Property Type As Type
             Get
                 Select Case HttpHandlerMode
-                    Case PortalKeeper.HttpHandlerMode.DynamicHandler
+                    Case PortalKeeper.HttpHandlerMode.DynamicHandler, PortalKeeper.HttpHandlerMode.Node
                         Return GetType(DynamicHttpHandler)
                     Case PortalKeeper.HttpHandlerMode.Type
                         Return HttpHandlerType.GetDotNetType()
@@ -73,39 +75,57 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property SubHandlers As New HttpSubHandlersConfig
 
 
+        Public Sub ProcessRequest(ByVal context As HttpContext)
+            ProcessRequest(context, New List(Of SimpleRuleEngine))
+        End Sub
 
-        Public Sub ProcessRequest(ByVal keeperContext As PortalKeeperContext(Of SimpleEngineEvent))
-            If Not keeperContext.Disabled Then
-                Dim objSubHandler As HttpSubHandlerSettings = Nothing
-                If Me.SubHandlers.Enabled Then
-                    objSubHandler = TryCast(Me.SubHandlers.MapDynamicHandler(keeperContext.DnnContext.HttpContext), HttpSubHandlerSettings)
+        Public Sub ProcessRequest(ByVal context As HttpContext, parentHandlers As List(Of SimpleRuleEngine))
 
+            Dim objSubHandler As HttpSubHandlerSettings = Nothing
+            If Me.SubHandlers.Enabled Then
+                objSubHandler = TryCast(Me.SubHandlers.MapDynamicHandler(context), HttpSubHandlerSettings)
+
+            End If
+            If objSubHandler Is Nothing OrElse objSubHandler.RunMainHandler Then
+                RunMainHandler(context, parentHandlers)
+            Else
+                If Me.HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler AndAlso objSubHandler.InitParamsToSubHandler Then
+                    parentHandlers.Add(Me.DynamicHandler)
+                    'keeperContext.Init(Me.DynamicHandler)
+                    'keeperContext.SetVar("ParentHandler", Me)
                 End If
-                If objSubHandler Is Nothing OrElse objSubHandler.RunMainHandler Then
-                    RunMainHandler(keeperContext)
-                Else
-                    If Me.HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler AndAlso objSubHandler.InitParamsToSubHandler Then
-                        keeperContext.Init(Me.DynamicHandler)
-                        keeperContext.SetVar("ParentHandler", Me)
-                    End If
-                End If
-                If objSubHandler IsNot Nothing Then
-                    objSubHandler.ProcessRequest(keeperContext)
-                End If
+            End If
+            If objSubHandler IsNot Nothing Then
+                objSubHandler.ProcessRequest(context, parentHandlers)
             End If
         End Sub
 
 
-        Private Sub RunMainHandler(keeperContext As PortalKeeperContext(Of SimpleEngineEvent))
+        Private Sub RunMainHandler(context As HttpContext, parentHandlers As List(Of SimpleRuleEngine))
             Select Case Me.HttpHandlerMode
                 Case PortalKeeper.HttpHandlerMode.Type
                     Dim targetHandler As IHttpHandler = DirectCast(ReflectionHelper.CreateObject(Me.HttpHandlerType.GetDotNetType()), IHttpHandler)
-                    targetHandler.ProcessRequest(keeperContext.DnnContext.HttpContext)
+                    targetHandler.ProcessRequest(context)
                 Case PortalKeeper.HttpHandlerMode.DynamicHandler
                     If Me.DynamicHandler.Enabled Then
-                        keeperContext.Init(Me.DynamicHandler)
+                        Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent)
+                        If parentHandlers.Count > 0 Then
+                            keeperContext = New PortalKeeperContext(Of SimpleEngineEvent)
+                            Dim key As String = "ParentHandler"
+                            For Each objHandler As SimpleRuleEngine In Enumerable.Reverse(parentHandlers)
+                                keeperContext.Init(objHandler)
+                                keeperContext.SetVar(key, Me)
+                                key = "Parent" & key
+                            Next
+                            keeperContext = Me.DynamicHandler.InitContext(keeperContext.Items)
+                        Else
+                            keeperContext = Me.DynamicHandler.InitContext()
+                        End If
+
                         keeperContext.SetVar("CurrentHandler", Me)
+                        
                         Me.DynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
+                        keeperContext.LogEndEngine()
                     End If
             End Select
         End Sub

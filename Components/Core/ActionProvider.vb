@@ -27,18 +27,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _AlternateAction As New KeeperAction(Of TEngineEvents)
 
         <ExtendedCategory("TechnicalSettings")> _
-     <SortOrder(950)> _
+        <SortOrder(950)> _
         Public Property AddSleepTime() As Boolean
 
         <ExtendedCategory("TechnicalSettings")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
         <ConditionalVisible("AddSleepTime", False, True)> _
         <SortOrder(950)> _
         Public Property SleepTime() As New STimeSpan()
 
         <ExtendedCategory("TechnicalSettings")> _
-         <SortOrder(950)> _
+        <ConditionalVisible("AddSleepTime", False, True)> _
+        <SortOrder(950)> _
+        Public Property RandomizeSleepTime As Boolean
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("AddSleepTime", False, True)> _
+        <ConditionalVisible("RandomizeSleepTime", False, True)> _
+        <SortOrder(950)> _
+        Public Property RandomizeSleepTimeOverOnly As Boolean
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(950)> _
         Public Property UseSemaphore As Boolean
 
         <Required(True)> _
@@ -54,7 +63,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <SortOrder(950)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
-       <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")> _
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
 
 
@@ -184,7 +193,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 toreturn = Me._AlternateAction.Run(actionContext)
             End If
             If Me._AddSleepTime AndAlso Me._SleepTime <> TimeSpan.Zero Then
-                Thread.Sleep(Me._SleepTime.Value)
+                Dim sleepDuration As TimeSpan = Me._SleepTime.Value
+                If Me.RandomizeSleepTime Then
+                    Dim objTicks As Long = sleepDuration.Ticks * 2
+                    Dim randomByte As Byte() = Aricie.Security.Cryptography.CryptoHelper.GetNewSalt(8)
+                    Dim objRandomLong As Long = BitConverter.ToInt64(randomByte, 0)
+                    If objRandomLong = Long.MinValue Then
+                        objRandomLong = Long.MaxValue
+                    Else
+                        objRandomLong = Math.Abs(objRandomLong)
+                    End If
+                    Dim objRandomTicks As Long
+                    If RandomizeSleepTimeOverOnly Then
+                        objRandomTicks = objRandomLong Mod (2 * objTicks)
+                    Else
+                        objRandomTicks = objTicks + (objRandomLong Mod objTicks)
+                    End If
+                    sleepDuration = TimeSpan.FromTicks(objRandomTicks)
+                End If
+                Thread.Sleep(sleepDuration)
             End If
             If Me._CaptureRunDuration Then
                 Dim duration As TimeSpan = PerformanceLogger.Instance.Now.Subtract(runStart)

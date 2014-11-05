@@ -42,11 +42,6 @@ Namespace ComponentModel
             Return _ProviderInstance
         End Function
 
-        Public Sub CallDebuggerBreak()
-            If Not Debugger.IsAttached Then
-                Debugger.Launch()
-            End If
-            Debugger.Break()
-        End Sub
+       
     End Class
 End Namespace

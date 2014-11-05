@@ -51,7 +51,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim key As String = verb & path
             If Not _CachedMappings.TryGetValue(key, toReturn) Then
                 For Each objHandlerSettings In Me.Handlers
-                    If objHandlerSettings.HttpHandlerMode = HttpHandlerMode.DynamicHandler AndAlso objHandlerSettings.Matches(verb, path) Then
+                    If (objHandlerSettings.HttpHandlerMode = HttpHandlerMode.DynamicHandler OrElse objHandlerSettings.HttpHandlerMode = HttpHandlerMode.Node) _
+                            AndAlso objHandlerSettings.Matches(verb, path) Then
                         toReturn = objHandlerSettings
                         Exit For
                     End If

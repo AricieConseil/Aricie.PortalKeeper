@@ -98,7 +98,7 @@ Namespace Services.Flee
 
 
         Private _SelectedVariable As String = ""
-        Private _Features As ExpressionFeature
+        Private _Features As ExpressionFeature = ExpressionFeature.SubMember
         Private _SelectedOperator As String = ""
 
         <Browsable(False)> _

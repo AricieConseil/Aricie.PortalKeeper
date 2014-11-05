@@ -44,7 +44,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property VirtualProxy As Boolean
 
-       
+        'A CookieContainer class to house the Cookie once it is contained within one of the Requests
+        Public Property CookieContainer As New CookieContainer()
+
+        Public Property EnableReferer As Boolean
+
+        Public Property LastAddress As Uri
+
 
 
         Protected Overrides Function GetWebRequest(ByVal address As Uri) As WebRequest
@@ -56,11 +62,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             toreturn.Method = Me._Method
             toreturn.Timeout = CInt(Me._Timeout.TotalMilliseconds)
 
+
             If TypeOf toreturn Is HttpWebRequest Then
                 Dim httpRequest As HttpWebRequest = DirectCast(toreturn, HttpWebRequest)
                 httpRequest.UserAgent = DefaultUserAgent
                 httpRequest.Accept = DefaultAccept
                 httpRequest.AutomaticDecompression = DecompressionMethods.Deflate Or DecompressionMethods.GZip
+                httpRequest.CookieContainer = Me.CookieContainer
+
+                If EnableReferer Then
+                    If LastAddress IsNot Nothing Then
+                        httpRequest.Referer = LastAddress.ToString()
+                    End If
+                End If
+                LastAddress = address
 
                 If httpRequest.Proxy IsNot Nothing AndAlso Me.VirtualProxy Then
                     FieldProxyServicePoint.SetValue(httpRequest.ServicePoint, False)

@@ -20,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ConditionalVisible("HasEvent", True, True)> _
+        <ConditionalVisible("HasEvent", False, True)> _
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _
         Public Property LifeCycleEvent() As TEngineEvents

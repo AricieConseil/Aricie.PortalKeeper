@@ -1,6 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
+Imports Aricie.ComponentModel
 
 Namespace ComponentModel
     Public Interface IEnabled
@@ -35,7 +36,7 @@ Namespace ComponentModel
                 If Not Me.Enabled Then
                     strEnable = "Disabled"
                 End If
-                Return String.Format("{0} {2} {1}", Me.Name, strEnable, Aricie.DNN.ComponentModel.UIConstants.TITLE_SEPERATOR)
+                Return String.Format("{0} {2} {1}", Me.Name, strEnable, UIConstants.TITLE_SEPERATOR)
             End Get
         End Property
 

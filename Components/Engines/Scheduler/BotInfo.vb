@@ -88,7 +88,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     userString &= IIf(Me.Enabled AndAlso PortalKeeperConfig.Instance.SchedulerFarm.EnableUserBots AndAlso targetUserBot.Enabled, " On", " Off").ToString
                 End If
                 Dim forcedString As String = IIf(Me._ForceRun, "Forced", "Unforced").ToString
-                Return String.Format("{0}{1}{2}{1}{3}{1}{4}{1}{5}", Me.Name.PadRight(50), ComponentModel.UIConstants.TITLE_SEPERATOR, enableString.PadRight(20), userString.PadRight(20), forcedString.PadRight(10), Me.BotSchedule.FormattedValueShort)
+                Return String.Format("{0}{1}{2}{1}{3}{1}{4}{1}{5}", Me.Name.PadRight(50), UIConstants.TITLE_SEPERATOR, enableString.PadRight(20), userString.PadRight(20), forcedString.PadRight(10), Me.BotSchedule.FormattedValueShort)
             End Get
         End Property
 
@@ -415,17 +415,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-
+       
         Private Sub InternalRunUnlocked(ByVal botContext As BotRunContext(Of TEngineEvent))
             Dim currentWebBotEvent As New BotInfoEvent
-            Dim objEnableLogsOrStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
+            'Dim objEnableLogsOrStopWatch As Boolean = Me.EnableStopWatch OrElse Me.EnableSimpleLogs
             SyncLock botContext
                 botContext.OnInit()
                 If botContext.Enabled Then
-                    If botContext.EngineContext Is Nothing Then
-                        botContext.EngineContext = New PortalKeeperContext(Of TEngineEvent)
-                        botContext.EngineContext.Init(Me, botContext.UserParams)
-                    End If
+
 
 
                     'If objEnableStopWatch Then
@@ -447,6 +444,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Next
                         End If
                     End If
+
+                    If botContext.EngineContext Is Nothing Then
+                        botContext.EngineContext = Me.InitContext(botContext.UserParams)
+                    End If
+
                 End If
 
             End SyncLock
@@ -454,10 +456,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If botContext.Enabled Then
 
                 Me.BatchRun(botContext.Events, botContext.EngineContext)
-
                 SyncLock botContext
 
-                   
 
                     botContext.History.LastRun = currentWebBotEvent.Time
                     botContext.History.BotCallHistory.Insert(0, currentWebBotEvent)
@@ -468,14 +468,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         currentWebBotEvent.VariablesDump = dump
                     End If
 
-                   
+
 
 
                     currentWebBotEvent.Duration = Now.Subtract(currentWebBotEvent.Time)
                     currentWebBotEvent.Success = True
 
 
-                  
+
                     botContext.History.NumberOfBotCall += 1
                     If currentWebBotEvent.Success Then
                         botContext.History.NumberOfSucceedBotCall += 1
@@ -493,25 +493,28 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             botContext.History.MaxDuration.Value = currentWebBotEvent.Duration
                         End If
                     End If
-                   
+
 
                     If Not Me.NoSave Then
 
-                        If objEnableLogsOrStopWatch Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Finalizing", Me.Name), _
-                                                        WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
-                            PerformanceLogger.Instance.AddDebugInfo(objStep)
-                        End If
+                        'If objEnableLogsOrStopWatch Then
+                        '    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} Finalizing", Me.Name), _
+                        '                                WorkingPhase.InProgress, False, False, -1, botContext.EngineContext.FlowId)
+                        '    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        'End If
+                        botContext.EngineContext.LogStart("Finalizing", False)
 
                         botContext.OnFinalize()
 
-
+                        botContext.EngineContext.LogEnd("Finalizing", False, False)
 
                     End If
-                    
-                    botContext.EngineContext.LogEndEngine()
+
+
 
                 End SyncLock
+
+                botContext.EngineContext.LogEndEngine()
 
             End If
 

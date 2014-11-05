@@ -24,7 +24,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
             <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _
-        Public Property Items() As List(Of Integer)
+        Public Overridable Property Items() As List(Of Integer)
             Get
                 Return _Items
             End Get
@@ -48,6 +48,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Return False
         End Function
+
 
 
         Public MustOverride Function GetCurrentValue(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Integer

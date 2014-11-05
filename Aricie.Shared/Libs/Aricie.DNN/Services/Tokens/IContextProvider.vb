@@ -2,14 +2,12 @@
 
     ''' <summary>
     ''' Interface for context providers: not used
-    ''' TODO: delete
     ''' </summary>
     ''' <remarks></remarks>
     Public Interface IContextProvider
 
-        Function GetCurrentContext() As Object
-
-        Function GetAvailiableContexts() As List(Of Object)
+        Function HasContect(objType As Type) As Boolean
+        Function GetContext(objType As Type) As Object
 
     End Interface
 
