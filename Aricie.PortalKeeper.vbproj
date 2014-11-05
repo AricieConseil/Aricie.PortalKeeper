@@ -92,6 +92,18 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL" />
+    <Reference Include="Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.GData.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Extensions.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.GData.Spreadsheets, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3f77feb76ff0d9a1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Spreadsheets.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>external\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -157,6 +169,16 @@
     <Compile Include="Components\Engines\Scheduler\UserParameterWrapper.vb" />
     <Compile Include="Components\Providers\Action\DefineVariableActionProvider.vb" />
     <Compile Include="Components\Providers\Action\GeneralObjectActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\Google\CellFeedInfo.vb" />
+    <Compile Include="Components\Providers\Action\Google\GDataServiceInfo.vb" />
+    <Compile Include="Components\Providers\Action\Google\GoogleOAuth2Info.vb" />
+    <Compile Include="Components\Providers\Action\Google\GoogleSpreadSheetActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\Google\OAuth2AccessToken.vb" />
+    <Compile Include="Components\Providers\Action\Google\OAuth2TokenStatus.vb" />
+    <Compile Include="Components\Providers\Action\Google\SpreadSheetCommand.vb" />
+    <Compile Include="Components\Providers\Action\Google\SpreadSheetEntryInfo.vb" />
+    <Compile Include="Components\Providers\Action\Google\SpreadSheetOperation.vb" />
+    <Compile Include="Components\Providers\Action\Google\WorksheetEntryInfo.vb" />
     <Compile Include="Components\Providers\Action\ProfileActionProviderBase.vb" />
     <Compile Include="Components\Providers\Action\ProfileLoadActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileSaveActionProvider.vb" />
@@ -349,6 +371,20 @@
     <None Include="external\OpenRasta\OpenRasta.Testing.dll" />
     <None Include="external\OpenRasta\OpenWrap.dll" />
     <None Include="external\OpenRasta\OpenWrap.Testing.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.AccessControl.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Analytics.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Apps.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Blogger.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Calendar.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Client.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Contacts.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.ContentForShopping.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Documents.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Extensions.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Photos.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.Spreadsheets.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.WebmasterTools.dll" />
+    <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.YouTube.dll" />
     <Content Include="Libraries\MonoTorrent\MonoTorrent.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\BruTile.Desktop.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\BruTile.dll" />

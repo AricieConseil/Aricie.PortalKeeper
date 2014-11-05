@@ -32,6 +32,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _MatchUserIds As String = ""
 
         <ExtendedCategory("Specifics")> _
+        Public Property MatchUnauthenticated As Boolean
+
+        <ExtendedCategory("Specifics")> _
+        Public Property MatchAllAuthenticated As Boolean
+
+        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
+        <ExtendedCategory("Specifics")> _
         Public Property MatchSuperUsers() As Boolean
             Get
                 Return _MatchSuperUsers
@@ -41,6 +48,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
         <ExtendedCategory("Specifics")> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(2)> _
@@ -54,6 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
         <ExtendedCategory("Specifics")> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(2)> _
@@ -74,24 +83,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me.DebuggerBreak Then
                 CallDebuggerBreak()
             End If
-            Dim objUser As UserInfo = context.DnnContext.User
-            context.Items("ClientUser") = objUser
-            If Me._MatchSuperUsers AndAlso objUser.IsSuperUser Then
-                Return True
+            If context.DnnContext.IsAuthenticated Then
+                
+                Dim objUser As UserInfo = context.DnnContext.User
+
+                context.Items("ClientUser") = objUser
+                If Me.MatchAllAuthenticated Then
+                    Return True
+                End If
+                If Me._MatchSuperUsers AndAlso objUser.IsSuperUser Then
+                    Return True
+                End If
+                If Me._MatchRoles <> "" AndAlso objUser.IsInRole(Me._MatchRoles) AndAlso Not objUser.IsSuperUser Then
+                    Return True
+                End If
+                If Me._MatchUserIds <> "" Then
+                    Dim userIds As String() = Me._MatchUserIds.Split(";"c)
+                    Dim userId As Integer
+                    For Each strUserId As String In userIds
+                        userId = Integer.Parse(strUserId)
+                        If userId = objUser.UserID Then
+                            Return True
+                        End If
+                    Next
+                End If
+            Else
+                Return Me.MatchUnauthenticated
             End If
-            If Me._MatchRoles <> "" AndAlso objUser.IsInRole(Me._MatchRoles) AndAlso Not objUser.IsSuperUser Then
-                Return True
-            End If
-            If Me._MatchUserIds <> "" Then
-                Dim userIds As String() = Me._MatchUserIds.Split(";"c)
-                Dim userId As Integer
-                For Each strUserId As String In userIds
-                    userId = Integer.Parse(strUserId)
-                    If userId = objUser.UserID Then
-                        Return True
-                    End If
-                Next
-            End If
+            
             Return False
         End Function
 

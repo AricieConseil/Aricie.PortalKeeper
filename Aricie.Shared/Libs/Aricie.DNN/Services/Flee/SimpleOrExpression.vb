@@ -1,5 +1,7 @@
 ﻿Imports Aricie.DNN.UI.Attributes
+Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.Services
 
 Namespace Services.Flee
     <Serializable()>
@@ -37,19 +39,7 @@ Namespace Services.Flee
 
     <Serializable()>
     Public MustInherit Class SimpleOrExpressionBase(Of T)
-
-
-
-        Public Property Mode As SimpleOrExpressionMode
-
-        <Width(500)> _
-        <Required(True)> _
-        <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Simple)>
-        Public Overridable Property Simple As T
-
-
-        Public MustOverride Function GetExpression() As SimpleExpression(Of T)
-
+        Inherits SimpleOrExpressionBase(Of T, T)
 
 
         Public Function GetValue() As T
@@ -65,9 +55,60 @@ Namespace Services.Flee
                 Case SimpleOrExpressionMode.Simple
                     Return Simple
                 Case SimpleOrExpressionMode.Expression
-                    Return Me.GetExpression.Evaluate(owner, dataContext)
+                    Dim toReturn As T = Me.GetExpression.Evaluate(owner, dataContext)
+                    If toReturn Is Nothing AndAlso CreateIfNull Then
+                        toReturn = Simple
+                    End If
+                    Return toReturn
             End Select
         End Function
+
+
+
+    End Class
+
+
+
+    <DefaultProperty("FriendlyName")> _
+    <Serializable()>
+    Public MustInherit Class SimpleOrExpressionBase(Of TSimple, TExpression)
+
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName As String
+            Get
+                If Mode = SimpleOrExpressionMode.Simple Then
+                    Return ReflectionHelper.GetFriendlyName(Simple)
+                Else
+                    Return GetExpression.Expression
+                End If
+            End Get
+        End Property
+
+        Public Property Mode As SimpleOrExpressionMode
+
+        <AutoPostBack()> _
+        <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
+        Public Property CreateIfNull As Boolean
+
+        <Browsable(False)> _
+        Public ReadOnly Property DisplaySimple As Boolean
+            Get
+                Return Mode = SimpleOrExpressionMode.Simple OrElse CreateIfNull
+            End Get
+        End Property
+
+        <SortOrder(100)> _
+        <Width(500)> _
+        <Required(True)> _
+        <ConditionalVisible("DisplaySimple", False, True)>
+        Public Overridable Property Simple As TSimple = ReflectionHelper.CreateObject(Of TSimple)()
+
+
+        Public MustOverride Function GetExpression() As SimpleExpression(Of TExpression)
+
+
+
+
 
     End Class
 End Namespace

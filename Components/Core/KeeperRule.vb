@@ -33,7 +33,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public ReadOnly Property Summary As String
             Get
-                Return String.Format("{0}{1}{2}", Me.Name.PadRight(50), ComponentModel.UIConstants.TITLE_SEPERATOR, IIf(Me.Enabled, "Enabled", "Disabled").ToString.PadRight(30))
+                Return String.Format("{0}{1}{2}", Me.Name.PadRight(50), UIConstants.TITLE_SEPERATOR, IIf(Me.Enabled, "Enabled", "Disabled").ToString.PadRight(30))
             End Get
         End Property
 

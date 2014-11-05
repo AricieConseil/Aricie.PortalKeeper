@@ -218,24 +218,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Sub ProcessStep(parameters As IDictionary(Of String, Object), ByVal baseHandler As ControlEventHandler, ByVal newStep As DynamicHandlerStep)
-            Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
+            'Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
 
-            If Not keeperContext.Disabled Then
-                Dim dynamicHandler As DynamicHandlerSettings = Nothing
-                If (Not Settings.DynamicHandlersDictionary.TryGetValue(newStep, dynamicHandler) OrElse dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.Before) AndAlso baseHandler IsNot Nothing Then
+            'If Not keeperContext.Disabled Then
+            Dim dynamicHandler As DynamicHandlerSettings = Nothing
+            If (Not Settings.DynamicHandlersDictionary.TryGetValue(newStep, dynamicHandler) OrElse dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.Before) AndAlso baseHandler IsNot Nothing Then
+                baseHandler.Invoke()
+            End If
+            If dynamicHandler IsNot Nothing AndAlso dynamicHandler.Enabled Then
+                If (Not Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnFirstLoad) OrElse (Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnPostBacks) Then
+                    parameters("Adapter") = Me
+                    Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = dynamicHandler.InitContext(parameters)
+                    dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
+                End If
+                If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
                     baseHandler.Invoke()
                 End If
-                If dynamicHandler IsNot Nothing AndAlso dynamicHandler.Enabled Then
-                    If (Not Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnFirstLoad) OrElse (Me.Control.Page.IsPostBack AndAlso Not dynamicHandler.NotOnPostBacks) Then
-                        parameters.Add("Adapter", Me)
-                        keeperContext.Init(dynamicHandler, parameters)
-                        dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
-                    End If
-                    If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
-                        baseHandler.Invoke()
-                    End If
-                End If
             End If
+            'End If
         End Sub
 
 

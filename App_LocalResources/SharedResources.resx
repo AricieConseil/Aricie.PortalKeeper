@@ -2085,12 +2085,6 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="LoopActionProvider`1_EnumerableExpression.Text" xml:space="preserve">
     <value>Collection Expression</value>
   </data>
-  <data name="LoopActionProvider`1_WaitTime.Help" xml:space="preserve">
-    <value>Define here the time to wait between 2 loop items</value>
-  </data>
-  <data name="LoopActionProvider`1_WaitTime.Text" xml:space="preserve">
-    <value>Sleep Time</value>
-  </data>
   <data name="MultipleActionProvider`1_KeeperAction.Text" xml:space="preserve">
     <value>Action Sequence</value>
   </data>
@@ -3001,7 +2995,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Enter the parameters to pass to your method or in case of an indexed property</value>
   </data>
   <data name="StringFilterProvider`1_FilterMode.Help" xml:space="preserve">
-    <value>There are 2 filter modes. You can either apply a series of transformations, or perform a xpath select</value>
+    <value>There are 3 filter modes. You can either apply a series of string transformations, use xpath queries, or apply token replace</value>
   </data>
   <data name="StringFilterProvider`1_FilterMode.Text" xml:space="preserve">
     <value>Filter Mode</value>
@@ -4984,7 +4978,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Sub Editor Original Path</value>
   </data>
   <data name="SubPathContainer_Path.Help" xml:space="preserve">
-    <value>This is the current selected sub path for the child entity. The syntax is identical to the Advanced Token Replace used in message based actions.</value>
+    <value>This is the current selected sub path for the child entity. Click on a node to navigate upward or downward the objects hierarchy.</value>
   </data>
   <data name="SubPathContainer_Path.Text" xml:space="preserve">
     <value>Child Editor Path</value>
@@ -5082,16 +5076,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SealEncryptionKey.Alert" xml:space="preserve">
     <value>Warning: You are about to seal your encryption keys. Make sure you have a copy of them, since they won't be available through the UI nor the API anymore. </value>
   </data>
-  <data name="SimpleOrExpressionBase`1_Mode.Help" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`2_Mode.Help" xml:space="preserve">
     <value>You can choose to directly edit an object value or to enter an expression, which resolves at runtime into an object of the right type</value>
   </data>
-  <data name="SimpleOrExpressionBase`1_Mode.Text" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`2_Mode.Text" xml:space="preserve">
     <value>Definition Mode</value>
   </data>
-  <data name="SimpleOrExpressionBase`1_Simple.Help" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`2_Simple.Help" xml:space="preserve">
     <value>Enter here the direct value to be used</value>
   </data>
-  <data name="SimpleOrExpressionBase`1_Simple.Text" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`2_Simple.Text" xml:space="preserve">
     <value>Value</value>
   </data>
   <data name="SmartFileInfo_Compress.Help" xml:space="preserve">
@@ -5974,7 +5968,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Username</value>
   </data>
   <data name="Simple.Text" xml:space="preserve">
-    <value>Simple Value</value>
+    <value>Simple</value>
   </data>
   <data name="SimpleOrExpression`1_Expression.Help" xml:space="preserve">
     <value>Enter below a Flee expression to be evaluated at runtime given a context owner, local and global variables, and static imports. Lookup the &lt;a href="http://flee.codeplex.com/wikipage?title=LanguageReference&amp;referringTitle=Home"&gt; language reference &lt;/a&gt; for more information.</value>
@@ -5982,7 +5976,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SimpleOrExpression`1_Expression.Text" xml:space="preserve">
     <value>Dynamic Expression</value>
   </data>
-  <data name="SimpleOrExpressionBase`1_Simple.Required" xml:space="preserve">
+  <data name="SimpleOrExpressionBase`2_Simple.Required" xml:space="preserve">
     <value>Simple value is required</value>
   </data>
   <data name="Variables_AddDelegates.Help" xml:space="preserve">
@@ -7369,5 +7363,677 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="Wednesday.Text" xml:space="preserve">
     <value>Wednesday</value>
+  </data>
+  <data name="Cache.Text" xml:space="preserve">
+    <value>Cache</value>
+  </data>
+  <data name="UserVariableInfo_Title.Required" xml:space="preserve">
+    <value>Variable Name required</value>
+  </data>
+  <data name="Variable.Text" xml:space="preserve">
+    <value>Variable</value>
+  </data>
+  <data name="WebRequestInfo`1_ClientLocation.Help" xml:space="preserve">
+    <value>Define here where the shared web client should be stored and looked for. </value>
+  </data>
+  <data name="WebRequestInfo`1_ClientLocation.Text" xml:space="preserve">
+    <value>Client Location</value>
+  </data>
+  <data name="WebRequestInfo`1_ClientVarName.Help" xml:space="preserve">
+    <value>Choose a name for the shared web client.</value>
+  </data>
+  <data name="WebRequestInfo`1_ClientVarName.Text" xml:space="preserve">
+    <value>Web Client Variable Name</value>
+  </data>
+  <data name="WebRequestInfo`1_CloseClient.Help" xml:space="preserve">
+    <value>Check if this is the last request and the resources can be freed</value>
+  </data>
+  <data name="WebRequestInfo`1_CloseClient.Text" xml:space="preserve">
+    <value>Dispose Client (last use)</value>
+  </data>
+  <data name="WebRequestInfo`1_EnableReferer.Help" xml:space="preserve">
+    <value>Check to keep track of the last request address and include it as a referrer to the following.</value>
+  </data>
+  <data name="WebRequestInfo`1_EnableReferer.Text" xml:space="preserve">
+    <value>Enable Referer</value>
+  </data>
+  <data name="WebRequestInfo`1_ReUseClient.Help" xml:space="preserve">
+    <value>Use that option to share you web client for several requests, for instance in order to keep session cookies.</value>
+  </data>
+  <data name="WebRequestInfo`1_ReUseClient.Text" xml:space="preserve">
+    <value>Share Web Client</value>
+  </data>
+  <data name="AccessCodeValidated.Message" xml:space="preserve">
+    <value>your access code was validated, and a long lived access token was obtained in exchange. You may save your configuration.</value>
+  </data>
+  <data name="AuthenticateUrl_Navigate.Text" xml:space="preserve">
+    <value>Click to Authorize</value>
+  </data>
+  <data name="DeleteCell.Text" xml:space="preserve">
+    <value>Delete Cell</value>
+  </data>
+  <data name="GDataServiceInfo`2_AuthenticationSettings.Help" xml:space="preserve">
+    <value>This is the application settings as obtained from your Console. To obtain those settings, navigate to &lt;a href="https://console.developers.google.com&gt;your developer console&lt;/a&gt;, create a project if needed, and in Credentials, create a new client id of type "Installed Application"</value>
+  </data>
+  <data name="GDataServiceInfo`2_AuthenticationSettings.Text" xml:space="preserve">
+    <value>OAuth2 Settings</value>
+  </data>
+  <data name="GDataServiceInfo`2_AuthorizationToken.Help" xml:space="preserve">
+    <value>The service must be authorized by a google account. You can have the corresponding link generated once the OAuth settings are correct. Then you'll be provided a Token to validate here.</value>
+  </data>
+  <data name="GDataServiceInfo`2_AuthorizationToken.Text" xml:space="preserve">
+    <value>Authorization Token</value>
+  </data>
+  <data name="GDataServiceInfo`2_InitializeToken.Text" xml:space="preserve">
+    <value>Initialize Access Token</value>
+  </data>
+  <data name="GoogleOAuth2Info_ApplicationName.Help" xml:space="preserve">
+    <value>Enter your application name or your Google Project ID</value>
+  </data>
+  <data name="GoogleOAuth2Info_ApplicationName.Required" xml:space="preserve">
+    <value>An Application name is required. Enter your Google Project ID</value>
+  </data>
+  <data name="GoogleOAuth2Info_ApplicationName.Text" xml:space="preserve">
+    <value>Application Name</value>
+  </data>
+  <data name="GoogleOAuth2Info_Scope.Help" xml:space="preserve">
+    <value>This is a list of API authorization that your application asks for.</value>
+  </data>
+  <data name="GoogleOAuth2Info_Scope.Text" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="CellFeedInfo`1_CaptureCellFeed.Help" xml:space="preserve">
+    <value>You can choose to save the Cell Feed to a local variable for later use in expressions. Its type is Google.GData.Spreadsheets.CellFeed</value>
+  </data>
+  <data name="CellFeedInfo`1_CaptureCellFeed.Text" xml:space="preserve">
+    <value>Capture Cell Feed</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_CaptureSpreadsheetFeed.Help" xml:space="preserve">
+    <value>You can choose to save the spreadsheet to a local variable for later use in expressions. Its type is Google.GData.Spreadsheets.SpreadsheetFeed</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_CaptureSpreadsheetFeed.Text" xml:space="preserve">
+    <value>Capture Spreadsheet Feed</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CaptureWorksheetEntry.Help" xml:space="preserve">
+    <value>You can choose to save the worksheet entry to a local variable for later use in expressions. Its type is Google.GData.Spreadsheets.WorksheetEntry</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CaptureWorksheetEntry.Text" xml:space="preserve">
+    <value>Capture Worksheet Entry</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CaptureWorksheetFeed.Help" xml:space="preserve">
+    <value>You can choose to save the worksheet feed to a local variable for later use in expressions. Its type is Google.GData.Spreadsheets.WorksheetFeed</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CaptureWorksheetFeed.Text" xml:space="preserve">
+    <value>Capture Worksheet Feed</value>
+  </data>
+  <data name="CellFeedInfo`1_CellFeedName.Help" xml:space="preserve">
+    <value>This is the name of the local variable created in the context to store the Cell feed.</value>
+  </data>
+  <data name="CellFeedInfo`1_CellFeedName.Text" xml:space="preserve">
+    <value>Cell Feed Variable Name</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Commands.Help" xml:space="preserve">
+    <value>Define here a sequential series of individual cell read or write commands. read cell values are agregated into a dictionary, wich is the output of the action provider.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Commands.Text" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_Initialize.Text" xml:space="preserve">
+    <value>Initialize Spreadsheet service</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_Service.Help" xml:space="preserve">
+    <value>In order to connect to a spreadsheet service, you must provide an OAuth2 configuration and an OAuth2 token. You can enter the informations manually or provide an expression for them.</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_Service.Text" xml:space="preserve">
+    <value>Service Settings</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetFeedName.Help" xml:space="preserve">
+    <value>This is the name of the local variable created in the context to store the spreadsheet feed.</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetFeedName.Text" xml:space="preserve">
+    <value>Spreadsheet Feed Variable Name</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetName.Help" xml:space="preserve">
+    <value>This is the name of the spread sheet to access, as provided in your Google document / Google drive account. Note that, you can connect to the service to obtain a list of spreadsheets and worksheets to select from, if your configuration allows it.</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetName.Text" xml:space="preserve">
+    <value>Spreadsheet Name</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetNameSelection.Help" xml:space="preserve">
+    <value>This is the list of Google Spreadsheets retrieved from your Google account.</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheetNameSelection.Text" xml:space="preserve">
+    <value>Select Spreadsheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorksheetEntryName.Help" xml:space="preserve">
+    <value>This is the name of the local variable created in the context to store the worksheet entry.</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorksheetEntryName.Text" xml:space="preserve">
+    <value>Worksheet Entry Variable Name</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorksheetFeedName.Help" xml:space="preserve">
+    <value>This is the name of the local variable created in the context to store the worksheet feed.</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorksheetFeedName.Text" xml:space="preserve">
+    <value>Worksheet Feed Variable Name</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetName.Help" xml:space="preserve">
+    <value>Within the above spreadsheet, this is the name of the worksheet to access. Note that, you can connect to the service to obtain a list of spreadsheets and worksheets to select from, if your configuration allows it.</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetName.Text" xml:space="preserve">
+    <value>Worksheet Name</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetNameSelection.Help" xml:space="preserve">
+    <value>This is the list of Worksheets for the select spreadsheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetNameSelection.Text" xml:space="preserve">
+    <value>Select Worksheet</value>
+  </data>
+  <data name="InsertCell.Text" xml:space="preserve">
+    <value>Insert Cell</value>
+  </data>
+  <data name="OAuth2AccessToken_AccessCode.Help" xml:space="preserve">
+    <value>This is the code provided by Google at the above page, to confirm authorization.</value>
+  </data>
+  <data name="OAuth2AccessToken_AccessCode.Required" xml:space="preserve">
+    <value>Access Code is required, navigate to the above link to authorize the service and obtain an access code.</value>
+  </data>
+  <data name="OAuth2AccessToken_AccessCode.Text" xml:space="preserve">
+    <value>Google Access Code</value>
+  </data>
+  <data name="OAuth2AccessToken_AccessToken.Help" xml:space="preserve">
+    <value>This is the long lived access token obtained from the access code. A refresh token is also saved.</value>
+  </data>
+  <data name="OAuth2AccessToken_AccessToken.Text" xml:space="preserve">
+    <value>Access Token</value>
+  </data>
+  <data name="OAuth2AccessToken_AuthenticateUrl.Help" xml:space="preserve">
+    <value>This is a one-time link to the authorization page. Once authorized, you will be given a token to enter validate here.</value>
+  </data>
+  <data name="OAuth2AccessToken_AuthenticateUrl.Text" xml:space="preserve">
+    <value>Authorization Url</value>
+  </data>
+  <data name="OAuth2AccessToken_Status.Help" xml:space="preserve">
+    <value>States if the token is empty, pending authorization or authorized. </value>
+  </data>
+  <data name="OAuth2AccessToken_Status.Text" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="OAuth2AccessToken_ValidateAccessCode.Text" xml:space="preserve">
+    <value>Validate Access Code</value>
+  </data>
+  <data name="OAuth2TokenInitialized.Message" xml:space="preserve">
+    <value>Authorization Link initialized. Navigate to the supplied link to authorize your Google Account.</value>
+  </data>
+  <data name="ReadCell.Text" xml:space="preserve">
+    <value>Read Cell</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Column.Help" xml:space="preserve">
+    <value>This is a static integer value or dynamic expression for the column's index of the target cell.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Column.Text" xml:space="preserve">
+    <value>Column</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Key.Help" xml:space="preserve">
+    <value>This is the key to store the read value in the output dictionary</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Key.Text" xml:space="preserve">
+    <value>Output Key</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Operation.Help" xml:space="preserve">
+    <value>Operation. A range of individual cell operations are available, to update the worksheet or to read values into the output dictionary variable</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Operation.Text" xml:space="preserve">
+    <value>Operation</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Row.Help" xml:space="preserve">
+    <value>This is a static integer value or dynamic expression for the row's index of the target cell.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Row.Text" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="SpreadSheetNameSelection.NullSelect" xml:space="preserve">
+    <value>&lt;-- No Spreadsheet Selected --&gt;</value>
+  </data>
+  <data name="UpdateCell.Text" xml:space="preserve">
+    <value>Update Cell</value>
+  </data>
+  <data name="WorkSheetNameSelection.NullSelect" xml:space="preserve">
+    <value>&lt;-- No Worksheet Selected --&gt;</value>
+  </data>
+  <data name="ActionProvider`1_RandomizeSleepTime.Help" xml:space="preserve">
+    <value>You can choose to make the sleep duration random, with a uniform distribution between 0 and twice the target duration</value>
+  </data>
+  <data name="ActionProvider`1_RandomizeSleepTime.Text" xml:space="preserve">
+    <value>Randomize Sleep Duration</value>
+  </data>
+  <data name="ActionProvider`1_RandomizeSleepTimeOverOnly.Help" xml:space="preserve">
+    <value>Check to turn to a uniform distribution between the target duration and twice its value.</value>
+  </data>
+  <data name="ActionProvider`1_RandomizeSleepTimeOverOnly.Text" xml:space="preserve">
+    <value>Randomize Striclty Above</value>
+  </data>
+  <data name="CellFeedInfo`1_CreateIf.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the worksheet entry if the following condition matches</value>
+  </data>
+  <data name="CellFeedInfo`1_CreateIf.Text" xml:space="preserve">
+    <value>Create if Expression</value>
+  </data>
+  <data name="CellFeedInfo`1_CreateIfNull.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the worksheet entry if the expression yields nothing</value>
+  </data>
+  <data name="CellFeedInfo`1_CreateIfNull.Text" xml:space="preserve">
+    <value>Create if Null</value>
+  </data>
+  <data name="CellFeedInfo`1_UseExistingWorksheetEntry.Help" xml:space="preserve">
+    <value>You can use a worksheet feed previously captured into a context variable, by entering the corresponding typed expression.</value>
+  </data>
+  <data name="CellFeedInfo`1_UseExistingWorksheetEntry.Text" xml:space="preserve">
+    <value>Use Existing Worksheet Entry</value>
+  </data>
+  <data name="CellFeedInfo`1_WorksheetEntryExpression.Help" xml:space="preserve">
+    <value>Enter an Expression for an existing worksheet entry previously captured as a contextual variable.</value>
+  </data>
+  <data name="CellFeedInfo`1_WorksheetEntryExpression.Text" xml:space="preserve">
+    <value>Worksheet Entry Expression</value>
+  </data>
+  <data name="CellFeedInfo`1_WorksheetInfo.Help" xml:space="preserve">
+    <value>Enter the parameters needed to access your worksheet</value>
+  </data>
+  <data name="CellFeedInfo`1_WorksheetInfo.Text" xml:space="preserve">
+    <value>Worksheet Entry Info</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakAtCompileTime.Help" xml:space="preserve">
+    <value>When running with the module's source code, check to launch a debugger if needed, and break before the expression is compiled to examine the environment.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakAtCompileTime.Text" xml:space="preserve">
+    <value>Break at Compile Time</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakAtEvaluateTime.Help" xml:space="preserve">
+    <value>When running with the module's source code, check to launch a debugger if needed, and break before the expression is evaluated to examine the environment.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakAtEvaluateTime.Text" xml:space="preserve">
+    <value>Break at Evaluate Time</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakOnException.Help" xml:space="preserve">
+    <value>When running with the module's source code, check to launch a debugger if needed, and break when an exception occurs at compile time or at evaluation time.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_BreakOnException.Text" xml:space="preserve">
+    <value>Break On Exception</value>
+  </data>
+  <data name="FleeExpressionInfo`1_Debug.Header" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="FleeExpressionInfo`1_LogCompileExceptions.Help" xml:space="preserve">
+    <value>Check to store a dnn event log for each exception thrown at compile time.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_LogCompileExceptions.Text" xml:space="preserve">
+    <value>Log Compile Exceptions</value>
+  </data>
+  <data name="FleeExpressionInfo`1_LogEvaluateExceptions.Help" xml:space="preserve">
+    <value>Check to store a dnn event log for each exception thrown at evaluate time.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_LogEvaluateExceptions.Text" xml:space="preserve">
+    <value>Log Evaluate Exceptions</value>
+  </data>
+  <data name="FleeExpressionInfo`1_ThrowCompileExceptions.Help" xml:space="preserve">
+    <value>Check to throw any exception caught at compile time.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_ThrowCompileExceptions.Text" xml:space="preserve">
+    <value>Throw Compile Exceptions</value>
+  </data>
+  <data name="FleeExpressionInfo`1_ThrowEvaluateExceptions.Help" xml:space="preserve">
+    <value>Check to throw any exception caught at Evaluate time.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_ThrowEvaluateExceptions.Text" xml:space="preserve">
+    <value>Throw Evaluate Exceptions</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CaptureWorksheetEntry.Help" xml:space="preserve">
+    <value>You can choose to capture the target worksheetentry to a local contextual variable.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CaptureWorksheetEntry.Text" xml:space="preserve">
+    <value>Capture WorksheetEntry</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CellFeed.Header" xml:space="preserve">
+    <value>Cell Feed</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CellFeedExpression.Help" xml:space="preserve">
+    <value>Enter an Expression for an existing cell feed previously captured as a contextual variable.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CellFeedExpression.Text" xml:space="preserve">
+    <value>Cell Feed Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CellFeedInfo.Help" xml:space="preserve">
+    <value>Enter the parameters needed to build you cell feed.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CellFeedInfo.Text" xml:space="preserve">
+    <value>Cell Feed Info</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Commands.Header" xml:space="preserve">
+    <value>Commands</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CreateIf.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the cell feed if the following condition matches</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CreateIf.Text" xml:space="preserve">
+    <value>Create if Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CreateIfNull.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the cell feed if the expression yields nothing</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CreateIfNull.Text" xml:space="preserve">
+    <value>Create if Null</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Pace.Help" xml:space="preserve">
+    <value>This is the time to wait between 2 commands.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Pace.Text" xml:space="preserve">
+    <value>Command Pace</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Spreadsheet.Header" xml:space="preserve">
+    <value>Spreadsheet</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_UseExistingCellFeed.Help" xml:space="preserve">
+    <value>You can use a cell feed previously captured into a context variable, by entering the corresponding typed expression.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_UseExistingCellFeed.Text" xml:space="preserve">
+    <value>Use Existing Cell Feed</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_WorksheetEntryExpression.Help" xml:space="preserve">
+    <value>Enter an Expression for an existing worksheet entry previously captured as a contextual variable.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_WorksheetEntryExpression.Text" xml:space="preserve">
+    <value>Worksheet Entry Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_WorksheetEntryName.Help" xml:space="preserve">
+    <value>Enter a name to capture the current worksheet entry to a context variable for reuse.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_WorksheetEntryName.Text" xml:space="preserve">
+    <value>Worksheet Entry Name</value>
+  </data>
+  <data name="LoopActionProvider`1_CaptureCounter.Help" xml:space="preserve">
+    <value>You can capture the current iteration of the loop into a variable to be used in later expressions</value>
+  </data>
+  <data name="LoopActionProvider`1_CaptureCounter.Text" xml:space="preserve">
+    <value>Capture Counter</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterStartsAt1.Help" xml:space="preserve">
+    <value>Traditionally, .Net indices start at 0, but as it isn't the case for real world problems, you may find convenient to switch to a 1 based index.</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterStartsAt1.Text" xml:space="preserve">
+    <value>Counter starts at 1</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterVarName.Help" xml:space="preserve">
+    <value>Enter a name for your counter variable</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterVarName.Text" xml:space="preserve">
+    <value>Counter Variable Name</value>
+  </data>
+  <data name="LoopActionProvider`1_Reverse.Help" xml:space="preserve">
+    <value>Check to enumerate the list clone of the target collection in the reverse order.</value>
+  </data>
+  <data name="LoopActionProvider`1_Reverse.Text" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="LoopActionProvider`1_UseCloneList.Help" xml:space="preserve">
+    <value>Use that option if you want to reverse or to change the collection being enumerated during the loop. Otherwise, an exception wil be thrown.</value>
+  </data>
+  <data name="LoopActionProvider`1_UseCloneList.Text" xml:space="preserve">
+    <value>Use Clone List</value>
+  </data>
+  <data name="SimpleOrExpressionBase`2_CreateIfNull.Help" xml:space="preserve">
+    <value>You can choose to enter a default value if the expression yields nothing</value>
+  </data>
+  <data name="SimpleOrExpressionBase`2_CreateIfNull.Text" xml:space="preserve">
+    <value>Create if Null</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Condition.Help" xml:space="preserve">
+    <value>Optionally enter a condition to be matched for the command to be executed.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Condition.Text" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="SpreadSheetCommand`1_ReadInput.Help" xml:space="preserve">
+    <value>By default, the displayed value will be read. In case of a formula, you may occasionally want to read the formula instead. Check here to read the input value rather than the display value.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_ReadInput.Text" xml:space="preserve">
+    <value>Read Input Value</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Value.Help" xml:space="preserve">
+    <value>Enter a value or an expression. The expected expression type, CData can be implicitely converted from a string expression.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_Value.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_CaptureSpreadsheetEntry.Help" xml:space="preserve">
+    <value>You can choose to save the spreadsheet entry to a local variable for later use in expressions. Its type is Google.GData.Spreadsheets.SpreadsheetEntry</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_CaptureSpreadsheetEntry.Text" xml:space="preserve">
+    <value>Capture Spreadsheet Entry</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_Service.Header" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_ServiceReady.Help" xml:space="preserve">
+    <value>Indicates if the service can be initialized to retrive the list of spreadsheets. </value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_ServiceReady.Text" xml:space="preserve">
+    <value>Service Ready</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadSheet.Header" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadsheetEntryName.Help" xml:space="preserve">
+    <value>Enter a name to store the resulting spreadsheet entry as a contextual variable.</value>
+  </data>
+  <data name="SpreadSheetEntryInfo`1_SpreadsheetEntryName.Text" xml:space="preserve">
+    <value>Spreadsheet Entry Name</value>
+  </data>
+  <data name="SubPathContainer_BottomPath.Header" xml:space="preserve">
+    <value>Path</value>
+  </data>
+  <data name="SubPathContainer_BottomPath.Help" xml:space="preserve">
+    <value>This is the current selected sub path for the child entity. Click on a node to navigate upward or downward the objects hierarchy.</value>
+  </data>
+  <data name="SubPathContainer_BottomPath.Text" xml:space="preserve">
+    <value>Child Editor Path</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CreateIf.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the spreadsheet entry if the following condition matches</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CreateIf.Text" xml:space="preserve">
+    <value>Create if Expression</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CreateIfNull.Help" xml:space="preserve">
+    <value>You can choose to enter init settings to build the spreadsheet entry if the expression yields nothing</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_CreateIfNull.Text" xml:space="preserve">
+    <value>Create if Null</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_Spreadsheet.Help" xml:space="preserve">
+    <value>Enter the parameters needed to access your spreadsheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_Spreadsheet.Text" xml:space="preserve">
+    <value>Spreadsheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_SpreadSheetEntryExpression.Help" xml:space="preserve">
+    <value>Enter an Expression for an existing spreadsheet entry previously captured as a contextual variable.</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_SpreadSheetEntryExpression.Text" xml:space="preserve">
+    <value>Spreadsheet Entry Epxression</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_UseExistingSpreadSheetEntry.Help" xml:space="preserve">
+    <value>You can use a spreadsheed entry previously captured into a context variable, by entering the corresponding typed expression.</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_UseExistingSpreadSheetEntry.Text" xml:space="preserve">
+    <value>Use Existing Spreadsheet Entry</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetInfo.Help" xml:space="preserve">
+    <value>Those are a few characteristics from the selected worksheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_WorkSheetInfo.Text" xml:space="preserve">
+    <value>Selected Worksheet Info</value>
+  </data>
+  <data name="Detailed.Text" xml:space="preserve">
+    <value>Detailed</value>
+  </data>
+  <data name="DnnPageCondition`1_MatchAnyDNNPageRequest.Help" xml:space="preserve">
+    <value>Check to match any DNN page request of the instance.</value>
+  </data>
+  <data name="DnnPageCondition`1_MatchAnyDNNPageRequest.Text" xml:space="preserve">
+    <value>Match Any DNN Page</value>
+  </data>
+  <data name="GeneralObjectAction_StaticCall.Help" xml:space="preserve">
+    <value>Check to enforce a static property or method call and remove the object validator</value>
+  </data>
+  <data name="GeneralObjectAction_StaticCall.Text" xml:space="preserve">
+    <value>Static Call</value>
+  </data>
+  <data name="KeeperObjectAction`1_AvailableParameters.Help" xml:space="preserve">
+    <value>The following arguments are passed from the event into context variables you can access in expressions.</value>
+  </data>
+  <data name="KeeperObjectAction`1_AvailableParameters.Text" xml:space="preserve">
+    <value>Available Parameters</value>
+  </data>
+  <data name="KeeperObjectAction`1_PassArguments.Help" xml:space="preserve">
+    <value>Check to store the event arguments as context variables. Note that because generally default imports are activated in expressions, thus "e" is understood as the mathematical constant, the name for event args is changed from "e" to Eargs when applicable.</value>
+  </data>
+  <data name="KeeperObjectAction`1_PassArguments.Text" xml:space="preserve">
+    <value>Pass Arguments</value>
+  </data>
+  <data name="MembershipCondition`1_MatchAllAuthenticated.Help" xml:space="preserve">
+    <value>Check to match all authenticated requests regardless of specific membership</value>
+  </data>
+  <data name="MembershipCondition`1_MatchAllAuthenticated.Text" xml:space="preserve">
+    <value>Match Any Authenticated</value>
+  </data>
+  <data name="MembershipCondition`1_MatchUnauthenticated.Help" xml:space="preserve">
+    <value>Matched anonymous http requests.</value>
+  </data>
+  <data name="MembershipCondition`1_MatchUnauthenticated.Text" xml:space="preserve">
+    <value>Match Unauthenticated</value>
+  </data>
+  <data name="OutputCachingStrategy_Cacheability.Help" xml:space="preserve">
+    <value>Enter the desired level of cacheability, according to &lt;a href="http://msdn.microsoft.com/en-us/library/system.web.httpcacheability%28v=vs.110%29.aspx"&gt;Ms documentation&lt;/a&gt;</value>
+  </data>
+  <data name="OutputCachingStrategy_Cacheability.Text" xml:space="preserve">
+    <value>Cacheability</value>
+  </data>
+  <data name="OutputCachingStrategy_ClearCookies.Help" xml:space="preserve">
+    <value>Clears the output cookies before caching is set (recommanded)</value>
+  </data>
+  <data name="OutputCachingStrategy_ClearCookies.Text" xml:space="preserve">
+    <value>Clear Cookies</value>
+  </data>
+  <data name="OutputCachingStrategy_Duration.Help" xml:space="preserve">
+    <value>Enter a duration, from which the expiry date is computed when caching is triggered.</value>
+  </data>
+  <data name="OutputCachingStrategy_Duration.Text" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="OutputCachingStrategy_EmptyPathInfoOnly.Help" xml:space="preserve">
+    <value>Only Cache Requests with empty paths, relative to the application root.</value>
+  </data>
+  <data name="OutputCachingStrategy_EmptyPathInfoOnly.Text" xml:space="preserve">
+    <value>Empty Path Only</value>
+  </data>
+  <data name="OutputCachingStrategy_EmptyQueryStringOnly.Help" xml:space="preserve">
+    <value>Only Cache Requests with no query string.</value>
+  </data>
+  <data name="OutputCachingStrategy_EmptyQueryStringOnly.Text" xml:space="preserve">
+    <value>Empty Query String only</value>
+  </data>
+  <data name="OutputCachingStrategy_Enabled.Help" xml:space="preserve">
+    <value>If unchecked, the caching strategy is bypassed.</value>
+  </data>
+  <data name="OutputCachingStrategy_Enabled.Text" xml:space="preserve">
+    <value>Enabled</value>
+  </data>
+  <data name="OutputCachingStrategy_Policy.Header" xml:space="preserve">
+    <value>Policy</value>
+  </data>
+  <data name="OutputCachingStrategy_Scope.Header" xml:space="preserve">
+    <value>Scope</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryBy.Help" xml:space="preserve">
+    <value>Enter a comma separated list of query string or forms params to vary the cached versions by.</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryBy.Text" xml:space="preserve">
+    <value>Vary By Params</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByBrowser.Help" xml:space="preserve">
+    <value>Activates the VaryByCustom("browser") feature, which yields distinct browser cached version </value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByBrowser.Text" xml:space="preserve">
+    <value>Vary by Browser</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByHeaders.Help" xml:space="preserve">
+    <value>Enter a list of comma separated headers to vary cached version by.</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByHeaders.Text" xml:space="preserve">
+    <value>Custom Vary By Headers</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByStar.Help" xml:space="preserve">
+    <value>Activates the "*" VaryByParam wildcard, which accounts for all parameters. </value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByStar.Text" xml:space="preserve">
+    <value>Vary by All Params</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserAgent.Help" xml:space="preserve">
+    <value>Cached versions Vary By the corresponding "User-Agent" Header</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserAgent.Text" xml:space="preserve">
+    <value>Vary By User Agent</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserCharSet.Help" xml:space="preserve">
+    <value>Cached versions Vary By the corresponding "Accept-Charset" Header</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserCharSet.Text" xml:space="preserve">
+    <value>Vary by User Char Set</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserLanguage.Help" xml:space="preserve">
+    <value>Vary by the corresponding "Accept-Language" Header</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByUserLanguage.Text" xml:space="preserve">
+    <value>Vary by User Language</value>
+  </data>
+  <data name="OutputCachingStrategy_Verbs.Help" xml:space="preserve">
+    <value>Enter a comma separated list of http verbs for http requests considered for caching</value>
+  </data>
+  <data name="OutputCachingStrategy_Verbs.Text" xml:space="preserve">
+    <value>Http Verbs</value>
+  </data>
+  <data name="PagePreInit.Text" xml:space="preserve">
+    <value>Page Pre Init</value>
+  </data>
+  <data name="RuleEngineSettings`1_Action.Header" xml:space="preserve">
+    <value>Action Providers</value>
+  </data>
+  <data name="RuleEngineSettings`1_Condition.Header" xml:space="preserve">
+    <value>Condition Providers</value>
+  </data>
+  <data name="RuleEngineSettings`1_LoggingLevel.Help" xml:space="preserve">
+    <value>You can generate DNN event logs of type DebugInfo, which must be activated in the Event Viewer Module settings first. There are 3 levels of logging. &lt;ul&gt;&lt;li&gt;&lt;strong&gt;Simple&lt;/strong&gt; means just the start and end events of the agent together with a dump if applicable&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Steps&lt;/strong&gt; means all engine steps or state changes are logged&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Detailed&lt;/strong&gt; means all individual condition and actions are logged.&lt;/li&gt;&lt;/ul&gt;</value>
+  </data>
+  <data name="RuleEngineSettings`1_LoggingLevel.Text" xml:space="preserve">
+    <value>Log Level</value>
+  </data>
+  <data name="Steps.Text" xml:space="preserve">
+    <value>Steps</value>
+  </data>
+  <data name="StringFilterProvider`1_AdditionalTokens.Help" xml:space="preserve">
+    <value>Enter additional static tokens, tokens providers, or conditional tokens.</value>
+  </data>
+  <data name="StringFilterProvider`1_AdditionalTokens.Text" xml:space="preserve">
+    <value>Additionarl Tokens</value>
+  </data>
+  <data name="StringFilterProvider`1_UseAdditionalTokens.Help" xml:space="preserve">
+    <value>By Default, the AdvancedTokenReplace instance is provided by the context object and the context variables are available as dictionary with prefix Item</value>
+  </data>
+  <data name="StringFilterProvider`1_UseAdditionalTokens.Text" xml:space="preserve">
+    <value>Use Additional Tokens</value>
+  </data>
+  <data name="TokenReplace.Text" xml:space="preserve">
+    <value>Token Replace</value>
   </data>
 </root>

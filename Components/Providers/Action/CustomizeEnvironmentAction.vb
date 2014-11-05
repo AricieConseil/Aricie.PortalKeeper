@@ -51,7 +51,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of RequestEvent)) As Boolean
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             If Me._SubPortalRegistrationType <> PortalRegistrationType.DefaultRegistration Then
                 actionContext.DnnContext.Portal.UserRegistration = CInt(Me._SubPortalRegistrationType)

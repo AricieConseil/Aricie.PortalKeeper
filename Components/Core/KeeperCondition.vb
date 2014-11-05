@@ -27,7 +27,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean 'Implements IConditionProvider(Of TEngineEvents).Match
             Dim toReturn As Boolean = False
-            Dim enableStopWatch As Boolean = context.EnableStopWatch
+            'Dim enableStopWatch As Boolean = context.EnableStopWatch
             Dim avConditions = ProviderList(Of ConditionProviderSettings(Of TEngineEvents)).GetAvailable(Me.Instances).Values
             If avConditions.Count = 0 Then
                 toReturn = True
@@ -36,28 +36,38 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 ' check our evaluation range...
                 element.CheckIsCorrectStepRange(context)
 
-                If enableStopWatch Then
-                    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
-                    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                If context.LoggingLevel = LoggingLevel.Detailed Then
+                    'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
+                    'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                    context.LogStart(String.Format("Eval {0}", element.Name), False)
                 End If
                 If element.IsMandatory Then
                     If Not (element.GetProvider.Match(context) Xor element.Negate) Then
-                        If enableStopWatch Then
+                        'If enableStopWatch Then
+                        '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
+                        '    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End Eval - {0} ", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
+                        '    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        'End If
+                        If context.LoggingLevel = LoggingLevel.Detailed Then
                             Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End Eval - {0} ", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
-                            PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            context.LogEnd(String.Format("Eval {0}", element.Name), False, False, conditionResult)
                         End If
-                        Return False
+                        toReturn = False
+                        Exit For
                     Else
                         toReturn = True
                     End If
                 ElseIf Not toReturn Then
                     toReturn = element.GetProvider.Match(context) Xor element.Negate
                 End If
-                If enableStopWatch Then
-                    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
-                    Dim objStep As New StepInfo(Debug.PKPDebugType, "End Eval Condition: " & element.Name, WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
-                    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                'If enableStopWatch Then
+                '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
+                '    Dim objStep As New StepInfo(Debug.PKPDebugType, "End Eval Condition: " & element.Name, WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
+                '    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                'End If
+                If context.LoggingLevel = LoggingLevel.Detailed Then
+                    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
+                    context.LogEnd(String.Format("Eval {0}", element.Name), False, False, conditionResult)
                 End If
             Next
             Return toReturn

@@ -13,6 +13,14 @@ Imports System.Globalization
 Imports System.Reflection
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    Public Enum ClientLocation
+        Variable
+        Cache
+        Session
+    End Enum
+
+
     <Serializable()> _
     Public Class WebRequestInfo(Of TEngineEvents As IConvertible)
 
@@ -114,6 +122,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("Request")> _
+        Public Property ReUseClient As Boolean
+
+        <ConditionalVisible("ReUseClient", False, True)> _
+        <ExtendedCategory("Request")> _
+        Public Property ClientLocation As ClientLocation = ClientLocation.Variable
+
+        <ExtendedCategory("Request")> _
+         <ConditionalVisible("ReUseClient", False, True)> _
+        Public Property ClientVarName As String = "WebClient"
+
+        <ExtendedCategory("Request")> _
+        <ConditionalVisible("ReUseClient", False, True)> _
+        Public Property CloseClient As Boolean
+
+
+        <ExtendedCategory("Request")> _
+        Public Property EnableReferer As Boolean
+
+
+        <ExtendedCategory("Request")> _
       <MainCategory()> _
         Public Property UseProxyPool() As Boolean
             Get
@@ -189,11 +217,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End Select
             End If
 
-
-
-
-
-            Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
+            'Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
 
             Dim proxyPool As WebProxyPool = Nothing
             If Me._UseProxyPool Then
@@ -208,6 +232,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             While (Not success) AndAlso objRetryNb <= Me._RetryNb
                 objTimeout = _STimeout.Value
                 Dim start As DateTime
+                Dim objClient As CompressionEnabledWebClient = Nothing
                 Try
                     objRetryNb += 1
 
@@ -226,37 +251,62 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     End If
 
-                    Using objClient As CompressionEnabledWebClient = CompressionEnabledWebClient.GetWebClient(Me._Method.ToString, objTimeout)
-                        If objProx IsNot Nothing Then
-                            objClient.Proxy = objProx
-                            objClient.VirtualProxy = virtualProxy
-                        End If
-                        If headers IsNot Nothing AndAlso headers.Count > 0 Then
-                            For Each headerPair As KeyValuePair(Of String, String) In headers
-                                objClient.Headers.Add(headerPair.Key, headerPair.Value)
-                            Next
-                        End If
-                        If enableStopWatch Then
-                            Dim targetKey As New KeyValuePair(Of String, String)("Target Url", targetUrl)
-                            Dim paramsKey As New KeyValuePair(Of String, String)("Params", ReflectionHelper.Serialize(inputParams).InnerXml)
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - Start : " & targetUrl, WorkingPhase.EndOverhead, False, False, -1, _
-                                                        actionContext.FlowId, targetKey, paramsKey)
-                            PerformanceLogger.Instance.AddDebugInfo(objStep)
-                        End If
-
-                        start = Now
-                        Select Case Me._Method
-                            Case WebMethod.Get
-                                toReturn = objClient.DownloadString(targetUrl)
-
-                            Case WebMethod.Post, WebMethod.Put, WebMethod.Delete
-                                Dim postData As String = Me.GetPostData(inputParams)
-                                objClient.Headers("Content-Type") = "application/x-www-form-urlencoded"
-                                toReturn = objClient.UploadString(targetUrl, Me._Method.ToString().ToUpperInvariant(), postData)
-
+                    If Me.ReUseClient Then
+                        Select Case ClientLocation
+                            Case PortalKeeper.ClientLocation.Variable
+                                objClient = DirectCast(actionContext.Item(Me.ClientVarName), CompressionEnabledWebClient)
+                            Case PortalKeeper.ClientLocation.Cache
+                                objClient = CacheHelper.GetGlobal(Of CompressionEnabledWebClient)(Me.ClientVarName)
+                            Case PortalKeeper.ClientLocation.Session
+                                objClient = DirectCast(actionContext.ActionContext.DnnContext.Session(Me.ClientVarName), CompressionEnabledWebClient)
                         End Select
-                        success = True
-                    End Using
+                    End If
+
+                    If objClient Is Nothing Then
+                        objClient = CompressionEnabledWebClient.GetWebClient(Me._Method.ToString, objTimeout)
+                        objClient.EnableReferer = Me.EnableReferer
+                        If Me.ReUseClient Then
+                            Select Case ClientLocation
+                                Case PortalKeeper.ClientLocation.Variable
+                                    actionContext.Item(Me.ClientVarName) = objClient
+                                Case PortalKeeper.ClientLocation.Cache
+                                    CacheHelper.SetGlobal(Of CompressionEnabledWebClient)(objClient, Me.ClientVarName)
+                                Case PortalKeeper.ClientLocation.Session
+                                    actionContext.ActionContext.DnnContext.Session(Me.ClientVarName) = objClient
+                            End Select
+                        End If
+                    End If
+
+
+                    If objProx IsNot Nothing Then
+                        objClient.Proxy = objProx
+                        objClient.VirtualProxy = virtualProxy
+                    End If
+                    If headers IsNot Nothing AndAlso headers.Count > 0 Then
+                        For Each headerPair As KeyValuePair(Of String, String) In headers
+                            objClient.Headers.Add(headerPair.Key, headerPair.Value)
+                        Next
+                    End If
+                    If actionContext.LoggingLevel = LoggingLevel.Detailed Then
+                        Dim targetKey As New KeyValuePair(Of String, String)("Target Url", targetUrl)
+                        Dim paramsKey As New KeyValuePair(Of String, String)("Params", ReflectionHelper.Serialize(inputParams).InnerXml)
+                        Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - Start : " & targetUrl, WorkingPhase.EndOverhead, False, False, -1, _
+                                                    actionContext.FlowId, targetKey, paramsKey)
+                        PerformanceLogger.Instance.AddDebugInfo(objStep)
+                    End If
+
+                    start = Now
+                    Select Case Me._Method
+                        Case WebMethod.Get
+                            toReturn = objClient.DownloadString(targetUrl)
+
+                        Case WebMethod.Post, WebMethod.Put, WebMethod.Delete
+                            Dim postData As String = Me.GetPostData(inputParams)
+                            objClient.Headers("Content-Type") = "application/x-www-form-urlencoded"
+                            toReturn = objClient.UploadString(targetUrl, Me._Method.ToString().ToUpperInvariant(), postData)
+
+                    End Select
+                    success = True
                 Catch ex As WebException
                     If objRetryNb >= Me._RetryNb Then
                         Dim obfuscatedParams As New Dictionary(Of String, String)(inputParams)
@@ -269,12 +319,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Dim newEx As New ApplicationException(message, ex)
                         Throw newEx
                     End If
+                Finally
+                    If objClient IsNot Nothing AndAlso ((Not Me.ReUseClient) OrElse Me.CloseClient) Then
+                        objClient.Dispose()
+                    End If
                 End Try
             End While
 
 
 
-            If enableStopWatch Then
+            If actionContext.LoggingLevel = LoggingLevel.Detailed Then
                 Dim responseLengthPair As New KeyValuePair(Of String, String)("Response Length", toReturn.Length.ToString(CultureInfo.InvariantCulture))
                 Dim responseBeginning As New KeyValuePair(Of String, String)("Response First 10000 chars", toReturn.ToString(CultureInfo.InvariantCulture).Substring(0, Math.Min(toReturn.Length, 10000)))
                 Dim objStep As New StepInfo(Debug.PKPDebugType, "Web Request - End: " & targetUrl, WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, responseLengthPair, responseBeginning)

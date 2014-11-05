@@ -776,6 +776,12 @@ Public Module Common
         Return request.UserHostAddress
     End Function
 
+    Public Sub CallDebuggerBreak()
+        If Not Debugger.IsAttached Then
+            Debugger.Launch()
+        End If
+        Debugger.Break()
+    End Sub
 
 #End Region
 

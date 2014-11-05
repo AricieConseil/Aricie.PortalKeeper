@@ -12,6 +12,7 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     Public Enum StringFilterMode
+        TokenReplace
         TransformsList
         Xpath
     End Enum
@@ -29,8 +30,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _FilterMode As StringFilterMode
 
         Private _Filter As New ExpressionFilterInfo
-
-        Private _XPath As New XPathInfo
 
         <ExtendedCategory("Filter")> _
             <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
@@ -66,30 +65,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
             Set(ByVal value As ExpressionFilterInfo)
                 _Filter = value
-                _Escaper = Nothing
             End Set
         End Property
 
         <ExtendedCategory("Filter")> _
        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
-        Public Property XPath() As XPathInfo
-            Get
-                Return _XPath
-            End Get
-            Set(ByVal value As XPathInfo)
-                _XPath = value
-            End Set
-        End Property
+        Public Property XPath() As New XPathInfo()
+          
 
         <ExtendedCategory("Filter")> _
-      <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
         Public Property XPathNavigableVarName As String = ""
 
 
+        <ExtendedCategory("Filter")> _
+       <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)> _
+        Public Property UseAdditionalTokens As Boolean
+
+        <ExtendedCategory("Filter")> _
+        <ConditionalVisible("UseAdditionalTokens", False, True)> _
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)> _
+        Public Property AdditionalTokens As New TokenSourceInfo()
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim input As String = Me._InputExpression.Evaluate(actionContext, actionContext)
             Select Case Me._FilterMode
@@ -103,28 +103,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Return Me._XPath.DoSelect(navigable)
                     End If
                     Return (Me._XPath.DoSelect(input))
+                Case StringFilterMode.TokenReplace
+                    Dim atr As AdvancedTokenReplace = actionContext.GetAdvancedTokenReplace()
+                    If UseAdditionalTokens Then
+                        AdditionalTokens.SetTokens(atr)
+                    End If
+                    Return atr.ReplaceAllTokens(input)
                 Case Else
-                    Return Me.Escaper.EscapeString(input)
+                    Return Me.Filter.Process(input)
             End Select
         End Function
 
-
-        Private _Escaper As StringEscaper
-
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Protected ReadOnly Property Escaper() As StringEscaper
-            Get
-                If _Escaper Is Nothing Then
-                    SyncLock Me._Filter
-                        If _Escaper Is Nothing Then
-                            Me._Escaper = New StringEscaper(Me._Filter)
-                        End If
-                    End SyncLock
-                End If
-                Return _Escaper
-            End Get
-        End Property
 
         Protected Overrides Function GetOutputType() As Type
             Select Case Me._FilterMode
@@ -132,6 +121,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Return GetType(String)
                 Case StringFilterMode.Xpath
                     Return Me._XPath.GetOutputType()
+                Case StringFilterMode.TokenReplace
+                    Return GetType(String)
             End Select
             Return GetType(String)
         End Function

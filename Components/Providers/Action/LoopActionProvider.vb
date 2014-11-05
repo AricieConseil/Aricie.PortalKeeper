@@ -7,6 +7,7 @@ Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -17,7 +18,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class LoopActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)
 
-        Private _EnumerableExpression As New FleeExpressionInfo(Of IEnumerable)
+
+
         Private _CurrentItemParam As String = "CurrentLoopItem"
 
         'Private _WaitTime As New STimeSpan(TimeSpan.FromSeconds(1))
@@ -27,9 +29,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _CounterUpdate As New SimpleExpression(Of Integer)("CurrentLoopItem + 1")
         Private _CounterEval As New SimpleExpression(Of Boolean)("CurrentLoopItem < 10")
 
-
         <ExtendedCategory("LoopAction")> _
-            <Required(True)> _
+           <Required(True)> _
         Public Property CurrentItemParam() As String
             Get
                 Return _CurrentItemParam
@@ -38,6 +39,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _CurrentItemParam = value
             End Set
         End Property
+        
 
         <ExtendedCategory("LoopAction")>
         Public Property UseCounter As Boolean
@@ -82,20 +84,42 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+      
 
+
+       
+
+
+       
 
         <ExtendedCategory("LoopAction")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
             <ConditionalVisible("UseCounter", True, True)> _
-        Public Property EnumerableExpression() As FleeExpressionInfo(Of IEnumerable)
-            Get
-                Return _EnumerableExpression
-            End Get
-            Set(ByVal value As FleeExpressionInfo(Of IEnumerable))
-                _EnumerableExpression = value
-            End Set
-        End Property
+        Public Property UseCloneList As Boolean
+
+        <ExtendedCategory("LoopAction")> _
+         <ConditionalVisible("UseCloneList", False, True)> _
+            <ConditionalVisible("UseCounter", True, True)> _
+        Public Property Reverse As Boolean
+
+        <ConditionalVisible("UseCounter", True, True)> _
+      <ExtendedCategory("LoopAction")> _
+        Public Property CaptureCounter As Boolean
+
+        <Required(True)> _
+        <ConditionalVisible("UseCounter", True, True)> _
+        <ConditionalVisible("CaptureCounter", False, True)> _
+        <ExtendedCategory("LoopAction")> _
+        Public Property CounterVarName As String = "CurrentLoopIndex"
+
+        <ConditionalVisible("UseCounter", True, True)> _
+        <ConditionalVisible("CaptureCounter", False, True)> _
+        <ExtendedCategory("LoopAction")> _
+        Public Property CounterStartsAt1 As Boolean
+
+        <ExtendedCategory("LoopAction")> _
+           <ConditionalVisible("UseCounter", True, True)> _
+        Public Property EnumerableExpression() As New FleeExpressionInfo(Of IEnumerable)
+          
 
         <XmlIgnore()> _
         <ConditionalVisible("DisablePerformanceLogger", True, True)> _
@@ -153,7 +177,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim toReturn As Boolean = True
 
@@ -183,12 +207,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Else
                 Dim objEnumerable As IEnumerable = Me._EnumerableExpression.Evaluate(actionContext, actionContext)
                 If objEnumerable IsNot Nothing Then
+                    If UseCloneList Then
+                        Dim newList = objEnumerable.Cast(Of Object)()
+                        If Reverse Then
+                            objEnumerable = newList.Reverse().ToList()
+                        Else
+                            objEnumerable = newList.ToList()
+                        End If
+                    End If
                     For Each objCurrent As Object In objEnumerable
                         If counter = maxIterations Then
                             Exit For
                         End If
                         actionContext.SetVar(Me._CurrentItemParam, objCurrent)
-                        'Me.SubBot.ProcessRules(actionContext, actionContext.CurrentEventStep, False)
+                        If CaptureCounter Then
+                            If CounterStartsAt1 Then
+                                actionContext.SetVar(Me.CounterVarName, counter + 1)
+                            Else
+                                actionContext.SetVar(Me.CounterVarName, counter)
+                            End If
+                        End If
                         If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
                             PerformanceLogger.Instance().DisableLog(actionContext.FlowId)
                         End If
@@ -196,7 +234,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
                             PerformanceLogger.Instance().EnableLog(actionContext.FlowId)
                         End If
-                        'Threading.Thread.Sleep(Me._WaitTime.Value)
                         counter += 1
                     Next
                 Else
@@ -210,6 +247,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Return toReturn
         End Function
+
+        Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
+            If Not Me.CurrentItemParam.IsNullOrEmpty() Then
+                existingVars.Add(Me.CurrentItemParam, GetType(Object))
+            End If
+            MyBase.AddVariables(currentProvider, existingVars)
+        End Sub
+
 
     End Class
 End Namespace

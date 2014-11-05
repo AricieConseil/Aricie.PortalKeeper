@@ -192,6 +192,7 @@
         Gittip
         Glass
         Globe
+        Google
         GooglePlus
         GooglePlusSquare
         GoogleWallet

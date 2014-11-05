@@ -27,9 +27,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Not mappedHandler.DynamicHandler.Enabled Then
                 Throw New HttpException(403, "Dynamic Http Handler was disabled in Portal Keeper Configuration")
             End If
-            Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
-            mappedHandler.ProcessRequest(keeperContext)
-
+            'Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = mappedHandler.DynamicHandler.InitContext() ' PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
+            mappedHandler.ProcessRequest(context)
+            'keeperContext.LogEndEngine()
 
         End Sub
     End Class

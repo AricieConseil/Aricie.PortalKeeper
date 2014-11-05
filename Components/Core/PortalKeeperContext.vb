@@ -61,24 +61,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         'Private _EnableStopWatch As Nullable(Of Boolean)
 
-        Public ReadOnly Property EnableLogs As Boolean
-            Get
-                If Me._CurrentEngine IsNot Nothing Then
-                    Return Me._CurrentEngine.EnableStopWatch OrElse Me._CurrentEngine.EnableSimpleLogs
-                Else
-                    Return Me.CurrentFirewallConfig.EnableStopWatch OrElse Me.CurrentFirewallConfig.EnableSimpleLogs
-                End If
-            End Get
-        End Property
+        'Public ReadOnly Property EnableLogs As Boolean
+        '    Get
+        '        If Me._CurrentEngine IsNot Nothing Then
+        '            Return Me._CurrentEngine.EnableStopWatch OrElse Me._CurrentEngine.EnableSimpleLogs
+        '        Else
+        '            Return Me.CurrentFirewallConfig.EnableStopWatch OrElse Me.CurrentFirewallConfig.EnableSimpleLogs
+        '        End If
+        '    End Get
+        'End Property
 
 
-        Public ReadOnly Property EnableStopWatch() As Boolean
+        'Public ReadOnly Property EnableStopWatch() As Boolean
+        '    Get
+        '        If Me._CurrentEngine IsNot Nothing Then
+        '            Return Me._CurrentEngine.EnableStopWatch
+        '        Else
+        '            Return Me.CurrentFirewallConfig.EnableStopWatch
+        '        End If
+        '    End Get
+        'End Property
+
+
+        Public ReadOnly Property LoggingLevel As LoggingLevel
             Get
-                If Me._CurrentEngine IsNot Nothing Then
-                    Return Me._CurrentEngine.EnableStopWatch
-                Else
-                    Return Me.CurrentFirewallConfig.EnableStopWatch
+                If Me.CurrentEngine IsNot Nothing Then
+                    Return Me.CurrentEngine.LoggingLevel
                 End If
+                Return Me.CurrentFirewallConfig.LoggingLevel
             End Get
         End Property
 
@@ -241,7 +251,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Sub Init(ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal userParams As IDictionary(Of String, Object))
+
             Me._CurrentEngine = configRules
+            Me.LogStart("Init Params", False)
             Dim vars As Dictionary(Of String, Object) = configRules.Variables.EvaluateVariables(Me, Me)
             If userParams IsNot Nothing Then
                 For Each objPair As KeyValuePair(Of String, Object) In userParams
@@ -251,6 +263,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             For Each objVar As KeyValuePair(Of String, Object) In vars
                 Me.SetVar(objVar.Key, objVar.Value)
             Next
+            Me.LogEnd("Init Params", False, False)
         End Sub
 
         Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
@@ -258,21 +271,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Me._CurrentEngine = configRules
             End If
             Me.CurrentEventStep = objEvent
-            Me.LogStartEventStep()
-
-
             If configRules.Mode = RuleEngineMode.Rules Then
-                For Each matchedRule As KeeperRule(Of TEngineEvents) In Me.MatchRules(configRules.Rules)
-                    matchedRule.RunActions(Me)
-                Next
+                Me.LogStartEventStep()
+                Dim matchedRules = Me.MatchRules(configRules.Rules)
+                If matchedRules.Count > 0 Then
+                    For Each matchedRule As KeeperRule(Of TEngineEvents) In matchedRules
+                        matchedRule.RunActions(Me)
+                    Next
+                End If
+                Me.LogEndEventStep(False)
             Else
                 If configRules.InitialCondition.Instances.Count = 0 OrElse configRules.InitialCondition.Match(Me) Then
+                    Me.LogStartEventStep()
                     configRules.Actions.Run(Me)
+                    Me.LogEndEventStep(False)
                 End If
             End If
-
-            Me.LogEndEventStep(endSequence)
-
+            If endSequence Then
+                Me.LogEndEngine()
+            End If
         End Sub
 
 
@@ -328,24 +345,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return DnnContext.Current.GetService(Of PortalKeeperContext(Of TEngineEvents))()
         End Function
 
-        Private Sub LogStartEventStep()
-            If Me.EnableLogs Then
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), _CurrentEngine.Name), _
-                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId)
+        Private Sub LogStartEventStep(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            Me.LogStart(Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), False, additionalProperties)
+        End Sub
+
+        Public Sub LogStart(eventStep As String, endInnerCode As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            If Me.LoggingLevel > PortalKeeper.LoggingLevel.None AndAlso (Me.LoggingLevel >= PortalKeeper.LoggingLevel.Steps OrElse eventStep = "Agent") Then
+                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", eventStep, _CurrentEngine.Name), _
+                                            WorkingPhase.InProgress, False, False, -1, Me.FlowId, additionalProperties)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub
 
+        Public Sub LogStartEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            Me.LogStart("Agent", False, additionalProperties)
+        End Sub
+
         Private Sub LogEndEventStep(ByVal endSequence As Boolean)
-            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence)
+            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), True, endSequence)
         End Sub
 
-        Public Sub LogEndEngine()
-            Me.LogEnd(String.Empty, True)
+        Public Sub LogEndEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            Me.LogEnd("Agent", True, True, additionalProperties)
         End Sub
 
-        Private Sub LogEnd(eventStep As String, ByVal endSequence As Boolean)
-            If Me.EnableLogs Then
+        Public Sub LogEnd(eventStep As String, endInnerCode As Boolean, ByVal endSequence As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            If Me.LoggingLevel > PortalKeeper.LoggingLevel.None AndAlso (Me.LoggingLevel >= PortalKeeper.LoggingLevel.Steps OrElse eventStep = "Agent") Then
                 Dim tempItems As New List(Of KeyValuePair(Of String, String))()
                 If endSequence AndAlso Me._CurrentEngine.LogDump Then
 
@@ -371,7 +396,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Else
                     logTitle = String.Format("End - {0} - {1}", eventStep, _CurrentEngine.Name)
                 End If
-
+                tempItems.AddRange(additionalProperties)
                 Dim objStep As StepInfo = New StepInfo(Debug.PKPDebugType, logTitle, _
                                           WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
@@ -399,7 +424,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     toReturn = New SerializableDictionary(Of String, Object)(Me.Items.Count)
                     For Each objVar As KeyValuePair(Of String, Object) In Me.Items
                         If objVar.Value IsNot Nothing Then
-                            If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User" OrElse (objVar.Key.StartsWith("Last"))) Then
+                            If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User") Then
                                 toReturn(objVar.Key) = objVar.Value
                             End If
                         End If

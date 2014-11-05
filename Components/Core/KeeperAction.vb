@@ -6,6 +6,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.ComponentModel
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -19,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
-            Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
+            'Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
 
             Dim availableActions As ICollection(Of ActionProviderSettings(Of TEngineEvents)) = ProviderList(Of ActionProviderSettings(Of TEngineEvents)).GetAvailable(Me.Instances).Values
             Dim toReturn As Boolean = True
@@ -37,12 +38,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If intCurrEvent > 0 AndAlso prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _
                        OrElse prov.Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < intCurrEvent Then
                             ' curl up and die here
-                            Throw New InvalidOperationException(String.Format("The action ""{0}"" cannot be executed at the current step {1}, its provider ""{2}"" covers only the steps {3} to {4}", element.Name, actionContext.CurrentEventStep, prov.Config.Name, prov.Config.MinTEngineEvents, prov.Config.MaxTEngineEvents))
+                            Throw New InvalidOperationException(String.Format("The action ""{0}"" cannot be executed at the current step {1}, its provider ""{2}"" covers only the steps {3} to {4}", _
+                                                                              element.Name, actionContext.CurrentEventStep, prov.Config.Name, prov.Config.MinTEngineEvents, prov.Config.MaxTEngineEvents))
                         Else
 
-                            If enableStopWatch Then
-                                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
-                                PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            If actionContext.LoggingLevel = LoggingLevel.Detailed Then
+                                actionContext.LogStart(element.Name, False)
+                                'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
+                                'PerformanceLogger.Instance.AddDebugInfo(objStep)
                             End If
                             toReturn = toReturn And prov.Run(actionContext)
                         End If
@@ -58,9 +61,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                         Dim message As String
                         If actionContext.CurrentRule IsNot Nothing Then
-                            message = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0} Dumped Vars: {5}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
+                            message = String.Format("Action Exception,  Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0}, InnerException: {1} {0} Dumped Vars: {5}", _
+                                                   UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
                         Else
-                            message = String.Format("Action Exception, InnerException: {1} {0} Engine Name: {2} {0} No Rule {0} Action Name: {3} {0} Dumped Vars: {4}", vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, element.Name, xmlDump)
+                            message = String.Format("Action Exception, Engine Name: {2} {0} No Rule {0} Action Name: {3} {0}, InnerException: {1} {0}  Dumped Vars: {4}", _
+                                                   UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, element.Name, xmlDump)
                         End If
 
                         Dim newEx As New ApplicationException(message, ex)
@@ -71,10 +76,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Throw newEx
                         End If
                     Finally
-                        If enableStopWatch Then
+                        If actionContext.LoggingLevel = LoggingLevel.Detailed Then
                             Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
-                            PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
+                            'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            actionContext.LogEnd(element.Name, False, False, actionResult)
                         End If
                     End Try
                     If (Not toReturn) AndAlso element.StopOnFailure Then

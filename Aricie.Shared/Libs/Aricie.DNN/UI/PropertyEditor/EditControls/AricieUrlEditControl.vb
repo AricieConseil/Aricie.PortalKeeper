@@ -1,6 +1,8 @@
 Imports System.Web.UI.WebControls
 Imports System.Web.UI.Adapters
 Imports Aricie.DNN.UI.Controls
+Imports DotNetNuke.Services.Localization
+Imports Microsoft.VisualBasic.CompilerServices
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.UserControls
 Imports System.Web.UI
@@ -12,6 +14,7 @@ Imports DotNetNuke.Services.Exceptions
 Imports DotNetNuke.UI.Utilities
 Imports Aricie.DNN.Entities
 Imports System.Globalization
+Imports DotNetNuke.Security
 
 Namespace UI.WebControls.EditControls
 
@@ -99,6 +102,9 @@ Namespace UI.WebControls.EditControls
             'End If
         End Sub
 
+
+
+
         Protected Overridable Sub ResolveEditControl()
 
             Me.Controls.Clear()
@@ -123,7 +129,7 @@ Namespace UI.WebControls.EditControls
                 Me.UrlControl.ShowUsers = ((objUrl.FilterMode And UrlControlMode.Member) = UrlControlMode.Member)
                 Me.UrlControl.ShowTrack = ((objUrl.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
                 Me.UrlControl.ShowLog = ((objUrl.FilterMode And UrlControlMode.Log) = UrlControlMode.Log)
-
+                Me.UrlControl.ShowNewWindow = ((objUrl.FilterMode And UrlControlMode.NewWindow) = UrlControlMode.NewWindow)
             End If
 
 
@@ -166,6 +172,22 @@ Namespace UI.WebControls.EditControls
                 control.RenderControl(writer)
             Next
         End Sub
+
+
+        Protected Overrides Sub RenderViewMode(writer As HtmlTextWriter)
+            Dim strUrl As String = Conversions.ToString(Me.Value)
+            If DotNetNuke.Common.Globals.GetURLType(strUrl) <> DotNetNuke.Entities.Tabs.TabType.Url Then
+                strUrl = DotNetNuke.Common.Globals.LinkClick(Conversions.ToString(Me.Value), -1, -1)
+            End If
+            Me.ControlStyle.AddAttributesToRender(writer)
+            writer.AddAttribute("href", strUrl)
+            writer.AddAttribute("target", "_blank")
+            writer.RenderBeginTag(HtmlTextWriterTag.A)
+            Dim navigateLink As String = Localization.GetString(Me.Name & "_Navigate.Text", Me.LocalResourceFile)
+            writer.Write(navigateLink)
+            writer.RenderEndTag()
+        End Sub
+
 
         Protected Overrides Sub LoadControlState(ByVal savedState As Object)
             MyBase.LoadControlState(savedState)

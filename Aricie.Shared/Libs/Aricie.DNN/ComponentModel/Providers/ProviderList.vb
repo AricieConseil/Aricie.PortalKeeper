@@ -13,9 +13,9 @@ Namespace ComponentModel
             End Get
         End Property
 
-        Public Shared Function GetAvailable(ByVal items As IList(Of T)) As IDictionary(Of String, T)
+        Public Shared Function GetAvailable(ByVal objItems As IEnumerable(Of T)) As IDictionary(Of String, T)
             Dim toReturn As New SerializableDictionary(Of String, T)
-            For Each objItem As T In items
+            For Each objItem As T In objItems
                 If objItem.Enabled Then
                     toReturn(objItem.Name) = objItem
                 End If

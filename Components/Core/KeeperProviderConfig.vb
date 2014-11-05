@@ -30,15 +30,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ConditionalVisible("HasEvent", True, True)> _
+        <ConditionalVisible("HasEvent", False, True)> _
         <Category("RequestEvents")> _
         Public Property MinTEngineEvents() As TEngineEvents
 
-        <ConditionalVisible("HasEvent", True, True)> _
+        <ConditionalVisible("HasEvent", False, True)> _
         <Category("RequestEvents")> _
         Public Property MaxTEngineEvents() As TEngineEvents
 
-        <ConditionalVisible("HasEvent", True, True)> _
+        <ConditionalVisible("HasEvent", False, True)> _
         <Category("RequestEvents")> _
         Public Property DefaultTEngineEvents() As TEngineEvents
             

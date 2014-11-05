@@ -179,7 +179,6 @@
     <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
     <Compile Include="ComponentModel\RelationCardinality.vb" />
     <Compile Include="ComponentModel\RelationNature.vb" />
-    <Compile Include="ComponentModel\UIConstants.vb" />
     <Compile Include="Config\AddInfo.vb" />
     <Compile Include="Config\AppSettingAddInfo.vb" />
     <Compile Include="Config\ComplexNodeInfo.vb" />
@@ -459,6 +458,8 @@
     <Compile Include="UI\PropertyEditor\EditControls\AricieEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\BreadCrumbsEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\IndexedDiv.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\IPathProvider.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\IProviderContainer.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\ProfileEditorEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\RequiredNumberForAdminControl.vb" />

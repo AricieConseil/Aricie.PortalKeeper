@@ -79,7 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object
             If Me.DebuggerBreak Then
-                Me.CallDebuggerBreak()
+                Common.CallDebuggerBreak()
             End If
             Dim toReturn As Object = Nothing
             Dim serializedValue As String = Me._InputExpression.Evaluate(actionContext, actionContext)
