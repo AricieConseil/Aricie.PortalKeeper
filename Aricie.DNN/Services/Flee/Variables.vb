@@ -9,8 +9,25 @@ Imports Aricie.Services
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
+Imports System.Collections.Specialized
 
 Namespace Services.Flee
+
+    <Serializable()> _
+     Public Class StringVariables
+        Inherits Variables(Of String)
+
+        Public Function EvaluateToNameValueCollection(ByVal owner As Object, ByVal globalVars As IContextLookup) As NameValueCollection
+            Dim tempDico As SerializableDictionary(Of String, Object) = Me.EvaluateVariables(owner, globalVars)
+            Dim toReturn As New NameValueCollection(tempDico.Count)
+            For Each tempPair As KeyValuePair(Of String, Object) In tempDico
+                toReturn.Add(tempPair.Key, tempPair.Value.ToString())
+            Next
+            Return toReturn
+        End Function
+
+    End Class
+
 
     ''' <summary>
     ''' Generics version of VariablesBase
@@ -52,6 +69,16 @@ Namespace Services.Flee
         Public Function EvaluateGeneric(ByVal owner As Object, ByVal globalVars As IContextLookup, forceStatic As Boolean) As SerializableDictionary(Of String, TResult)
             Return EvaluateGeneric(owner, globalVars)
         End Function
+
+        Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, DotNetType(Of VariableInfo))
+           
+            Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
+            Dim objGeneralDotNetType As New DotNetType(Of VariableInfo)(GetType(GeneralVariableInfo(Of )), New DotNetType(GetType(TResult)))
+            toReturn.Add(ReflectionHelper.GetSimpleTypeName(objGeneralDotNetType.GetDotNetType()), objGeneralDotNetType)
+
+            Return toReturn
+        End Function
+
 
     End Class
 

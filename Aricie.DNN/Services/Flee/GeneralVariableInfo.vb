@@ -13,6 +13,26 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
 
 Namespace Services.Flee
+
+    <Serializable()> _
+    Public Class GeneralVariableInfo(Of T)
+        Inherits GeneralVariableInfo
+
+        Private _ConstDotNetType As New DotNetType(GetType(T))
+
+        <Browsable(False)> _
+        Public Overrides Property DotNetType As DotNetType
+            Get
+                Return _ConstDotNetType
+            End Get
+            Set(value As DotNetType)
+                'do nothing
+            End Set
+        End Property
+
+    End Class
+
+    <Serializable()> _
     Public Class GeneralVariableInfo
         Inherits VariableInfo
         Implements ISelector(Of MethodInfo)
@@ -23,7 +43,7 @@ Namespace Services.Flee
         Private _SimpleExpression As SimpleExpression(Of Object)
         Private _FleeExpression As New FleeExpressionInfo(Of Object)
 
-        Public Property DotNetType As New DotNetType()
+        Public Overridable Property DotNetType As New DotNetType()
 
         <Browsable(False)> _
         Public ReadOnly Property HasType As Boolean
@@ -212,7 +232,7 @@ Namespace Services.Flee
 
         <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
         <ConditionalVisible("RequiresInstance", False, True)>
-         Public Property TargetInstance As New SimpleExpression(Of Object)
+        Public Property TargetInstance As New SimpleExpression(Of Object)
 
         <ConditionalVisible("HasType", False, True)> _
 <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
@@ -242,7 +262,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             Dim toReturn As Object
-          
+
             If Me._Instance IsNot Nothing Then
                 If Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode <> Flee.InstanceMode.Off Then
                     If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
@@ -355,7 +375,7 @@ Namespace Services.Flee
                     If Me.VariableMode = Flee.VariableMode.Constructor Then
                         toReturn.AddRange(Me.DotNetType.GetDotNetType.GetConstructors())
                     ElseIf ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType(), True, False).TryGetValue(Me.MethodName, members) Then
-                        toReturn.AddRange(members.OfType (Of MethodBase)())
+                        toReturn.AddRange(members.OfType(Of MethodBase)())
                     End If
                 End If
                 Return toReturn

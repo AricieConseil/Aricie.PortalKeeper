@@ -6,6 +6,7 @@ Imports System.Web
 Imports System.Web.Configuration
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
+Imports System.Collections.Specialized
 
 Namespace Entities
 
@@ -133,7 +134,17 @@ Namespace Entities
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function Redirect(ByVal context As HttpContext) As Boolean
-            Return Redirect(context, 0, "", "")
+            Return Redirect(context, Nothing, Nothing)
+        End Function
+
+        ''' <summary>
+        '''  Redirect to Url
+        ''' </summary>
+        ''' <param name="context">HTTP Context</param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function Redirect(ByVal context As HttpContext, queryUpdates As NameValueCollection, queryRemoves As IEnumerable(Of String)) As Boolean
+            Return Redirect(context, 0, "", "", queryUpdates, queryRemoves)
         End Function
 
         ''' <summary>
@@ -144,13 +155,18 @@ Namespace Entities
         ''' <param name="queryErrorsParam">Name of the error params to avoid infinite loop</param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function Redirect(ByVal context As HttpContext, ByVal targetStatus As Integer, ByVal queryErrorsParam As String, ByVal queryErrorsValue As String) As Boolean
+        Public Function Redirect(ByVal context As HttpContext, ByVal targetStatus As Integer, ByVal queryErrorsParam As String, ByVal queryErrorsValue As String, _
+                                 queryUpdates As NameValueCollection, queryRemoves As IEnumerable(Of String)) As Boolean
             Try
 
                 If String.IsNullOrEmpty(Me._Url) Then
                     Return False
                 End If
-
+                Dim target As String = Me.UrlPath
+                If queryUpdates IsNot Nothing OrElse queryRemoves IsNot Nothing Then
+                    Dim targetUri As New Uri(target)
+                    target = targetUri.ModifyQueryString(queryUpdates, queryRemoves)
+                End If
                 If (RedirectMode = CustomErrorsRedirectMode.ResponseRewrite) Then
                     context.Response.Clear()
                     If Me.UrlType = DotNetNuke.Entities.Tabs.TabType.Tab Then
@@ -163,13 +179,13 @@ Namespace Entities
                         End If
                     End If
 
-                    context.Server.Execute(Me.UrlPath)
+                    context.Server.Execute(target)
                     If targetStatus <> 0 Then
                         context.Response.StatusCode = targetStatus
                     End If
                     context.ApplicationInstance.CompleteRequest()
                 Else
-                    Dim targetUrl As String = Me.UrlPath
+                    'Dim targetUrl As String = Me.UrlPath
                     If Not String.IsNullOrEmpty(queryErrorsParam) Then
                         If (Not context.Request.QueryString.Item(queryErrorsParam) Is Nothing) Then
                             Return False
@@ -179,17 +195,29 @@ Namespace Entities
                             If (Me.UrlPath.IndexOf("?"c) > 0) Then
                                 sepChar = "&"c
                             End If
-                            targetUrl = (targetUrl & sepChar & queryErrorsParam & "=" & queryErrorsValue)
+                            target = (target & sepChar & queryErrorsParam & "=" & queryErrorsValue)
                         End If
                     End If
 
-                    context.Response.Redirect(targetUrl, False)
+                    context.Response.Redirect(target, False)
                 End If
             Catch ex As Exception
                 Aricie.Services.ExceptionHelper.LogException(ex)
                 Return False
             End Try
             Return True
+        End Function
+
+        ''' <summary>
+        ''' Redirect to Url when there is an error
+        ''' </summary>
+        ''' <param name="context">HTTP Context</param>
+        ''' <param name="targetStatus">Page status</param>
+        ''' <param name="queryErrorsParam">Name of the error params to avoid infinite loop</param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function Redirect(ByVal context As HttpContext, ByVal targetStatus As Integer, ByVal queryErrorsParam As String, ByVal queryErrorsValue As String) As Boolean
+            Return Redirect(context, targetStatus, queryErrorsParam, queryErrorsValue, Nothing, Nothing)
         End Function
 
     End Class

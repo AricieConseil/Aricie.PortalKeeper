@@ -1,4 +1,6 @@
 
+Imports Aricie.Services
+
 Namespace ComponentModel
 
     <Serializable()> _
@@ -7,6 +9,10 @@ Namespace ComponentModel
 
 
         Private _Items As New Dictionary(Of Integer, T)
+
+        Public Sub New()
+            'Me.Item = ReflectionHelper.CreateObject(Of T)()
+        End Sub
 
         Public Sub New(ByVal item As T)
             Me.Item = item
@@ -53,8 +59,13 @@ Namespace ComponentModel
     ''' <summary>
     ''' Général purpose Eventargs with
     ''' </summary>
+    <Serializable()> _
     Public Class ChangedEventArgs
         Inherits EventArgs
+
+        Public Sub New()
+
+        End Sub
 
         Public Sub New(ByVal oldValue As Object, ByVal newValue As Object)
             MyBase.New()
@@ -86,20 +97,37 @@ Namespace ComponentModel
         End Property
     End Class
 
+    <Serializable()> _
     Public Class ChangedEventArgs(Of T)
         Inherits GenericEventArgs(Of T)
+
+        Public Sub New()
+            MyBase.New()
+        End Sub
 
         Public Sub New(ByVal oldValue As T, ByVal newValue As T)
             MyBase.New(oldValue, newValue)
         End Sub
+        Public Sub New(ByVal oldValue As T, ByVal newValue As T, boolChangedAllowed As Boolean)
+            MyBase.New(oldValue, newValue)
+            Me._ChangedAllowed = boolChangedAllowed
+        End Sub
 
-        Public Property OldValue() As T
+        Private _ChangedAllowed As Boolean = True
+
+        Public ReadOnly Property ChangedAllowed As Boolean
+            Get
+                Return _ChangedAllowed
+            End Get
+        End Property
+
+        Public Property ChangedInEvent As Boolean
+
+
+        Public ReadOnly Property OldValue() As T
             Get
                 Return Me.Items(0)
             End Get
-            Set(ByVal value As T)
-                Me.Items(0) = value
-            End Set
         End Property
 
         Public Property NewValue() As T
@@ -107,7 +135,12 @@ Namespace ComponentModel
                 Return Me.Items(1)
             End Get
             Set(ByVal value As T)
-                Me.Items(1) = value
+                If Me.ChangedAllowed Then
+                    Me.ChangedInEvent = True
+                    Me.Items(1) = value
+                Else
+                    Throw New ApplicationException("New Value not allowed for modification in Event args")
+                End If
             End Set
         End Property
     End Class

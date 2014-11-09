@@ -1,6 +1,32 @@
 ﻿Imports System.Text
+Imports System.Globalization
+Imports System.Web
 
 Namespace Text
+
+
+    Public Enum TrimType
+        None
+        Trim
+        TrimStart
+        TrimEnd
+    End Enum
+
+   
+
+    Public Enum CaseChange
+        None
+        ToLower
+        ToLowerInvariant
+        ToUpper
+        ToUpperInvariant
+    End Enum
+
+    Public Enum Base64Convert
+        None
+        FromBase64
+        ToBase64
+    End Enum
 
     ''' <summary>
     ''' Enumeration wrapped around common encodings
@@ -15,12 +41,19 @@ Namespace Text
         BigEndianUnicode
     End Enum
 
+    Public Enum HtmlEncodeMethod
+        HtmlEncode
+        SecurityEscape
+        'CustomCharSet
+        NumberEntities
+    End Enum
 
     ''' <summary>
     ''' Helper to retrieve and encoding based on the dedicated enumeration
     ''' </summary>
     Public Module EncodingHelper
 
+        <System.Runtime.CompilerServices.Extension> _
         Public Function GetEncoding(objSimpleEncoding As SimpleEncoding) As Encoding
             Select Case objSimpleEncoding
                 Case SimpleEncoding.Default
@@ -42,6 +75,22 @@ Namespace Text
             End Select
         End Function
 
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function HtmlEncode(source As String, method As HtmlEncodeMethod) As String
+            Select Case method
+                Case HtmlEncodeMethod.SecurityEscape
+                    Return System.Security.SecurityElement.Escape(source)
+                Case HtmlEncodeMethod.NumberEntities
+                    Dim toReturn As New StringBuilder
+                    For Each objChar As Char In source
+                        toReturn.Append("&#")
+                        toReturn.Append(AscW(objChar).ToString(CultureInfo.InvariantCulture))
+                        toReturn.Append(";")
+                    Next
+                    Return toReturn.ToString()
+            End Select
+            Return HttpUtility.HtmlEncode(source)
+        End Function
 
     End Module
 
