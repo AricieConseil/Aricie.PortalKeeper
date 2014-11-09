@@ -14,5 +14,5 @@ using System.Runtime.InteropServices;
 [assembly: Debuggable(DebuggableAttribute.DebuggingModes.Default | DebuggableAttribute.DebuggingModes.DisableOptimizations | DebuggableAttribute.DebuggingModes.IgnoreSymbolStoreSequencePoints | DebuggableAttribute.DebuggingModes.EnableEditAndContinue)]
 [assembly: Guid("7275afb7-d618-4f79-8d32-08d8d03b41d2")]
 [assembly: RuntimeCompatibility(WrapNonExceptionThrows=true)]
-[assembly: AssemblyVersion("04.00.02")]
-[assembly: AssemblyFileVersion("04.00.02")]
+[assembly: AssemblyVersion("04.01.00")]
+[assembly: AssemblyFileVersion("04.01.00")]
