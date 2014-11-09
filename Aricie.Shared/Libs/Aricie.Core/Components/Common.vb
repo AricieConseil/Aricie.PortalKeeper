@@ -19,6 +19,7 @@ Imports System.Security
 Imports System.Runtime.InteropServices
 Imports Aricie.Security.Cryptography
 Imports System.Runtime.CompilerServices
+Imports Aricie.Text
 
 
 ''' <summary>
@@ -117,9 +118,22 @@ Public Module Common
         Return StringToByteArray(hexInput)
     End Function
 
+
+    
+
     <System.Runtime.CompilerServices.Extension> _
     Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
         Return Convert.ToBase64String(Encoding.UTF8.GetBytes(strUtf8))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetBase64FromEncoding(ByVal strToEncode As String, ByVal objEncoding As Encoding) As String
+        Return Convert.ToBase64String(objEncoding.GetBytes(strToEncode))
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function GetFromBase64(ByVal strBase64 As String, ByVal objEncoding As Encoding) As String
+        Return objEncoding.GetString(Convert.FromBase64String(strBase64))
     End Function
 
     <System.Runtime.CompilerServices.Extension> _

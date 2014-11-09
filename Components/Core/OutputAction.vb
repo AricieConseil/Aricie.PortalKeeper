@@ -164,7 +164,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
             If Not Me.OutputName.IsNullOrEmpty() Then
-                existingVars.Add(Me.OutputName, GetOutputType())
+                existingVars(Me.OutputName) = GetOutputType()
             End If
             MyBase.AddVariables(currentProvider, existingVars)
         End Sub

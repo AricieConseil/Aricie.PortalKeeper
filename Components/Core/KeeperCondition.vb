@@ -42,7 +42,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     context.LogStart(String.Format("Eval {0}", element.Name), False)
                 End If
                 If element.IsMandatory Then
-                    If Not (element.GetProvider.Match(context) Xor element.Negate) Then
+                    If Not (element.GetProvider().Match(context) Xor element.Negate) Then
                         'If enableStopWatch Then
                         '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
                         '    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End Eval - {0} ", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
@@ -58,7 +58,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         toReturn = True
                     End If
                 ElseIf Not toReturn Then
-                    toReturn = element.GetProvider.Match(context) Xor element.Negate
+                    toReturn = element.GetProvider().Match(context) Xor element.Negate
                 End If
                 'If enableStopWatch Then
                 '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())

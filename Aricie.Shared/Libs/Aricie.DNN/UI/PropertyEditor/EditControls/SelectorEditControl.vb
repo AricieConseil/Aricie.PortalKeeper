@@ -3,6 +3,7 @@ Imports System.Web.UI
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
+Imports Aricie.Services
 
 Namespace UI.WebControls.EditControls
     Public Class SelectorEditControl
@@ -130,7 +131,11 @@ Namespace UI.WebControls.EditControls
             If vaueType.IsEnum Then
                 Me.Value = [Enum].Parse(vaueType, _selector.SelectedValue)
             Else
-                Me.Value = Convert.ChangeType(_selector.SelectedValue, Me.Value.GetType())
+                If _selector.SelectedValue.IsNullOrEmpty() Then
+                    Me.Value = ReflectionHelper.CreateObject(Me.Value.GetType())
+                Else
+                    Me.Value = Convert.ChangeType(_selector.SelectedValue, Me.Value.GetType())
+                End If
             End If
             'ElseIf _selector.InsertNullItem Then
             '    Me.Value = _selector.NullItemValue

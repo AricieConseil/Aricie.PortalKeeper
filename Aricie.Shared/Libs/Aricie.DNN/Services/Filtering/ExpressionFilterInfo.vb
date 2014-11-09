@@ -1,27 +1,23 @@
 Imports System.Text.RegularExpressions
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.ComponentModel
+Imports Aricie.DNN.Security.Cryptography
+Imports Aricie.Security.Cryptography
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Web
 Imports System.Text
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.Text
+Imports Aricie.DNN.Security
+Imports System.Globalization
 
 Namespace Services.Filtering
 
-    Public Enum TrimType
-        None
-        Trim
-        TrimStart
-        TrimEnd
-    End Enum
+    
 
-
-    ''' <summary>
-    ''' Enumeration of the possible encodings for the filter
-    ''' </summary>
-    ''' <remarks></remarks>
     Public Enum EncodeProcessing
         None
         UrlEncode
@@ -29,6 +25,13 @@ Namespace Services.Filtering
         HtmlEncode
         HtmlDecode
     End Enum
+
+
+
+
+
+
+   
 
     ''' <summary>
     ''' Enumeration of the possible transformations for the filter
@@ -55,6 +58,7 @@ Namespace Services.Filtering
         Private _CharsMap As Dictionary(Of Char, Char)
         Private _RegexMap As Dictionary(Of Regex, String)
         Private _BuildLock As New Object
+        Private _Encryption As EncryptionInfo
 
 
 #Region "ctors"
@@ -70,14 +74,35 @@ Namespace Services.Filtering
         Public Sub New(ByVal maxLength As Integer, ByVal forceToLower As Boolean, ByVal encodePreProcessing As EncodeProcessing, ByVal buildDefaultTransforms As DefaultTransforms)
             Me.New()
             Me._MaxLength = maxLength
-            Me._ForceToLower = forceToLower
+            Me.ForceToLower = forceToLower
             Me._EncodePreProcessing = encodePreProcessing
             Me.BuildDefault(buildDefaultTransforms)
+
         End Sub
 
 #End Region
 
+      
 
+        
+
+       
+        ''' <summary>
+        ''' Encoding preprocessing
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property EncodePreProcessing() As EncodeProcessing = EncodeProcessing.None
+
+        <ConditionalVisible("EncodePreProcessing", False, True, EncodeProcessing.HtmlEncode)> _
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property PreHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
+
+
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property CaseChange As CaseChange
 
         ''' <summary>
         ''' Forces input to lowercase output
@@ -85,25 +110,52 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Property ForceToLower() As Boolean = False
+        <Browsable(False)>
+        Public Property ForceToLower() As Boolean
+            Get
+                Return Nothing
+            End Get
+            Set(value As Boolean)
+                If value Then
+                    Me.CaseChange = CaseChange.ToLower
+                End If
+            End Set
+        End Property
 
         ''' <summary>
-        ''' Encoding preprocessing
+        ''' Is the output Trimmed the output
         ''' </summary>
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Property EncodePreProcessing() As EncodeProcessing = EncodeProcessing.None
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property Trim As TrimType
 
+        ''' <summary>
+        ''' The char to be trimmed
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ConditionalVisible("Trim", True, True, TrimType.None)> _
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property TrimChar As String = "-"
+         
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property ApplyFormat As Boolean
+
+        <ExtendedCategory("GlobalFilter")> _
+        <ConditionalVisible("ApplyFormat", False, True)> _
+        Public Property FormatPattern As CData = "{0}"
+
+        '<CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.Accordion, True)> _
         ''' <summary>
         ''' Transformation list to replace elements of the input
         ''' </summary>
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
-        <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.Accordion, True)> _
+        <ExtendedCategory("Transformations")> _
         Public Property TransformList() As List(Of StringTransformInfo)
             Get
                 Return _TransformList
@@ -119,6 +171,7 @@ Namespace Services.Filtering
         ''' </summary>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("Transformations")> _
         Public ReadOnly Property DefaultCharReplacement() As String
             Get
                 If _DefaultCharReplacement Is Nothing Then
@@ -138,29 +191,68 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("Transformations")> _
         Public Property PreventDoubleDefaults As Boolean = True
 
+        <ExtendedCategory("Advanced")> _
+        Public Property Base64Convert As Base64Convert = Base64Convert.None
+
+        <ExtendedCategory("Advanced")> _
+        <ConditionalVisible("Base64Convert", False, True)> _
+        Public Property TargetEncoding As SimpleEncoding = SimpleEncoding.UTF8
 
 
-        ''' <summary>
-        ''' Is the output Trimmed the output
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Property Trim As TrimType
+        <ExtendedCategory("Advanced")> _
+        Public Property UseCompression As Boolean
 
-        ''' <summary>
-        ''' The char to be trimmed
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ConditionalVisible("Trim", True, True, TrimType.None)> _
-        Public Property TrimChar As String = "-"
-         
+        <ExtendedCategory("Advanced")> _
+        <ConditionalVisible("UseCompression", False, True)> _
+        Public Property CompressMethod() As CompressionMethod
 
+        <ExtendedCategory("Advanced")> _
+        <ConditionalVisible("UseCompression", False, True)> _
+        Public Property CompressDirection() As CompressionDirection
 
+        <ExtendedCategory("Advanced")> _
+        Public Property UseEncryption As Boolean
+
+        <ExtendedCategory("Advanced")> _
+       <ConditionalVisible("UseEncryption", False, True)> _
+        Public Property CryptoDirection As CryptoTransformDirection
+
+        Private _Base64Salt As String = ""
+        <ExtendedCategory("Advanced")> _
+        <ConditionalVisible("UseEncryption", False, True)> _
+        Public Property Base64Salt As String
+            Get
+                If Not Me.UseEncryption Then
+                    Return Nothing
+                End If
+                If _Base64Salt.IsNullOrEmpty() Then
+                    _Base64Salt = CryptoHelper.GetNewSalt(30).ToBase64()
+                End If
+                Return _Base64Salt
+            End Get
+            Set(value As String)
+                _Base64Salt = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Advanced")> _
+          <ConditionalVisible("UseEncryption", False, True)> _
+        Public Property Encryption As EncryptionInfo
+            Get
+                If Not Me.UseEncryption Then
+                    Return Nothing
+                ElseIf _Encryption Is Nothing Then
+                    _Encryption = New EncryptionInfo
+                End If
+                Return _Encryption
+            End Get
+            Set(value As EncryptionInfo)
+                _Encryption = value
+            End Set
+        End Property
 
         ''' <summary>
         ''' Encoding postprocessing
@@ -168,8 +260,12 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("GlobalFilter")> _
         Public Property EncodePostProcessing() As EncodeProcessing = EncodeProcessing.None
 
+        <ConditionalVisible("EncodePostProcessing", False, True, EncodeProcessing.HtmlEncode)> _
+        <ExtendedCategory("GlobalFilter")> _
+        Public Property PostHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
 
         ''' <summary>
         ''' Maximum length for the output
@@ -178,6 +274,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks>-1 to disable</remarks>
         <Required(True)> _
+        <ExtendedCategory("GlobalFilter")> _
         Public Property MaxLength() As Integer = -1
 
 
@@ -187,10 +284,8 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("AdditionalFilters")> _
         Public Property AdditionalFilters As New List(Of ExpressionFilterInfo)
-
-
-
 
 
         ''' <summary>
@@ -285,9 +380,9 @@ Namespace Services.Filtering
         End Sub
 
 
-
        
-            
+
+        
 
         ''' <summary>
         ''' Escapes the string passed as the parameter according to the rules defined in the ExpressionFilterInfo
@@ -297,28 +392,44 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         Public Function Process(ByVal originalString As String) As String
 
-            Dim toReturn As String
+            Dim toReturn As String = originalString
             Dim maxLength As Integer = Me._MaxLength
             Dim noMaxLentgth As Boolean = (maxLength = -1)
+
+
+
 
             'encode preprocessing
             Select Case Me._EncodePreProcessing
                 Case EncodeProcessing.HtmlEncode
-                    toReturn = HttpUtility.HtmlEncode(originalString)
+                    toReturn = toReturn.HtmlEncode(Me.PreHtmlEncodeMethod)
+
                 Case EncodeProcessing.HtmlDecode
-                    toReturn = HttpUtility.HtmlDecode(originalString)
+                    toReturn = HttpUtility.HtmlDecode(toReturn)
                 Case EncodeProcessing.UrlEncode
-                    toReturn = HttpUtility.UrlEncode(originalString)
+                    toReturn = HttpUtility.UrlEncode(toReturn)
                 Case EncodeProcessing.UrlDecode
-                    toReturn = HttpUtility.UrlDecode(originalString)
+                    toReturn = HttpUtility.UrlDecode(toReturn)
                 Case Else
                     toReturn = originalString
             End Select
 
+
+
             'forceLower
-            If Me._ForceToLower Then
-                toReturn = toReturn.ToLowerInvariant()
+            If Me.CaseChange <> CaseChange.None Then
+                Select Case CaseChange
+                    Case CaseChange.ToLower
+                        toReturn = toReturn.ToLower()
+                    Case CaseChange.ToLowerInvariant
+                        toReturn = toReturn.ToLowerInvariant()
+                    Case CaseChange.ToUpper
+                        toReturn = toReturn.ToUpper()
+                    Case CaseChange.ToUpperInvariant
+                        toReturn = toReturn.ToUpperInvariant()
+                End Select
             End If
+
 
             'dealing with regexs
             For Each objRegexReplace As KeyValuePair(Of Regex, String) In Me.RegexMap
@@ -383,10 +494,43 @@ Namespace Services.Filtering
                 End If
             End If
 
+            If Me.ApplyFormat Then
+                toReturn = String.Format(FormatPattern, toReturn)
+            End If
+
+            If Base64Convert <> Base64Convert.None Then
+                Select Case Base64Convert
+                    Case Base64Convert.ToBase64
+                        toReturn = toReturn.GetBase64FromEncoding(TargetEncoding.GetEncoding())
+                    Case Base64Convert.FromBase64
+                        toReturn = toReturn.GetFromBase64(TargetEncoding.GetEncoding())
+                End Select
+            End If
+
+            If Me.UseCompression Then
+                Select Case CompressDirection
+                    Case CompressionDirection.Compress
+                        toReturn = toReturn.Compress(CompressMethod)
+                    Case CompressionDirection.Decompress
+                        toReturn = toReturn.Decompress(CompressMethod)
+                End Select
+            End If
+
+            If Me.UseEncryption Then
+                Select Case CryptoDirection
+                    Case CryptoTransformDirection.Encrypt
+                        toReturn = Encryption.DoEncrypt(toReturn.ToUTF8(), Base64Salt.FromBase64()).ToBase64()
+                    Case CryptoTransformDirection.Decrypt
+                        toReturn = Encryption.Decrypt(toReturn.FromBase64(), Base64Salt.FromBase64()).FromUTF8()
+                End Select
+
+            End If
+
+
             'encode postprocessing
             Select Case Me._EncodePostProcessing
                 Case EncodeProcessing.HtmlEncode
-                    toReturn = HttpUtility.HtmlEncode(toReturn)
+                    toReturn = toReturn.HtmlEncode(Me.PostHtmlEncodeMethod)
                 Case EncodeProcessing.HtmlDecode
                     toReturn = HttpUtility.HtmlDecode(toReturn)
                 Case EncodeProcessing.UrlEncode
@@ -410,8 +554,6 @@ Namespace Services.Filtering
             Return toReturn
 
         End Function
-
-
 
 
 
@@ -543,8 +685,15 @@ Namespace Services.Filtering
                 Return False
             End If
             If objToCompare.MaxLength <> Me._MaxLength _
-                    OrElse objToCompare.ForceToLower <> Me._ForceToLower _
+                    OrElse objToCompare.CaseChange <> Me._CaseChange _
                     OrElse objToCompare.EncodePreProcessing <> Me._EncodePreProcessing _
+                    OrElse objToCompare.EncodePostProcessing <> Me.EncodePostProcessing _
+                    OrElse objToCompare.Trim <> Me.Trim _
+                    OrElse objToCompare.TrimChar <> Me.TrimChar _
+                    OrElse objToCompare.ApplyFormat <> Me.ApplyFormat _
+                    OrElse objToCompare.FormatPattern.Value <> Me.FormatPattern.Value _
+                    OrElse objToCompare.PreventDoubleDefaults <> Me.PreventDoubleDefaults _
+                    OrElse objToCompare.DefaultCharReplacement <> Me.DefaultCharReplacement _
                     OrElse objToCompare.TransformList.Count <> Me._TransformList.Count Then
                 Return False
             End If

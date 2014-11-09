@@ -8,6 +8,7 @@ Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Security
 Imports Aricie.Services
+Imports System.Xml.Serialization
 
 Namespace Services.Flee
 
@@ -37,6 +38,50 @@ Namespace Services.Flee
             MyBase.New(expressionText)
         End Sub
 
+        <ExtendedCategory("Expression")> _
+        Public Overrides ReadOnly Property ReturnType As String
+            Get
+                Return MyBase.ReturnType
+            End Get
+        End Property
+
+        <Required(True)> _
+       <LineCount(4), Width(500)> _
+       <ExtendedCategory("Expression")> _
+        Public Overrides Property Expression As String
+            Get
+                Return MyBase.Expression
+            End Get
+            Set(value As String)
+                MyBase.Expression = value
+            End Set
+        End Property
+
+        <XmlIgnore()> _
+        <ExtendedCategory("Expression")> _
+        Public Overrides Property ExpressionBuilder As FleeExpressionBuilder
+            Get
+                Return MyBase.ExpressionBuilder
+            End Get
+            Set(value As FleeExpressionBuilder)
+                MyBase.ExpressionBuilder = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Expression")> _
+        Public Overrides Sub DisplayAvailableVars(pe As AriciePropertyEditorControl)
+            MyBase.DisplayAvailableVars(pe)
+        End Sub
+
+        <ExtendedCategory("Expression")> _
+        Public Overrides Sub RemoveExpressionBuilder(pe As AriciePropertyEditorControl)
+            MyBase.RemoveExpressionBuilder(pe)
+        End Sub
+
+        <ExtendedCategory("Expression")> _
+        Public Overrides Sub InsertSelectedVar(pe As AriciePropertyEditorControl)
+            MyBase.InsertSelectedVar(pe)
+        End Sub
 
 
         ''' <summary>

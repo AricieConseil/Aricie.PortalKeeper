@@ -21,13 +21,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class KeeperObjectAction(Of TEngineEvents As IConvertible)
         Inherits GeneralObjectAction
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
         Public Property EventHandlerType As EventHandlerType
 
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
        <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.DelegateExpression)> _
@@ -40,7 +38,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.KeeperAction)> _
@@ -52,20 +49,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public ReadOnly Property AvailableParametersAndTypes As SerializableDictionary(Of String, Type)
             Get
                 Dim toReturn As New SerializableDictionary(Of String, Type)
-                For Each objParam As ParameterInfo In Me.CandidateEventParams
-                    Dim objParamName As String = objParam.Name
-                    If objParamName = "e" Then
-                        objParamName = DynamicControlAdapter.EventArgsVarName
-                    End If
-                    toReturn.Add(objParamName, objParam.ParameterType)
-                Next
+                If Me.CandidateEventParams IsNot Nothing Then
+                    For Each objParam As ParameterInfo In Me.CandidateEventParams
+                        Dim objParamName As String = objParam.Name
+                        If objParamName = "e" Then
+                            objParamName = DynamicControlAdapter.EventArgsVarName
+                        End If
+                        toReturn.Add(objParamName, objParam.ParameterType)
+                    Next
+                End If
                 Return toReturn
             End Get
         End Property
 
 
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("PassArguments", False, True)> _
@@ -82,7 +80,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.KeeperAction)> _
@@ -95,7 +92,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Get
                 If _CandidateEventParams Is Nothing Then
-                    _CandidateEventParams = ReflectionHelper.GetEventParameters(Me.CandidateEvent)
+                    If Me.CandidateEvent IsNot Nothing Then
+                        _CandidateEventParams = ReflectionHelper.GetEventParameters(Me.CandidateEvent)
+                    End If
                 End If
                 Return _CandidateEventParams
             End Get

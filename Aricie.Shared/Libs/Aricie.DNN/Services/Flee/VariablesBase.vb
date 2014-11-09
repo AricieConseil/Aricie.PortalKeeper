@@ -23,6 +23,7 @@ Namespace Services.Flee
         Private Shared ReadOnly _GenerictypeLessTypeCTorVar As Type = GetType(CtorVariableInfo(Of ))
         Private Shared ReadOnly _GenerictypeLessTypeVar As Type = GetType(VariableInfo(Of ))
 
+
         <Obsolete("user other signature")> _
         Public Function EvaluateVariables(ByVal owner As Object, ByVal globalVars As IContextLookup, forceStatic As Boolean) As SerializableDictionary(Of String, Object)
             Return EvaluateVariables(owner, globalVars)

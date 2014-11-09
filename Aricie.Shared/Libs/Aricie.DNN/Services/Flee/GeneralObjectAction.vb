@@ -28,7 +28,6 @@ Namespace Services.Flee
 
 
 
-        <ExtendedCategory("Instance")> _
         Public Property DotNetType As New DotNetType()
 
         <Browsable(False)> _
@@ -63,14 +62,14 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasConcreteType", False, True)> _
-        <ConditionalVisible("StaticCall", True, True)> _
         <ExtendedCategory("Instance")> _
+            <ConditionalVisible("HasConcreteType", False, True)> _
+            <ConditionalVisible("StaticCall", True, True)> _
         Public Property Instance() As New FleeExpressionInfo(Of Object)
 
 
-        <ConditionalVisible("HasType", False, True)> _
         <ExtendedCategory("Action")> _
+        <ConditionalVisible("HasType", False, True)> _
         Public Property ActionMode As ObjectActionMode
 
 
@@ -80,10 +79,10 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <Selector("Name", "Name", False, True, "<Select a Member Name>", "", False, True)> _
-        <ExtendedCategory("Action")> _
         <AutoPostBack()> _
         Public Property MemberName() As String = String.Empty
 
@@ -129,16 +128,16 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("HasParameters", False, True)> _
-        <ExtendedCategory("Action")> _
         Public Overridable Property Parameters() As New Variables
 
 
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
+        <ExtendedCategory("Action")> _
         Public Overridable Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
 
         Private _CandidateEvent As EventInfo
@@ -147,18 +146,20 @@ Namespace Services.Flee
         Protected ReadOnly Property CandidateEvent As EventInfo
             Get
                 If _CandidateEvent Is Nothing Then
-                    Dim candidateEventMember As MemberInfo = Me.SelectedMembers(0)
-                    If candidateEventMember IsNot Nothing Then
-                        Dim objCandidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
-                        If objCandidateEvent IsNot Nothing Then
-                            _CandidateEvent = objCandidateEvent
+                    If Me.ActionMode = ObjectActionMode.AddEventHandler AndAlso Me.SelectedMembers.Count > 0 Then
+                        Dim candidateEventMember As MemberInfo = Me.SelectedMembers(0)
+                        If candidateEventMember IsNot Nothing Then
+                            Dim objCandidateEvent As EventInfo = TryCast(candidateEventMember, EventInfo)
+                            If objCandidateEvent IsNot Nothing Then
+                                _CandidateEvent = objCandidateEvent
+                            Else
+                                Throw New Exception(String.Format( _
+                                    "Candidate Member {0} could not be converted to event {1} in type {2}", _
+                                    candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
+                            End If
                         Else
-                            Throw New Exception(String.Format( _
-                                "Candidate Member {0} could not be converted to event {1} in type {2}", _
-                                candidateEventMember.ToString(), Me.MemberName, Me.DotNetType.GetDotNetType()))
+                            Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.MemberName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                         End If
-                    Else
-                        Throw New Exception(String.Format("Event {0} was not found in type {1}", Me.MemberName, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                     End If
                 End If
                 Return _CandidateEvent
@@ -168,9 +169,9 @@ Namespace Services.Flee
 
 
 
-        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasParameters", False, True)> _
         <ActionButton(IconName.Key, IconOptions.Normal)> _
+        <ExtendedCategory("Action")> _
         Public Sub SetParameters(ape As AriciePropertyEditorControl)
             If Me.SelectedMember IsNot Nothing Then
                 Dim objParameters As ParameterInfo() = {}
@@ -324,8 +325,11 @@ Namespace Services.Flee
         Public ReadOnly Property SelectedMember As MemberInfo
             Get
                 Dim tmpMembers As List(Of MemberInfo) = SelectedMembers
+                If MemberIndex = 0 Then
+                    MemberIndex = 1
+                End If
                 If tmpMembers.Count >= MemberIndex Then
-                    Return SelectedMembers(MemberIndex - 1)
+                    Return tmpMembers(MemberIndex - 1)
                 End If
                 Return Nothing
             End Get
