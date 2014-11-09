@@ -62,6 +62,7 @@ Namespace Security.Cryptography
         Private Const BaseInitVector As String = "Aricie"
 
         Private _StaticRandomNumberGenerator As RNGCryptoServiceProvider
+
         Public ReadOnly Property StaticRandomNumberGenerator As RNGCryptoServiceProvider
             Get
                 If _StaticRandomNumberGenerator Is Nothing Then
@@ -71,13 +72,13 @@ Namespace Security.Cryptography
             End Get
         End Property
 
+        Public Random As New Random()
+            
         Public Sub AddRandomDelay()
 
             Thread.Sleep(GetNewSalt(0)(0))
 
         End Sub
-
-
 
         Public Function GetNewSalt() As Byte()
             Return GetNewSalt(16)

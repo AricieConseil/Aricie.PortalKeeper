@@ -6,6 +6,7 @@ Imports Aricie.DNN.Services.Filtering
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports System.Net
+Imports Aricie.Text
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _

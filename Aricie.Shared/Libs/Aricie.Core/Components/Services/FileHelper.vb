@@ -4,7 +4,6 @@ Imports System.Web
 Imports System.Globalization
 
 Namespace Services
-
     ''' <summary>
     ''' Helper class for file operations
     ''' </summary>

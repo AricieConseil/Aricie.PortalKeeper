@@ -197,12 +197,47 @@ Namespace Security.Cryptography
             End Set
         End Property
 
-       
+        <ExtendedCategory("PublicKeys")> _
+        Public Property PublicKeyDisplay As PublicKeyDisplay
+
+        <ExtendedCategory("PublicKeys")> _
+        <Width(500)> _
+        <LineCount(10)> _
+     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.Xml)> _
+        Public ReadOnly Property PublicKeyAsXml As String
+            Get
+                Return Me.AsymmetricAlgo.ToXmlString(False)
+            End Get
+        End Property
+
+        <ExtendedCategory("PublicKeys")> _
+        <Width(500)> _
+        <LineCount(10)> _
+     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.CSPBlob)> _
+        Public ReadOnly Property PublicKeyAsCSPBlob As String
+            Get
+                Return Convert.ToBase64String(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportCspBlob(False))
+            End Get
+        End Property
+
+        <ExtendedCategory("PublicKeys")> _
+        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)> _
+        <LabelMode(LabelMode.Top)> _
+        Public ReadOnly Property PublicKeyAsRSAParameters As RSAParametersInfo
+            Get
+                Return New RSAParametersInfo(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportParameters(False))
+            End Get
+        End Property
+
+
+        <ExtendedCategory("PrivateKeys")> _
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
        <LineCount(36)> _
       <Width(500)> _
       <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-        Public Property EncryptionPrivateKey As CData
+       Public Property EncryptionPrivateKey As CData
             Get
                 Try
                     If Me.SealType = KeyProtectionMode.None Then
@@ -227,6 +262,7 @@ Namespace Security.Cryptography
             End Set
         End Property
 
+        <ExtendedCategory("PrivateKeys")> _
         <LineCount(4)> _
       <Width(500)> _
        <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
@@ -241,6 +277,7 @@ Namespace Security.Cryptography
         Public Property ProtectedDataEntropy As Byte() = New Byte() {}
 
 
+        <ExtendedCategory("PrivateKeys")> _
         <LineCount(36)> _
       <Width(500)> _
        <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
@@ -331,7 +368,7 @@ Namespace Security.Cryptography
         End Property
 
 
-
+        <ExtendedCategory("PrivateKeys")> _
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
         <LineCount(3)> _
        <Width(500)> _
@@ -359,6 +396,7 @@ Namespace Security.Cryptography
             End Set
         End Property
 
+        <ExtendedCategory("PrivateKeys")> _
         <LineCount(6)> _
       <Width(500)> _
        <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
@@ -399,42 +437,12 @@ Namespace Security.Cryptography
         End Property
 
 
-
-        Public Property PublicKeyDisplay As PublicKeyDisplay
-
-        <Width(500)> _
-        <LineCount(10)> _
-     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.Xml)> _
-        Public ReadOnly Property PublicKeyAsXml As String
-            Get
-                Return Me.AsymmetricAlgo.ToXmlString(False)
-            End Get
-        End Property
-
-        <Width(500)> _
-        <LineCount(10)> _
-     <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-     <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.CSPBlob)> _
-        Public ReadOnly Property PublicKeyAsCSPBlob As String
-            Get
-                Return Convert.ToBase64String(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportCspBlob(False))
-            End Get
-        End Property
-
-
-        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)> _
-        <LabelMode(LabelMode.Top)> _
-        Public ReadOnly Property PublicKeyAsRSAParameters As RSAParametersInfo
-            Get
-                Return New RSAParametersInfo(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportParameters(False))
-            End Get
-        End Property
+       
 
 
 
 
-
+        <ExtendedCategory("PrivateKeys")> _
         <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
         <ActionButton(IconName.Lock, IconOptions.Normal, "SealEncryptionKey.Alert")>
         Public Sub SealInApplication(ape As AriciePropertyEditorControl)
@@ -456,7 +464,7 @@ Namespace Security.Cryptography
             End If
         End Sub
 
-
+        <ExtendedCategory("PrivateKeys")> _
         <ConditionalVisible("SealType", True, True, KeyProtectionMode.ProtectData)> _
       <ConditionalVisible("SealType", True, True, KeyProtectionMode.KeyContainer)> _
       <ActionButton(IconName.Lock, IconOptions.Normal, "SealInKeyContainer.Alert")>
@@ -481,6 +489,7 @@ Namespace Security.Cryptography
             ape.DisplayLocalizedMessage("SealInKeyContainer.Completed", ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
+        <ExtendedCategory("PrivateKeys")> _
         <ConditionalVisible("SealType", True, True, KeyProtectionMode.ProtectData)> _
         <ActionButton(IconName.Lock, IconOptions.Normal, "SealProtectData.Alert")>
         Public Sub SealProtectData(ape As AriciePropertyEditorControl)
@@ -501,14 +510,13 @@ Namespace Security.Cryptography
         End Sub
 
 
-
+        <ExtendedCategory("PrivateKeys")> _
         <ActionButton(IconName.Refresh, IconOptions.Normal, "ResetEncryptionKey.Alert")>
         Public Sub ResetEncryptionKeys(ape As AriciePropertyEditorControl)
             Me.ResetEncryptionKeys()
             ape.ItemChanged = True
             ape.DisplayLocalizedMessage("ResetEncryption.Completed", ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
-
 
 
         Public Function DoEncrypt(payload As Byte(), ByRef salt() As Byte) As Byte() Implements IEncrypter.Encrypt
@@ -589,6 +597,9 @@ Namespace Security.Cryptography
             'Dim ephemeral As CspParameters = CryptoHelper.CSPCreateNewKey(String.Empty, AsymmetricKeySize, False, True)
             Me._AsymmetricAlgo = New RSACryptoServiceProvider(CInt(AsymmetricKeySize))
             Me.ProtectedDataEntropy = {}
+            If Me.EncryptionTypes.Count = 0 Then
+                Me.EncryptionTypes.Add(EncryptionType.Symmetric)
+            End If
         End Sub
 
         'Private Function GetEncryptedKey() As String

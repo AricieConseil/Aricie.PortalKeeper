@@ -160,6 +160,7 @@
     <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Components\Services\ExceptionHelper.vb" />
     <Compile Include="Components\Services\FileHelper.vb" />
+    <Compile Include="Components\UriExtensions.vb" />
     <Compile Include="Components\STimeSpan.vb" />
     <Compile Include="Components\Text\SimpleEncoding.vb" />
     <Compile Include="Components\TypeHandler.vb" />

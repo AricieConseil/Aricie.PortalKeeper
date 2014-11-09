@@ -83,7 +83,7 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public ReadOnly Property ReturnType() As String
+        Public Overridable ReadOnly Property ReturnType() As String
             Get
                 Return ReflectionHelper.GetSafeTypeName(GetType(TResult))
             End Get
@@ -107,7 +107,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <Required(True)> _
         <LineCount(4), Width(500)> _
-        Public Property Expression() As String
+        Public Overridable Property Expression() As String
             Get
                 Return _Expression
             End Get
@@ -131,13 +131,11 @@ Namespace Services.Flee
         End Property
 
         <XmlIgnore()> _
-        <ExtendedCategory("", "Help")> _
-        Public Property ExpressionBuilder As FleeExpressionBuilder
+        Public Overridable Property ExpressionBuilder As FleeExpressionBuilder
 
         <ConditionalVisible("HasExpressionBuilder", True, True)> _
-        <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Magic, IconOptions.Normal)> _
-        Public Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
+        Public Overridable Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
 
             'Dim currentPe As AriciePropertyEditorControl = pe
             'Dim currentProvider As IExpressionVarsProvider
@@ -174,9 +172,8 @@ Namespace Services.Flee
         End Sub
 
         <ConditionalVisible("HasExpressionBuilder", False, True)> _
-        <ExtendedCategory("", "Help")> _
         <ActionButton(IconName.Undo, IconOptions.Normal)> _
-        Public Sub RemoveExpressionBuilder(ByVal pe As AriciePropertyEditorControl)
+        Public Overridable Sub RemoveExpressionBuilder(ByVal pe As AriciePropertyEditorControl)
 
             Me.ExpressionBuilder = Nothing
             pe.ItemChanged = True
@@ -184,9 +181,8 @@ Namespace Services.Flee
 
 
         <ConditionalVisible("HasExpressionBuilder", False, True)> _
-           <ExtendedCategory("", "Help")> _
           <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
-        Public Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
+        Public Overridable Sub InsertSelectedVar(ByVal pe As AriciePropertyEditorControl)
             Me.Expression &= Me.ExpressionBuilder.InsertString
             Me.ExpressionBuilder = Nothing
             pe.ItemChanged = True

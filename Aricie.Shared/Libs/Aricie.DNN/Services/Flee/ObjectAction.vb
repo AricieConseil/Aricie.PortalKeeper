@@ -3,6 +3,7 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Flee
     ''' <summary>

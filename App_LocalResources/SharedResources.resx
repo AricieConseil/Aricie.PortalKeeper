@@ -4759,7 +4759,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Import Methods</value>
   </data>
   <data name="PortalKeeperConfig_RestServices.Header" xml:space="preserve">
-    <value>Web services</value>
+    <value>Web services (soon)</value>
   </data>
   <data name="RestService_DynamicMethods.Help" xml:space="preserve">
     <value>Here you can define individual methods for your web service. Each method is associated to one or several http verbs, and runs a dedicated rule engine with dedicated actions to deal with operation results.</value>
@@ -7874,6 +7874,12 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="WorksheetEntryInfo`1_WorkSheetInfo.Text" xml:space="preserve">
     <value>Selected Worksheet Info</value>
   </data>
+  <data name="CaptureStream.Text" xml:space="preserve">
+    <value>Capture Stream</value>
+  </data>
+  <data name="CaptureString.Text" xml:space="preserve">
+    <value>Capture String</value>
+  </data>
   <data name="Detailed.Text" xml:space="preserve">
     <value>Detailed</value>
   </data>
@@ -8035,5 +8041,302 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="TokenReplace.Text" xml:space="preserve">
     <value>Token Replace</value>
+  </data>
+  <data name="TransformStream.Text" xml:space="preserve">
+    <value>Transform Stream</value>
+  </data>
+  <data name="TransformString.Text" xml:space="preserve">
+    <value>Transform String</value>
+  </data>
+  <data name="TransformWrite.Text" xml:space="preserve">
+    <value>Transform Write</value>
+  </data>
+  <data name="TransformWriteString.Text" xml:space="preserve">
+    <value>Transform Write String</value>
+  </data>
+  <data name="Compress.Text" xml:space="preserve">
+    <value>Compress</value>
+  </data>
+  <data name="Compressed.Text" xml:space="preserve">
+    <value>Compressed</value>
+  </data>
+  <data name="ConditionProviderSettings`1_AddPreConditionActions.Help" xml:space="preserve">
+    <value>You can add a series of actions to be run before the condition is evaluated. You can also skip the evaluation and return a specific match value when the actions fail.</value>
+  </data>
+  <data name="ConditionProviderSettings`1_AddPreConditionActions.Text" xml:space="preserve">
+    <value>Add Preprocessing actions</value>
+  </data>
+  <data name="ConditionProviderSettings`1_PreConditionActions.Header" xml:space="preserve">
+    <value>Preprocessing </value>
+  </data>
+  <data name="ConditionProviderSettings`1_PreConditionActions.Help" xml:space="preserve">
+    <value>Those actions are to be run before the condition is evaluated (be careful with step event in rule settings). </value>
+  </data>
+  <data name="ConditionProviderSettings`1_PreConditionActions.Text" xml:space="preserve">
+    <value>Preprocessing Actions</value>
+  </data>
+  <data name="ConditionProviderSettings`1_StopActions.Help" xml:space="preserve">
+    <value>Check to prevent the actual condition evaluation when the action returns a failure flag</value>
+  </data>
+  <data name="ConditionProviderSettings`1_StopActions.Text" xml:space="preserve">
+    <value>Skip Match if fails</value>
+  </data>
+  <data name="ConditionProviderSettings`1_StopMatches.Help" xml:space="preserve">
+    <value>By default, if the preprocessing action fails, the condition evaluates to false. Check to have the condition match when the actions fail.</value>
+  </data>
+  <data name="ConditionProviderSettings`1_StopMatches.Text" xml:space="preserve">
+    <value>Stop Matches</value>
+  </data>
+  <data name="Decompress.Text" xml:space="preserve">
+    <value>Decompress</value>
+  </data>
+  <data name="Decrypt.Text" xml:space="preserve">
+    <value>Decrypt</value>
+  </data>
+  <data name="Deflate.Text" xml:space="preserve">
+    <value>Deflate</value>
+  </data>
+  <data name="DocumentNavigable.Text" xml:space="preserve">
+    <value>Document as IXPathNavigable</value>
+  </data>
+  <data name="DocumentString.Text" xml:space="preserve">
+    <value>Document as a String</value>
+  </data>
+  <data name="Encrypt.Text" xml:space="preserve">
+    <value>Encrypt</value>
+  </data>
+  <data name="Encrypted.Text" xml:space="preserve">
+    <value>Encrypted</value>
+  </data>
+  <data name="EncryptionInfo_PrivateKeys.Header" xml:space="preserve">
+    <value>Private Keys</value>
+  </data>
+  <data name="EncryptionInfo_PublicKeys.Header" xml:space="preserve">
+    <value>Public Key</value>
+  </data>
+  <data name="ExpressionFilterInfo_AdditionalFilters.Header" xml:space="preserve">
+    <value>Additional Filters</value>
+  </data>
+  <data name="ExpressionFilterInfo_Advanced.Header" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="ExpressionFilterInfo_ApplyFormat.Help" xml:space="preserve">
+    <value>You can choose to wrap the value in a template pattern as format</value>
+  </data>
+  <data name="ExpressionFilterInfo_ApplyFormat.Text" xml:space="preserve">
+    <value>Apply Format</value>
+  </data>
+  <data name="ExpressionFilterInfo_Base64Convert.Help" xml:space="preserve">
+    <value>You can convert the input string in and from Base 64, givent a target Encoding</value>
+  </data>
+  <data name="ExpressionFilterInfo_Base64Convert.Text" xml:space="preserve">
+    <value>Base 64 conversions</value>
+  </data>
+  <data name="ExpressionFilterInfo_Base64Salt.Help" xml:space="preserve">
+    <value>Note that normally, you should be storing a custom salt for each encryption operation. Here we use a common salt instead.</value>
+  </data>
+  <data name="ExpressionFilterInfo_Base64Salt.Text" xml:space="preserve">
+    <value>Custom Base 64 Salt</value>
+  </data>
+  <data name="ExpressionFilterInfo_CaseChange.Help" xml:space="preserve">
+    <value>Use one of the selceted option to apply a global change to the case</value>
+  </data>
+  <data name="ExpressionFilterInfo_CaseChange.Text" xml:space="preserve">
+    <value>Case Change</value>
+  </data>
+  <data name="ExpressionFilterInfo_CompressDirection.Help" xml:space="preserve">
+    <value>Choose to compress or decompress the input string with the selected compression method. the result byte array is then converted to a base 64 string.</value>
+  </data>
+  <data name="ExpressionFilterInfo_CompressDirection.Text" xml:space="preserve">
+    <value>Compression Direction</value>
+  </data>
+  <data name="ExpressionFilterInfo_CompressMethod.Help" xml:space="preserve">
+    <value>The standard Gzip and Deflate compression streams are available.</value>
+  </data>
+  <data name="ExpressionFilterInfo_CompressMethod.Text" xml:space="preserve">
+    <value>Compression Method</value>
+  </data>
+  <data name="ExpressionFilterInfo_CryptoDirection.Help" xml:space="preserve">
+    <value>Choose to encrypt or decrypt the string content. The result is then converted to base 64. Note that you'll need to copy the keys and salt for both operations to match. </value>
+  </data>
+  <data name="ExpressionFilterInfo_CryptoDirection.Text" xml:space="preserve">
+    <value>Encryption Direction</value>
+  </data>
+  <data name="ExpressionFilterInfo_Encryption.Help" xml:space="preserve">
+    <value>The following settings control the encryption operation. You can choose to seal the keys to prevent their access once the configuration is done. You should do that only after you saved a copy of them.</value>
+  </data>
+  <data name="ExpressionFilterInfo_Encryption.Text" xml:space="preserve">
+    <value>Encryption Settings</value>
+  </data>
+  <data name="ExpressionFilterInfo_FormatPattern.Help" xml:space="preserve">
+    <value>This is the pattern template of the wrapping. The {0} symbol will be replaced by the source string.</value>
+  </data>
+  <data name="ExpressionFilterInfo_FormatPattern.Text" xml:space="preserve">
+    <value>Format Pattern</value>
+  </data>
+  <data name="ExpressionFilterInfo_GlobalFilter.Header" xml:space="preserve">
+    <value>Global Filter</value>
+  </data>
+  <data name="ExpressionFilterInfo_PostHtmlEncodeMethod.Help" xml:space="preserve">
+    <value>There are several ways to html/xml encode a string with different sets of html name or number entities emitted.</value>
+  </data>
+  <data name="ExpressionFilterInfo_PostHtmlEncodeMethod.Text" xml:space="preserve">
+    <value>Post Html Encode Method</value>
+  </data>
+  <data name="ExpressionFilterInfo_PreHtmlEncodeMethod.Help" xml:space="preserve">
+    <value>There are several ways to html/xml encode a string with different sets of html name or number entities emitted.</value>
+  </data>
+  <data name="ExpressionFilterInfo_PreHtmlEncodeMethod.Text" xml:space="preserve">
+    <value>Pre Html Encode Method</value>
+  </data>
+  <data name="ExpressionFilterInfo_TargetEncoding.Help" xml:space="preserve">
+    <value>Select the target encoding to convert the input string from / to base 64 encoding</value>
+  </data>
+  <data name="ExpressionFilterInfo_TargetEncoding.Text" xml:space="preserve">
+    <value>Target Encoding</value>
+  </data>
+  <data name="ExpressionFilterInfo_Transformations.Header" xml:space="preserve">
+    <value>Transformations</value>
+  </data>
+  <data name="ExpressionFilterInfo_UseCompression.Help" xml:space="preserve">
+    <value>You can compress the string using Deflate or GZip. The compressed byte array is then converted to a base64 string</value>
+  </data>
+  <data name="ExpressionFilterInfo_UseCompression.Text" xml:space="preserve">
+    <value>Compress</value>
+  </data>
+  <data name="ExpressionFilterInfo_UseEncryption.Help" xml:space="preserve">
+    <value>You can encrypt or decrypt the input string with a custom crypto transformation. Note that normally, you would want to store a distinct salt as a separate string for each encryption. Here, as single salt is generated and reused. The result is then converted to base 64, and decryption assumes a base 64 string. You'll need to copy the keys and salt for both operations to match.</value>
+  </data>
+  <data name="ExpressionFilterInfo_UseEncryption.Text" xml:space="preserve">
+    <value>Use Encryption</value>
+  </data>
+  <data name="FromBase64.Text" xml:space="preserve">
+    <value>From Base 64</value>
+  </data>
+  <data name="Gzip.Text" xml:space="preserve">
+    <value>Gzip</value>
+  </data>
+  <data name="NumberEntities.Text" xml:space="preserve">
+    <value>Number Entities</value>
+  </data>
+  <data name="RedirectAction`1_AdditionalQuery.Help" xml:space="preserve">
+    <value>Enter a set of instance or dynamic querystring paramters to be evaluated and added to the target url at runtime.</value>
+  </data>
+  <data name="RedirectAction`1_AdditionalQuery.Text" xml:space="preserve">
+    <value>Additional Querystring parameters</value>
+  </data>
+  <data name="RedirectAction`1_CurrentRequestUrl.Help" xml:space="preserve">
+    <value>Check to target the current request url, e.g. with additional paramters.</value>
+  </data>
+  <data name="RedirectAction`1_CurrentRequestUrl.Text" xml:space="preserve">
+    <value>Current Request Url</value>
+  </data>
+  <data name="RedirectAction`1_EndResponse.Help" xml:space="preserve">
+    <value>Check to end the response immediately after the redirection. Note that exceptions might be thrown then.</value>
+  </data>
+  <data name="RedirectAction`1_EndResponse.Text" xml:space="preserve">
+    <value>End Response</value>
+  </data>
+  <data name="RedirectAction`1_RemovedQuery.Help" xml:space="preserve">
+    <value>Enter a set of querystring parameter names, to be removed from the target url.</value>
+  </data>
+  <data name="RedirectAction`1_RemovedQuery.Text" xml:space="preserve">
+    <value>Removed Query</value>
+  </data>
+  <data name="RedirectAction`1_Specifics.Header" xml:space="preserve">
+    <value>Redirect</value>
+  </data>
+  <data name="RedirectAction`1_TargetUrl.Help" xml:space="preserve">
+    <value>Enter or select a target url, or an expression for a url.</value>
+  </data>
+  <data name="RedirectAction`1_TargetUrl.Text" xml:space="preserve">
+    <value>Target Url</value>
+  </data>
+  <data name="SecurityEscape.Text" xml:space="preserve">
+    <value>Security Escape</value>
+  </data>
+  <data name="Selection.Text" xml:space="preserve">
+    <value>Selection</value>
+  </data>
+  <data name="SelectionNodes.Text" xml:space="preserve">
+    <value>Selected xpath results</value>
+  </data>
+  <data name="SelectionString.Text" xml:space="preserve">
+    <value>Selected string values</value>
+  </data>
+  <data name="Signed.Text" xml:space="preserve">
+    <value>Signed</value>
+  </data>
+  <data name="SimpleExpression`1_Expression.Header" xml:space="preserve">
+    <value>Expression</value>
+  </data>
+  <data name="SimpleOrExpression`2_Expression.Help" xml:space="preserve">
+    <value>Enter an expression that evaluates to the desired type</value>
+  </data>
+  <data name="SimpleOrExpression`2_Expression.Text" xml:space="preserve">
+    <value>Expression</value>
+  </data>
+  <data name="ToBase64.Text" xml:space="preserve">
+    <value>To Base 64</value>
+  </data>
+  <data name="ToLower.Text" xml:space="preserve">
+    <value>To Lower</value>
+  </data>
+  <data name="ToLowerInvariant.Text" xml:space="preserve">
+    <value>To Lower Invariant</value>
+  </data>
+  <data name="ToUpper.Text" xml:space="preserve">
+    <value>To Upper</value>
+  </data>
+  <data name="ToUpperInvariant.Text" xml:space="preserve">
+    <value>To Upper Invariant</value>
+  </data>
+  <data name="Trim.Text" xml:space="preserve">
+    <value>Trim</value>
+  </data>
+  <data name="TrimEnd.Text" xml:space="preserve">
+    <value>Trim End</value>
+  </data>
+  <data name="TrimStart.Text" xml:space="preserve">
+    <value>Trim Start</value>
+  </data>
+  <data name="XPathInfo_ApplyFilter.Help" xml:space="preserve">
+    <value>You can apply a string filter on the fly on result node values.</value>
+  </data>
+  <data name="XPathInfo_ApplyFilter.Text" xml:space="preserve">
+    <value>Apply Filter</value>
+  </data>
+  <data name="XPathInfo_Filter.Header" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="XPathInfo_Filter.Help" xml:space="preserve">
+    <value>Enter a string filter to be applied to the xpath results </value>
+  </data>
+  <data name="XPathInfo_Filter.Text" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="XPathInfo_OutputMode.Help" xml:space="preserve">
+    <value>You can choose to return the selection result, or the document as a string or navigable, mostly after direct node updates with a string filter, when applicable.</value>
+  </data>
+  <data name="XPathInfo_OutputMode.Text" xml:space="preserve">
+    <value>Output Mode</value>
+  </data>
+  <data name="XPathInfo_RunSimulation.Text" xml:space="preserve">
+    <value>Run Simulation</value>
+  </data>
+  <data name="XPathInfo_SelectExpression.Required" xml:space="preserve">
+    <value>Select Expression is mandatory ("." references current node)</value>
+  </data>
+  <data name="XPathInfo_SelectMode.Help" xml:space="preserve">
+    <value>When the selection is returned, you can choose to return string values or navigator nodes.</value>
+  </data>
+  <data name="XPathInfo_SelectMode.Text" xml:space="preserve">
+    <value>Select Mode</value>
+  </data>
+  <data name="XPathInfo_UpdateNodes.Help" xml:space="preserve">
+    <value>Check to update selected nodes with values processed by the applied filter.</value>
+  </data>
+  <data name="XPathInfo_UpdateNodes.Text" xml:space="preserve">
+    <value>Updates Nodes</value>
   </data>
 </root>

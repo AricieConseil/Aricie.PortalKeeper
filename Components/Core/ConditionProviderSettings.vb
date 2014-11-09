@@ -4,6 +4,7 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.Xml.Serialization
 Imports System.Globalization
+Imports DotNetNuke.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -15,6 +16,42 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property IsMandatory() As Boolean
 
         Public Property DebuggerBreak As Boolean
+
+        <SortOrder(200)> _
+        <ExtendedCategory("PreConditionActions")> _
+        Public Property AddPreConditionActions As Boolean
+
+        Private _PreConditionActions As KeeperAction(Of TEngineEvents)
+
+        <SortOrder(200)> _
+        <ConditionalVisible("AddPreConditionActions", False, True)> _
+        <ExtendedCategory("PreConditionActions")> _
+        Public Property PreConditionActions As KeeperAction(Of TEngineEvents)
+            Get
+                If Not Me.AddPreConditionActions Then
+                    Return Nothing
+                End If
+                If _PreConditionActions Is Nothing Then
+                    _PreConditionActions = New KeeperAction(Of TEngineEvents)
+                End If
+                Return _PreConditionActions
+            End Get
+            Set(value As KeeperAction(Of TEngineEvents))
+                _PreConditionActions = value
+            End Set
+        End Property
+
+        <SortOrder(200)> _
+        <ConditionalVisible("AddPreConditionActions", False, True)> _
+        <ExtendedCategory("PreConditionActions")> _
+        Public Property StopActions As Boolean
+
+        <SortOrder(200)> _
+        <ConditionalVisible("StopActions", False, True)> _
+        <ConditionalVisible("AddPreConditionActions", False, True)> _
+        <ExtendedCategory("PreConditionActions")> _
+        Public Property StopMatches As Boolean
+
 
         Protected Overrides Function CreateProvider() As IConditionProvider(Of TEngineEvents)
             Dim toreturn As IConditionProvider(Of TEngineEvents)

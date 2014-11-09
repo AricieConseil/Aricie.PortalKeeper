@@ -19,7 +19,8 @@ Namespace Services.Filtering
     ''' Class for string transformation
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable(), DefaultProperty("SourceValue")> _
+    <Serializable()> _
+    <DefaultProperty("FriendlyName")> _
     Public Class StringTransformInfo
 
         Public Sub New()
@@ -31,6 +32,13 @@ Namespace Services.Filtering
             Me._SourceValue = sourcevalue
             Me._ReplaceValue = replacevalue
         End Sub
+
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName As String
+            Get
+                Return String.Format("{1} {0} {2} {0} {3}", Aricie.ComponentModel.UIConstants.TITLE_SEPERATOR, Me.FilterType.ToString(), SourceValue, ReplaceValue)
+            End Get
+        End Property
 
         ''' <summary>
         ''' Type of filter
@@ -50,7 +58,7 @@ Namespace Services.Filtering
         <SortOrder(1)> _
          <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
             LineCount(2), Width(400)> _
-        Public Property SourceValue() As String = string.Empty
+        Public Property SourceValue() As String = String.Empty
 
         ''' <summary>
         ''' Replace value
@@ -61,7 +69,7 @@ Namespace Services.Filtering
         <SortOrder(2)> _
          <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
             LineCount(2), Width(400)> _
-        Public Property ReplaceValue() As String = string.Empty
+        Public Property ReplaceValue() As String = String.Empty
 
         ''' <summary>
         ''' Equality
