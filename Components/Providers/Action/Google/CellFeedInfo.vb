@@ -55,7 +55,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me.WorksheetInfo.AddVariables(existingVars)
 
             If Me.CaptureCellFeed Then
-                existingVars.Add(Me.CellFeedName, GetType(CellFeed))
+                existingVars(Me.CellFeedName) = GetType(CellFeed)
             End If
 
         End Sub

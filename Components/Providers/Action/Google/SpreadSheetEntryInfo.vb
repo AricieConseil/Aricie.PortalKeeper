@@ -154,7 +154,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Sub AddVariables(ByRef existingVars As IDictionary(Of String, Type))
             If Me.CaptureSpreadsheetFeed Then
-                existingVars.Add(Me.SpreadSheetFeedName, GetType(SpreadsheetFeed))
+                existingVars(Me.SpreadSheetFeedName) = GetType(SpreadsheetFeed)
             End If
 
         End Sub

@@ -147,7 +147,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me.Spreadsheet.AddVariables(existingVars)
 
             If Me.CaptureWorksheetFeed Then
-                existingVars.Add(Me.WorksheetFeedName, GetType(WorksheetFeed))
+                existingVars(Me.WorksheetFeedName) = GetType(WorksheetFeed)
             End If
             'If Me.CaptureWorksheetEntry Then
             '    existingVars.Add(Me.WorksheetEntryName, GetType(WorksheetEntry))

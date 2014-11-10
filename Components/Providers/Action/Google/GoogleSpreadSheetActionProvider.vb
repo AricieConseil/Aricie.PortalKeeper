@@ -143,7 +143,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me.CellFeedInfo.AddVariables(existingVars)
 
             If Me.CaptureWorksheetEntry Then
-                existingVars.Add(Me.WorksheetEntryName, GetType(WorksheetEntry))
+                existingVars(Me.WorksheetEntryName) = GetType(WorksheetEntry)
             End If
 
             MyBase.AddVariables(currentProvider, existingVars)
