@@ -60,6 +60,11 @@
     <Reference Include="commons-logging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>external\commons-logging.dll</HintPath>
     </Reference>
+    <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\DocumentFormat.OpenXml.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="DotNetNuke, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\Aricie.DNN\external\dnn481\DotNetNuke.dll</HintPath>
@@ -96,7 +101,10 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -127,6 +135,8 @@
     <Compile Include="Services\IFilter\IFilterReader.vb" />
     <None Include="Services\OpenXML\Excel2007Reader.vb" />
     <None Include="Services\OpenXML\Word2007Reader.vb" />
+    <Compile Include="Services\OpenXML\xlsxColumnInfo.vb" />
+    <Compile Include="Services\OpenXML\xlsxController.vb" />
     <Compile Include="Services\Pdf\PdfBoxReader.vb" />
     <Compile Include="Services\Pdf\PdfCreator.vb" />
     <Compile Include="Services\Pdf\PdfFiller.vb" />
