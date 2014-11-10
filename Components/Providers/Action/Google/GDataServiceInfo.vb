@@ -4,6 +4,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Google.GData.Client
 Imports Aricie.DNN.UI.WebControls
 Imports Google.GData.Spreadsheets
+Imports System.Xml.Serialization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -62,6 +63,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _Service As T
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property Service As T
             Get
