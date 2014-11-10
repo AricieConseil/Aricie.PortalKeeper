@@ -69,6 +69,15 @@
         <file>
           <name>MonoTorrent.dll</name>
         </file>
+        <file>
+          <name>Google.GData.Client.dll</name>
+        </file>
+        <file>
+          <name>Google.GData.Extensions.dll</name>
+        </file>
+        <file>
+          <name>Google.GData.Spreadsheets.dll</name>
+        </file>
       </files>
     </folder>
   </folders>

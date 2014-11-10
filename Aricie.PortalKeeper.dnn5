@@ -169,6 +169,18 @@
               <name>MonoTorrent.dll</name>
               <sourceFileName>MonoTorrent.dll</sourceFileName>
             </assembly>
+            <assembly>
+              <name>Google.GData.Client.dll</name>
+              <sourceFileName>Google.GData.Client.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Google.GData.Extensions.dll</name>
+              <sourceFileName>Google.GData.Extensions.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Google.GData.Spreadsheets.dll</name>
+              <sourceFileName>Google.GData.Spreadsheets.dll</sourceFileName>
+            </assembly>
           </assemblies>
         </component>
         <component type="File">
