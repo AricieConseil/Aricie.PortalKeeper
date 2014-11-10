@@ -307,7 +307,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Recovery String</value>
   </data>
   <data name="FirewallConfig_CustomErrorPage.Header" xml:space="preserve">
-    <value>Custom Error Pages</value>
+    <value>Custom Errors (Obsolete)</value>
   </data>
   <data name="PortalKeeperConfig_MainSettings.Header" xml:space="preserve">
     <value>MainSettings</value>
@@ -7413,7 +7413,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Delete Cell</value>
   </data>
   <data name="GDataServiceInfo`2_AuthenticationSettings.Help" xml:space="preserve">
-    <value>This is the application settings as obtained from your Console. To obtain those settings, navigate to &lt;a href="https://console.developers.google.com&gt;your developer console&lt;/a&gt;, create a project if needed, and in Credentials, create a new client id of type "Installed Application"</value>
+    <value>This is the application settings as obtained from your Console. To obtain those settings, navigate to &lt;a href="https://console.developers.google.com"&gt;your developer console&lt;/a&gt;, create a project if needed, and in Credentials, create a new client id of type "Installed Application"</value>
   </data>
   <data name="GDataServiceInfo`2_AuthenticationSettings.Text" xml:space="preserve">
     <value>OAuth2 Settings</value>

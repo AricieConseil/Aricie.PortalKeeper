@@ -13,6 +13,7 @@ Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
+    <ActionButton(IconName.CloudDownload, IconOptions.Normal)> _
     <Serializable()> _
     Public Class HttpHandlerSettings
         Inherits HttpHandlerInfo
@@ -123,7 +124,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
 
                         keeperContext.SetVar("CurrentHandler", Me)
-                        
+
                         Me.DynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
                         keeperContext.LogEndEngine()
                     End If
