@@ -21,11 +21,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class KeeperObjectAction(Of TEngineEvents As IConvertible)
         Inherits GeneralObjectAction
 
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
         Public Property EventHandlerType As EventHandlerType
 
-
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
        <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.DelegateExpression)> _
@@ -38,6 +39,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.KeeperAction)> _
@@ -63,7 +65,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("PassArguments", False, True)> _
@@ -79,7 +81,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-
+        <ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.KeeperAction)> _

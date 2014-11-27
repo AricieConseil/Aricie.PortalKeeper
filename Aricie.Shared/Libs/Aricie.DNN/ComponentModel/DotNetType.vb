@@ -352,7 +352,7 @@ Namespace ComponentModel
                         End If
                     End If
             End Select
-            Return toReturn.OrderBy(Function(objDotNetType) objDotNetType.GetDotNetType().Name).ToList()
+            Return toReturn.OrderBy(Function(objDotNetType) IIf(objDotNetType.GetDotNetType() IsNot Nothing, objDotNetType.GetDotNetType().Name, "")).ToList()
         End Function
 
         'Public Overrides Function Equals(ByVal obj As Object) As Boolean
