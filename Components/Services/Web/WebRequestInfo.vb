@@ -338,7 +338,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If LogRequest Then
                 Dim objUrl As New KeyValuePair(Of String, String)("Url", targetUrl)
                 Dim objResponse As New KeyValuePair(Of String, String)("Response", toReturn)
-                Dim objDebug As New DebugInfo(Debug.PKPDebugType, "Web Request: " & targetUrl, objUrl, objResponse)
+                Dim objParams As New KeyValuePair(Of String, String)("Params", ReflectionHelper.Serialize(inputParams).Beautify())
+                Dim objDebug As New DebugInfo(Debug.PKPDebugType, "Web Request: " & targetUrl, objUrl, objResponse, objParams)
                 SimpleDebugLogger.Instance.AddDebugInfo(objDebug)
             End If
 

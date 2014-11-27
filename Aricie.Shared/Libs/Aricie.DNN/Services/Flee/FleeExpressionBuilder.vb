@@ -18,9 +18,9 @@ Namespace Services.Flee
     <Serializable()> _
     Public MustInherit Class FleeExpressionBuilderBase
 
-
+        <Browsable(False)> _
         <XmlIgnore()> _
-        Public AvailableVariables As New Dictionary(Of String, DotNetType)
+        Public Property AvailableVariables As New Dictionary(Of String, DotNetType)
 
         <ConditionalVisible("InsertString", True, True, "")>
         Public MustOverride ReadOnly Property InsertString As String
