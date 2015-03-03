@@ -20,7 +20,6 @@ Imports DotNetNuke.Common.Utilities
 Imports System.Web.UI
 Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
-Imports Aricie.DNN.UI
 
 Namespace Services
     ''' <summary>

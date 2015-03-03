@@ -1,5 +1,4 @@
 ﻿Imports Aricie.DNN.UI.Attributes
-Imports Aricie.Services
 Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Flee

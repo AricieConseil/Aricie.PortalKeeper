@@ -181,6 +181,14 @@
               <name>Google.GData.Spreadsheets.dll</name>
               <sourceFileName>Google.GData.Spreadsheets.dll</sourceFileName>
             </assembly>
+            <assembly>
+              <name>WatiN.Core.dll</name>
+              <sourceFileName>WatiN.Core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Interop.SHDocVw.dll</name>
+              <sourceFileName>Interop.SHDocVw.dll</sourceFileName>
+            </assembly>
           </assemblies>
         </component>
         <component type="File">

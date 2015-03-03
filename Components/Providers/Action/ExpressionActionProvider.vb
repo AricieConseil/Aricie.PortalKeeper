@@ -1,11 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.Services.Flee
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.UI.WebControls
-Imports Ciloci.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _

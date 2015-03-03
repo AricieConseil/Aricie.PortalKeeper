@@ -1,7 +1,6 @@
-﻿Imports System.Text.RegularExpressions
+﻿
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 
 

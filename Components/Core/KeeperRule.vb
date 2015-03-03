@@ -1,13 +1,9 @@
-﻿Imports System.Web
-Imports System.Web.Services
-Imports System.Web.Services.Protocols
+﻿
 Imports System.ComponentModel
 Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
-Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization

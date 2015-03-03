@@ -1,10 +1,8 @@
 Imports Aricie.DNN.ComponentModel
-Imports Aricie.Collections
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports System.Web.Compilation
 Imports DotNetNuke.UI.WebControls
 Imports System.Reflection
 Imports System.Web.UI.WebControls
@@ -243,7 +241,23 @@ Namespace Services.Flee
             End Get
         End Property
 
+        Public Shared Function GetExpressionBuilder(ByVal pe As AriciePropertyEditorControl, fullAccess As Boolean) As FleeExpressionBuilder
+            Dim toReturn As FleeExpressionBuilder
+#If DEBUG Then
+            toReturn = DirectCast(ReflectionHelper.CreateObject(GetType(FleeExpressionBuilder).AssemblyQualifiedName), FleeExpressionBuilder)
 
+#Else
+            toReturn = New FleeExpressionBuilder()     
+#End If
+            Dim avVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
+            avVars = toReturn.GetAvailableVars(pe)
+            toReturn.AvailableVariables = avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value))
+
+            If fullAccess Then
+                toReturn.ExpressionOwnerFullAccess = True
+            End If
+            Return toReturn
+        End Function
 
         Public Overridable Function GetAvailableVars(pe As AriciePropertyEditorControl) As Dictionary(Of String, Type)
 

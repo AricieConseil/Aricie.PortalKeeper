@@ -1,7 +1,6 @@
 ﻿Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.Services.Exceptions
 Imports OpenRasta.Diagnostics
-Imports OpenRasta.Hosting.AspNet
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 

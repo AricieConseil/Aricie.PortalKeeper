@@ -52,12 +52,13 @@ Namespace Services.Workers
             Dim switchPeriod As TimeSpan = TimeSpan.FromMilliseconds(1)
             Dim maxWait As DateTime = DateTime.MaxValue
             If Not timeout = TimeSpan.Zero Then
-                switchPeriod = TimeSpan.FromTicks(timeout.Ticks \ 100)
+                switchPeriod = TimeSpan.FromTicks(Math.Max(TimeSpan.FromTicks(timeout.Ticks \ 100).Ticks, TimeSpan.FromMilliseconds(1).Ticks))
             End If
             Dim index As Long = _Watch.Elapsed.Ticks Mod _MaxCount
             Dim owned As Boolean
             Do
                 owned = Me.WaitMutex(CInt(index), switchPeriod)
+                index = index + 1 Mod _MaxCount
             Loop Until owned OrElse timeout <> TimeSpan.Zero AndAlso timeout < _Watch.Elapsed.Subtract(startTime)
             Return owned
         End Function

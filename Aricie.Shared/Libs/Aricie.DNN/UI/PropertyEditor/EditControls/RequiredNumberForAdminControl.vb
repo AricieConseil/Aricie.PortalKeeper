@@ -1,14 +1,7 @@
-﻿Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.Common
+﻿
 Imports DotNetNuke.UI.WebControls
-Imports System.Collections.Specialized
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
-Imports System.Globalization
-Imports DotNetNuke.Services.FileSystem
-Imports DotNetNuke.Entities.Portals
-Imports DotNetNuke.Common.Utilities
-Imports Aricie.DNN.UI.WebControls.EditControls
 
 
 Namespace UI.WebControls.EditControls

@@ -20,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _Items As New List(Of Integer)
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
             <Editor(GetType(ListEditControl), GetType(EditControl))> _
             <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
             <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _

@@ -1,6 +1,5 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports System.Net
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper

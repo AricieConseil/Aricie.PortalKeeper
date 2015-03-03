@@ -4,7 +4,6 @@ Imports DotNetNuke.Services.Log.EventLog
 Imports System
 Imports System.Web
 Imports System.Reflection
-Imports Aricie.Services
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Services.Exceptions
 
@@ -70,13 +69,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Me.ProcessRecovery(keeperContext)
                     Dim dosMatched As Boolean = False
                     If keeperContext.CurrentFirewallConfig.DosSettings.Enabled Then
-                        keeperContext.LogStart("DoS Evaluation", False)
+                        keeperContext.LogStart("DoS Evaluation", LoggingLevel.Steps, False)
                         dosMatched = Me.ProcessDenialOfService(keeperContext)
-                        If keeperContext.LoggingLevel > LoggingLevel.Simple Then
+                        If keeperContext.LoggingLevel >= LoggingLevel.Steps Then
                             Dim objPair As New KeyValuePair(Of String, String)("Dos Matched", dosMatched.ToString)
                             'Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
                             'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            keeperContext.LogEnd("Dos Evaluation", False, False, objPair)
+                            keeperContext.LogEnd("Dos Evaluation", False, LoggingLevel.Steps, Nothing, objPair)
                         End If
                     End If
                     If Not dosMatched Then
@@ -216,7 +215,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         currentKey = ""
                     End Try
                     If clueDico.Value.TryGetValue(currentKey, currentExpiration) Then
-                        If Now < currentExpiration Then
+                        If PerformanceLogger.Now < currentExpiration Then
                             'match -> run DoS action
                             keeperContext.CurrentFirewallConfig.DosSettings.DoSAction.Run(keeperContext)
                             Return True

@@ -247,23 +247,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Sub Init(ByVal configRules As RuleEngineSettings(Of TEngineEvents))
-            Me.Init(configRules, Nothing)
+            Me._CurrentEngine = configRules
+            Me.InitParams(configRules.Variables)
         End Sub
 
-        Public Sub Init(ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal userParams As IDictionary(Of String, Object))
 
-            Me._CurrentEngine = configRules
-            Me.LogStart("Init Params", False)
-            Dim vars As Dictionary(Of String, Object) = configRules.Variables.EvaluateVariables(Me, Me)
-            If userParams IsNot Nothing Then
-                For Each objPair As KeyValuePair(Of String, Object) In userParams
-                    vars(objPair.Key) = objPair.Value
+        Public Overloads Sub InitParams(ByVal params As VariablesBase)
+            If params IsNot Nothing Then
+                Me.LogStart("Init Params", PortalKeeper.LoggingLevel.Steps, False)
+                Dim vars As Dictionary(Of String, Object) = params.EvaluateVariables(Me, Me)
+                Me.InitParams(vars)
+                Me.LogEnd("Init Params", False, PortalKeeper.LoggingLevel.Steps, Nothing)
+            End If
+        End Sub
+
+
+        Public Overloads Sub InitParams(ByVal params As IDictionary(Of String, Object))
+            If params IsNot Nothing Then
+                For Each objPair As KeyValuePair(Of String, Object) In params
+                    Me.SetVar(objPair.Key, objPair.Value)
                 Next
             End If
-            For Each objVar As KeyValuePair(Of String, Object) In vars
-                Me.SetVar(objVar.Key, objVar.Value)
-            Next
-            Me.LogEnd("Init Params", False, False)
         End Sub
 
         Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
@@ -311,9 +315,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     Catch ex As Exception
                         Dim xmlDump As String = ""
-                        If Me._CurrentEngine.ExceptionDumpAllVars OrElse Me._CurrentEngine.ExceptionDumpVars.Length > 0 Then
-                            Dim dumpVars As List(Of String) = ParseStringList(Me._CurrentEngine.ExceptionDumpVars)
-                            Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(Me._CurrentEngine.ExceptionDumpAllVars, dumpVars)
+                        If Me._CurrentEngine.ExceptionDumpSettings.EnableDump Then
+                            Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(Me._CurrentEngine.ExceptionDumpSettings)
                             xmlDump = ReflectionHelper.Serialize(dump).InnerXml
                         End If
                         Dim message As String = String.Format("Rule Condition Exception, Engine Name: {0}, Rule Name: {1}, Dumped Vars: {2}, InnerException: ", Me._CurrentEngine.Name, objRule.Name, xmlDump)
@@ -338,7 +341,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Return objTokenReplace
         End Function
-      
+
 
 
         Public Overrides Function GetInstance() As PortalKeeperContext(Of TEngineEvents)
@@ -346,11 +349,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Private Sub LogStartEventStep(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            Me.LogStart(Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), False, additionalProperties)
+            Me.LogStart(Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), LoggingLevel.Steps, False, additionalProperties)
         End Sub
 
-        Public Sub LogStart(eventStep As String, endInnerCode As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            If Me.LoggingLevel > PortalKeeper.LoggingLevel.None AndAlso (Me.LoggingLevel >= PortalKeeper.LoggingLevel.Steps OrElse eventStep = "Agent") Then
+        Public Sub LogStart(eventStep As String, minLevel As LoggingLevel, endInnerCode As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            If (Me.LoggingLevel >= minLevel) Then
                 Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", eventStep, _CurrentEngine.Name), _
                                             WorkingPhase.InProgress, False, False, -1, Me.FlowId, additionalProperties)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
@@ -358,37 +361,29 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Sub LogStartEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            Me.LogStart("Agent", False, additionalProperties)
+            Me.LogStart("Agent", LoggingLevel.Simple, False, additionalProperties)
         End Sub
 
         Private Sub LogEndEventStep(ByVal endSequence As Boolean)
-            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), True, endSequence)
+            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence, LoggingLevel.Steps, Nothing)
         End Sub
 
         Public Sub LogEndEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            Me.LogEnd("Agent", True, True, additionalProperties)
+            Me.LogEnd("Agent", True, LoggingLevel.Simple, Me.CurrentEngine.LogEndDumpSettings, additionalProperties)
         End Sub
 
-        Public Sub LogEnd(eventStep As String, endInnerCode As Boolean, ByVal endSequence As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            If Me.LoggingLevel > PortalKeeper.LoggingLevel.None AndAlso (Me.LoggingLevel >= PortalKeeper.LoggingLevel.Steps OrElse eventStep = "Agent") Then
+        Public Sub LogEnd(eventStep As String, ByVal endSequence As Boolean, minLevel As LoggingLevel, ByVal objDumpSettings As DumpSettings, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+            If (Me.LoggingLevel >= minLevel) Then
                 Dim tempItems As New List(Of KeyValuePair(Of String, String))()
-                If endSequence AndAlso Me._CurrentEngine.LogDump Then
+                'If endSequence AndAlso Me._CurrentEngine.LogDump Then
 
-                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
+                '    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump()
 
-                    For Each objItem As KeyValuePair(Of String, Object) In dump
-                        If objItem.Value IsNot Nothing Then
-                            Dim serialized As String
-                            Try
-                                serialized = ReflectionHelper.Serialize(objItem.Value).InnerXml
-                            Catch ex As Exception
-                                serialized = ex.ToString()
-                            End Try
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, serialized))
-                        Else
-                            tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
-                        End If
-                    Next
+                '    tempItems = DumpToLogs(dump)
+                'End If
+                If objDumpSettings IsNot Nothing AndAlso objDumpSettings.EnableDump Then
+                    Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(objDumpSettings)
+                    tempItems = DumpToLogs(dump)
                 End If
                 Dim logTitle As String
                 If eventStep.IsNullOrEmpty() Then
@@ -398,77 +393,110 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 tempItems.AddRange(additionalProperties)
                 Dim objStep As StepInfo = New StepInfo(Debug.PKPDebugType, logTitle, _
-                                          WorkingPhase.EndOverhead, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                                          WorkingPhase.InProgress, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub
 
 
-        Public Function GetDump(dumpAllVars As Boolean, dumpaVarList As ICollection(Of String)) As SerializableDictionary(Of String, Object)
+        Public Function DumpToLogs(dump As Dictionary(Of String, Object)) As List(Of KeyValuePair(Of String, String))
+            Dim tempItems As New List(Of KeyValuePair(Of String, String))()
 
-
-            Return Me.GetDump(dumpAllVars, dumpaVarList, Nothing)
+            For Each objItem As KeyValuePair(Of String, Object) In dump
+                If objItem.Value IsNot Nothing Then
+                    Dim serialized As String
+                    Try
+                        serialized = ReflectionHelper.Serialize(objItem.Value).Beautify()
+                    Catch ex As Exception
+                        serialized = ex.ToString()
+                    End Try
+                    tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, serialized))
+                Else
+                    tempItems.Add(New KeyValuePair(Of String, String)(objItem.Key, ""))
+                End If
+            Next
+            Return tempItems
         End Function
 
+
+      
         Public Function GetDump() As SerializableDictionary(Of String, Object)
 
 
-            Return Me.GetDump(Me._CurrentEngine.DumpAllVars, Me._CurrentEngine.DumpVarList, Nothing)
+            Return Me.GetDump(Me.CurrentEngine.LogEndDumpSettings)
         End Function
 
-        Public Function GetDump(dumpAllVars As Boolean, dumpaVarList As ICollection(Of String), defaultValue As Object) As SerializableDictionary(Of String, Object)
-            Dim toReturn As SerializableDictionary(Of String, Object)
-            Dim dumpVar As Object = Nothing
-            If dumpAllVars Then
-                SyncLock (Items)
-                    toReturn = New SerializableDictionary(Of String, Object)(Me.Items.Count)
-                    For Each objVar As KeyValuePair(Of String, Object) In Me.Items
-                        If objVar.Value IsNot Nothing Then
-                            If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User") Then
-                                toReturn(objVar.Key) = objVar.Value
+        Public Function GetDump(ByVal objDumpSettings As DumpSettings) As SerializableDictionary(Of String, Object)
+            Dim toReturn As SerializableDictionary(Of String, Object) = Nothing
+            If objDumpSettings.EnableDump Then
+                Dim dumpVar As Object = Nothing
+                If objDumpSettings.DumpAllVars Then
+                    SyncLock (Items)
+                        toReturn = New SerializableDictionary(Of String, Object)(Me.Items.Count)
+                        For Each objVar As KeyValuePair(Of String, Object) In Me.Items
+                            If objVar.Value IsNot Nothing Then
+                                If Not (objVar.Key = "UserBot" OrElse objVar.Key = "User") Then
+                                    toReturn(objVar.Key) = objVar.Value
+                                End If
+                            End If
+                        Next
+                    End SyncLock
+                Else
+                    toReturn = New SerializableDictionary(Of String, Object)(objDumpSettings.DumpVarList.Count)
+                    For Each key As String In objDumpSettings.DumpVarList
+                        If key.IndexOf("="c) > -1 Then
+                            Dim splitVar() As String = key.Split("="c)
+                            If splitVar.Length = 2 Then
+                                Dim newKey As String = splitVar(0)
+                                Dim exp As New SimpleExpression(Of Object)(splitVar(1))
+                                Dim objValue As Object
+                                Try
+                                    objValue = exp.Evaluate(Me, Me)
+                                Catch
+                                    objValue = objDumpSettings.DefaultValue.Evaluate(Me, Me)
+                                End Try
+                                If objValue Is Nothing Then
+                                    If Not objDumpSettings.SkipNull Then
+                                        toReturn(newKey) = objDumpSettings.DefaultValue.Evaluate(Me, Me)
+                                    End If
+                                Else
+                                    toReturn(newKey) = objValue
+                                End If
+                            End If
+                        ElseIf key.IndexOf("."c) > -1 Then
+                            Dim exp As New SimpleExpression(Of Object)(key)
+                            Dim objValue As Object
+                            Try
+                                objValue = exp.Evaluate(Me, Me)
+                            Catch
+                                objValue = objDumpSettings.DefaultValue.Evaluate(Me, Me)
+                            End Try
+                            If objValue Is Nothing Then
+                                If Not objDumpSettings.SkipNull Then
+                                    toReturn(key) = objDumpSettings.DefaultValue.Evaluate(Me, Me)
+                                End If
+                            Else
+                                toReturn(key) = objValue
+                            End If
+                        Else
+                            If Me.Items.TryGetValue(key, dumpVar) Then
+                                toReturn(key) = dumpVar
+                            ElseIf Not objDumpSettings.SkipNull Then
+                                toReturn(key) = objDumpSettings.DefaultValue.Evaluate(Me, Me)
                             End If
                         End If
+
+
                     Next
-                End SyncLock
-            Else
-                toReturn = New SerializableDictionary(Of String, Object)(dumpaVarList.Count)
-                For Each key As String In dumpaVarList
-                    If key.IndexOf("."c) > -1 Then
-                        Dim exp As New SimpleExpression(Of Object)(key)
-                        Dim objVar As Object
-                        Try
-                            objVar = exp.Evaluate(Me, Me)
-                        Catch
-                            objVar = defaultValue
-                        End Try
-                        If objVar IsNot Nothing Then
-                            toReturn(key) = objVar
-                        End If
-                    Else
-                        If Me.Items.TryGetValue(key, dumpVar) Then
-                            toReturn(key) = dumpVar
-                        End If
-                    End If
-                Next
+                End If
+                'Else
+                '    toReturn = New SerializableDictionary(Of String, Object)
             End If
 
+
             Return toReturn
         End Function
 
-        Public Function ComputeDynamicExpressions(inputExpressions As String, skipNull As Boolean) As SerializableDictionary(Of String, Object)
-            Dim toReturn As New SerializableDictionary(Of String, Object)
-            Dim fieldNames As Dictionary(Of String, String) = ParsePairs(inputExpressions, True)
-            Dim dump As SerializableDictionary(Of String, Object) = Me.GetDump(False, fieldNames.Keys)
-            Dim fieldName As String = Nothing
-            For Each dumpVar As KeyValuePair(Of String, Object) In dump
-                If fieldNames.TryGetValue(dumpVar.Key, fieldName) Then
-                    If (Not skipNull) OrElse dumpVar.Value IsNot Nothing Then
-                        toReturn(fieldName) = dumpVar.Value
-                    End If
-                End If
-            Next
-            Return toReturn
-        End Function
 
 #End Region
 

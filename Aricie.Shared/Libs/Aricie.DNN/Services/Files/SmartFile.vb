@@ -20,7 +20,6 @@ Imports System.Xml
 Imports DotNetNuke.Services.Localization
 Imports System.IO
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Security
 
 Namespace Services.Files
 
@@ -584,6 +583,11 @@ Namespace Services.Files
         '    End If
         '    Return toReturn
         'End Function
+
+        Public Shared Sub DeleteSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo)
+            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
+            ObsoleteDNNProvider.Instance.DeleteFile(objFileInfo)
+        End Sub
 
 
         Public Shared Function LoadSmartFile(Of T As New)(key As EntityKey, settings As SmartFileInfo) As SmartFile(Of T)

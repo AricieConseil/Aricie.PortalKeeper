@@ -1,8 +1,6 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports Ciloci.Flee
-Imports Aricie.ComponentModel
 Imports System.ComponentModel
-Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Web
 Imports System.Globalization
@@ -59,7 +57,7 @@ Namespace Services.Flee
         Protected InternalBreakAtEvaluateTime As Boolean
         Protected InternalLogCompileExceptions As Boolean = True
         Protected InternalLogEvaluateExceptions As Boolean
-        Protected InternalThrowCompileExceptions As Boolean
+        Protected InternalThrowCompileExceptions As Boolean = True
         Protected InternalThrowEvaluateExceptions As Boolean = True
 
         Private Shared ReadOnly _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
@@ -137,35 +135,9 @@ Namespace Services.Flee
         <ActionButton(IconName.Magic, IconOptions.Normal)> _
         Public Overridable Sub DisplayAvailableVars(ByVal pe As AriciePropertyEditorControl)
 
-            'Dim currentPe As AriciePropertyEditorControl = pe
-            'Dim currentProvider As IExpressionVarsProvider
-            'Dim previousProvider As IExpressionVarsProvider = Nothing
-            'Do
-            '    If TypeOf currentPe.DataSource Is IExpressionVarsProvider Then
-            '        currentProvider = DirectCast(currentPe.DataSource, IExpressionVarsProvider)
-            '        'If previousProvider Is Nothing Then
-            '        '    previousProvider = currentProvider
-            '        'End If
-            '        currentProvider.AddVariables(previousProvider, avVars)
-            '        previousProvider = currentProvider
-            '    End If
-            '    currentPe = currentPe.ParentAricieEditor
+            Dim fullAccess As Boolean = Me.InternalOverrideOwner AndAlso ((Me.InternalOwnerMemberAccess And Reflection.BindingFlags.NonPublic) = Reflection.BindingFlags.NonPublic)
 
-            'Loop Until currentPe Is Nothing
-#If DEBUG Then
-            Me.ExpressionBuilder = DirectCast(ReflectionHelper.CreateObject(GetType(FleeExpressionBuilder).AssemblyQualifiedName), FleeExpressionBuilder)
-
-#Else
-            Me.ExpressionBuilder = New FleeExpressionBuilder()     
-#End If
-            Dim avVars As IDictionary(Of String, Type) = New Dictionary(Of String, Type)
-            avVars = ExpressionBuilder.GetAvailableVars(pe)
-            Me.ExpressionBuilder.AvailableVariables = avVars.ToDictionary(Function(objVarPair) objVarPair.Key, Function(objVarPair) New DotNetType(objVarPair.Value))
-
-            If Me.InternalOverrideOwner AndAlso ((Me.InternalOwnerMemberAccess And Reflection.BindingFlags.NonPublic) = Reflection.BindingFlags.NonPublic) Then
-                Me.ExpressionBuilder.ExpressionOwnerFullAccess = True
-            End If
-
+            Me.ExpressionBuilder = FleeExpressionBuilder.GetExpressionBuilder(pe, fullAccess)
             pe.DisplayLocalizedMessage("ExpressionHelper.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             'pe.DisplayMessage(Me.ExpressionBuilder.GetType.AssemblyQualifiedName, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
             pe.ItemChanged = True
@@ -375,6 +347,7 @@ Namespace Services.Flee
                 toReturn.Imports.AddType(GetType(System.Math), "")
                 toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "Enumerable")
                 toReturn.Imports.AddType(GetType(DateTime), "DateTime")
+                toReturn.Imports.AddType(GetType(HttpUtility), "HttpUtility")
                 'toReturn.Imports.AddType(GetType(ReflectionHelper), "ReflectionHelper")
                 'toReturn.Imports.AddType(GetType(System.Linq.Expressions.Expression), "Expression")
             End If
@@ -439,10 +412,10 @@ Namespace Services.Flee
                     If obj IsNot Nothing Then
                         e.VariableType = obj.GetType
                     Else
-                        e.VariableType = GetType(TResult)
+                        e.VariableType = GetType(Object)
                     End If
                 Else
-                    e.VariableType = GetType(TResult)
+                    e.VariableType = GetType(Object)
                 End If
 
             End Sub

@@ -1,6 +1,4 @@
 ﻿Imports System.Linq
-Imports Aricie.DNN.Settings
-Imports System.Xml.Linq
 Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.Entities.Modules
 Imports Aricie.DNN.Services.UpgradeSystem.Actions.Settings.Configuration

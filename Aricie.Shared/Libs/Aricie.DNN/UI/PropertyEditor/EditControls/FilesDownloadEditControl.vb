@@ -1,11 +1,8 @@
-﻿Imports System.Reflection
+﻿
 Imports System.Web.UI
-Imports System.Globalization
-Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports System.IO
 Imports System.Web.UI.WebControls
-Imports Aricie.Web.UI
 Imports Aricie.Services
 
 Namespace UI.WebControls.EditControls

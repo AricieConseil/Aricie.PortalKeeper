@@ -2,8 +2,6 @@
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Users
-Imports Aricie.Services
-Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace UI.WebControls
 

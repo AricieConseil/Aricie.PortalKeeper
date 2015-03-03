@@ -1,9 +1,9 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.Services
-Imports Aricie.DNN.Services.Workers
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -34,22 +34,42 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overridable Property ExitAction() As Boolean
 
 
-        <ExtendedCategory("TechnicalSettings")> _
+
+
+        <SortOrder(2000)> _
+        <ExtendedCategory("TechnicalSettings", "Debug")> _
+        Public Property DisableLog As Boolean
+
+        <SortOrder(2000)> _
+        <ExtendedCategory("TechnicalSettings", "Debug")> _
+         <ConditionalVisible("DisableLog", True, True)> _
+        Public Property LoggingLevel As LoggingLevel = LoggingLevel.Detailed
+
+        <SortOrder(2000)> _
+         <ExtendedCategory("TechnicalSettings", "Debug")> _
+         <ConditionalVisible("DisableLog", True, True)> _
+        Public Property LogDumpSettings As New DumpSettings()
+
+        <ExtendedCategory("TechnicalSettings", "Exceptions")> _
+        <SortOrder(1000)> _
+        Public Property ExceptionActions As New EnabledFeature(Of KeeperAction(Of TEngineEvents))
+
+        <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <SortOrder(1000)> _
         Public Property RethrowException() As Boolean
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <SortOrder(1000)> _
         Public Property DontLogExceptions() As Boolean
 
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <ConditionalVisible("DontLogExceptions", False, True)> _
         <SortOrder(1000)> _
         Public Property CaptureException() As Boolean
 
         <Required(True)> _
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <ConditionalVisible("CaptureException", False, True)> _
         <SortOrder(1000)> _
         Public Property ExceptionVarName() As String = "ActionException"

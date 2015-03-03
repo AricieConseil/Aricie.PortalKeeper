@@ -56,7 +56,7 @@ Namespace Providers
 
             If dependencies.Length = 0 Then
                 If Not absoluteExpiration.Equals(Constants.Cache.NoExpiration) Then
-                    DataCache.SetCache(key, value, absoluteExpiration)
+                    DataCache.SetCache(key, value, Now.Add(absoluteExpiration))
                 Else
                     DataCache.SetCache(key, value)
                 End If

@@ -9,10 +9,8 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Web
 Imports System.Text
-Imports Aricie.DNN.ComponentModel
 Imports Aricie.Text
-Imports Aricie.DNN.Security
-Imports System.Globalization
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Filtering
 
@@ -288,6 +286,57 @@ Namespace Services.Filtering
         Public Property AdditionalFilters As New List(Of ExpressionFilterInfo)
 
 
+        
+
+        ''' <summary>
+        ''' Simulation data
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("Simulation")> _
+            <Width(500)> _
+            <LineCount(8)> _
+            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        Public Overridable Property SimulationData() As New CData
+
+        Private _SimulationResult As String = ""
+
+        <Browsable(False)> _
+        Public ReadOnly Property Hasresult As Boolean
+            Get
+                Return Not _SimulationResult.IsNullOrEmpty()
+            End Get
+        End Property
+
+        ''' <summary>
+        ''' Result of the simulation
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ConditionalVisible("Hasresult")> _
+        <ExtendedCategory("Simulation")> _
+        Public ReadOnly Property SimulationResult() As String
+            Get
+                Return _SimulationResult
+            End Get
+        End Property
+
+        <ExtendedCategory("Simulation")> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Sub RunSimulation(ByVal pe As AriciePropertyEditorControl)
+            If Not String.IsNullOrEmpty(Me.SimulationData.Value) Then
+                Dim toReturn As String = Me.Process(Me.SimulationData.Value)
+                If toReturn IsNot Nothing Then
+                    Me._SimulationResult = toReturn
+                End If
+                pe.ItemChanged = True
+            End If
+        End Sub
+
+
+
         ''' <summary>
         ''' Char-based transformation map
         ''' </summary>
@@ -403,7 +452,6 @@ Namespace Services.Filtering
             Select Case Me._EncodePreProcessing
                 Case EncodeProcessing.HtmlEncode
                     toReturn = toReturn.HtmlEncode(Me.PreHtmlEncodeMethod)
-
                 Case EncodeProcessing.HtmlDecode
                     toReturn = HttpUtility.HtmlDecode(toReturn)
                 Case EncodeProcessing.UrlEncode
@@ -427,6 +475,12 @@ Namespace Services.Filtering
                         toReturn = toReturn.ToUpper()
                     Case CaseChange.ToUpperInvariant
                         toReturn = toReturn.ToUpperInvariant()
+                    Case Text.CaseChange.ToPascal
+                        toReturn = toReturn.ToPascalCase()
+                    Case Text.CaseChange.ToCamel
+                        toReturn = toReturn.ToCamelCase()
+                    Case Text.CaseChange.ToTitle
+                        toReturn = toReturn.ToTitleCase()
                 End Select
             End If
 
@@ -487,9 +541,18 @@ Namespace Services.Filtering
                         Case TrimType.Trim
                             toReturn = toReturn.Trim(TrimChar(0))
                         Case TrimType.TrimStart
-                            toReturn = toReturn.Trim(TrimChar(0))
+                            toReturn = toReturn.TrimStart(TrimChar(0))
                         Case TrimType.TrimEnd
-                            toReturn = toReturn.Trim(TrimChar(0))
+                            toReturn = toReturn.TrimEnd(TrimChar(0))
+                    End Select
+                Else
+                    Select Case Me.Trim
+                        Case TrimType.Trim
+                            toReturn = toReturn.Trim()
+                        Case TrimType.TrimStart
+                            toReturn = toReturn.TrimStart()
+                        Case TrimType.TrimEnd
+                            toReturn = toReturn.TrimEnd()
                     End Select
                 End If
             End If
@@ -592,7 +655,7 @@ Namespace Services.Filtering
                             tempStringMap(transform.SourceValue) = transform.ReplaceValue
                         Case StringFilterType.RegexReplace
                             Try
-                                Dim objRegex As New Regex(transform.SourceValue, RegexOptions.Compiled)
+                                Dim objRegex As New Regex(transform.SourceValue, transform.RegexOptions)
                                 tempRegexMap(objRegex) = transform.ReplaceValue
                             Catch ex As Exception
                                 Aricie.Services.ExceptionHelper.LogException(ex)

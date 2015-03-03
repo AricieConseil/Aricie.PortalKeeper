@@ -16,8 +16,7 @@ Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services.Files
 Imports DotNetNuke.Services.Exceptions
-Imports System.IO
-Imports System.Xml
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Users, IconOptions.Normal)> _
@@ -193,10 +192,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("Storage")> _
-        Public Property Storage As UserBotStorage
+        Public Property Storage As UserBotStorage = UserBotStorage.SmartFiles
 
+        <ConditionalVisible("Storage", False, True, UserBotStorage.SmartFiles)> _
         <ExtendedCategory("Storage")> _
         Public Property StorageSettings As New SmartFileInfo
+
+        <ExtendedCategory("Storage")> _
+        Public Property CachePlannedSchedule As New EnabledFeature(Of STimeSpan)(New STimeSpan(TimeSpan.FromMinutes(3)))
+
 
         'Public Sub SetEncrypter(encrypter As IEncrypter)
         '    _encrypter = encrypter
@@ -363,27 +367,65 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
+        'Public Function PeekUserBotInfo(ByVal user As UserInfo) As DateTime
+        '    Select Case Storage
+        '        Case UserBotStorage.Personalisation
+        '            Dim objUserBot As UserBotInfo = GetUserBotInfo(user, False)
+        '            If objUserBot IsNot Nothing AndAlso objUserBot.Enabled Then
+        '                Return objUserBot.BotHistory.GetNextSchedule(Me.Bot.BotSchedule) ' objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
+        '            Else
+        '                Return DateTime.MaxValue
+        '            End If
+        '        Case UserBotStorage.SmartFiles
+        '            Dim key As EntityKey = Me.GetUserBotKey(user)
+        '            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = SmartFile.GetFileInfo(key, Me.StorageSettings)
+        '            If objFileInfo IsNot Nothing Then
+        '                Return Me.Bot.BotSchedule.GetNextSchedule(ObsoleteDNNProvider.Instance.GetFileLastModificationDate(objFileInfo))
+        '            Else
+        '                Return DateTime.MaxValue
+        '            End If
+        '    End Select
+        '    Return DateTime.MaxValue
+        'End Function
+
+        'todo: we need a version that limits db round trips (+split smart files MainParameters vs parameters vs history)
         Public Function PeekUserBotInfo(ByVal user As UserInfo) As DateTime
-            Select Case Storage
-                Case UserBotStorage.Personalisation
-                    Dim objUserBot As UserBotInfo = GetUserBotInfo(user, False)
-                    If objUserBot IsNot Nothing AndAlso objUserBot.Enabled Then
-                        Return Me.Bot.BotSchedule.GetNextSchedule(objUserBot.BotHistory.LastRun) ' objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
-                    Else
-                        Return DateTime.MaxValue
-                    End If
-                Case UserBotStorage.SmartFiles
-                    Dim key As EntityKey = Me.GetUserBotKey(user)
-                    Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = SmartFile.GetFileInfo(key, Me.StorageSettings)
-                    If objFileInfo IsNot Nothing Then
-                        Return ObsoleteDNNProvider.Instance.GetFileLastModificationDate(objFileInfo).Add(Me.Bot.Schedule.Value)
-                    Else
-                        Return DateTime.MaxValue
-                    End If
-            End Select
-            Return DateTime.MaxValue
+            Dim toReturn As New Nullable(Of DateTime)
+            If Me.CachePlannedSchedule.Enabled Then
+                toReturn = CacheHelper.GetGlobal(Of Nullable(Of DateTime))(NextScheduleUserBotKey, user.UserID.ToString(CultureInfo.InvariantCulture), Me.Name)
+            End If
+            If Not toReturn.HasValue Then
+                'Select Case Storage
+                '    Case UserBotStorage.Personalisation
+                '        Dim objUserBot As UserBotInfo = GetUserBotInfo(user, False)
+                '        If objUserBot IsNot Nothing AndAlso objUserBot.Enabled Then
+                '            toReturn = objUserBot.BotHistory.GetNextSchedule(Me.Bot.BotSchedule) ' objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
+                '        Else
+                '            toReturn = DateTime.MaxValue
+                '        End If
+                '    Case UserBotStorage.SmartFiles
+                '        Dim key As EntityKey = Me.GetUserBotKey(user)
+                '        Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = SmartFile.GetFileInfo(key, Me.StorageSettings)
+                '        If objFileInfo IsNot Nothing Then
+                '            toReturn = Me.Bot.BotSchedule.GetNextSchedule(ObsoleteDNNProvider.Instance.GetFileLastModificationDate(objFileInfo))
+                '        Else
+                '            toReturn = DateTime.MaxValue
+                '        End If
+                'End Select
+                Dim objUserBot As UserBotInfo = GetUserBotInfo(user, False)
+                If objUserBot IsNot Nothing AndAlso objUserBot.Enabled Then
+                    toReturn = objUserBot.BotHistory.GetNextSchedule(Me.Bot.BotSchedule) ' objUserBot.BotHistory.LastRun.Add(Me.Bot.Schedule.Value)
+                Else
+                    toReturn = DateTime.MaxValue
+                End If
+                If Me.CachePlannedSchedule.Enabled Then
+                    CacheHelper.SetCache(Of Nullable(Of DateTime))(toReturn.Value, Me.CachePlannedSchedule.Entity.Value, NextScheduleUserBotKey, user.UserID.ToString(CultureInfo.InvariantCulture), Me.Name)
+                End If
+            End If
+            Return toReturn.Value
         End Function
 
+        Public Const NextScheduleUserBotKey As String = "NextScheduleUserBot"
 
         Public Function GetUserBotInfo(ByVal user As UserInfo, ByVal createIfNull As Boolean) As UserBotInfo
 
@@ -512,11 +554,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     'Dim key As EntityKey = Me.GetUserBotKey(user, pid)
                     'Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings, encrypter)
                     'SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
-                    Me.SaveSmartUserBot(user, objUserBotInfo)
+                    If objUserBotInfo IsNot Nothing Then
+                        Me.SetDefaultParameters(objUserBotInfo)
+                        Me.SaveSmartUserBot(user, objUserBotInfo)
+                    Else
+                        Me.DeleteSmartUserBot(user)
+                    End If
             End Select
 
-
-            RemoveCache(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
+            CacheHelper.RemoveCache(Of Nullable(Of DateTime))(NextScheduleUserBotKey, user.UserID.ToString(CultureInfo.InvariantCulture), Me.Name)
+            'RemoveCache(Of UserBotInfo)(Me.Name, user.UserID.ToString(CultureInfo.InvariantCulture))
         End Sub
 
 
@@ -527,6 +574,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim objSmartFile As New SmartFile(Of UserBotInfo)(key, objUserBotInfo, Me.StorageSettings)
             SmartFile.SaveSmartFile(objSmartFile, Me.StorageSettings)
         End Sub
+
+        Private Sub DeleteSmartUserBot(user As UserInfo)
+            Dim key As EntityKey = Me.GetUserBotKey(user)
+            SmartFile.DeleteSmartFile(Of UserBotInfo)(key, Me.StorageSettings)
+        End Sub
+
 
         Private Function GetSampleBotKey(pid As Integer) As EntityKey
             Dim objSampleUser As UserInfo = New UserController().GetUser(pid, PortalInfo(pid).AdministratorId)
@@ -781,20 +834,37 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Public Sub InitBot(ByVal sender As Object, e As GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
                 Dim runContext = e.Item
                 Dim objUserBotInfo As UserBotInfo = Me.UserBotSettings.GetUserBotInfo(Me.User, False)
-                If objUserBotInfo.Enabled AndAlso Me.UserBotSettings.Bot.BotSchedule.GetNextSchedule(objUserBotInfo.BotHistory.LastRun) <= Now Then '.Add(Me.UserBotSettings.Bot.Schedule.Value) <= Now Then
-                    runContext.Enabled = True
-                    Me._UserBot = objUserBotInfo
-                    runContext.History = Me._UserBot.BotHistory
-                    runContext.UserParams = Me._UserBot.GetParameterValues(Me.User)
+                If objUserBotInfo.Enabled Then
+                    Dim nextSchedule As DateTime = objUserBotInfo.BotHistory.GetNextSchedule(Me.UserBotSettings.Bot.BotSchedule)
+                    If nextSchedule <= Now Then '.Add(Me.UserBotSettings.Bot.Schedule.Value) <= Now Then
+                        runContext.Enabled = True
+                        Me._UserBot = objUserBotInfo
+                        runContext.History = Me._UserBot.BotHistory
+                        runContext.UserParams = Me._UserBot.GetParameterValues(Me.User)
+                        If Me.UserBotSettings.CachePlannedSchedule.Enabled Then
+                            CacheHelper.RemoveCache(Of Nullable(Of DateTime))(NextScheduleUserBotKey, User.UserID.ToString(CultureInfo.InvariantCulture), Me.UserBotSettings.Name)
+                        End If
+                    Else
+                        runContext.Enabled = False
+                        If Me.UserBotSettings.CachePlannedSchedule.Enabled Then
+                            CacheHelper.SetCache(Of Nullable(Of DateTime))(nextSchedule, Me.UserBotSettings.CachePlannedSchedule.Entity.Value, NextScheduleUserBotKey, User.UserID.ToString(CultureInfo.InvariantCulture), Me.UserBotSettings.Name)
+                        End If
+                    End If
                 Else
                     runContext.Enabled = False
+                    If UserBotSettings.CachePlannedSchedule.Enabled Then
+                        CacheHelper.SetCache(Of Nullable(Of DateTime))(DateTime.MaxValue, Me.UserBotSettings.CachePlannedSchedule.Entity.Value, NextScheduleUserBotKey, User.UserID.ToString(CultureInfo.InvariantCulture), Me.UserBotSettings.Name)
+                    End If
                 End If
             End Sub
-
             Public Sub SaveBot(ByVal sender As Object, e As GenericEventArgs(Of BotRunContext(Of TEngineEvent)))
                 Me._UserBot.BotHistory = e.Item.History
                 Me._UserBotSettings.SetUserBotInfo(Me._User, Me._User.PortalID, Me._UserBot)
+                If UserBotSettings.CachePlannedSchedule.Enabled Then
+                    Dim nextSchedule As DateTime = Me.UserBot.BotHistory.GetNextSchedule(Me.UserBotSettings.Bot.BotSchedule)
 
+                    CacheHelper.SetCache(Of Nullable(Of DateTime))(nextSchedule, Me.UserBotSettings.CachePlannedSchedule.Entity.Value, NextScheduleUserBotKey, User.UserID.ToString(CultureInfo.InvariantCulture), Me.UserBotSettings.Name)
+                End If
             End Sub
 
         End Class

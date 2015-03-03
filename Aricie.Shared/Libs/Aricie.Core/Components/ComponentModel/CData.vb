@@ -6,8 +6,6 @@ Imports System.Security.Permissions
 Imports System.ComponentModel
 Imports System.ComponentModel.Design.Serialization
 Imports System.Globalization
-Imports System.Text
-Imports System.IO
 
 Namespace ComponentModel
    

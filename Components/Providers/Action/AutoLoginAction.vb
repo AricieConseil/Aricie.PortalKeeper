@@ -1,14 +1,8 @@
 ﻿Imports System.ComponentModel
-Imports System.Xml.Serialization
 Imports System.Web.Configuration
-Imports Aricie.ComponentModel
 Imports DotNetNuke.Security.Membership
 Imports DotNetNuke.Entities.Users
-Imports Aricie.DNN.Entities
-Imports DotNetNuke.UI.WebControls
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.Security
-Imports DotNetNuke.Common.Utilities
 Imports System.Globalization
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls

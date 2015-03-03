@@ -2,8 +2,6 @@
 Imports System.IO
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.Common.Globals
-Imports System.Text
-Imports System.Reflection
 
 Namespace UI.Skin
 

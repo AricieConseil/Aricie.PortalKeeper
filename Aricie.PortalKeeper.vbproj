@@ -104,6 +104,27 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Spreadsheets.dll</HintPath>
     </Reference>
+    <Reference Include="Interop.SHDocVw, Version=1.1.0.0, Culture=neutral, PublicKeyToken=db7cfd3acb5ad44e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+      <HintPath>external\Watin\Interop.SHDocVw.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython, Version=2.7.5.0, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IronPython\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IronPython\Microsoft.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IronPython\Microsoft.Scripting.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting.Core, Version=1.1.0.20, Culture=neutral, PublicKeyToken=7f709c5b713576e1, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IronPython\Microsoft.Scripting.Core.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>external\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
@@ -123,12 +144,17 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
     <Reference Include="System.EnterpriseServices" />
     <Reference Include="System.Web.Mobile" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WatiN.Core, Version=2.1.0.1196, Culture=neutral, PublicKeyToken=db7cfd3acb5ad44e, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Watin\WatiN.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -152,7 +178,9 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\Core\DumpSettings.vb" />
     <Compile Include="Components\Core\KeeperObjectAction.vb" />
+    <Compile Include="Components\Core\LoggingLevel.vb" />
     <Compile Include="Components\Engines\ControlAdapters\DynamicControlAdapter.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdaptersConfig.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdapterSettings.vb" />
@@ -169,10 +197,10 @@
     <Compile Include="Components\Engines\Scheduler\UserParameterWrapper.vb" />
     <Compile Include="Components\Providers\Action\DefineVariableActionProvider.vb" />
     <Compile Include="Components\Providers\Action\GeneralObjectActionProvider.vb" />
-    <Compile Include="Components\Providers\Action\Google\CellFeedInfo.vb" />
     <Compile Include="Components\Providers\Action\Google\GDataServiceInfo.vb" />
     <Compile Include="Components\Providers\Action\Google\GoogleOAuth2Info.vb" />
     <Compile Include="Components\Providers\Action\Google\GoogleSpreadSheetActionProvider.vb" />
+    <Compile Include="Components\Providers\Action\Google\SpreadsheetFeedInfo.vb" />
     <Compile Include="Components\Providers\Action\Google\OAuth2AccessToken.vb" />
     <Compile Include="Components\Providers\Action\Google\OAuth2TokenStatus.vb" />
     <Compile Include="Components\Providers\Action\Google\SpreadSheetCommand.vb" />
@@ -188,6 +216,10 @@
     <Compile Include="Components\Engines\RestServices\OperationResultType.vb" />
     <Compile Include="Components\Engines\RestServices\RestHandlerType.vb" />
     <Compile Include="Components\Engines\RestServices\ReturnRestOperationAction.vb" />
+    <Compile Include="Components\Providers\Action\RunPython.vb" />
+    <Compile Include="Components\Services\IronPython\IronPython.vb" />
+    <Compile Include="Components\Services\IronPython\IronPythonScriptHost.vb" />
+    <Compile Include="Components\Services\IronPython\ScriptBase.vb" />
     <Compile Include="Components\Services\Web\CompressionEnabledWebClient.vb">
       <SubType>Component</SubType>
     </Compile>
@@ -311,16 +343,27 @@
     <Content Include="Components\Engines\ControlAdapters\DefaultControlAdapters.xml" />
     <Content Include="Components\Engines\HttpHandlers\DefaultHttpHandlers.xml" />
     <Content Include="Components\Engines\Scheduler\DevBots.xml" />
+    <Content Include="external\IronPython\IronPython.dll" />
+    <Content Include="external\IronPython\IronPython.Modules.dll" />
+    <Content Include="external\IronPython\IronPython.SQLite.dll" />
+    <Content Include="external\IronPython\jterry.scripting.host.dll" />
+    <Content Include="external\IronPython\Microsoft.Dynamic.dll" />
+    <Content Include="external\IronPython\Microsoft.Scripting.AspNet.dll" />
+    <Content Include="external\IronPython\Microsoft.Scripting.Core.dll" />
+    <Content Include="external\IronPython\Microsoft.Scripting.dll" />
+    <Content Include="external\IronPython\Microsoft.Scripting.Metadata.dll" />
     <Content Include="external\JsonNet\Newtonsoft.Json.dll" />
     <Content Include="external\JsonNet\Newtonsoft.Json.pdb" />
+    <Content Include="external\Watin\Interop.SHDocVw.dll" />
+    <Content Include="external\Watin\WatiN.Core.dll" />
     <Content Include="js\Payment.js" />
-    <Content Include="KeeperConfig.ascx.designer.vb">
+    <Compile Include="KeeperConfig.ascx.designer.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
-    </Content>
-    <Content Include="KeeperConfig.ascx.vb">
+    </Compile>
+    <Compile Include="KeeperConfig.ascx.vb">
       <DependentUpon>KeeperConfig.ascx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
-    </Content>
+    </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\MyExtensions\MyWebExtension.vb">
       <VBMyExtensionTemplateID>Microsoft.VisualBasic.Web.MyExtension</VBMyExtensionTemplateID>
@@ -344,7 +387,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Aricie.PortalKeeper.Default.config" />
+    <Content Include="Aricie.PortalKeeper.Default.config">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

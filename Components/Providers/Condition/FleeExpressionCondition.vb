@@ -1,7 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
-Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
@@ -19,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _FleeExpression As New FleeExpressionInfo(Of Boolean)
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
         Public Property FleeExpression() As FleeExpressionInfo(Of Boolean)

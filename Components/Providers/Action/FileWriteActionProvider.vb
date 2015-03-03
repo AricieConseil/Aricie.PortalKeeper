@@ -1,11 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports DotNetNuke.UI.WebControls
-Imports FileHelpers
-Imports FileHelpers.Dynamic
-Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper

@@ -9,6 +9,7 @@ Imports Aricie.DNN.Security.Trial
 Imports Aricie.Services
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -46,24 +47,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(950)> _
         Public Property RandomizeSleepTimeOverOnly As Boolean
 
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(950)> _
+
+        <SortOrder(951)> _
+        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
+        Public Property WaitSynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)("Synchro"))
+
+
+        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
+        <SortOrder(952)> _
         Public Property UseSemaphore As Boolean
 
         <Required(True)> _
-        <SortOrder(950)> _
+        <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SemaphoreName As String = "Aricie-ActionSemaphore"
 
-        <SortOrder(950)> _
+        <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property NbConcurrentThreads As Integer = 1
 
-        <SortOrder(950)> _
+        <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
 
 
@@ -117,26 +124,35 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property RunDurationVarName() As String = String.Empty
 
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1000)> _
+        <ExtendedCategory("TechnicalSettings", "Debug")> _
+        <SortOrder(2000)> _
         Public Property DisablePerformanceLogger() As Boolean
 
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1000)> _
+
+
+        <ExtendedCategory("TechnicalSettings", "Debug")> _
+        <SortOrder(2000)> _
         Public Property DebuggerBreak As Boolean
 
-        <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings", "Debug")> _
         <ConditionalVisible("DebuggerBreak", False, True)> _
-        <SortOrder(1000)> _
+        <SortOrder(2000)> _
         Public Property DebuggerBreakEarly As Boolean
 
 
 
 
 
-
-
         Public Overridable Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
+            If Me.WaitSynchronisationHandle.Enabled Then
+                Dim key As String = Me.WaitSynchronisationHandle.Entity.GetValue(actionContext, actionContext)
+                Dim counter As Object = Nothing
+                If actionContext.Items.TryGetValue(key, counter) Then
+                    DirectCast(counter, Countdown).Wait()
+                Else
+                    Throw New ApplicationException("No Synchronisation handle was found in the context variables with name " & key)
+                End If
+            End If
             If Me.UseSemaphore Then
                 Dim owned As Boolean
                 'Dim semaphoreId As String = "AsyncBot" & botContext.AsyncLockId.ToString(CultureInfo.InvariantCulture)
@@ -158,8 +174,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Catch ex As AbandonedMutexException
                         ExceptionHelper.LogException(ex)
                         owned = True
-                    Catch ex As Exception
-                        ExceptionHelper.LogException(ex)
                     Finally
                         If owned Then
                             objSemaphore.Release()
@@ -185,7 +199,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toreturn As Boolean
             Dim runStart As DateTime
             If Me._CaptureRunDuration Then
-                runStart = PerformanceLogger.Instance.Now
+                runStart = PerformanceLogger.Now
             End If
             If (Not Me._ConditionalAction) OrElse Me._Condition.Match(actionContext) Then
                 toreturn = Me.Run(actionContext)
@@ -193,6 +207,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 toreturn = Me._AlternateAction.Run(actionContext)
             End If
             If Me._AddSleepTime AndAlso Me._SleepTime <> TimeSpan.Zero Then
+
                 Dim sleepDuration As TimeSpan = Me._SleepTime.Value
                 If Me.RandomizeSleepTime Then
                     Dim objTicks As Long = sleepDuration.Ticks * 2
@@ -211,10 +226,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                     sleepDuration = TimeSpan.FromTicks(objRandomTicks)
                 End If
+                If actionContext.LoggingLevel = LoggingLevel.Detailed Then
+                    Dim objStep As New StepInfo(Debug.PKPDebugType, "Action Sleep Start", _
+                                                WorkingPhase.EndOverhead, False, False, -1, actionContext.FlowId)
+                    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                End If
                 Thread.Sleep(sleepDuration)
+                If actionContext.LoggingLevel = LoggingLevel.Detailed Then
+                    Dim objStep As New StepInfo(Debug.PKPDebugType, "End Action Sleep", _
+                                                WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
+                    PerformanceLogger.Instance.AddDebugInfo(objStep)
+                End If
+
             End If
             If Me._CaptureRunDuration Then
-                Dim duration As TimeSpan = PerformanceLogger.Instance.Now.Subtract(runStart)
+                Dim duration As TimeSpan = PerformanceLogger.Now.Subtract(runStart)
                 actionContext.SetVar(Me._RunDurationVarName, duration)
             End If
             If Me.DisablePerformanceLogger Then
@@ -223,7 +249,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toreturn
         End Function
 
-        
+
 
 
         Public Overridable Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
@@ -242,6 +268,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
+
+        Protected Sub Sleep(actioncontext As PortalKeeperContext(Of TEngineEvents), sleepTime As TimeSpan)
+
+            If actioncontext.LoggingLevel = LoggingLevel.Detailed Then
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "Sleep Spreadsheet Command Start", _
+                                            WorkingPhase.EndOverhead, False, False, -1, actioncontext.FlowId)
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+            Thread.Sleep(sleepTime)
+            If actioncontext.LoggingLevel = LoggingLevel.Detailed Then
+                Dim objStep As New StepInfo(Debug.PKPDebugType, "End Sleep Spreadsheet Command", _
+                                            WorkingPhase.InProgress, False, False, -1, actioncontext.FlowId)
+                PerformanceLogger.Instance.AddDebugInfo(objStep)
+            End If
+
+        End Sub
 
     End Class
 End Namespace

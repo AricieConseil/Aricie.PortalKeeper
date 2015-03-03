@@ -1,12 +1,10 @@
 ﻿Imports System.Net
 Imports System.ComponentModel
-Imports System.Globalization
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.Entities
-Imports Aricie.DNN.Services.Filtering
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper

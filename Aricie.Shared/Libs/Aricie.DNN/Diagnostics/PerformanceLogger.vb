@@ -1,9 +1,6 @@
 ﻿Imports DotNetNuke.Services.Log.EventLog
 Imports Aricie.Services
 Imports System.Globalization
-Imports System.Reflection
-Imports Aricie.Web
-Imports System.Web
 
 Namespace Diagnostics
 
@@ -74,11 +71,7 @@ Namespace Diagnostics
 
 #End Region
 
-        Public ReadOnly Property Now As DateTime
-            Get
-                Return Me.StopWatchStartTime.Add(Me.StopWatch.Elapsed)
-            End Get
-        End Property
+       
 
 
         Protected Overrides ReadOnly Property AddLogTypeAndName() As Boolean
@@ -89,7 +82,7 @@ Namespace Diagnostics
 
         Public Overrides Sub AddDebugInfo(ByVal objToLog As StepInfo, ByVal serialize As Boolean)
             If Me._DisabledLogs.Count = 0 OrElse Not Me._DisabledLogs.Contains(objToLog.FlowId) Then
-                objToLog.StopElapsed = Me.StopWatch.Elapsed
+                objToLog.StopElapsed = StopWatch.Elapsed
                 If Me._AgregatedLogs.Count > 0 AndAlso Me._AgregatedLogs.Contains(objToLog.FlowId) Then
                     objToLog.Cumulated = True
                 End If
@@ -186,7 +179,7 @@ Namespace Diagnostics
             If objToLog.StepNumber = -1 Then
                 objToLog.StepNumber = currentPerfTimer.StepNumber
             End If
-            objToLog.FlowStartTime = Me.StopWatchStartTime.Add(currentPerfTimer.StartTime)
+            objToLog.FlowStartTime = StopWatchStartTime.Add(currentPerfTimer.StartTime)
 
             objEventLogInfo.AddProperty("Step", objToLog.StepNumber.ToString(CultureInfo.InvariantCulture))
 
@@ -235,7 +228,7 @@ Namespace Diagnostics
                 If objToLog.IsLastStep Then
                     endTimeName = "Flow End Time"
                 End If
-                objEventLogInfo.AddProperty(endTimeName, Me.StopWatchStartTime.Add(objToLog.StopElapsed).ToString("yyyy, dddd, MMMM dd, h:mm:ss.FFFFFFF"))
+                objEventLogInfo.AddProperty(endTimeName, StopWatchStartTime.Add(objToLog.StopElapsed).ToString("yyyy, dddd, MMMM dd, h:mm:ss.FFFFFFF"))
 
             End If
             objToLog.TotalElapsed = totalElapsed

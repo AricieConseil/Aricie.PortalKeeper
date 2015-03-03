@@ -1,12 +1,9 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.DNN.Services
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
-Imports Aricie.Services
 Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -72,6 +69,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _AddItems = value
             End Set
         End Property
+
+        <SortOrder(422)> _
+        <ConditionalVisible("ShowOutput", False, True)> _
+       <ConditionalVisible("AddItems", False, True)> _
+       <ExtendedCategory("Specifics")> _
+        Public Property CaptureCount As Boolean
+
+        <SortOrder(422)> _
+        <ConditionalVisible("ShowOutput", False, True)> _
+       <ConditionalVisible("AddItems", False, True)> _
+       <ConditionalVisible("CaptureCount", False, True)> _
+       <ExtendedCategory("Specifics")> _
+        Public Property CountCaptureName As New SimpleOrSimpleExpression(Of String)("ResultsCount")
 
         <SortOrder(423)> _
         <ConditionalVisible("ShowOutput", False, True)> _
@@ -145,6 +155,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     Else
                         actionContext.Items(Me._OutputName) = cachedObject
+                    End If
+
+                    If Me.CaptureCount Then
+                        Dim newItems As ICollection = TryCast(cachedObject, ICollection)
+                        If newItems IsNot Nothing Then
+                            actionContext.Items(Me.CountCaptureName.GetValue(actionContext, actionContext)) = newItems.Count
+                        ElseIf TypeOf cachedObject Is String Then
+                            actionContext.Items(Me.CountCaptureName.GetValue(actionContext, actionContext)) = DirectCast(cachedObject, String).Length
+                        End If
                     End If
                 Else
                     actionContext.Items(Me._OutputName) = cachedObject

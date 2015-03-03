@@ -9,7 +9,6 @@ Imports System.Security
 Imports System.Runtime.InteropServices
 Imports System.Security.Cryptography.Xml
 Imports Aricie.Cryptography
-Imports System.Linq
 
 Namespace Security.Cryptography
 

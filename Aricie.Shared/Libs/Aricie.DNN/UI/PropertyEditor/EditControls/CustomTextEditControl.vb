@@ -3,7 +3,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI
 Imports DotNetNuke.Common.Utilities
 Imports System.Globalization
-Imports System.Web
+Imports DotNetNuke.Security
 
 Namespace UI.WebControls.EditControls
 
@@ -29,14 +29,18 @@ Namespace UI.WebControls.EditControls
 
         Protected Overrides Sub OnAttributesChanged()
             MyBase.OnAttributesChanged()
-            If (Not MyBase.CustomAttributes Is Nothing) Then
+            If (MyBase.CustomAttributes IsNot Nothing) Then
                 For Each attribute As Attribute In MyBase.CustomAttributes
                     If TypeOf attribute Is MaxLengthAttribute Then
                         Me.MaxLength = DirectCast(attribute, MaxLengthAttribute).Length
                     ElseIf TypeOf attribute Is WidthAttribute Then
                         Me.WidthPx = DirectCast(attribute, WidthAttribute).Width
                     ElseIf TypeOf attribute Is LineCountAttribute Then
-                        Me.LineCount = DirectCast(attribute, LineCountAttribute).LineCount
+                        Dim lca As LineCountAttribute = DirectCast(attribute, LineCountAttribute)
+                        Me.LineCount = lca.LineCount
+                        If lca.AutoResize Then
+                            Me.LineCount = RestrictedLineCount(Me.StringValue, Me.LineCount, 200)
+                        End If
                     ElseIf TypeOf attribute Is SizeAttribute Then
                         Me.Size = DirectCast(attribute, SizeAttribute).Size
                     End If
@@ -44,7 +48,20 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
+        Protected Overrides Sub RenderViewMode(ByVal writer As HtmlTextWriter)
+            Dim str As String = Me.Page.Server.HtmlDecode(Convert.ToString(Me.Value))
+            str = GetHtmlLineBreaks(str)
+            MyBase.ControlStyle.AddAttributesToRender(writer)
+            If str.IndexOf("<br/>", System.StringComparison.Ordinal) > 0 Then
+                writer.RenderBeginTag(HtmlTextWriterTag.P)
+            Else
 
+                writer.RenderBeginTag(HtmlTextWriterTag.Span)
+            End If
+
+            writer.Write((New PortalSecurity()).InputFilter(str, PortalSecurity.FilterFlag.NoScripting))
+            writer.RenderEndTag()
+        End Sub
 
         ' Methods
         Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)

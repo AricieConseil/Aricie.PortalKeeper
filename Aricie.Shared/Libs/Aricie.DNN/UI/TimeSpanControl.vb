@@ -1,13 +1,7 @@
-﻿Imports System
-Imports System.Collections.Generic
+﻿
 Imports System.ComponentModel
-Imports System.Text
-Imports System.Web
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
-Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.UI.WebControls
-
 
 
 <DefaultProperty("Text"), ToolboxData("<{0}:TimeSpanControl runat=server></{0}:TimeSpanControl>")> _

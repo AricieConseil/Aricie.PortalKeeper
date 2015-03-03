@@ -1,8 +1,5 @@
 ﻿Imports Aricie.DNN.ComponentModel
-Imports System.ComponentModel
-Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports System.Xml.Serialization
 Imports System.Globalization
 Imports DotNetNuke.UI.WebControls
 
@@ -11,10 +8,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ConditionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))
 
+        <ExtendedCategory("Condition")> _
         Public Property Negate() As Boolean
 
+        <ExtendedCategory("Condition")> _
         Public Property IsMandatory() As Boolean
 
+
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property LoggingLevel As LoggingLevel = LoggingLevel.Detailed
+
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property LogDumpSettings As New DumpSettings()
+
+        <ExtendedCategory("TechnicalSettings")> _
         Public Property DebuggerBreak As Boolean
 
         <SortOrder(200)> _

@@ -239,7 +239,7 @@ Namespace ComponentModel
                     Return 21
                 Case CompoundHour.TenPM
                     Return 22
-                Case CompoundHour.ElevenAM
+                Case CompoundHour.ElevenPM
                     Return 23
             End Select
             Throw New ArgumentException("Invalid Hour", "objCompound")

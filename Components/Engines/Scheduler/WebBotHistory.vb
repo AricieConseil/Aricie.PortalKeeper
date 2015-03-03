@@ -5,6 +5,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -27,7 +28,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _MaxDuration As New STimeSpan(UnlimitedTimeSpan)
 
 
-        Private _AverageDuration As New STimeSpan(UnlimitedTimeSpan)
 
         Private _LastRun As DateTime = DateTime.MinValue
 
@@ -36,7 +36,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #End Region
 
 
+
+
 #Region "Public Properties"
+
+        Public Property NextSchedule As Nullable(Of DateTime)
+
 
         <IsReadOnly(True)> _
         <ExtendedCategory("Stats")> _
@@ -79,6 +84,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <Browsable(False)> _
+        Public Property TotalDuration() As New STimeSpan(TimeSpan.Zero)
+
+
+        <XmlIgnore()> _
+        <ExtendedCategory("Stats")> _
+        Public ReadOnly Property TotalDurationString() As String
+            Get
+                Return FormatTimeSpan(Me.TotalDuration.Value, True)
+            End Get
+        End Property
+
+        <Browsable(False)> _
         Public Property MinDuration() As STimeSpan
             Get
                 Return _MinDuration
@@ -114,21 +131,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+
+
         <Browsable(False)> _
-        Public Property AverageDuration() As STimeSpan
+        Public ReadOnly Property AverageDuration() As TimeSpan
             Get
-                Return _AverageDuration
+                If Me.NumberOfSucceedBotCall > 0 Then
+                    Return TimeSpan.FromTicks(Me.TotalDuration.Value.Ticks \ Me.NumberOfSucceedBotCall)
+                End If
+                Return TimeSpan.Zero
             End Get
-            Set(ByVal value As STimeSpan)
-                _AverageDuration = value
-            End Set
         End Property
 
         <XmlIgnore()> _
         <ExtendedCategory("Stats")> _
         Public ReadOnly Property AverageDurationString() As String
             Get
-                Return FormatTimeSpan(Me._AverageDuration.Value, True)
+                Return FormatTimeSpan(AverageDuration, True)
             End Get
         End Property
 
@@ -137,14 +156,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public ReadOnly Property AverageDurationWOExtremsString() As String
             Get
                 If _NumberOfSucceedBotCall > 2 Then
-                    Dim totalTime As New TimeSpan(_AverageDuration.Value.Ticks * _NumberOfSucceedBotCall)
-                    Dim avgTimeWOExtrems As TimeSpan = TimeSpan.FromTicks((totalTime.Ticks - _MinDuration.Value.Ticks - _MaxDuration.Value.Ticks) \ (_NumberOfSucceedBotCall - 2))
-                    Return FormatTimeSpan(avgTimeWOExtrems, True)
+                    Dim totalTime As New TimeSpan(AverageDuration.Ticks * _NumberOfSucceedBotCall)
+                    Dim avgTimeWoExtrems As TimeSpan = TimeSpan.FromTicks((totalTime.Ticks - _MinDuration.Value.Ticks - _MaxDuration.Value.Ticks) \ (_NumberOfSucceedBotCall - 2))
+                    Return FormatTimeSpan(avgTimeWoExtrems, True)
                 Else
                     Return AverageDurationString
                 End If
             End Get
         End Property
+
+        
 
 
         <IsReadOnly(True)> _
@@ -167,6 +188,38 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #End Region
 
 
+        Public Function GetNextSchedule(objSchedule As ScheduleInfo) As DateTime
+            If Me.NextSchedule.HasValue Then
+                Return NextSchedule.Value
+            Else
+                Return objSchedule.GetNextSchedule(Me.LastRun)
+            End If
+        End Function
+
+        Public Sub Increment(currentWebBotEvent As BotInfoEvent, maxNb As Integer)
+
+            Me.LastRun = currentWebBotEvent.Time
+            Me.NextSchedule = currentWebBotEvent.NextSchedule
+
+            If Me.BotCallHistory.Count > maxNb Then
+                Me.BotCallHistory.RemoveRange(maxNb, Me.BotCallHistory.Count - maxNb)
+            End If
+
+            Me.BotCallHistory.Insert(0, currentWebBotEvent)
+
+            Me.NumberOfBotCall += 1
+            If currentWebBotEvent.Success Then
+                Me.NumberOfSucceedBotCall += 1
+                Me.TotalDuration += currentWebBotEvent.Duration
+                If currentWebBotEvent.Duration < Me.MinDuration Then
+                    Me.MinDuration.Value = currentWebBotEvent.Duration
+                End If
+                If currentWebBotEvent.Duration > Me.MaxDuration OrElse Me.MaxDuration = TimeSpan.MaxValue Then
+                    Me.MaxDuration.Value = currentWebBotEvent.Duration
+                End If
+            End If
+
+        End Sub
 
 
 

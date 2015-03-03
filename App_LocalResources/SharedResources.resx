@@ -2172,10 +2172,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="StringFilterProvider`1_Filter.Header" xml:space="preserve">
     <value>Filter</value>
   </data>
-  <data name="StringFilterProvider`1_Filter.Help" xml:space="preserve">
-    <value>Define here the filter as a series of string transformations</value>
+  <data name="StringFilterProvider`1_FilterSource.Help" xml:space="preserve">
+    <value>Use one of the many available features to transform the input string.</value>
   </data>
-  <data name="StringFilterProvider`1_Filter.Text" xml:space="preserve">
+  <data name="StringFilterProvider`1_FilterSource.Text" xml:space="preserve">
     <value>Filter</value>
   </data>
   <data name="StringFilterProvider`1_InputExpression.Help" xml:space="preserve">
@@ -2362,7 +2362,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Here's a series of simple properties you should update before you activate your bot</value>
   </data>
   <data name="UserBotInfo_PropertyDefinitions.Text" xml:space="preserve">
-    <value>Main Parameters</value>
+    <value>Basic Parameters</value>
   </data>
   <data name="CustomErrorsInfo_CustomErrors.Header" xml:space="preserve">
     <value>Custom Errors</value>
@@ -3000,10 +3000,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="StringFilterProvider`1_FilterMode.Text" xml:space="preserve">
     <value>Filter Mode</value>
   </data>
-  <data name="StringFilterProvider`1_XPath.Help" xml:space="preserve">
+  <data name="StringFilterProvider`1_XPathSource.Help" xml:space="preserve">
     <value>Here you define the xpath query to be performed. You can choose to return a single or a list of values. Values may be individual strings or dictionaries of subselects.</value>
   </data>
-  <data name="StringFilterProvider`1_XPath.Text" xml:space="preserve">
+  <data name="StringFilterProvider`1_XPathSource.Text" xml:space="preserve">
     <value>XPath configuration</value>
   </data>
   <data name="SubSelects_AddNew.Text" xml:space="preserve">
@@ -3151,10 +3151,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>This is the XmlSerialized value of all bot variables dumped by the end of the bot run</value>
   </data>
   <data name="UserBotInfo_NoOverride.Help" xml:space="preserve">
-    <value>The platform allows site administrators to occasionally propose updated default values for selected variable to be overwritten. When checked, your set of variables won't be overwritten when given the opportunity, unless the override is explicitly forced. A platform administrator should warn you when such an upgrade opportunity is given.</value>
+    <value>The platform allows site administrators to occasionally propose updated default values for selected variable to be overwritten, typically with better values. When checked, your set of variables won't be overwritten when given the opportunity, unless the overwrite is explicitly forced. A platform administrator should warn you when such an upgrade opportunity is given.</value>
   </data>
   <data name="UserBotInfo_NoOverride.Text" xml:space="preserve">
-    <value>Prevent overwrites</value>
+    <value>No Admin Updates</value>
   </data>
   <data name="UserVariableInfo_ForceOverride.Help" xml:space="preserve">
     <value>When checked, all user values will be overriden with the default value regardless of their choice to lock their value</value>
@@ -4981,13 +4981,13 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>This is the current selected sub path for the child entity. Click on a node to navigate upward or downward the objects hierarchy.</value>
   </data>
   <data name="SubPathContainer_Path.Text" xml:space="preserve">
-    <value>Child Editor Path</value>
+    <value>Current Path</value>
   </data>
   <data name="SubPathContainer_SubEntity.Help" xml:space="preserve">
     <value>Here is a subeditor generated for a child entity of the original main one. Use the extra dropdownlist and command button to broader back the scope.</value>
   </data>
   <data name="SubPathContainer_SubEntity.Text" xml:space="preserve">
-    <value>Child Editor</value>
+    <value>Current Node</value>
   </data>
   <data name="BotFarmInfo`1_ResetEncryptionKey.Text" xml:space="preserve">
     <value>Reset Encryption Key</value>
@@ -5349,10 +5349,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="KeyValuePair`2_Value.Required" xml:space="preserve">
     <value>Value is required</value>
   </data>
-  <data name="LoopActionProvider`1_MaxNbIterations.Help" xml:space="preserve">
+  <data name="LoopActionProvider`1_MaxIterations.Help" xml:space="preserve">
     <value>Additionally to the loop condition, you can specify an absolute maximum number of iterations (0 = unlimited)</value>
   </data>
-  <data name="LoopActionProvider`1_MaxNbIterations.Text" xml:space="preserve">
+  <data name="LoopActionProvider`1_MaxIterations.Text" xml:space="preserve">
     <value>Max Number of Iterations</value>
   </data>
   <data name="MissingFile.Message" xml:space="preserve">
@@ -7379,10 +7379,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="WebRequestInfo`1_ClientLocation.Text" xml:space="preserve">
     <value>Client Location</value>
   </data>
-  <data name="WebRequestInfo`1_ClientVarName.Help" xml:space="preserve">
-    <value>Choose a name for the shared web client.</value>
+  <data name="WebRequestInfo`1_WebClientVarName.Help" xml:space="preserve">
+    <value>Choose a name for shared web client if applicable.</value>
   </data>
-  <data name="WebRequestInfo`1_ClientVarName.Text" xml:space="preserve">
+  <data name="WebRequestInfo`1_WebClientVarName.Text" xml:space="preserve">
     <value>Web Client Variable Name</value>
   </data>
   <data name="WebRequestInfo`1_CloseClient.Help" xml:space="preserve">
@@ -7733,11 +7733,11 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="GoogleSpreadSheetActionProvider`1_Spreadsheet.Header" xml:space="preserve">
     <value>Spreadsheet</value>
   </data>
-  <data name="GoogleSpreadSheetActionProvider`1_UseExistingCellFeed.Help" xml:space="preserve">
-    <value>You can use a cell feed previously captured into a context variable, by entering the corresponding typed expression.</value>
+  <data name="GoogleSpreadSheetActionProvider`1_UseExistingFeed.Help" xml:space="preserve">
+    <value>You can use a feed previously captured into a context variable, by entering the corresponding typed expression.</value>
   </data>
-  <data name="GoogleSpreadSheetActionProvider`1_UseExistingCellFeed.Text" xml:space="preserve">
-    <value>Use Existing Cell Feed</value>
+  <data name="GoogleSpreadSheetActionProvider`1_UseExistingFeed.Text" xml:space="preserve">
+    <value>Use Existing Feed</value>
   </data>
   <data name="GoogleSpreadSheetActionProvider`1_WorksheetEntryExpression.Help" xml:space="preserve">
     <value>Enter an Expression for an existing worksheet entry previously captured as a contextual variable.</value>
@@ -7836,7 +7836,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>This is the current selected sub path for the child entity. Click on a node to navigate upward or downward the objects hierarchy.</value>
   </data>
   <data name="SubPathContainer_BottomPath.Text" xml:space="preserve">
-    <value>Child Editor Path</value>
+    <value>Current Path</value>
   </data>
   <data name="WorksheetEntryInfo`1_CreateIf.Help" xml:space="preserve">
     <value>You can choose to enter init settings to build the spreadsheet entry if the following condition matches</value>
@@ -8338,5 +8338,833 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="XPathInfo_UpdateNodes.Text" xml:space="preserve">
     <value>Updates Nodes</value>
+  </data>
+  <data name="ControlAdapterSettings_GlobalParameters.Help" xml:space="preserve">
+    <value>Global Parameters are available to each dynamic handler and evaluated prior to dedicated handler parameters.</value>
+  </data>
+  <data name="ControlAdapterSettings_GlobalParameters.Text" xml:space="preserve">
+    <value>Global Parameters</value>
+  </data>
+  <data name="ActionProviderSettings`1_DisableLog.Help" xml:space="preserve">
+    <value>If logging is enabled , you can opt that specific action out from the logging sequence by checking that checkbox.</value>
+  </data>
+  <data name="ActionProviderSettings`1_DisableLog.Text" xml:space="preserve">
+    <value>Disable Log</value>
+  </data>
+  <data name="ActionProviderSettings`1_LogDumpSettings.Help" xml:space="preserve">
+    <value>Together with timing and performance properties saved in the event log, you can generate a dump of context variables, or comma separated expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for logging.</value>
+  </data>
+  <data name="ActionProviderSettings`1_LogDumpSettings.Text" xml:space="preserve">
+    <value>Log Dump Settings</value>
+  </data>
+  <data name="ActionProviderSettings`1_LoggingLevel.Help" xml:space="preserve">
+    <value>Enter here the minimum level to include this action, or the level above which this action should be logged. The agent logging level can then be specified globally in its technical settings.</value>
+  </data>
+  <data name="ActionProviderSettings`1_LoggingLevel.Text" xml:space="preserve">
+    <value>Minimum Logging Level</value>
+  </data>
+  <data name="ConditionProviderSettings`1_Condition.Header" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="ConditionProviderSettings`1_LogDumpSettings.Help" xml:space="preserve">
+    <value>Together with timing and performance properties saved in the event log, you can generate a dump of context variables, or comma separated expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for logging.</value>
+  </data>
+  <data name="ConditionProviderSettings`1_LogDumpSettings.Text" xml:space="preserve">
+    <value>Log Dump Settings</value>
+  </data>
+  <data name="ConditionProviderSettings`1_LoggingLevel.Help" xml:space="preserve">
+    <value>Enter here the minimum level to include this condition, or the level above which this action should be logged. The agent logging level can then be specified globally in its technical settings.</value>
+  </data>
+  <data name="ConditionProviderSettings`1_LoggingLevel.Text" xml:space="preserve">
+    <value>Minimum Logging Level</value>
+  </data>
+  <data name="ConditionProviderSettings`1_TechnicalSettings.Header" xml:space="preserve">
+    <value>Technical Settings</value>
+  </data>
+  <data name="DumpSettings_DefaultValue.Help" xml:space="preserve">
+    <value>Enter the default value for null entries or exceptions caught during evaluation, as an expression for an Object (default is an empty String)</value>
+  </data>
+  <data name="DumpSettings_DefaultValue.Text" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="DumpSettings_DisplayAvailableVars.Text" xml:space="preserve">
+    <value>Setup Expression Builder</value>
+  </data>
+  <data name="DumpSettings_DumpAllVars.Help" xml:space="preserve">
+    <value>Check to serialize and log all variables stored within the context </value>
+  </data>
+  <data name="DumpSettings_DumpAllVars.Text" xml:space="preserve">
+    <value>Dump All Variables</value>
+  </data>
+  <data name="DumpSettings_DumpVariables.Help" xml:space="preserve">
+    <value>Enter a comma separated list of variables or named expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for logging.</value>
+  </data>
+  <data name="DumpSettings_DumpVariables.Text" xml:space="preserve">
+    <value>Dump Variables</value>
+  </data>
+  <data name="DumpSettings_EnableDump.Help" xml:space="preserve">
+    <value>Check to enable generating dumps on log end.</value>
+  </data>
+  <data name="DumpSettings_EnableDump.Text" xml:space="preserve">
+    <value>Enable Dump</value>
+  </data>
+  <data name="DumpSettings_ExpressionBuilder.Help" xml:space="preserve">
+    <value>Use the following drop down lists to build your expression from the available variables, operators, and methods, then click the insert button to update your expression text area.</value>
+  </data>
+  <data name="DumpSettings_ExpressionBuilder.Text" xml:space="preserve">
+    <value>Build your Expression step by step and insert the corresponding string</value>
+  </data>
+  <data name="DumpSettings_InsertSelectedVar.Text" xml:space="preserve">
+    <value>Insert Built Expression</value>
+  </data>
+  <data name="DumpSettings_RemoveExpressionBuilder.Text" xml:space="preserve">
+    <value>Remove Expression Builder</value>
+  </data>
+  <data name="DumpSettings_SkipNull.Help" xml:space="preserve">
+    <value>Check to skip null entries keys in the result dictionary</value>
+  </data>
+  <data name="DumpSettings_SkipNull.Text" xml:space="preserve">
+    <value>Skip Null</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterEvalAfter.Help" xml:space="preserve">
+    <value>Check to skip the evaluation on the first pass.</value>
+  </data>
+  <data name="LoopActionProvider`1_CounterEvalAfter.Text" xml:space="preserve">
+    <value>Evaluate Second</value>
+  </data>
+  <data name="OutputAction`1_CaptureCount.Help" xml:space="preserve">
+    <value>When adding items to an existing set, you can capture new items count into a named variable.</value>
+  </data>
+  <data name="OutputAction`1_CaptureCount.Text" xml:space="preserve">
+    <value>Capture Count</value>
+  </data>
+  <data name="OutputAction`1_CountCaptureName.Help" xml:space="preserve">
+    <value>This is the name of the variable to be inserted into the context to hold the new items count.</value>
+  </data>
+  <data name="OutputAction`1_CountCaptureName.Text" xml:space="preserve">
+    <value>Count Variable Name</value>
+  </data>
+  <data name="RuleEngineSettings`1_ExceptionDumpSettings.Help" xml:space="preserve">
+    <value>When Exceptions are caught, you can generate a dump of context variables, or comma separated expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for logging.</value>
+  </data>
+  <data name="RuleEngineSettings`1_ExceptionDumpSettings.Text" xml:space="preserve">
+    <value>Exception Dump Settings</value>
+  </data>
+  <data name="RuleEngineSettings`1_LogEndDumpSettings.Help" xml:space="preserve">
+    <value>When logging is enabled, you can generate a dump of context variables, or comma separated expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for logging.</value>
+  </data>
+  <data name="RuleEngineSettings`1_LogEndDumpSettings.Text" xml:space="preserve">
+    <value>Log End Dump Settings</value>
+  </data>
+  <data name="SpreadSheetCommand`1_CheckForChanges.Help" xml:space="preserve">
+    <value>If checked, the cell will be read for actual changes before an update is applied.</value>
+  </data>
+  <data name="SpreadSheetCommand`1_CheckForChanges.Text" xml:space="preserve">
+    <value>Check for changes</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_Spreadsheet.Header" xml:space="preserve">
+    <value>Spreadsheet</value>
+  </data>
+  <data name="WorksheetEntryInfo`1_Worksheet.Header" xml:space="preserve">
+    <value>Worksheet</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpSettings.Help" xml:space="preserve">
+    <value>Together with timing and performance properties saved in the history, you can generate a dump of context variables, or comma separated expressions (e.g. "VarName, VarName.PropName, ExpName =Exp(Vars), etc."). A dictironay of String, Object is generated, and each value is serialized for saving.</value>
+  </data>
+  <data name="BotInfo`1_HistoryDumpSettings.Text" xml:space="preserve">
+    <value>History Dump Settings</value>
+  </data>
+  <data name="CellCommands.Text" xml:space="preserve">
+    <value>Cell Commands</value>
+  </data>
+  <data name="CellFeedInfo`1_Feed.Header" xml:space="preserve">
+    <value>Feed</value>
+  </data>
+  <data name="CellFeedInfo`1_Worksheet.Header" xml:space="preserve">
+    <value>Worksheet</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Feed.Header" xml:space="preserve">
+    <value>Data Feed</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_IncludeIndex.Help" xml:space="preserve">
+    <value>In List mode, each row is turned into an individual dictionary of string, string with key the header name of the column and value the string value of each corresponding cell.  You can also choose the include the Index to this row's dictionary by providing the header name.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_IncludeIndex.Text" xml:space="preserve">
+    <value>Include Index</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_IndexKey.Help" xml:space="preserve">
+    <value>This is the key to insert the row's index into individual row's dictionary.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_IndexKey.Text" xml:space="preserve">
+    <value>Index Key</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_KeyColumnHeaders.Help" xml:space="preserve">
+    <value>Enter the headers, as found in the first row of the Google worksheet, of the columns to make up a single or composite key for insertion in the row's output dictionary.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_KeyColumnHeaders.Text" xml:space="preserve">
+    <value>Key Columns</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_FeedExpression.Help" xml:space="preserve">
+    <value>Enter an expression that resolves into a Google GData ListFeed or CellFeed object, as obtained for instance from a FeedInfo parameter Object.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_FeedExpression.Text" xml:space="preserve">
+    <value>Feed Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_FeedInfo.Help" xml:space="preserve">
+    <value>Enter here the parameters to build a Google GData ListFeed or CellFeed, from a Worksheet Entry</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_FeedInfo.Text" xml:space="preserve">
+    <value>Feed</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ReturnDictionary.Help" xml:space="preserve">
+    <value>By default, the output is a list of the dictionaries generated for each row. You can also choose to generate a dictionary of the same dictionaries instead, by specifying the headers of columns to make up the key for each row, </value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ReturnDictionary.Text" xml:space="preserve">
+    <value>Return Dictionary</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_SpreadSheetMode.Help" xml:space="preserve">
+    <value>There are 2 modes, Cell based and List based. The former is more flexible, yet the latter is faster.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_SpreadSheetMode.Text" xml:space="preserve">
+    <value>Spreadsheet Mode</value>
+  </data>
+  <data name="HtmlPageScrapInfo_BaseUrl.Help" xml:space="preserve">
+    <value>This is the base part of the url for the pages to scrap, to be completed with pages parameters for paged results</value>
+  </data>
+  <data name="HtmlPageScrapInfo_BaseUrl.Text" xml:space="preserve">
+    <value>Base Url</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Custom.Header" xml:space="preserve">
+    <value>Custom</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Custom.Help" xml:space="preserve">
+    <value>Add custom named properties, to your scrap.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Custom.Text" xml:space="preserve">
+    <value>Custom Properties</value>
+  </data>
+  <data name="HtmlPageScrapInfo_IncludeFirstPage.Help" xml:space="preserve">
+    <value>Check to include the parameter on the first page, usually omitted.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_IncludeFirstPage.Text" xml:space="preserve">
+    <value>Include First Page</value>
+  </data>
+  <data name="HtmlPageScrapInfo_MaxNbPage.Help" xml:space="preserve">
+    <value>Enter the maximum number of pages to request. 0 means no limit.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_MaxNbPage.Text" xml:space="preserve">
+    <value>Max Nb of Pages</value>
+  </data>
+  <data name="HtmlPageScrapInfo_QueryParameter.Help" xml:space="preserve">
+    <value>Enter the parameter to add to the base url to request results pages</value>
+  </data>
+  <data name="HtmlPageScrapInfo_QueryParameter.Text" xml:space="preserve">
+    <value>Page query string Parameter</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Pager.Header" xml:space="preserve">
+    <value>Pager</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Scraping.Header" xml:space="preserve">
+    <value>Scraping</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Url.Header" xml:space="preserve">
+    <value>Urls</value>
+  </data>
+  <data name="HtmlPageScrapInfo_UsePager.Help" xml:space="preserve">
+    <value>Check to activate requesting a series of result pages with an http parameter.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_UsePager.Text" xml:space="preserve">
+    <value>Use Pager</value>
+  </data>
+  <data name="HtmlPageScrapInfo_XPath.Help" xml:space="preserve">
+    <value>Scrap named fields from Xpath queries and sub-queries. The type of output depends on the Xpath settings.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_XPath.Text" xml:space="preserve">
+    <value>XPath Scraping</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ZeroBasedIndex.Help" xml:space="preserve">
+    <value>Check for a paging index starting with 0</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ZeroBasedIndex.Text" xml:space="preserve">
+    <value>Zero based Index</value>
+  </data>
+  <data name="ListCommands.Text" xml:space="preserve">
+    <value>List Commands</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_CaptureFeed.Help" xml:space="preserve">
+    <value>You can choose to capture the generated list or cell feed to a local variable, to reuse that entity for subsequent queries.</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_CaptureFeed.Text" xml:space="preserve">
+    <value>Capture Feed</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_CreateIfNull.Help" xml:space="preserve">
+    <value>If the Worksheet expression evaluates to a null entry, you can create an new worhseet by providing creation parameters.</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_CreateIfNull.Text" xml:space="preserve">
+    <value>Create if Null</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_Feed.Header" xml:space="preserve">
+    <value>Feed</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_FeedName.Help" xml:space="preserve">
+    <value>Enter a name for a variable for the feed to be created and inserted into the action context.</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_FeedName.Text" xml:space="preserve">
+    <value>Feed Name</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_UseExistingWorksheetEntry.Help" xml:space="preserve">
+    <value>You can choose to reuse an Object of type WorksheetEntry that was previously created and captured. </value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_UseExistingWorksheetEntry.Text" xml:space="preserve">
+    <value>Use Existing Worksheet Entry</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_Worksheet.Header" xml:space="preserve">
+    <value>Worksheet</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_WorksheetEntryExpression.Help" xml:space="preserve">
+    <value>Enter an expression, which resolves to an Object of type Google.GData.Spreadsheets.WorksheetEntry</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_WorksheetEntryExpression.Text" xml:space="preserve">
+    <value>WorksheetEntry Expression</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_WorksheetInfo.Help" xml:space="preserve">
+    <value>Enter the information to identify the Google worksheet to generate a feed from. You may have to generate an authentication token to connect to the service.</value>
+  </data>
+  <data name="SpreadsheetFeedInfo`1_WorksheetInfo.Text" xml:space="preserve">
+    <value>Worksheet Settings</value>
+  </data>
+  <data name="ClearItems.Command" xml:space="preserve">
+    <value>Clear</value>
+  </data>
+  <data name="DeleteEntry.Text" xml:space="preserve">
+    <value>Delete Entry</value>
+  </data>
+  <data name="ExpressionFilterInfo_RunSimulation.Text" xml:space="preserve">
+    <value>Run Simulation</value>
+  </data>
+  <data name="ExpressionFilterInfo_Simulation.Header" xml:space="preserve">
+    <value>Simulation</value>
+  </data>
+  <data name="ExpressionFilterInfo_Simulation.Help" xml:space="preserve">
+    <value>Check to bring a simulator to check your settings.</value>
+  </data>
+  <data name="ExpressionFilterInfo_Simulation.Text" xml:space="preserve">
+    <value>Enable Simulation</value>
+  </data>
+  <data name="ExpressionFilterInfo_SimulationData.Help" xml:space="preserve">
+    <value>Enter an input string to be processed and click the action button</value>
+  </data>
+  <data name="ExpressionFilterInfo_SimulationData.Text" xml:space="preserve">
+    <value>Input String</value>
+  </data>
+  <data name="ExpressionFilterInfo_SimulationResult.Help" xml:space="preserve">
+    <value>This displays the result of the input string processing after the action button is clicked</value>
+  </data>
+  <data name="ExpressionFilterInfo_SimulationResult.Text" xml:space="preserve">
+    <value>Simulation Result</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CaptureEntries.Help" xml:space="preserve">
+    <value>The action returns dictionaries parsed from the ListEntry objects. You can also choose to return the ListEntry objects as a distinct Variable. The collection format follows the same format(list or dictionary according to the following parameter)</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_CaptureEntries.Text" xml:space="preserve">
+    <value>Capture Entries</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_EntriesVarName.Help" xml:space="preserve">
+    <value>This is the name for the variable that will hold the collection of ListEntries. The following parameter determines if the variable is made of a list of ListEntry Object or a dictionary of string, ListEntry.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_EntriesVarName.Text" xml:space="preserve">
+    <value>Entries Variable Name</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_InputDictionaryExpression.Help" xml:space="preserve">
+    <value>Enter an expression that resolves to a dictionary of string, string, with values for each column with headers corresponding to the dictionary's keys.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_InputDictionaryExpression.Text" xml:space="preserve">
+    <value>Input Dictionary Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ListEntryExpression.Help" xml:space="preserve">
+    <value>Enter an expression that resolves to the list entry to update/delete.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ListEntryExpression.Text" xml:space="preserve">
+    <value>Target ListEntry Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ListMode.Help" xml:space="preserve">
+    <value>Those are the different actions you can perform on a spreadsheet in List mode.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ListMode.Text" xml:space="preserve">
+    <value>List Mode</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Detail.Header" xml:space="preserve">
+    <value>Detail</value>
+  </data>
+  <data name="HtmlScrapDetailRequestInfo_DetailUrlColumn.Help" xml:space="preserve">
+    <value>Enter the key that holds the detail url in the main results scraping xpath settings.</value>
+  </data>
+  <data name="HtmlScrapDetailRequestInfo_DetailUrlColumn.Text" xml:space="preserve">
+    <value>Detail Url Key</value>
+  </data>
+  <data name="HtmlRequestInfo_XPath.Help" xml:space="preserve">
+    <value>Scrap named fields from Xpath queries and sub-queries. The type of output depends on the Xpath settings.</value>
+  </data>
+  <data name="HtmlRequestInfo_XPath.Text" xml:space="preserve">
+    <value>Scraping Xpath</value>
+  </data>
+  <data name="HtmlPageScrapInfo_PageSize.Help" xml:space="preserve">
+    <value>Enter the number of items per page to shift the result index accordingly.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_PageSize.Text" xml:space="preserve">
+    <value>Page Size</value>
+  </data>
+  <data name="HtmlPageScrapInfo_QueryType.Help" xml:space="preserve">
+    <value>Paging can be supported through adding page number or result indexes</value>
+  </data>
+  <data name="HtmlPageScrapInfo_QueryType.Text" xml:space="preserve">
+    <value>Pager Query Type</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ScrapDetail.Help" xml:space="preserve">
+    <value>Check to browse result details from the harvested url</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ScrapDetail.Text" xml:space="preserve">
+    <value>Scrap Detail</value>
+  </data>
+  <data name="InsertEntry.Text" xml:space="preserve">
+    <value>Insert Entry</value>
+  </data>
+  <data name="LoopActionProvider`1_ConditionalPass.Help" xml:space="preserve">
+    <value>Check to evaluate a condition to be matched before each loop pass, or the item is skipped.</value>
+  </data>
+  <data name="LoopActionProvider`1_ConditionalPass.Text" xml:space="preserve">
+    <value>Conditional Pass</value>
+  </data>
+  <data name="LoopActionProvider`1_PassCondition.Help" xml:space="preserve">
+    <value>Define a condition to be matched before each loop pass</value>
+  </data>
+  <data name="LoopActionProvider`1_PassCondition.Text" xml:space="preserve">
+    <value>Pass Condition</value>
+  </data>
+  <data name="PageNb.Text" xml:space="preserve">
+    <value>Page Number</value>
+  </data>
+  <data name="ReadList.Text" xml:space="preserve">
+    <value>Read List</value>
+  </data>
+  <data name="ResultIndex.Text" xml:space="preserve">
+    <value>Result Index</value>
+  </data>
+  <data name="UpdateEntry.Text" xml:space="preserve">
+    <value>Update Entry</value>
+  </data>
+  <data name="DictionaryEntry_Key.Help" xml:space="preserve">
+    <value>Enter a new key value that is not already in use in the dictionary</value>
+  </data>
+  <data name="DictionaryEntry_Key.Text" xml:space="preserve">
+    <value>New Key</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ClientMode.Help" xml:space="preserve">
+    <value>There are 2 modes: a web client will perform an http request and return the html response; a web browser is heavier and will wait for the page to load and run scripts before returning the resulting Dom Html document. Use a web browser only if loading the page is required.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ClientMode.Text" xml:space="preserve">
+    <value>Client Mode</value>
+  </data>
+  <data name="HtmlRequestInfo_ClientMode.Help" xml:space="preserve">
+    <value>There are 2 modes: a web client will perform an http request and return the html response; a web browser is heavier and will wait for the page to load and run scripts before returning the resulting Dom Html document. Use a web browser only if loading the page is required.</value>
+  </data>
+  <data name="HtmlRequestInfo_ClientMode.Text" xml:space="preserve">
+    <value>Client Mode</value>
+  </data>
+  <data name="MTA.Text" xml:space="preserve">
+    <value>Multithreaded apartment</value>
+  </data>
+  <data name="STA.Text" xml:space="preserve">
+    <value>Single-threaded apartment</value>
+  </data>
+  <data name="TaskQueueInfo_ApartmentState.Help" xml:space="preserve">
+    <value>Select the apartment state queue threads should be started with. Single-threaded Apartment is required for using a web browser.</value>
+  </data>
+  <data name="TaskQueueInfo_ApartmentState.Text" xml:space="preserve">
+    <value>Apartment State</value>
+  </data>
+  <data name="Browser.Text" xml:space="preserve">
+    <value>Web Browser</value>
+  </data>
+  <data name="WebClient.Text" xml:space="preserve">
+    <value>Web Client</value>
+  </data>
+  <data name="WebRequestInfo`1_ClientMode.Help" xml:space="preserve">
+    <value>There are 2 modes: a web client will perform an http request and return the html response; a web browser is heavier and will wait for the page to load and run scripts before returning the resulting Dom Html document. Use a web browser only if loading the page is required. You can also enter an dynamic expression to define the mode from an existing variable.</value>
+  </data>
+  <data name="WebRequestInfo`1_ClientMode.Text" xml:space="preserve">
+    <value>Client Mode</value>
+  </data>
+  <data name="WebRequestInfo`1_WebBrowserVarName.Help" xml:space="preserve">
+    <value>Choose a name for shared web browser if applicable.</value>
+  </data>
+  <data name="WebRequestInfo`1_WebBrowserVarName.Text" xml:space="preserve">
+    <value>Web Browser Variable Name</value>
+  </data>
+  <data name="WebRequestInfo`1_WebClient.Header" xml:space="preserve">
+    <value>Web Client</value>
+  </data>
+  <data name="XPathInfo_BrowsableSimulationResult.Help" xml:space="preserve">
+    <value>This is the structured result from your XPath query and sub queries.</value>
+  </data>
+  <data name="XPathInfo_BrowsableSimulationResult.Text" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="XPathInfo_ResultAsXml.Help" xml:space="preserve">
+    <value>By default the result object is displayed as a structured subform, but you can also serialize the result to Xml for offline exploration.</value>
+  </data>
+  <data name="XPathInfo_ResultAsXml.Text" xml:space="preserve">
+    <value>Display Result as XML</value>
+  </data>
+  <data name="CloseClient.Text" xml:space="preserve">
+    <value>Close Client</value>
+  </data>
+  <data name="DoRequest.Text" xml:space="preserve">
+    <value>Send Request</value>
+  </data>
+  <data name="HtmlPageScrapInfo_FrameId.Help" xml:space="preserve">
+    <value>You can optionally provide the id of an html frame, the tags of which enclose the document to capture.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_FrameId.Text" xml:space="preserve">
+    <value>Frame Id</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ScrapDetails.Help" xml:space="preserve">
+    <value>You can add one or several detail scraping parameters, with additional fields selected from detail pages.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_ScrapDetails.Text" xml:space="preserve">
+    <value>Scrap Details</value>
+  </data>
+  <data name="HtmlRequestInfo_FrameId.Help" xml:space="preserve">
+    <value>You can optionally provide the id of an html frame, the tags of which enclose the document to capture.</value>
+  </data>
+  <data name="HtmlRequestInfo_FrameId.Text" xml:space="preserve">
+    <value>Frame Id</value>
+  </data>
+  <data name="LoopActionProvider`1_LastFlagName.Help" xml:space="preserve">
+    <value>This is the name of the variable that will be inserted to signal the last pass. It will be removed afeter the loop actions are finished.</value>
+  </data>
+  <data name="LoopActionProvider`1_LastFlagName.Text" xml:space="preserve">
+    <value>Last Item Flag Name</value>
+  </data>
+  <data name="LoopActionProvider`1_SignalLast.Help" xml:space="preserve">
+    <value>You can add a flag to the context variables to signal that this is the last pass of the loop. The collection should resolve to a type that implements ICollection to use that feature.</value>
+  </data>
+  <data name="LoopActionProvider`1_SignalLast.Text" xml:space="preserve">
+    <value>Signal Last item</value>
+  </data>
+  <data name="StringTransformInfo_RegexOptions.Help" xml:space="preserve">
+    <value>Define the regex options to be used upon creation by checking the corresponding checkboxes</value>
+  </data>
+  <data name="StringTransformInfo_RegexOptions.Text" xml:space="preserve">
+    <value>Regex Options</value>
+  </data>
+  <data name="WebRequestInfo`1_CaptureFrame.Help" xml:space="preserve">
+    <value>You can optionally provide the id of an html frame, the tags of which enclose the document to capture.</value>
+  </data>
+  <data name="WebRequestInfo`1_CaptureFrame.Text" xml:space="preserve">
+    <value>Capture Frame</value>
+  </data>
+  <data name="WebRequestInfo`1_Client.Header" xml:space="preserve">
+    <value>Client</value>
+  </data>
+  <data name="WebRequestInfo`1_FrameId.Help" xml:space="preserve">
+    <value>This is the id of an html frame, the tags of which enclose the document to capture.</value>
+  </data>
+  <data name="WebRequestInfo`1_FrameId.Text" xml:space="preserve">
+    <value>Frame Id</value>
+  </data>
+  <data name="WebRequestInfo`1_WebBrowser.Header" xml:space="preserve">
+    <value>Web Browser</value>
+  </data>
+  <data name="WebRequestInfo`1_WebMode.Help" xml:space="preserve">
+    <value>There are 2 modes, you can either perform a parametrized http request with a client, or close an existing client.</value>
+  </data>
+  <data name="WebRequestInfo`1_WebMode.Text" xml:space="preserve">
+    <value>Mode</value>
+  </data>
+  <data name="XPathInfo_EvaluateExpression.Help" xml:space="preserve">
+    <value>Check if your Xpath Expression is to be evaluated rather than selected (with functions)</value>
+  </data>
+  <data name="XPathInfo_EvaluateExpression.Text" xml:space="preserve">
+    <value>Evaluate Expression</value>
+  </data>
+  <data name="ActionProvider`1_WaitSynchronisationHandle.Help" xml:space="preserve">
+    <value>You can optionally wait for an existing handle from previous asynchronous actions to be signaled by all threads before the action is run. The action serves as a synchronization rendez-vous for concurrent previous actions. Enter the name of the variable the handle was created to.</value>
+  </data>
+  <data name="ActionProvider`1_WaitSynchronisationHandle.Text" xml:space="preserve">
+    <value>Wait Synchronisation handles</value>
+  </data>
+  <data name="AsyncEnabledActionProvider`1_SynchronisationHandle.Help" xml:space="preserve">
+    <value>You can optionally create a synchronisation handle as a variable added to the action context. Enter the variable name as a string or an expression of a string. Note that the synchronisation handle is a counter that can be incremented several times, and needs all registered asynchronous threads to signal their end before a blocking action is resumed.</value>
+  </data>
+  <data name="AsyncEnabledActionProvider`1_SynchronisationHandle.Text" xml:space="preserve">
+    <value>Add Synchronisation handle</value>
+  </data>
+  <data name="EnabledFeature`1_Enabled.Help" xml:space="preserve">
+    <value>Check to enable that feature and enter the corresponding parameters. </value>
+  </data>
+  <data name="EnabledFeature`1_Enabled.Text" xml:space="preserve">
+    <value>Enable</value>
+  </data>
+  <data name="EnabledFeature`1_Entity.Help" xml:space="preserve">
+    <value>This is the value for the corresponding property. you can enter a simple value or an expression that resolves to the target type.</value>
+  </data>
+  <data name="EnabledFeature`1_Entity.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ExcludedColumns.Help" xml:space="preserve">
+    <value>Enter columns to exclude from the comparison (e.g. Update Date column)</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_ExcludedColumns.Text" xml:space="preserve">
+    <value>Columns Ignored</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_UpdateIfChanged.Help" xml:space="preserve">
+    <value>Check to automatically compare the existing value before the update command is issued.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_UpdateIfChanged.Text" xml:space="preserve">
+    <value>Update if Changed</value>
+  </data>
+  <data name="KeeperAction`1_TimeLimit.Help" xml:space="preserve">
+    <value>You can introduce a time limit to your sequence of action. When the limit is reached, the remaning actions are skiped</value>
+  </data>
+  <data name="KeeperAction`1_TimeLimit.Text" xml:space="preserve">
+    <value>Time Limit</value>
+  </data>
+  <data name="ToCamel.Text" xml:space="preserve">
+    <value>To Camel Case</value>
+  </data>
+  <data name="ToPascal.Text" xml:space="preserve">
+    <value>To Pascal Case</value>
+  </data>
+  <data name="ToTitle.Text" xml:space="preserve">
+    <value>To Title Case</value>
+  </data>
+  <data name="UserBotInfo_Advanced.Header" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="WebRequestInfo`1_LogResponse.Help" xml:space="preserve">
+    <value>You can include the response of your http request as a additional parameter to the logged event.</value>
+  </data>
+  <data name="WebRequestInfo`1_LogResponse.Text" xml:space="preserve">
+    <value>Log Response</value>
+  </data>
+  <data name="BotInfoEvent_VariablesDump.Help" xml:space="preserve">
+    <value>Here are a set of selected variables dumped after the execution of your bot.</value>
+  </data>
+  <data name="BotInfoEvent_VariablesDump.Text" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="BotInfo`1_AddCustomSchedule.Help" xml:space="preserve">
+    <value>You can provide an additional restrictive schedule over the base schedule, though an expression, e.g. a user parameter.</value>
+  </data>
+  <data name="BotInfo`1_AddCustomSchedule.Text" xml:space="preserve">
+    <value>Add Custom Schedule</value>
+  </data>
+  <data name="BotInfo`1_CustomSchedule.Help" xml:space="preserve">
+    <value>Enter an expression that resolves to a schedule to account for.</value>
+  </data>
+  <data name="BotInfo`1_CustomSchedule.Text" xml:space="preserve">
+    <value>Custom Schedule Expression</value>
+  </data>
+  <data name="Command.Text" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="HtmlPageScrapInfo_CustomVars.Help" xml:space="preserve">
+    <value>Create custom typed variables to be used within the bot logic</value>
+  </data>
+  <data name="HtmlPageScrapInfo_CustomVars.Text" xml:space="preserve">
+    <value>Custom Variables</value>
+  </data>
+  <data name="RunPython`1_Python.Header" xml:space="preserve">
+    <value>Script</value>
+  </data>
+  <data name="RunPython`1_Python.Help" xml:space="preserve">
+    <value>Here you can configure your Python script or define a dynamic expression that resolves to the corresponding type. Your Python script can be a file or a string</value>
+  </data>
+  <data name="RunPython`1_Python.Text" xml:space="preserve">
+    <value>Python script</value>
+  </data>
+  <data name="ScheduleInfo_Config.Header" xml:space="preserve">
+    <value>Configuration</value>
+  </data>
+  <data name="ScheduleInfo_Test.Text" xml:space="preserve">
+    <value>Test</value>
+  </data>
+  <data name="ScheduleInfo_TestDate.Help" xml:space="preserve">
+    <value>Enter a date and time for a fictious previous schedule to test computing the new target schedule.</value>
+  </data>
+  <data name="ScheduleInfo_TestDate.Text" xml:space="preserve">
+    <value>Previous Schedule</value>
+  </data>
+  <data name="ScheduleInfo_TestResult.Help" xml:space="preserve">
+    <value>This is the next computed schedule from now, accounting for the previous schedule entered</value>
+  </data>
+  <data name="ScheduleInfo_TestResult.Text" xml:space="preserve">
+    <value>Computed Next Schedule</value>
+  </data>
+  <data name="ScheduleInfo_Tests.Header" xml:space="preserve">
+    <value>Tests</value>
+  </data>
+  <data name="Script.Text" xml:space="preserve">
+    <value>Script</value>
+  </data>
+  <data name="ScriptBase_Command.Help" xml:space="preserve">
+    <value>Enter a single command to be executed</value>
+  </data>
+  <data name="ScriptBase_Command.Required" xml:space="preserve">
+    <value>A non empty command is required</value>
+  </data>
+  <data name="ScriptBase_Command.Text" xml:space="preserve">
+    <value>Command</value>
+  </data>
+  <data name="ScriptBase_File.Help" xml:space="preserve">
+    <value>Select a file from a directory available to you</value>
+  </data>
+  <data name="ScriptBase_File.Text" xml:space="preserve">
+    <value>Script File</value>
+  </data>
+  <data name="ScriptBase_Mode.Help" xml:space="preserve">
+    <value>There are 3 modes to providing the input string, a online file, a script string or a command script.</value>
+  </data>
+  <data name="ScriptBase_Mode.Text" xml:space="preserve">
+    <value>Input Mode</value>
+  </data>
+  <data name="ScriptBase_Output.Help" xml:space="preserve">
+    <value>This is the output of the scripting engine.</value>
+  </data>
+  <data name="ScriptBase_Output.Text" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="ScriptBase_Refresh.Text" xml:space="preserve">
+    <value>Refresh</value>
+  </data>
+  <data name="ScriptBase_Run.Text" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="ScriptBase_Script.Help" xml:space="preserve">
+    <value>Copy / paste or type your script here. </value>
+  </data>
+  <data name="ScriptBase_Script.Required" xml:space="preserve">
+    <value>A non empty string is required</value>
+  </data>
+  <data name="ScriptBase_Script.Text" xml:space="preserve">
+    <value>Script</value>
+  </data>
+  <data name="ScriptFile.Text" xml:space="preserve">
+    <value>Script File</value>
+  </data>
+  <data name="SubPathContainer_ReadOnlySubEntity.Help" xml:space="preserve">
+    <value>Here is a subeditor generated for a child entity of the original main one. Use the extra dropdownlist and command button to broader back the scope.</value>
+  </data>
+  <data name="SubPathContainer_ReadOnlySubEntity.Text" xml:space="preserve">
+    <value>Current Node</value>
+  </data>
+  <data name="UserBotDeleted.Message" xml:space="preserve">
+    <value>Your User Bot was successfully deleted</value>
+  </data>
+  <data name="UserBotInfo_Run.Text" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="UserBotRunPlanned.Message" xml:space="preserve">
+    <value>Your Bot was planned for immediate execution. It will be run as soon as your schedule configuration allows it.</value>
+  </data>
+  <data name="WebBotHistory_TotalDurationString.Help" xml:space="preserve">
+    <value>This is the total time spent by your bot within successful runs.</value>
+  </data>
+  <data name="WebBotHistory_TotalDurationString.Text" xml:space="preserve">
+    <value>Total Duration</value>
+  </data>
+  <data name="ActionProviderSettings`1_Debug.Header" xml:space="preserve">
+    <value>Debug</value>
+  </data>
+  <data name="ActionProviderSettings`1_ExceptionActions.Help" xml:space="preserve">
+    <value>You can define a specific sequence of actions to be run when an exception is caught.</value>
+  </data>
+  <data name="ActionProviderSettings`1_ExceptionActions.Text" xml:space="preserve">
+    <value>Exceptions Triggered Actions</value>
+  </data>
+  <data name="ActionProviderSettings`1_Exceptions.Header" xml:space="preserve">
+    <value>Exceptions</value>
+  </data>
+  <data name="ActionProvider`1_Synchronization.Header" xml:space="preserve">
+    <value>Synchronization</value>
+  </data>
+  <data name="BotFarmInfo`1_RunningServers.Help" xml:space="preserve">
+    <value>In case of a web farm, you can optionnally enter a comma separated list of server names, on which the bot farm will exclusively be run. Each bot can then be individually associated with more specific server selections.</value>
+  </data>
+  <data name="BotFarmInfo`1_RunningServers.Text" xml:space="preserve">
+    <value>Running Servers</value>
+  </data>
+  <data name="BotInfoEvent_NextSchedule.Help" xml:space="preserve">
+    <value>This is the next run schedule as planned at the end of that event run.</value>
+  </data>
+  <data name="BotInfoEvent_NextSchedule.Text" xml:space="preserve">
+    <value>Planned Next Schedule</value>
+  </data>
+  <data name="Compiled.Text" xml:space="preserve">
+    <value>Compiled</value>
+  </data>
+  <data name="CultureInvariant.Text" xml:space="preserve">
+    <value>Culture Invariant</value>
+  </data>
+  <data name="ECMAScript.Text" xml:space="preserve">
+    <value>ECMA Script</value>
+  </data>
+  <data name="ExplicitCapture.Text" xml:space="preserve">
+    <value>Explicit Capture</value>
+  </data>
+  <data name="IgnorePatternWhitespace.Text" xml:space="preserve">
+    <value>Ignore Pattern Whitespace</value>
+  </data>
+  <data name="Multiline.Text" xml:space="preserve">
+    <value>Multiline</value>
+  </data>
+  <data name="OneTimeLocal.Text" xml:space="preserve">
+    <value>Single Use Client</value>
+  </data>
+  <data name="RightToLeft.Text" xml:space="preserve">
+    <value>Right To Left</value>
+  </data>
+  <data name="ScriptBase_ClearOutput.Text" xml:space="preserve">
+    <value>Clear Output</value>
+  </data>
+  <data name="ScriptBase_Parameters.Header" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="ScriptBase_Parameters.Help" xml:space="preserve">
+    <value>Since your script might make use of variables available at runtime during the execution of your agent, you can define test paramters to mock them here for testing purpose.</value>
+  </data>
+  <data name="ScriptBase_Parameters.Text" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="ScriptBase_Test.Header" xml:space="preserve">
+    <value>Tests</value>
+  </data>
+  <data name="Singleline.Text" xml:space="preserve">
+    <value>Single Line</value>
+  </data>
+  <data name="UserBotSettings`1_CachePlannedSchedule.Help" xml:space="preserve">
+    <value>In order to prevent round trips to DB, you can choose to keep the user bots planned schedule in cache. Choose here a value.</value>
+  </data>
+  <data name="UserBotSettings`1_CachePlannedSchedule.Text" xml:space="preserve">
+    <value>Cache Planned Schedule</value>
+  </data>
+  <data name="WebBotHistory_NextSchedule.Help" xml:space="preserve">
+    <value>This is the next run schedule as planned from the last run or set manually. </value>
+  </data>
+  <data name="WebBotHistory_NextSchedule.Text" xml:space="preserve">
+    <value>Next Schedule</value>
+  </data>
+  <data name="WebRequestInfo`1_MaxConcurrentConnexions.Help" xml:space="preserve">
+    <value>You can choose to overwrite the service end point max number of simultanous connexions (default 2). </value>
+  </data>
+  <data name="WebRequestInfo`1_MaxConcurrentConnexions.Text" xml:space="preserve">
+    <value>Define Max Nb of Connexions</value>
+  </data>
+  <data name="WebRequestInfo`1_SwallowWebExceptions.Help" xml:space="preserve">
+    <value>.Net Web client will throw exceptions when the request is not succesful. You may choose to swallow those exceptions as long as content can be read (e.g displaying a 404 pages while sending the 404 not found status.) </value>
+  </data>
+  <data name="WebRequestInfo`1_SwallowWebExceptions.Text" xml:space="preserve">
+    <value>Ignore Web Exceptions</value>
   </data>
 </root>

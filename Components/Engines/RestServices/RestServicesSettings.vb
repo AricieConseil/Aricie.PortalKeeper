@@ -2,8 +2,6 @@
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Configuration
-Imports DotNetNuke.Entities.Users
-Imports OpenRasta.IO
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
 

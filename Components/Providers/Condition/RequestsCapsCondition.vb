@@ -1,6 +1,5 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
@@ -17,7 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _RequestsCaps As New List(Of RequestsCapInfo)
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(ListEditControl), GetType(EditControl))> _
            <InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
            <CollectionEditor(False, False, True, True, 10)> _

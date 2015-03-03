@@ -1,5 +1,4 @@
 ﻿Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.Security
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Security.Cryptography
 

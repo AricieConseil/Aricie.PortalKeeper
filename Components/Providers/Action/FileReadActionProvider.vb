@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.Text
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 

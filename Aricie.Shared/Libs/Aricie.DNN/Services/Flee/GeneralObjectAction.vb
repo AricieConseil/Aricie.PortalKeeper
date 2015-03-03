@@ -6,8 +6,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
-Imports System.Web.UI.WebControls
-Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
 Imports System.Xml.Serialization
@@ -95,19 +93,6 @@ Namespace Services.Flee
         Public Property MemberIndex As Integer = 1
 
 
-        ''' <summary>
-        ''' Gets or sets the value of the property
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
-        <LabelMode(LabelMode.Top)> _
-        <ExtendedCategory("Action")> _
-        Public Property PropertyValue() As New FleeExpressionInfo(Of Object)
-
-
         <Browsable(False)> _
         Public ReadOnly Property HasParameters As Boolean
             Get
@@ -132,6 +117,22 @@ Namespace Services.Flee
         <ConditionalVisible("HasType", False, True)> _
         <ConditionalVisible("HasParameters", False, True)> _
         Public Overridable Property Parameters() As New Variables
+
+
+        ''' <summary>
+        ''' Gets or sets the value of the property
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ConditionalVisible("HasType", False, True)> _
+        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
+        <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Action")> _
+        Public Property PropertyValue() As New FleeExpressionInfo(Of Object)
+
+
+      
 
 
 

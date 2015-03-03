@@ -123,15 +123,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected WithEvents divUserBot As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
         '''<summary>
-        '''lblUserBot control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents lblUserBot As Global.System.Web.UI.WebControls.Label
-
-        '''<summary>
         '''ctUserBotEntities control.
         '''</summary>
         '''<remarks>

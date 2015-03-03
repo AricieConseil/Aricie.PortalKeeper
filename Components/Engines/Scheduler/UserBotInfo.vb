@@ -2,19 +2,20 @@
 Imports System.ComponentModel
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Entities.Profile
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
-Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Settings
 Imports DotNetNuke.Services.Localization
 Imports System.Linq
 Imports Aricie.DNN.Services
+Imports System.Globalization
+Imports System.Threading
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -42,23 +43,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Property NoOverride() As Boolean
-            Get
-                Return _NoOverride
-            End Get
-            Set(ByVal value As Boolean)
-                _NoOverride = value
-            End Set
-        End Property
-
-        Public Property AnonymousRanking() As Boolean
-            Get
-                Return _AnonymousRanking
-            End Get
-            Set(ByVal value As Boolean)
-                _AnonymousRanking = value
-            End Set
-        End Property
+      
 
         <Browsable(False)> _
         Public Property UserParameters() As SimpleList(Of UserVariableInfo)
@@ -226,7 +211,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <OnDemand(False)> _
         <ExtendedCategory("Configuration")> _
             <ConditionalVisible("HasEntities", False, False)> _
-            <CollectionEditor(NoAdd:=True, NoDeletion:=True, ShowAddItem:=False, Ordered:=False, Paged:=False, DisplayStyle:=CollectionDisplayStyle.Accordion, EnableExport:=True)> _
+            <CollectionEditor(NoAdd:=True, NoDeletion:=True, ShowAddItem:=False, Ordered:=False, Paged:=False, DisplayStyle:=CollectionDisplayStyle.Accordion, EnableExport:=False)> _
             <LabelMode(LabelMode.Top)> _
             <XmlIgnore()> _
         Public Property Entities() As SerializableList(Of UserParameterWrapper)
@@ -234,7 +219,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim toReturn As New SerializableList(Of UserParameterWrapper)
                 toReturn.AddRange(From userParameter In Me._UserParameters.Values _
                                   Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso Not userParameter.IsReadOnly _
-                                  Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities(userParameter.Name)))
+                                  Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities, userParameter.Name))
                 Return toReturn
             End Get
             Set(ByVal value As SerializableList(Of UserParameterWrapper))
@@ -252,7 +237,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim toReturn As New SerializableList(Of UserParameterWrapper)
                 toReturn.AddRange(From userParameter In Me._UserParameters.Values _
                                   Where userParameter.Mode = UserParameterMode.ReflectedEditor AndAlso userParameter.IsReadOnly _
-                                 Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities(userParameter.Name)))
+                                 Select New UserParameterWrapper(userParameter.Title, userParameter.Decription, Me._Entities, userParameter.Name))
                 Return toReturn
             End Get
         End Property
@@ -284,6 +269,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
+        <ExtendedCategory("Advanced")> _
+        Public Property NoOverride() As Boolean
+            Get
+                Return _NoOverride
+            End Get
+            Set(ByVal value As Boolean)
+                _NoOverride = value
+            End Set
+        End Property
+
+
+        <ExtendedCategory("Advanced")> _
+        Public Property AnonymousRanking() As Boolean
+            Get
+                Return _AnonymousRanking
+            End Get
+            Set(ByVal value As Boolean)
+                _AnonymousRanking = value
+            End Set
+        End Property
+
 
         <XmlIgnore()> _
         <OnDemand(False)> _
@@ -300,24 +306,77 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ConditionalVisible("IsAuthenticated", False, False)> _
+       <ActionButton(IconName.Rocket, IconOptions.Normal)> _
+        Public Sub Run(ByVal ape As AriciePropertyEditorControl)
+            ape.Page.Validate()
+            If ape.IsValid Then
+                Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
+                If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
+                    Me.BotHistory.NextSchedule = Now
+                    Me.Save(ape.ParentModule.UserInfo, userSettings)
+
+                    Dim key As String = "UserBot" & userSettings.Name
+                    ape.Page.Session.Remove(key)
+                    ape.DisplayMessage(Localization.GetString("UserBotRunPlanned.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                End If
+            End If
+        End Sub
+
+
+        <ConditionalVisible("IsAuthenticated", False, False)> _
         <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
         Public Sub Save(ByVal ape As AriciePropertyEditorControl)
             ape.Page.Validate()
             If ape.IsValid Then
                 Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
                 If PortalKeeperConfig.Instance.SchedulerFarm.AvailableUserBots.TryGetValue(SettingsController.GetModuleSettings(Of KeeperModuleSettings)(SettingsScope.ModuleSettings, ape.ParentModule.ModuleId).UserBotName, userSettings) Then
-                    'Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
-                    Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(ape.ParentModule.UserInfo, True)
-                    Me.RevertReadonlyParameters(readOnlyUserBot)
-                    'Me.UserBot = userBotEntity
-                    'Me.BindSettings()
-                    userSettings.SetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Me)
-                    Dim key As String = "UserBot" & userSettings.Name
-                    ape.Page.Session.Remove(key)
-                    ape.DisplayMessage(Localization.GetString("UserBotSaved.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                    Me.BotHistory.NextSchedule = Nothing
+                    If Me.Save(ape.ParentModule.UserInfo, userSettings) Then
+                        Dim key As String = "UserBot" & userSettings.Name
+                        ape.Page.Session.Remove(key)
+                        ape.DisplayMessage(Localization.GetString("UserBotSaved.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
+                    Else
+                        ape.DisplayMessage(Localization.GetString("UserBotNotSaved.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
+                    End If
                 End If
             End If
         End Sub
+
+        Public Function Save(objUser As UserInfo, userSettings As UserBotSettings(Of ScheduleEvent)) As Boolean
+            'Dim userBotEntity As UserBotInfo = DirectCast(Me.ctUserBotEntities.DataSource, UserBotInfo)
+            Dim readOnlyUserBot As UserBotInfo = userSettings.GetUserBotInfo(objUser, True)
+            Me.RevertReadonlyParameters(readOnlyUserBot)
+            'Me.UserBot = userBotEntity
+            'Me.BindSettings()
+            If userSettings.Bot.UseMutex Then
+                Dim owned As Boolean
+                Dim mutexId As String = BotInfo(Of ScheduleEvent).GetMutexId(objUser.UserID.ToString(CultureInfo.InvariantCulture))
+             Using objMutex As New Mutex(False, mutexId)
+                    Try
+                       If (Not userSettings.Bot.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objMutex.WaitOne(userSettings.Bot.SynchronisationTimeout.Value)) OrElse (userSettings.Bot.SynchronisationTimeout.Value = TimeSpan.Zero AndAlso objMutex.WaitOne()) Then
+                            owned = True
+                            userSettings.SetUserBotInfo(objUser, objUser.PortalID, Me)
+                            Return True
+                        End If
+                    Catch ex As AbandonedMutexException
+                        ExceptionHelper.LogException(ex)
+                        owned = True
+                    Catch ex As Exception
+                        ExceptionHelper.LogException(ex)
+                    Finally
+                        If owned Then
+                            objMutex.ReleaseMutex()
+                        End If
+                    End Try
+                End Using
+            Else
+                userSettings.SetUserBotInfo(objUser, objUser.PortalID, Me)
+                Return True
+            End If
+            Return False
+        End Function
+
+
 
         <ConditionalVisible("IsAuthenticated", False, False)> _
         <ActionButton(IconName.Undo, IconOptions.Normal)> _
@@ -338,8 +397,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 userSettings.SetUserBotInfo(ape.ParentModule.UserInfo, ape.ParentModule.PortalId, Nothing)
                 Dim key As String = "UserBot" & userSettings.Name
                 ape.Page.Session.Remove(key)
+                ape.DisplayMessage(Localization.GetString("UserBotDeleted.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
                 ape.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
-                'ape.DisplayMessage(Localization.GetString("UserBotDeleted.Message", ape.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
             End If
         End Sub
 

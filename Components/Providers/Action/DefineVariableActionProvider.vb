@@ -2,7 +2,6 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
-Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Magic, IconOptions.Normal)> _

@@ -78,10 +78,6 @@
       <HintPath>..\..\bin\CountryListBox.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="DomainName.Library, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\DomainName.Library.dll</HintPath>
-    </Reference>
     <Reference Include="DotNetNuke, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\dnn481\DotNetNuke.dll</HintPath>
@@ -201,7 +197,11 @@
     <Compile Include="Diagnostics\DebugEventArgs.vb" />
     <Compile Include="Diagnostics\DebugInfoScope.vb" />
     <Compile Include="Entities\APICredentials.vb" />
+    <Compile Include="Entities\DomainName\DomainName.vb" />
+    <Compile Include="Entities\DomainName\TLDRule.vb" />
+    <Compile Include="Entities\DomainName\TLDRulesCache.vb" />
     <Compile Include="Entities\FileUpload.vb" />
+    <Compile Include="Entities\HtmlPageScrapInfo.vb" />
     <Compile Include="Entities\ParsedUri.vb" />
     <Compile Include="Entities\PingUrlInfo.vb" />
     <Compile Include="Entities\LoginInfo.vb" />
@@ -384,6 +384,7 @@
     <Compile Include="Services\Filtering\StringEscaper.vb" />
     <Compile Include="Services\Tokens\TokenSourceInfo.vb" />
     <Compile Include="Diagnostics\AsyncLogger.vb" />
+    <Compile Include="Services\Workers\Countdown.vb" />
     <Compile Include="Services\Workers\SafeSemaphore.vb" />
     <Compile Include="Services\Workers\SimpleProcessStartInfo.vb" />
     <Compile Include="Services\Workers\TaskQueue.vb" />

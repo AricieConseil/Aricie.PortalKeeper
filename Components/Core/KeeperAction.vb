@@ -1,14 +1,17 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports Aricie.Collections
-Imports Aricie.DNN.Diagnostics
 Imports System.Globalization
 Imports Aricie.Services
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.ComponentModel
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    
+
 
     <ActionButton(IconName.Tasks, IconOptions.Normal)> _
     <Serializable()> _
@@ -16,15 +19,33 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits ProviderHost(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
         Implements IExpressionVarsProvider
 
-
-
+        Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             'Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
 
             Dim availableActions As ICollection(Of ActionProviderSettings(Of TEngineEvents)) = ProviderList(Of ActionProviderSettings(Of TEngineEvents)).GetAvailable(Me.Instances).Values
             Dim toReturn As Boolean = True
+            Dim endTime As DateTime
+            If TimeLimit.Enabled Then
+                Dim timeKey As String = "EndTime-" & actionContext.CurrentRule.Name
+
+                If Not actionContext.Items.ContainsKey(timeKey) Then
+
+                    Dim timePair = TimeLimit.Entity.GetValuePair(actionContext, actionContext)
+                    If TimeLimit.Entity.Mode = SimpleOrExpressionMode.Simple Then
+                        endTime = Now.Add(timePair.Value.Value)
+                    Else
+                        endTime = Now.Add(timePair.Key)
+                    End If
+                Else
+                    endTime = DirectCast(actionContext.Item(timeKey), DateTime)
+                End If
+            End If
             For Each element As ActionProviderSettings(Of TEngineEvents) In availableActions
+                If TimeLimit.Enabled AndAlso Now > endTime Then
+                    Exit For
+                End If
                 Dim prov As IActionProvider(Of TEngineEvents) = element.GetProvider
                 Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
                 If element.LifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
@@ -41,12 +62,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Throw New InvalidOperationException(String.Format("The action ""{0}"" cannot be executed at the current step {1}, its provider ""{2}"" covers only the steps {3} to {4}", _
                                                                               element.Name, actionContext.CurrentEventStep, prov.Config.Name, prov.Config.MinTEngineEvents, prov.Config.MaxTEngineEvents))
                         Else
-
-                            If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                                actionContext.LogStart(element.Name, False)
-                                'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
-                                'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                            If (Not element.DisableLog) Then
+                                actionContext.LogStart(element.Name, element.LoggingLevel, False)
                             End If
+
                             toReturn = toReturn And prov.Run(actionContext)
                         End If
                     Catch ex As Exception
@@ -54,10 +73,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             actionContext.Items(element.ExceptionVarName) = ex
                         End If
                         Dim xmlDump As String = ""
-                        If actionContext.CurrentEngine.ExceptionDumpAllVars OrElse actionContext.CurrentEngine.ExceptionDumpVars.Length > 0 Then
-                            Dim dumpVars As List(Of String) = ParseStringList(actionContext.CurrentEngine.ExceptionDumpVars)
-                            Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(actionContext.CurrentEngine.ExceptionDumpAllVars, dumpVars)
-                            xmlDump = ReflectionHelper.Serialize(dump).InnerXml
+                        If actionContext.CurrentEngine.ExceptionDumpSettings.EnableDump Then
+                            Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(actionContext.CurrentEngine.ExceptionDumpSettings)
+                            xmlDump = ReflectionHelper.Serialize(dump).Beautify(True)
                         End If
                         Dim message As String
                         If actionContext.CurrentRule IsNot Nothing Then
@@ -72,15 +90,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If Not element.DontLogExceptions Then
                             DotNetNuke.Services.Exceptions.LogException(newEx)
                         End If
+
+
+                        If element.ExceptionActions.Enabled Then
+                            toReturn = element.ExceptionActions.Entity.Run(actionContext)
+                        Else
+                            toReturn = False
+                        End If
                         If element.RethrowException Then
                             Throw newEx
                         End If
+
                     Finally
-                        If actionContext.LoggingLevel = LoggingLevel.Detailed Then
+                        If (Not element.DisableLog) AndAlso actionContext.LoggingLevel >= element.LoggingLevel Then
                             Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
                             'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
                             'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            actionContext.LogEnd(element.Name, False, False, actionResult)
+                            actionContext.LogEnd(element.Name, False, element.LoggingLevel, element.LogDumpSettings, actionResult)
                         End If
                     End Try
                     If (Not toReturn) AndAlso element.StopOnFailure Then

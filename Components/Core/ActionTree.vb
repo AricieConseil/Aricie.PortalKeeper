@@ -2,7 +2,6 @@
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 
 

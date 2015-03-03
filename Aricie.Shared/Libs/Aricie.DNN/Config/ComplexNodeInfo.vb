@@ -1,5 +1,4 @@
 Imports System.Xml.Serialization
-Imports System.Xml
 
 Namespace Configuration
 

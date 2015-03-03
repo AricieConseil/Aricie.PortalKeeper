@@ -1,4 +1,4 @@
-Imports System.Reflection
+
 Imports Aricie.DNN.ComponentModel
 
 Namespace UI.Attributes
@@ -12,7 +12,13 @@ Namespace UI.Attributes
 
 
 
+        Public Sub New(ByVal masterPropertyName As String)
+            Me.Value = New ConditionalVisibleInfo(masterPropertyName, False, True)
+        End Sub
 
+        Public Sub New(ByVal masterPropertyName As String, ByVal negate As Boolean)
+            Me.Value = New ConditionalVisibleInfo(masterPropertyName, negate, True)
+        End Sub
 
         Public Sub New(ByVal masterPropertyName As String, ByVal negate As Boolean, ByVal enforcePostBack As Boolean)
             Me.Value = New ConditionalVisibleInfo(masterPropertyName, negate, enforcePostBack)

@@ -2,22 +2,17 @@
 Imports System.Security.Cryptography
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
-Imports Aricie.DNN.UI.Controls
-Imports System.Web.Configuration
 Imports Aricie.Security.Cryptography
 Imports Aricie.Cryptography
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml
-Imports DotNetNuke.Entities.Users
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Text
-Imports System.IO
-Imports System.Security
 
 Namespace Security.Cryptography
 

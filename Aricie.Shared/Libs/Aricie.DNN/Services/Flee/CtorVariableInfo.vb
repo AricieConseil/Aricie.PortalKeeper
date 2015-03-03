@@ -1,7 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Flee

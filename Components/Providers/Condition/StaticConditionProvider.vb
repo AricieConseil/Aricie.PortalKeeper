@@ -1,4 +1,4 @@
-﻿Imports Aricie.ComponentModel
+﻿
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 
@@ -14,7 +14,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Value As Boolean = True
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property Value() As Boolean
             Get
                 Return _Value

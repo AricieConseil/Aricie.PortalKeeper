@@ -1,11 +1,7 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.Attributes
-Imports System.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Collections
-Imports DotNetNuke.UI.WebControls
-Imports System.Xml.Serialization
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls
 
@@ -86,18 +82,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Display")> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
-            LineCount(4), Width(500)> _
-        Public Property DumpVariables() As String
-            Get
-                Return _DumpVariables
-            End Get
-            Set(ByVal value As String)
-                _DumpVariables = value
-            End Set
-        End Property
+        '<ExtendedCategory("Display")> _
+        '    <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
+        '    LineCount(4), Width(500)> _
+        'Public Property DumpVariables() As String
+        '    Get
+        '        Return _DumpVariables
+        '    End Get
+        '    Set(ByVal value As String)
+        '        _DumpVariables = value
+        '    End Set
+        'End Property
 
+        <ExtendedCategory("Display")> _
+        Public Property DumpSettings As New DumpSettings()
 
 
 
@@ -115,20 +113,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <XmlIgnore()> _
-            <Browsable(False)> _
-        Public ReadOnly Property DumpVarList() As List(Of String)
-            Get
-                If _DumpVarList Is Nothing Then
-                    SyncLock _dumpVarLock
-                        If _DumpVarList Is Nothing Then
-                            _DumpVarList = ParseStringList(Me._DumpVariables)
-                        End If
-                    End SyncLock
-                End If
-                Return _DumpVarList
-            End Get
-        End Property
+        '<XmlIgnore()> _
+        '    <Browsable(False)> _
+        'Public ReadOnly Property DumpVarList() As List(Of String)
+        '    Get
+        '        If _DumpVarList Is Nothing Then
+        '            SyncLock _dumpVarLock
+        '                If _DumpVarList Is Nothing Then
+        '                    _DumpVarList = ParseStringList(Me._DumpVariables)
+        '                End If
+        '            End SyncLock
+        '        End If
+        '        Return _DumpVarList
+        '    End Get
+        'End Property
 
 
 
@@ -158,7 +156,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             context.SetVar("Value", objValue)
             If Not Me._UseFilter OrElse Me._ProbeFilterExpression.Evaluate(context, context) Then
                 Dim objHeader As String = Me._ProbeHeaderExpression.Evaluate(context, context)
-                Dim objDump As SerializableDictionary(Of String, Object) = context.GetDump(False, Me.DumpVarList)
+                Dim objDump As SerializableDictionary(Of String, Object) = context.GetDump(Me.DumpSettings)
                 toReturn = New ProbeInstance(objHeader, objValue, objDump)
                 If Not objUserBotInfo.AnonymousRanking Then
                     toReturn.User = user.DisplayName

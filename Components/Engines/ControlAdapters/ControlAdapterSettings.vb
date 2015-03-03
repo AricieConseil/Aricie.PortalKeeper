@@ -8,7 +8,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.UI.WebControls
-Imports System.IO
 Imports System.Linq
 Imports Aricie.DNN.Services.Flee
 
@@ -23,6 +22,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         SelectPath
         EnterPath
     End Enum
+
+    Public Delegate Sub ControlEventHandler()
 
     <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
     <Serializable()> _
@@ -117,10 +118,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+
         <ProvidersSelector("Text", "Value")> _
         <ConditionalVisible("AdapterMode", False, True, AdapterControlMode.DynamicAdapter)> _
         Public Property DynamicHandlers As New SerializableList(Of DynamicHandlerSettings)
 
+        <ConditionalVisible("AdapterMode", False, True, AdapterControlMode.DynamicAdapter)> _
+        Public Property GlobalParameters As New Variables()
 
         Private _DynamicHandlersDictionary As Dictionary(Of DynamicHandlerStep, DynamicHandlerSettings)
 
@@ -265,7 +269,35 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return Nothing
         End Function
 
-       
+
+        Public Sub ProcessStep(adapter As DynamicControlAdapter, parameters As IDictionary(Of String, Object), ByVal baseHandler As ControlEventHandler, ByVal newStep As DynamicHandlerStep)
+            'Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = PortalKeeperContext(Of SimpleEngineEvent).Instance(HttpContext.Current)
+
+            'If Not keeperContext.Disabled Then
+            Dim dynamicHandler As DynamicHandlerSettings = Nothing
+            If (Not DynamicHandlersDictionary.TryGetValue(newStep, dynamicHandler) OrElse dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.Before) AndAlso baseHandler IsNot Nothing Then
+                baseHandler.Invoke()
+            End If
+            If dynamicHandler IsNot Nothing AndAlso dynamicHandler.Enabled Then
+                If (Not adapter.GeneralAdaptedControl.Page.IsPostBack AndAlso Not dynamicHandler.NotOnFirstLoad) OrElse (adapter.GeneralAdaptedControl.Page.IsPostBack AndAlso Not dynamicHandler.NotOnPostBacks) Then
+                    parameters("Adapter") = adapter
+                    parameters("HandlerStep") = newStep
+                    Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = dynamicHandler.InitContext()
+                    keeperContext.InitParams(Me.GlobalParameters)
+                    keeperContext.InitParams(parameters)
+                    dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
+                End If
+                If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
+                    baseHandler.Invoke()
+                End If
+            End If
+            'End If
+        End Sub
+
+
+
+
+
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
             existingVars.Add("Adapter", GetResolvedAdapterControlType())
         End Sub

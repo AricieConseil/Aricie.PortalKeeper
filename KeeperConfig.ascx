@@ -1,10 +1,10 @@
-<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" CodeFile="KeeperConfig.ascx.vb" %>
+<%@ Control Language="VB" AutoEventWireup="false" Inherits="Aricie.DNN.Modules.PortalKeeper.UI.KeeperConfig" CodeBehind="KeeperConfig.ascx.vb" %>
 <%@ Register Assembly="DotNetNuke" Namespace="DotNetNuke.UI.WebControls" TagPrefix="dnn" %>
 <%@ Register Assembly="Aricie.DNN" Namespace="Aricie.DNN.UI.WebControls" TagPrefix="aricie" %>
 <div class="divPKP"> 
     <div id="divConfig" runat="server">
           <div class="divcenter" runat="server" visible="false" id="divDebug">
-                <dnn:CommandButton ID="cmdDebug" Visible="true" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
+                <dnn:CommandButton ID="cmdDebug" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
                     ResourceKey="cmdDebug" />
             </div>
         <div id="divHostConfig" runat="server">
@@ -33,14 +33,14 @@
             </div>
         </div>
         <div id="divUserBot" runat="server" visible="false" class="SubDiv">
-            <asp:Label ID="lblUserBot" CssClass="Head" runat="server" ResourceKey="lblUserBot" /><br />
-            <div class="SubDiv">
+            <%--<asp:Label ID="lblUserBot" CssClass="Head" runat="server" ResourceKey="lblUserBot" /><br />--%>
+            <%--<div class="SubDiv">--%>
                 <aricie:AriciePropertyEditorControl ID="ctUserBotEntities" EditControlStyle-CssClass="NormalTextBox"
                     EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                     GroupHeaderIncludeRule="True" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                     GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"
-                    LabelWidth="200px" DisableExports="True" />
-            </div>
+                    LabelWidth="200px" />
+            <%--</div>--%>
             <div class="CommandsButtons DNNAligncenter" id="divUserBotCmds" runat="server">
                 <div class="SubDiv" id="divActionCommands" visible="False" runat="server" />
                 <%-- <div class="SubDiv">

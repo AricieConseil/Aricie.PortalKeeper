@@ -1,14 +1,10 @@
 Imports System.Web.UI.WebControls
 Imports System.Web.UI
-Imports Aricie.DNN.UI.Controls
 Imports Aricie.DNN.Services
-Imports Aricie.Collections
 Imports DotNetNuke.Entities.Modules
-Imports Aricie.Web.UI
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.UserControls
 Imports System.Web.UI.HtmlControls
-Imports DotNetNuke.UI.Utilities
 Imports System.Globalization
 Imports Aricie.Services
 Imports System.Reflection

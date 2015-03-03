@@ -86,8 +86,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Catch ex As AbandonedMutexException
                         ExceptionHelper.LogException(ex)
                         owned = True
-                    Catch ex As Exception
-                        ExceptionHelper.LogException(ex)
                     Finally
                         If owned Then
                             objSemaphore.Release()
@@ -97,6 +95,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Else
                 Return RunUnlocked(actionContext, aSync)
             End If
+            Return False
         End Function
 
 
@@ -142,8 +141,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Catch ex As AbandonedMutexException
                             ExceptionHelper.LogException(ex)
                             owned = True
-                        Catch ex As Exception
-                            ExceptionHelper.LogException(ex)
                         Finally
                             If owned Then
                                 objSemaphore.Release()

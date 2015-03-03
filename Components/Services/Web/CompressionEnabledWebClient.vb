@@ -51,6 +51,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property LastAddress As Uri
 
+        Public Property MaxConcurrentConnexions As Integer = System.Net.ServicePointManager.DefaultConnectionLimit
 
 
         Protected Overrides Function GetWebRequest(ByVal address As Uri) As WebRequest
@@ -63,8 +64,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             toreturn.Timeout = CInt(Me._Timeout.TotalMilliseconds)
 
 
-            If TypeOf toreturn Is HttpWebRequest Then
-                Dim httpRequest As HttpWebRequest = DirectCast(toreturn, HttpWebRequest)
+            Dim httpRequest As HttpWebRequest = TryCast(toreturn, HttpWebRequest)
+            If (httpRequest IsNot Nothing) Then
+
+                If MaxConcurrentConnexions <> System.Net.ServicePointManager.DefaultConnectionLimit AndAlso MaxConcurrentConnexions <> httpRequest.ServicePoint.ConnectionLimit Then
+                    httpRequest.ServicePoint.ConnectionLimit = MaxConcurrentConnexions
+                End If
+
                 httpRequest.UserAgent = DefaultUserAgent
                 httpRequest.Accept = DefaultAccept
                 httpRequest.AutomaticDecompression = DecompressionMethods.Deflate Or DecompressionMethods.GZip
@@ -83,13 +89,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             End If
 
+           
+
             Return toreturn
         End Function
 
 
         Public Shared Function GetWebClient(ByVal method As String, ByVal timeout As TimeSpan) As CompressionEnabledWebClient
             Dim toReturn As New CompressionEnabledWebClient(method)
-            toReturn._Timeout = timeout
+            If timeout > TimeSpan.Zero AndAlso timeout < TimeSpan.FromSeconds(60) Then
+                toReturn._Timeout = timeout
+            End If
+
             toReturn.Headers("User-Agent") = DefaultUserAgent
 
             toReturn.Headers("Accept") = DefaultAccept

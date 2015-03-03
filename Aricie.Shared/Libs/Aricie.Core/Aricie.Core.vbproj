@@ -136,6 +136,9 @@
     <Compile Include="Components\ComponentModel\Filters\ListFilter.vb" />
     <Compile Include="Components\ComponentModel\Filters\SimpleFilter.vb" />
     <Compile Include="Components\Common.vb" />
+    <Compile Include="Components\ComponentModel\OutputEventArgs.vb" />
+    <Compile Include="Components\ComponentModel\OutputEventHandler.vb" />
+    <Compile Include="Components\ComponentModel\OutputRedirector.vb" />
     <Compile Include="Components\ComponentModel\RegexMapping.vb" />
     <Compile Include="Components\ComponentModel\Serializable.vb" />
     <Compile Include="Components\ComponentModel\UIConstants.vb" />

@@ -5,7 +5,6 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
-Imports System.Threading
 
 Namespace Services.Flee
     ''' <summary>

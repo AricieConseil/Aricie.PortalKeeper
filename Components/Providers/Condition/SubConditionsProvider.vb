@@ -16,7 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _KeeperCondition As New KeeperCondition(Of TEngineEvents)
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
         Public Property KeeperCondition() As KeeperCondition(Of TEngineEvents)

@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
@@ -31,14 +30,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _MatchUserIds As String = ""
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property MatchUnauthenticated As Boolean
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property MatchAllAuthenticated As Boolean
 
         <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property MatchSuperUsers() As Boolean
             Get
                 Return _MatchSuperUsers
@@ -49,7 +48,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(2)> _
             <Width(200)> _
@@ -63,7 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(2)> _
             <Width(200)> _

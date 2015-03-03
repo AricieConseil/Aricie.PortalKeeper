@@ -1,9 +1,6 @@
 ﻿
 Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
-Imports System.ComponentModel
-Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Flee
@@ -36,39 +33,50 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 ' check our evaluation range...
                 element.CheckIsCorrectStepRange(context)
 
-                If context.LoggingLevel = LoggingLevel.Detailed Then
-                    'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
-                    'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                    context.LogStart(String.Format("Eval {0}", element.Name), False)
-                End If
+                
                 If element.IsMandatory Then
+                    If context.LoggingLevel >= element.LoggingLevel Then
+                        'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
+                        'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        context.LogStart(String.Format("Eval {0}", element.Name), element.LoggingLevel, False)
+                    End If
                     If Not (element.GetProvider().Match(context) Xor element.Negate) Then
                         'If enableStopWatch Then
                         '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
                         '    Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End Eval - {0} ", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
                         '    PerformanceLogger.Instance.AddDebugInfo(objStep)
                         'End If
-                        If context.LoggingLevel = LoggingLevel.Detailed Then
+                        If context.LoggingLevel >= element.LoggingLevel Then
                             Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
-                            context.LogEnd(String.Format("Eval {0}", element.Name), False, False, conditionResult)
+                            context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
                         End If
                         toReturn = False
                         Exit For
                     Else
                         toReturn = True
                     End If
+                    If context.LoggingLevel >= element.LoggingLevel Then
+                        Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
+                        context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
+                    End If
                 ElseIf Not toReturn Then
+                    If context.LoggingLevel >= element.LoggingLevel Then
+                        'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("Eval {0} - Start", element.Name), WorkingPhase.InProgress, False, False, -1, context.FlowId)
+                        'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        context.LogStart(String.Format("Eval {0}", element.Name), element.LoggingLevel, False)
+                    End If
                     toReturn = element.GetProvider().Match(context) Xor element.Negate
+                    If context.LoggingLevel >= element.LoggingLevel Then
+                        Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
+                        context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
+                    End If
                 End If
                 'If enableStopWatch Then
                 '    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
                 '    Dim objStep As New StepInfo(Debug.PKPDebugType, "End Eval Condition: " & element.Name, WorkingPhase.InProgress, False, False, -1, context.FlowId, conditionResult)
                 '    PerformanceLogger.Instance.AddDebugInfo(objStep)
                 'End If
-                If context.LoggingLevel = LoggingLevel.Detailed Then
-                    Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
-                    context.LogEnd(String.Format("Eval {0}", element.Name), False, False, conditionResult)
-                End If
+               
             Next
             Return toReturn
         End Function

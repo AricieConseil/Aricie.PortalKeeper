@@ -1,6 +1,5 @@
 ﻿Imports System.Threading
 Imports Aricie.Services
-Imports DotNetNuke.Services.Exceptions
 
 Namespace Services.Workers
     ''' <summary>

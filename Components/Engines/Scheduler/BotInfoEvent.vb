@@ -1,11 +1,7 @@
 Imports System.ComponentModel
-Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Collections
-Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
-Imports Aricie.DNN.Services.Filtering
-Imports Aricie.Services
-Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -60,6 +56,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        Public Property NextSchedule As DateTime
+
 
         <Browsable(False)> _
         Public Property Duration() As TimeSpan
@@ -87,13 +85,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If Me.Duration = Constants.UnlimitedTimeSpan Then
                     Return "NA"
                 Else
-                    Return Me.Duration.Seconds.ToString & " s " & Me.Duration.Milliseconds & " ms "
+                    Return Common.FormatTimeSpan(Duration, True)
                 End If
             End Get
         End Property
 
+        'Public Property DumpAsText As Boolean
 
-        <Browsable(False)> _
+        '<ConditionalVisible("DumpAsText", True)> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.Accordion, NoAdd:=True, NoDeletion:=True, EnableExport:=True)>
         Public Property VariablesDump() As SerializableDictionary(Of String, Object)
             Get
                 Return _VariablesDump
@@ -103,16 +103,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Width(500)> _
-        <LineCount(50)> _
-        <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-        <XmlIgnore()> _
-        <LabelMode(LabelMode.Top)> _
-        Public ReadOnly Property PayLoad() As String
-            Get
-                Return ReflectionHelper.Serialize(_VariablesDump).Beautify()
-            End Get
-        End Property
+
+        '<Width(500)> _
+        '<LineCount(50)> _
+        '<Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+        '<LabelMode(LabelMode.Top)> _
+        '<XmlIgnore()> _
+        '<ConditionalVisible("DumpAsText")> _
+        'Public ReadOnly Property PayLoad() As CData
+        '    Get
+        '        Return New CData(ReflectionHelper.Serialize(_VariablesDump).Beautify())
+        '    End Get
+        'End Property
 
 #End Region
     End Class

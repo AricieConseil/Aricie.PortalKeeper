@@ -2,9 +2,7 @@
 Imports System.IO
 Imports DotNetNuke.Security.Membership
 Imports DotNetNuke.Services.FileSystem
-Imports OpenRasta.IO
 Imports OpenRasta.Web
-Imports OpenRasta.Security
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.Services
