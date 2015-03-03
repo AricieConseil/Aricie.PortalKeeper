@@ -1,7 +1,6 @@
 ﻿Imports Aricie.DNN.Security.Trial
 Imports DotNetNuke.Security
 Imports Aricie.DNN.UI.WebControls
-Imports Aricie.DNN.Services
 
 Namespace UI.Attributes
 

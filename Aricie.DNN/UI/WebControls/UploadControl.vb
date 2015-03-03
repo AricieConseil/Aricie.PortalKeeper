@@ -1,15 +1,12 @@
-﻿Imports Aricie.DNN.UI.Attributes
+﻿
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Common
-Imports DotNetNuke.UI
-Imports System.Collections.Specialized
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports System.Globalization
 Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.Common.Utilities
-Imports DotNetNuke.Services.Localization
 
 Namespace UI.WebControls
     Public Class UploadControl

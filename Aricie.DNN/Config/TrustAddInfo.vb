@@ -6,6 +6,7 @@ Namespace Configuration
     ''' Custom Error Add merge node
     ''' </summary>
     <XmlRoot("trust")> _
+    <XmlType("trust")> _
     <Serializable()> _
     Public Class TrustAddInfo
         Inherits AddInfo

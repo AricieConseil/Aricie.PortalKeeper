@@ -3,7 +3,6 @@ Imports System.Web.UI
 Imports System.Web.UI.WebControls
 Imports System.Web.UI.HtmlControls
 Imports System.Reflection
-Imports System.Runtime.CompilerServices
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
@@ -18,7 +17,6 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.Services.Flee
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -434,6 +432,7 @@ Namespace UI.WebControls
                 If Me._ExceptionsToProcess.Count = 0 AndAlso (ItemChanged OrElse Me.IsDirty) Then
                     'quelle utilité ?
                     'Jesse: nécessaire pour prendre en compte les modifications postérieures aux event handlers
+                    Me.ResetDatasourceType()
                     DataBind()
                 End If
 
@@ -710,7 +709,7 @@ Namespace UI.WebControls
             If Me.DataSource IsNot Nothing AndAlso Me.PropertyDepth = 0 Then
                 If Not String.IsNullOrEmpty(Me.SubEditorFullPath) Then
                     'If Me.Page.IsPostBack Then
-                    If Not Me.DataSource.GetType() Is GetType(SubPathContainer) Then
+                    If Me.DataSource.GetType() IsNot GetType(SubPathContainer) Then
                         Dim newContainerEntity As New SubPathContainer()
                         newContainerEntity.OriginalEntity = Me.DataSource
                         newContainerEntity.OriginalPath = SubEditorFullPath
@@ -721,7 +720,8 @@ Namespace UI.WebControls
                         '    newContainerEntity.Path = newContainerEntity.OriginalPath
                         'End If
                         Me.DataSource = newContainerEntity
-                        Me._FieldsDictionary = Nothing
+                        'Me._FieldsDictionary = Nothing
+                        Me.ResetDatasourceType()
                     Else
                         Dim newPath As String = DirectCast(Me.DataSource, SubPathContainer).Path
                         If newPath <> Me.SubEditorPath Then
@@ -757,13 +757,17 @@ Namespace UI.WebControls
             If Me.DataSource IsNot Nothing Then
                 toReturn.Add(GetCommandButtons(Me.DataSource.GetType()))
                 Dim subPathContainer = TryCast(Me.DataSource, SubPathContainer)
-                If (subPathContainer IsNot Nothing AndAlso Not subPathContainer.OriginalEntity Is subPathContainer.SubEntity) Then
+                If (subPathContainer IsNot Nothing AndAlso subPathContainer.OriginalEntity IsNot subPathContainer.SubEntity) Then
                     'toReturn = New List(Of ActionButtonInfo)(toReturn)
                     Dim dico = subPathContainer.GetParentEntities()
                     For Each objEntityPair As KeyValuePair(Of String, Object) In dico
-                        If objEntityPair.Value IsNot Nothing Then
-                            Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(objEntityPair.Value.GetType)
-                            Dim toAdd As IEnumerable(Of ActionButtonInfo) = From actionButton In additionalButtons Where String.IsNullOrEmpty(actionButton.ExtendedCategory.TabName) AndAlso String.IsNullOrEmpty(actionButton.ExtendedCategory.SectionName) AndAlso actionButton.ConditionalVisibles.Count = 0
+                        Dim subEntity As Object = objEntityPair.Value
+                        If subEntity IsNot Nothing Then
+                            Dim additionalButtons As List(Of ActionButtonInfo) = GetCommandButtons(subEntity.GetType)
+                            Dim toAdd As IEnumerable(Of ActionButtonInfo) = From tmpActionButton In additionalButtons _
+                                                                            Where String.IsNullOrEmpty(tmpActionButton.ExtendedCategory.TabName) _
+                                                                                AndAlso String.IsNullOrEmpty(tmpActionButton.ExtendedCategory.SectionName) _
+                                                                                AndAlso ComputeVisibility(subEntity, tmpActionButton.ConditionalVisibles, tmpActionButton.Method)
                             If toAdd.Count > 0 Then
                                 toReturn.Add(toAdd)
                             End If
@@ -950,14 +954,14 @@ Namespace UI.WebControls
                             _CurrentPath = String.Empty
                         End If
                     Else
-                        If Me.ParentAricieField.DataField <> "SubEntity" Then
+                        If Me.ParentAricieField.DataField <> "SubEntity" AndAlso Me.ParentAricieField.DataField <> "ReadOnlySubEntity" Then
                             _CurrentPath = Me.ParentAricieField.DataField
                         Else
                             _CurrentPath = String.Empty
                         End If
                     End If
                 Else
-                    If Me.ParentAricieField.DataField <> "SubEntity" Then
+                    If Me.ParentAricieField.DataField <> "SubEntity" AndAlso Me.ParentAricieField.DataField <> "ReadOnlySubEntity" Then
                         _CurrentPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
                     Else
                         _CurrentPath = parentPath
@@ -1427,32 +1431,39 @@ Namespace UI.WebControls
 
         End Function
 
-        Private Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo), objMember As MemberInfo) As Boolean
+        Private Overloads Function ComputeVisibility(conditionalVisibles As IList(Of ConditionalVisibleInfo), objMember As MemberInfo) As Boolean
+            Return ComputeVisibility(Me.DataSource, conditionalVisibles, objMember, Me)
+        End Function
+
+        Private Overloads Shared Function ComputeVisibility(objDataSource As Object, conditionalVisibles As IList(Of ConditionalVisibleInfo), objMember As MemberInfo, Optional pe As AriciePropertyEditorControl = Nothing) As Boolean
             Dim toReturn As Boolean = True
-            Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)
+            Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(objDataSource.GetType)
             Dim objPropInfo As PropertyInfo = Nothing
             For Each condVisibility As ConditionalVisibleInfo In conditionalVisibles
                 If props.TryGetValue(condVisibility.MasterPropertyName, objPropInfo) Then
                     Dim subVis As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(objPropInfo)
-                    If subVis.Count > 0 AndAlso objMember IsNot objPropInfo AndAlso Not Me.GetRowVisibility(objPropInfo) Then
+                    If subVis.Count > 0 AndAlso objMember IsNot objPropInfo _
+                        AndAlso ((pe IsNot Nothing AndAlso Not pe.GetRowVisibility(objPropInfo)) _
+                                 OrElse (pe Is Nothing AndAlso ComputeVisibility(objDataSource, subVis, objPropInfo))) Then
+                        'todo: figure out if correct
                         toReturn = False
                     Else
-                        Dim value As Object = objPropInfo.GetValue(Me.DataSource, Nothing)
+                        Dim value As Object = objPropInfo.GetValue(objDataSource, Nothing)
                         toReturn = toReturn AndAlso condVisibility.MatchValue(value)
                         If toReturn AndAlso condVisibility.SecondaryPropertyName <> "" Then
                             If props.TryGetValue(condVisibility.SecondaryPropertyName, objPropInfo) Then
-                                value = objPropInfo.GetValue(Me.DataSource, Nothing)
+                                value = objPropInfo.GetValue(objDataSource, Nothing)
                                 toReturn = toReturn AndAlso condVisibility.MatchSecondary(value)
                             End If
                         End If
                     End If
-                    If condVisibility.EnforceAutoPostBack Then
-                        If Not _PostBackFields.Contains(condVisibility.MasterPropertyName) Then
-                            _PostBackFields.Add(condVisibility.MasterPropertyName)
+                    If condVisibility.EnforceAutoPostBack AndAlso pe IsNot Nothing Then
+                        If Not pe._PostBackFields.Contains(condVisibility.MasterPropertyName) Then
+                            pe._PostBackFields.Add(condVisibility.MasterPropertyName)
                         End If
                         If condVisibility.SecondaryPropertyName <> "" Then
-                            If Not _PostBackFields.Contains(condVisibility.SecondaryPropertyName) Then
-                                _PostBackFields.Add(condVisibility.SecondaryPropertyName)
+                            If Not pe._PostBackFields.Contains(condVisibility.SecondaryPropertyName) Then
+                                pe._PostBackFields.Add(condVisibility.SecondaryPropertyName)
                             End If
                         End If
                     End If
@@ -1460,6 +1471,8 @@ Namespace UI.WebControls
             Next
             Return toReturn
         End Function
+
+
 
         Private Sub ParseQueryString()
             If Me.IsRoot Then

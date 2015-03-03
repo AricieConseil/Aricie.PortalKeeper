@@ -1,6 +1,5 @@
 Imports System.Xml
 Imports Aricie.Security.Cryptography
-Imports System.Web.Configuration
 Imports DotNetNuke.Common
 Imports DotNetNuke.Entities.Modules.Definitions
 Imports DotNetNuke.Entities.Modules

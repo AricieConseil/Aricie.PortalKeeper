@@ -1,6 +1,5 @@
 ﻿Imports Aricie.DNN.Services
 Imports System.IO
-Imports System.Web
 Imports Aricie.Services
 Imports System.Globalization
 Imports System.ComponentModel
@@ -16,7 +15,6 @@ Imports Aricie.DNN.Settings
 '-------------------------------------------------------------------------------
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
-Imports DotNetNuke.Services.Localization
 
 Namespace ComponentModel
 

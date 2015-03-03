@@ -1,4 +1,4 @@
-﻿Imports System.Xml.Linq
+﻿
 Imports Aricie.DNN.Settings
 
 Namespace Services.UpgradeSystem.Actions.Settings

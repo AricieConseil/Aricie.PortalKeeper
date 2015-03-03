@@ -1,5 +1,4 @@
 ﻿Imports Aricie.DNN.Services.Filtering
-Imports Aricie.DNN.UI.Attributes
 
 Namespace Services.Data
     <Serializable()> _

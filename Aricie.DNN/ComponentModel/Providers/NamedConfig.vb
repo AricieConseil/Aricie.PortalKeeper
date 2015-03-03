@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports Aricie.ComponentModel
 
@@ -36,12 +35,21 @@ Namespace ComponentModel
                 If Not Me.Enabled Then
                     strEnable = "Disabled"
                 End If
-                Return String.Format("{0} {2} {1}", Me.Name, strEnable, UIConstants.TITLE_SEPERATOR)
+                Dim details As String = GetFriendlyDetails()
+                If details.IsNullOrEmpty() Then
+                    Return String.Format("{0} {2} {1}", Me.Name, strEnable, UIConstants.TITLE_SEPERATOR)
+                Else
+                    Return String.Format("{1} {0} {2} {0} {3}", UIConstants.TITLE_SEPERATOR, Me.Name, strEnable, details)
+                End If
             End Get
         End Property
 
         Public Overridable Property Enabled() As Boolean = True Implements IEnabled.Enabled
 
+
+        Public Overridable Function GetFriendlyDetails() As String
+            Return ""
+        End Function
 
         Public Sub Disable()
             Me._Enabled = False

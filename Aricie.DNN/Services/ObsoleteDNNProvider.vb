@@ -123,7 +123,9 @@ Namespace Services
         End Function
 
 
-
+        Public Overridable Sub DeleteFile(objFile As DotNetNuke.Services.FileSystem.FileInfo)
+            NukeHelper.FileController.DeleteFile(objFile.PortalId, objFile.FileName, objFile.FolderId, True)
+        End Sub
 
 
 

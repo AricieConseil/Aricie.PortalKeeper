@@ -10,7 +10,6 @@
 ' $Log$
 
 
-Imports System.Web.UI
 
 
 <Assembly: System.Web.UI.WebResource("Aricie.DNN.next.gif", "image/gif")> 

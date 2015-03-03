@@ -2,7 +2,6 @@ Imports Aricie.DNN.UI
 Imports Aricie.Services
 Imports Aricie.DNN.Settings
 
-Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.Entities.Host
 Imports DotNetNuke.Entities.Modules
 Imports DotNetNuke.Entities.Profile
@@ -17,8 +16,6 @@ Imports System.Reflection
 Imports System.Text
 Imports System.Text.RegularExpressions
 Imports System.Web.UI
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Services.Filtering
 
 
 Namespace Services

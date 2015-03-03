@@ -1,8 +1,6 @@
 Imports Aricie.DNN.UI.Attributes
-Imports System.ComponentModel
 Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.UI.WebControls
-Imports Aricie.Web.UI
 Imports DotNetNuke.Entities.Modules
 Imports System.Web.UI
 Imports Aricie.DNN.Security.Trial
@@ -140,14 +138,9 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
-        Protected Function BuildEditor(ByVal editInfo As EditorInfo, ByVal container As Control) As EditControl
+      
 
-            Dim objEditControl As EditControl = AricieFieldEditorControl.CreateEditControl(editInfo, Me.ParentAricieField, container)
-            objEditControl.LocalResourceFile = Me.LocalResourceFile
-
-            Return objEditControl
-
-        End Function
+      
 
         Public Function BuildEditInfo(ByVal objValue As Object, editMode As PropertyEditorMode) As EditorInfo
             Return Me.BuildEditInfo(objValue, "", editMode)
@@ -189,8 +182,27 @@ Namespace UI.WebControls.EditControls
 
         End Function
 
+        Protected Function BuildEditor(ByVal editInfo As EditorInfo, ByVal container As Control) As EditControl
+
+            Dim objEditControl As EditControl = AricieFieldEditorControl.CreateEditControl(editInfo, Me.ParentAricieField, container)
+            objEditControl.ControlStyle.CopyFrom(Me.ParentField.ControlStyle)
+            objEditControl.LocalResourceFile = Me.LocalResourceFile
+            If (editInfo.ControlStyle IsNot Nothing) Then
+                objEditControl.ControlStyle.CopyFrom(editInfo.ControlStyle)
+            End If
+            AddHandler objEditControl.ValueChanged, AddressOf SubValueChanged
+
+            Return objEditControl
+
+        End Function
+
+
         Protected Sub OnItemChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
             RaiseEvent ItemChanged(sender, e)
+        End Sub
+
+        Private Sub SubValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
+            Me.OnDataChanged(New EventArgs())
         End Sub
 
 

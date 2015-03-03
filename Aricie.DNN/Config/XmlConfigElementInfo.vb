@@ -1,10 +1,7 @@
 ﻿Imports System.Xml
 Imports Aricie.DNN.Services
-Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
-Imports Aricie.Services
-Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Configuration

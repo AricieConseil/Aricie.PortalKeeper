@@ -1,5 +1,4 @@
 ﻿Imports Aricie.Services
-Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace UI.Attributes

@@ -1,15 +1,9 @@
 ﻿Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.ComponentModel
-Imports System.Web.Configuration
-Imports System.Security.Cryptography
 Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
 Imports System.Xml.Serialization
-Imports System.IO
-Imports System.Xml
-Imports System.Text
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.Services.FileSystem
@@ -116,6 +110,22 @@ Namespace Services.Files
 
         <ConditionalVisible("ChooseDnnFile", False, True)> _
         Public Property DnnFile As New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
+
+
+        <Browsable(False)> _
+        Public ReadOnly Property DNNFileInfo As DotNetNuke.Services.FileSystem.FileInfo
+            Get
+                Dim toReturn As DotNetNuke.Services.FileSystem.FileInfo = Nothing
+                If Me.ChooseDnnFile Then
+                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(NukeHelper.PortalId, Me.DnnFile.Url)
+                Else
+                    'todo
+                    Throw New NotImplementedException()
+                End If
+                Return toReturn
+            End Get
+        End Property
+
 
         <ConditionalVisible("ChooseDnnFile", True, True)> _
         Public Overrides Property PathMode As FilePathMode

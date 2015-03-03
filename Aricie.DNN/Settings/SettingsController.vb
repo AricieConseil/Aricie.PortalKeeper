@@ -1,21 +1,15 @@
 Imports Aricie.DNN.Services
 Imports System.Globalization
 Imports Aricie.DNN.Diagnostics
-Imports Aricie.DNN.ComponentModel
-Imports Aricie.ComponentModel
 Imports DotNetNuke.Entities.Users
 Imports Aricie.Services
 Imports DotNetNuke.Services.Personalization
 Imports System.Web
 Imports System.IO
 Imports System.Text
-Imports DotNetNuke.Services.Exceptions
 Imports DotNetNuke.Entities.Portals
-Imports DotNetNuke.Entities.Host
 Imports System.Reflection
 Imports DotNetNuke.Services.Log.EventLog
-Imports Aricie.DNN.Services.Files
-Imports DotNetNuke.Services.FileSystem
 
 
 Namespace Settings

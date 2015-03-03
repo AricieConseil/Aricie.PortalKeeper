@@ -1,6 +1,5 @@
 ﻿Imports System.Web.UI
 Imports System.Web.UI.WebControls
-Imports Aricie.DNN.Services
 
 Namespace UI.WebControls
     <ParseChildren(True)> _

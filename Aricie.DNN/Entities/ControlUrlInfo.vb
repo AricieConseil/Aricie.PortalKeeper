@@ -5,8 +5,8 @@ Imports Aricie.DNN.Services
 Imports System.Web
 Imports System.Web.Configuration
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.UI.WebControls
 Imports System.Collections.Specialized
+Imports DotNetNuke.Services.FileSystem
 
 Namespace Entities
 
@@ -117,8 +117,20 @@ Namespace Entities
             'End Set
         End Property
 
+        <Browsable(False)> _
+        Public ReadOnly Property FileInfo As DotNetNuke.Services.FileSystem.FileInfo
+            Get
+                Dim toReturn As FileInfo = Nothing
+                If Me.UrlType = DotNetNuke.Entities.Tabs.TabType.File Then
+                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(NukeHelper.PortalId, Me._Url)
+                End If
+                Return toReturn
+            End Get
+        End Property
 
-       Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
+
+
+        Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
             Get
                 Return _RedirectMode
             End Get

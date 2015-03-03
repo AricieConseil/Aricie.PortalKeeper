@@ -3,23 +3,14 @@ Imports Aricie.Services
 Imports System.Web
 Imports System.Web.UI
 Imports System.Text
-Imports System.Security.Cryptography
-Imports System.Threading
 Imports System.IO
-Imports System.Globalization
 Imports System.IO.Compression
 Imports System.Net
-Imports System.Web.Configuration
 Imports System.Xml
-Imports System.Security.Cryptography.X509Certificates
-Imports System.Security.Cryptography.Xml
-Imports Aricie.Cryptography
 Imports System.Linq
-Imports System.Security
-Imports System.Runtime.InteropServices
 Imports Aricie.Security.Cryptography
 Imports System.Runtime.CompilerServices
-Imports Aricie.Text
+Imports System.Text.RegularExpressions
 
 
 ''' <summary>
@@ -75,7 +66,7 @@ Public Module Common
 
     Public Function GetNextCyclicFlag(Of T As {IConvertible})(current As T, availableValues As T) As T
         Dim toReturn As T
-        Dim foundNext As Boolean = True
+        Dim foundNext As Boolean
         Dim foundBefore As Boolean = False
         Dim firstAvailable As T
         For Each flagOption As T In Common.GetEnumMembers(Of T)()
@@ -109,6 +100,8 @@ Public Module Common
         Return String.IsNullOrEmpty(value)
     End Function
 
+   
+
     Public Function StringToByteArray(hexInput As String) As Byte()
         Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
     End Function
@@ -119,7 +112,7 @@ Public Module Common
     End Function
 
 
-    
+
 
     <System.Runtime.CompilerServices.Extension> _
     Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
@@ -215,6 +208,49 @@ Public Module Common
     End Function
 
 
+    Public WordRegex As New Regex("\p{Lu}\p{Ll}+|\p{Lu}+(?!\p{Ll})|\p{Ll}+|\d+", RegexOptions.Compiled)
+    Public SplitRegex As New Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled)
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function ToPascalCase(input As String) As String
+        Return WordRegex.Replace(input, AddressOf EvaluatePascal)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function ToCamelCase(input As String) As String
+        Dim pascal As String = ToPascalCase(input)
+        Return WordRegex.Replace(pascal, AddressOf EvaluateFirstCamel, 1)
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function ToTitleCase(input As String) As String
+        Dim pascal As String = ToPascalCase(input)
+        Return SplitRegex.Replace(pascal, " $1")
+    End Function
+
+    Private Function EvaluateFirstCamel(match As Match) As String
+        Return match.Value.ToLower()
+    End Function
+
+    Private Function EvaluatePascal(match As Match) As String
+        Dim value As String = match.Value
+        Dim valueLength As Integer = value.Length
+
+        If valueLength = 1 Then
+            Return value.ToUpper()
+        Else
+            If valueLength <= 2 AndAlso IsWordUpper(value) Then
+                Return value
+            Else
+                Return value.Substring(0, 1).ToUpper() + value.Substring(1, valueLength - 1).ToLower()
+            End If
+        End If
+    End Function
+
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function IsWordUpper(word As String) As Boolean
+        Return word.All(Function(c) Not [Char].IsLower(c))
+    End Function
 
     <System.Runtime.CompilerServices.Extension> _
     Public Function Compress(ByVal source As String, ByVal method As CompressionMethod) As String
@@ -298,6 +334,18 @@ Public Module Common
         End While
         Return count
     End Function
+
+    Public Function RestrictedLineCount(value As String, minLines As Integer, maxLines As Integer) As Integer
+        Return Math.Max(minLines, Math.Min( _
+                        Math.Max(value.Length \ 50, _
+                        value.LinesCount()) _
+                        , maxLines))
+    End Function
+
+    Public Function GetHtmlLineBreaks(source As String) As String
+        Return source.Replace(vbCrLf, "<br/>").Replace(vbLf, "<br/>")
+    End Function
+
 
     Public Function ParseStringList(ByVal listAsString As String, Optional ByVal separator As Char = ","c) As List(Of String)
         Dim strArray As String() = listAsString.Trim.Trim(separator).Split(New String() {separator}, StringSplitOptions.RemoveEmptyEntries)
@@ -645,12 +693,14 @@ Public Module Common
 
 #Region " HTML methods "
 
+    <Extension()> _
     Public Function HtmlEncode(ByVal text As String) As String
 
         Return HttpUtility.HtmlEncode(text)
 
     End Function
 
+    <Extension()> _
     Public Function HtmlDecode(ByVal text As String) As String
 
         Return HttpUtility.HtmlDecode(text)

@@ -2,6 +2,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports System.Text.RegularExpressions
 
 Namespace Services.Filtering
 
@@ -70,6 +71,10 @@ Namespace Services.Filtering
          <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
             LineCount(2), Width(400)> _
         Public Property ReplaceValue() As String = String.Empty
+
+
+        <ConditionalVisible("FilterType", False, True, StringFilterType.RegexReplace)> _
+        Public Property RegexOptions As RegexOptions = System.Text.RegularExpressions.RegexOptions.Compiled Or System.Text.RegularExpressions.RegexOptions.CultureInvariant
 
         ''' <summary>
         ''' Equality

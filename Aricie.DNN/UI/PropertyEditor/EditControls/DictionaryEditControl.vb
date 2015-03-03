@@ -140,6 +140,13 @@ Namespace UI.WebControls.EditControls
             If TypeOf Me.ctlNewItemKeyEditControl Is CustomTextEditControl Then
                 DirectCast(Me.ctlNewItemKeyEditControl, CustomTextEditControl).Size = 50
             End If
+
+            Dim divKeyControl As New HtmlGenericControl("div")
+
+            Dim label As PropertyLabelControl = Me.ParentAricieField.BuildLtLabel(keyEditorInfo)
+            divKeyControl.Controls.Add(label)
+            divKeyControl.Controls.Add(Me.ctlNewItemKeyEditControl)
+
             Me.ctlNewItemValueEditControl = BuildEditor(valueEditorInfo, container)
 
 
@@ -148,7 +155,8 @@ Namespace UI.WebControls.EditControls
 
             Me.ctlNewItemValueEditControl.Visible = False
 
-            Dim table As HtmlContainerControl = InjectEditors(Me.ctlNewItemKeyEditControl, Me.ctlNewItemValueEditControl)
+            'Dim table As HtmlContainerControl = InjectEditors(Me.ctlNewItemKeyEditControl, Me.ctlNewItemValueEditControl)
+            Dim table As HtmlContainerControl = InjectEditors(divKeyControl, Me.ctlNewItemValueEditControl)
 
             container.Controls.Add(table)
 

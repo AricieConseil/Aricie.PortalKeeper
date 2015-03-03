@@ -1,7 +1,6 @@
 ﻿Imports System.Web
 Imports Aricie.Services
 Imports Aricie.Collections
-Imports System.Globalization
 Imports System.Xml.Serialization
 
 Namespace Services

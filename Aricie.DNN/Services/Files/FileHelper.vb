@@ -6,9 +6,6 @@ Imports DotNetNuke.Services.Log.EventLog
 Imports DotNetNuke.Services.FileSystem
 Imports System.Drawing
 Imports System.Globalization
-Imports Aricie.Services
-Imports System.Reflection
-Imports System.Web.Hosting
 
 Namespace Services
 

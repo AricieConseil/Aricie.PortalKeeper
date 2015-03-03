@@ -3,8 +3,6 @@ Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.UI.WebControls
-Imports System.Globalization
-Imports System.ComponentModel
 Imports Aricie.DNN.Security.Trial
 
 Namespace UI.WebControls.EditControls

@@ -11,6 +11,11 @@ Namespace Services
     ''' <remarks></remarks>
     Public Class PropertyExplorer
 
+        'todo:change this ugly fix
+        Public Shared Function ExpressionToTokens(expression As String) As String
+            Return expression.Replace("."c, ":"c).Replace("['", ":").Replace("[""", ":").Replace("["c, ":").Replace("']", "").Replace("""]", "").Replace("]"c, "")
+        End Function
+
         Public Const LocalizedKey As String = "Localized"
         Public Shared ArrayGetMethod As MethodInfo = GetType(Array).GetMethod("GetValue", New Type() {GetType(Integer)})
 
@@ -66,7 +71,7 @@ Namespace Services
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Property CurrentIndex() As Integer = 0
-           
+
         ''' <summary>
         ''' Gets or sets whether the property access is localized
         ''' </summary>
@@ -92,7 +97,8 @@ Namespace Services
         End Property
 
 
-        Private _CurrentMember As MemberInfo
+        'Private _CurrentMember As MemberInfo
+        Private _CurrentMemberStack As New List(Of MemberInfo)
 
         ''' <summary>
         ''' Gets the current member information
@@ -102,7 +108,10 @@ Namespace Services
         ''' <remarks></remarks>
         Public ReadOnly Property CurrentMember() As MemberInfo
             Get
-                Return _CurrentMember
+                If CurrentMemberStack.Count > 0 Then
+                    Return CurrentMemberStack(CurrentMemberStack.Count - 1)
+                End If
+                Return Nothing
             End Get
         End Property
 
@@ -121,6 +130,15 @@ Namespace Services
             End Get
         End Property
 
+        Public Property CurrentMemberStack As List(Of MemberInfo)
+            Get
+                Return _CurrentMemberStack
+            End Get
+            Set(value As List(Of MemberInfo))
+                _CurrentMemberStack = value
+            End Set
+        End Property
+
         ''' <summary>
         ''' Calculates deep property value
         ''' </summary>
@@ -130,16 +148,16 @@ Namespace Services
 
             Dim dpa As DeepObjectPropertyAccess = Nothing
             While Me.CurrentIndex < Me.Params.Count AndAlso Not Me.IsCompleted
-                Dim currentParam As String = Me.CurrentParam
+                'Dim currentParam As String = Me.CurrentParam
                 Me.GetPropertyValue()
                 If Me._CurrentValue IsNot Nothing Then
                     If Not String.IsNullOrEmpty(Me.TokenQueue) Then
 
                         'dealing with sub properties
-                        If Not deepAccess.PropertiesDeepAccess.TryGetValue(currentParam, dpa) Then
-                            dpa = deepAccess.GetDeepPropertyAccess(currentParam, Me)
+                        If Not deepAccess.PropertiesDeepAccess.TryGetValue(CurrentParam, dpa) Then
+                            dpa = deepAccess.GetDeepPropertyAccess(CurrentParam, Me)
                         End If
-                       
+
                         Me.GetDeepPropertyValue(dpa)
                     End If
                 End If
@@ -159,8 +177,9 @@ Namespace Services
                 Else
                     If Me.CurrentValue IsNot Nothing Then
                         Dim objType As Type = Me.CurrentValue.GetType
-                        _CurrentMember = ReflectionHelper.GetMember(objType, Me.CurrentParam)
-                        If Not _CurrentMember Is Nothing Then
+                        Dim objCurrentMember As MemberInfo = ReflectionHelper.GetMember(objType, Me.CurrentParam)
+                        If objCurrentMember IsNot Nothing Then
+
                             Me.CurrentIndex += 1
                         Else
 
@@ -169,22 +188,25 @@ Namespace Services
 
                                 Select Case tempMember.MemberType
                                     Case MemberTypes.Field, MemberTypes.Property, MemberTypes.Method
-                                        _CurrentMember = tempMember
+                                        objCurrentMember = tempMember
                                         Exit For
                                 End Select
                             Next
-                            If _CurrentMember Is Nothing And TypeOf Me.CurrentValue Is Array Then
-                                _CurrentMember = ArrayGetMethod
+                            If objCurrentMember Is Nothing AndAlso TypeOf Me.CurrentValue Is Array Then
+                                objCurrentMember = ArrayGetMethod
                             End If
                         End If
-                        If _CurrentMember IsNot Nothing Then
-                            If LevelAccess = TokenLevelAccess.PropertiesOnly AndAlso _CurrentMember.MemberType <> MemberTypes.Property Then
-                                Throw New ArgumentException(String.Format("Only properties allowed in token replace, {0} is not allowed", _CurrentMember.Name))
+                        If objCurrentMember IsNot Nothing Then
+
+                            Me.CurrentMemberStack.Add(objCurrentMember)
+
+                            If LevelAccess = TokenLevelAccess.PropertiesOnly AndAlso objCurrentMember.MemberType <> MemberTypes.Property Then
+                                Throw New ArgumentException(String.Format("Only properties allowed in token replace, {0} is not allowed", objCurrentMember.Name))
                             End If
 
-                            Select Case _CurrentMember.MemberType
+                            Select Case objCurrentMember.MemberType
                                 Case MemberTypes.Property
-                                    Dim propInfo As PropertyInfo = DirectCast(_CurrentMember, PropertyInfo)
+                                    Dim propInfo As PropertyInfo = DirectCast(objCurrentMember, PropertyInfo)
 
                                     Dim objIndexParameters() As ParameterInfo = propInfo.GetIndexParameters()
                                     Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
@@ -205,10 +227,10 @@ Namespace Services
                                         Throw New ApplicationException(message.ToString(), ex)
                                     End Try
                                 Case MemberTypes.Field
-                                    Dim fInfo As FieldInfo = DirectCast(_CurrentMember, FieldInfo)
+                                    Dim fInfo As FieldInfo = DirectCast(objCurrentMember, FieldInfo)
                                     Me._CurrentValue = fInfo.GetValue(Me.CurrentValue)
                                 Case MemberTypes.Method
-                                    Dim mInfo As MethodInfo = DirectCast(_CurrentMember, MethodInfo)
+                                    Dim mInfo As MethodInfo = DirectCast(objCurrentMember, MethodInfo)
                                     Dim objIndexParameters() As ParameterInfo = mInfo.GetParameters()
                                     Dim paramvalues As Object() = ReflectionHelper.BuildParameters(objIndexParameters, _
                                                             Me.Params.GetRange(Me.CurrentIndex, Me.Params.Count - Me.CurrentIndex))
@@ -218,7 +240,7 @@ Namespace Services
 
                                     Me._CurrentValue = mInfo.Invoke(Me.CurrentValue, paramvalues)
                                 Case Else
-                                    Throw New ArgumentException(String.Format("wrong member type in token replace, {0} is not allowed", _CurrentMember.Name))
+                                    Throw New ArgumentException(String.Format("wrong member type in token replace, {0} is not allowed", objCurrentMember.Name))
                             End Select
                         Else
                             Me.CurrentValue = Nothing

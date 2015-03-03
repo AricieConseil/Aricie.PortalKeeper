@@ -2,7 +2,6 @@ Imports Aricie.DNN.Services.Workers
 Imports Aricie.ComponentModel
 Imports Aricie.Services
 Imports Aricie.DNN.Settings
-Imports DotNetNuke.Services.Exceptions
 
 Namespace Diagnostics
     ''' <summary>

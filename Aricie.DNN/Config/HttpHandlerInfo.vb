@@ -3,7 +3,6 @@ Imports Aricie.Web
 Imports System.ComponentModel
 Imports System.Text.RegularExpressions
 Imports System.Xml.Serialization
-Imports Aricie.DNN.ComponentModel
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 

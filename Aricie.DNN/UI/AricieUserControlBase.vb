@@ -5,7 +5,6 @@ Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.Entities.Users
 Imports System.Globalization
 Imports System.Web.UI
-Imports Aricie.Web.UI
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Localization
 Imports System.Threading
