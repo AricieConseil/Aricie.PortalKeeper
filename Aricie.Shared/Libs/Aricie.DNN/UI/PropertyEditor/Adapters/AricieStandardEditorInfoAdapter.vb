@@ -4,9 +4,7 @@ Imports System.Reflection
 Imports Aricie.Services
 Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Users
-Imports System.Globalization
 Imports Aricie.DNN.UI.WebControls.EditorInfos
-Imports Aricie.DNN.Services
 
 Namespace UI.WebControls
 
@@ -23,6 +21,9 @@ Namespace UI.WebControls
 
         Private Shared _EditorClones As New Dictionary(Of String, EditorInfo)
 
+        Public Sub New(objProp As PropertyInfo)
+            Me._CurrentProperty = objProp
+        End Sub
 
         Public Sub New(ByVal dataSource As Object, ByVal fieldName As String)
             Me.New(dataSource, fieldName, Nothing)
@@ -59,33 +60,36 @@ Namespace UI.WebControls
 
 
         Public Function CreateEditControl() As EditorInfo Implements IEditorInfoAdapter.CreateEditControl
-            Dim currentType As Type = Me.DataSource.GetType
-            Dim toReturn As EditorInfo
-            Dim cachedEditor As EditorInfo = Nothing '= CacheHelper.GetGlobal(Of EditorInfo)(currentType.FullName, FieldName)
+            Dim currentType As Type
+            If Me.DataSource IsNot Nothing Then
+                currentType = Me.DataSource.GetType
+            Else
+                currentType = _CurrentProperty.DeclaringType
+            End If
+
+            Dim toReturn As EditorInfo = Nothing
+            'Dim cachedEditor As EditorInfo = Nothing '= CacheHelper.GetGlobal(Of EditorInfo)(currentType.FullName, FieldName)
             Dim key As String = currentType.Name & "."c & Me._CurrentProperty.Name
-            Dim value As Object = Me._CurrentProperty.GetValue(DataSource, Nothing)
+            Dim value As Object = Nothing
+            If Me.DataSource IsNot Nothing OrElse _CurrentProperty.GetGetMethod.IsStatic Then
+                value = Me._CurrentProperty.GetValue(DataSource, Nothing)
+            End If
             If value IsNot Nothing Then
                 key &= "."c & value.GetType.Name
             End If
 
             If Me._AdditionalAttributes IsNot Nothing Then
-                For Each attr As Attribute In Me._AdditionalAttributes
-                    key &= attr.ToString()
-                Next
+                key = Me._AdditionalAttributes.Cast(Of Attribute)().Aggregate(key, Function(current, attr) current & attr.ToString())
             End If
 
-
-
-
-            If Not _EditorClones.TryGetValue(key, cachedEditor) Then
+            If Not _EditorClones.TryGetValue(key, toReturn) Then
                 toReturn = GetEditorInfo()
                 SyncLock _EditorClones
                     _EditorClones(key) = toReturn
                 End SyncLock
                 'CacheHelper.SetGlobal(Of EditorInfo)(toReturn, currentType.FullName, FieldName)
-            Else
-                toReturn = GetCloneEditor(cachedEditor, value)
             End If
+            toReturn = GetCloneEditor(toReturn, value)
             Return toReturn
         End Function
 
@@ -95,7 +99,7 @@ Namespace UI.WebControls
                     Try
                         Dim eType As Type = e.Value.GetType
                         Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType
-                        If Not eType.Equals(propType) Then
+                        If Not (eType Is propType) Then
                             Dim objConverter As TypeConverter = TypeDescriptor.GetConverter(propType)
                             If objConverter.CanConvertFrom(eType) Then
                                 e.Value = objConverter.ConvertFrom(e.Value)
@@ -162,15 +166,23 @@ Namespace UI.WebControls
         ''' -----------------------------------------------------------------------------
         Private Function GetEditorInfo() As EditorInfo
 
-            Dim objType As Type = Me.DataSource.GetType
+            Dim objType As Type
+            If DataSource IsNot Nothing Then
+                objType = Me.DataSource.GetType
+            Else
+                objType = _CurrentProperty.DeclaringType
+            End If
 
             Dim editInfo As New AricieEditorInfo()
 
             'Get the Name of the property
             editInfo.Name = _CurrentProperty.Name()
 
-            'Get the value of the property
-            editInfo.Value = _CurrentProperty.GetValue(Me.DataSource, Nothing)
+            If Me.DataSource IsNot Nothing OrElse _CurrentProperty.GetGetMethod.IsStatic Then
+                'Get the value of the property
+                editInfo.Value = _CurrentProperty.GetValue(Me.DataSource, Nothing)
+            End If
+            
 
             'Get the type of the property
             editInfo.Type = _CurrentProperty.PropertyType().AssemblyQualifiedName

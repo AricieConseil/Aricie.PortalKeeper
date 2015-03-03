@@ -1,9 +1,7 @@
-Imports System.Web.UI.WebControls
-Imports System.Web.UI.Adapters
+
 Imports Aricie.DNN.UI.Controls
 Imports DotNetNuke.Services.Localization
 Imports Microsoft.VisualBasic.CompilerServices
-Imports DotNetNuke.Common
 Imports DotNetNuke.UI.UserControls
 Imports System.Web.UI
 Imports System.Collections.Specialized
@@ -11,10 +9,8 @@ Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Services.FileSystem
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Exceptions
-Imports DotNetNuke.UI.Utilities
 Imports Aricie.DNN.Entities
 Imports System.Globalization
-Imports DotNetNuke.Security
 
 Namespace UI.WebControls.EditControls
 

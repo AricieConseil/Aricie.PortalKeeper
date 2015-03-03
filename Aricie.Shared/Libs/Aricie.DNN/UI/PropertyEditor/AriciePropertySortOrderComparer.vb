@@ -1,5 +1,4 @@
 ﻿Imports System.Reflection
-Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 

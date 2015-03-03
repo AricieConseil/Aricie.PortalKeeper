@@ -40,7 +40,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Dim schedulerFarm As BotFarmInfo(Of ScheduleEvent) = PortalKeeperConfig.Instance.SchedulerFarm
             If schedulerFarm.Enabled Then
-                Dim limitTime As DateTime = Now.Add(TimeSpan.FromTicks((New TimeLapse(Me.ScheduleHistoryItem.TimeLapse, Me.ScheduleHistoryItem.TimeLapseMeasurement).ToTimeSpan.Ticks * 98) \ 100))
+                Dim limitTime As DateTime = PerformanceLogger.Now.Add(TimeSpan.FromTicks((New TimeLapse(Me.ScheduleHistoryItem.TimeLapse, Me.ScheduleHistoryItem.TimeLapseMeasurement).ToTimeSpan.Ticks * 98) \ 100))
                 Dim flowid As String = ""
                 If schedulerFarm.EnableLogs Then
                     flowid = Guid.NewGuid.ToString
@@ -58,11 +58,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                                     WorkingPhase.InProgress, False, False, -1, flowid)
                         PerformanceLogger.Instance.AddDebugInfo(objStep)
                     End If
-                    loopStartTime = Now
+                    loopStartTime = PerformanceLogger.Now
                     If loopStartTime >= nextSchedule Then
                         nextSchedule = loopStartTime.Add(schedulerFarm.Schedule.Value)
                         schedulerFarm.RunBots(ScheduleEventList, False, flowid)
-                        loopEndTime = Now
+                        loopEndTime = PerformanceLogger.Now
                         maxRunDuration = TimeSpan.FromTicks(Math.Max(maxRunDuration.Ticks, loopEndTime.Subtract(loopStartTime).Ticks))
 
                     Else
@@ -77,7 +77,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                                         WorkingPhase.InProgress, False, False, -1, flowid)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
-                        loopEndTime = Now
+                        loopEndTime = PerformanceLogger.Now
                     End If
 
                     If schedulerFarm.EnableLogs Then

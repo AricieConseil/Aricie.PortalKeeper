@@ -1,7 +1,6 @@
 Imports System.IO
 Imports System.Web
 Imports System.Text
-Imports Aricie.IO
 Imports Aricie.ComponentModel
 
 Namespace IO

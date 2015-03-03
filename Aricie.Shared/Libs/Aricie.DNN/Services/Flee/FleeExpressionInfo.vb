@@ -6,8 +6,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
 Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
-Imports DotNetNuke.Security
-Imports Aricie.Services
 Imports System.Xml.Serialization
 
 Namespace Services.Flee
@@ -46,7 +44,7 @@ Namespace Services.Flee
         End Property
 
         <Required(True)> _
-       <LineCount(4), Width(500)> _
+       <LineCount(5), Width(500)> _
        <ExtendedCategory("Expression")> _
         Public Overrides Property Expression As String
             Get

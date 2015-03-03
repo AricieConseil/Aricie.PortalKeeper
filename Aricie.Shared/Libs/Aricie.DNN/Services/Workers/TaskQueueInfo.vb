@@ -1,8 +1,5 @@
-Imports System.ComponentModel
+
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.ComponentModel
-Imports DotNetNuke.UI.WebControls
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Threading
 
 Namespace Services.Workers
@@ -80,6 +77,8 @@ Namespace Services.Workers
         <ExtendedCategory("AdvancedSettings")> _
         Public Property IdleTimeout As New STimeSpan(TimeSpan.FromMilliseconds(100))
 
+        <ExtendedCategory("AdvancedSettings")> _
+        Public Property ApartmentState As ApartmentState = ApartmentState.Unknown
 
         <ExtendedCategory("AdvancedSettings")> _
         Public Property ThreadPriority() As ThreadPriority = ThreadPriority.Lowest

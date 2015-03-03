@@ -78,6 +78,12 @@
         <file>
           <name>Google.GData.Spreadsheets.dll</name>
         </file>
+        <file>
+          <name>WatiN.Core.dll</name>
+        </file>
+        <file>
+          <name>Interop.SHDocVw.dll</name>
+        </file>
       </files>
     </folder>
   </folders>

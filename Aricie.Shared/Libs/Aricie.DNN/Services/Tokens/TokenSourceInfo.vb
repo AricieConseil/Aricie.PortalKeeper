@@ -5,7 +5,6 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.Services
-Imports DotNetNuke.Services.Exceptions
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Filtering

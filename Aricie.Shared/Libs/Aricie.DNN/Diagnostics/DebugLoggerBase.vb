@@ -2,7 +2,6 @@
 Imports DotNetNuke.Services.Log.EventLog
 Imports Aricie.DNN.Services
 Imports Aricie.Services
-Imports DotNetNuke.Services.Exceptions
 Imports System.Xml
 Imports System.Globalization
 
@@ -25,11 +24,11 @@ Namespace Diagnostics
 
         Private Shared Sub StartStopWatch()
             _StopWatch = New Stopwatch()
-            _StopWatchStartTime = Now
+            _StopWatchStartTime = DateTime.Now
             _StopWatch.Start()
         End Sub
 
-        Protected ReadOnly Property StopWatchStartTime() As DateTime
+        Protected Shared ReadOnly Property StopWatchStartTime() As DateTime
             Get
                 If _StopWatch Is Nothing Then
                     StartStopWatch()
@@ -38,7 +37,7 @@ Namespace Diagnostics
             End Get
         End Property
 
-        Protected ReadOnly Property StopWatch() As Stopwatch
+        Protected Shared ReadOnly Property StopWatch() As Stopwatch
             Get
                 If _StopWatch Is Nothing Then
                     StartStopWatch()
@@ -47,8 +46,14 @@ Namespace Diagnostics
             End Get
         End Property
 
+        Public Shared ReadOnly Property Now As DateTime
+            Get
+                Return StopWatchStartTime.Add(StopWatch.Elapsed)
+            End Get
+        End Property
+
         Public Function GetTimeStamp() As DateTime
-            Return Me.StopWatchStartTime.Add(Me.StopWatch.Elapsed)
+            Return StopWatchStartTime.Add(StopWatch.Elapsed)
         End Function
 
         Public Const glbDnnLogTypeKey As String = "DEBUG"

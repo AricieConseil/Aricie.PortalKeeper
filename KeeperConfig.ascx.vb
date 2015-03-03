@@ -1,8 +1,5 @@
 Imports System.Diagnostics
 Imports System.Collections.Generic
-Imports System.Reflection
-Imports System.Web.Compilation
-Imports Aricie.ComponentModel
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Services.Exceptions
@@ -17,14 +14,7 @@ Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.Diagnostics
-Imports Aricie.DNN.Services.Flee
-Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports System.Reflection.Emit
-Imports RedditSharp
 Imports Aricie.Web
-Imports Aricie.DNN.UI.WebControls
 
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
@@ -146,9 +136,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 AddHandler Me.KC.Debug, AddressOf Me.OnDebug
                 If Not Me.IsPostBack Then
                     AssertInstalled()
-#If DEBUG Then
-                    Me.divDebug.Visible = True
-#End If
+                    '#If DEBUG Then
+                    '                    Me.divDebug.Visible = True
+                    '#End If
                 End If
                 EnforceFreeVersion()
                 BindSettings()
@@ -160,7 +150,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub EnforceFreeVersion()
 
-            Dim tc As TrialController = TrialController.Instance(New TrialProvider())
+            Dim tc As Aricie.DNN.Security.Trial.TrialController = Aricie.DNN.Security.Trial.TrialController.Instance(New TrialProvider())
             Dim objTrialStatus As TrialStatusInfo = tc.LimitModule(Me, True)
             Me.KC.TrialStatus = objTrialStatus
             Me.KS.TrialStatus = objTrialStatus
@@ -382,10 +372,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 If objActionCommand.Name = commandName Then
                     Try
                         Dim resultContext As New PortalKeeperContext(Of ScheduleEvent)
-                        resultContext.Init(Me.UserBotSettings.Bot, Me.UserBot.GetParameterValues(Me.UserInfo))
+                        resultContext.Init(Me.UserBotSettings.Bot)
+                        resultContext.InitParams(Me.UserBot.GetParameterValues(Me.UserInfo))
                         resultContext.Init(objActionCommand)
                         objActionCommand.BatchRun(PortalKeeperSchedule.ScheduleEventList, resultContext)
-                        Dim resultVars As SerializableDictionary(Of String, Object) = resultContext.ComputeDynamicExpressions(objActionCommand.ComputedVars, True)
+
+                        'Dim resultVars As SerializableDictionary(Of String, Object) = resultContext.ComputeDynamicExpressions(objActionCommand.ComputedVars, True)
+
+                        Dim objDumpSettings As New DumpSettings()
+                        objDumpSettings.EnableDump = True
+                        objDumpSettings.DumpAllVars = False
+                        objDumpSettings.DumpVariables = objActionCommand.ComputedVars
+                        objDumpSettings.SkipNull = False
+                        Dim resultVars As SerializableDictionary(Of String, Object) = resultContext.GetDump(objDumpSettings)
+
                         If resultVars.Count > 0 Then
                             UserBot.ComputedEntities = resultVars
                         End If
@@ -460,7 +460,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 
 
-                HttpInternals.Instance.StopDirectoryCriticalMonitoring("App_LocalResources")
+                'HttpInternals.Instance.StopDirectoryCriticalMonitoring("App_LocalResources")
                 'message = HttpUtility.HtmlEncode(message)
 
 

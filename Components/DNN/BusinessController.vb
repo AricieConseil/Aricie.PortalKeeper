@@ -1,6 +1,5 @@
-Imports Aricie.DNN.Services
+
 Imports Aricie.Services
-Imports Aricie.DNN.Settings
 Imports DotNetNuke.Entities.Modules
 Imports System.Xml
 

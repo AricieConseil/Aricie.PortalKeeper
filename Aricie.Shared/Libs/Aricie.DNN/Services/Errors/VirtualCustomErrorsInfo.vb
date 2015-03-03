@@ -1,4 +1,4 @@
-﻿Imports System.ComponentModel
+﻿
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.UI.Attributes
@@ -6,7 +6,6 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.UI.Controls
 Imports Aricie.DNN.ComponentModel
-Imports System.Web
 Imports DotNetNuke.UI.Skins
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.UI.Skins.Controls

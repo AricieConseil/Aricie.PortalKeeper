@@ -1,10 +1,4 @@
-Imports System.Xml.Serialization
-Imports System.Runtime.Serialization
-Imports System.Xml.Schema
-Imports System.Xml
-Imports Aricie.Services
-Imports System.Runtime.InteropServices
-Imports System.Text
+
 
 
 Namespace Collections

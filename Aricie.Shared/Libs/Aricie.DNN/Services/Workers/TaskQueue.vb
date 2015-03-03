@@ -1,6 +1,5 @@
 ﻿Imports Aricie.ComponentModel
 Imports System.Threading
-Imports DotNetNuke.Services.Exceptions
 Imports Amib.Threading
 
 Namespace Services.Workers
@@ -60,6 +59,9 @@ Namespace Services.Workers
             smtpInfo.UseCallerCallContext = True
             smtpInfo.UseCallerHttpContext = True
             smtpInfo.PostExecuteWorkItemCallback = AddressOf PostExecuteWorkItemCallback
+            If Me._TaskInfo.ApartmentState <> ApartmentState.Unknown Then
+                smtpInfo.ApartmentState = Me._TaskInfo.ApartmentState
+            End If
             smtpInfo.ThreadPriority = Me._TaskInfo.ThreadPriority
             smtpInfo.IdleTimeout = CInt(Me._TaskInfo.IdleTimeout.Value.TotalMilliseconds)
             If Me._TaskInfo.EnablePerformanceCounters Then

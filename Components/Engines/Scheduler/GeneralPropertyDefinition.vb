@@ -1,10 +1,8 @@
 ﻿Imports System.Xml.Serialization
 Imports System.ComponentModel
-Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.Entities.Users
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Common.Utilities
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Globalization
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Common.Lists

@@ -3,7 +3,7 @@ Imports DotNetNuke.Services.Tokens
 Imports System.Globalization
 Imports DotNetNuke.Entities.Users
 Imports DotNetNuke.Services.Localization
-Imports DotNetNuke.Services.Exceptions
+Imports System.Reflection
 
 Namespace Services
 
@@ -84,6 +84,18 @@ Namespace Services
 
 #Region "Public methods"
 
+
+        Public Function GetMemberStack(ByVal expression As String) As List(Of MemberInfo)
+
+            Dim propExplorer As New PropertyExplorer(expression, Me._TokenSource, Me.LevelAccess)
+
+            propExplorer.GetDeepPropertyValue(Me)
+
+            Return propExplorer.CurrentMemberStack
+
+        End Function
+
+       
         Public Overloads Function GetValue(ByVal strPropertyName As String) As Object
 
             Return GetValue(strPropertyName, False)
@@ -104,6 +116,9 @@ Namespace Services
             Return propExplorer.CurrentValue
 
         End Function
+
+
+
 
 
         ''' <summary>

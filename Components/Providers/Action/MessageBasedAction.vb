@@ -1,10 +1,7 @@
 ﻿Imports Aricie.DNN.Services.Filtering
 Imports System.ComponentModel
-Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services
-Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 

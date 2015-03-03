@@ -1,11 +1,9 @@
-﻿Imports DotNetNuke.Services.Exceptions
-Imports OpenRasta.Pipeline.Contributors
+﻿
 Imports OpenRasta.DI
 Imports OpenRasta.Configuration.Fluent
 Imports OpenRasta.Diagnostics
 Imports OpenRasta.Hosting.AspNet
 Imports OpenRasta.Configuration
-Imports OpenRasta.Security
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper

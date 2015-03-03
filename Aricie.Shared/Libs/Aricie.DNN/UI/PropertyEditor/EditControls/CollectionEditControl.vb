@@ -44,6 +44,8 @@ Namespace UI.WebControls.EditControls
         Protected WithEvents addSelector As SelectorControl
 
         Protected WithEvents cmdAddButton As IconActionButton
+        Protected WithEvents cmdClearButton As IconActionButton
+
 
         Protected WithEvents ctImportFile As System.Web.UI.HtmlControls.HtmlInputFile
         'Public WithEvents txtExportPath As TextBox
@@ -309,7 +311,8 @@ Namespace UI.WebControls.EditControls
 
             If Not _DisplayStyle.HasValue Then
                 Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue, False)
-                If objetType IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
+                'If objetType IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
+                If objetType IsNot Nothing AndAlso (Not objetType.IsPrimitive) Then
                     Me._DisplayStyle = CollectionDisplayStyle.Accordion
                 Else
                     Me._DisplayStyle = CollectionDisplayStyle.List
@@ -393,8 +396,9 @@ Namespace UI.WebControls.EditControls
                     '    path = toEditor.SubEditorPath & "."c & path
                     'End If
                     toEditor.SubEditorFullPath = path
+                    toEditor.ItemChanged = True
                 End If
-                toEditor.ItemChanged = True
+
 
             End If
         End Sub
@@ -474,21 +478,6 @@ Namespace UI.WebControls.EditControls
                 If Me.Page.IsValid Then
                     Me.AddNewItem(Me.AddEntry)
 
-                    'If Me._AddNewEntry Then
-                    '    Me.ctlAddContainer.Controls.Clear()
-                    '    Me._AddEntry = Nothing
-                    'End If
-
-                    'If Me._PageSize > 0 Then
-                    '    Me.PageIndex = CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize))
-                    'End If
-
-                    ''Me.BindData()
-
-                    'If Me._AddNewEntry Then
-                    '    Me.CreateAddRow(Me.ctlAddContainer)
-                    'End If
-
                     addEvent.Value = Me.CollectionValue
                     addEvent.Changed = True
                     Me.OnValueChanged(addEvent)
@@ -500,6 +489,29 @@ Namespace UI.WebControls.EditControls
 
 
         End Sub
+
+        Private Sub ClearClick(ByVal sender As Object, ByVal e As EventArgs)
+            Try
+                Dim clearEvent As New PropertyEditorEventArgs(Me.Name)
+                clearEvent.OldValue = New ArrayList(Me.CollectionValue)
+                Page.Validate()
+                If Me.Page.IsValid Then
+
+                    For i As Integer = Me.CollectionValue.Count - 1 To 0 Step -1
+                        Me.DeleteItem(i)
+                    Next
+
+                    clearEvent.Value = Me.CollectionValue
+                    clearEvent.Changed = True
+                    Me.OnValueChanged(clearEvent)
+
+                End If
+            Catch ex As Exception
+                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+            End Try
+        End Sub
+
+
 
         Private Sub CopyClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
@@ -551,7 +563,7 @@ Namespace UI.WebControls.EditControls
                     End Using
                     ImportItems(importCollect)
                 Else
-                    DotNetNuke.UI.Skins.Skin.AddModuleMessage(Me.ParentModule, Localization.GetString("MissingFile.Message", Me.LocalResourceFile), ModuleMessage.ModuleMessageType.YellowWarning)
+                    Me.ParentAricieEditor.DisplayLocalizedMessage("MissingFile.Message", ModuleMessage.ModuleMessageType.YellowWarning)
                     '    Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(GetExportFileName(), False)
                     '    importCollect = DirectCast(Aricie.DNN.Settings.SettingsController.LoadFileSettings(path, Me.CollectionValue.GetType, False, False), ICollection)
                 End If
@@ -706,7 +718,12 @@ Namespace UI.WebControls.EditControls
         End Function
 
         Public Shared Function GetIndexPath(index As String) As String
-            Return String.Format("[{0}]", index)
+            If index.IsNumber Then
+                Return String.Format("[{0}]", index)
+            Else
+                Return String.Format("[""{0}""]", index)
+            End If
+
         End Function
 
 
@@ -723,9 +740,17 @@ Namespace UI.WebControls.EditControls
             If _CollectionSubPath.IsNullOrEmpty Then
                 Dim parentPath As String = GetParentPath(Me)
                 If parentPath.IsNullOrEmpty() Then
-                    _CollectionSubPath = ParentAricieField.DataField
+                    If ParentAricieField.Editor Is Me Then
+                        _CollectionSubPath = ParentAricieField.DataField
+                    Else
+                        _CollectionSubPath = ""
+                    End If
                 Else
-                    _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
+                    If ParentAricieField.Editor Is Me Then
+                        _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
+                    Else
+                        _CollectionSubPath = parentPath
+                    End If
                 End If
             End If
             Return _CollectionSubPath
@@ -823,7 +848,7 @@ Namespace UI.WebControls.EditControls
                 Integer.TryParse(advStringValue, cookieValue)
             End If
 
-            If cookieValue <> item.ItemIndex Then
+            If cookieValue <> item.ItemIndex AndAlso item.DataItem IsNot Nothing AndAlso (Not item.DataItem.GetType().IsPrimitive) Then
 
                 Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "navigate" & ClientAPI.COLUMN_DELIMITER & commandIndex))
                 _headers(item.ItemIndex) = headerLink
@@ -1012,20 +1037,30 @@ Namespace UI.WebControls.EditControls
                             End If
                         End If
 
+                        If Me._AddNewEntry OrElse TypeOf Me.CollectionValue Is IDictionary Then
+                            Me.ctlAddContainer = pnAdd
+                            Me.CreateAddRow(pnAdd)
+                        End If
+
                         cmdAddButton = New IconActionButton()
                         pnAdd.Controls.Add(cmdAddButton)
                         cmdAddButton.ActionItem.IconName = IconName.Magic
                         cmdAddButton.Text = "Add " & Name
                         cmdAddButton.ResourceKey = "AddNew.Command"
                         cmdAddButton.Visible = Not HideAddButton
-
-
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
-                        If Me._AddNewEntry OrElse TypeOf Me.CollectionValue Is IDictionary Then
-                            Me.ctlAddContainer = pnAdd
-                            Me.CreateAddRow(pnAdd)
-                        End If
+
+                        cmdClearButton = New IconActionButton()
+                        pnAdd.Controls.Add(cmdClearButton)
+                        cmdClearButton.ActionItem.IconName = IconName.TrashO
+                        cmdClearButton.Text = "Clear " & Name
+                        cmdClearButton.ResourceKey = "ClearItems.Command"
+                        cmdClearButton.Visible = Not HideAddButton
+                        AddHandler cmdClearButton.Click, AddressOf ClearClick
+
+
+                       
                     End If
 
 
@@ -1085,6 +1120,8 @@ Namespace UI.WebControls.EditControls
                 End If
             End If
         End Sub
+
+
 
 
         Private Property CopiedCollection As ICollection

@@ -8,6 +8,12 @@ Namespace UI.Attributes
             Me._lineCount = lineCount
         End Sub
 
+        Public Sub New(ByVal lineCount As Integer, objAutorResize As Boolean)
+            Me._lineCount = lineCount
+            Me.AutoResize = objAutorResize
+        End Sub
+
+        Public Property AutoResize As Boolean = True
 
         ' Properties
         Public ReadOnly Property LineCount() As Integer

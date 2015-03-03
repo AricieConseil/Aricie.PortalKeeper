@@ -5,7 +5,6 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
-Imports System.Xml.Serialization
 Imports System.Xml.XPath
 Imports Aricie.DNN.UI.WebControls
 
@@ -56,22 +55,35 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("Filter")> _
-        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TransformsList)> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+       <ConditionalVisible("FilterMode", False, True, StringFilterMode.TransformsList)> _
+        Public Property FilterSource() As New SimpleOrExpression(Of ExpressionFilterInfo)
+
+        'todo: remove obsolete property
+       <Browsable(False)> _
         Public Property Filter() As ExpressionFilterInfo
             Get
-                Return _Filter
+                Return FilterSource.Simple
             End Get
             Set(ByVal value As ExpressionFilterInfo)
-                _Filter = value
+                FilterSource.Simple = value
             End Set
         End Property
 
         <ExtendedCategory("Filter")> _
        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
-        Public Property XPath() As New XPathInfo()
-          
+        Public Property XPathSource As New SimpleOrExpression(Of XPathInfo)
+
+        'todo: remove obsolete property
+        <Browsable(False)> _
+        Public Property XPath() As XPathInfo
+            Get
+                Return XPathSource.Simple
+            End Get
+            Set(value As XPathInfo)
+                XPathSource.Simple = value
+            End Set
+        End Property
+
 
         <ExtendedCategory("Filter")> _
         <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
@@ -94,15 +106,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim input As String = Me._InputExpression.Evaluate(actionContext, actionContext)
             Select Case Me._FilterMode
                 Case StringFilterMode.Xpath
+                    Dim tempXpath As XPathInfo = XPathSource.GetValue(actionContext, actionContext)
                     If Not String.IsNullOrEmpty(XPathNavigableVarName) Then
                         Dim navigable As IXPathNavigable = DirectCast(actionContext.GetVar(XPathNavigableVarName), IXPathNavigable)
                         If navigable Is Nothing OrElse navigable.CreateNavigator.InnerXml <> input Then
-                            navigable = _XPath.GetNavigable(input)
+                            navigable = tempXpath.GetNavigable(input)
                             actionContext.SetVar(XPathNavigableVarName, navigable)
                         End If
-                        Return Me._XPath.DoSelect(navigable)
+                        Return tempXpath.DoSelect(navigable)
                     End If
-                    Return (Me._XPath.DoSelect(input))
+                    Return (tempXpath.DoSelect(input))
                 Case StringFilterMode.TokenReplace
                     Dim atr As AdvancedTokenReplace = actionContext.GetAdvancedTokenReplace()
                     If UseAdditionalTokens Then
@@ -120,7 +133,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case StringFilterMode.TransformsList
                     Return GetType(String)
                 Case StringFilterMode.Xpath
-                    Return Me._XPath.GetOutputType()
+                    Return Me.XPathSource.Simple.GetOutputType()
                 Case StringFilterMode.TokenReplace
                     Return GetType(String)
             End Select

@@ -1,8 +1,6 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
-Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
-Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 
@@ -34,7 +32,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property RequestSource() As RequestSource
             Get
                 Return _RequestSource
@@ -45,7 +43,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
             <InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))> _
             <CollectionEditor(False, False, True, True, 10)> _
         Public Property ValueList() As List(Of String)
@@ -57,7 +55,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(ListEditControl), GetType(EditControl)), _
             InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))> _
             <CollectionEditor(False, False, True, True, 10)> _

@@ -1,11 +1,9 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.ComponentModel
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.Services
 
@@ -28,7 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private objBackTrackLock As New Object
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
            <LabelMode(LabelMode.Top)> _
         Public Property DiscriminationSource() As RequestSource
@@ -40,13 +38,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _
         Public Property LockDuration() As STimeSpan = New STimeSpan(TimeSpan.FromMinutes(60))
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Condition")> _
         Public Property NewConnectionsDontMatch() As Boolean = False
 
         Private Shared Property UserLocks() As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))

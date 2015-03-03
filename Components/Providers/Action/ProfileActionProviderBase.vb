@@ -5,7 +5,6 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports DotNetNuke.Entities.Profile
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.User, IconOptions.Normal)> _

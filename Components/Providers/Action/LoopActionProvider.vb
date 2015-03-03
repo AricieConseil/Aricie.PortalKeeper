@@ -1,7 +1,6 @@
-﻿Imports Aricie.DNN.Services
+﻿
 Imports Aricie.DNN.Services.Flee
 Imports System.ComponentModel
-Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
@@ -20,77 +19,50 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private _CurrentItemParam As String = "CurrentLoopItem"
 
         'Private _WaitTime As New STimeSpan(TimeSpan.FromSeconds(1))
 
 
-        Private _CounterStart As New SimpleExpression(Of Integer)("0")
-        Private _CounterUpdate As New SimpleExpression(Of Integer)("CurrentLoopItem + 1")
-        Private _CounterEval As New SimpleExpression(Of Boolean)("CurrentLoopItem < 10")
-
         <ExtendedCategory("LoopAction")> _
            <Required(True)> _
-        Public Property CurrentItemParam() As String
-            Get
-                Return _CurrentItemParam
-            End Get
-            Set(ByVal value As String)
-                _CurrentItemParam = value
-            End Set
-        End Property
-        
+        Public Property CurrentItemParam() As String = "CurrentLoopItem"
 
         <ExtendedCategory("LoopAction")>
         Public Property UseCounter As Boolean
 
+        'todo: remove that obsolete property
+        <Browsable(False)> _
+        Public Property MaxNbIterations As Integer
+            Get
+                Return MaxIterations.Simple
+            End Get
+            Set(value As Integer)
+                MaxIterations.Simple = value
+            End Set
+        End Property
+
         <ExtendedCategory("LoopAction")>
-        Public Property MaxNbIterations As Integer = 0
-
-
-        <ExtendedCategory("LoopAction")> _
-        <LabelMode(LabelMode.Top)> _
-        <ConditionalVisible("UseCounter", False, True)> _
-        Public Property CounterStart() As SimpleExpression(Of Integer)
-            Get
-                Return _CounterStart
-            End Get
-            Set(ByVal value As SimpleExpression(Of Integer))
-                _CounterStart = value
-            End Set
-        End Property
+        Public Property MaxIterations As New SimpleOrExpression(Of Integer)(0)
 
         <ExtendedCategory("LoopAction")> _
         <LabelMode(LabelMode.Top)> _
         <ConditionalVisible("UseCounter", False, True)> _
-        Public Property CounterUpdate() As SimpleExpression(Of Integer)
-            Get
-                Return _CounterUpdate
-            End Get
-            Set(ByVal value As SimpleExpression(Of Integer))
-                _CounterUpdate = value
-            End Set
-        End Property
+        Public Property CounterStart() As New SimpleExpression(Of Integer)("0")
+          
 
         <ExtendedCategory("LoopAction")> _
         <LabelMode(LabelMode.Top)> _
         <ConditionalVisible("UseCounter", False, True)> _
-        Public Property CounterEval() As SimpleExpression(Of Boolean)
-            Get
-                Return _CounterEval
-            End Get
-            Set(ByVal value As SimpleExpression(Of Boolean))
-                _CounterEval = value
-            End Set
-        End Property
+        Public Property CounterUpdate() As New SimpleExpression(Of Integer)("CurrentLoopItem + 1")
 
-      
+        <ExtendedCategory("LoopAction")> _
+        <LabelMode(LabelMode.Top)> _
+        <ConditionalVisible("UseCounter", False, True)> _
+        Public Property CounterEval() As New SimpleExpression(Of Boolean)("CurrentLoopItem < 10")
 
-
-       
-
-
-       
+        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", False, True)> _
+        Public Property CounterEvalAfter() As Boolean
 
         <ExtendedCategory("LoopAction")> _
             <ConditionalVisible("UseCounter", True, True)> _
@@ -117,22 +89,39 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property CounterStartsAt1 As Boolean
 
         <ExtendedCategory("LoopAction")> _
-           <ConditionalVisible("UseCounter", True, True)> _
+        <ConditionalVisible("UseCounter", True, True)> _
         Public Property EnumerableExpression() As New FleeExpressionInfo(Of IEnumerable)
-          
 
-        <XmlIgnore()> _
+        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)> _
+        Public Property SignalLast As Boolean
+
+        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)> _
+        <ConditionalVisible("SignalLast", False, True)> _
+        <Required(True)> _
+        Public Property LastFlagName As String = "IsLast"
+
+        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)> _
+        Public Property ConditionalPass As Boolean
+
+        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)> _
+        <ConditionalVisible("ConditionalPass", False, True)> _
+        Public Property PassCondition As New KeeperCondition(Of TEngineEvents)
+
+
         <ConditionalVisible("DisablePerformanceLogger", True, True)> _
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(1001)> _
         Public Overridable Property AgregateLogSteps() As Boolean
 
 
-        <XmlIgnore()> _
         <ConditionalVisible("DisablePerformanceLogger", True, True)> _
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(1001)> _
-        Public Property LogParticularSteps() As Boolean = True
+        Public Property LogParticularSteps() As Boolean
 
         <ConditionalVisible("LogParticularSteps", False, True)> _
         <ExtendedCategory("TechnicalSettings")> _
@@ -186,14 +175,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
 
 
-            Dim maxIterations As Integer = Integer.MaxValue
-            If Me.MaxNbIterations > 0 Then
-                maxIterations = MaxNbIterations
+            Dim intMaxNbIterations As Integer = Me.MaxIterations.GetValue(actionContext, actionContext)
+            If intMaxNbIterations <= 0 Then
+                intMaxNbIterations = Integer.MaxValue
             End If
+
             Dim counter As Integer = 0
             If Me.UseCounter Then
                 actionContext.SetVar(Me._CurrentItemParam, Me._CounterStart.Evaluate(actionContext, actionContext))
-                While Me._CounterEval.Evaluate(actionContext, actionContext) AndAlso counter < maxIterations
+                While counter < intMaxNbIterations AndAlso ((CounterEvalAfter AndAlso counter = 0) OrElse Me._CounterEval.Evaluate(actionContext, actionContext))
                     If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
                         PerformanceLogger.Instance().DisableLog(actionContext.FlowId)
                     End If
@@ -206,6 +196,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End While
             Else
                 Dim objEnumerable As IEnumerable = Me._EnumerableExpression.Evaluate(actionContext, actionContext)
+                Dim nbItems As Integer = 0
+                If SignalLast Then
+                    Dim objCollec As ICollection = TryCast(objEnumerable, ICollection)
+                    If objCollec IsNot Nothing Then
+                        nbItems = objCollec.Count
+                    End If
+                End If
                 If objEnumerable IsNot Nothing Then
                     If UseCloneList Then
                         Dim newList = objEnumerable.Cast(Of Object)()
@@ -216,10 +213,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     End If
                     For Each objCurrent As Object In objEnumerable
-                        If counter = maxIterations Then
+                        If counter = intMaxNbIterations Then
                             Exit For
                         End If
                         actionContext.SetVar(Me._CurrentItemParam, objCurrent)
+                        If SignalLast AndAlso counter = nbItems - 1 Then
+                            actionContext.SetVar(Me.LastFlagName, True)
+                        End If
                         If CaptureCounter Then
                             If CounterStartsAt1 Then
                                 actionContext.SetVar(Me.CounterVarName, counter + 1)
@@ -230,9 +230,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
                             PerformanceLogger.Instance().DisableLog(actionContext.FlowId)
                         End If
-                        toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
+                        If Not Me.ConditionalPass OrElse Me.PassCondition.Match(actionContext) Then
+                            toReturn = MyBase.Run(actionContext, aSync) AndAlso toReturn
+                        End If
                         If LogParticularSteps AndAlso Not StepsToLog.Contains(counter) Then
                             PerformanceLogger.Instance().EnableLog(actionContext.FlowId)
+                        End If
+                        If SignalLast AndAlso counter = nbItems - 1 Then
+                            actionContext.Items.Remove(Me.LastFlagName)
                         End If
                         counter += 1
                     Next
@@ -250,7 +255,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overrides Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type))
             If Not Me.CurrentItemParam.IsNullOrEmpty() Then
-                existingVars.Add(Me.CurrentItemParam, GetType(Object))
+                existingVars(Me.CurrentItemParam) = GetType(Object)
             End If
             MyBase.AddVariables(currentProvider, existingVars)
         End Sub

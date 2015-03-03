@@ -1,6 +1,5 @@
 ﻿Imports System.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
-Imports DotNetNuke.Services.Log.EventLog
 Imports DotNetNuke.Framework
 Imports DotNetNuke.Entities.Modules
 Imports Aricie.DNN.UI.Attributes

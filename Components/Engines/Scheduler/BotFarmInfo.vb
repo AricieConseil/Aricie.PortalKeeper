@@ -13,6 +13,7 @@ Imports DotNetNuke.UI.Skins.Controls
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.Services
+Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -35,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Private members"
 
-     
+
 
         Private _Schedule As New STimeSpan(TimeSpan.FromSeconds(15))
 
@@ -76,8 +77,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        <ExtendedCategory("TechnicalSettings")> _
+         <Width(300)> _
+            <LineCount(2)> _
+            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        Public Property RunningServers() As String = ""
 
-      
         <ExtendedCategory("TechnicalSettings")>
         Public Property Schedule() As STimeSpan
             Get
@@ -154,7 +159,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-      
+
 
         <ActionButton(IconName.Rocket, IconOptions.Normal)>
         Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
@@ -177,50 +182,48 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Function RunBots(ByVal events As IList(Of TEngineEvent), ByVal forceRun As Boolean, flowId As String) As Integer
-            'Dim minNextRun As DateTime = lastRun.Add(Me._Schedule)
-            'If minNextRun < Now Then
             Dim toreturn As Integer
-            Select Case Me._Synchronization
-                Case SynchronizationMode.Monitor
-                    If Monitor.TryEnter(botlock, Me._SynchronisationTimeout.Value) Then
-                        Try
-                            toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
-                        Catch ex As Exception
-                            AsyncLogger.Instance.AddException(ex)
-                            'DotNetNuke.Services.Exceptions.LogException(ex)
-                        Finally
-                            Monitor.Exit(botlock)
-                        End Try
-                        'lastRun = Now
-                    End If
-                Case SynchronizationMode.Mutex
-                    Dim owned As Boolean
-                    Dim mutexId As String = _MutexName
-                    'todo: check if a global mutex is necessary (see the code below for security access)
-                    'mutexId = String.Format("Global\{0}", mutexId)
-                    Using objMutex As New Mutex(False, mutexId)
-                        Try
-                            'Dim allowEveryoneRule As New MutexAccessRule(New SecurityIdentifier(WellKnownSidType.WorldSid, Nothing), MutexRights.FullControl, AccessControlType.Allow)
-                            'Dim securitySettings As New MutexSecurity()
-                            'securitySettings.AddAccessRule(allowEveryoneRule)
-                            'objMutex.SetAccessControl(securitySettings)
+            If Me.MatchServer() Then
 
-                            If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
-                                owned = True
+                Select Case Me._Synchronization
+                    Case SynchronizationMode.Monitor
+                        If Monitor.TryEnter(botlock, Me._SynchronisationTimeout.Value) Then
+                            Try
                                 toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
-                            End If
-                        Catch ex As AbandonedMutexException
-                            ExceptionHelper.LogException(ex)
-                            owned = True
-                        Catch ex As Exception
-                            ExceptionHelper.LogException(ex)
-                        Finally
-                            If owned Then
-                                objMutex.ReleaseMutex()
-                            End If
-                        End Try
-                    End Using
-            End Select
+                            Catch ex As Exception
+                                AsyncLogger.Instance.AddException(ex)
+                                'DotNetNuke.Services.Exceptions.LogException(ex)
+                            Finally
+                                Monitor.Exit(botlock)
+                            End Try
+                            'lastRun = Now
+                        End If
+                    Case SynchronizationMode.Mutex
+                        Dim owned As Boolean
+                        Dim mutexId As String = _MutexName
+                        'todo: check if a global mutex is necessary (see the code below for security access)
+                        'mutexId = String.Format("Global\{0}", mutexId)
+                        Using objMutex As New Mutex(False, mutexId)
+                            Try
+
+                                If objMutex.WaitOne(Me._SynchronisationTimeout.Value) Then
+                                    owned = True
+                                    toreturn = Me.RunBotsUnlocked(events, forceRun, flowId)
+                                End If
+                            Catch ex As AbandonedMutexException
+                                ExceptionHelper.LogException(ex)
+                                owned = True
+                            Catch ex As Exception
+                                ExceptionHelper.LogException(ex)
+                            Finally
+                                If owned Then
+                                    objMutex.ReleaseMutex()
+                                End If
+                            End Try
+                        End Using
+                End Select
+            End If
+           
             'Else
             'Thread.Sleep(GetHalfSchedule)
             'End If
@@ -248,11 +251,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
             For Each webBot As BotInfo(Of TEngineEvent) In Me.Bots.Instances
-                
-                If Not webBot.MasterBotDisabled Then 'AndAlso Not webBot.AsyncLockBot.ContainsKey(-1)
+
+                If webBot.Enabled AndAlso Not webBot.MasterBotDisabled Then 'AndAlso Not webBot.AsyncLockBot.ContainsKey(-1)
                     Dim history = webBot.BotHistory
                     'Dim nextSchedule As DateTime = history.LastRun.Add(webBot.Schedule.Value)
-                    Dim nextSchedule As DateTime = webBot.BotSchedule.GetNextSchedule(history.LastRun)
+                    Dim nextSchedule As DateTime = history.GetNextSchedule(webBot.BotSchedule)
                     If nextSchedule <= Now OrElse forceRun AndAlso webBot.ForceRun Then
                         Dim runContext As New BotRunContext(Of TEngineEvent)(webBot, nextSchedule)
                         runContext.Enabled = True
@@ -298,8 +301,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End If
         'End Sub
 
-      
 
+        <NonSerialized()> _
+        Private _ServerList As List(Of String)
+
+        Private Function MatchServer() As Boolean
+            If _ServerList Is Nothing Then
+                _ServerList = New List(Of String)
+                If Not RunningServers.IsNullOrEmpty() Then
+                    For Each strServer As String In Me._RunningServers.Trim.Split(","c)
+                        If strServer.Trim <> "" Then
+                            _ServerList.Add(strServer.Trim.ToUpper)
+                        End If
+                    Next
+                End If
+            End If
+            Return _ServerList.Count = 0 OrElse _ServerList.Contains(DotNetNuke.Common.Globals.ServerName.ToUpper)
+        End Function
 
 
 #End Region

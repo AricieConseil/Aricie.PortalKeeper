@@ -1,11 +1,7 @@
 Imports Aricie.DNN.UI.Attributes
 Imports System.Web.UI
 Imports Aricie.Services
-Imports System.Web.UI.WebControls
-Imports System.Reflection
 Imports DotNetNuke.UI.WebControls
-Imports Aricie.ComponentModel
-Imports System.Collections.Specialized
 
 Namespace UI.WebControls.EditControls
 

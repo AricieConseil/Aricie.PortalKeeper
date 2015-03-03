@@ -1,5 +1,4 @@
 ﻿Imports System.ComponentModel
-Imports Aricie.DNN.Services
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -12,8 +11,6 @@ Imports System.Xml
 Imports Aricie.Services
 Imports System.Xml.Serialization
 Imports Newtonsoft.Json
-Imports System.Runtime.Serialization
-Imports System.Reflection
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper

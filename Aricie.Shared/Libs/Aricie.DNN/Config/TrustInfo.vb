@@ -1,7 +1,5 @@
 ﻿Imports System.Xml
 Imports Aricie.DNN.Services
-Imports System.Xml.Serialization
-Imports DotNetNuke.Common.Utilities
 
 Namespace Configuration
     ''' <summary>

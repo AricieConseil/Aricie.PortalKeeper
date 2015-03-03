@@ -1,13 +1,8 @@
-﻿Imports Aricie.DNN.UI.Attributes
-Imports DotNetNuke.Common
+﻿
 Imports DotNetNuke.UI.WebControls
 Imports System.Collections.Specialized
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
-Imports System.Globalization
-Imports DotNetNuke.Services.FileSystem
-Imports DotNetNuke.Entities.Portals
-Imports DotNetNuke.Common.Utilities
 
 Namespace UI.WebControls.EditControls
     <ToolboxData("<{0}:RequiredTextBoxForAdminControl runat=server></{0}:RequiredTextBoxForAdminControl>")> _

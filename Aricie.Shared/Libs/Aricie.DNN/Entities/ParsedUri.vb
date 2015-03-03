@@ -12,10 +12,10 @@
             Me.ParseDomain()
         End Sub
 
-        Private _DomainName As DomainName.Library.DomainName
+        Private _DomainName As DomainName
 
         Private Sub ParseDomain()
-            DomainName.Library.DomainName.TryParse(Me.Host, Me._DomainName)
+            DomainName.TryParse(Me.Host, Me._DomainName)
         End Sub
 
 

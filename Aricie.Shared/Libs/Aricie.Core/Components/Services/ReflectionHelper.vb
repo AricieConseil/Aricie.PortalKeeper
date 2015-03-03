@@ -11,12 +11,10 @@ Imports System.Security
 Imports System.Security.Permissions
 Imports Aricie.ComponentModel
 Imports System.Text.RegularExpressions
-Imports System.Web.Caching
 Imports System.Runtime.CompilerServices
 Imports System.ComponentModel
 Imports System.Linq
 Imports System.Linq.Expressions
-Imports System.Web.UI.WebControls
 Imports Aricie.Business.Filters
 Imports Aricie.Collections
 Imports System.Reflection.Emit
@@ -537,6 +535,9 @@ Namespace Services
                 Dim valueType As Type = value.GetType
                 If valueType.GetInterface("IConvertible") IsNot Nothing Then
                     toReturn = DirectCast(value, IConvertible).ToString(CultureInfo.InvariantCulture)
+                    If toReturn.Length > 500 Then
+                        toReturn = toReturn.Substring(0, 500) & " (...)"
+                    End If
                 Else
                     Dim defProp As PropertyInfo = GetDefaultProperty(valueType)
                     If defProp IsNot Nothing Then
@@ -554,7 +555,12 @@ Namespace Services
                             Dim keyName As String = GetFriendlyName(keyValue)
                             Dim valueValue As Object = valueProp.GetValue(value, Nothing)
                             Dim valueName As String = GetFriendlyName(valueValue)
-                            toReturn = String.Format("{0} {1} {2}", keyName, UIConstants.TITLE_SEPERATOR, valueName)
+                            If valueName.Length < 100 Then
+                                toReturn = String.Format("{0} {1} {2}", keyName, UIConstants.TITLE_SEPERATOR, valueName)
+                            Else
+                                toReturn = keyName
+                            End If
+
                         End If
                     End If
                     If toReturn.IsNullOrEmpty() Then

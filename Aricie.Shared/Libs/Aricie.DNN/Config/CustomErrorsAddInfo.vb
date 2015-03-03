@@ -1,18 +1,11 @@
 ﻿Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Errors
-Imports System.Web.Configuration
-Imports System.Web
-Imports Aricie.DNN.UI.Attributes
-Imports System.ComponentModel
-Imports Aricie.ComponentModel
-Imports DotNetNuke.UI.WebControls
-Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Entities
 
 Namespace Configuration
     ''' <summary>
     ''' Custom Errors Add merge node
     ''' </summary>
+    <XmlType("customErrors")> _
     <XmlRoot("customErrors")> _
     <Serializable()> _
     Public Class CustomErrorsAddInfo

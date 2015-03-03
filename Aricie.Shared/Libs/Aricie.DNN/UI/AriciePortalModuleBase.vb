@@ -10,10 +10,7 @@ Imports Aricie.DNN.Services
 Imports System.Web.UI.HtmlControls
 Imports System.Web.UI
 Imports System.Reflection
-Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
-Imports Aricie.Services
-Imports System.Globalization
 Imports System.Web.UI.WebControls
 
 

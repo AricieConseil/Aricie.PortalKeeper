@@ -16,15 +16,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _WorkSheets As WorksheetFeed
         Private _SelectedSpreadSheet As String = ""
 
+        <ExtendedCategory("Spreadsheet")> _
         Public Property UseExistingSpreadSheetEntry As Boolean
 
+        <ExtendedCategory("Spreadsheet")> _
         <ConditionalVisible("UseExistingSpreadSheetEntry", False, True)> _
         Public Property SpreadSheetEntryExpression As New SimpleExpression(Of SpreadsheetEntry)
 
         '<AutoPostBack()> _
         '<ConditionalVisible("UseExistingSpreadSheetEntry", False, True)> _
         'Public Property CreateIf As New KeeperCondition(Of TEngineEvents)
-
+        <ExtendedCategory("Spreadsheet")> _
         <AutoPostBack()> _
       <ConditionalVisible("UseExistingSpreadSheetEntry", False, True)> _
         Public Property CreateIfNull As Boolean
@@ -36,7 +38,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-       
+        'Public Sub UpdateEntries(objWorksheet As WorksheetEntry, objSpreadsheet As SpreadsheetEntry, actionContext As PortalKeeperContext(Of TEngineEvents))
+        '    If Me.CaptureWorksheetEntry Then
+        '        actionContext.Item(Me.WorksheetEntryName) = objWorksheet
+        '    End If
+        'End Sub
+        <ExtendedCategory("Spreadsheet")> _
+        <ConditionalVisible("ShowSpreadsheetEntryInfo", False, True)> _
+        Public Property Spreadsheet As New SpreadSheetEntryInfo(Of TEngineEvents)
 
 
         <Browsable(False)> _
@@ -48,9 +57,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _Worksheet As WorksheetEntry
 
+        <ExtendedCategory("Worksheet")> _
         <ConditionalVisible("Initialized", True, True)> _
         Public Property WorkSheetName As String = ""
 
+        <ExtendedCategory("Worksheet")> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("Initialized", False, True)> _
         <Selector("Text", "Value", False, True, "<Select WorkSheet>", "", False, True)> _
@@ -75,7 +86,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-
+        <ExtendedCategory("Worksheet")> _
         <ConditionalVisible("WorkSheetNameSelection", True, True, "")> _
         <ConditionalVisible("Initialized", False, True)> _
         Public ReadOnly Property WorkSheetInfo As String
@@ -87,10 +98,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-
+        <ExtendedCategory("Worksheet")> _
         Public Property CaptureWorksheetFeed As Boolean
 
-
+        <ExtendedCategory("Worksheet")> _
         <ConditionalVisible("CaptureWorksheetFeed", False, True)> _
         Public Property WorksheetFeedName As String = "Worksheets"
 
@@ -108,14 +119,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        'Public Sub UpdateEntries(objWorksheet As WorksheetEntry, objSpreadsheet As SpreadsheetEntry, actionContext As PortalKeeperContext(Of TEngineEvents))
-        '    If Me.CaptureWorksheetEntry Then
-        '        actionContext.Item(Me.WorksheetEntryName) = objWorksheet
-        '    End If
-        'End Sub
-
-        <ConditionalVisible("ShowSpreadsheetEntryInfo", False, True)> _
-        Public Property Spreadsheet As New SpreadSheetEntryInfo(Of TEngineEvents)
+      
 
 
         Public Function GetWorksheetEntry(actionContext As PortalKeeperContext(Of TEngineEvents)) As WorksheetEntry

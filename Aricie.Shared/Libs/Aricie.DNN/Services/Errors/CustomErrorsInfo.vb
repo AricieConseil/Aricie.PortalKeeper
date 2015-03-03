@@ -7,7 +7,6 @@ Imports Aricie.DNN.Configuration
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml
 Imports System.Web
-Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Errors
@@ -16,8 +15,6 @@ Namespace Services.Errors
     ''' </summary>
     ''' <remarks></remarks>
     <Serializable()> _
-    <XmlInclude(GetType(CustomErrorsAddInfo))> _
-    <XmlInclude(GetType(CustomErrorAddInfo))> _
     Public Class CustomErrorsInfo
         Inherits XmlConfigElementInfo
 

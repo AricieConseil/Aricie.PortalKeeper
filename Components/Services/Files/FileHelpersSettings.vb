@@ -149,19 +149,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Function ComputeDynamicExpressions(inputObjects As IEnumerable) As List(Of SerializableDictionary(Of String, Object))
 
             Dim toReturn As New List(Of SerializableDictionary(Of String, Object))
-            Dim fieldNames As Dictionary(Of String, String) = ParsePairs(Me.FieldVars, True)
+            'Dim fieldNames As Dictionary(Of String, String) = ParsePairs(Me.FieldVars, True)
             For Each inputObject As Object In inputObjects
                 Dim context As New PortalKeeperContext(Of String)
                 context.SetVar(Me.InputEntityVarName, inputObject)
-                Dim dump As SerializableDictionary(Of String, Object) = context.GetDump(False, fieldNames.Keys, "")
-                Dim fieldVarsDico As New SerializableDictionary(Of String, Object)
-                Dim fieldName As String = Nothing
-                For Each dumpVar As KeyValuePair(Of String, Object) In dump
-                    If fieldNames.TryGetValue(dumpVar.Key, fieldName) Then
-                        fieldVarsDico(fieldName) = dumpVar.Value
-                    End If
-                Next
-                toReturn.Add(fieldVarsDico)
+                Dim objDumpSettings As New DumpSettings()
+                objDumpSettings.EnableDump = True
+                objDumpSettings.DumpAllVars = False
+                objDumpSettings.DumpVariables = Me.FieldVars
+                objDumpSettings.SkipNull = False
+                Dim dump As SerializableDictionary(Of String, Object) = context.GetDump(objDumpSettings)
+                toReturn.Add(dump)
             Next
             Return toReturn
         End Function

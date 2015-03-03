@@ -305,11 +305,7 @@ Public Class AricieFieldEditorControl
                                 Dim ctc As New CustomTextEditControl()
                                 ctc.Width = 600
                                 Dim strValue = Conversions.ToString(editorInfo.Value)
-                                ctc.LineCount = Math.Max(3, _
-                                                         Math.Min( _
-                                                             Math.Max(strValue.Length \ 50, _
-                                                                      strValue.LinesCount()) _
-                                                            , 200))
+                                ctc.LineCount = RestrictedLineCount(strValue, 3, 200)
                                 objEditControl = ctc
                             Else
                                 editorInfo.LabelMode = LabelMode.Top
@@ -402,11 +398,8 @@ Public Class AricieFieldEditorControl
 #Region "private Methods"
 
     Private Sub BuildLtDiv(ByVal editInfo As EditorInfo)
-        Dim child As HtmlGenericControl = Nothing
+
         Dim label As PropertyLabelControl = Nothing
-
-
-
 
         'Dim oppositeSide As String = Me.GetOppositeSide(editInfo.LabelMode)
         'If (oppositeSide.Length > 0) Then
@@ -414,44 +407,29 @@ Public Class AricieFieldEditorControl
         '    control.Attributes.Add("style", str3)
         'End If
 
-        Dim ctlEditControl As EditControl = Me.BuildEditor(editInfo)
+        Dim ctlEditControl As EditControl = Me.BuildEditor(editInfo, Nothing)
+        'Me._Editor = ctlEditControl
+
 
         If editInfo.LabelMode = LabelMode.Top OrElse editInfo.LabelMode = LabelMode.Bottom OrElse editInfo.LabelMode = LabelMode.None Then
             Me._FullWidth = True
         End If
 
         If (editInfo.LabelMode <> LabelMode.None) Then
-            child = New HtmlGenericControl("div")
-            child.EnableViewState = False
-
-            Select Case editInfo.LabelMode
-                Case LabelMode.Left
-                    child.Attributes.Add("class", "ctLeft")
-                Case LabelMode.Right
-                    child.Attributes.Add("class", "ctRight")
-                Case Else
-            End Select
-
-
-            '  Dim str2 As String = ("float: " & editInfo.LabelMode.ToString.ToLower)
-            If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
-                'str2 = (str2 & "; width: " & Me.LabelWidth.ToString)
-                child.Attributes.Add("style", String.Format("width:{0}", Me.LabelWidth.ToString))
-            End If
-
             label = Me.BuildLtLabel(editInfo)
+            label.EditControl = ctlEditControl
         End If
-        Dim control As New HtmlGenericControl("div")
+        Dim divEditControl As New HtmlGenericControl("div")
 
         Dim ctlVisibility As VisibilityControl = Me.BuildVisibility(editInfo)
         If (ctlVisibility IsNot Nothing) Then
             ctlVisibility.Attributes.Add("class", "ctRight")
-            control.Controls.Add(ctlVisibility)
+            divEditControl.Controls.Add(ctlVisibility)
         End If
-        control.Controls.Add(ctlEditControl)
+        divEditControl.Controls.Add(ctlEditControl)
         Dim image As Image = Me.BuildRequiredIcon(editInfo)
         If (image IsNot Nothing) Then
-            control.Controls.Add(image)
+            divEditControl.Controls.Add(image)
         End If
 
 
@@ -462,19 +440,45 @@ Public Class AricieFieldEditorControl
                 Me.Controls.Add(label)
             End If
 
-            Me.Controls.Add(control)
+            Me.Controls.Add(divEditControl)
         Else
+            Dim divLabel As HtmlGenericControl = Nothing
+
+
             If label IsNot Nothing Then
-                child.Controls.Add(label)
+                If (editInfo.LabelMode <> LabelMode.None) Then
+                    divLabel = New HtmlGenericControl("div")
+                    divLabel.EnableViewState = False
+
+                    Select Case editInfo.LabelMode
+                        Case LabelMode.Left
+                            divLabel.Attributes.Add("class", "ctLeft")
+                        Case LabelMode.Right
+                            divLabel.Attributes.Add("class", "ctRight")
+                        Case Else
+                    End Select
+
+
+                    '  Dim str2 As String = ("float: " & editInfo.LabelMode.ToString.ToLower)
+                    If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
+                        'str2 = (str2 & "; width: " & Me.LabelWidth.ToString)
+                        divLabel.Attributes.Add("style", String.Format("width:{0}", Me.LabelWidth.ToString))
+                    End If
+
+                    label = Me.BuildLtLabel(editInfo)
+                End If
+
+
+                divLabel.Controls.Add(label)
             End If
 
             If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Top)) Then
-                Me.Controls.Add(child)
-                Me.Controls.Add(control)
+                Me.Controls.Add(divLabel)
+                Me.Controls.Add(divEditControl)
             Else
-                Me.Controls.Add(control)
-                If (child IsNot Nothing) Then
-                    Me.Controls.Add(child)
+                Me.Controls.Add(divEditControl)
+                If (divLabel IsNot Nothing) Then
+                    Me.Controls.Add(divLabel)
                 End If
             End If
         End If
@@ -490,56 +494,65 @@ Public Class AricieFieldEditorControl
         End If
     End Sub
 
-    Protected Function BuildLtLabel(ByVal editInfo As EditorInfo) As PropertyLabelControl
-        Dim control2 As New PropertyLabelControl
-        control2.ID = (editInfo.Name & "_Label")
-        control2.HelpStyle.CopyFrom(Me.HelpStyle)
-        control2.LabelStyle.CopyFrom(Me.LabelStyle)
-        control2.EnableViewState = False
+    Public Function BuildLtLabel(ByVal editInfo As EditorInfo) As PropertyLabelControl
+        Dim toReturn As New PropertyLabelControl
+        toReturn.ID = (editInfo.Name & "_Label")
+        toReturn.HelpStyle.CopyFrom(Me.HelpStyle)
+        toReturn.LabelStyle.CopyFrom(Me.LabelStyle)
+        toReturn.EnableViewState = False
         Dim str As String = TryCast(editInfo.Value, String)
         Select Case Me.HelpDisplayMode
             Case HelpDisplayMode.Never
-                control2.ShowHelp = False
+                toReturn.ShowHelp = False
                 Exit Select
             Case HelpDisplayMode.EditOnly
                 If Not ((editInfo.EditMode = PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str))) Then
-                    control2.ShowHelp = False
+                    toReturn.ShowHelp = False
                     Exit Select
                 End If
-                control2.ShowHelp = True
+                toReturn.ShowHelp = True
                 Exit Select
             Case HelpDisplayMode.Always
-                control2.ShowHelp = True
+                toReturn.ShowHelp = True
                 Exit Select
         End Select
-        control2.Caption = editInfo.Name
-        control2.HelpText = editInfo.Name
-        control2.ResourceKey = editInfo.ResourceKey
+        toReturn.Caption = editInfo.Name
+        toReturn.HelpText = editInfo.Name
+        toReturn.ResourceKey = editInfo.ResourceKey
         If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) Then
-            control2.Width = Me.LabelWidth
+            toReturn.Width = Me.LabelWidth
         End If
         If _FullWidth Then
-            control2.CssClass &= " aricieFullWidth"
+            toReturn.CssClass = (toReturn.CssClass & " aricieFullWidth").Trim()
         End If
 
-        Return control2
+        Return toReturn
     End Function
 
-    Protected Function BuildEditor(ByVal editInfo As EditorInfo) As EditControl
-        Dim control2 As EditControl = CreateEditControl(editInfo, Me)
-        control2.ControlStyle.CopyFrom(Me.EditControlStyle)
-        control2.LocalResourceFile = Me.LocalResourceFile
-        If (Not editInfo.ControlStyle Is Nothing) Then
-            control2.ControlStyle.CopyFrom(editInfo.ControlStyle)
+    Public Function BuildEditor(ByVal editInfo As EditorInfo, Optional ByVal container As Control = Nothing) As EditControl
+        Dim toReturn As EditControl = CreateEditControl(editInfo, Me, container)
+        toReturn.ControlStyle.CopyFrom(Me.EditControlStyle)
+        toReturn.LocalResourceFile = Me.LocalResourceFile
+        If (editInfo.ControlStyle IsNot Nothing) Then
+            toReturn.ControlStyle.CopyFrom(editInfo.ControlStyle)
         End If
-        AddHandler control2.ValueChanged, New PropertyChangedEventHandler(AddressOf Me.ValueChanged)
-        If TypeOf control2 Is DNNListEditControl Then
-            Dim control3 As DNNListEditControl = DirectCast(control2, DNNListEditControl)
-            AddHandler control3.ItemChanged, New PropertyChangedEventHandler(AddressOf Me.ListItemChanged)
+
+        If container Is Nothing Then
+            AddHandler toReturn.ValueChanged, New PropertyChangedEventHandler(AddressOf Me.ValueChanged)
+            If TypeOf toReturn Is DNNListEditControl Then
+                Dim control3 As DNNListEditControl = DirectCast(toReturn, DNNListEditControl)
+                AddHandler control3.ItemChanged, New PropertyChangedEventHandler(AddressOf Me.ListItemChanged)
+            End If
+            Me._Editor = toReturn
         End If
-        Me._Editor = control2
-        Return control2
+
+        Return toReturn
     End Function
+
+    Private Sub SubValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
+        Dim pe As New PropertyEditorEventArgs(Me.Editor.Name, Me.Editor.Value, Me.Editor.OldValue)
+        Me.ValueChanged(sender, pe)
+    End Sub
 
 
     Protected Function BuildRequiredIcon(ByVal editInfo As EditorInfo) As Image

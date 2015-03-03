@@ -1,7 +1,6 @@
 Imports System.Web.UI.WebControls
 Imports Aricie.ComponentModel
 Imports System.Web.UI
-Imports Aricie.Web.UI
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Localization
 Imports Aricie.Services

@@ -4,7 +4,6 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Tabs
 Imports DotNetNuke.Framework
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports DotNetNuke.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -25,11 +24,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class DnnPageCondition(Of TEngineEvents As IConvertible)
         Inherits SelectionSetCondition(Of TEngineEvents)
 
+        <ExtendedCategory("Condition")> _
         Public Property MatchAnyDNNPageRequest As Boolean
 
-           <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
-           <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _
-       <ConditionalVisible("MatchAnyDNNPageRequest", True, True)> _
+        <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _
+    <ConditionalVisible("MatchAnyDNNPageRequest", True, True)> _
+    <ExtendedCategory("Condition")> _
         Public Overrides Property Items As List(Of Integer)
             Get
                 Return MyBase.Items

@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\..\..\bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,16 +28,24 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>..\..\..\..\bin\</OutputPath>
+    <OutputPath>bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aricie.PortalKeeper, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Aricie.PortalKeeper.dll</HintPath>
+    </Reference>
     <Reference Include="DotNetNuke, Version=4.8.1.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\DotNetNuke.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="RedditSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\RedditSharpNet35\bin\Release\RedditSharp.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -60,15 +68,12 @@
     <Compile Include="RedditWebAction.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="external\Aricie.PortalKeeper.dll" />
     <Content Include="external\DotNetNuke.dll" />
     <Content Include="external\RedditSharpNet35\bin\Release\RedditSharp.dll" />
     <Content Include="external\RedditSharpNet35\bin\Release\RedditSharp.pdb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\Aricie.PortalKeeper.vbproj">
-      <Project>{e16cb689-af6f-4919-bc7b-1d345a2d48ce}</Project>
-      <Name>Aricie.PortalKeeper</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
@@ -76,10 +81,6 @@
     <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
-    </ProjectReference>
-    <ProjectReference Include="external\RedditSharpNet35\RedditSharpNet35.csproj">
-      <Project>{a368cb75-75f0-4489-904d-b5cebb0fe624}</Project>
-      <Name>RedditSharpNet35</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

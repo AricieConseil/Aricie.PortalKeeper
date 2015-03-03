@@ -3,7 +3,6 @@ Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
@@ -50,15 +49,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-       
-    End Class
 
-    Public Enum LoggingLevel
-        None = 0
-        Simple = 1
-        Steps = 1 + 2
-        Detailed = 1 + 2 + 4
-    End Enum
+    End Class
 
 
     <Serializable()> _
@@ -94,7 +86,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("Mode", False, True, RuleEngineMode.Actions)> _
         <SortOrder(1)>
         Public Property InitialCondition() As New KeeperCondition(Of TEngineEvents)
-           
+
 
         '<Editor(GetType(ListEditControl), GetType(EditControl))> _
         '<InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
@@ -121,63 +113,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <SortOrder(1000)> _
-        <ExtendedCategory("TechnicalSettings")> _
+       <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
-        Public Property LogDump As Boolean
+        Public Property LogEndDumpSettings As New DumpSettings()
 
         <SortOrder(1000)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
-        <ConditionalVisible("LogDump", False, True)> _
-        Public Property DumpAllVars() As Boolean
+      <ExtendedCategory("TechnicalSettings")> _
+        Public Property ExceptionDumpSettings As New DumpSettings()
 
-        <SortOrder(1000)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
-        <ConditionalVisible("LogDump", False, True)> _
-         <ConditionalVisible("DumpAllVars", True, True)> _
-          <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(4), Width(500)> _
-        Public Property DumpVariables() As String = ""
+        '<ExtendedCategory("TechnicalSettings")> _
+        '<SortOrder(1000)> _
+        'Public Property ExceptionDumpAllVars() As Boolean
 
-
-        Private _dumpVarLock As New Object
-        Private _DumpVarList As List(Of String)
-
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public ReadOnly Property DumpVarList() As List(Of String)
-            Get
-                If _DumpVarList Is Nothing Then
-                    SyncLock _dumpVarLock
-                        If _DumpVarList Is Nothing Then
-                            '_DumpVarList = New List(Of String)
-                            'Dim strVars As String() = Me._DumpVariables.Split(","c)
-                            'For Each strVar As String In strVars
-                            '    If strVar.Trim <> "" Then
-                            '        _DumpVarList.Add(strVar.Trim())
-                            '    End If
-                            'Next
-                            _DumpVarList = ParseStringList(Me._DumpVariables)
-                        End If
-                    End SyncLock
-                End If
-                Return _DumpVarList
-            End Get
-        End Property
-
-
-
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1000)> _
-        Public Property ExceptionDumpAllVars() As Boolean
-
-        <ConditionalVisible("ExceptionDumpAllVars", True, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
-         <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
-           LineCount(4), Width(500)> _
-           <SortOrder(1000)> _
-        Public Property ExceptionDumpVars() As String = String.Empty
+        '<ConditionalVisible("ExceptionDumpAllVars", True, True)> _
+        '<ExtendedCategory("TechnicalSettings")> _
+        ' <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
+        '   LineCount(4), Width(500)> _
+        '   <SortOrder(1000)> _
+        'Public Property ExceptionDumpVars() As String = String.Empty
 
 
 
@@ -264,21 +217,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function BatchRun(events As IEnumerable(Of TEngineEvents), userParams As IDictionary(Of String, Object)) As PortalKeeperContext(Of TEngineEvents)
 
             Dim newContext As PortalKeeperContext(Of TEngineEvents) = Me.InitContext(userParams)
-          
+
             Me.BatchRun(events, newContext)
 
             Return newContext
         End Function
 
-
-       
-
-        Public Function InitContext(Optional userParams As IDictionary(Of String, Object) = Nothing) As PortalKeeperContext(Of TEngineEvents)
+        Public Function InitContext() As PortalKeeperContext(Of TEngineEvents)
             Dim toReturn As New PortalKeeperContext(Of TEngineEvents)
             toReturn.SetEngine(Me)
             toReturn.LogStartEngine()
-            toReturn.Init(Me, userParams)
-           
+            toReturn.Init(Me)
+            Return toReturn
+        End Function
+
+
+        Public Function InitContext(userParams As IDictionary(Of String, Object)) As PortalKeeperContext(Of TEngineEvents)
+            Dim toReturn As PortalKeeperContext(Of TEngineEvents) = Me.InitContext()
+            toReturn.InitParams(userParams)
             Return toReturn
         End Function
 

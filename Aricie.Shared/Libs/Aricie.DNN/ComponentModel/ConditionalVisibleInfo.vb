@@ -1,7 +1,6 @@
 ﻿Imports System.Reflection
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
-Imports Microsoft.VisualBasic.CompilerServices
 
 Namespace ComponentModel
     Public Class ConditionalVisibleInfo

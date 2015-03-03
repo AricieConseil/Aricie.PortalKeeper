@@ -3,7 +3,6 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.ComponentModel
 Imports System.Xml.Serialization
-Imports Aricie.DNN.Entities
 Imports Aricie.Collections
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls

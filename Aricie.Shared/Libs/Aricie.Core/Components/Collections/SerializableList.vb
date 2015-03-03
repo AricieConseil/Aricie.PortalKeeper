@@ -1,7 +1,5 @@
 Imports System.Xml.Serialization
 Imports Aricie.Services
-Imports Aricie.Providers
-Imports System.Xml
 
 Namespace Collections
     ''' <summary>

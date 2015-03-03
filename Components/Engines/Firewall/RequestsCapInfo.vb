@@ -1,10 +1,9 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.ComponentModel
+Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports System.Threading
 Imports Aricie.DNN.UI.WebControls.EditControls
-Imports System.Xml.Serialization
-Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports DotNetNuke.Framework
 Imports Aricie.DNN.UI.Attributes
@@ -176,7 +175,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private _CurrentCapWindow As DateTime = Now
+        Private _CurrentCapWindow As DateTime = PerformanceLogger.Now
         Private _LockCapWindow As New Object
         Private _CurrentWindowCount As Integer
         Private _BannedWindows As New Dictionary(Of DateTime, Boolean)
@@ -199,7 +198,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Not Me._Enabled OrElse Not Me.IsInScope(context) Then
                 Return True
             End If
-            Dim dateNow As DateTime = Now
+            Dim dateNow As DateTime = PerformanceLogger.Now
             If dateNow > _CurrentCapWindow.Add(Me.Duration) Then
                 SyncLock _LockCapWindow
                     If dateNow > _CurrentCapWindow.Add(Me.Duration) Then

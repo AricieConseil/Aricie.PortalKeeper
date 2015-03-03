@@ -20,6 +20,9 @@ Namespace Text
         ToLowerInvariant
         ToUpper
         ToUpperInvariant
+        ToPascal
+        ToCamel
+        ToTitle
     End Enum
 
     Public Enum Base64Convert

@@ -1,5 +1,4 @@
 ﻿Imports Aricie.DNN.UI.Controls
-Imports DotNetNuke.UI.WebControls
 
 Namespace UI.WebControls
 
