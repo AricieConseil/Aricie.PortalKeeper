@@ -137,6 +137,7 @@
     <None Include="Services\OpenXML\Word2007Reader.vb" />
     <Compile Include="Services\OpenXML\xlsxColumnInfo.vb" />
     <Compile Include="Services\OpenXML\xlsxController.vb" />
+    <Compile Include="Services\OpenXML\xlsxDataField.vb" />
     <Compile Include="Services\Pdf\PdfBoxReader.vb" />
     <Compile Include="Services\Pdf\PdfCreator.vb" />
     <Compile Include="Services\Pdf\PdfFiller.vb" />
