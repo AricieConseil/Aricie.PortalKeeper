@@ -75,7 +75,7 @@ Namespace UI.WebControls
 
 
         Private Sub HtmlJsSlider_Init(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Init
-            Dim defaultCSS As String = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css"
+            Dim defaultCSS As String = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/themes/base/jquery-ui.css"
             ResourcesUtils.registerStylesheet(Page, "jQueryUIBase", defaultCSS, False)
         End Sub
 
