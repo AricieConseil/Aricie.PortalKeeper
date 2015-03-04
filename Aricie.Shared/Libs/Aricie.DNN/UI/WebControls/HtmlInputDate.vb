@@ -208,7 +208,11 @@ Namespace UI.WebControls
             descriptor.AddProperty("format", Me.Format)
             descriptor.AddProperty("currentDate", Me.DateValue) '.ToString("dd/MM/yyyy"))
             descriptor.AddProperty("urljQueryTools", Page.ClientScript.GetWebResourceUrl(GetType(HtmlInputDate), "Aricie.DNN.jquery.tools.min.js")) 'scriptRef.Path)
-            descriptor.AddProperty("urlCDNjQueryTools", Me.UrlCDNJqueryTools)
+            If Context.Request.IsSecureConnection Then
+                descriptor.AddProperty("urlCDNjQueryTools", Page.ClientScript.GetWebResourceUrl(GetType(HtmlInputDate), "Aricie.DNN.jquery.tools.min.js"))
+            Else
+                descriptor.AddProperty("urlCDNjQueryTools", Me.UrlCDNJqueryTools)
+            End If
             Me.Text = ""
             'descriptor.AddProperty("format", "dd/mm/yyyy")
             'If Not currentDate = Nothing Then

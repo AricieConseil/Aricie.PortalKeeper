@@ -362,7 +362,11 @@ Namespace UI.WebControls
                 Return False
             End If
             Dim fileName As String = Me._fileUpload.FileName
-            Dim str3 As String = System.IO.Path.Combine(currentPortalSettings.HomeDirectoryMapPath, Replace(Me.Path, "/", "\")) '(currentPortalSettings.HomeDirectoryMapPath & Replace(Me.path, "/", "\"))
+            Dim str3 As String = System.IO.Path.Combine(currentPortalSettings.HomeDirectoryMapPath, Replace(Me.Path, "/", "\"))
+            If Not str3.EndsWith("\") Then
+                ' Add the required "\" to the end of the physical path
+                str3 &= "\"
+            End If
             Dim folderId As Integer = -1
 
 
@@ -437,29 +441,28 @@ Namespace UI.WebControls
                 fi = fc.GetFile(Me._fileUpload.FileName, currentPortalSettings.PortalId, folderId)
                 If fi Is Nothing Then
                     Return False
-                End If
-                If FileHelper.IsImageByExtension(fi) Then
-                    FileId = fileController.AddFile(PortalController.GetCurrentPortalSettings.PortalId, _
-                    fileName, _
-                    extension, _
-                    Me._fileUpload.FileContent.Length, _
-                    fi.Width, fi.Height, "", Me.Path, folderId, False)
                 Else
-                    FileId = fileController.AddFile(PortalController.GetCurrentPortalSettings.PortalId, _
-                        fileName, _
-                        extension, _
-                        Me._fileUpload.FileContent.Length, _
-                         0, 0, "", Me.Path, folderId, False)
+                    FileId = fi.FileId
+                    ' Update the file attributes
+                    If FileHelper.IsImageByExtension(fi) Then
+                        fileController.UpdateFile(FileId, fileName, extension, Me._fileUpload.FileContent.Length, fi.Width, fi.Height, "", Me.Path, folderId)
+                    Else
+                        fileController.UpdateFile(FileId, _
+                            fileName, _
+                            extension, _
+                            Me._fileUpload.FileContent.Length, _
+                             0, 0, "", Me.Path, folderId)
+                    End If
+                    If Not AllowNewUpload Then
+                        'Cache l'upload de fichier jusqu'à la suppression du dernier fichier chargé (qui permettra d'uploader a nouveau)
+                        Me._fileUpload.Visible = False
+                        Me._uploadLink.Visible = False
+                    Else
+                        Me._fileUpload.Visible = True
+                        Me._uploadLink.Visible = True
+                    End If
                 End If
-                If Not AllowNewUpload Then
-                    'Cache l'upload de fichier jusqu'à la suppression du dernier fichier chargé (qui permettra d'uploader a nouveau)
-                    Me._fileUpload.Visible = False
-                    Me._uploadLink.Visible = False
-                Else
-                    Me._fileUpload.Visible = True
-                    Me._uploadLink.Visible = True
-                End If
-              
+
             Else
                 Me._errorLabel.Text = str
                 Return False

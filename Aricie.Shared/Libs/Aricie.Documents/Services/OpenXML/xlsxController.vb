@@ -2,6 +2,8 @@
 Imports DocumentFormat.OpenXml.Packaging
 Imports DocumentFormat.OpenXml.Spreadsheet
 Imports System.Drawing
+Imports System.Linq
+Imports Aricie.Documents.Services.OpenXML.xlsxDataField
 
 Namespace Services.OpenXML
 
@@ -395,6 +397,159 @@ Namespace Services.OpenXML
             End Select
         End Function
 
+        Public Shared Function GetExcelColumns(ByVal dnnFile As DotNetNuke.Services.FileSystem.FileInfo) As IEnumerable(Of ExcelRowEntity)
+
+            Dim currentXlsDocument As SpreadsheetDocument = SpreadsheetDocument.Open(dnnFile.PhysicalPath, False)
+            Dim sheets = currentXlsDocument.WorkbookPart.Workbook.Descendants(Of Sheet)()
+            Dim toReturn As List(Of ExcelRowEntity) = New List(Of ExcelRowEntity)
+            For Each currentSheet As Sheet In sheets
+                Dim myWSPart As WorksheetPart = CType(currentXlsDocument.WorkbookPart.GetPartById(currentSheet.Id), WorksheetPart)
+                Dim rows = myWSPart.Worksheet.GetFirstChild(Of SheetData)().Elements(Of Row)()
+                If rows.Count > 0 Then
+                    Dim cells = rows.First().Elements(Of Cell)()
+                    Dim value As String = String.Empty
+                    Dim idxCell As Integer = 0
+                    Dim idValue As Integer = 0
+                    For Each myCell In cells
+                        value = myCell.CellValue.Text
+                        If myCell.DataType.Value = CellValues.SharedString Then
+                            If (Integer.TryParse(value, idValue)) Then
+
+                                Dim currentSharedValue As SharedStringItem = currentXlsDocument.WorkbookPart.SharedStringTablePart.SharedStringTable.Elements(Of SharedStringItem).ElementAt(idValue)
+                                If (Not currentSharedValue.Text Is Nothing) Then
+                                    value = currentSharedValue.Text.Text
+                                ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerText)) Then
+                                    value = currentSharedValue.InnerText
+                                ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerXml)) Then
+                                    value = currentSharedValue.InnerXml
+                                Else
+                                    value = String.Empty
+                                End If
+                            End If
+                        End If
+                        toReturn.Add(New xlsxDataField.ExcelRowEntity() With {.t = value, .v = idxCell.ToString()})
+                        idxCell += 1
+
+                    Next
+                    ' toReturn.AddRange(rows.First().Elements(Of Cell)().Select(Function(cell, idx) New OIDataField.ExcelRowEntity() With {.t = cell.CellValue.Text, .v = idx.ToString}).Where(Function(x) Not String.IsNullOrEmpty(x.t)))
+                End If
+
+            Next
+            'Dim firstRow As Row = currentXlsDocument.WorkbookPart.WorksheetParts.First().Worksheet.Descendants(Of Row)().FirstOrDefault()
+            'Dim firstRowCells As IEnumerable(Of Cell) = firstRow.Descendants(Of Cell)()
+            'Dim idx As Integer = 0
+            ' = firstRowCells.Select(Function(cell, idx) New OIDataField.ExcelRowEntity() With {.t = cell.InnerText, .v = idx.ToString})
+            Return toReturn
+
+        End Function
+
+        Public Shared Function GetExcelRowsWithReferences(ByVal dnnFile As DotNetNuke.Services.FileSystem.FileInfo) As List(Of Dictionary(Of String, String))
+            Dim toReturn As New List(Of Dictionary(Of String, String))
+            Dim currentXlsDocument As SpreadsheetDocument = SpreadsheetDocument.Open(dnnFile.PhysicalPath, False)
+            Dim sheets = currentXlsDocument.WorkbookPart.Workbook.Descendants(Of Sheet)()
+
+            For Each currentSheet As Sheet In sheets
+                Dim myWSPart As WorksheetPart = CType(currentXlsDocument.WorkbookPart.GetPartById(currentSheet.Id), WorksheetPart)
+                Dim rows = myWSPart.Worksheet.GetFirstChild(Of SheetData)().Elements(Of Row)()
+                If rows.Count > 0 Then
+                    For Each myRow In rows
+                        Dim rowToAdd As New Dictionary(Of String, String)
+                        Dim cells = myRow.Elements(Of Cell)()
+                        Dim value As String = String.Empty
+                        Dim idxCell As Integer = 0
+                        Dim idValue As Integer = 0
+                        For Each myCell In cells
+                            If (Not myCell.CellValue Is Nothing) Then
+                                value = myCell.CellValue.Text
+                            Else
+                                value = String.Empty
+                            End If
+
+                            'If Not myCell.DataType Is Nothing AndAlso myCell.DataType.Value = CellValues.SharedString Then
+                            If Not myCell.DataType Is Nothing Then
+                                Select Case myCell.DataType.Value
+                                    Case CellValues.SharedString
+                                        If (Integer.TryParse(value, idValue)) Then
+
+                                            Dim currentSharedValue As SharedStringItem = currentXlsDocument.WorkbookPart.SharedStringTablePart.SharedStringTable.Elements(Of SharedStringItem).ElementAt(idValue)
+                                            If (Not currentSharedValue.Text Is Nothing) Then
+                                                value = currentSharedValue.Text.Text
+                                            ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerText)) Then
+                                                value = currentSharedValue.InnerText
+                                            ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerXml)) Then
+                                                value = currentSharedValue.InnerXml
+                                            Else
+                                                value = String.Empty
+                                            End If
+                                        End If
+                                        'Case CellValues.Number
+                                        '    value = value.Replace(".", ",")
+                                End Select
+                            Else
+                                If IsNumeric(value.Replace(".", ",")) Then
+                                    value = value.Replace(".", ",")
+                                End If
+                            End If
+
+                            rowToAdd.Add(myCell.CellReference.ToString, value)
+                        Next
+
+                        toReturn.Add(rowToAdd)
+                    Next
+                End If
+            Next
+            Return toReturn
+        End Function
+
+        <Obsolete("Deprecated:This version can't manage excel rows with empty cells")>
+        Public Shared Function GetExcelRows(ByVal dnnFile As DotNetNuke.Services.FileSystem.FileInfo) As List(Of List(Of String))
+            Dim toReturn As New List(Of List(Of String))
+            Dim currentXlsDocument As SpreadsheetDocument = SpreadsheetDocument.Open(dnnFile.PhysicalPath, False)
+            Dim sheets = currentXlsDocument.WorkbookPart.Workbook.Descendants(Of Sheet)()
+
+            For Each currentSheet As Sheet In sheets
+                Dim myWSPart As WorksheetPart = CType(currentXlsDocument.WorkbookPart.GetPartById(currentSheet.Id), WorksheetPart)
+                Dim rows = myWSPart.Worksheet.GetFirstChild(Of SheetData)().Elements(Of Row)()
+                If rows.Count > 0 Then
+                    For Each myRow In rows
+                        Dim rowToAdd As New List(Of String)
+                        Dim cells = myRow.Elements(Of Cell)()
+                        Dim value As String = String.Empty
+                        Dim idxCell As Integer = 0
+                        Dim idValue As Integer = 0
+                        For Each myCell In cells
+                            If (Not myCell.CellValue Is Nothing) Then
+                                value = myCell.CellValue.Text
+                            Else
+                                value = String.Empty
+                            End If
+
+                            If Not myCell.DataType Is Nothing AndAlso myCell.DataType.Value = CellValues.SharedString Then
+                                If (Integer.TryParse(value, idValue)) Then
+
+                                    Dim currentSharedValue As SharedStringItem = currentXlsDocument.WorkbookPart.SharedStringTablePart.SharedStringTable.Elements(Of SharedStringItem).ElementAt(idValue)
+                                    If (Not currentSharedValue.Text Is Nothing) Then
+                                        value = currentSharedValue.Text.Text
+                                    ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerText)) Then
+                                        value = currentSharedValue.InnerText
+                                    ElseIf (Not String.IsNullOrEmpty(currentSharedValue.InnerXml)) Then
+                                        value = currentSharedValue.InnerXml
+                                    Else
+                                        value = String.Empty
+                                    End If
+                                End If
+                            End If
+
+                            rowToAdd.Add(value)
+
+                        Next
+
+                        toReturn.Add(rowToAdd)
+                    Next
+                End If
+            Next
+            Return toReturn
+        End Function
 
     End Class
 
