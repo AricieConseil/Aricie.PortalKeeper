@@ -3,55 +3,36 @@ Imports System.Xml
 
 Namespace Configuration
 
-    ' <XmlInclude(GetType(CustomErrorAddInfo))> _
-    '<XmlInclude(GetType(CustomErrorsAddInfo))> _
-    '<XmlInclude(GetType(TrustAddInfo))> _
-    <Serializable()> _
-    Public Class CustomAddInfo
-        Inherits AddInfo
-
-        Public Sub New()
-
-        End Sub
-
-        Public Sub New(ByVal elementName As String)
-            Me._ElementName = elementName
-        End Sub
-
-
-        Private _ElementName As String = ""
-
-
-        Public Property ElementName() As String
-            Get
-                Return _ElementName
-            End Get
-            Set(ByVal value As String)
-                _ElementName = value
-            End Set
-        End Property
-
-
-
-    End Class
-
-
-    ''' <summary>
-    ''' Base Class for a add merge node
-    ''' </summary>
-    <XmlRoot("add")> _
-    <XmlInclude(GetType(CustomAddInfo))> _
-    <XmlInclude(GetType(CustomErrorAddInfo))> _
-    <XmlInclude(GetType(CustomErrorsAddInfo))> _
+    '<XmlRoot("add", Namespace:="CustomAddInfo")> _
     <XmlInclude(GetType(ProviderAddInfo))> _
         <XmlInclude(GetType(AppSettingAddInfo))> _
         <XmlInclude(GetType(HttpModuleAddInfo))> _
         <XmlInclude(GetType(HttpHandlerAddInfo))> _
         <XmlInclude(GetType(WebServerAddInfo))> _
-        <XmlInclude(GetType(TrustAddInfo))> _
-        <Serializable()> _
+        <XmlInclude(GetType(CustomAddInfo))> _
+    <XmlRoot("add")> _
+    <Serializable()> _
     Public Class AddInfo
+        Inherits AddInfoBase
+
+    End Class
+
+    ''' <summary>
+    ''' Base Class for a add merge node
+    ''' </summary>
+    '<XmlRoot("add", Namespace:="AddInfo")> _
+    '<XmlRoot("add")> _
+    <XmlInclude(GetType(TrustAddInfo))> _
+    <XmlInclude(GetType(CustomErrorAddInfo))> _
+    <XmlInclude(GetType(CustomErrorsAddInfo))> _
+    <XmlInclude(GetType(AddInfo))> _
+    <Serializable()> _
+    Public Class AddInfoBase
         Implements IXmlSerializable
+
+        Public Sub New()
+
+        End Sub
 
 
         Private _Attributes As New Dictionary(Of String, String)

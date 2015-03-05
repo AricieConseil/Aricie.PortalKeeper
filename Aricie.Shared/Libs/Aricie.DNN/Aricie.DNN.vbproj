@@ -12,6 +12,8 @@
     <FileAlignment>512</FileAlignment>
     <MyType>Windows</MyType>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SGenUseProxyTypes>false</SGenUseProxyTypes>
+    <SGenPlatformTarget>$(Platform)</SGenPlatformTarget>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>
     <OptionStrict>On</OptionStrict>
@@ -54,6 +56,7 @@
     <CodeAnalysisRules>
     </CodeAnalysisRules>
     <CodeAnalysisRuleSet>Migrated rules for Aricie.DNN.ruleset</CodeAnalysisRuleSet>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -179,12 +182,10 @@
     <Compile Include="Config\AppSettingAddInfo.vb" />
     <Compile Include="Config\ComplexNodeInfo.vb" />
     <Compile Include="Config\ConfigActionType.vb" />
-    <Compile Include="Config\ConfigSchema.vb">
-      <DependentUpon>ConfigSchema.xsd</DependentUpon>
-    </Compile>
     <Compile Include="Config\AuthenticationServiceInfo.vb" />
     <Compile Include="Config\ConfigElementInfo.vb" />
     <Compile Include="Config\AppSettingInfo.vb" />
+    <Compile Include="Config\CustomAddInfo.vb" />
     <Compile Include="Config\CustomErrorAddInfo.vb" />
     <Compile Include="Config\CustomErrorDynamicHandlerUpdater.vb" />
     <Compile Include="Config\CustomErrorsAddInfo.vb" />
@@ -581,7 +582,6 @@
   <ItemGroup>
     <None Include="ComponentModel\ComponentModel.cd" />
     <None Include="Config\Config.cd" />
-    <None Include="Config\ConfigSchema.xsd" />
     <None Include="Services\Services.cd" />
   </ItemGroup>
   <ItemGroup>

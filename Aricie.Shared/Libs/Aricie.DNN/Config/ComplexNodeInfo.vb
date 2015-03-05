@@ -2,9 +2,9 @@ Imports System.Xml.Serialization
 
 Namespace Configuration
 
-
+    '<XmlRoot("node", Namespace:="ComplexNodeInfo")> _
+    '<XmlRoot("node")> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
-      <XmlRoot("node")> _
     <Serializable()> _
     Public Class ComplexNodeInfo
         Inherits NodeInfo
@@ -36,7 +36,7 @@ Namespace Configuration
 
 
         <XmlAttribute("key")> _
-        Public Property Key() As String  =""
+        Public Property Key() As String = ""
 
         <XmlAttribute("collision")> _
         Public Property Collision() As NodeCollision = NodeCollision.overwrite

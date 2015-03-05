@@ -2,14 +2,14 @@
 Imports Aricie.DNN.Services.Errors
 
 Namespace Configuration
+    '<XmlType("customErrors")> _
     ''' <summary>
     ''' Custom Errors Add merge node
     ''' </summary>
-    <XmlType("customErrors")> _
     <XmlRoot("customErrors")> _
     <Serializable()> _
     Public Class CustomErrorsAddInfo
-        Inherits AddInfo
+        Inherits AddInfoBase
 
         Public Sub New()
 

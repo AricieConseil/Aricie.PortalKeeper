@@ -6,7 +6,7 @@
       <foldername>Aricie.PortalKeeper</foldername>
       <modulename>Aricie.PortalKeeper</modulename>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
-      <version>04.01.00</version>
+      <version>04.01.01</version>
       <businesscontrollerclass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businesscontrollerclass>
       <resourcefile>Aricie.PortalKeeper_resources.zip</resourcefile>
       <modules>
@@ -38,6 +38,9 @@
         <!-- Assemblies PKP -->
         <file>
           <name>Aricie.PortalKeeper.dll</name>
+        </file>
+        <file>
+          <name>Aricie.PortalKeeper.XmlSerializers.dll</name>
         </file>
         <file>
           <name>Aricie.PortalKeeper.Bitcoin.dll</name>
@@ -83,6 +86,18 @@
         </file>
         <file>
           <name>Interop.SHDocVw.dll</name>
+        </file>
+        <file>
+          <name>IronPython.dll</name>
+        </file>
+        <file>
+          <name>Microsoft.Dynamic.dll</name>
+        </file>
+        <file>
+          <name>Microsoft.Scripting.Core.dll</name>
+        </file>
+        <file>
+          <name>Microsoft.Scripting.dll</name>
         </file>
       </files>
     </folder>

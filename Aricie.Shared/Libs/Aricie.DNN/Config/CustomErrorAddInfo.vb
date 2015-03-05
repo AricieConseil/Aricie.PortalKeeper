@@ -10,7 +10,7 @@ Namespace Configuration
     <XmlRoot("error")> _
     <Serializable()> _
     Public Class CustomErrorAddInfo
-        Inherits AddInfo
+        Inherits AddInfoBase
 
         Public Sub New()
         End Sub

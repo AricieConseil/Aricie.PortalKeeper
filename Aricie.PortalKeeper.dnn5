@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="Aricie.PortalKeeper" type="Module" version="4.1.0">
+    <package name="Aricie.PortalKeeper" type="Module" version="4.1.1">
       <friendlyName>Aricie - PortalKeeper</friendlyName>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
       <owner>
@@ -72,6 +72,10 @@
             <assembly>
               <name>Aricie.PortalKeeper.dll</name>
               <sourceFileName>Aricie.PortalKeeper.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Aricie.PortalKeeper.XmlSerializers.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.XmlSerializers.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>Aricie.PortalKeeper.Bitcoin.dll</name>
@@ -188,6 +192,22 @@
             <assembly>
               <name>Interop.SHDocVw.dll</name>
               <sourceFileName>Interop.SHDocVw.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IronPython.dll</name>
+              <sourceFileName>IronPython.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Microsoft.Dynamic.dll</name>
+              <sourceFileName>Microsoft.Dynamic.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Microsoft.Scripting.Core.dll</name>
+              <sourceFileName>Microsoft.Scripting.Core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Microsoft.Scripting.dll</name>
+              <sourceFileName>Microsoft.Scripting.dll</sourceFileName>
             </assembly>
           </assemblies>
         </component>

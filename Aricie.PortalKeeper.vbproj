@@ -13,6 +13,8 @@
     </RootNamespace>
     <AssemblyName>Aricie.PortalKeeper</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <SGenUseProxyTypes>false</SGenUseProxyTypes>
+    <SGenPlatformTarget>$(Platform)</SGenPlatformTarget>
     <MyType>Custom</MyType>
     <OptionExplicit>On</OptionExplicit>
     <OptionCompare>Binary</OptionCompare>
@@ -52,6 +54,7 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
     <PackageAsSingleFile>false</PackageAsSingleFile>
     <DeployIisAppPath />
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release Trial|AnyCPU'">
     <DefineTrace>true</DefineTrace>
