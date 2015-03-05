@@ -1,15 +1,14 @@
 ﻿Imports System.Xml.Serialization
 
 Namespace Configuration
-
+    ''<XmlType("trust")> _
     ''' <summary>
     ''' Custom Error Add merge node
     ''' </summary>
     <XmlRoot("trust")> _
-    <XmlType("trust")> _
     <Serializable()> _
     Public Class TrustAddInfo
-        Inherits AddInfo
+        Inherits AddInfoBase
 
         Public Sub New()
 

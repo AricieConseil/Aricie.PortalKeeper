@@ -372,6 +372,9 @@ Namespace UI.WebControls
 
         Public Sub RaisePostBackEvent(ByVal eventArgument As String) Implements System.Web.UI.IPostBackEventHandler.RaisePostBackEvent
             Try
+                If Me.DataSource Is Nothing Then
+                    Throw New ApplicationException("Data Source missing from property editor")
+                End If
                 Dim args As String() = Strings.Split(eventArgument, ClientAPI.COLUMN_DELIMITER)
                 If args.Length = 2 AndAlso args(0) = "expand" Then
                     Dim sectionName As String = args(1)

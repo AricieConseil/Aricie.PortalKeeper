@@ -76,10 +76,15 @@ Namespace Collections
                         End If
                         dico.Add(key, value)
                     Catch ex As Exception
+                        
+#If DEBUG Then
+                        Throw
+#Else
                         ExceptionHelper.LogException(ex)
                         While reader.Depth > depth
                             reader.Skip()
                         End While
+#End If
                     Finally
                         reader.ReadEndElement()
                         reader.MoveToContent()

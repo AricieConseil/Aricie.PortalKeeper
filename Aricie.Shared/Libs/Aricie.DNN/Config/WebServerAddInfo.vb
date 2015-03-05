@@ -2,14 +2,15 @@ Imports System.Xml.Serialization
 Imports Aricie.Services
 
 Namespace Configuration
-
+    '<XmlRoot("add")> _
     ''' <summary>
     ''' Base Webserver Add merge node
     ''' </summary>
+    '<XmlRoot("add", Namespace:="WebServerAddInfo")> _
+    '<XmlRoot("add")> _
     <XmlInclude(GetType(HttpModuleAddInfo))> _
-        <XmlInclude(GetType(HttpHandlerAddInfo))> _
-        <XmlRoot("add")> _
-        <Serializable()> _
+    <XmlInclude(GetType(HttpHandlerAddInfo))> _
+    <Serializable()> _
     Public Class WebServerAddInfo
         Inherits AddInfo
 
