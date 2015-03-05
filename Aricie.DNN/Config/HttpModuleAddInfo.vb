@@ -2,11 +2,12 @@ Imports System.Xml.Serialization
 
 Namespace Configuration
 
-
+    '<XmlRoot("add")> _
     ''' <summary>
     ''' HttpModule Add merge node
     ''' </summary>
-    <XmlRoot("add")> _
+    '<XmlRoot("add", Namespace:="HttpModuleAddInfo")> _
+    '<XmlRoot("add")> _
     <Serializable()> _
     Public Class HttpModuleAddInfo
         Inherits WebServerAddInfo

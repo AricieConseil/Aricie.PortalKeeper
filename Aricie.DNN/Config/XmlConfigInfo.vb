@@ -15,6 +15,7 @@ Namespace Configuration
 
         Private _NodesList As New List(Of NodesInfo)
 
+
         <XmlElement("nodes")> _
         Public Property NodesList() As List(Of NodesInfo)
             Get

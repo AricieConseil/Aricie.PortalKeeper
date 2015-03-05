@@ -2,13 +2,15 @@ Imports System.Xml.Serialization
 
 Namespace Configuration
 
-    
+    '<XmlType(AnonymousType:=True)> _
     '<XmlInclude(GetType(CustomErrorAddInfo))> _
     '<XmlInclude(GetType(CustomErrorsAddInfo))> _
     '<XmlInclude(GetType(TrustAddInfo))> _
-    '<XmlInclude(GetType(SimpleNodeInfo))> _
-    '<XmlInclude(GetType(ComplexNodeInfo))> _
-    <XmlRoot("nodes"), XmlType(AnonymousType:=True)> _
+    <XmlInclude(GetType(NodeInfo))> _
+    <XmlInclude(GetType(SimpleNodeInfo))> _
+    <XmlInclude(GetType(ComplexNodeInfo))> _
+    <XmlInclude(GetType(StandardComplexNodeInfo))> _
+    <XmlRoot("nodes")> _
     <Serializable()> _
     Public Class NodesInfo
         'Inherits List(Of NodeInfo)
@@ -16,7 +18,6 @@ Namespace Configuration
         '<nodes configfile="web.config">
 
 
-        Private _Nodes As New List(Of NodeInfo)
 
 
 
@@ -40,20 +41,31 @@ Namespace Configuration
             End Set
         End Property
 
-        ' <XmlElement(GetType(NodeInfo))> _
-        '<XmlElement(GetType(SimpleNodeInfo))> _
-        '<XmlElement(GetType(ComplexNodeInfo))> _
-        '<XmlElement(GetType(StandardComplexNodeInfo))> _
+        '<XmlElement("node")> _
+        ' <XmlElement("node", GetType(NodeInfo))> _
+        '<XmlElement("node", GetType(SimpleNodeInfo))> _
+        '<XmlElement("node", GetType(ComplexNodeInfo))> _
+        '<XmlElement("node", GetType(StandardComplexNodeInfo))> _
+        ' <XmlArrayItemAttribute("node", GetType(NodeInfo))> _
+        '<XmlArrayItemAttribute("node", GetType(SimpleNodeInfo))> _
+        '<XmlArrayItemAttribute("node", GetType(ComplexNodeInfo))> _
+        '<XmlArrayItemAttribute("node", GetType(StandardComplexNodeInfo))> _
+        '<XmlArrayItemAttribute("node")> _
+        '  <XmlArrayAttribute()> _
         <XmlElement("node")> _
-        Public Property Nodes() As List(Of NodeInfo)
-            Get
-                Return _Nodes
-            End Get
-            Set(ByVal value As List(Of NodeInfo))
-                _Nodes = value
-            End Set
-        End Property
+        Public Property Nodes() As New NodesList()
+          
 
 
     End Class
+
+
+    Public Class NodesList
+        Inherits List(Of NodeInfo)
+
+
+    End Class
+
+
+
 End Namespace

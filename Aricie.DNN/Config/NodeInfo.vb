@@ -3,11 +3,11 @@ Imports System.Xml.Serialization
 Namespace Configuration
 
 
-    
+    '<XmlRoot("node", Namespace:="NodeInfo")> _
+    <XmlRoot("node")> _
     <XmlInclude(GetType(SimpleNodeInfo))> _
     <XmlInclude(GetType(ComplexNodeInfo))> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
-    <XmlRoot("node")> _
     <Serializable()> _
     Public Class NodeInfo
 

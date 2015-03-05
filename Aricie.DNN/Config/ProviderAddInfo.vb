@@ -2,11 +2,10 @@ Imports System.Xml.Serialization
 Imports Aricie.Services
 
 Namespace Configuration
-
+    '<XmlRoot("add", Namespace:="ProviderAddInfo")> _
     ''' <summary>
     ''' Providers Add merge node
     ''' </summary>
-    <XmlRoot("add")> _
     <Serializable()> _
     Public Class ProviderAddInfo
         Inherits AddInfo

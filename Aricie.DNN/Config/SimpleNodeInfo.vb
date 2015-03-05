@@ -1,10 +1,8 @@
 Imports System.Xml.Serialization
 
 Namespace Configuration
-
-    '<XmlInclude(GetType(CustomErrorAddInfo))> _
-    '    <XmlInclude(GetType(CustomErrorsAddInfo))> _
-    <XmlRoot("node")> _
+    '<XmlRoot("node", Namespace:="SimpleNodeInfo")> _
+    '<XmlRoot("node")> _
     <Serializable()> _
     Public Class SimpleNodeInfo
         Inherits NodeInfo
