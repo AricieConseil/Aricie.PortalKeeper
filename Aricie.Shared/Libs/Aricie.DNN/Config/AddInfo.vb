@@ -20,8 +20,6 @@ Namespace Configuration
     ''' <summary>
     ''' Base Class for a add merge node
     ''' </summary>
-    '<XmlRoot("add", Namespace:="AddInfo")> _
-    '<XmlRoot("add")> _
     <XmlInclude(GetType(TrustAddInfo))> _
     <XmlInclude(GetType(CustomErrorAddInfo))> _
     <XmlInclude(GetType(CustomErrorsAddInfo))> _

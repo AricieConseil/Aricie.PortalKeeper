@@ -53,106 +53,172 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub OnBeginRequest(ByVal sender As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+            Try
+                Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
 
-            Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
-            keeperContext.SetEngine(keeperContext.CurrentFirewallConfig)
-            'Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
-            If keeperContext.CurrentFirewallConfig.Enabled AndAlso Not keeperContext.RequestOutOfScope Then
-                If Not Me.SecondaryModule Then
+                Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
+                keeperContext.SetEngine(keeperContext.CurrentFirewallConfig)
+                'Dim requestOutInScope As Boolean = keeperContext.RequestOutOfScope
+                If keeperContext.CurrentFirewallConfig.Enabled AndAlso Not keeperContext.RequestOutOfScope Then
+                    If Not Me.SecondaryModule Then
 
-                    If keeperContext.LoggingLevel > LoggingLevel.None Then
-                        Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
-                        keeperContext.LogStartEngine(objPair)
-                    End If
-                    keeperContext.Init(keeperContext.CurrentFirewallConfig)
-                    Me.ProcessRecovery(keeperContext)
-                    Dim dosMatched As Boolean = False
-                    If keeperContext.CurrentFirewallConfig.DosSettings.Enabled Then
-                        keeperContext.LogStart("DoS Evaluation", LoggingLevel.Steps, False)
-                        dosMatched = Me.ProcessDenialOfService(keeperContext)
-                        If keeperContext.LoggingLevel >= LoggingLevel.Steps Then
-                            Dim objPair As New KeyValuePair(Of String, String)("Dos Matched", dosMatched.ToString)
-                            'Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
-                            'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            keeperContext.LogEnd("Dos Evaluation", False, LoggingLevel.Steps, Nothing, objPair)
+                        If keeperContext.LoggingLevel > LoggingLevel.None Then
+                            Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
+                            keeperContext.LogStartEngine(objPair)
                         End If
+                        keeperContext.Init(keeperContext.CurrentFirewallConfig)
+                        Me.ProcessRecovery(keeperContext)
+                        Dim dosMatched As Boolean = False
+                        If keeperContext.CurrentFirewallConfig.DosSettings.Enabled Then
+                            keeperContext.LogStart("DoS Evaluation", LoggingLevel.Steps, False)
+                            dosMatched = Me.ProcessDenialOfService(keeperContext)
+                            If keeperContext.LoggingLevel >= LoggingLevel.Steps Then
+                                Dim objPair As New KeyValuePair(Of String, String)("Dos Matched", dosMatched.ToString)
+                                'Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
+                                'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                                keeperContext.LogEnd("Dos Evaluation", False, LoggingLevel.Steps, Nothing, objPair)
+                            End If
+                        End If
+                        If Not dosMatched Then
+                            Me.ProcessStep(context, RequestEvent.BeginRequest, False)
+                        End If
+                    Else
+                        Me.ProcessRecovery(keeperContext)
+                        Me.ProcessStep(context, RequestEvent.BeginRequestAfterDNN, False)
                     End If
-                    If Not dosMatched Then
-                        Me.ProcessStep(context, RequestEvent.BeginRequest, False)
-                    End If
-                Else
-                    Me.ProcessRecovery(keeperContext)
-                    Me.ProcessStep(context, RequestEvent.BeginRequestAfterDNN, False)
                 End If
-            End If
-            keeperContext.beginRequestPassed = True
+                keeperContext.beginRequestPassed = True
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
 
         Private Sub OnAuthenticateRequest(ByVal sender As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
-            Me.ProcessStep(context, RequestEvent.AuthenticateRequest, False)
+            Try
+                Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+                Me.ProcessStep(context, RequestEvent.AuthenticateRequest, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+
+        
         End Sub
 
         Private Sub PostMapRequestHandler(ByVal sender As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
-            Me.ProcessStep(context, RequestEvent.PostMapRequestHandler, False)
+            Try
+                Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+                Me.ProcessStep(context, RequestEvent.PostMapRequestHandler, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+
+            
         End Sub
 
         Private Sub PreRequestHandlerExecute(ByVal s As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(s, HttpApplication).Context
-            Me.ProcessStep(context, RequestEvent.PreRequestHandlerExecute, False)
-            'Me.ProcessStep(context, RequestEvent.Default, False)
 
-            Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
-            Dim keeperConfig As FirewallConfig = keeperContext.CurrentFirewallConfig
-            If keeperConfig.Enabled Then
-                If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
-                    Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
-                    AddHandler objPage.PreInit, AddressOf Me.Page_PreInit
-                    AddHandler objPage.Init, AddressOf Me.Page_Init
-                    AddHandler objPage.Load, AddressOf Me.Page_Load
-                    AddHandler objPage.PreRender, AddressOf Me.Page_PreRender
-                    AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
+            Try
+                Dim context As HttpContext = DirectCast(s, HttpApplication).Context
+                Me.ProcessStep(context, RequestEvent.PreRequestHandlerExecute, False)
+                'Me.ProcessStep(context, RequestEvent.Default, False)
+
+                Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
+                Dim keeperConfig As FirewallConfig = keeperContext.CurrentFirewallConfig
+                If keeperConfig.Enabled Then
+                    If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
+                        Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
+                        AddHandler objPage.PreInit, AddressOf Me.Page_PreInit
+                        AddHandler objPage.Init, AddressOf Me.Page_Init
+                        AddHandler objPage.Load, AddressOf Me.Page_Load
+                        AddHandler objPage.PreRender, AddressOf Me.Page_PreRender
+                        AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
+                    End If
                 End If
-            End If
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+
+          
         End Sub
 
         Private Sub Page_PreInit(ByVal sender As Object, ByVal args As EventArgs)
-            Dim context As HttpContext = HttpContext.Current
-            PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
-            Me.ProcessStep(context, RequestEvent.PagePreInit, False)
+
+            Try
+                Dim context As HttpContext = HttpContext.Current
+                PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+                Me.ProcessStep(context, RequestEvent.PagePreInit, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
         Private Sub Page_Init(ByVal sender As Object, ByVal args As EventArgs)
+
+            Try
+
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
             Dim context As HttpContext = HttpContext.Current
             Me.ProcessStep(context, RequestEvent.PageInit, False)
         End Sub
 
         Private Sub Page_Load(ByVal sender As Object, ByVal args As EventArgs)
-            Dim context As HttpContext = HttpContext.Current
-            Me.ProcessStep(context, RequestEvent.PageLoad, False)
+
+            Try
+                Dim context As HttpContext = HttpContext.Current
+                Me.ProcessStep(context, RequestEvent.PageLoad, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
         Private Sub Page_PreRender(ByVal sender As Object, ByVal args As EventArgs)
-            Dim context As HttpContext = HttpContext.Current
-            Me.ProcessStep(context, RequestEvent.PagePreRender, False)
+
+            Try
+                Dim context As HttpContext = HttpContext.Current
+                Me.ProcessStep(context, RequestEvent.PagePreRender, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
         Private Sub Page_PreRenderComplete(ByVal sender As Object, ByVal args As EventArgs)
-            Dim context As HttpContext = HttpContext.Current
-            Me.ProcessStep(context, RequestEvent.PagePreRenderComplete, False)
+
+            Try
+                Dim context As HttpContext = HttpContext.Current
+                Me.ProcessStep(context, RequestEvent.PagePreRenderComplete, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
         Private Sub PostRequestHandlerExecute(ByVal sender As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
-            Me.ProcessStep(context, RequestEvent.PostRequestHandlerExecute, False)
+
+            Try
+                Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+                Me.ProcessStep(context, RequestEvent.PostRequestHandlerExecute, False)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
         Private Sub OnEndRequest(ByVal sender As Object, ByVal e As EventArgs)
-            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
-            Me.ProcessStep(context, RequestEvent.EndRequest, True)
+
+            Try
+                Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+                Me.ProcessStep(context, RequestEvent.EndRequest, True)
+            Catch ex As Exception
+                Exceptions.LogException(ex)
+            End Try
+           
         End Sub
 
 

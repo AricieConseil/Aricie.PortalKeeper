@@ -133,14 +133,6 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="OpenRasta, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\OpenRasta\OpenRasta.dll</HintPath>
-    </Reference>
-    <Reference Include="OpenRasta.Hosting.AspNet, Version=2.0.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\OpenRasta\OpenRasta.Hosting.AspNet.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -214,11 +206,9 @@
     <Compile Include="Components\Providers\Action\ProfileLoadActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileSaveActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileType.vb" />
-    <Compile Include="Components\Engines\RestServices\DynamicRestHandler.vb" />
     <Compile Include="Components\Engines\RestServices\DynamicRestMethod.vb" />
     <Compile Include="Components\Engines\RestServices\OperationResultType.vb" />
     <Compile Include="Components\Engines\RestServices\RestHandlerType.vb" />
-    <Compile Include="Components\Engines\RestServices\ReturnRestOperationAction.vb" />
     <Compile Include="Components\Providers\Action\RunPython.vb" />
     <Compile Include="Components\Services\IronPython\IronPython.vb" />
     <Compile Include="Components\Services\IronPython\IronPythonScriptHost.vb" />
@@ -226,11 +216,7 @@
     <Compile Include="Components\Services\Web\CompressionEnabledWebClient.vb">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Components\Engines\Firewall\DNNAuthenticationProvider.vb" />
-    <Compile Include="Components\Engines\Firewall\FileUploadHandler.vb" />
-    <Compile Include="Components\Engines\RestServices\OpenRastaLogger.vb" />
     <Compile Include="Components\Engines\RestServices\RestService.vb" />
-    <Compile Include="Components\Engines\RestServices\RestServicesConfiguration.vb" />
     <Compile Include="Components\Engines\RestServices\RestServicesSettings.vb" />
     <Compile Include="Components\DNN\KeeperModuleSettings.vb" />
     <Compile Include="Components\Core\ParametersMode.vb" />
@@ -391,6 +377,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aricie.PortalKeeper.Default.config">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Aricie.PortalKeeper - Light.dnn5">
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="Aricie.PortalKeeper.Light.Default.config" />
+    <Content Include="Aricie.PortalKeeper.Full.Default.config">
       <SubType>Designer</SubType>
     </Content>
     <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll">

@@ -9167,4 +9167,16 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="WebRequestInfo`1_SwallowWebExceptions.Text" xml:space="preserve">
     <value>Ignore Web Exceptions</value>
   </data>
+  <data name="OutputCachingStrategy_AddArrOptOutHeaders.Help" xml:space="preserve">
+    <value>Since IIS standard load-balancer, Application Request Routing (ARR), adds affinity cookies to the http responses to route the clients to a a single server, that would also concern all clients using a single cached version. Fortunately, since ARR version 3.0, Microsoft provides an opt-out mechanism through a dedicated header, which prevents the cookie from being generated. Check here to opt out from ARR affinity by generating such a response header.</value>
+  </data>
+  <data name="OutputCachingStrategy_AddArrOptOutHeaders.Text" xml:space="preserve">
+    <value>Add ARR Opt Out Headers</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByContentEncodings.Help" xml:space="preserve">
+    <value>Allows to cache both compressed and uncompressed versions of the response content. Enter a semi colon separated list of encoding values, by which to vary the cache</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryByContentEncodings.Text" xml:space="preserve">
+    <value>Vary By Content Encoding</value>
+  </data>
 </root>
