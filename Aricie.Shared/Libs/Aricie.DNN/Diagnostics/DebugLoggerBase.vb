@@ -308,6 +308,10 @@ Namespace Diagnostics
             objEventLogInfo.AddProperty("Thread Culture", objToLog.ThreadCulture)
             objEventLogInfo.AddProperty("AppDomain Id", AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture))
             objEventLogInfo.AddProperty("Process Id", Process.GetCurrentProcess.Id.ToString(CultureInfo.InvariantCulture))
+            objEventLogInfo.AddProperty("Server Name", DotNetNuke.Common.Globals.ServerName)
+            objEventLogInfo.AddProperty("IP Address", DnnContext.Current.IPAddress.ToString)
+            objEventLogInfo.AddProperty("Current User Name", DotNetNuke.Entities.Users.UserController.GetCurrentUserInfo().Username)
+
         End Sub
 
 

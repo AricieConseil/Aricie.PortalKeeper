@@ -5,8 +5,6 @@ Namespace Configuration
     ''' <summary>
     ''' HttpHandler Add merge node
     ''' </summary>
-    '<XmlRoot("add", Namespace:="HttpHandlerAddInfo")> _
-    '<XmlRoot("add")> _
     <Serializable()> _
     Public Class HttpHandlerAddInfo
         Inherits WebServerAddInfo

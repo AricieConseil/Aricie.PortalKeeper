@@ -19,6 +19,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits ProviderHost(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
         Implements IExpressionVarsProvider
 
+        Private Const DefaultEventStep As String = "Default"
+
         Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
@@ -49,11 +51,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim prov As IActionProvider(Of TEngineEvents) = element.GetProvider
                 Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
                 If element.LifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
-                        OrElse (element.LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = "Default" _
+                        OrElse (element.LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
                                 AndAlso (prov.Config.DefaultTEngineEvents.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
-                                         OrElse (prov.Config.DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = "Default" _
+                                         OrElse (prov.Config.DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
                                                  AndAlso (actionContext.CurrentRule Is Nothing _
-                                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent)))) Then
+                                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent) _
+                                                        OrElse prov.Config.MinTEngineEvents.ToString(CultureInfo.InvariantCulture) = prov.Config.MaxTEngineEvents.ToString(CultureInfo.InvariantCulture)))) Then
 
                     Try
                         If intCurrEvent > 0 AndAlso prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _

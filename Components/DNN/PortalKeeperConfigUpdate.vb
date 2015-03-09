@@ -1,5 +1,5 @@
 Imports Aricie.DNN.Configuration
-Imports OpenRasta.Hosting.AspNet
+'Imports OpenRasta.Hosting.AspNet
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -43,12 +43,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function GetConfigElements() As System.Collections.Generic.List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
             Dim toReturn As New List(Of IConfigElementInfo)
 
-            Dim toAdd As WebServerElementInfo
+            'Dim toAdd As WebServerElementInfo
             'Jesse:      OpenRasta()
-            toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
-            toReturn.Add(toAdd)
-            toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
-            toReturn.Add(toAdd)
+            'toAdd = New HttpModuleInfo("OpenRastaModule", GetType(OpenRastaModule), "managedHandler")
+            'toReturn.Add(toAdd)
+            'toAdd = New HttpHandlerInfo("OpenRastaHandler", GetType(OpenRastaHandler), "*.rastahook", "*", "integratedMode")
+            'toReturn.Add(toAdd)
 
             Return toReturn
         End Function

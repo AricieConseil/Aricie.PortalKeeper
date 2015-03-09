@@ -5,8 +5,6 @@ Namespace Configuration
     ''' <summary>
     ''' AppSettings Add merge node
     ''' </summary>
-    '<XmlRoot("add", Namespace:="AppSettingAddInfo")> _
-    '<XmlRoot("add")> _
     Public Class AppSettingAddInfo
         Inherits AddInfoBase
 

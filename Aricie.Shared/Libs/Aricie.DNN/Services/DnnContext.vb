@@ -20,6 +20,7 @@ Imports DotNetNuke.Common.Utilities
 Imports System.Web.UI
 Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
+Imports System.Net.NetworkInformation
 
 Namespace Services
     ''' <summary>
@@ -445,6 +446,14 @@ Namespace Services
                 If _IPAddress Is Nothing Then
                     If Me.Request IsNot Nothing Then
                         IPAddress.TryParse(Common.GetExternalIPAddress(Me.Request), _IPAddress)
+                    Else
+                        For Each netif As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
+                            Dim properties As IPInterfaceProperties = netif.GetIPProperties()
+                            For Each dns As IPAddress In properties.DnsAddresses
+                                _IPAddress = dns
+                                Return dns
+                            Next
+                        Next
                     End If
                 End If
                 Return _IPAddress

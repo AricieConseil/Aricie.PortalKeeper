@@ -6,8 +6,6 @@ Namespace Configuration
     ''' <summary>
     ''' Base Webserver Add merge node
     ''' </summary>
-    '<XmlRoot("add", Namespace:="WebServerAddInfo")> _
-    '<XmlRoot("add")> _
     <XmlInclude(GetType(HttpModuleAddInfo))> _
     <XmlInclude(GetType(HttpHandlerAddInfo))> _
     <Serializable()> _
