@@ -24,7 +24,7 @@ Namespace Services.Caching
 
         Private _Verbs As String = "get"
         Private _VerbsList As List(Of String)
-
+        Private _VaryByContentEncodings As String = "gzip;deflate"
 
 
         Public Property Enabled() As Boolean
@@ -84,7 +84,7 @@ Namespace Services.Caching
         End Property
 
         <ExtendedCategory("Scope")> _
-         Public Property EmptyQueryStringOnly() As Boolean
+        Public Property EmptyQueryStringOnly() As Boolean
             Get
                 Return _EmptyQueryStringOnly
             End Get
@@ -142,7 +142,7 @@ Namespace Services.Caching
 
         <ExtendedCategory("Policy")> _
         Public Property VaryByBrowser As Boolean = True
-       
+
         <ExtendedCategory("Policy")> _
         Public Property VaryByUserLanguage As Boolean
 
@@ -165,6 +165,7 @@ Namespace Services.Caching
             End Set
         End Property
 
+
         <Browsable(False)> _
         Public ReadOnly Property VaryByHeadersList() As List(Of String)
             Get
@@ -181,6 +182,38 @@ Namespace Services.Caching
 
         <ExtendedCategory("Policy")> _
         Public Property ClearCookies As Boolean = True
+
+        <ExtendedCategory("Policy")> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        <LineCount(2), Width(400)>
+        Public Property VaryByContentEncodings As String
+            Get
+                Return _VaryByContentEncodings
+            End Get
+            Set(value As String)
+                _VaryByContentEncodings = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Policy")> _
+        Public Property AddArrOptOutHeaders As Boolean
+
+
+        Private _VaryByContentEncodingsList As List(Of String)
+
+        <Browsable(False)> _
+        Public ReadOnly Property VaryByContentEncodingsList() As List(Of String)
+            Get
+                If _VaryByContentEncodingsList Is Nothing Then
+                    SyncLock _VaryBy
+                        If _VaryByContentEncodingsList Is Nothing Then
+                            _VaryByContentEncodingsList = Common.ParseStringList(_VaryByContentEncodings, ";"c)
+                        End If
+                    End SyncLock
+                End If
+                Return _VaryByContentEncodingsList
+            End Get
+        End Property
 
 
         Public Function CalculateVaryByKey(ByVal request As HttpRequest) As String
@@ -201,7 +234,7 @@ Namespace Services.Caching
 
 
         Public Function MatchRequest(objContext As HttpContext) As Boolean
-            Dim currentVerb As String = objContext.Request.HttpMethod.ToUpperInvariant
+            Dim currentVerb As String = objContext.Request.HttpMethod.ToUpperInvariant()
             If VerbsList.Any(Function(objVerb) objVerb.ToUpperInvariant = currentVerb) Then
                 If (Not EmptyQueryStringOnly) OrElse objContext.Request.Url.Query.IsNullOrEmpty() Then
                     Return True
@@ -244,6 +277,13 @@ Namespace Services.Caching
             If Me.VaryByBrowser Then
                 objResponse.Cache.SetVaryByCustom("browser")
             End If
+            For Each strEncoding As String In VaryByContentEncodingsList
+                objResponse.Cache.VaryByContentEncodings.Item(strEncoding) = True
+            Next
+            If AddArrOptOutHeaders Then
+                objResponse.Headers.Add("Arr-Disable-Session-Affinity", "True")
+            End If
+
 
             Dim callBackInfo As New ValidationCallBackInfo(timeStamp, True, expiration)
 
