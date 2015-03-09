@@ -92,7 +92,7 @@
             <assembly>
               <name>PowerCollections.dll</name>
               <sourceFileName>PowerCollections.dll</sourceFileName>
-            </assembly
+            </assembly>
             <assembly>
               <name>Google.GData.Client.dll</name>
               <sourceFileName>Google.GData.Client.dll</sourceFileName>
