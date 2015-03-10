@@ -8,6 +8,7 @@
 
 
 
+
         Private Shared _Sink As New Dictionary(Of String, Object)
 
         Public Overrides Function GetCache(ByVal key As String) As Object
@@ -45,6 +46,12 @@
         End Sub
 
 
+
+        Public Overrides Sub ClearCache()
+            SyncLock _Sink
+                _Sink.Clear()
+            End SyncLock
+        End Sub
 
     End Class
 End Namespace

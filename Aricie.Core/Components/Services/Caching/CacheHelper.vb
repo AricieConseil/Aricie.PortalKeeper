@@ -31,11 +31,17 @@ Namespace Services
             SystemServiceProvider.Instance().RemoveCache(key)
         End Sub
 
+
+
         Public Sub SetCacheDependant(ByVal Key As String, ByVal value As Object, ByVal expiration As TimeSpan, _
                                                 ByVal ParamArray dependencies() As String)
 
             SystemServiceProvider.Instance().SetCacheDependant(Key, value, expiration, dependencies)
 
+        End Sub
+
+        Public Sub ClearCache()
+            SystemServiceProvider.Instance().ClearCache()
         End Sub
 
 #End Region
@@ -103,7 +109,7 @@ Namespace Services
 
             Dim key As String = Constants.GetKey(Of T)(args)
 
-            SetCache(key, obj)
+            SetCache(key, obj, Constants.Cache.GlobalExpiration)
 
         End Sub
 
@@ -139,7 +145,7 @@ Namespace Services
 
             Dim key As String = Constants.GetKey(Of T, H)(args)
 
-            SetCache(key, obj)
+            SetCacheDependant(key, obj, Constants.Cache.GlobalExpiration)
 
         End Sub
 
