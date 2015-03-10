@@ -300,7 +300,7 @@ Namespace Settings
                 End If
                 If useCache Then
                     If Not fileExists Then
-                        CacheHelper.SetCache(fileName, toReturn)
+                        CacheHelper.SetCache(fileName, toReturn, Constants.Cache.GlobalExpiration)
                     Else
                         CacheHelper.SetCacheDependant(fileName, toReturn, Constants.Cache.NoExpiration, fileName)
                     End If

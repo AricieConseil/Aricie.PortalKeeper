@@ -13,6 +13,7 @@ Namespace Providers
     Public Class DotNetNukeServiceProvider
         Inherits SystemServiceProvider
 
+
         ''' <summary>
         ''' Returns cached object
         ''' </summary>
@@ -124,6 +125,11 @@ Namespace Providers
             Else
                 DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
             End If
+        End Sub
+
+        Public Overrides Sub ClearCache()
+            DataCache.RemoveCache(Constants.Cache.Dependency)
+            DataCache.ClearHostCache(True)
         End Sub
     End Class
 End Namespace
