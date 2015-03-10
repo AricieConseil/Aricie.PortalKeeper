@@ -69,6 +69,8 @@
         Public MustOverride Sub SetCacheDependant(ByVal key As String, ByVal value As Object, _
                                                    ByVal absoluteExpiration As TimeSpan, ByVal ParamArray dependencies() As String)
 
+        Public MustOverride Sub ClearCache()
+
         'Public MustOverride Function CreateObject(ByVal typeName As String) As Object
 
         Public Overridable Sub LogException(ByVal ex As Exception)
