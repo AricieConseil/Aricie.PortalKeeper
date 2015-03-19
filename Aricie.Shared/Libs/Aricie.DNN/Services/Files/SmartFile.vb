@@ -257,10 +257,17 @@ Namespace Services.Files
         End Property
 
 
-        <ExtendedCategory("Content")> _
+        <Browsable(False)> _
         Public ReadOnly Property Size As Integer
             Get
                 Return Me._PayLoad.Length
+            End Get
+        End Property
+
+        <ExtendedCategory("Content")> _
+        Public ReadOnly Property FormattedSize As String
+            Get
+                Return BytesToString(Size)
             End Get
         End Property
 

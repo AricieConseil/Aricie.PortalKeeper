@@ -435,7 +435,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Dim objStrem As Stream = objRep.GetResponseStream()
                             If objStrem IsNot Nothing Then
                                 Dim objEncoding As Encoding = Nothing
-                                If Not objRep.ContentType.IsNullOrEmpty Then
+                                If Not objRep.ContentType.IsNullOrEmpty() Then
                                     objEncoding = Me.GetEncodingFromContentType(objRep.ContentType)
                                 End If
                                 If objEncoding IsNot Nothing Then

@@ -83,7 +83,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Overrides Function Equals(ByVal obj As Object) As Boolean
-            Dim objToCompare As StringTransformInfo = CType(obj, StringTransformInfo)
+            Dim objToCompare As StringTransformInfo = TryCast(obj, StringTransformInfo)
             If objToCompare Is Nothing Then
                 Return False
             End If

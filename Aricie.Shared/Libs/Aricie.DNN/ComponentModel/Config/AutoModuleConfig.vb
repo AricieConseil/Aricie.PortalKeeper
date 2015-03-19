@@ -1,4 +1,6 @@
-﻿Namespace ComponentModel
+﻿Imports Aricie.DNN.Settings
+
+Namespace ComponentModel
     ''' <summary>
     ''' Generic self referencing self identifying module configuration class
     ''' </summary>
@@ -14,6 +16,16 @@
 
 
         'End Sub
+
+        Public Property ModuleInstance(mid As Integer) As TConfigClass
+            Get
+                Return SettingsController.GetModuleSettings(Of TConfigClass)(SettingsScope.ModuleSettings, mid)
+            End Get
+            Set(value As TConfigClass)
+                SettingsController.SetModuleSettings(Of TConfigClass)(SettingsScope.ModuleSettings, mid, value)
+            End Set
+        End Property
+
 
         Public MustOverride Function GetModuleName() As String Implements IModuleIdentity.GetModuleName
 

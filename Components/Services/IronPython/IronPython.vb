@@ -1,5 +1,7 @@
 ﻿Imports System.ComponentModel
 Imports Aricie.DNN.Services
+Imports Aricie.DNN.Entities
+Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -9,6 +11,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Command
     End Enum
 
+    <Serializable()> _
+    Public Class ExtendedHtmlScraps
+        Inherits HtmlPageScrapsInfo(Of ExtendedHtmlScrap)
+
+        <ExtendedCategory("Advanced")> _
+        Public Property Python As New EnabledFeature(Of IronPython)
+
+    End Class
+
+    <Serializable()> _
+    Public Class ExtendedHtmlScrap
+        Inherits HtmlPageScrapInfo
+
+        <ExtendedCategory("Custom")> _
+        Public Property Python As New EnabledFeature(Of IronPython)
+
+    End Class
 
     <Serializable()> _
     Public Class IronPython

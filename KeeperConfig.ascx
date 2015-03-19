@@ -33,24 +33,13 @@
             </div>
         </div>
         <div id="divUserBot" runat="server" visible="false" class="SubDiv">
-            <%--<asp:Label ID="lblUserBot" CssClass="Head" runat="server" ResourceKey="lblUserBot" /><br />--%>
-            <%--<div class="SubDiv">--%>
                 <aricie:AriciePropertyEditorControl ID="ctUserBotEntities" EditControlStyle-CssClass="NormalTextBox"
                     EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                     GroupHeaderIncludeRule="True" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                     GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"
                     LabelWidth="200px" />
-            <%--</div>--%>
             <div class="CommandsButtons DNNAligncenter" id="divUserBotCmds" runat="server">
                 <div class="SubDiv" id="divActionCommands" visible="False" runat="server" />
-                <%-- <div class="SubDiv">
-                    <dnn:CommandButton ID="cmdSaveUserBot" runat="server" ImageUrl="~/images/save.gif"
-                        ResourceKey="cmdSaveUserBot" />
-                    <dnn:CommandButton ID="cmdCancelUserBot" runat="server" ImageUrl="~/images/cancel.gif"
-                        ResourceKey="cmdCancel" CausesValidation="false" />
-                    <dnn:CommandButton ID="cmdDeleteUserBot" runat="server" ImageUrl="~/images/delete.gif"
-                        ResourceKey="cmdDeleteUserBot" CausesValidation="false" />
-                </div>--%>
             </div>
             <asp:Label ID="lblBotDefinition" CssClass="Head" runat="server" Visible="false" ResourceKey="lblBotDefinition" /><br />
             <div class="SubDiv">

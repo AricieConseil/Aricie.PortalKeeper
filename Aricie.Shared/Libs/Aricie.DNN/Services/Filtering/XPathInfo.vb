@@ -85,7 +85,7 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overridable Property IsHtmlContent() As Boolean
+        Public Overridable Property IsHtmlContent() As Boolean = True
 
         <ExtendedCategory("XPathSettings")> _
         Public Property EvaluateExpression As Boolean
@@ -110,7 +110,7 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
-        Public Property SingleSelect() As Boolean
+        Public Property SingleSelect() As Boolean = True
 
         
 

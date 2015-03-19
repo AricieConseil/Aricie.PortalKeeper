@@ -5556,10 +5556,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="SmartFile_Sign.Text" xml:space="preserve">
     <value>Sign</value>
   </data>
-  <data name="SmartFile_Size.Help" xml:space="preserve">
+  <data name="SmartFile_FormattedSize.Help" xml:space="preserve">
     <value>This is the size of the payload in bytes using utf-8 encoding</value>
   </data>
-  <data name="SmartFile_Size.Text" xml:space="preserve">
+  <data name="SmartFile_FormattedSize.Text" xml:space="preserve">
     <value>Size</value>
   </data>
   <data name="SmartFile_Verify.Text" xml:space="preserve">
@@ -7002,19 +7002,19 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Trace</value>
   </data>
   <data name="XmlConfigElementInfo_Install.Text" xml:space="preserve">
-    <value>Install Http handler in web.config</value>
+    <value>Register Component in web.config File</value>
   </data>
   <data name="XmlConfigElementInfo_Installed.Help" xml:space="preserve">
-    <value>This indicates if the HttpHandler was registed in web.config. </value>
+    <value>This indicates if the Component was registered in web.config. </value>
   </data>
   <data name="XmlConfigElementInfo_Installed.Text" xml:space="preserve">
     <value>Installed</value>
   </data>
   <data name="XmlConfigElementInfo_Uninstall.Text" xml:space="preserve">
-    <value>Uninstall Http handler from web.config</value>
+    <value>Uninstall Component from web.config</value>
   </data>
   <data name="XmlConfigElementInfo_Update.Text" xml:space="preserve">
-    <value>Update web.config element with new values</value>
+    <value>Update web.config component with new values</value>
   </data>
   <data name="XmlNamedConfigElementInfo_Name.Help" xml:space="preserve">
     <value>Enter a valid web.config name for your HttpHandler.</value>
@@ -9178,5 +9178,251 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="OutputCachingStrategy_VaryByContentEncodings.Text" xml:space="preserve">
     <value>Vary By Content Encoding</value>
+  </data>
+  <data name="ActionTree`1_Synonym.Help" xml:space="preserve">
+    <value>Map several keys to the same action by using synonyms refering to an existing configuration.</value>
+  </data>
+  <data name="ActionTree`1_Synonym.Text" xml:space="preserve">
+    <value>Synonym</value>
+  </data>
+  <data name="ExpressionFilterInfo_Categorization.Header" xml:space="preserve">
+    <value>Categorization</value>
+  </data>
+  <data name="ExpressionFilterInfo_Categorization.Help" xml:space="preserve">
+    <value>You can define a dictionary of categories with matching words, to transform your input strings into a series of well defined categories, with or without a default value for unrecognised inputs.</value>
+  </data>
+  <data name="ExpressionFilterInfo_Categorization.Text" xml:space="preserve">
+    <value>Categorization Dictionary</value>
+  </data>
+  <data name="FirewallConfig_Compression.Header" xml:space="preserve">
+    <value>Compression</value>
+  </data>
+  <data name="FirewallConfig_UrlCompression.Help" xml:space="preserve">
+    <value>Http Compression is a web.config parameter that can be activated in IIS or manually edited with additional parameters available. Use the following form to update the web.config file accordingly.</value>
+  </data>
+  <data name="FirewallConfig_UrlCompression.Text" xml:space="preserve">
+    <value>Url Compression Configuration</value>
+  </data>
+  <data name="UrlCompressionInfo_DoDynamicCompression.Help" xml:space="preserve">
+    <value>Indicates whether dynamic pages and content should be compressed. Note that in order to define the corresponding web.config file section, it must not be forbiden at the web site level.</value>
+  </data>
+  <data name="UrlCompressionInfo_DoDynamicCompression.Text" xml:space="preserve">
+    <value>Do Dynamic Compression</value>
+  </data>
+  <data name="UrlCompressionInfo_DoStaticCompression.Help" xml:space="preserve">
+    <value>Indicates whether static files should be compressed, as opposed to dynamic pages and content. Note that in order to define the corresponding web.config file section, it must not be forbiden at the web site level.</value>
+  </data>
+  <data name="UrlCompressionInfo_DoStaticCompression.Text" xml:space="preserve">
+    <value>Do Static Compression</value>
+  </data>
+  <data name="UrlCompressionInfo_DynamicCompressionBeforeCache.Help" xml:space="preserve">
+    <value>When using dynamic compression in conjunction with output caching, you may define here that compression should be done before caching. Make sure that you set a VaryByContentEncoding="gzip;deflate" directive to properly support clients with various compression policies, and be aware that this disables kernel caching, thus at a small cost, that might be compensated by the gain in CPU and bandwidth.</value>
+  </data>
+  <data name="UrlCompressionInfo_DynamicCompressionBeforeCache.Text" xml:space="preserve">
+    <value>Compress Before Cache</value>
+  </data>
+  <data name="CategorizationInfo_Comparer.Text" xml:space="preserve">
+    <value>Comparer</value>
+  </data>
+  <data name="CategorizationInfo_Compariser.Help" xml:space="preserve">
+    <value>The following parameters define what comparer is used to build the categories' dictionary.</value>
+  </data>
+  <data name="CategorizationInfo_Comparison.Header" xml:space="preserve">
+    <value>Comparison</value>
+  </data>
+  <data name="CategorizationInfo_Comparison.Help" xml:space="preserve">
+    <value>Choose a method of comparison to search for the category words in the input text.</value>
+  </data>
+  <data name="CategorizationInfo_Comparison.Text" xml:space="preserve">
+    <value>Comparison</value>
+  </data>
+  <data name="CategorizationInfo_DefaultToUnchanged.Help" xml:space="preserve">
+    <value>You can choose to leave the input string unchanged when no category is found, rather than set to a default value</value>
+  </data>
+  <data name="CategorizationInfo_DefaultToUnchanged.Text" xml:space="preserve">
+    <value>Default Unchanged</value>
+  </data>
+  <data name="CategorizationInfo_DefaultValue.Help" xml:space="preserve">
+    <value>This is the value returned when no category is found</value>
+  </data>
+  <data name="CategorizationInfo_DefaultValue.Text" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="CategorizationInfo_Mode.Help" xml:space="preserve">
+    <value>There are 2 modes, "Dictionary contains input", means the dictionary of categorised terms must contains a key matching the input givent the defined comparer (faster). "Input contains key", means the input string must contains one of the defined words (more flexible but slower).</value>
+  </data>
+  <data name="CategorizationInfo_Mode.Text" xml:space="preserve">
+    <value>Comparison Mode</value>
+  </data>
+  <data name="CategorizationInfo_SubTree.Help" xml:space="preserve">
+    <value>Categories are defined as a dictionary binding categories as keys to lists of matching words. Enter a new key to add a category, and start adding new words. </value>
+  </data>
+  <data name="CategorizationInfo_SubTree.Text" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="ComparerInfo_Comparison.Help" xml:space="preserve">
+    <value>Choose amongst the available string comparison modes</value>
+  </data>
+  <data name="ComparerInfo_Comparison.Text" xml:space="preserve">
+    <value>Comparison</value>
+  </data>
+  <data name="ComparerInfo_CultureMode.Help" xml:space="preserve">
+    <value>There are several modes to define the cutlture used in the custom culture aware comparer</value>
+  </data>
+  <data name="ComparerInfo_CultureMode.Text" xml:space="preserve">
+    <value>Culture Mode</value>
+  </data>
+  <data name="ComparerInfo_CustomCultureLocale.Help" xml:space="preserve">
+    <value>Enter a culture code to set the comparer's custom culture</value>
+  </data>
+  <data name="ComparerInfo_CustomCultureLocale.Text" xml:space="preserve">
+    <value>Custom Culture Code</value>
+  </data>
+  <data name="CurrentCulture.Text" xml:space="preserve">
+    <value>Specific Culture</value>
+  </data>
+  <data name="CurrentCultureIgnoreCase.Text" xml:space="preserve">
+    <value>Specific Culture - Ignore Case</value>
+  </data>
+  <data name="DictionaryContainsInput.Text" xml:space="preserve">
+    <value>Dictionary contains Input</value>
+  </data>
+  <data name="InputContainsKey.Text" xml:space="preserve">
+    <value>Input contains Key</value>
+  </data>
+  <data name="InvariantCulture.Text" xml:space="preserve">
+    <value>Invariant Culture</value>
+  </data>
+  <data name="InvariantCultureIgnoreCase.Text" xml:space="preserve">
+    <value>Invariant Culture - Ignore Case</value>
+  </data>
+  <data name="Ordinal.Text" xml:space="preserve">
+    <value>Ordinal</value>
+  </data>
+  <data name="OrdinalIgnoreCase.Text" xml:space="preserve">
+    <value>Ordinal - Ignore Case</value>
+  </data>
+  <data name="CategorizationInfo_Comparizon.Help" xml:space="preserve">
+    <value>Select the string comparison to use with the contains search.</value>
+  </data>
+  <data name="CategorizationInfo_Comparizon.Text" xml:space="preserve">
+    <value>String Comparison</value>
+  </data>
+  <data name="ExtendedHtmlScraps_Python.Help" xml:space="preserve">
+    <value>You can optionally add a python script that will be run once all other actions have played, in order to edit the results dictionary of values to be inserted or updated in the target Google spreadsheet.</value>
+  </data>
+  <data name="ExtendedHtmlScraps_Python.Text" xml:space="preserve">
+    <value>Custom Python Script (global)</value>
+  </data>
+  <data name="ExtendedHtmlScrap_Python.Help" xml:space="preserve">
+    <value>You can optionally add a python script that will be run once all other actions have played, in order to edit the results dictionary of values to be inserted or updated in the target Google spreadsheet.</value>
+  </data>
+  <data name="ExtendedHtmlScrap_Python.Text" xml:space="preserve">
+    <value>Custom Python Script</value>
+  </data>
+  <data name="FilteredString_Filter.Help" xml:space="preserve">
+    <value>Define a filter to process your input string</value>
+  </data>
+  <data name="FilteredString_Filter.Text" xml:space="preserve">
+    <value>Filter</value>
+  </data>
+  <data name="FilteredString_Source.Help" xml:space="preserve">
+    <value>Enter an expression that evaluates to the string to filter</value>
+  </data>
+  <data name="FilteredString_Source.Text" xml:space="preserve">
+    <value>Source Expression</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_PrimaryKey.Help" xml:space="preserve">
+    <value>Enter a list of column headers, the columns of which make up the identifier of spreadsheet records.</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_PrimaryKey.Text" xml:space="preserve">
+    <value>Primary Key Columns</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Requests.Help" xml:space="preserve">
+    <value>Enter here one or several search urls, specifying whether to use a web client or a web browser.</value>
+  </data>
+  <data name="HtmlPageScrapInfo_Requests.Text" xml:space="preserve">
+    <value>Search Requests</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_AdditionalColumns.Help" xml:space="preserve">
+    <value>You can optionally configure additional columns computed and filtered from existing columns.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_AdditionalColumns.Text" xml:space="preserve">
+    <value>Additional Columns</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_Advanced.Header" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_Custom.Help" xml:space="preserve">
+    <value>Enter custom pairs of column names and static values to be added to the result fields.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_Custom.Text" xml:space="preserve">
+    <value>Custom Values</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_Global.Header" xml:space="preserve">
+    <value>Global</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_MaxNbPages.Help" xml:space="preserve">
+    <value>This is a global limit to the number of pages harvested for each scrap, which overwrites their individual limit configured. 0 means no global limit configured.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_MaxNbPages.Text" xml:space="preserve">
+    <value>Max Nb Pages / Scrap (global)</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_MaxResultsPerPage.Help" xml:space="preserve">
+    <value>This is the maximum number of individual result per page processed and saved to the spreadsheet. 0 means no limit configured.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_MaxResultsPerPage.Text" xml:space="preserve">
+    <value>Max Nb Results / Page (global)</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_PageScraps.Header" xml:space="preserve">
+    <value>Page Scraps</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_PageScraps.Help" xml:space="preserve">
+    <value>Edit existing or create new page scraps, by defining urls and means to extract data from html content.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_PageScraps.Text" xml:space="preserve">
+    <value>Individiual Page Scraps</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_PrimaryKeys.Help" xml:space="preserve">
+    <value>Enter the list of column names that identify uniquely a result record in the target spreadsheet.</value>
+  </data>
+  <data name="HtmlPageScrapsInfo`1_PrimaryKeys.Text" xml:space="preserve">
+    <value>Primary Keys</value>
+  </data>
+  <data name="HtmlRequestInfo_Url.Help" xml:space="preserve">
+    <value>Enter a base search Url to retrieve result pages.</value>
+  </data>
+  <data name="HtmlRequestInfo_Url.Text" xml:space="preserve">
+    <value>Url</value>
+  </data>
+  <data name="OneOrMore`1_More.Help" xml:space="preserve">
+    <value>Manage a list of additional items here.</value>
+  </data>
+  <data name="OneOrMore`1_More.Text" xml:space="preserve">
+    <value>Additional Values</value>
+  </data>
+  <data name="OneOrMore`1_One.Help" xml:space="preserve">
+    <value>This is your initial item.</value>
+  </data>
+  <data name="OneOrMore`1_One.Text" xml:space="preserve">
+    <value>Initial Value</value>
+  </data>
+  <data name="Column.Text" xml:space="preserve">
+    <value>Column</value>
+  </data>
+  <data name="HtmlScrapDetailRequestInfo_UrlMode.Help" xml:space="preserve">
+    <value>There are 2 modes to build the detail url, pattern, which let you build the url string with tokens, and column, which lets you enter the name of an existing column.</value>
+  </data>
+  <data name="HtmlScrapDetailRequestInfo_UrlMode.Text" xml:space="preserve">
+    <value>Url Mode</value>
+  </data>
+  <data name="HtmlScrapRequestInfo_XPath.Help" xml:space="preserve">
+    <value>Define a main xpath query and a set of named sub selects to build a dictionary of string values extracted from the target Html content.</value>
+  </data>
+  <data name="HtmlScrapRequestInfo_XPath.Text" xml:space="preserve">
+    <value>XPath Selection</value>
+  </data>
+  <data name="Pattern.Text" xml:space="preserve">
+    <value>Pattern</value>
   </data>
 </root>

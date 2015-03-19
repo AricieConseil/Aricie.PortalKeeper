@@ -2,6 +2,7 @@
 Imports System.Xml.Serialization
 Imports System.Threading
 Imports DotNetNuke.Common
+Imports Aricie.DNN.Services
 
 Namespace Diagnostics
     ''' <summary>
@@ -15,14 +16,18 @@ Namespace Diagnostics
         Private _AdditionalProperties() As KeyValuePair(Of String, String) = Nothing
         Private _Properties As SerializableDictionary(Of String, String)
 
-        Public Property DebugType() As String = String.Empty
-        Public Property Name() As String = String.Empty
-        Public Property Description() As String = String.Empty
-        Public Property MemoryUsage() As Boolean
-        Public Property PortalId() As Integer = -1
-        Public Property ThreadId() As String = String.Empty
-        Public Property ThreadCulture() As String = String.Empty
-        Public Property ServerName() As String = String.Empty
+        Public Property DebugType As String = String.Empty
+        Public Property Name As String = String.Empty
+        Public Property Description As String = String.Empty
+        Public Property MemoryUsage As Boolean
+        Public Property PortalId As Integer = -1
+        Public Property ThreadId As String = String.Empty
+        Public Property ThreadCulture As String = String.Empty
+        Public Property ServerName As String = String.Empty
+
+        Public Property IpAddress As String = String.Empty
+
+        Public Property UserName As String = String.Empty
 
         <XmlIgnore()> _
         Public Property AdditionalProperties() As KeyValuePair(Of String, String)()
@@ -52,7 +57,10 @@ Namespace Diagnostics
         Public Sub New()
             Me._ThreadId = Thread.CurrentThread.GetHashCode.ToString
             Me._ThreadCulture = Thread.CurrentThread.CurrentCulture.ToString
-            Me._ServerName = Globals.ServerName
+            Me.ServerName = Globals.ServerName
+            Me.IpAddress = DnnContext.Current.IPAddress.ToString
+            Me.UserName = DnnContext.Current.User.Username
+            Me.PortalId = DnnContext.Current.Portal.PortalId
         End Sub
 
         Public Sub New(ByVal debugType As String, ByVal name As String, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))

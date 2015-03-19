@@ -106,7 +106,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("ReturnDictionary", False, True)> _
         <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
         <ExtendedCategory("Commands")> _
-        Public Property KeyColumnHeaders As New List(Of String)
+        Public Property PrimaryKey As New SimpleOrExpression(Of List(Of String))
+
 
         <ExtendedCategory("Commands")> _
         Public Property Pace As New STimeSpan(TimeSpan.FromMilliseconds(200))
@@ -222,7 +223,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 End If
                                 Console.WriteLine()
                                 If Me.ReturnDictionary Then
-                                    Dim tempKey As String = Me.KeyColumnHeaders.Aggregate("", Function(current, header) current & currentRow(header))
+                                    Dim tempKey As String = Me.PrimaryKey.GetValue(actionContext, actionContext).Aggregate("", Function(current, header) current & currentRow(header))
                                     toReturnDictionary(tempKey) = currentRow
                                     If Me.CaptureEntries Then
                                         toReturnEntriesDico(tempKey) = objListEntry
