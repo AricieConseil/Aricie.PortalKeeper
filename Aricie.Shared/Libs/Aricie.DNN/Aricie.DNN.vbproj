@@ -192,6 +192,7 @@
     <Compile Include="Config\MultiUpdateProvider.vb" />
     <Compile Include="Config\TrustAddInfo.vb" />
     <Compile Include="Config\TrustInfo.vb" />
+    <Compile Include="Config\UrlCompressionInfo.vb" />
     <Compile Include="Config\VirtualCustomErrorUpdater.vb" />
     <Compile Include="Config\XmlNamedConfigElementInfo.vb" />
     <Compile Include="Diagnostics\Constants.vb" />
@@ -287,6 +288,10 @@
     <Compile Include="Services\Files\SmartFile.vb" />
     <Compile Include="Services\Files\SmartFileInfo.vb" />
     <Compile Include="Services\Files\SmartFolder.vb" />
+    <Compile Include="Services\Filtering\CategorizationInfo.vb" />
+    <Compile Include="Services\Filtering\ComparerInfo.vb" />
+    <Compile Include="Services\Filtering\DefaultTransforms.vb" />
+    <Compile Include="Services\Filtering\EncodeProcessing.vb" />
     <Compile Include="Services\Filtering\FilterControlInfo.vb" />
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />

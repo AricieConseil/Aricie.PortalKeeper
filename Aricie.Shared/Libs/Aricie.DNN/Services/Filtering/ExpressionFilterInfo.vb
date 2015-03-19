@@ -11,36 +11,10 @@ Imports System.Web
 Imports System.Text
 Imports Aricie.Text
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Entities
+Imports System.Threading
 
 Namespace Services.Filtering
-
-    
-
-    Public Enum EncodeProcessing
-        None
-        UrlEncode
-        UrlDecode
-        HtmlEncode
-        HtmlDecode
-    End Enum
-
-
-
-
-
-
-   
-
-    ''' <summary>
-    ''' Enumeration of the possible transformations for the filter
-    ''' </summary>
-    ''' <remarks></remarks>
-    Public Enum DefaultTransforms
-        None
-        UrlPart
-        UrlFull
-    End Enum
-
     ''' <summary>
     ''' Class representing filtering and transformation applied to a string
     ''' </summary>
@@ -80,11 +54,11 @@ Namespace Services.Filtering
 
 #End Region
 
-      
 
-        
 
-       
+
+
+
         ''' <summary>
         ''' Encoding preprocessing
         ''' </summary>
@@ -138,7 +112,7 @@ Namespace Services.Filtering
         <ConditionalVisible("Trim", True, True, TrimType.None)> _
         <ExtendedCategory("GlobalFilter")> _
         Public Property TrimChar As String = "-"
-         
+
         <ExtendedCategory("GlobalFilter")> _
         Public Property ApplyFormat As Boolean
 
@@ -191,6 +165,9 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ExtendedCategory("Transformations")> _
         Public Property PreventDoubleDefaults As Boolean = True
+
+        <ExtendedCategory("Categorization")> _
+        Public Property Categorization As New EnabledFeature(Of CategorizationInfo)
 
         <ExtendedCategory("Advanced")> _
         Public Property Base64Convert As Base64Convert = Base64Convert.None
@@ -286,7 +263,7 @@ Namespace Services.Filtering
         Public Property AdditionalFilters As New List(Of ExpressionFilterInfo)
 
 
-        
+
 
         ''' <summary>
         ''' Simulation data
@@ -298,6 +275,7 @@ Namespace Services.Filtering
             <Width(500)> _
             <LineCount(8)> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+            <XmlIgnore()> _
         Public Overridable Property SimulationData() As New CData
 
         Private _SimulationResult As String = ""
@@ -429,9 +407,9 @@ Namespace Services.Filtering
         End Sub
 
 
-       
 
-        
+
+
 
         ''' <summary>
         ''' Escapes the string passed as the parameter according to the rules defined in the ExpressionFilterInfo
@@ -607,14 +585,13 @@ Namespace Services.Filtering
                 toReturn = toReturn.Substring(0, maxLength)
             End If
 
+            If Me.Categorization.Enabled Then
+                toReturn = Me.Categorization.Entity.Match(toReturn)
+            End If
+
             'recursive call to process additional filters sequentially
-            For Each subExpression As ExpressionFilterInfo In Me.AdditionalFilters
 
-                toReturn = subExpression.Process(toReturn)
-
-            Next
-
-            Return toReturn
+            Return Me.AdditionalFilters.Aggregate(toReturn, Function(current, subExpression) subExpression.Process(current))
 
         End Function
 

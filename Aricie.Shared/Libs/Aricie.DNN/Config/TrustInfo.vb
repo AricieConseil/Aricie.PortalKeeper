@@ -33,7 +33,7 @@ Namespace Configuration
             End If
             xPath &= "]"
             Dim moduleNode As XmlNode = xmlConfig.SelectSingleNode(xPath)
-            Return (Not moduleNode Is Nothing)
+            Return (moduleNode IsNot Nothing)
         End Function
 
 

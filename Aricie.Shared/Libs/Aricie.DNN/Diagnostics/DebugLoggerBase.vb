@@ -277,8 +277,8 @@ Namespace Diagnostics
                 objEventLogInfo.LogProperties.Add(New LogDetailInfo("Logger Exception", ex.ToString))
                 Try
                     AsyncLogger.Instance.AddLog(objEventLogInfo)
-                Catch ex2 As Exception
-
+                Catch
+                    'do nothing to prevent a crash
                 End Try
             End Try
 
@@ -306,11 +306,12 @@ Namespace Diagnostics
             End If
             objEventLogInfo.AddProperty("Thread Id", objToLog.ThreadId)
             objEventLogInfo.AddProperty("Thread Culture", objToLog.ThreadCulture)
+
             objEventLogInfo.AddProperty("AppDomain Id", AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture))
             objEventLogInfo.AddProperty("Process Id", Process.GetCurrentProcess.Id.ToString(CultureInfo.InvariantCulture))
-            objEventLogInfo.AddProperty("Server Name", DotNetNuke.Common.Globals.ServerName)
-            objEventLogInfo.AddProperty("IP Address", DnnContext.Current.IPAddress.ToString)
-            objEventLogInfo.AddProperty("Current User Name", DotNetNuke.Entities.Users.UserController.GetCurrentUserInfo().Username)
+            objEventLogInfo.AddProperty("Server Name", objToLog.ServerName)
+            objEventLogInfo.AddProperty("IP Address", objToLog.IpAddress.ToString)
+            objEventLogInfo.AddProperty("Current User Name", objToLog.UserName)
 
         End Sub
 

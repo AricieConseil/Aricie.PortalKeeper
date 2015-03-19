@@ -39,7 +39,7 @@ Namespace UI.WebControls.EditControls
                         Dim lca As LineCountAttribute = DirectCast(attribute, LineCountAttribute)
                         Me.LineCount = lca.LineCount
                         If lca.AutoResize Then
-                            Me.LineCount = RestrictedLineCount(Me.StringValue, Me.LineCount, 200)
+                            Me.LineCount = RestrictedLineCount(Me.StringValue, Me.LineCount, 70)
                         End If
                     ElseIf TypeOf attribute Is SizeAttribute Then
                         Me.Size = DirectCast(attribute, SizeAttribute).Size
@@ -50,7 +50,7 @@ Namespace UI.WebControls.EditControls
 
         Protected Overrides Sub RenderViewMode(ByVal writer As HtmlTextWriter)
             Dim str As String = Me.Page.Server.HtmlDecode(Convert.ToString(Me.Value))
-            str = GetHtmlLineBreaks(str)
+            'str = GetHtmlLineBreaks(str)
             MyBase.ControlStyle.AddAttributesToRender(writer)
             If str.IndexOf("<br/>", System.StringComparison.Ordinal) > 0 Then
                 writer.RenderBeginTag(HtmlTextWriterTag.P)

@@ -159,11 +159,13 @@ Namespace Entities
                     End If
                     While currentTarget <> toReturn
                         toReturn = currentTarget
-                        currentTarget = GetNextHour(currentTarget, previousSchedule)
-                        currentTarget = GetNextDay(currentTarget, previousSchedule)
-                        currentTarget = GetNextWeek(currentTarget, previousSchedule)
-                        currentTarget = GetNextMonth(currentTarget, previousSchedule)
-                        currentTarget = GetNextYear(currentTarget, previousSchedule)
+                        If currentTarget <> DateTime.MaxValue Then
+                            currentTarget = GetNextHour(currentTarget, previousSchedule)
+                            currentTarget = GetNextDay(currentTarget, previousSchedule)
+                            currentTarget = GetNextWeek(currentTarget, previousSchedule)
+                            currentTarget = GetNextMonth(currentTarget, previousSchedule)
+                            currentTarget = GetNextYear(currentTarget, previousSchedule)
+                        End If
                     End While
                     Return toReturn
             End Select
@@ -335,10 +337,11 @@ Namespace Entities
                             If nbHours < 0 OrElse nbHours = 0 AndAlso Me.ScheduleType = Aricie.ComponentModel.ScheduleType.FixedTimes Then
                                 nbHours += 24
                             End If
-                            toReturn = New DateTime(target.Year, target.Month, target.Day, target.Hour, 0, 0).AddHours(nbHours)
-                        End If
+                            toReturn = New DateTime(target.Year, target.Month, target.Day, target.Hour, 0, 0)
+                            toReturn = toReturn.AddHours(nbHours)
+                    End If
                     Else
-                        toReturn = DateTime.MaxValue
+                    toReturn = DateTime.MaxValue
                     End If
             End Select
             Return toReturn

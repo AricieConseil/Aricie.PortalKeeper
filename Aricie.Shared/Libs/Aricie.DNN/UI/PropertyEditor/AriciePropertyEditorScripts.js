@@ -123,6 +123,7 @@ function initialisePropertyEditorsScripts() {
             var tabPath = selectedNode.data('entitypath');
             
             var localCookieTabName = tabPath + "-" + cookieTabName;
+            var existingSelection = getAdvanceVariableValue(localCookieTabName);
             selectedNode.tabs({
                 select: function (event, ui) {
                     setAdvanceVariableValue(localCookieTabName, ui.index); 
@@ -135,8 +136,8 @@ function initialisePropertyEditorsScripts() {
                     var resultat = performASPNetValidation();
                     return resultat;
                 },
-                active: (parseInt(getAdvanceVariableValue(localCookieTabName)) || 0),
-                selected: (parseInt(getAdvanceVariableValue(localCookieTabName)) || 0)
+                active: (parseInt(existingSelection) || 0),
+                selected: (parseInt(existingSelection) || 0)
             });
         });
         

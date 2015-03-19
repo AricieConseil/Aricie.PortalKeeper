@@ -1,5 +1,6 @@
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.Configuration
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.Services.Errors
@@ -25,6 +26,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'todo: make obsolete
         <Browsable(False)> _
         Public Property RestServices() As RestServicesSettings
+
+        <ExtendedCategory("Compression")> _
+        Public Property UrlCompression As New UrlCompressionInfo()
 
         <ExtendedCategory("CustomErrorPage")> _
         <SortOrder(400)> _

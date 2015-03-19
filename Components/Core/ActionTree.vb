@@ -31,7 +31,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ConditionalVisible("Mode", False, True, ActionTreeMode.DecisionTree)> _
-        <CollectionEditor(False, True, False, True, 20, CollectionDisplayStyle.Accordion, True, 0, "Key")> _
+        <CollectionEditor(False, True, False, True, 20, CollectionDisplayStyle.Accordion, True, 0, "Key" )> _
         <Orientation(Orientation.Vertical)> _
         <ExtendedCategory("SubTrees")> _
         Public Property SubTrees As New SerializableSortedDictionary(Of String, ActionTree(Of TEngineEvents))

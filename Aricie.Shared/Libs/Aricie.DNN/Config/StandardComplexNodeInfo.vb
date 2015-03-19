@@ -21,26 +21,8 @@ Namespace Configuration
             MyBase.New()
         End Sub
 
-        '<XmlArrayItemAttribute("add", GetType(AddInfo))> _
-        '<XmlArrayItemAttribute("trust", GetType(TrustAddInfo))> _
-        '<XmlArrayItemAttribute("customErrors", GetType(CustomErrorsAddInfo))> _
-        '<XmlArrayItemAttribute("error", GetType(CustomErrorAddInfo))> _
-        '<XmlArrayAttribute()> _
-        '<XmlArrayItemAttribute("add", GetType(ProviderAddInfo))> _
-        '<XmlArrayItemAttribute("add", GetType(AppSettingAddInfo))> _
-        '<XmlArrayItemAttribute("add", GetType(HttpModuleAddInfo))> _
-        '<XmlArrayItemAttribute("add", GetType(HttpHandlerAddInfo))> _
-        '<XmlArrayItemAttribute("add", GetType(WebServerAddInfo))> _
-        '<XmlArrayItemAttribute("add", GetType(CustomAddInfo))> _
-        '<XmlElement("add")> _
-        '<XmlChoiceIdentifier("ChildrenTypes")> _
-        '<XmlElement("add", GetType(ProviderAddInfo))> _
-        '<XmlElement("add", GetType(AppSettingAddInfo))> _
-        '<XmlElement("add", GetType(HttpModuleAddInfo))> _
-        '<XmlElement("add", GetType(HttpHandlerAddInfo))> _
-        '<XmlElement("add", GetType(WebServerAddInfo))> _
-        '<XmlElement("add", GetType(CustomAddInfo))> _
-        '<XmlElement("add", GetType(AddInfo))> _
+       
+        <XmlElement("urlCompression", GetType(UrlCompressionAddInfo))> _
         <XmlElement("customErrors", GetType(CustomErrorsAddInfo))> _
         <XmlElement("error", GetType(CustomErrorAddInfo))> _
         <XmlElement("trust", GetType(TrustAddInfo))> _

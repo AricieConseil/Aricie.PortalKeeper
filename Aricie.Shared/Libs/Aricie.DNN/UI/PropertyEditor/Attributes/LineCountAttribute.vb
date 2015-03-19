@@ -3,7 +3,12 @@
 Namespace UI.Attributes
     Public Class LineCountAttribute
         Inherits Attribute
-        ' Methods
+
+
+        Public Sub New()
+
+        End Sub
+
         Public Sub New(ByVal lineCount As Integer)
             Me._lineCount = lineCount
         End Sub
@@ -24,7 +29,7 @@ Namespace UI.Attributes
 
 
         ' Fields
-        Private _lineCount As Integer
+        Private ReadOnly _lineCount As Integer
     End Class
 
 

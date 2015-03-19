@@ -313,10 +313,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub BindSettings()
             If Me.UserInfo.IsSuperUser Then
+                Me.divUserBot.Controls.Clear()
                 Me.KC.LocalResourceFile = Me.SharedResourceFile
                 Me.KC.DataSource = Me.KeeperConfig
                 Me.KC.DataBind()
             Else
+                Me.divHostConfig.Controls.Clear()
                 If Me.KeeperConfig.SchedulerFarm.EnableUserBots AndAlso Not String.IsNullOrEmpty(Me.KeeperModuleSettings.UserBotName) Then
                     If Me.KeeperModuleSettings.UserBot IsNot Nothing AndAlso Me.KeeperModuleSettings.UserBot.Bot IsNot Nothing Then
                         Dim userSettings As UserBotSettings(Of ScheduleEvent) = Nothing
@@ -355,12 +357,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                             End If
                         End If
                     End If
+                Else
+                    Me.divUserBot.Controls.Clear()
                 End If
             End If
             If Me.KeeperConfig.FirewallConfig.EnablePortalLevelSettings AndAlso Me.IsAdmin Then
                 Me.KS.LocalResourceFile = Me.SharedResourceFile
                 Me.KS.DataSource = Me.KeeperSettings
                 Me.KS.DataBind()
+            Else
+                Me.divPortalSettings.Controls.Clear()
             End If
         End Sub
 

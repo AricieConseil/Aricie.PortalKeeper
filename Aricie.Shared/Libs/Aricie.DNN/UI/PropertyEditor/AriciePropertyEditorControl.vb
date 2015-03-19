@@ -17,6 +17,7 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
+Imports System.Globalization
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -347,11 +348,8 @@ Namespace UI.WebControls
 
 
         Protected Overrides Sub OnInit(ByVal e As System.EventArgs)
-            If Not Me.Page.IsPostBack Then
-                Me.ParseQueryString()
-            End If
+           
             MyBase.OnInit(e)
-            ' SB: rajout destiné à fournir le style correct à DNN pour les popups d'aide
             If NukeHelper.DnnVersion.Major >= 6 Then
                 ' rien à faire pour l'instant
                 HelpStyle.CssClass += " dnnFormHelpContent"
@@ -403,10 +401,10 @@ Namespace UI.WebControls
                             _CurrentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & _CurrentTab.Name))
                         End If
 
-                        Dim clientVarName As String = Me.GetPath() + "-cookieTab"
+                        Dim clientVarName As String = GetClientVarName() 'Me.GetPath() + "-cookieTab"
                         Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
-                        DnnContext.Current.AdvancedClientVariable(clientVarName) = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index.ToString).first()
-
+                        Dim tIndex As Integer = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index).first()
+                        DnnContext.Current.AdvancedClientVariable(clientVarName) = tIndex.ToString(CultureInfo.InvariantCulture)
                         Me.FieldsDictionary.HideAllTabs()
 
                         Me.DisplayElement(t, False)
@@ -420,6 +418,9 @@ Namespace UI.WebControls
                 ProcessException(ex)
             End Try
         End Sub
+
+        
+
 
         Protected Overrides Sub ListItemChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
             MyBase.ListItemChanged(sender, e)
@@ -541,6 +542,7 @@ Namespace UI.WebControls
             _SortedUnderLyingDataSource = Nothing
         End Sub
 
+        Private _QueryStringParsed As Boolean
         Public Overrides Sub DataBind()
 
 
@@ -554,6 +556,12 @@ Namespace UI.WebControls
             'Start Tracking ViewState
             TrackViewState()
             Try
+                If Not Me.Page.IsPostBack AndAlso Not _QueryStringParsed Then
+                    Me.ParseQueryString()
+                    _QueryStringParsed = True
+                End If
+                ' SB: rajout destiné à fournir le style correct à DNN pour les popups d'aide
+                
                 'Create the Editor
                 CreateEditor()
 
@@ -691,7 +699,7 @@ Namespace UI.WebControls
             End If
 
             Validate()
-           
+
         End Sub
 
 
@@ -709,7 +717,7 @@ Namespace UI.WebControls
         End Sub
 
         Private Sub ProcessSubPath()
-            If Me.DataSource IsNot Nothing AndAlso Me.PropertyDepth = 0 Then
+            If Me.DataSource IsNot Nothing AndAlso Me.IsRoot Then
                 If Not String.IsNullOrEmpty(Me.SubEditorFullPath) Then
                     'If Me.Page.IsPostBack Then
                     If Me.DataSource.GetType() IsNot GetType(SubPathContainer) Then
@@ -854,15 +862,15 @@ Namespace UI.WebControls
         Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
-
-                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(Me.GetPath() + "-cookieTab")
+                Dim clientVarName As String = GetClientVarName()
+                Dim advStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
 
                 Dim loopTabIndex = 0
                 Dim currentTabIndex As Integer = 0
                 If (Not String.IsNullOrEmpty(advStr)) Then
                     Integer.TryParse(advStr, currentTabIndex)
                 End If
-               
+
                 If currentTabIndex > objElement.Tabs.Count - 1 Then
                     currentTabIndex = 0
                 End If
@@ -975,7 +983,10 @@ Namespace UI.WebControls
             Return _CurrentPath
         End Function
 
-        
+        Private Function GetClientVarName() As String
+            Return Me.GetPath() & "-cookieTab"
+        End Function
+
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
             Dim nbControls As Integer
