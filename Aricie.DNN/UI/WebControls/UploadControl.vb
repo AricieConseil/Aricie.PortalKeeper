@@ -280,6 +280,7 @@ Namespace UI.WebControls
                 AddHandler Me._downloadLink.Click, New EventHandler(AddressOf Me.downloadLink_Click)
             End If
             If (Not Me._uploadLink Is Nothing) Then
+                ScriptManager.GetCurrent(Me.Page).RegisterPostBackControl(_uploadLink)
                 AddHandler Me._uploadLink.Click, New ImageClickEventHandler(AddressOf Me.uploadLink_Click)
             End If
             If (Not Me._deleteLink Is Nothing) Then

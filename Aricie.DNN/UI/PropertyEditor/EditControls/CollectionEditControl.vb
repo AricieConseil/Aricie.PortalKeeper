@@ -312,7 +312,7 @@ Namespace UI.WebControls.EditControls
             If Not _DisplayStyle.HasValue Then
                 Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue, False)
                 'If objetType IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objetType) AndAlso objetType IsNot GetType(CData) Then
-                If objetType IsNot Nothing AndAlso (Not objetType.IsPrimitive) Then
+                If objetType IsNot Nothing AndAlso (Not ReflectionHelper.IsSimpleType(objetType)) Then
                     Me._DisplayStyle = CollectionDisplayStyle.Accordion
                 Else
                     Me._DisplayStyle = CollectionDisplayStyle.List
@@ -847,8 +847,25 @@ Namespace UI.WebControls.EditControls
             If (Not String.IsNullOrEmpty(advStringValue)) Then
                 Integer.TryParse(advStringValue, cookieValue)
             End If
-
-            If cookieValue <> item.ItemIndex AndAlso item.DataItem IsNot Nothing AndAlso (Not item.DataItem.GetType().IsPrimitive) Then
+            Dim displaySubItem As Boolean = True
+            If cookieValue <> item.ItemIndex AndAlso item.DataItem IsNot Nothing Then
+                Dim objDataItemType As Type = item.DataItem.GetType()
+                If Not ReflectionHelper.IsSimpleType(objDataItemType) Then
+                    If objDataItemType.IsGenericType AndAlso objDataItemType.GetGenericTypeDefinition Is GetType(KeyValuePair(Of ,)) Then
+                        Dim valueType As Type = objDataItemType.GetGenericArguments()(1)
+                        If Not valueType.IsPrimitive Then
+                            If Not (valueType.IsGenericType _
+                                    AndAlso valueType.GetGenericTypeDefinition Is GetType(List(Of )) _
+                                    AndAlso ReflectionHelper.IsSimpleType(valueType.GetGenericArguments()(0))) Then
+                                displaySubItem = False
+                            End If
+                        End If
+                    Else
+                        displaySubItem = False
+                    End If
+                End If
+            End If
+            If Not displaySubItem Then
 
                 Globals.SetAttribute(headerLink, "onClick", "dnn.vars=null;" & ClientAPI.GetPostBackClientHyperlink(Me, "navigate" & ClientAPI.COLUMN_DELIMITER & commandIndex))
                 _headers(item.ItemIndex) = headerLink

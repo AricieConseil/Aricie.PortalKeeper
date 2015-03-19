@@ -397,6 +397,10 @@ Namespace Services
             Return toReturn
         End Function
 
+        Public Shared Function IsSimpleType(ByVal objType As Type) As Boolean
+            Return objType.IsPrimitive OrElse objType Is GetType(String)
+        End Function
+
 
         Public Shared Function IsStatic(ByVal objType As Type) As Boolean
             Return objType.IsAbstract AndAlso objType.IsSealed
@@ -560,11 +564,13 @@ Namespace Services
                             Else
                                 toReturn = keyName
                             End If
-
                         End If
                     End If
                     If toReturn.IsNullOrEmpty() Then
                         toReturn = GetSimpleTypeName(valueType)
+                        If valueType.GetInterface("ICollection") IsNot Nothing Then
+                            toReturn = String.Format("{0} {1} {2} items", toReturn, UIConstants.TITLE_SEPERATOR, DirectCast(value, ICollection).Count.ToString(CultureInfo.InvariantCulture))
+                        End If
                     End If
                 End If
             End If

@@ -207,6 +207,17 @@ Public Module Common
         Return True
     End Function
 
+    Public Function BytesToString(byteCount As Long) As [String]
+        Dim suf As String() = {"B", "KB", "MB", "GB", "TB", "PB", "EB"}
+        'Longs run out around EB
+        If byteCount = 0 Then
+            Return "0" + suf(0)
+        End If
+        Dim bytes As Long = Math.Abs(byteCount)
+        Dim place As Integer = Convert.ToInt32(Math.Floor(Math.Log(bytes, 1024)))
+        Dim num As Double = Math.Round(bytes / Math.Pow(1024, place), 1)
+        Return (Math.Sign(byteCount) * num).ToString() + suf(place)
+    End Function
 
     Public WordRegex As New Regex("\p{Lu}\p{Ll}+|\p{Lu}+(?!\p{Ll})|\p{Ll}+|\d+", RegexOptions.Compiled)
     Public SplitRegex As New Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled)
@@ -906,7 +917,7 @@ Public Module Common
 
 
 
-    Private _PrivateIPStringArray As String(,) = {{"0.0.0.0", "2.255.255.255"}, {"10.0.0.0", "10.255.255.255"}, {"127.0.0.0", "127.255.255.255"}, {"169.254.0.0", "169.254.255.255"}, {"172.16.0.0", "172.31.255.255"}, {"192.0.2.0", "192.0.2.255"}, {"192.168.0.0", "192.168.255.25"}, {"255.255.255.0", "255.255.255.255"}}
+    Private ReadOnly _PrivateIPStringArray As String(,) = {{"0.0.0.0", "2.255.255.255"}, {"10.0.0.0", "10.255.255.255"}, {"127.0.0.0", "127.255.255.255"}, {"169.254.0.0", "169.254.255.255"}, {"172.16.0.0", "172.31.255.255"}, {"192.0.2.0", "192.0.2.255"}, {"192.168.0.0", "192.168.255.25"}, {"255.255.255.0", "255.255.255.255"}}
 
     ''' <summary>
     ''' converti un long en int en récupérant les 4 octets de droite du long
