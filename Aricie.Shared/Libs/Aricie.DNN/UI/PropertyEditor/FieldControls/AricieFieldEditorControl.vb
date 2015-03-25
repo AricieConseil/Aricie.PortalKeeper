@@ -339,7 +339,12 @@ Public Class AricieFieldEditorControl
         objEditControl.OldValue = editorInfo.Value
 
         objEditControl.CustomAttributes = editorInfo.Attributes
-        objEditControl.CssClass = "NormalTextBox"
+        If editorInfo.EditMode = PropertyEditorMode.Edit Then
+            objEditControl.CssClass = "NormalTextBox"
+        Else
+            objEditControl.CssClass = "Normal"
+        End If
+
 
         'AddHandler propEditor.PreRender, AddressOf propEditor_PreRender
         Dim myValidators As IList(Of BaseValidator) = BuildValidators(editorInfo, objEditControl.ID, fieldCtl)

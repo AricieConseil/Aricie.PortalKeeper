@@ -18,6 +18,7 @@ Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports System.Globalization
+Imports System.Text.RegularExpressions
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -342,6 +343,15 @@ Namespace UI.WebControls
             End Set
         End Property
 
+
+        Public Sub ClearBackPath()
+            Dim strPath = SubEditorPath
+            If Not strPath.IsNullOrEmpty() AndAlso strPath <> SubEditorFullPath Then
+                SubEditorFullPath = strPath
+                Me.ItemChanged = True
+            End If
+        End Sub
+
 #End Region
 
 #Region "Event Handlers"
@@ -397,20 +407,29 @@ Namespace UI.WebControls
                         If _CurrentTab IsNot Nothing Then
                             If _CurrentTab Is t Then
                                 Exit Sub
+                            Else
+                                _CurrentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & _CurrentTab.Name))
+                                _CurrentTab.Loaded = False
+                                _CurrentTab = t
+
                             End If
-                            _CurrentTab.HeaderLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & _CurrentTab.Name))
                         End If
 
-                        Dim clientVarName As String = GetClientVarName() 'Me.GetPath() + "-cookieTab"
-                        Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
+                      
                         Dim tIndex As Integer = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index).first()
-                        DnnContext.Current.AdvancedClientVariable(clientVarName) = tIndex.ToString(CultureInfo.InvariantCulture)
-                        Me.FieldsDictionary.HideAllTabs()
 
+                        Dim clientVarName As String = GetTabIndexClientVarName() 'Me.GetPath() + "-cookieTab"
+                        'Dim clientVarValueStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
+                        DnnContext.Current.AdvancedClientVariable(clientVarName) = tIndex.ToString(CultureInfo.InvariantCulture)
+
+                        Me.FieldsDictionary.TabsContainer.SetAttribute("data-activetab", tIndex.ToString(CultureInfo.InvariantCulture))
+
+                        'Me.FieldsDictionary.HideAllTabs()
+                        t.Loaded = True
                         Me.DisplayElement(t, False)
 
                         t.HeaderLink.Attributes.Remove("onclick")
-                        t.Loaded = True
+                        't.Loaded = True
                     End If
 
                 End If
@@ -419,7 +438,7 @@ Namespace UI.WebControls
             End Try
         End Sub
 
-        
+
 
 
         Protected Overrides Sub ListItemChanged(ByVal sender As Object, ByVal e As DotNetNuke.UI.WebControls.PropertyEditorEventArgs)
@@ -433,9 +452,10 @@ Namespace UI.WebControls
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             Try
 
+                'needed to account for changes during control events
                 If Me._ExceptionsToProcess.Count = 0 AndAlso (ItemChanged OrElse Me.IsDirty) Then
-                    'quelle utilité ?
-                    'Jesse: nécessaire pour prendre en compte les modifications postérieures aux event handlers
+
+
                     Me.ResetDatasourceType()
                     DataBind()
                 End If
@@ -457,9 +477,9 @@ Namespace UI.WebControls
                     End If
                     EnforceTrialMode()
                     For Each t As Tab In Me.FieldsDictionary.Tabs.Values
-                        For Each c As Control In t.Container.Controls
-                            c.Visible = t.Loaded
-                        Next
+                        If Not t.Loaded Then
+                            t.Container.Visible = False
+                        End If
                     Next
                 End If
 
@@ -533,6 +553,7 @@ Namespace UI.WebControls
 
 
         Public Sub ResetDatasourceType()
+
             Controls.Clear()
             Fields.Clear()
             _FieldsDictionary = Nothing
@@ -561,7 +582,7 @@ Namespace UI.WebControls
                     _QueryStringParsed = True
                 End If
                 ' SB: rajout destiné à fournir le style correct à DNN pour les popups d'aide
-                
+
                 'Create the Editor
                 CreateEditor()
 
@@ -817,29 +838,17 @@ Namespace UI.WebControls
 
         Protected Function DisplayElement(objElement As Element, keepHidden As Boolean) As Integer
 
-
+            objElement.Container.Visible = True
             Dim nbControls As Integer
-            Try
-                nbControls += AddColumns(objElement, objElement.Container, keepHidden)
-            Catch ex As Exception
-                Me.ProcessException(ex)
-            End Try
-            Try
-                nbControls += AddSections(objElement, objElement.Container, keepHidden)
-            Catch ex As Exception
-                Me.ProcessException(ex)
-            End Try
-            Try
-                nbControls += AddTabs(objElement, keepHidden)
-            Catch ex As Exception
-                Me.ProcessException(ex)
-            End Try
+            nbControls += AddColumns(objElement, objElement.Container, keepHidden)
+
+            nbControls += AddSections(objElement, objElement.Container, keepHidden)
+
+            nbControls += AddTabs(objElement, keepHidden)
+
             If Me.EditMode = PropertyEditorMode.Edit Then
-                Try
-                    nbControls += AddActionButtons(objElement, keepHidden)
-                Catch ex As Exception
-                    Me.ProcessException(ex)
-                End Try
+                nbControls += AddActionButtons(objElement, keepHidden)
+
             End If
 
             Return nbControls
@@ -862,7 +871,7 @@ Namespace UI.WebControls
         Protected Function AddTabs(objElement As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             If objElement.Tabs.Count > 0 Then
-                Dim clientVarName As String = GetClientVarName()
+                Dim clientVarName As String = GetTabIndexClientVarName()
                 Dim advStr As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
 
                 Dim loopTabIndex = 0
@@ -880,8 +889,10 @@ Namespace UI.WebControls
 
                 tabsContainer.Attributes.Add("class", "aricie_pe_tabs-" & Me.ClientID)
                 tabsContainer.Attributes.Add("hash", Me.ClientID.GetHashCode().ToString())
-                tabsContainer.Attributes.Add("data-entitypath", GetPath())
+                'tabsContainer.Attributes.Add("data-entitypath", Regex.Escape(GetPath()))
+                DirectCast(tabsContainer, IAttributeAccessor).SetAttribute("data-activetab", currentTabIndex.ToString(CultureInfo.InvariantCulture))
                 objElement.Container.Controls.Add(tabsContainer)
+                objElement.TabsContainer = tabsContainer
                 tabsContainer.Controls.Add(tabsHeader)
                 Dim tabIshidden As Boolean
 
@@ -937,12 +948,11 @@ Namespace UI.WebControls
                         Else
                             headerLink.Attributes.Add("onclick", ClientAPI.GetPostBackClientHyperlink(Me, "tabChange" & ClientAPI.COLUMN_DELIMITER & objTab.Name))
                         End If
-                    End If
-
-                    If Not displayTab Then
+                    Else
                         objTab.Container.Visible = False
                         li.Style("display") = "none"
                     End If
+
 
                     loopTabIndex += 1
                 Next
@@ -983,9 +993,7 @@ Namespace UI.WebControls
             Return _CurrentPath
         End Function
 
-        Private Function GetClientVarName() As String
-            Return Me.GetPath() & "-cookieTab"
-        End Function
+       
 
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
@@ -1497,6 +1505,10 @@ Namespace UI.WebControls
             End If
         End Sub
 
+        Private Function GetTabIndexClientVarName() As String
+            Return Me.GetPath() & "-cookieTab"
+        End Function
+
 #End Region
 
 #Region "IScriptControl"
@@ -1536,7 +1548,7 @@ Namespace UI.WebControls
         Public Class Element
             Private _Name As String
             Private _Container As Control
-            Private _Loaded As Boolean = False
+
             Private _Prefix As String
 
 
@@ -1599,28 +1611,24 @@ Namespace UI.WebControls
             End Property
 
             Public Property Loaded() As Boolean
-                Get
-                    Return _Loaded
-                End Get
-                Set(ByVal value As Boolean)
-                    _Loaded = value
-                End Set
-            End Property
+           
 
 
             Public Property Columns As New Dictionary(Of Integer, List(Of PropertyInfo))
 
             Public Property Sections As New Dictionary(Of String, Section)
 
+            Public Property TabsContainer As IAttributeAccessor
+
             Public Property Tabs As New Dictionary(Of String, Tab)
 
             Public Property ActionButtons As New List(Of List(Of ActionButtonInfo))
 
-            Public Sub HideAllTabs()
-                For Each t As Tab In Me.Tabs.Values
-                    t.Loaded = False
-                Next
-            End Sub
+            'Public Sub HideAllTabs()
+            '    For Each t As Tab In Me.Tabs.Values
+            '        t.Loaded = False
+            '    Next
+            'End Sub
 
             Public Overrides Function GetHashCode() As Integer
                 Return Me.Name.GetHashCode()

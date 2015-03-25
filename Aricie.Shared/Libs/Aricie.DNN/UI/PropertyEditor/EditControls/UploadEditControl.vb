@@ -11,6 +11,8 @@ Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.Common.Utilities
 
 Namespace UI.WebControls.EditControls
+
+    'todo: most of this is redundant with Aricie.DNN.Web.UI.UploadControl, which should be relied upon
     Public Class UploadEditControl
         Inherits EditControl
 
