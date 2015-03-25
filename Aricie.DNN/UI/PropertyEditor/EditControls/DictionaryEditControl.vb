@@ -20,7 +20,7 @@ Namespace UI.WebControls.EditControls
 
         Protected WithEvents ctlNewItemKeyEditControl As EditControl
         Protected WithEvents ctlNewItemValueEditControl As EditControl
-        Private _KeyValueOrientation As Orientation = Orientation.Horizontal
+        Private _KeyValueOrientation As Orientation = Orientation.Vertical
 
 
 #End Region
@@ -207,6 +207,24 @@ Namespace UI.WebControls.EditControls
             Return New DictionaryEntry(key, value)
         End Function
 
+        Protected Overrides Sub AddItems(items As ICollection)
+            If items.Count = 1 Then
+                Dim itemToAdd As Object = items(0)
+                Dim objAddEntry As Object = Me.AddEntry
+                If objAddEntry IsNot Nothing Then
+                    Dim entryKeyProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(objAddEntry.GetType())("Key")
+                    Dim keyAddEntry As Object = entryKeyProp.GetValue(objAddEntry, Nothing)
+                    If keyAddEntry IsNot Nothing AndAlso ReflectionHelper.IsSimpleType(keyAddEntry.GetType()) AndAlso Not keyAddEntry.ToString().IsNullOrEmpty() Then
+                        Dim itemKeyProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(itemToAdd.GetType())("Key")
+                        itemKeyProp.SetValue(itemToAdd, keyAddEntry, Nothing)
+                    End If
+                End If
+                Me.AddNewItem(itemToAdd)
+            Else
+                MyBase.AddItems(items)
+            End If
+        End Sub
+
         Protected Overrides Sub AddNewItem(ByVal item As Object)
             Dim key As Object
             Dim value As Object
@@ -216,8 +234,8 @@ Namespace UI.WebControls.EditControls
                 value = de.Value
             Else
                 Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(item.GetType)
-                key = props("key").GetValue(item, Nothing)
-                value = props("value").GetValue(item, Nothing)
+                key = props("Key").GetValue(item, Nothing)
+                value = props("Value").GetValue(item, Nothing)
             End If
             If Not Me.DictionaryValue.Contains(key) Then
                 DictionaryValue.Add(key, value)

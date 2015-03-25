@@ -20,6 +20,7 @@ Imports System.IO
 Imports Aricie.DNN.Security.Trial
 Imports System.Linq
 Imports System.Text
+Imports System.Text.RegularExpressions
 
 Namespace UI.WebControls.EditControls
     Public MustInherit Class CollectionEditControl
@@ -434,7 +435,9 @@ Namespace UI.WebControls.EditControls
 
                             delEvent.Value = Me.CollectionValue
                             delEvent.Changed = True
+
                             Me.OnValueChanged(delEvent)
+                            Me.ParentAricieEditor.RootEditor.ClearBackPath()
                         Case "Up"
                             RaiseEvent MoveUp(commandIndex)
                             Dim addEvent As New PropertyEditorEventArgs(Me.Name)
@@ -504,7 +507,7 @@ Namespace UI.WebControls.EditControls
                     clearEvent.Value = Me.CollectionValue
                     clearEvent.Changed = True
                     Me.OnValueChanged(clearEvent)
-
+                    Me.ParentAricieEditor.RootEditor.ClearBackPath()
                 End If
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
@@ -659,7 +662,7 @@ Namespace UI.WebControls.EditControls
                     Dim accordion As New HtmlGenericControl("div")
                     accordion.Attributes.Add("class", "aricie_pe_accordion-" & Me.ParentEditor.ClientID)
                     accordion.Attributes.Add("hash", Me.ParentEditor.ClientID.GetHashCode().ToString())
-                    accordion.Attributes.Add("data-entitypath", GetPath())
+                    'accordion.Attributes.Add("data-activeaccordion", Me.GetCurrentAccordionIndex().ToString(CultureInfo.InvariantCulture))
                     Me.Controls.Add(accordion)
                     accordion.Controls.Add(Me.rpContentList)
                 Else
@@ -740,13 +743,13 @@ Namespace UI.WebControls.EditControls
             If _CollectionSubPath.IsNullOrEmpty Then
                 Dim parentPath As String = GetParentPath(Me)
                 If parentPath.IsNullOrEmpty() Then
-                    If ParentAricieField.Editor Is Me Then
+                    If ParentAricieField.Editor Is Me AndAlso Me.ParentAricieField.DataField <> "SubEntity" AndAlso Me.ParentAricieField.DataField <> "ReadOnlySubEntity" Then
                         _CollectionSubPath = ParentAricieField.DataField
                     Else
                         _CollectionSubPath = ""
                     End If
                 Else
-                    If ParentAricieField.Editor Is Me Then
+                    If ParentAricieField.Editor Is Me AndAlso Me.ParentAricieField.DataField <> "SubEntity" AndAlso Me.ParentAricieField.DataField <> "ReadOnlySubEntity" Then
                         _CollectionSubPath = String.Format("{0}.{1}", parentPath, Me.ParentAricieField.DataField)
                     Else
                         _CollectionSubPath = parentPath
@@ -829,31 +832,25 @@ Namespace UI.WebControls.EditControls
 
 
 
-            'headerLink.InnerText = accordionHeaderText.Replace(" "c, ChrW(160))
 
-            headerLink.Text = accordionHeaderText '.Replace(" "c, ChrW(160))
+            headerLink.Text = accordionHeaderText
 
-            'headerLink.Attributes.Add("href", String.Format("#{0}_{1}", Me.ID, commandIndex))
 
             headerLink.Url = String.Format("#{0}_{1}", Me.ID, commandIndex)
 
-            '  Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies("cookieAccordion" & Me.ParentEditor.ClientID.GetHashCode())
-            Dim cookieValue As Integer = -1
 
-            'If cookie IsNot Nothing Then
-            '    Integer.TryParse(cookie.Value, cookieValue)
-            'End If
-            Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(String.Format("{0}-cookieAccordion", Me.GetPath()))
-            If (Not String.IsNullOrEmpty(advStringValue)) Then
-                Integer.TryParse(advStringValue, cookieValue)
-            End If
+            'Dim currentAccordionIndex = GetCurrentAccordionIndex()
             Dim displaySubItem As Boolean = True
-            If cookieValue <> item.ItemIndex AndAlso item.DataItem IsNot Nothing Then
+            'If currentAccordionIndex <> item.ItemIndex AndAlso item.DataItem IsNot Nothing Then
+            If item.DataItem IsNot Nothing Then
                 Dim objDataItemType As Type = item.DataItem.GetType()
                 If Not ReflectionHelper.IsSimpleType(objDataItemType) Then
                     If objDataItemType.IsGenericType AndAlso objDataItemType.GetGenericTypeDefinition Is GetType(KeyValuePair(Of ,)) Then
                         Dim valueType As Type = objDataItemType.GetGenericArguments()(1)
-                        If Not valueType.IsPrimitive Then
+                        If valueType Is GetType(Object) Then
+                            valueType = ReflectionHelper.GetProperty(objDataItemType, "Value", item.DataItem).GetType()
+                        End If
+                        If Not ReflectionHelper.IsSimpleType(valueType) Then
                             If Not (valueType.IsGenericType _
                                     AndAlso valueType.GetGenericTypeDefinition Is GetType(List(Of )) _
                                     AndAlso ReflectionHelper.IsSimpleType(valueType.GetGenericArguments()(0))) Then
@@ -883,6 +880,21 @@ Namespace UI.WebControls.EditControls
 
 
         End Sub
+
+        'Private Function GetCurrentAccordionIndex() As Integer
+        '    Dim toReturn As Integer = -1
+        '    Dim clientVarName As String = Me.GetAccordionIndexClientVarName()
+        '    Dim advStringValue As String = DnnContext.Current.AdvancedClientVariable(clientVarName)
+        '    If (Not String.IsNullOrEmpty(advStringValue)) Then
+        '        Integer.TryParse(advStringValue, toReturn)
+        '    End If
+        '    Return toReturn
+        'End Function
+
+
+        'Private Function GetAccordionIndexClientVarName() As String
+        '    Return Me.GetPath() & "-cookieAccordion"
+        'End Function
 
         Private Sub DisplaySubItems(index As Integer, plItemContainer As Control, item As Object)
             Me._ItemIndex = index
@@ -1167,11 +1179,17 @@ Namespace UI.WebControls.EditControls
 
         Private Sub ImportItems(items As ICollection)
             Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-            addEvent.OldValue = New ArrayList(Me.CollectionValue)
-
-            For Each newItem As Object In items
-                Me.AddNewItem(newItem)
-            Next
+            If TypeOf Me.CollectionValue Is IList AndAlso ReflectionHelper.CanCreateObject(Me.CollectionValue.GetType()) Then
+                Dim oldValue As IList = DirectCast(ReflectionHelper.CreateObject(Me.CollectionValue.GetType()), IList)
+                For Each obj As Object In Me.CollectionValue
+                    oldValue.Add(obj)
+                Next
+                addEvent.OldValue = oldValue
+            Else
+                addEvent.OldValue = New ArrayList(Me.CollectionValue)
+            End If
+            
+            Me.AddItems(items)
 
             'If Me._PageSize > 0 Then
             '    Me.PageIndex = CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize))
@@ -1185,6 +1203,11 @@ Namespace UI.WebControls.EditControls
 
         End Sub
 
+        Protected Overridable Sub AddItems(items As ICollection)
+            For Each newItem As Object In items
+                Me.AddNewItem(newItem)
+            Next
+        End Sub
 
         Private Function GetExportFileName() As String
             Dim prefix As String = ReflectionHelper.GetCollectionFileName(Me.CollectionValue)

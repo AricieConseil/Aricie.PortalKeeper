@@ -50,47 +50,30 @@ function initialisePropertyEditorsScripts() {
 
     initJSON();
     var selector;
-    var cookieAccName;
-    var cookieTabName;
+    
 
     // accordion
     selector = ".aricie_pe_accordion" + "-" + AriciePropertyEditorScripts.get_clientId();
-    //cookieAccName = 'cookieAccordion' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-    cookieAccName = 'cookieAccordion';
+    
 
     // on fait l'évaluation du noeud un minimum
     var selectedNodes = jQuery(selector);
     if (selectedNodes.length > 0) {
         jQuery.each(selectedNodes, function (i, selectedNodeDom) {
             var selectedNode = jQuery(selectedNodeDom);
-          var accordionPath = selectedNode.data('entitypath');
-          var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); 
-            if (cookieVal == undefined || cookieVal === -1) { 
-                cookieVal = false;
-            } else {
-                cookieVal = parseInt(cookieVal);
-            }
+
+            var activeAccordion = -1;
+            var strActiveAccordion = selectedNode.data('activeaccordion');
+            if (strActiveAccordion == null || strActiveAccordion == '')
+                activeAccordion = parseInt(strActiveAccordion);
+
             selectedNode.accordion(
             {
-                active: cookieVal,
+                active: activeAccordion,
                 heightStyle: "content",
                 clearStyle: true,
                 autoHeight: false,
                 collapsible: true
-            });
-
-            jQuery('> h3.ui-accordion-header>a', selectedNode).click(function () {
-                var h3 = jQuery(this).parent();
-                var index = h3.parent().children('h3.ui-accordion-header').index(h3);
-                var cookieVal = getAdvanceVariableValue(accordionPath + "-" + cookieAccName); //eval(jQuery.cookie(cookieAccName));
-
-                if (cookieVal === index) {
-
-                    setAdvanceVariableValue(accordionPath + "-" + cookieAccName, null);
-                } else {
-
-                    setAdvanceVariableValue(accordionPath + "-" + cookieAccName, index);
-                }
             });
 
             jQuery.each(jQuery(" > h3", selectedNode), function (i, h3) {
@@ -113,31 +96,26 @@ function initialisePropertyEditorsScripts() {
 
     // tabs
     selector = ".aricie_pe_tabs-" + AriciePropertyEditorScripts.get_clientId();
-    //cookieTabName = 'cookieTab' + AriciePropertyEditorScripts.get_clientId() + AriciePropertyEditorScripts.get_hash();
-    cookieTabName = 'cookieTab';
+    
     var tabsItemCt = jQuery(selector);
     if (tabsItemCt.length > 0) {
         jQuery.each(tabsItemCt, function (i, tabItem) {
             var selectedNode = jQuery(tabItem);
-
-            var tabPath = selectedNode.data('entitypath');
+           
+            var strActiveTab = selectedNode.data('activetab');
+            var activeTab = (parseInt(strActiveTab) || 0);
             
-            var localCookieTabName = tabPath + "-" + cookieTabName;
-            var existingSelection = getAdvanceVariableValue(localCookieTabName);
             selectedNode.tabs({
                 select: function (event, ui) {
-                    setAdvanceVariableValue(localCookieTabName, ui.index); 
                     var resultat = performASPNetValidation();
                     return resultat;
                 },
                 activate: function (e, ui) {
-                    var currentIndex = ui.newTab.parent().find("li").index(ui.newTab);
-                    setAdvanceVariableValue(localCookieTabName, currentIndex); 
                     var resultat = performASPNetValidation();
                     return resultat;
                 },
-                active: (parseInt(existingSelection) || 0),
-                selected: (parseInt(existingSelection) || 0)
+                active: activeTab,
+                selected: activeTab
             });
         });
         
@@ -229,6 +207,19 @@ function performASPNetValidation() {
     }
     return true;
 }
+
+var unicodeRegex = /\\u([\d\w]{4})/gi;
+
+function UnescapeUnicode(input) {
+    var toReturn = "";
+    toReturn = input.replace(unicodeRegex, function (match, grp) {
+        return String.fromCharCode(parseInt(grp, 16));
+    });
+    //toReturn = unescape(toReturn);
+    return toReturn;
+}
+
+
 
 
 function SelectAndActivateParentHeader(src) {

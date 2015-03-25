@@ -242,7 +242,11 @@ Namespace UI.Controls
                     'Reflection.SetProperty(updatePanelType, "UpdateMode", updatePanel, New Object() {System.Enum.Parse(updatePanelModeType, "0")})
                     updateProp.SetValue(updatePanel, System.Enum.Parse(updatePanelModeType, "0"), Nothing)
                     'AddHandler clientVarControl.Load, AddressOf ClientVarControl_Load
-                    DotNetNuke.UI.Utilities.DNNClientAPI.AddBodyOnloadEventHandler(Me.Page, "Sys.WebForms.PageRequestManager.getInstance().add_endRequest(function (sender, args){dnn.vars=null;});")
+                    DotNetNuke.UI.Utilities.DNNClientAPI.AddBodyOnloadEventHandler(Me.Page, _
+                                                                                   "function ResetClientVar(sender, args){" & vbCrLf _
+                                                                                   & "dnn.vars = null;" & vbCrLf _
+                                                                                   & "}" & vbCrLf _
+                                                                                   & "Sys.WebForms.PageRequestManager.getInstance().add_endRequest(ResetClientVar);")
                     Me.Context.Items("AjaxifyClientVariable") = True
                 End If
             End If
