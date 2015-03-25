@@ -129,64 +129,7 @@ Namespace Entities
         Public Property ScrapDetails As New SerializableList(Of HtmlScrapDetailRequestInfo)
 
 
-        '<ExtendedCategory("Detail")> _
-        '<ConditionalVisible("ScrapDetail", False, True)> _
-        <Browsable(False)> _
-        Public Property DetailClientMode As HttpClientMode
-            Get
-                If ScrapDetails.Count > 0 Then
-                    Return ScrapDetails(0).ClientMode
-                End If
-                Return HttpClientMode.WebClient
-            End Get
-            Set(value As HttpClientMode)
-                If ScrapDetails.Count = 0 Then
-                    Dim toAdd As New HtmlScrapDetailRequestInfo()
-                    ScrapDetails.Add(toAdd)
-                End If
-                ScrapDetails(0).ClientMode = value
-            End Set
-        End Property
-
-        '<ExtendedCategory("Detail")> _
-        '<ConditionalVisible("DetailClientMode", False, True, HttpClientMode.Browser)> _
-        <Browsable(False)> _
-        Public Property DetailFrameId As String
-            Get
-                If ScrapDetails.Count > 0 Then
-                    Return ScrapDetails(0).FrameId
-                End If
-                Return ""
-            End Get
-            Set(value As String)
-                If ScrapDetails.Count = 0 Then
-                    Dim toAdd As New HtmlScrapDetailRequestInfo()
-                    ScrapDetails.Add(toAdd)
-                End If
-                ScrapDetails(0).FrameId = value
-            End Set
-        End Property
-
-        '<ExtendedCategory("Detail")> _
-        '<ConditionalVisible("ScrapDetail", False, True)> _
-        <Browsable(False)> _
-        Public Property DetailXPath As XPathInfo
-            Get
-                If ScrapDetails.Count > 0 Then
-                    Return ScrapDetails(0).XPath
-                End If
-                Return New XPathInfo("//title", True, True)
-            End Get
-            Set(value As XPathInfo)
-                If ScrapDetails.Count = 0 Then
-                    Dim toAdd As New HtmlScrapDetailRequestInfo()
-                    ScrapDetails.Add(toAdd)
-                End If
-                ScrapDetails(0).XPath = value
-            End Set
-        End Property
-
-        Public Overrides Function GetFriendlyDetails() As String
+     Public Overrides Function GetFriendlyDetails() As String
             Return String.Format("{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, _
                                  IIf(Me.UsePager, "max " & Me.MaxNbPage & " ", "No ").ToString() & "page" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _
                                 IIf(Me.ScrapDetail, Me.ScrapDetails.Count().ToString(CultureInfo.InvariantCulture) & " ", "No ").ToString() & "detail scrap" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _

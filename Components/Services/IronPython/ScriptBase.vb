@@ -12,6 +12,7 @@ Imports DotNetNuke.Services.Localization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -80,7 +81,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Dim lookup As New SimpleContextLookup()
                     If Me.Parameters.Instances.Count > 0 Then
                         Dim tempContext As New PortalKeeperContext(Of ScheduleEvent)
-                        lookup.Items = Me.Parameters.EvaluateVariables(tempContext, tempContext)
+                        lookup.Items = ReflectionHelper.CloneObject(Me.Parameters.EvaluateVariables(tempContext, tempContext))
                     End If
                     newOutput = Me.Run(input, lookup)
                     sb.Append(newOutput)

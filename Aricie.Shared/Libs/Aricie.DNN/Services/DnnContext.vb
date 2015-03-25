@@ -21,6 +21,7 @@ Imports System.Web.UI
 Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
 Imports System.Net.NetworkInformation
+Imports System.Web.Script.Serialization
 
 Namespace Services
     ''' <summary>
@@ -694,20 +695,29 @@ Namespace Services
 
         Private _AdvancedClientVars As SerializableDictionary(Of String, String)
 
+        Private Shared _JavascriptSerializer As JavaScriptSerializer
+
+        Public Shared ReadOnly Property JavascriptSerializer As JavaScriptSerializer
+            Get
+                If _JavascriptSerializer Is Nothing Then
+                    _JavascriptSerializer = New JavaScriptSerializer()
+                End If
+                Return _JavascriptSerializer
+            End Get
+        End Property
+
         Private ReadOnly Property AdvancedClientVars() As SerializableDictionary(Of String, String)
             Get
-                'Dim toReturn As SerializableDictionary(Of String, String) = DnnContext.Current.GetItem(Of SerializableDictionary(Of String, String))(AdvancedVarKey)
                 If _AdvancedClientVars Is Nothing Then
                     Dim dnnclientVar As String = ClientAPI.GetClientVariable(Me.DnnPage, AdvancedVarKey)
                     If (String.IsNullOrEmpty(dnnclientVar)) Then
                         'HACK the dnn process to get the dnnvariable (deserialisation pb) - check the HTTP Context
                         Dim dnnVariable As String = Me.HttpContext.Request("__dnnVariable")
                         If (Not String.IsNullOrEmpty(dnnVariable)) Then
-                            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
                             If (dnnVariable.StartsWith("`")) Then
                                 dnnVariable = dnnVariable.Remove(0, 1)
                             End If
-                            Dim dnnVariableObj As Dictionary(Of String, String) = jss.Deserialize(Of Dictionary(Of String, String))(dnnVariable.Replace("`", "'"))
+                            Dim dnnVariableObj As Dictionary(Of String, String) = JavascriptSerializer.Deserialize(Of Dictionary(Of String, String))(dnnVariable.Replace("`", "'"))
                             If dnnVariableObj.ContainsKey(AdvancedVarKey) Then
                                 dnnclientVar = CStr(dnnVariableObj(AdvancedVarKey))
                             End If
@@ -716,11 +726,8 @@ Namespace Services
                     If String.IsNullOrEmpty(dnnclientVar) Then
                         _AdvancedClientVars = New SerializableDictionary(Of String, String)
                     Else
-                        Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
-                        _AdvancedClientVars = jss.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
-                        '_AdvancedClientVars = ReflectionHelper.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
+                        _AdvancedClientVars = JavascriptSerializer.Deserialize(Of SerializableDictionary(Of String, String))(dnnclientVar)
                     End If
-                    'DnnContext.Current.SetItem(Of SerializableDictionary(Of String, String))(toReturn, AdvancedVarKey)
                     AddHandler Me.DnnPage.PreRenderComplete, AddressOf SerializeAdvancedClientVars
                 End If
                 Return _AdvancedClientVars
@@ -728,13 +735,8 @@ Namespace Services
         End Property
 
         Private Sub SerializeAdvancedClientVars(ByVal sender As Object, ByVal e As EventArgs)
-            '  If Me.AdvancedClientVars.Count > 0 Then
-
-            Dim dnnclientVar As String = String.Empty 'ReflectionHelper.Serialize(Me.AdvancedClientVars).OuterXml
-            Dim jss As New System.Web.Script.Serialization.JavaScriptSerializer()
-            dnnclientVar = jss.Serialize(Me.AdvancedClientVars)
+            Dim dnnclientVar As String = JavascriptSerializer.Serialize(Me.AdvancedClientVars)
             ClientAPI.RegisterClientVariable(Me.DnnPage, AdvancedVarKey, dnnclientVar, True)
-            '  End If
         End Sub
 
 

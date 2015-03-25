@@ -20,14 +20,14 @@ Namespace UI.WebControls.EditControls
         Protected Overrides Sub OnInit(ByVal e As EventArgs)
             MyBase.OnInit(e)
             Me.EnsureChildControls()
-            If Not Page Is Nothing And Me.EditMode = PropertyEditorMode.Edit Then
+            If Page IsNot Nothing And Me.EditMode = PropertyEditorMode.Edit Then
                 Me.Page.RegisterRequiresPostBack(Me)
             End If
         End Sub
 
         Protected Overrides Sub OnAttributesChanged()
             MyBase.OnAttributesChanged()
-            If (Not CustomAttributes Is Nothing) Then
+            If (CustomAttributes IsNot Nothing) Then
                 For Each attribute As Attribute In CustomAttributes
                     If TypeOf attribute Is SelectorAttribute Then
                         Dim selAtt As SelectorAttribute = CType(attribute, SelectorAttribute)
@@ -41,7 +41,7 @@ Namespace UI.WebControls.EditControls
             Dim args As New PropertyEditorEventArgs(Me.Name)
             args.Value = Me.Value
             args.OldValue = Me.OldValue
-            args.Changed = (Not args.Value Is args.OldValue)
+            args.Changed = (args.Value IsNot args.OldValue)
             args.StringValue = Me.StringValue
 
             If args.Changed Then

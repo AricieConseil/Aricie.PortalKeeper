@@ -19,7 +19,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _SpreadSheets As SpreadsheetFeed
 
 
-       
+        <ExtendedCategory("Service")> _
+        Public Property Service As New SimpleOrExpression(Of GDataServiceInfo(Of SpreadsheetsService, TEngineEvents))( _
+            New GDataServiceInfo(Of SpreadsheetsService, TEngineEvents)("https://spreadsheets.google.com/feeds https://docs.google.com/feeds"))
 
         <ExtendedCategory("SpreadSheet")> _
         Public ReadOnly Property ServiceReady As Boolean
@@ -85,9 +87,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Service")> _
-        Public Property Service As New SimpleOrExpression(Of GDataServiceInfo(Of SpreadsheetsService, TEngineEvents))( _
-            New GDataServiceInfo(Of SpreadsheetsService, TEngineEvents)("https://spreadsheets.google.com/feeds https://docs.google.com/feeds"))
+       
 
 
 
