@@ -210,8 +210,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return toReturn
         End Function
 
-        Public Overridable Sub ProcessRules(ByVal context As PortalKeeperContext(Of TEngineEvents), ByVal objEvent As TEngineEvents, ByVal endSequence As Boolean)
-            context.ProcessRules(objEvent, Me, endSequence)
+        Public Overridable Sub ProcessRules(ByVal context As PortalKeeperContext(Of TEngineEvents), ByVal objEvent As TEngineEvents, ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
+            context.ProcessRules(objEvent, Me, endSequence, endoverhead)
         End Sub
 
         Public Function BatchRun(events As IEnumerable(Of TEngineEvents), userParams As IDictionary(Of String, Object)) As PortalKeeperContext(Of TEngineEvents)
@@ -241,7 +241,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Sub BatchRun(events As IEnumerable(Of TEngineEvents), ByRef existingContext As PortalKeeperContext(Of TEngineEvents))
             For Each eventStep As TEngineEvents In events
-                Me.ProcessRules(existingContext, eventStep, False)
+                Me.ProcessRules(existingContext, eventStep, False, False)
             Next
         End Sub
 

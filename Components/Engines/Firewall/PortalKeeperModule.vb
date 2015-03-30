@@ -76,7 +76,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Dim objPair As New KeyValuePair(Of String, String)("Dos Matched", dosMatched.ToString)
                             'Dim objStep As New StepInfo(Debug.PKPDebugType, Debug.TimingSteps.EndDoS, WorkingPhase.InProgress, False, False, -1, keeperContext.FlowId)
                             'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            keeperContext.LogEnd("Dos Evaluation", False, LoggingLevel.Steps, Nothing, objPair)
+                            keeperContext.LogEnd("Dos Evaluation", False, False, LoggingLevel.Steps, Nothing, objPair)
                         End If
                     End If
                     If Not dosMatched Then
@@ -254,7 +254,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Protected Sub ProcessStep(ByVal context As HttpContext, ByVal newStep As RequestEvent, ByVal endSequence As Boolean)
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
             If (Not keeperContext.Disabled AndAlso keeperContext.CurrentFirewallConfig.Enabled) AndAlso Not keeperContext.RequestOutOfScope Then
-                keeperContext.CurrentFirewallConfig.ProcessRules(keeperContext, newStep, False)
+                keeperContext.CurrentFirewallConfig.ProcessRules(keeperContext, newStep, False, True)
                 If endSequence Then
                     Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
                     Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)

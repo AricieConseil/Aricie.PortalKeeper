@@ -285,7 +285,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Dim keeperContext As PortalKeeperContext(Of SimpleEngineEvent) = dynamicHandler.InitContext()
                     keeperContext.InitParams(Me.GlobalParameters)
                     keeperContext.InitParams(parameters)
-                    dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
+                    dynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True, True)
                 End If
                 If baseHandler IsNot Nothing AndAlso dynamicHandler.BaseHandlerMode = ControlBaseHandlerMode.After Then
                     baseHandler.Invoke()

@@ -15,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _DisplayBotConfig As Boolean
 
-        Private _DisplayRankings As Boolean = True
+        Private _DisplayRankings As Boolean
 
         <ExtendedCategory("UserBots")> _
         Public ReadOnly Property EnableUserBots() As Boolean

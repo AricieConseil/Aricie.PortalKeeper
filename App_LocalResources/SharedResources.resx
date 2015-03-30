@@ -9425,4 +9425,16 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="Pattern.Text" xml:space="preserve">
     <value>Pattern</value>
   </data>
+  <data name="NoCache.Text" xml:space="preserve">
+    <value>No Cache</value>
+  </data>
+  <data name="Private.Text" xml:space="preserve">
+    <value>Private</value>
+  </data>
+  <data name="Server.Text" xml:space="preserve">
+    <value>Server</value>
+  </data>
+  <data name="ServerAndPrivate.Text" xml:space="preserve">
+    <value>Server And Private</value>
+  </data>
 </root>

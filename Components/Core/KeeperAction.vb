@@ -109,7 +109,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
                             'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
                             'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            actionContext.LogEnd(element.Name, False, element.LoggingLevel, element.LogDumpSettings, actionResult)
+                            actionContext.LogEnd(element.Name, False, False, element.LoggingLevel, element.LogDumpSettings, actionResult)
                         End If
                     End Try
                     If (Not toReturn) AndAlso element.StopOnFailure Then

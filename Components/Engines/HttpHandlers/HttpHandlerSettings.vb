@@ -124,8 +124,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                         keeperContext.SetVar("CurrentHandler", Me)
 
-                        Me.DynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True)
-                        keeperContext.LogEndEngine()
+                        Me.DynamicHandler.ProcessRules(keeperContext, SimpleEngineEvent.Run, True, True)
+                        'keeperContext.LogEndEngine()
                     End If
             End Select
         End Sub

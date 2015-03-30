@@ -48,7 +48,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         'End If
                         If context.LoggingLevel >= element.LoggingLevel Then
                             Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", False.ToString())
-                            context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
+                            context.LogEnd(String.Format("Eval {0}", element.Name), False, False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
                         End If
                         toReturn = False
                         Exit For
@@ -57,7 +57,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                     If context.LoggingLevel >= element.LoggingLevel Then
                         Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
-                        context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
+                        context.LogEnd(String.Format("Eval {0}", element.Name), False, False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
                     End If
                 ElseIf Not toReturn Then
                     If context.LoggingLevel >= element.LoggingLevel Then
@@ -68,7 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     toReturn = element.GetProvider().Match(context) Xor element.Negate
                     If context.LoggingLevel >= element.LoggingLevel Then
                         Dim conditionResult As New KeyValuePair(Of String, String)("Condition Result", toReturn.ToString())
-                        context.LogEnd(String.Format("Eval {0}", element.Name), False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
+                        context.LogEnd(String.Format("Eval {0}", element.Name), False, False, element.LoggingLevel, element.LogDumpSettings, conditionResult)
                     End If
                 End If
                 'If enableStopWatch Then

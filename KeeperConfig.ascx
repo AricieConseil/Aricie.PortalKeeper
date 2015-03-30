@@ -8,7 +8,7 @@
                     ResourceKey="cmdDebug" />
             </div>
         <div id="divHostConfig" runat="server">
-            <aricie:AriciePropertyEditorControl ID="KC" EditControlStyle-CssClass="NormalTextBox"
+            <aricie:AriciePropertyEditorControl ID="KC" EditControlStyle-CssClass="NormalTextBox" EnableViewstate="False" 
                 EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                 GroupHeaderIncludeRule="true" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                 GroupByMode="Section" DisplayMode="Div" EnabledOnDemandSections="True" runat="server"
@@ -21,7 +21,7 @@
         </div>
         <div id="divPortalSettings" runat="server" visible="false">
             <asp:Label ID="lblSettings" CssClass="Head" runat="server" ResourceKey="lblSettings" /><br />
-            <aricie:AriciePropertyEditorControl ID="KS" EditControlStyle-CssClass="NormalTextBox"
+            <aricie:AriciePropertyEditorControl ID="KS" EnableViewstate="False" EditControlStyle-CssClass="NormalTextBox"
                 EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                 GroupHeaderIncludeRule="True" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                 GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"
@@ -33,7 +33,7 @@
             </div>
         </div>
         <div id="divUserBot" runat="server" visible="false" class="SubDiv">
-                <aricie:AriciePropertyEditorControl ID="ctUserBotEntities" EditControlStyle-CssClass="NormalTextBox"
+                <aricie:AriciePropertyEditorControl ID="ctUserBotEntities" EnableViewstate="False" EditControlStyle-CssClass="NormalTextBox"
                     EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                     GroupHeaderIncludeRule="True" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                     GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"
@@ -43,7 +43,7 @@
             </div>
             <asp:Label ID="lblBotDefinition" CssClass="Head" runat="server" Visible="false" ResourceKey="lblBotDefinition" /><br />
             <div class="SubDiv">
-                <aricie:AriciePropertyEditorControl ID="ctlUserBot" EditControlStyle-CssClass="NormalTextBox"
+                <aricie:AriciePropertyEditorControl ID="ctlUserBot" EnableViewstate="False" EditControlStyle-CssClass="NormalTextBox"
                     EnableClientValidation="true" ErrorStyle-CssClass="NormalRed" GroupHeaderStyle-CssClass="Head"
                     GroupHeaderIncludeRule="True" LabelStyle-CssClass="SubHead" VisibilityStyle-CssClass="Normal"
                     GroupByMode="Section" DisplayMode="Div" runat="server" CssClass="pkSettings"

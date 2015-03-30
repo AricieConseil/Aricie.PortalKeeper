@@ -62,9 +62,9 @@ function initialisePropertyEditorsScripts() {
         jQuery.each(selectedNodes, function (i, selectedNodeDom) {
             var selectedNode = jQuery(selectedNodeDom);
 
-            var activeAccordion = -1;
+            var activeAccordion = -1000;
             var strActiveAccordion = selectedNode.data('activeaccordion');
-            if (strActiveAccordion == null || strActiveAccordion == '')
+            if (!(strActiveAccordion == null || strActiveAccordion == ''))
                 activeAccordion = parseInt(strActiveAccordion);
 
             selectedNode.accordion(

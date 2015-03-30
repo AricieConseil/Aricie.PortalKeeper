@@ -486,7 +486,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                     botContext.OnFinalize()
 
-                    botContext.EngineContext.LogEnd("Finalizing", False, LoggingLevel.Steps, Nothing)
+                    botContext.EngineContext.LogEnd("Finalizing", False, False, LoggingLevel.Steps, Nothing)
 
                 End If
 
