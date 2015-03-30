@@ -166,12 +166,12 @@ Namespace UI.WebControls
         ''' -----------------------------------------------------------------------------
         Private Function GetEditorInfo() As EditorInfo
 
-            Dim objType As Type
-            If DataSource IsNot Nothing Then
-                objType = Me.DataSource.GetType
-            Else
-                objType = _CurrentProperty.DeclaringType
-            End If
+            'Dim objType As Type
+            'If DataSource IsNot Nothing Then
+            '    objType = Me.DataSource.GetType
+            'Else
+            '    objType = _CurrentProperty.DeclaringType
+            'End If
 
             Dim editInfo As New AricieEditorInfo()
 

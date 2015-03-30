@@ -303,7 +303,7 @@ Namespace Services.Caching
                     If callBackInfo Is Nothing OrElse callBackInfo.ValidateCacheCallback(context) Then
                         status = HttpValidationStatus.Valid
                     Else
-                        status = HttpValidationStatus.IgnoreThisRequest
+                        status = HttpValidationStatus.Invalid
                     End If
                 End If
             Catch ex As Exception

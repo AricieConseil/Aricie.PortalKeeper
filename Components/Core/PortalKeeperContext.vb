@@ -254,10 +254,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Overloads Sub InitParams(ByVal params As VariablesBase)
             If params IsNot Nothing Then
-                Me.LogStart("Init Params", PortalKeeper.LoggingLevel.Steps, False)
+                'Me.LogStart("Init Params", PortalKeeper.LoggingLevel.Steps, False)
                 Dim vars As Dictionary(Of String, Object) = params.EvaluateVariables(Me, Me)
                 Me.InitParams(vars)
-                Me.LogEnd("Init Params", False, PortalKeeper.LoggingLevel.Steps, Nothing)
+                'Me.LogEnd("Init Params", False, False, PortalKeeper.LoggingLevel.Steps, Nothing)
             End If
         End Sub
 
@@ -270,7 +270,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
-        Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean)
+        Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
             If Me._CurrentEngine IsNot configRules Then
                 Me._CurrentEngine = configRules
             End If
@@ -283,12 +283,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         matchedRule.RunActions(Me)
                     Next
                 End If
-                Me.LogEndEventStep(False)
+                Me.LogEndEventStep(False, endoverhead)
             Else
                 If configRules.InitialCondition.Instances.Count = 0 OrElse configRules.InitialCondition.Match(Me) Then
                     Me.LogStartEventStep()
                     configRules.Actions.Run(Me)
-                    Me.LogEndEventStep(False)
+                    Me.LogEndEventStep(False, endoverhead)
                 End If
             End If
             If endSequence Then
@@ -364,15 +364,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me.LogStart("Agent", LoggingLevel.Simple, False, additionalProperties)
         End Sub
 
-        Private Sub LogEndEventStep(ByVal endSequence As Boolean)
-            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence, LoggingLevel.Steps, Nothing)
+        Private Sub LogEndEventStep(ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
+            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence, endoverhead, LoggingLevel.Steps, Nothing)
         End Sub
 
         Public Sub LogEndEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            Me.LogEnd("Agent", True, LoggingLevel.Simple, Me.CurrentEngine.LogEndDumpSettings, additionalProperties)
+            Me.LogEnd("Agent", True, True, LoggingLevel.Simple, Me.CurrentEngine.LogEndDumpSettings, additionalProperties)
         End Sub
 
-        Public Sub LogEnd(eventStep As String, ByVal endSequence As Boolean, minLevel As LoggingLevel, ByVal objDumpSettings As DumpSettings, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+        Public Sub LogEnd(eventStep As String, ByVal endSequence As Boolean, ByVal endoverhead As Boolean, minLevel As LoggingLevel, ByVal objDumpSettings As DumpSettings, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
             If (Me.LoggingLevel >= minLevel) Then
                 Dim tempItems As New List(Of KeyValuePair(Of String, String))()
                 'If endSequence AndAlso Me._CurrentEngine.LogDump Then
@@ -391,9 +391,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Else
                     logTitle = String.Format("End - {0} - {1}", eventStep, _CurrentEngine.Name)
                 End If
+                Dim nextPhase As WorkingPhase = WorkingPhase.InProgress
+                If endoverhead Then
+                    nextPhase = WorkingPhase.EndOverhead
+                End If
                 tempItems.AddRange(additionalProperties)
                 Dim objStep As StepInfo = New StepInfo(Debug.PKPDebugType, logTitle, _
-                                          WorkingPhase.InProgress, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                                          nextPhase, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub
