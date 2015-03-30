@@ -146,26 +146,26 @@ Public Class AricieFieldEditorControl
             MyBase.CreateEditor()
 
         Else
-            Dim editor As EditorInfo = Me.EditorInfoAdapter.CreateEditControl
+            Dim objEditor As EditorInfo = Me.EditorInfoAdapter.CreateEditControl
 
-            If (editor.EditMode = PropertyEditorMode.Edit) Then
-                editor.EditMode = Me.EditMode
+            If (objEditor.EditMode = PropertyEditorMode.Edit) Then
+                objEditor.EditMode = Me.EditMode
             End If
             If Not String.IsNullOrEmpty(Me.EditorTypeName) Then
-                editor.Editor = Me.EditorTypeName
+                objEditor.Editor = Me.EditorTypeName
             End If
             If (Me.LabelMode <> LabelMode.Left) Then
-                editor.LabelMode = Me.LabelMode
+                objEditor.LabelMode = Me.LabelMode
             End If
             If Me.Required Then
-                editor.Required = Me.Required
+                objEditor.Required = Me.Required
             End If
             If Not String.IsNullOrEmpty(Me.ValidationExpression) Then
-                editor.ValidationExpression = Me.ValidationExpression
+                objEditor.ValidationExpression = Me.ValidationExpression
             End If
-            Me.OnItemCreated(New PropertyEditorItemEventArgs(editor))
-            Me.Visible = editor.Visible
-            For Each customAttribute As Attribute In editor.Attributes
+            Me.OnItemCreated(New PropertyEditorItemEventArgs(objEditor))
+            Me.Visible = objEditor.Visible
+            For Each customAttribute As Attribute In objEditor.Attributes
                 If TypeOf customAttribute Is AutoPostBackAttribute Then
                     Me._AutoPostBack = True
                 End If
@@ -178,7 +178,7 @@ Public Class AricieFieldEditorControl
 
             Next
 
-            Me.BuildLtDiv(editor)
+            Me.BuildLtDiv(objEditor)
 
 
 
@@ -511,7 +511,7 @@ Public Class AricieFieldEditorControl
                 toReturn.ShowHelp = False
                 Exit Select
             Case HelpDisplayMode.EditOnly
-                If Not ((editInfo.EditMode = PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str))) Then
+                If Not ((editInfo.EditMode = PropertyEditorMode.Edit) OrElse (editInfo.Required AndAlso String.IsNullOrEmpty(str))) Then
                     toReturn.ShowHelp = False
                     Exit Select
                 End If
@@ -544,8 +544,8 @@ Public Class AricieFieldEditorControl
 
         If container Is Nothing Then
             AddHandler toReturn.ValueChanged, New PropertyChangedEventHandler(AddressOf Me.ValueChanged)
-            If TypeOf toReturn Is DNNListEditControl Then
-                Dim control3 As DNNListEditControl = DirectCast(toReturn, DNNListEditControl)
+            Dim control3 As DNNListEditControl = TryCast(toReturn, DNNListEditControl)
+            If (control3 IsNot Nothing) Then
                 AddHandler control3.ItemChanged, New PropertyChangedEventHandler(AddressOf Me.ListItemChanged)
             End If
             Me._Editor = toReturn
@@ -563,7 +563,7 @@ Public Class AricieFieldEditorControl
     Protected Function BuildRequiredIcon(ByVal editInfo As EditorInfo) As Image
         Dim image2 As Image = Nothing
         Dim str As String = TryCast(editInfo.Value, String)
-        If ((Me.ShowRequired AndAlso editInfo.Required) AndAlso ((editInfo.EditMode = PropertyEditorMode.Edit) Or (editInfo.Required And String.IsNullOrEmpty(str)))) Then
+        If ((Me.ShowRequired AndAlso editInfo.Required) AndAlso ((editInfo.EditMode = PropertyEditorMode.Edit) OrElse (editInfo.Required AndAlso String.IsNullOrEmpty(str)))) Then
             image2 = New Image
             image2.EnableViewState = False
             If (Me.RequiredUrl = Null.NullString) Then

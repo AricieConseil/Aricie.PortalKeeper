@@ -142,12 +142,12 @@ Namespace UI.WebControls.EditControls
 
       
 
-        Public Function BuildEditInfo(ByVal objValue As Object, editMode As PropertyEditorMode) As EditorInfo
-            Return Me.BuildEditInfo(objValue, "", editMode)
+        Public Function BuildEditInfo(ByVal objValue As Object, objEditMode As PropertyEditorMode) As EditorInfo
+            Return Me.BuildEditInfo(objValue, "", objEditMode)
         End Function
 
-        Public Function BuildEditInfo(ByVal objValue As Object, ByVal fieldName As String, editMode As PropertyEditorMode) As EditorInfo
-            Dim adapter As IEditorInfoAdapter
+        Public Function BuildEditInfo(ByVal objValue As Object, ByVal fieldName As String, objEditMode As PropertyEditorMode) As EditorInfo
+            Dim objAdapter As IEditorInfoAdapter
 
             Dim cutomAttributes(-1) As Attribute
             Dim tempAttributes As IList(Of Attribute) = Nothing
@@ -158,13 +158,13 @@ Namespace UI.WebControls.EditControls
 
             Dim toReturn As EditorInfo
             If fieldName = "" Then
-                adapter = New InnerEditorInfoAdapter(Me.Name, objValue, editMode, cutomAttributes)
-                toReturn = adapter.CreateEditControl
+                objAdapter = New InnerEditorInfoAdapter(Me.Name, objValue, objEditMode, cutomAttributes)
+                toReturn = objAdapter.CreateEditControl
             Else
 
-                adapter = New AricieStandardEditorInfoAdapter(objValue, fieldName, cutomAttributes)
-                toReturn = adapter.CreateEditControl
-                toReturn.EditMode = editMode
+                objAdapter = New AricieStandardEditorInfoAdapter(objValue, fieldName, cutomAttributes)
+                toReturn = objAdapter.CreateEditControl
+                toReturn.EditMode = objEditMode
                 toReturn.Type = Aricie.Services.ReflectionHelper.GetPropertiesDictionary(objValue.GetType)(fieldName).GetValue(objValue, Nothing).GetType().AssemblyQualifiedName
                 toReturn.Attributes = cutomAttributes
 
