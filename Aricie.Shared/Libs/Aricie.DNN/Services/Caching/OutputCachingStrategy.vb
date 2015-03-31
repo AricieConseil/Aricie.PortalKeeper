@@ -6,6 +6,7 @@ Imports System.Web
 Imports System.Text
 Imports System.Globalization
 Imports Aricie.Services
+Imports System.Xml.Serialization
 
 Namespace Services.Caching
     <Serializable()> _
@@ -165,7 +166,7 @@ Namespace Services.Caching
             End Set
         End Property
 
-
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property VaryByHeadersList() As List(Of String)
             Get
@@ -201,8 +202,9 @@ Namespace Services.Caching
 
         Private _VaryByContentEncodingsList As List(Of String)
 
+        <XmlIgnore()> _
         <Browsable(False)> _
-        Public ReadOnly Property VaryByContentEncodingsList() As List(Of String)
+         Public ReadOnly Property VaryByContentEncodingsList() As List(Of String)
             Get
                 If _VaryByContentEncodingsList Is Nothing Then
                     SyncLock _VaryBy

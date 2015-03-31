@@ -1,5 +1,6 @@
 Imports Aricie.DNN.Configuration
 'Imports OpenRasta.Hosting.AspNet
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -12,7 +13,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim toReturn As New List(Of IConfigElementInfo)
             toReturn.Add(New SchedulerTaskElementInfo("PortalKeeper Bot Farm", GetType(PortalKeeperSchedule), TimeSpan.FromMinutes(1)))
             Dim toAdd As WebServerElementInfo = New HttpModuleInfo("Aricie.PortalKeeper", GetType(PortalKeeperModule), "managedHandler")
-            toAdd.InsertBeforeKey = "UrlRewrite"
+            If NukeHelper.DnnVersion.Major > 6 Then
+                toAdd.InsertBeforeKey = "RequestFilter"
+            Else
+                toAdd.InsertBeforeKey = "UrlRewrite"
+            End If
+
             toReturn.Add(toAdd)
 
             toAdd = New HttpModuleInfo("Aricie.PortalKeeperAfterDNN", GetType(PortalKeeperModuleAfterDNN), "managedHandler")
