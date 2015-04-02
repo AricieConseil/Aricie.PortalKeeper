@@ -112,9 +112,9 @@ Namespace Services.Caching
         <ExtendedCategory("Policy")> _
         Public Property VaryByStar As Boolean
 
-
+        <XmlIgnore()> _
         <Browsable(False)> _
-        Public ReadOnly Property VaryByList() As List(Of String)
+         Public ReadOnly Property VaryByList() As List(Of String)
             Get
                 If _VaryByList Is Nothing Then
                     SyncLock _VaryBy

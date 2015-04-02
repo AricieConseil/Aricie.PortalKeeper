@@ -37,16 +37,12 @@ Namespace UI.WebControls
 #Region "Fields"
 
 
-        Private Shared _VisibleCatsByType As New Dictionary(Of Type, List(Of String))
-        Private _VisibleCats As List(Of String)
         Private _SectionsCollapsedByDefault As Boolean = True
-        Private _SortedUnderLyingDataSource As PropertyInfo()
         Private _TrialStatus As TrialStatusInfo = TrialStatusInfo.NoTrial(TrialConfigInfo.Empty)
         Private _ValidationGroup As String
         Private _isHidden As Boolean
 
         Private _ItemChanged As Boolean
-        Private _Groups As New Dictionary(Of String, KeyValuePair(Of Control, Control))
         Private _PropertyDepth As Integer
         Private _ParentEditor As PropertyEditorControl
 
@@ -358,7 +354,7 @@ Namespace UI.WebControls
 
 
         Protected Overrides Sub OnInit(ByVal e As System.EventArgs)
-           
+
             MyBase.OnInit(e)
             If NukeHelper.DnnVersion.Major >= 6 Then
                 ' rien à faire pour l'instant
@@ -415,7 +411,7 @@ Namespace UI.WebControls
                             End If
                         End If
 
-                      
+
                         Dim tIndex As Integer = FieldsDictionary.Tabs.Select(Function(kvp, index) New With {.tab = kvp.Key, .index = index}).Where(Function(s) s.tab = tabName).Select(Function(s) s.index).first()
 
                         Dim clientVarName As String = GetTabIndexClientVarName() 'Me.GetPath() + "-cookieTab"
@@ -560,7 +556,6 @@ Namespace UI.WebControls
             _FriendlyName = String.Empty
             _OnDemandSections = Nothing
             _SectionsCollapsedByDefault = Nothing
-            _SortedUnderLyingDataSource = Nothing
         End Sub
 
         Private _QueryStringParsed As Boolean
@@ -732,6 +727,7 @@ Namespace UI.WebControls
         Private Sub CreateHeader()
             If _headerControl Is Nothing Then
                 Me._headerControl = New PlaceHolder
+                Me._headerControl.ID = "phHeader"
             End If
             Me.Controls.Add(_headerControl)
 
@@ -825,6 +821,7 @@ Namespace UI.WebControls
             If Me.DataSource IsNot Nothing Then
                 If ActionButton IsNot Nothing Then
                     Dim myPeIco As New IconActionControl()
+                    myPeIco.ID = "PeIco"
                     myPeIco.ActionItem = _ActionButton.IconAction
                     'todo: insert a text with apropriate format and layout.
                     'myPeIco.Text = Me.DataSource.GetType.Name
