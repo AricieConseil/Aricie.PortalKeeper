@@ -5,6 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Reflection
 Imports Aricie.Services
 Imports System.Web.UI
+Imports System.Globalization
 
 Namespace UI.WebControls.EditControls
     Public Class BreadCrumbsEditControl
@@ -195,14 +196,14 @@ Namespace UI.WebControls.EditControls
             For Each objItem In items
                 'Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
                 If Not objItem.Key.EndsWith(objItem.Value.Text) Then
-                    Dim objButton As New IconActionButton With {.Text = objItem.Value.Text, .ActionItem = objItem.Value.Icon, .CommandArgument = objItem.Key}
+                    Dim objButton As New IconActionButton With {.ID = "btn" & counter.ToString(CultureInfo.InvariantCulture), .Text = objItem.Value.Text, .ActionItem = objItem.Value.Icon, .CommandArgument = objItem.Key}
                     ' objButton.ActionItem.IconName = IconName.Home
                     AddHandler objButton.Command, AddressOf ButtonClick
                     Me.Controls.Add(objButton)
                     Me._Buttons(objItem.Key) = objButton
                     counter += 1
                     If counter < items.Count Then
-                        Dim objLabel As New Label With {.Text = Me.Separator}
+                        Dim objLabel As New Label With {.ID = "lbl" & counter.ToString(CultureInfo.InvariantCulture), .Text = Me.Separator}
                         Me.Controls.Add(objLabel)
                     End If
                 End If
