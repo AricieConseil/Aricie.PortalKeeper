@@ -9437,4 +9437,40 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ServerAndPrivate.Text" xml:space="preserve">
     <value>Server And Private</value>
   </data>
+  <data name="ControlAdapterSettings_VersionRange.Help" xml:space="preserve">
+    <value>You can define the range of DNN versions supported by you control adapter. This is useful if you intend to deploy your configuration to a various set of DNN instances.</value>
+  </data>
+  <data name="ControlAdapterSettings_VersionRange.Text" xml:space="preserve">
+    <value>DNN Versions Range</value>
+  </data>
+  <data name="Range`1_Maximum.Help" xml:space="preserve">
+    <value>Define here the upper bound of your range.</value>
+  </data>
+  <data name="Range`1_Maximum.Text" xml:space="preserve">
+    <value>Maximum</value>
+  </data>
+  <data name="Range`1_Minimum.Help" xml:space="preserve">
+    <value>Define here the lower bound of your range</value>
+  </data>
+  <data name="Range`1_Minimum.Text" xml:space="preserve">
+    <value>Minimum</value>
+  </data>
+  <data name="Range`1_Mode.Help" xml:space="preserve">
+    <value>Choose whether you want to define a lower bound, an upper bound, none or both.</value>
+  </data>
+  <data name="Range`1_Mode.Text" xml:space="preserve">
+    <value>Bounds</value>
+  </data>
+  <data name="SerializableVersion_Version.Help" xml:space="preserve">
+    <value>Use the dropdownlist to define the Major, Minor and Build integer components of your version.</value>
+  </data>
+  <data name="SerializableVersion_Version.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SetMaximum.Text" xml:space="preserve">
+    <value>Set Maximum</value>
+  </data>
+  <data name="SetMinimum.Text" xml:space="preserve">
+    <value>Set Minimum</value>
+  </data>
 </root>

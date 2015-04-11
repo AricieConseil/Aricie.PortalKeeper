@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
@@ -59,7 +60,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Implements IExpressionVarsProvider
         Implements IContextProvider
 
-
+        Public Overrides Function GetFriendlyDetails() As String
+            Return String.Format("{1} Parameters{0}{2} {3}", UIConstants.TITLE_SEPERATOR, Me.Variables.Instances.Count.ToString(), _
+                                 IIf(Mode = RuleEngineMode.Actions, Actions.Instances.Count.ToString(), Rules.Count.ToString()), _
+                                 IIf(Mode = RuleEngineMode.Actions, "Actions", "Rules"))
+        End Function
 
         Public Sub New()
             'Me.ImportDefaultProviders()

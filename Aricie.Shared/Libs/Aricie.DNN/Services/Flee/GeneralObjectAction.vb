@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
@@ -17,6 +18,7 @@ Namespace Services.Flee
     ''' Non Generic version of the ObjectAction
     ''' </summary>
     ''' <remarks></remarks>
+    <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class GeneralObjectAction
         Inherits ObjectAction
@@ -24,7 +26,16 @@ Namespace Services.Flee
         Implements ISelector(Of MethodInfo)
         Implements ISelector(Of PropertyInfo)
 
-
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName As String
+            Get
+                Dim strTypeName As String = "UnTyped"
+                If Me.HasType Then
+                    strTypeName = ReflectionHelper.GetSimpleTypeName(DotNetType.GetDotNetType())
+                End If
+                Return String.Format("{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, strTypeName, Me.ActionMode.ToString(), MemberName.ToString())
+            End Get
+        End Property
 
         Public Property DotNetType As New DotNetType()
 
@@ -125,14 +136,26 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+
+
+        <Browsable(False)> _
+        Public Property PropertyValue() As FleeExpressionInfo(Of Object)
+            Get
+                Return Nothing
+            End Get
+            Set(objValue As FleeExpressionInfo(Of Object))
+                Me.Value.Expression = objValue
+                Me.Value.Mode = SimpleOrExpressionMode.Expression
+            End Set
+        End Property
+
+
         <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
-        <LabelMode(LabelMode.Top)> _
-        <ExtendedCategory("Action")> _
-        Public Property PropertyValue() As New FleeExpressionInfo(Of Object)
+         <ConditionalVisible("ActionMode", False, True, ObjectActionMode.SetProperty)> _
+         <LabelMode(LabelMode.Top)> _
+         <ExtendedCategory("Action")> _
+        Public Property Value As New SimpleOrExpression(Of Object)
 
-
-      
 
 
 
@@ -212,7 +235,7 @@ Namespace Services.Flee
                             If TypeOf potentialMember Is PropertyInfo Then
                                 targetProp = DirectCast(potentialMember, PropertyInfo)
                                 If targetProp.GetIndexParameters.Length = args.Count Then
-                                    Dim objValue As Object = Me.PropertyValue.Evaluate(owner, globalVars)
+                                    Dim objValue As Object = Me.Value.GetValue(owner, globalVars)
                                     If Not (targetProp.GetGetMethod().IsStatic OrElse Me.StaticCall) Then
                                         Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
                                         If Me.LockTarget Then
@@ -296,10 +319,10 @@ Namespace Services.Flee
             If objDelegate IsNot Nothing Then
                 If Me.LockTarget Then
                     SyncLock target
-                        candidateEvent.AddEventHandler(target, objDelegate)
+                        CandidateEvent.AddEventHandler(target, objDelegate)
                     End SyncLock
                 Else
-                    candidateEvent.AddEventHandler(target, objDelegate)
+                    CandidateEvent.AddEventHandler(target, objDelegate)
                 End If
             Else
                 Throw New Exception(String.Format( _

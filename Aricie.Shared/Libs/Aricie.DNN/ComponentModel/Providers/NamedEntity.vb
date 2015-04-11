@@ -9,6 +9,7 @@ Namespace ComponentModel
     Public Class NamedEntity
 
 
+
         Public Sub New()
         End Sub
 
@@ -39,7 +40,7 @@ Namespace ComponentModel
         End Sub
 
         <SortOrder(0)> _
-        <RegularExpressionValidator("(\p{Lu}|\p{Ll}|\p{Lt}|\p{Lm}|\p{Lo}|\p{Nl})((\p{Lu}|\p{Ll}|\p{Lt}|\p{Lm}|\p{Lo}|\p{Nl})|(\p{Mn}|\p{Mc}|\p{Nd}|\p{Pc}|\p{Cf}))*")> _
+        <RegularExpressionValidator(Constants.Content.RegularNameValidator)> _
         <Required(True)> _
         <Width(300)> _
         Public Overrides Property Name As String

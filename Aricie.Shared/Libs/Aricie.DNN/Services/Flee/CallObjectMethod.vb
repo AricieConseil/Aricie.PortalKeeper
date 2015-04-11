@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 
@@ -13,10 +14,23 @@ Namespace Services.Flee
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
     <DisplayName("Call Method")> _
+     <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class CallObjectMethod(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
         Implements ISelector(Of MethodInfo)
+
+
+
+        <Browsable(False)> _
+        Public Overridable ReadOnly Property FriendlyName As String
+            Get
+                Return String.Format("Call Method{0}{1}", UIConstants.TITLE_SEPERATOR, MethodName.ToString())
+            End Get
+        End Property
+
+
+
 
         ''' <summary>
         ''' Gets or sets the method name
@@ -51,7 +65,7 @@ Namespace Services.Flee
             Next
             Dim potentialsMembers As List(Of MemberInfo) = Nothing
             Dim targetMethod As MethodInfo
-            If ReflectionHelper.GetFullMembersDictionary(GetType(TObjectType)).TryGetValue(Me._MethodName, potentialsMembers) Then
+            If ReflectionHelper.GetFullMembersDictionary(GetType(TObjectType)).TryGetValue(Me.MethodName, potentialsMembers) Then
                 Dim index As Integer = 0
                 For Each potentialMember As MemberInfo In potentialsMembers
                     If TypeOf potentialMember Is MethodInfo Then

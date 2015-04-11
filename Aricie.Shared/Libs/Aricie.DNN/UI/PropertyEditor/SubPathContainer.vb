@@ -184,7 +184,7 @@ Namespace UI.WebControls
         Public Function GetSelectorG(propertyName As String) As IList(Of KeyValuePair(Of String, IconInfo)) Implements ISelector(Of KeyValuePair(Of String, IconInfo)).GetSelectorG
             Dim toReturn As New List(Of KeyValuePair(Of String, IconInfo))
             Dim dicoBuilder As New StringBuilder()
-            Dim split As String() = Me.OriginalPath.Split("."c)
+            Dim split As String() = PropertyExplorer.SplitExpression(Me.OriginalPath).ToArray()  'Me.OriginalPath.Split("."c)
             Select Case propertyName
                 Case "Path", "BottomPath"
                     For i As Integer = LBound(split) To UBound(split) Step 1

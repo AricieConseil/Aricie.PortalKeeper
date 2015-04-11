@@ -4,7 +4,6 @@ Imports System.Xml.Schema
 Imports Aricie.Services
 
 Namespace ComponentModel
-
     <Serializable()> _
     Public Class Serializable(Of T)
         Implements IXmlSerializable
