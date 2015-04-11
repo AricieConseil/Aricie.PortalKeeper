@@ -1172,22 +1172,19 @@ Namespace Services
             If objtype IsNot Nothing Then
                 If memberName.IndexOf("-"c) > 0 Then
                     Dim memberSplit As String() = memberName.Split("-"c)
-                    If memberSplit.Length <> 2 OrElse Not IsNumber(memberSplit(1)) Then
-                        Throw New ArgumentException(String.Format("memberName {0} wrongly Formatted", memberName), "memberName")
-                    End If
-                    Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(objtype, True, True)
-                    Dim objList As List(Of MemberInfo) = Nothing
-                    If objMembers.TryGetValue(memberSplit(0), objList) Then
-                        Dim idx As Integer = Integer.Parse(memberSplit(1))
-                        If idx > objList.Count - 1 Then
-                            Throw New ArgumentException(String.Format("{0} has an invalid member index", memberName), "memberName")
+                    If memberSplit.Length = 2 AndAlso memberSplit(1).IsNumber() Then
+                        Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(objtype, True, True)
+                        Dim objList As List(Of MemberInfo) = Nothing
+                        If objMembers.TryGetValue(memberSplit(0), objList) Then
+                            Dim idx As Integer = Integer.Parse(memberSplit(1))
+                            If idx < objList.Count Then
+                                toReturn = objList(idx)
+                            End If
                         End If
-                        toReturn = objList(idx)
                     End If
                 Else
                     Dim objMembers As Dictionary(Of String, MemberInfo) = ReflectionHelper.GetMembersDictionary(objtype, True, True)
                     objMembers.TryGetValue(memberName, toReturn)
-
                 End If
             End If
             Return toReturn
