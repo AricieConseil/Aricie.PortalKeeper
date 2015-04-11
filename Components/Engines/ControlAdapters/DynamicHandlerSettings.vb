@@ -206,6 +206,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class DynamicHandlerSettings
         Inherits SimpleRuleEngine
 
+        Public Overrides Function GetFriendlyDetails() As String
+            Dim typed As Boolean = Me.GetType().IsGenericType
+            If typed Then
+                Return "Typed"
+            Else
+                Return "Untyped"
+            End If
+        End Function
 
         Public Property MainControlStep As ControlStep
 

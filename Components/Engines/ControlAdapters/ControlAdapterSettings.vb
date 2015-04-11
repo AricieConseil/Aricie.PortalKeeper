@@ -7,9 +7,11 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Linq
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -23,6 +25,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         EnterPath
     End Enum
 
+   
+
+   
+
+
     Public Delegate Sub ControlEventHandler()
 
     <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
@@ -33,7 +40,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Implements IExpressionVarsProvider
 
 
-
+        Public Overrides Function GetFriendlyDetails() As String
+            Select Case Me.AdaptedMode
+                Case AdaptedControlMode.Type
+                    If Me.ResolvedAdaptedControlType IsNot Nothing Then
+                        Return ResolvedAdaptedControlType.FullName
+                    End If
+                Case AdaptedControlMode.Path
+                    Return Me.AdaptedControlPath
+            End Select
+            Return ""
+        End Function
 
         '<Browsable(False)> _
         'Public ReadOnly Property FriendlyName As String
@@ -44,6 +61,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '        Return "Select Adapted Control Type"
         '    End Get
         'End Property
+        
+
+        Public Property VersionRange As New EnabledFeature(Of Range(Of SerializableVersion))(New Range(Of SerializableVersion)(New SerializableVersion(New Version(4, 8, 1)), New SerializableVersion(NukeHelper.DnnVersion)))
+
+        <Browsable(False)> _
+        Public ReadOnly Property IsEnabled As Boolean
+            Get
+                Return Me.Enabled AndAlso ((Not Me.VersionRange.Enabled) OrElse Me.VersionRange.Entity.Validate(NukeHelper.DnnVersion))
+            End Get
+        End Property
 
         Public Property AdaptedMode As AdaptedControlMode
 

@@ -36,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Me.Enabled Then
                 Dim browser As HttpBrowserCapabilities = HttpContext.Current.Request.Browser
                 For Each objTypeAdapter As KeyValuePair(Of Type, ControlAdapterSettings) In Me.AdaptersDictionary
-                    If objTypeAdapter.Value.Enabled Then
+                    If objTypeAdapter.Value.IsEnabled Then
                         If Not browser.Adapters.Contains(objTypeAdapter.Key.AssemblyQualifiedName) Then
                             SyncLock browser.Adapters
                                 If Not browser.Adapters.Contains(objTypeAdapter.Key.AssemblyQualifiedName) Then

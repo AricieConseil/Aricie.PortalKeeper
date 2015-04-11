@@ -472,13 +472,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
 
 
-                For i As Integer = 0 To 0
+                'For i As Integer = 0 To 0
 
 
 
 
-                    DnnContext.Instance.AddModuleMessage(String.Format("Message: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
-                Next
+                '    DnnContext.Instance.AddModuleMessage(String.Format("Message: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
+                'Next
 
 
                 DnnContext.Instance.AddModuleMessage(String.Format("Time Elapsed: {0}", Common.FormatTimeSpan(sw.Elapsed)), ModuleMessage.ModuleMessageType.GreenSuccess)

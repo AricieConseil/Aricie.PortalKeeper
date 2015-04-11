@@ -72,7 +72,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     Public MustInherit Class DynamicControlAdapter
-        Inherits ControlAdapter 'Base(Of T)
+        Inherits PageAdapter 'Base(Of T)
         'Implements IPostBackDataHandler
 
 

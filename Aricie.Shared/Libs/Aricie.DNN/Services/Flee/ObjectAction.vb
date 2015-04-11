@@ -2,6 +2,8 @@
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports System.ComponentModel
+Imports Aricie.ComponentModel
 
 Namespace Services.Flee
     ''' <summary>
@@ -59,6 +61,8 @@ Namespace Services.Flee
     Public MustInherit Class ObjectAction(Of TObjectType)
         Inherits ObjectAction
 
+        
+
         ''' <summary>
         ''' Returns the generic type
         ''' </summary>
@@ -90,6 +94,7 @@ Namespace Services.Flee
         <ExtendedCategory("Parameters")> _
         Public Overridable Property Parameters() As New Variables
 
+        
     End Class
 
 

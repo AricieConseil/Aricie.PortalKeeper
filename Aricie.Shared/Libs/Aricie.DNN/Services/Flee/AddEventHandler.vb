@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.Services
@@ -24,17 +25,26 @@ Namespace Services.Flee
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
     <DisplayName("Add Event Handler")> _
+     <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class AddEventHandler(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
         Implements ISelector(Of EventInfo)
 
 
+        <Browsable(False)> _
+        Public Overridable ReadOnly Property FriendlyName As String
+            Get
+                Return String.Format("Add Event Handler{0}{1}", UIConstants.TITLE_SEPERATOR, EventName.ToString())
+            End Get
+        End Property
+
+
 
         <ExtendedCategory("Instance")> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ProvidersSelector()> _
-        Public Property EventName As String
+        Public Property EventName As String = ""
 
 
         Public Property DelegateExpression As New FleeExpressionInfo(Of [Delegate])
