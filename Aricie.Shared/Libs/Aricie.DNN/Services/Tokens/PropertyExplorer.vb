@@ -202,13 +202,10 @@ Namespace Services
                         Dim objType As Type = Me.CurrentValue.GetType
                         Dim objCurrentMember As MemberInfo = ReflectionHelper.GetMember(objType, Me.CurrentParam)
                         If objCurrentMember IsNot Nothing Then
-
                             Me.CurrentIndex += 1
                         Else
-
                             Dim defaultMembers() As MemberInfo = objType.GetDefaultMembers
                             For Each tempMember As MemberInfo In defaultMembers
-
                                 Select Case tempMember.MemberType
                                     Case MemberTypes.Field, MemberTypes.Property, MemberTypes.Method
                                         objCurrentMember = tempMember
