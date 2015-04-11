@@ -202,6 +202,7 @@
     <Compile Include="Entities\DomainName\DomainName.vb" />
     <Compile Include="Entities\DomainName\TLDRule.vb" />
     <Compile Include="Entities\DomainName\TLDRulesCache.vb" />
+    <Compile Include="Entities\EnabledFeature.vb" />
     <Compile Include="Entities\FileUpload.vb" />
     <Compile Include="Entities\HtmlPageScrapInfo.vb" />
     <Compile Include="Entities\ParsedUri.vb" />

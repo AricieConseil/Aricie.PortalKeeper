@@ -278,7 +278,12 @@ Public Class AricieFieldEditorControl
                     '    propEditor = New TextEditControl()
                     'End If
                     objEditControl = New CustomTextEditControl()
-
+                Case "System.Version"
+                    If NukeHelper.DnnVersion.Major > 5 Then
+                        objEditControl = DirectCast(ReflectionHelper.CreateObject("DotNetNuke.UI.WebControls.VersionEditControl, DotNetNuke"), EditControl)
+                    Else
+                        objEditControl = New TextEditControl(editorInfo.Type)
+                    End If
                 Case Else
 
                     If objType.IsEnum Then
@@ -318,8 +323,14 @@ Public Class AricieFieldEditorControl
             End Select
         Else
             'Use Editor
-            Dim editType As Type = ReflectionHelper.CreateType(editorInfo.Editor)
-            objEditControl = CType(Activator.CreateInstance(editType), EditControl)
+            Dim editType As Type = ReflectionHelper.CreateType(editorInfo.Editor, False)
+
+            If editType IsNot Nothing Then
+                objEditControl = CType(Activator.CreateInstance(editType), EditControl)
+            Else
+                objEditControl = New TextEditControl(editorInfo.Type)
+            End If
+
         End If
 
 

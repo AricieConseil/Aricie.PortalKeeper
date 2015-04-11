@@ -41,7 +41,8 @@ Namespace Configuration
             Select Case actionType
                 Case ConfigActionType.Install
 
-                    Dim node As New StandardComplexNodeInfo((NukeHelper.DefineWebServerElementPath("system.web")), NodeInfo.NodeAction.update, StandardComplexNodeInfo.NodeCollision.save, NukeHelper.DefineWebServerElementPath("system.web") & "/trust")
+                    Dim node As New StandardComplexNodeInfo((NukeHelper.DefineWebServerElementPath("system.web")), NodeInfo.NodeAction.update, _
+                                                            StandardComplexNodeInfo.NodeCollision.save, NukeHelper.DefineWebServerElementPath("system.web") & "/trust")
                     node.Children.Add(New TrustAddInfo(Me))
                     targetNodes.Nodes.Add(node)
 

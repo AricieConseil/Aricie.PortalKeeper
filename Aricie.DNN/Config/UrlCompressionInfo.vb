@@ -44,7 +44,8 @@ Namespace Configuration
             Select Case actionType
                 Case ConfigActionType.Install
 
-                    Dim node As New StandardComplexNodeInfo((NukeHelper.DefineWebServerElementPath("system.webServer")), NodeInfo.NodeAction.update, StandardComplexNodeInfo.NodeCollision.save, NukeHelper.DefineWebServerElementPath("system.web") & "/trust")
+                    Dim node As New StandardComplexNodeInfo((NukeHelper.DefineWebServerElementPath("system.webServer")), NodeInfo.NodeAction.update, StandardComplexNodeInfo.NodeCollision.save, _
+                                                            NukeHelper.DefineWebServerElementPath("system.webServer") & "/urlCompression")
                     node.Children.Add(New UrlCompressionAddInfo(Me))
                     targetNodes.Nodes.Add(node)
 

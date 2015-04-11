@@ -1,6 +1,8 @@
 Imports System.Reflection
 Imports Aricie.Services
 Imports System.Text
+Imports System.Text.RegularExpressions
+Imports System.Linq
 
 Namespace Services
 
@@ -11,17 +13,38 @@ Namespace Services
     ''' <remarks></remarks>
     Public Class PropertyExplorer
 
-        'todo:change this ugly fix
+
+        Private Shared ReadOnly ExpressionSplitter As New Regex(Constants.Content.ExpressionSplitCapture, RegexOptions.Compiled)
+        Private Shared ReadOnly ExpressionSegmentSplitter As New Regex(Constants.Content.ExpressionSegmentCapture, RegexOptions.Compiled)
+
+
+        Public Shared Function SplitExpression(exp As String) As IEnumerable(Of String)
+            Dim groupsCaptures As CaptureCollection = ExpressionSplitter.Match(exp).Groups(1).Captures
+            Return (From objCapture As Capture In groupsCaptures.Cast(Of Capture)() Select objCapture.Value).ToList()
+        End Function
+
         Public Shared Function ExpressionToTokens(expression As String) As String
-            Return expression.Replace("."c, ":"c).Replace("['", ":").Replace("[""", ":").Replace("["c, ":").Replace("']", "").Replace("""]", "").Replace("]"c, "")
+            Dim toReturn As New StringBuilder()
+            Dim segments As IEnumerable(Of String) = SplitExpression(expression)
+            For Each segment As String In SplitExpression(expression)
+                toReturn.Append(":")
+                Dim segmentSplit As Match = ExpressionSegmentSplitter.Match(segment)
+                toReturn.Append(segmentSplit.Groups(1).Captures(0).Value)
+                If segmentSplit.Groups(2).Captures.Count > 0 Then
+                    toReturn.Append(":"c)
+                    toReturn.Append(segmentSplit.Groups(2).Captures(0).Value)
+                End If
+            Next
+            Return toReturn.ToString().TrimStart(":"c)
+            'Return expression.Replace("."c, ":"c).Replace("['", ":").Replace("[""", ":").Replace("["c, ":").Replace("']", "").Replace("""]", "").Replace("]"c, "")
         End Function
 
         Public Const LocalizedKey As String = "Localized"
-        Public Shared ArrayGetMethod As MethodInfo = GetType(Array).GetMethod("GetValue", New Type() {GetType(Integer)})
+        Public Shared ReadOnly ArrayGetMethod As MethodInfo = GetType(Array).GetMethod("GetValue", New Type() {GetType(Integer)})
 
         Public Property LevelAccess As TokenLevelAccess = TokenLevelAccess.All
 
-        Private _Separator As Char
+        Private ReadOnly _Separator As Char
 
         Public Sub New(ByVal expression As String, ByVal initialValue As Object, levelAccess As TokenLevelAccess)
             Me.New(expression, initialValue, ":"c)

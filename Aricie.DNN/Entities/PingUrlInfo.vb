@@ -6,24 +6,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Xml.Serialization
 
 Namespace Entities
-
-    Public Class EnabledFeature(Of T As {New})
-
-        Public Sub New()
-            Me.Entity = New T()
-        End Sub
-
-        Public Sub New(objSimple As T)
-            Me.Entity = objSimple
-        End Sub
-
-        Public Property Enabled As Boolean
-
-        <ConditionalVisible("Enabled", False, True)>
-        Public Property Entity As New T()
-
-    End Class
-
     ''' <summary>
     ''' Configuration Entity class for a Web Ping engine
     ''' </summary>

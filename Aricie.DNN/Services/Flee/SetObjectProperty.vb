@@ -3,6 +3,7 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 
@@ -13,9 +14,18 @@ Namespace Services.Flee
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
     <Serializable()> _
+    <DefaultProperty("FriendlyName")> _
     Public Class SetObjectProperty(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
         Implements ISelector(Of PropertyInfo)
+
+        <Browsable(False)> _
+        Public Overridable ReadOnly Property FriendlyName As String
+            Get
+                Return String.Format("Set Property{0}{1}", UIConstants.TITLE_SEPERATOR, PropertyName.ToString())
+            End Get
+        End Property
+
 
         ''' <summary>
         ''' Gets or sets the property name
@@ -28,15 +38,21 @@ Namespace Services.Flee
         <ProvidersSelector()> _
         Public Property PropertyName() As String = String.Empty
 
-        ''' <summary>
-        ''' Gets or sets the value of the property
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
+
+        <Browsable(False)> _
+        Public Property Value() As FleeExpressionInfo(Of Object)
+            Get
+                Return Nothing
+            End Get
+            Set(objValue As FleeExpressionInfo(Of Object))
+                Me.PropertyValue.Expression = objValue
+                Me.PropertyValue.Mode = SimpleOrExpressionMode.Expression
+            End Set
+        End Property
+
+
         <ExtendedCategory("Instance")> _
-        <LabelMode(LabelMode.Top)> _
-        Public Property Value() As New FleeExpressionInfo(Of Object)
+        Public Property PropertyValue As New SimpleOrExpression(Of Object)
 
         ''' <summary>
         ''' Runs the evaluation against an object
@@ -45,10 +61,7 @@ Namespace Services.Flee
         ''' <param name="globalVars"></param>
         ''' <remarks></remarks>
         Public Overrides Function Run(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
-            Dim args As New List(Of Object)
-            For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                args.Add(objParam.Value)
-            Next
+            Dim args As List(Of Object) = (From objParam In Me.Parameters.EvaluateVariables(owner, globalVars) Select objParam.Value).ToList()
             Dim potentialsMembers As List(Of MemberInfo) = Nothing
             Dim targetProp As PropertyInfo
             If ReflectionHelper.GetFullMembersDictionary(GetType(TObjectType)).TryGetValue(Me._PropertyName, potentialsMembers) Then
@@ -56,7 +69,7 @@ Namespace Services.Flee
                     If TypeOf potentialMember Is PropertyInfo Then
                         targetProp = DirectCast(potentialMember, PropertyInfo)
                         If targetProp.GetIndexParameters.Length = args.Count Then
-                            Dim objValue As Object = Me._Value.Evaluate(owner, globalVars)
+                            Dim objValue As Object = Me.PropertyValue.GetValue(owner, globalVars)
                             Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
                             If Me.LockTarget Then
                                 SyncLock target
@@ -74,7 +87,7 @@ Namespace Services.Flee
         End Function
 
 
-       
+
         ''' <summary>
         ''' Returns values for the generic Type properties that are writable
         ''' </summary>
@@ -92,12 +105,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function GetSelectorG(ByVal propertyName As String) As System.Collections.Generic.IList(Of System.Reflection.PropertyInfo) Implements ComponentModel.ISelector(Of System.Reflection.PropertyInfo).GetSelectorG
-            Dim toReturn As New List(Of PropertyInfo)()
-            For Each objProperty As PropertyInfo In ReflectionHelper.GetPropertiesDictionary(Of TObjectType)().Values
-                If objProperty.CanWrite Then
-                    toReturn.Add(objProperty)
-                End If
-            Next
+            Dim toReturn As List(Of PropertyInfo) = (From objProperty In ReflectionHelper.GetPropertiesDictionary(Of TObjectType)().Values Where objProperty.CanWrite).ToList()
             toReturn.Sort(Function(objProp1, objProp2) String.Compare(objProp1.Name, objProp2.Name, StringComparison.InvariantCultureIgnoreCase))
             Return toReturn
         End Function

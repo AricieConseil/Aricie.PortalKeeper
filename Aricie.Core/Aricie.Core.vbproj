@@ -144,6 +144,7 @@
     <Compile Include="Components\ComponentModel\OutputRedirector.vb" />
     <Compile Include="Components\ComponentModel\RegexMapping.vb" />
     <Compile Include="Components\ComponentModel\Serializable.vb" />
+    <Compile Include="Components\ComponentModel\SerializableVersion.vb" />
     <Compile Include="Components\ComponentModel\UIConstants.vb" />
     <Compile Include="Components\ComponentModel\VariableStrategy.vb" />
     <Compile Include="Components\CompressionMethod.vb" />
