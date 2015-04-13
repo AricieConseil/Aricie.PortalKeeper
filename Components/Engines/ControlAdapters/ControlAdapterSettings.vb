@@ -134,7 +134,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _ResolvedAdapterType As Type
 
-        <LabelMode(LabelMode.Top)> _
        <Browsable(False)> _
         Public ReadOnly Property ResolvedAdapterControlType As Type
             Get
