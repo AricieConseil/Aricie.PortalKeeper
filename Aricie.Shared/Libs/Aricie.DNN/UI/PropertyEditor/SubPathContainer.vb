@@ -16,7 +16,7 @@ Namespace UI.WebControls
     Public Class SubPathContainer
         Implements ISelector(Of KeyValuePair(Of String, IconInfo))
         Implements IExpressionVarsProvider
-        Implements IContextProvider
+        Implements IContextSource
 
 
 
@@ -252,16 +252,16 @@ Namespace UI.WebControls
             Next
         End Sub
 
-        Public Function GetContext(objType As Type) As Object Implements IContextProvider.GetContext
-            Return (From objIContext In Me.GetParentEntities().Values.OfType(Of IContextProvider)() _
-                    Where objIContext.HasContect(objType) _
+        Public Function GetContext(objType As Type) As Object Implements IContextSource.GetContext
+            Return (From objIContext In Me.GetParentEntities().Values.OfType(Of IContextSource)() _
+                    Where objIContext.HasContext(objType) _
                     Select objIContext.GetContext(objType)).FirstOrDefault()
         End Function
 
-        Public Function HasContect(objType As Type) As Boolean Implements IContextProvider.HasContect
-            Return Me.GetParentEntities().Values.OfType(Of IContextProvider)() _
+        Public Function HasContect(objType As Type) As Boolean Implements IContextSource.HasContext
+            Return Me.GetParentEntities().Values.OfType(Of IContextSource)() _
                 .Any(Function(contextProvider) _
-                         contextProvider.HasContect(objType))
+                         contextProvider.HasContext(objType))
         End Function
     End Class
 End Namespace

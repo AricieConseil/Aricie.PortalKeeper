@@ -1098,11 +1098,11 @@ Namespace UI.WebControls
 
         Public Overridable Function GetContext(contextType As Type) As Object
             Dim currentPe As AriciePropertyEditorControl = Me
-            Dim currentProvider As IContextProvider
+            Dim currentProvider As IContextSource
             Do
-                If TypeOf currentPe.DataSource Is IContextProvider Then
-                    currentProvider = DirectCast(currentPe.DataSource, IContextProvider)
-                    If currentProvider.HasContect(contextType) Then
+                If TypeOf currentPe.DataSource Is IContextSource Then
+                    currentProvider = DirectCast(currentPe.DataSource, IContextSource)
+                    If currentProvider.HasContext(contextType) Then
                         Return currentProvider.GetContext(contextType)
                     End If
                 End If

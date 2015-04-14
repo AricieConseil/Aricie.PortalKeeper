@@ -58,7 +58,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
         Implements IExpressionVarsProvider
-        Implements IContextProvider
+        Implements IContextSource
 
         Public Overrides Function GetFriendlyDetails() As String
             Return String.Format("{1} Parameters{0}{2} {3}", UIConstants.TITLE_SEPERATOR, Me.Variables.Instances.Count.ToString(), _
@@ -275,11 +275,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Public Function HasContect(ByVal objType As Type) As Boolean Implements IContextProvider.HasContect
+        Public Function HasContect(ByVal objType As Type) As Boolean Implements IContextSource.HasContext
             Return objType Is GetType(PortalKeeperContext(Of TEngineEvents))
         End Function
 
-        Public Function GetContext(ByVal objType As Type) As Object Implements IContextProvider.GetContext
+        Public Function GetContext(ByVal objType As Type) As Object Implements IContextSource.GetContext
 
             Return InitContext(Nothing)
         End Function
