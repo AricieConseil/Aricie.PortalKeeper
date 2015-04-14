@@ -445,7 +445,8 @@ Namespace Services
         Public ReadOnly Property IPAddress() As IPAddress
             Get
                 If _IPAddress Is Nothing Then
-                    If Me.Request IsNot Nothing Then
+                    'todo: beware of the racing condition here (the request could be disposed during the parsing)
+                    If Me.Request IsNot Nothing AndAlso Not (Me.HttpContext.CurrentNotification >= RequestNotification.EndRequest AndAlso Me.HttpContext.IsPostNotification) Then
                         IPAddress.TryParse(Common.GetExternalIPAddress(Me.Request), _IPAddress)
                     Else
                         For Each netif As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
