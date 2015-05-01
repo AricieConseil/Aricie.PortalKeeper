@@ -7,8 +7,28 @@ Imports System.Web.Configuration
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Collections.Specialized
 Imports DotNetNuke.Services.FileSystem
+Imports DotNetNuke.Entities.Tabs
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Entities.Portals
 
 Namespace Entities
+
+    Public Class DNNPortalAlias
+
+        <AutoPostBack()> _
+       <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+       <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)> _
+        Public Property PortalAlias As String = ""
+
+        Public Function GetUrl() As String
+            If Not PortalAlias.IsNullOrEmpty() Then
+                Return DotNetNuke.Common.Globals.AddHTTP(PortalAlias)
+            End If
+            Return ""
+        End Function
+
+    End Class
+
 
     <Flags()> _
     Public Enum UrlControlMode
@@ -41,6 +61,8 @@ Namespace Entities
         Private _UrlPath As String = ""
 
         Private _RedirectMode As CustomErrorsRedirectMode = CustomErrorsRedirectMode.ResponseRedirect
+
+        Private _PortalAlias As String = ""
 
         Public Sub New()
 
@@ -89,7 +111,7 @@ Namespace Entities
         End Property
 
 
-        
+
 
         <ConditionalVisible("ShowTrack", False, True)> _
         Public Overridable Property Track() As Boolean
@@ -104,11 +126,35 @@ Namespace Entities
             End Set
         End Property
 
+        <ConditionalVisible("UrlType", False, True, TabType.Tab)> _
+        Public Property DefinePortalAlias As Boolean
+
+        <AutoPostBack()> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)> _
+        <ConditionalVisible("UrlType", False, True, TabType.Tab)> _
+        <ConditionalVisible("DefinePortalAlias", False, True)>
+        Public Property PortalAlias As String
+            Get
+                Return _PortalAlias
+            End Get
+            Set(value As String)
+                If _PortalAlias <> value Then
+                    _UrlPath = ""
+                    _PortalAlias = value
+                End If
+            End Set
+        End Property
+
         <IsReadOnly(True)> _
         Public Overridable ReadOnly Property UrlPath() As String
             Get
                 If String.IsNullOrEmpty(_UrlPath) Then
                     _UrlPath = Aricie.DNN.Services.NukeHelper.GetPathFromCtrUrl(NukeHelper.PortalId, Me._Url, Me._Track)
+                    If DefinePortalAlias AndAlso Not PortalAlias.IsNullOrEmpty() AndAlso Not _UrlPath.IsNullOrEmpty() Then
+                        Dim targetPA As Uri = New Uri(DotNetNuke.Common.Globals.AddHTTP(PortalAlias))
+                        _UrlPath = New Uri(targetPA, _UrlPath).ToString()
+                    End If
                 End If
                 Return Me._UrlPath
             End Get
@@ -199,7 +245,7 @@ Namespace Entities
                 Else
                     'Dim targetUrl As String = Me.UrlPath
                     If Not String.IsNullOrEmpty(queryErrorsParam) Then
-                        If (Not context.Request.QueryString.Item(queryErrorsParam) Is Nothing) Then
+                        If (context.Request.QueryString.Item(queryErrorsParam) IsNot Nothing) Then
                             Return False
                         End If
                         If Not String.IsNullOrEmpty(queryErrorsValue) Then

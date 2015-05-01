@@ -679,15 +679,12 @@ Namespace Settings
         Public Sub SetModuleSettings(Of T As {Class})(ByVal scope As SettingsScope, ByVal scopeId As Integer, _
                                                         ByVal settings As T, ByVal setCache As Boolean, _
                                                         ByVal ParamArray args() As String)
-            Dim strMSKey As String
+            Dim strKey As String = Constants.GetKey(Of T)(args)
 
-            strMSKey = Constants.GetKey(Of T)(args)
-
-
-            DeleteFromModuleSettings(scope, scopeId, strMSKey)
+            DeleteFromModuleSettings(scope, scopeId, strKey)
 
             Dim xmlGeneralSettings As String = ReflectionHelper.Serialize(settings).OuterXml
-            SaveToModuleSettings(scope, scopeId, strMSKey, xmlGeneralSettings)
+            SaveToModuleSettings(scope, scopeId, strKey, xmlGeneralSettings)
             If setCache Then
                 Dim newArgs As String() = {}
                 newArgs = GetKeyArgs(Of T)(scope, scopeId, args)
@@ -714,15 +711,16 @@ Namespace Settings
         ''' </returns>
         ''' <remarks></remarks>
 
-        <Obsolete("This function is deprecated ; please use evalEndOfValidXMLString instead of")> Private Function VerifyTagsXML(Of T)(ByVal xmlSettings As String) As Integer
+        <Obsolete("This function is deprecated ; please use evalEndOfValidXMLString instead of")> _
+        Private Function VerifyTagsXML(Of T)(ByVal xmlSettings As String) As Integer
 
-            Dim startPosition As Integer = xmlSettings.IndexOf("?>")
-            Dim posStartTag As Integer = xmlSettings.IndexOf("<", startPosition) + 1
+            Dim startPosition As Integer = xmlSettings.IndexOf("?>", System.StringComparison.Ordinal)
+            Dim posStartTag As Integer = xmlSettings.IndexOf("<", startPosition, System.StringComparison.Ordinal) + 1
             'posStartTag est maintenant placé sur la première position de la balise de start
             Dim endPosStartTag As Integer = 0
-            endPosStartTag = xmlSettings.IndexOf(" ", posStartTag)
-            If endPosStartTag > xmlSettings.IndexOf(">", posStartTag) Then
-                endPosStartTag = xmlSettings.IndexOf(">", posStartTag)
+            endPosStartTag = xmlSettings.IndexOf(" ", posStartTag, System.StringComparison.Ordinal)
+            If endPosStartTag > xmlSettings.IndexOf(">", posStartTag, System.StringComparison.Ordinal) Then
+                endPosStartTag = xmlSettings.IndexOf(">", posStartTag, System.StringComparison.Ordinal)
             End If
             Dim tagSize As Integer = endPosStartTag - posStartTag
 
@@ -731,7 +729,7 @@ Namespace Settings
 
 
             Dim strEndTag As String = "</" & tagName & ">"
-            Dim position As Integer = xmlSettings.IndexOf(strEndTag)
+            Dim position As Integer = xmlSettings.IndexOf(strEndTag, System.StringComparison.Ordinal)
             If (position + tagSize + 3) < xmlSettings.Length() Then
                 'il y a des informations après la balise de fermeture 
                 Return position + tagSize + 3
@@ -756,14 +754,14 @@ Namespace Settings
 
             Dim toReturn As Integer = -1
 
-            Dim startPosition As Integer = xmlSettings.IndexOf("?>")
+            Dim startPosition As Integer = xmlSettings.IndexOf("?>", System.StringComparison.Ordinal)
             If startPosition <> -1 Then
-                Dim posStartTag As Integer = xmlSettings.IndexOf("<", startPosition) + 1
+                Dim posStartTag As Integer = xmlSettings.IndexOf("<", startPosition, System.StringComparison.Ordinal) + 1
                 ' PosStartTag est maintenant placé sur la première position de la balise de start
                 Dim endPosStartTag As Integer = 0
-                endPosStartTag = xmlSettings.IndexOf(" ", posStartTag)
-                If endPosStartTag > xmlSettings.IndexOf(">", posStartTag) Then
-                    endPosStartTag = xmlSettings.IndexOf(">", posStartTag)
+                endPosStartTag = xmlSettings.IndexOf(" ", posStartTag, System.StringComparison.Ordinal)
+                If endPosStartTag > xmlSettings.IndexOf(">", posStartTag, System.StringComparison.Ordinal) Then
+                    endPosStartTag = xmlSettings.IndexOf(">", posStartTag, System.StringComparison.Ordinal)
                 End If
                 Dim tagSize As Integer = endPosStartTag - posStartTag
 
@@ -772,7 +770,7 @@ Namespace Settings
 
                 If tagName <> "" Then
                     Dim strEndTag As String = "</" & tagName & ">"
-                    Dim position As Integer = xmlSettings.IndexOf(strEndTag)
+                    Dim position As Integer = xmlSettings.IndexOf(strEndTag, System.StringComparison.Ordinal)
                     If (position + tagSize + 3) < xmlSettings.Length() Then
                         ' Il y a des informations après la balise de fermeture 
                         toReturn = position + tagSize + 3
@@ -835,25 +833,24 @@ Namespace Settings
                                                  ByVal scopeid As Integer, ByVal key As String, _
                                                  Optional ByRef settings As Hashtable = Nothing) As String
 
-            Dim toReturn As String = ""
+            Dim toReturn As New StringBuilder()
             If settings Is Nothing Then
                 settings = FetchSettings(scope, scopeid)
             End If
             If settings.ContainsKey(key) Then
-                toReturn = CType(settings(key), String)
+                toReturn.Append(DirectCast(settings(key), String))
 
                 Dim j As Integer = 2
                 Dim tempStr As String
                 ' Do
-                tempStr = ""
                 While settings.ContainsKey(key & "-" & j)
-                    tempStr = CType(settings(key & "-" & j), String)
-                    toReturn += tempStr
+                    tempStr = DirectCast(settings(key & "-" & j), String)
+                    toReturn.Append(tempStr)
                     j += 1
                 End While
 
             End If
-            Return toReturn
+            Return toReturn.ToString()
 
         End Function
 
@@ -954,10 +951,10 @@ Namespace Settings
                     Select Case NukeHelper.DnnVersion.Major
                         Case Is >= 6
                             toReturn = New Hashtable()
-                            Dim TypeHostController As Type = ReflectionHelper.CreateType("DotNetNuke.Entities.Controllers.HostController, DotNetNuke")
-                            Dim HostControllerInstance = TypeHostController.GetProperty("Instance", BindingFlags.Public Or BindingFlags.Static Or BindingFlags.FlattenHierarchy).GetValue(Nothing, Nothing)
-                            Dim hostSettingsMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(TypeHostController, "GetSettingsDictionary"), MethodInfo)
-                            Dim hostSettings As Dictionary(Of String, String) = DirectCast(hostSettingsMethod.Invoke(HostControllerInstance, Nothing), Dictionary(Of String, String))
+                            Dim typeHostController As Type = ReflectionHelper.CreateType("DotNetNuke.Entities.Controllers.HostController, DotNetNuke")
+                            Dim hostControllerInstance = typeHostController.GetProperty("Instance", BindingFlags.Public Or BindingFlags.Static Or BindingFlags.FlattenHierarchy).GetValue(Nothing, Nothing)
+                            Dim hostSettingsMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(typeHostController, "GetSettingsDictionary"), MethodInfo)
+                            Dim hostSettings As Dictionary(Of String, String) = DirectCast(hostSettingsMethod.Invoke(hostControllerInstance, Nothing), Dictionary(Of String, String))
                             For Each item As KeyValuePair(Of String, String) In hostSettings
                                 toReturn.Add(item.Key, item.Value)
                             Next
@@ -996,10 +993,10 @@ Namespace Settings
                 Case SettingsScope.HostSettings
                     Select Case NukeHelper.DnnVersion.Major
                         Case Is >= 6
-                            Dim TypeHostController As Type = Type.GetType("DotNetNuke.Entities.Controllers.HostController, DotNetNuke")
-                            Dim HostControllerInstance = TypeHostController.GetProperty("Instance", BindingFlags.Public Or BindingFlags.Static Or BindingFlags.FlattenHierarchy).GetValue(Nothing, Nothing)
-                            Dim hostSettingsMethod As MethodInfo = TypeHostController.GetMethod("Update", New Type() {GetType(String), GetType(String)})
-                            hostSettingsMethod.Invoke(HostControllerInstance, New Object() {key, strXmlToSave})
+                            Dim typeHostController As Type = Type.GetType("DotNetNuke.Entities.Controllers.HostController, DotNetNuke")
+                            Dim hostControllerInstance = typeHostController.GetProperty("Instance", BindingFlags.Public Or BindingFlags.Static Or BindingFlags.FlattenHierarchy).GetValue(Nothing, Nothing)
+                            Dim hostSettingsMethod As MethodInfo = typeHostController.GetMethod("Update", New Type() {GetType(String), GetType(String)})
+                            hostSettingsMethod.Invoke(hostControllerInstance, New Object() {key, strXmlToSave})
                         Case Else
                             HostController.UpdateHostSetting(key, strXmlToSave)
                     End Select
@@ -1009,7 +1006,37 @@ Namespace Settings
             End Select
         End Sub
 
+        Private _GetPortalDefaultLanguageMethod As MethodInfo
 
+        Public ReadOnly Property GetPortalDefaultLanguageMethod As MethodInfo
+            Get
+                If _GetPortalDefaultLanguageMethod Is Nothing Then
+                    _GetPortalDefaultLanguageMethod = DirectCast(ReflectionHelper.GetMember(GetType(PortalController), "GetPortalDefaultLanguage"), MethodInfo)
+                End If
+                Return _GetPortalDefaultLanguageMethod
+            End Get
+        End Property
+
+
+        Private _DeletePortalsettingMethod As MethodInfo
+
+        Public ReadOnly Property DeletePortalsettingMethod As MethodInfo
+            Get
+                If _DeletePortalsettingMethod Is Nothing Then
+                    Dim portalSettingsMethodDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(GetType(PortalController))
+                    Dim deletePortalSettingsListMethod As New List(Of MemberInfo)
+                    If portalSettingsMethodDico.TryGetValue("DeletePortalSetting", deletePortalSettingsListMethod) Then
+                        For Each item As MethodInfo In deletePortalSettingsListMethod.OfType(Of MethodInfo)()
+                            If item.GetParameters.Length = 3 Then
+                                _DeletePortalsettingMethod = item
+                                Exit For
+                            End If
+                        Next
+                    End If
+                End If
+                Return _DeletePortalsettingMethod
+            End Get
+        End Property
 
         Public Sub DeleteSettings(ByVal scope As SettingsScope, _
                                    ByVal scopeId As Integer, ByVal key As String)
@@ -1024,26 +1051,8 @@ Namespace Settings
                             Dim culture As String = ""
                             Dim objItem As MethodInfo = Nothing
                             Try
-                                Dim TypePortalController As Type
-                                TypePortalController = ReflectionHelper.CreateType("DotNetNuke.Entities.Portals.PortalController, DotNetNuke")
-                                Dim portalCtlr As Object = Activator.CreateInstance(TypePortalController)
-
-                                Dim activePortalLanguageMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(TypePortalController, "GetPortalDefaultLanguage"), MethodInfo)
-                                culture = DirectCast(activePortalLanguageMethod.Invoke(portalCtlr, New Object() {scopeId}), String)
-
-
-                                Dim portalSettingsMethodDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(TypePortalController)
-
-                                Dim deletePortalSettingsListMethod As New List(Of MemberInfo)
-                                If portalSettingsMethodDico.TryGetValue("DeletePortalSetting", deletePortalSettingsListMethod) Then
-                                    For Each item As MemberInfo In deletePortalSettingsListMethod
-                                        objItem = DirectCast(item, MethodInfo)
-                                        If objItem.GetParameters.Length = 3 Then
-                                            objItem.Invoke(portalCtlr, New Object() {scopeId, key, culture})
-                                            Exit For
-                                        End If
-                                    Next
-                                End If
+                                culture = DirectCast(GetPortalDefaultLanguageMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId}), String)
+                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, culture})
 
                             Catch ex As Exception
                                 NukeHelper.LogController.AddLog("DeleteSettingsDebug", String.Format("Erreur d'enregistrement des settings : ScopeId = {0} / key = {1} / culture = {2} /// Exceptions => {3} :", scopeId, key, culture, ex.Message), Nothing, -1, EventLogController.EventLogType.HOST_ALERT)
@@ -1058,10 +1067,31 @@ Namespace Settings
             End Select
         End Sub
 
+
+        Private _UpdatePortalsettingMethod As MethodInfo
+
+        Public ReadOnly Property UpdatePortalsettingMethod As MethodInfo
+            Get
+                If _UpdatePortalsettingMethod Is Nothing Then
+                    Dim portalSettingsMembersDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(GetType(PortalController))
+                    Dim updatePortalSettingsListMethod As New List(Of MemberInfo)
+                    If portalSettingsMembersDico.TryGetValue("UpdatePortalSetting", updatePortalSettingsListMethod) Then
+                        For Each item As MethodInfo In updatePortalSettingsListMethod.OfType(Of MethodInfo)()
+                            If item.GetParameters.Length = 5 Then
+                                _UpdatePortalsettingMethod = item
+                                Exit For
+                            End If
+                        Next
+                    End If
+                End If
+                Return _UpdatePortalsettingMethod
+            End Get
+        End Property
+
         Private Sub InnerUpdateSiteSettings(ByVal scopeId As Integer, ByVal key As String, ByVal value As String)
             ' Modification pour DNN 6.1: MAJ du web.config à chaque appel au UpdateSiteSetting de portalsettings
             While True
-                Dim ExceptionCounter As Integer = 0 ' on va tenter un nombre limité de fois cette modification
+                Dim exceptionCounter As Integer = 0 ' on va tenter un nombre limité de fois cette modification
                 Try
 
 
@@ -1070,26 +1100,10 @@ Namespace Settings
                             Dim culture As String = ""
                             Dim objItem As MethodInfo = Nothing
                             Try
-                                Dim TypePortalController As Type
-                                TypePortalController = ReflectionHelper.CreateType("DotNetNuke.Entities.Portals.PortalController, DotNetNuke")
-                                Dim portalCtlr As Object = Activator.CreateInstance(TypePortalController)
-
-                                Dim activePortalLanguageMethod As MethodInfo = DirectCast(ReflectionHelper.GetMember(TypePortalController, "GetPortalDefaultLanguage"), MethodInfo)
-                                culture = DirectCast(activePortalLanguageMethod.Invoke(portalCtlr, New Object() {scopeId}), String)
-
-
-                                Dim portalSettingsMethodDico As Dictionary(Of String, List(Of MemberInfo)) = ReflectionHelper.GetFullMembersDictionary(TypePortalController)
-
-                                Dim updatePortalSettingsListMethod As New List(Of MemberInfo)
-                                If portalSettingsMethodDico.TryGetValue("UpdatePortalSetting", updatePortalSettingsListMethod) Then
-                                    For Each item As MemberInfo In updatePortalSettingsListMethod
-                                        objItem = DirectCast(item, MethodInfo)
-                                        If objItem.GetParameters.Length = 5 Then
-                                            objItem.Invoke(portalCtlr, New Object() {scopeId, key, value, True, culture})
-                                            Exit For
-                                        End If
-                                    Next
-                                End If
+                               
+                                culture = DirectCast(GetPortalDefaultLanguageMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId}), String)
+                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, String.Empty})
+                                UpdatePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, value, True, culture})
 
                             Catch ex As Exception
                                 NukeHelper.LogController.AddLog("UpdateSettingsDebug", String.Format("Erreur d'enregistrement des settings : ScopeId = {0} / key = {1} / value = {2} / culture = {3} //// Method : {4}", scopeId, key, value, culture, ex.Message), Nothing, -1, EventLogController.EventLogType.HOST_ALERT)
@@ -1099,8 +1113,8 @@ Namespace Settings
                             PortalSettings.UpdateSiteSetting(scopeId, key, value)
                     End Select ' classique
                 Catch ioex As IOException ' une exception IO, sans doute le web.config qui n'a pas encore été relaché d'un traitement précédent
-                    ExceptionCounter += 1
-                    If ExceptionCounter <= 100 Then
+                    exceptionCounter += 1
+                    If exceptionCounter <= 100 Then
                         Continue While ' Tentons à nouveau
                     Else
                         Throw ' on abandonne

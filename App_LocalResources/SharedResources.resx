@@ -9473,4 +9473,31 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="SetMinimum.Text" xml:space="preserve">
     <value>Set Minimum</value>
   </data>
+  <data name="ControlUrlInfo_DefinePortalAlias.Help" xml:space="preserve">
+    <value>You can select a particular portal alias to use together with your target path.</value>
+  </data>
+  <data name="ControlUrlInfo_DefinePortalAlias.Text" xml:space="preserve">
+    <value>Specific Portal Alias</value>
+  </data>
+  <data name="ControlUrlInfo_PortalAlias.Help" xml:space="preserve">
+    <value>Select the target portal alias</value>
+  </data>
+  <data name="ControlUrlInfo_PortalAlias.Text" xml:space="preserve">
+    <value>Portal Alias</value>
+  </data>
+  <data name="FirewallSettings_TechnicalSettings.Header" xml:space="preserve">
+    <value>Advanced Settings</value>
+  </data>
+  <data name="GeneralObjectAction_InitializeSimpleValue.Text" xml:space="preserve">
+    <value>Init Value</value>
+  </data>
+  <data name="GeneralObjectAction_Value.Help" xml:space="preserve">
+    <value>Define an instance or an expression for the property's setter value.</value>
+  </data>
+  <data name="GeneralObjectAction_Value.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="SimpleOrExpressionBase`2_ResetInstance.Text" xml:space="preserve">
+    <value>Reset Value</value>
+  </data>
 </root>

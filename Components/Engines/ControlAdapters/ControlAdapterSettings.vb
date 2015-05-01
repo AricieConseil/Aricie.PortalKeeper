@@ -221,6 +221,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End SyncLock
         End Sub
 
+        Private Shared _ascxList As ListItemCollection
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
             Dim toReturn As New ListItemCollection
@@ -230,14 +231,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     toReturn.Add(New ListItem("Portable Handler", "Portable"))
 
                 Case "AdaptedSelectedPath"
-                    Dim objFiles As IEnumerable(Of String) = Aricie.DNN.Services.FileHelper.LoadFiles("*.as?x")
-                    Dim filelist As List(Of String) = objFiles.Where(Function(file) file.ToLower().EndsWith("aspx") OrElse file.ToLower().EndsWith("ascx")).ToList()
-                    ' Sort alphabetically.
-                    filelist.Sort()
-
-                    For Each objFile As String In filelist
-                        toReturn.Add(Aricie.DNN.Services.FileHelper.GetPathFromMapPath(objFile))
-                    Next
+                    If _ascxList Is Nothing Then
+                        Dim objFiles As IEnumerable(Of String) = Aricie.DNN.Services.FileHelper.LoadFiles("*.as?x")
+                        Dim fileList As List(Of String) = objFiles.Where(Function(file) file.ToLower().EndsWith("aspx") OrElse file.ToLower().EndsWith("ascx")).ToList()
+                        fileList.Sort()
+                        For Each objFile As String In _ascxList
+                            toReturn.Add(Aricie.DNN.Services.FileHelper.GetPathFromMapPath(objFile))
+                        Next
+                        _ascxList = toReturn
+                    End If
             End Select
 
             Return toReturn

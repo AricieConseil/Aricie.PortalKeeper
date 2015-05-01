@@ -1,5 +1,6 @@
 Imports System.Xml.Serialization
 Imports Aricie.Services
+Imports System.Linq
 
 Namespace Collections
     ''' <summary>
@@ -39,18 +40,9 @@ Namespace Collections
             Dim depth As Integer = reader.Depth
             reader.ReadStartElement()
             Try
-                Dim types As New List(Of Type)
                 Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
                 Dim typeNames As List(Of String) = DirectCast(serializer.Deserialize(reader), List(Of String))
-                For Each strType As String In typeNames
-                    Dim objType As Type
-                    Try
-                        objType = ReflectionHelper.CreateType(strType)
-                    Catch ex As Exception
-                        objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType))
-                    End Try
-                    types.Add(objType)
-                Next
+                Dim types As List(Of Type) = (From strType In typeNames Select objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType), False) Where objType IsNot Nothing).ToList()
                 serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
                 Dim objList As List(Of T) = DirectCast(serializer.Deserialize(reader), List(Of T))
                 For Each objT As T In objList
@@ -79,13 +71,7 @@ Namespace Collections
                     types.Add(tempType)
                 End If
             Next
-            Dim typeNames As New List(Of String)
-            For Each objtype As Type In types
-                If Not objtype Is GetType(T) Then
-                    Dim safeName As String = ReflectionHelper.GetSafeTypeName(objtype)
-                    typeNames.Add(safeName)
-                End If
-            Next
+            Dim typeNames As List(Of String) = (From objtype In types Where objtype IsNot GetType(T) Select ReflectionHelper.GetSafeTypeName(objtype)).ToList()
             Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
             serializer.Serialize(writer, typeNames)
             serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)

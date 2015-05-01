@@ -204,8 +204,11 @@ Public Class AricieFieldEditorControl
         TrackViewState()
 
         'Create the editor
-        CreateEditor()
 
+
+        'todo
+        CreateEditor()
+    
         'Set flag so CreateChildConrols should not be invoked later in control's lifecycle
         ChildControlsCreated = True
 
@@ -218,17 +221,20 @@ Public Class AricieFieldEditorControl
         Try
             MyBase.ValueChanged(sender, e)
             If Me.IsDirty Then
-                Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
-                If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
-                    ae.ParentAricieEditor.ItemChanged = True
-                    ae.ParentAricieEditor.RootEditor.ItemChanged = True
-                    'If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                    '    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
-                    '    If ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                    '        ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
-                    '    End If
-                    'End If
+                If Me.ParentAricieEditor IsNot Nothing Then
+                    'Me.ParentAricieEditor.ItemChanged = True
+                    Me.ParentAricieEditor.RootEditor.ItemChanged = True
                 End If
+                'Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
+                'If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
+
+                '    'If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                '    '    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                '    '    If ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                '    '        ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                '    '    End If
+                '    'End If
+                'End If
             End If
         Catch ex As Exception
             If Me.ParentAricieEditor IsNot Nothing Then
@@ -254,9 +260,11 @@ Public Class AricieFieldEditorControl
         Dim objEditControl As EditControl
 
         If editorInfo.Editor = "UseSystemType" Then
-            Dim objType As Type = ReflectionHelper.CreateType(editorInfo.Type)
+            Dim objType As Type
             If editorInfo.Value IsNot Nothing Then 'AndAlso editorInfo.Value.GetType() IsNot objType AndAlso Not ReflectionHelper.CanConvert(objType, editorInfo.Value.GetType()) Then
                 objType = editorInfo.Value.GetType()
+            Else
+                objType = ReflectionHelper.CreateType(editorInfo.Type)
             End If
 
             Select Case objType.FullName
@@ -290,7 +298,8 @@ Public Class AricieFieldEditorControl
                         If ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttr) TypeOf objAttr Is FlagsAttribute).Any() Then
                             objEditControl = New AricieCheckBoxListEditControl()
                         Else
-                            objEditControl = New EnumEditControl(objType.AssemblyQualifiedName)
+                            'objEditControl = New EnumEditControl(objType.AssemblyQualifiedName)
+                            objEditControl = New AricieEnumEditControl(objType)
                         End If
 
                     Else

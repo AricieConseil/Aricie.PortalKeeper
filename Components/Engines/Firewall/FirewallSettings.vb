@@ -79,7 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <XmlIgnore()> _
         Public Overrides Property Name As String
             Get
-                Return MyBase.Name
+                Return "Firewall"
             End Get
             Set(value As String)
                 MyBase.Name = value
@@ -98,10 +98,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("")> _
+        <ExtendedCategory("TechnicalSettings")> _
         <Width(450)> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        Public Property RecoveryParam() As String
+         Public Property RecoveryParam() As String
             Get
                 If String.IsNullOrEmpty(_RecoveryParam) Then
                     _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
@@ -114,10 +114,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("")> _
+        <ExtendedCategory("TechnicalSettings")> _
         <Width(450)> _
             <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-        Public Property RestartParam() As String
+         Public Property RestartParam() As String
             Get
                 If String.IsNullOrEmpty(_RestartParam) Then
                     _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
@@ -133,7 +133,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ExtendedCategory("TechnicalSettings")> _
-        <ConditionalVisible("ShowTechnicalSettings", False, True, True)> _
         <SortOrder(1000)> _
         Public Property RequestScope() As RequestScope
             Get
@@ -145,7 +144,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("TechnicalSettings")> _
-        <ConditionalVisible("ShowTechnicalSettings", False, True, True)> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <LineCount(2)> _
         <Width(300)> _
