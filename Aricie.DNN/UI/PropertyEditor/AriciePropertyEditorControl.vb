@@ -601,11 +601,14 @@ Namespace UI.WebControls
                 If Not MyBase.GetRowVisibility(info) Then
                     Return False
                 End If
-                'Jesse: I don't understand that rollback: why should null strings ("not true" reference type)  be hidden?
-                'Jesse: reapplying the original full test
-                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) AndAlso info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                    'If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                    Return False
+                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) Then
+                    Try
+                        If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
+                            Return False
+                        End If
+                    Catch
+                        Return False
+                    End Try
                 End If
             End If
             Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)

@@ -17,8 +17,8 @@ Namespace Services.Flee
 
         Public Property Enabled As Boolean = True Implements IEnabled.Enabled
 
-        <ExtendedCategory("Instance")> _
-        Public Property LockTarget As Boolean = True
+        '<ExtendedCategory("Instance")> _
+        Public Overridable Property LockTarget As Boolean = True
 
         ''' <summary>
         ''' Returns the name of the Object object

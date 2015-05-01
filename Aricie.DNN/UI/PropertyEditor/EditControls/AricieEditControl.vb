@@ -4,9 +4,34 @@ Imports DotNetNuke.UI.WebControls
 Imports DotNetNuke.Entities.Modules
 Imports System.Web.UI
 Imports Aricie.DNN.Security.Trial
+Imports Aricie.Services
+Imports System.Globalization
 
 
 Namespace UI.WebControls.EditControls
+
+    Public Class AricieEnumEditControl
+        Inherits EnumEditControl
+
+        Protected ReadOnly EnumType As Type
+
+        Public Sub New(objEnumType As Type)
+            MyBase.New(ReflectionHelper.GetSafeTypeName(objEnumType))
+            EnumType = objEnumType
+        End Sub
+        Protected Overrides Sub RenderViewMode(writer As HtmlTextWriter)
+            'Dim propValue As Int32 = Convert.ToInt32(Value)
+            Dim propValue As Object = DirectCast(Value, IConvertible).ToType([Enum].GetUnderlyingType(EnumType), CultureInfo.InvariantCulture)
+            Dim enumValue As String = [Enum].Format(EnumType, propValue, "G")
+
+            ControlStyle.AddAttributesToRender(writer)
+            writer.RenderBeginTag(HtmlTextWriterTag.Span)
+            writer.Write(enumValue)
+            writer.RenderEndTag()
+        End Sub
+
+    End Class
+
     ''' <summary>
     ''' Base Control to edit a property
     ''' </summary>
@@ -85,7 +110,7 @@ Namespace UI.WebControls.EditControls
             End Get
         End Property
 
-       
+
 
         Public ReadOnly Property ParentField() As FieldEditorControl
             Get
@@ -138,9 +163,9 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
-      
 
-      
+
+
 
         Public Function BuildEditInfo(ByVal objValue As Object, objEditMode As PropertyEditorMode) As EditorInfo
             Return Me.BuildEditInfo(objValue, "", objEditMode)

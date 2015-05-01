@@ -41,7 +41,7 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub OnAttributesChanged()
-            If (Not CustomAttributes Is Nothing) Then
+            If (CustomAttributes IsNot Nothing) Then
                 For Each attribute As Attribute In CustomAttributes
                     If TypeOf attribute Is FieldStyleAttribute Then
                         _width = DirectCast(attribute, FieldStyleAttribute).Width
@@ -192,8 +192,10 @@ Namespace UI.WebControls.EditControls
         Public Overrides Sub DataBind()
 
             If Me.Value IsNot Nothing Then
-                Me._InnerEditor.DataSource = Me.Value
-                Me._InnerEditor.DataBind()
+                If TypeOf _InnerEditor Is AriciePropertyEditorControl AndAlso DirectCast(_InnerEditor, AriciePropertyEditorControl).PropertyDepth < 5 Then
+                    Me._InnerEditor.DataSource = Me.Value
+                    Me._InnerEditor.DataBind()
+                End If
                 'AddHandler _InnerEditor.ItemCreated, New EditorCreatedEventHandler(AddressOf Me.EditorItemCreated)
                 'MyBase.DataBind()
             End If
