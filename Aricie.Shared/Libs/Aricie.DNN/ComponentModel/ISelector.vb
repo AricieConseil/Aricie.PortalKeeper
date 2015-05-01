@@ -1,4 +1,5 @@
 ﻿Namespace ComponentModel
+
     Public Interface ISelector
         Function GetSelector(ByVal propertyName As String) As IList
 

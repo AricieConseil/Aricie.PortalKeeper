@@ -21,6 +21,9 @@ Imports System.Reflection.Emit
 
 Namespace Services
 
+    
+
+
     ''' <summary>
     ''' Global Helper with many Reflection related methods.
     ''' </summary>
@@ -91,7 +94,7 @@ Namespace Services
         Private Const glbDependency As String = Aricie.Constants.Cache.Dependency & "Reflection"
 
         Private ReadOnly _Singletons As New Dictionary(Of Type, Object)
-        Private ReadOnly _XmlSerializers As New Dictionary(Of Type, Dictionary(Of String, XmlSerializer))
+        Private ReadOnly _XmlSerializers As New Dictionary(Of String, XmlSerializerBag)
         Private Shared _XmlSerializerFactory As New XmlSerializerFactory
         Private ReadOnly _TypesByTypeName As New Dictionary(Of String, Type)
         Private ReadOnly _PropertiesByType As New Dictionary(Of Type, Dictionary(Of String, PropertyInfo))
@@ -231,29 +234,29 @@ Namespace Services
 
 
 
-           
+
 
 
 
 
 #If DEBUG Then
-                toReturn = BuildManager.GetType(typeName, throwOnError, True)
-                If toReturn IsNot Nothing Then
-                    Dim debugType As Type = Nothing
-                    If _DebugSurrogates IsNot Nothing Then
-                        Dim dest As Object = _DebugSurrogates.Invoke(toReturn)
-                        If dest IsNot Nothing Then
-                            debugType = dest.GetType()
-                        End If
-                        'Else
-                        '    Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
-                        '    debugType = CreateType(debugTypeName, False)
+            toReturn = BuildManager.GetType(typeName, throwOnError, True)
+            If toReturn IsNot Nothing Then
+                Dim debugType As Type = Nothing
+                If _DebugSurrogates IsNot Nothing Then
+                    Dim dest As Object = _DebugSurrogates.Invoke(toReturn)
+                    If dest IsNot Nothing Then
+                        debugType = dest.GetType()
                     End If
-
-                    If debugType IsNot Nothing Then
-                        Return debugType
-                    End If
+                    'Else
+                    '    Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
+                    '    debugType = CreateType(debugTypeName, False)
                 End If
+
+                If debugType IsNot Nothing Then
+                    Return debugType
+                End If
+            End If
 #Else
              If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
 
@@ -272,7 +275,7 @@ Namespace Services
 
 #End If
 
-            
+
             Return toReturn
 
         End Function
@@ -490,14 +493,14 @@ Namespace Services
                 End If
             Else
                 If objectType Is GetType(String) Then
-                    toReturn = ""
+                    toReturn = String.Empty
                 ElseIf objectType Is GetType(DateTime) Then
                     toReturn = DateTime.Now
                 Else
                     toReturn = Convert.ChangeType(0, Type.GetTypeCode(objectType))
                     'toReturn = Convert.ChangeType(0, objectType)
                     If objectType.IsEnum Then
-                        toReturn = [Enum].Parse(objectType, toReturn.ToString)
+                        toReturn = [Enum].Parse(objectType, toReturn.ToString())
                     End If
                 End If
             End If
@@ -841,7 +844,7 @@ Namespace Services
         End Function
 
 
-       
+
 
         Public Shared Sub AddEventHandler(Of TEventArgs As EventArgs)(objEventInfo As EventInfo, item As Object, action As EventHandler(Of TEventArgs))
             Dim handler As [Delegate] = WrapDelegate(objEventInfo.EventHandlerType, action)
@@ -1034,7 +1037,7 @@ Namespace Services
             Return toReturn
         End Function
 
-      
+
         Public Shared Function GetCustomAttributes(objMember As MemberInfo) As Object()
             Dim toReturn As Object() = Nothing
             If Not _CustomAttributes.TryGetValue(objMember, toReturn) Then
@@ -1370,7 +1373,7 @@ Namespace Services
         End Function
 
 
-      
+
 
 
         ''' <summary>
@@ -1421,7 +1424,7 @@ Namespace Services
                 ElseIf accessMethod.IsFamily Then
                     sigBuilder.Append("protected ")
                 End If
-                
+
                 If accessMethod.IsStatic Then
                     sigBuilder.Append("static ")
                 End If
@@ -1761,44 +1764,79 @@ Namespace Services
             Return GetSerializer(objType, extraTypes, useCache, Nothing)
         End Function
 
+
+        Public Class XmlSerializerBag
+
+            Public Sub New()
+
+            End Sub
+
+            Public Sub New(targetType As Type, rootName As String)
+                Me._TargetType = targetType
+                Me._RootName = rootName
+            End Sub
+
+            Public Sub New(targetType As Type, rootName As String, subTypes As IEnumerable(Of Type))
+                Me.New(targetType, rootName)
+                If subTypes IsNot Nothing Then
+                    For Each objtype As Type In subTypes
+                        Me._SubTypes.Add(objtype)
+                    Next
+                End If
+            End Sub
+
+            Private _TargetType As Type
+            Private _RootName As String
+
+            Private _SubTypes As New HashSet(Of Type)
+
+            Public Sub AddSubType(objType As Type)
+                If Not _SubTypes.Contains(objType) Then
+                    SyncLock Me
+                        _SubTypes.Add(objType)
+                        _Serializer = Nothing
+                    End SyncLock
+                End If
+            End Sub
+
+            Private _Serializer As XmlSerializer
+
+            Public ReadOnly Property Serializer As XmlSerializer
+                Get
+                    If _Serializer Is Nothing Then
+                        SyncLock Me
+                            _Serializer = BuildSerializer(_TargetType, _SubTypes.ToArray(), _RootName)
+                        End SyncLock
+                    End If
+                    Return _Serializer
+                End Get
+            End Property
+
+        End Class
+
+
         Public Shared Function GetSerializer(ByVal objType As Type, ByVal extraTypes() As Type, ByVal useCache As Boolean, ByVal rootName As String) As XmlSerializer
-
-
 
             Dim toReturn As XmlSerializer = Nothing
 
             If useCache Then
 
+                Dim targetXmlSerializerBag As XmlSerializerBag = Nothing
+                Dim key As String = objType.FullName & "||" & rootName
 
-                Dim tempDico As Dictionary(Of String, XmlSerializer) = Nothing
-
-                If Not Instance._XmlSerializers.TryGetValue(objType, tempDico) Then
-                    tempDico = New Dictionary(Of String, XmlSerializer)
+                If Not Instance._XmlSerializers.TryGetValue(key, targetXmlSerializerBag) Then
+                    targetXmlSerializerBag = New XmlSerializerBag(objType, rootName, extraTypes)
                     SyncLock Instance._XmlSerializers
-                        Instance._XmlSerializers(objType) = tempDico
+                        Instance._XmlSerializers(key) = targetXmlSerializerBag
                     End SyncLock
-                End If
-                Dim params As New List(Of String)
-                If extraTypes IsNot Nothing Then
+                ElseIf extraTypes IsNot Nothing Then
                     For Each extraType As Type In extraTypes
-                        params.Add(extraType.FullName)
+                        targetXmlSerializerBag.AddSubType(extraType)
                     Next
                 End If
-                If Not String.IsNullOrEmpty(rootName) Then
-                    params.Add(rootName)
-                End If
-                Dim key As String = ""
-                If params.Count > 0 Then
-                    key = Constants.GetKey(params.ToArray)
-                End If
-                If Not tempDico.TryGetValue(key, toReturn) Then
-                    toReturn = BuildSerializer(objType, extraTypes, rootName)
-                    SyncLock tempDico
-                        tempDico(key) = toReturn
-                    End SyncLock
-                End If
 
-                'toReturn = GetSingleton(Of XmlSerializer)(objType, New CreateInstanceCallBack(AddressOf BuildSerializer))
+                toReturn = targetXmlSerializerBag.Serializer
+
             Else
                 toReturn = BuildSerializer(objType, extraTypes, rootName)
             End If

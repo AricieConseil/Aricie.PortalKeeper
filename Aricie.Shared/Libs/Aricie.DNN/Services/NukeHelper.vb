@@ -57,11 +57,24 @@ Namespace Services
         Private _PortalAliasesByPortalId As Dictionary(Of Integer, List(Of PortalAliasInfo))
         Private _PortalAliasByPortalAliasId As Dictionary(Of Integer, PortalAliasInfo)
         Private _PortalIdByPortalAlias As Dictionary(Of String, Integer)
+        Private _PortalController As PortalController
 
 #Region "instanciated controllers"
 
         Public ReadOnly HostController As New HostSettingsController()
-        Public ReadOnly PortalController As New PortalController()
+        Public ReadOnly Property PortalController As PortalController
+            Get
+                If _PortalController Is Nothing Then
+                    SyncLock _PidsLock
+                        If _PortalController Is Nothing Then
+                            _PortalController = New PortalController()
+                        End If
+                    End SyncLock
+                End If
+                Return _PortalController
+            End Get
+        End Property
+
         Public ReadOnly PortalAliasController As New PortalAliasController()
         Public ReadOnly ModuleController As New ModuleController()
         Private _RoleController As RoleController
@@ -1058,7 +1071,7 @@ Namespace Services
         Public Function GetPathFromCtrUrl(ByVal portalId As Integer, ByVal controlUrl As String, ByVal track As Boolean) As String
 
             Dim toreturn As String = controlUrl
-            Dim uRLType As TabType = GetURLType(controlUrl)
+            Dim uRLType As TabType = Globals.GetURLType(controlUrl)
 
             If (uRLType = TabType.File) AndAlso Not track Then
 

@@ -1,7 +1,7 @@
 Namespace Services.Flee
     Public Enum ObjectActionMode
-        SetProperty
         CallMethod
+        SetProperty
         AddEventHandler
     End Enum
 End NameSpace
