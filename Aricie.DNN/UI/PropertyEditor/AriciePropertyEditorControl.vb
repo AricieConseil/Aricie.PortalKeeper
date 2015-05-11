@@ -704,7 +704,7 @@ Namespace UI.WebControls
                     If Page.Header.FindControl(cssId) Is Nothing Then
                         Dim lnk As New HtmlControls.HtmlLink
                         lnk.ID = cssId
-                        lnk.Href = "http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
+                        lnk.Href = "https://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/flick/jquery-ui.css"
                         lnk.Attributes.Add("type", "text/css")
                         lnk.Attributes.Add("rel", "stylesheet")
                         Page.Header.Controls.Add(lnk)
