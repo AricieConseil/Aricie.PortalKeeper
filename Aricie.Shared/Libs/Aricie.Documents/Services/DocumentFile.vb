@@ -5,11 +5,12 @@ Imports System.IO
 Imports Aricie.Documents.Services.IFilter
 Imports Aricie.Documents.Services.Pdf
 Imports System.Text.RegularExpressions
-Imports Org.apache.pdfbox.pdmodel
+Imports org.apache.pdfbox.pdmodel
 
 Imports iTextSharp.text.pdf
 Imports iTextSharp.text.xml
 Imports System.Text
+Imports iTextSharp.text
 
 
 Namespace Services
@@ -22,6 +23,9 @@ Namespace Services
         Private _dicoReadFilters As Dictionary(Of String, IDocumentReader) = New Dictionary(Of String, IDocumentReader)()
 
         Private _pageNumber As Integer = -1
+
+        Private firstPageDim As Rectangle
+
 #End Region
 
 #Region "Public Properties"
@@ -133,6 +137,17 @@ Namespace Services
 
         Public Function getPageNumber() As Integer
             Return PageNumber
+        End Function
+
+        Public Function getBookRatio() As Double
+            Dim pdfReader As PdfReader = New PdfReader(_fileName)
+
+            Me.firstPageDim = pdfReader.GetPageSize(1)
+            Dim rotation = pdfReader.GetPageRotation(1)
+            If rotation = 90 Or rotation = 270 Then
+                Return (Me.firstPageDim.Width / Me.firstPageDim.Height)
+            End If
+            Return (Me.firstPageDim.Height / Me.firstPageDim.Width)
         End Function
 
         Private Sub InitDicoReadFilters()

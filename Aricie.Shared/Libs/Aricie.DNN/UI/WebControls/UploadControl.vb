@@ -1,5 +1,4 @@
-﻿
-Imports Aricie.DNN.Services
+﻿Imports Aricie.DNN.Services
 Imports DotNetNuke.Common
 Imports System.Web.UI
 Imports System.Web.UI.WebControls
@@ -7,13 +6,14 @@ Imports System.Globalization
 Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.Common.Utilities
+Imports System.Linq
 
 Namespace UI.WebControls
     Public Class UploadControl
         Inherits WebControl
         ' Methods
-
-        Private Const OverrideMessage As String = "Ecraser le fichier éxistant"
+#Region "Constants"
+        Private Const OverrideMessage As String = "Ecraser le fichier existant"
         Private Const UploadHelpMessage As String = "Sélectionnez votre fichier puis cliquez sur la flèche verte pour l'enregistrer."
         Private Const AllowedExtensionsMessage As String = "Fichiers autorisés : "
         Private Const MaximumSizeAllowedMessage As String = "Taille maximum autorisée : "
@@ -22,11 +22,37 @@ Namespace UI.WebControls
         Private Const AllowedExtensionsErrorMessage As String = "Les extensions autorisées sont {0}."
         Private Const MaximumSizeAllowedErrorMessage As String = "La taille maximum est de {0} " & FileUnit & "."
         Private Const SameFileNameAlreadyExistMessage As String = "Un fichier de m" & ChrW(234) & "me nom existe déj" & ChrW(224) & "."
+#End Region
+#Region "Fields"
+
+
+        ' Fields
+        Private _ckOverride As CheckBox
+        Private _downloadLink As LinkButton
+        Private _deleteLink As ImageButton
+        Private _errorLabel As Label
+        Private _fileImage As Image
+        Private _fileUpload As FileUpload
+        Private _InfoLabel As Label
+        Private _uploadLink As ImageButton
+        Private _extensions As String = String.Empty
+        Private _path As String = String.Empty
+        Private _Size As Integer = -1
+        Private _autoErase As Boolean = False
+        Private _DNNAccountExist As Boolean = True
+        Private _customUploadMessage As String = String.Empty
+        Private _showImage As Boolean = False
+        Private _customMaximumWidth As Integer = -1
+        Private _customMaximumHeight As Integer = -1
+        Private _AllowNewUpload As Boolean = False
+#End Region
+#Region "Properties"
+
 
 
         Public Property AutoErase As Boolean
             Get
-                Return _autoerase
+                Return _autoErase
             End Get
             Set(ByVal value As Boolean)
                 _autoErase = value
@@ -134,8 +160,6 @@ Namespace UI.WebControls
             End Set
         End Property
 
-
-
         ''' <summary>
         ''' Permet de charger un nouveau fichier une fois le chargement terminé.
         ''' </summary>
@@ -150,14 +174,12 @@ Namespace UI.WebControls
                 _AllowNewUpload = value
             End Set
         End Property
-
+#End Region
         ' ajouter propriétés CustomMessage string, ShowImage boolean, CustomWidth, CustomHeight (garder les proportions)
         ' ajouter constantes message par défaut
 
-
         Protected Overrides Sub CreateChildControls()
             MyBase.CreateChildControls()
-
 
             Me._uploadLink = New ImageButton
             Me._fileUpload = New FileUpload
@@ -203,7 +225,7 @@ Namespace UI.WebControls
                         Me._InfoLabel.Visible = False
                         Me._deleteLink.Visible = True
                     End If
-                    
+
                 End If
             Else
                 Me._deleteLink.Visible = False
@@ -216,11 +238,11 @@ Namespace UI.WebControls
             End If
 
             If (Me.Extensions <> String.Empty) Then
-                Me._InfoLabel.Text = (Me._InfoLabel.Text & "<br>" & AllowedExtensionsMessage & Me.Extensions & ".<br>")
+                Me._InfoLabel.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}<br/>{1}{2}.<br/>", Me._InfoLabel.Text, AllowedExtensionsMessage, Me.Extensions)
             End If
             If (Me.Size <> -1) Then
-                Me._InfoLabel.Text = _
-                    (Me._InfoLabel.Text & "<br>" & MaximumSizeAllowedMessage & Me.Size.ToString(CultureInfo.InvariantCulture) & FileUnit & ".<br>")
+                Me._InfoLabel.Text = String.Format(System.Globalization.CultureInfo.CurrentCulture, "{0}<br/>{1}{2}{3}.<br/>", Me._InfoLabel.Text, MaximumSizeAllowedMessage,
+                                                   Me.Size.ToString(CultureInfo.InvariantCulture), FileUnit)
             End If
 
             Me.Controls.Add(Me._InfoLabel)
@@ -253,25 +275,6 @@ Namespace UI.WebControls
             Return toReturn
         End Function
 
-        'Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) _
-        '    As Boolean
-        '    Return False
-        'End Function
-
-        'Protected Sub OnDataChanged(ByVal e As EventArgs)
-        '    Dim args As New EventArgs()
-        '    args.Value = _value
-        '    args.OldValue = MyBase.OldValue
-        '    args.StringValue = Me.StringValue
-        '    MyBase.OnValueChanged(args)
-        '    Dim _
-        '        validator As RequiredFieldValidator = _
-        '            DirectCast(MyBase.Parent.Parent.FindControl((MyBase.Name & "_Req")), RequiredFieldValidator)
-        '    If (Not validator Is Nothing) Then
-        '        validator.Enabled = False
-        '    End If
-        'End Sub
-
         Protected Overrides Sub OnLoad(ByVal e As EventArgs)
             MyBase.OnLoad(e)
             Me.EnsureChildControls()
@@ -288,28 +291,12 @@ Namespace UI.WebControls
             End If
         End Sub
 
-        'Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
-        '    MyBase.OnPreRender(e)
-        '    If ((Not Me.Page Is Nothing)) Then 'AndAlso (MyBase.EditMode = PropertyEditorMode.Edit)) Then
-        '        Me.Page.RegisterRequiresPostBack(Me)
-        '    End If
-
-        'End Sub
-
-        'Protected Overrides Sub RenderEditMode(ByVal writer As HtmlTextWriter)
-        '    MyBase.RenderChildren(writer)
-        'End Sub
-
         Protected Sub ShowImage()
-            If Me.FileId <> -1 Then 'If _value <> -1 Then
+            If Me.FileId <> -1 Then
                 Dim controller As New FileController
                 Dim currentPortalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
                 Dim fileById As FileInfo = controller.GetFileById(Me.FileId, currentPortalSettings.PortalId)
-                'Dim list As New List(Of String)
-                'list.Add("jpg")
-                'list.Add("gif")
-                'list.Add("png")
-                'If ((Not fileById Is Nothing) AndAlso list.Contains(fileById.Extension.TrimStart("."c))) Then
+
                 If ((Not fileById Is Nothing) AndAlso FileHelper.IsImageByExtension(fileById)) Then
                     Me._fileImage.Visible = True
                     Me._fileImage.AlternateText = fileById.FileName
@@ -343,17 +330,15 @@ Namespace UI.WebControls
             If Not Me._fileUpload.HasFile Then
                 Return False
             End If
-            'Dim predicate As Func(Of FileItem, Boolean) = Nothing
-            'Dim currentUserInfo As UserInfo = UserController.GetCurrentUserInfo
+
             Dim currentPortalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
-            'Dim controller As New FileController
             Dim extension As String = System.IO.Path.GetExtension(Me._fileUpload.FileName).TrimStart(New Char() {"."c})
             If _
                 Not _
-                (String.IsNullOrEmpty(Me.extensions) OrElse _
-                 Me.extensions.Contains(extension.TrimStart(New Char() {"."c}))) Then
+                (String.IsNullOrEmpty(Me.Extensions) OrElse _
+                 Me.Extensions.Contains(extension.TrimStart(New Char() {"."c}))) Then
                 Me._errorLabel.Text = _
-                    String.Format(CultureInfo.InvariantCulture, AllowedExtensionsErrorMessage, Me.extensions)
+                    String.Format(CultureInfo.InvariantCulture, AllowedExtensionsErrorMessage, Me.Extensions)
                 Return False
             End If
             If ((Me.Size <> -1) AndAlso (Me._fileUpload.FileContent.Length > (Me.Size * &H400))) Then
@@ -363,19 +348,18 @@ Namespace UI.WebControls
                 Return False
             End If
             Dim fileName As String = Me._fileUpload.FileName
-            Dim str3 As String = System.IO.Path.Combine(currentPortalSettings.HomeDirectoryMapPath, Replace(Me.Path, "/", "\"))
-            If Not str3.EndsWith("\") Then
+            Dim folderPath As String = System.IO.Path.Combine(currentPortalSettings.HomeDirectoryMapPath, Replace(Me.Path, "/", "\"))
+            If Not folderPath.EndsWith("\") Then
                 ' Add the required "\" to the end of the physical path
-                str3 &= "\"
+                folderPath &= "\"
             End If
             Dim folderId As Integer = -1
 
-
             If (FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path) Is Nothing) Then
                 FileSystemUtils.AddFolder(currentPortalSettings, currentPortalSettings.HomeDirectoryMapPath, Me.Path)
-
+                Dim currentFolder As FolderInfo = FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path)
                 ' Ajout des permissions en écriture pour l'utilisateur courant
-                folderId = FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path).FolderID
+                folderId = currentFolder.FolderID
                 Dim permissionToAdd As New DotNetNuke.Security.Permissions.FolderPermissionInfo
                 permissionToAdd.FolderID = folderId
                 Dim objRoleController As New DotNetNuke.Security.Roles.RoleController
@@ -384,8 +368,19 @@ Namespace UI.WebControls
                 permissionToAdd.PermissionID = CType(objPermissionController.GetPermissionByCodeAndKey("SYSTEM_FOLDER", "WRITE")(0), DotNetNuke.Security.Permissions.PermissionInfo).PermissionID
                 permissionToAdd.PermissionKey = "WRITE"
                 permissionToAdd.AllowAccess = True
-                Dim obj As New DotNetNuke.Security.Permissions.FolderPermissionController
-                obj.AddFolderPermission(permissionToAdd)
+                Dim folderPermissionC As New DotNetNuke.Security.Permissions.FolderPermissionController
+                Dim currentPermissions As DotNetNuke.Security.Permissions.FolderPermissionCollection = folderPermissionC.GetFolderPermissionsCollectionByFolderPath(currentPortalSettings.PortalId, currentFolder.FolderPath)
+                Dim permissionAlreadySet As Boolean = False
+                For Each currentFolderPermission As DotNetNuke.Security.Permissions.FolderPermissionInfo In currentPermissions
+                    If (currentFolderPermission.PortalID = permissionToAdd.PortalID AndAlso currentFolderPermission.FolderID = currentFolder.FolderID AndAlso currentFolderPermission.PermissionID = permissionToAdd.PermissionID AndAlso currentFolderPermission.RoleID = permissionToAdd.RoleID) Then
+                        permissionAlreadySet = True
+                    End If
+                Next
+
+                If (Not permissionAlreadySet) Then
+                    folderPermissionC.AddFolderPermission(permissionToAdd)
+                End If
+
             Else
                 folderId = FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path).FolderID
             End If
@@ -403,7 +398,7 @@ Namespace UI.WebControls
                 End If
 
                 If DNNAccountExist Then
-                    str = FileSystemUtils.DeleteFile((str3 & fileName), currentPortalSettings)
+                    str = FileSystemUtils.DeleteFile((folderPath & fileName), currentPortalSettings)
                 Else
 
                 End If
@@ -418,10 +413,10 @@ Namespace UI.WebControls
             Dim fc As New FileController
 
             If DNNAccountExist Then
-                str = FileSystemUtils.UploadFile(str3, Me._fileUpload.PostedFile, False)
+                str = FileSystemUtils.UploadFile(folderPath, Me._fileUpload.PostedFile, False)
             Else
-                Me._fileUpload.PostedFile.SaveAs(str3 & Me._fileUpload.FileName)
-                FileSystemUtils.SynchronizeFolder(currentPortalSettings.PortalId, str3, Me.Path, True)
+                Me._fileUpload.PostedFile.SaveAs(folderPath & Me._fileUpload.FileName)
+                FileSystemUtils.SynchronizeFolder(currentPortalSettings.PortalId, folderPath, Me.Path, True)
 
                 fi = fc.GetFile(Me._fileUpload.FileName, currentPortalSettings.PortalId, folderId)
                 FileId = fi.FileId
@@ -433,7 +428,7 @@ Namespace UI.WebControls
             End If
 
             If String.IsNullOrEmpty(str) Then
-                Dim fileController As New FileController
+
                 If folderId = -1 Then
                     Dim folderController As New FolderController
                     folderId = folderController.AddFolder(PortalController.GetCurrentPortalSettings.PortalId, Me.Path)
@@ -446,13 +441,9 @@ Namespace UI.WebControls
                     FileId = fi.FileId
                     ' Update the file attributes
                     If FileHelper.IsImageByExtension(fi) Then
-                        fileController.UpdateFile(FileId, fileName, extension, Me._fileUpload.FileContent.Length, fi.Width, fi.Height, "", Me.Path, folderId)
+                        fc.UpdateFile(FileId, fileName, extension, Me._fileUpload.FileContent.Length, fi.Width, fi.Height, String.Empty, Me.Path, folderId)
                     Else
-                        fileController.UpdateFile(FileId, _
-                            fileName, _
-                            extension, _
-                            Me._fileUpload.FileContent.Length, _
-                             0, 0, "", Me.Path, folderId)
+                        Aricie.DNN.Services.ObsoleteDNNProvider.Instance.AddOrUpdateFile(fi, Me._fileUpload.FileBytes, False)
                     End If
                     If Not AllowNewUpload Then
                         'Cache l'upload de fichier jusqu'à la suppression du dernier fichier chargé (qui permettra d'uploader a nouveau)
@@ -492,13 +483,13 @@ Namespace UI.WebControls
             Dim currentPortalSettings As PortalSettings = PortalController.GetCurrentPortalSettings
             Dim myfolder As FolderInfo = FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path)
             Dim str3 As String = (currentPortalSettings.HomeDirectoryMapPath & Replace(Me.Path, "/", "\"))
-            Dim str As String = String.Empty
+            ' Dim str As String = String.Empty
 
             If Me._downloadLink.Text <> String.Empty AndAlso myfolder IsNot Nothing Then
                 Me.FileId = 0
 
                 If DNNAccountExist Then
-                    str = FileSystemUtils.DeleteFile((str3 & Me._downloadLink.Text), currentPortalSettings)
+                    FileSystemUtils.DeleteFile((str3 & Me._downloadLink.Text), currentPortalSettings)
                 Else
                     System.IO.File.Delete(str3 & Me._downloadLink.Text)
                     FileSystemUtils.SynchronizeFolder(currentPortalSettings.PortalId, str3, Me.Path, True)
@@ -513,46 +504,11 @@ Namespace UI.WebControls
                 Me._InfoLabel.Visible = True
                 Me._deleteLink.Visible = False
 
-                'FileSystemUtils.DeleteFiles(New String() {FileSystemUtils.GetFolder(currentPortalSettings.PortalId, Me.Path).FolderPath})
             End If
         End Sub
 
         Public Event FileUploaded(ByVal sender As Object, ByVal e As EventArgs)
 
-
-        ' Properties
-        'Protected Overrides Property StringValue() As String
-        '    Get
-        '        If (_value Is Nothing) Then
-        '            Return String.Empty
-        '        End If
-        '        Return _value.ToString
-        '    End Get
-        '    Set(ByVal value As String)
-        '        _value = value
-        '    End Set
-        'End Property
-
-
-        ' Fields
-        Private _ckOverride As CheckBox
-        Private _downloadLink As LinkButton
-        Private _deleteLink As ImageButton
-        Private _errorLabel As Label
-        Private _fileImage As Image
-        Private _fileUpload As FileUpload
-        Private _InfoLabel As Label
-        Private _uploadLink As ImageButton
-        Private _extensions As String = String.Empty
-        Private _path As String = String.Empty
-        Private _Size As Integer = -1
-        Private _autoErase As Boolean = False
-        Private _DNNAccountExist As Boolean = True
-        Private _customUploadMessage As String = String.Empty
-        Private _showImage As Boolean = False
-        Private _customMaximumWidth As Integer = -1
-        Private _customMaximumHeight As Integer = -1
-        Private _AllowNewUpload As Boolean = False
 
     End Class
 End Namespace
