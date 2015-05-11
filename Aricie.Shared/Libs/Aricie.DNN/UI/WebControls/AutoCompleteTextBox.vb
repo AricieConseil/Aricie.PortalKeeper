@@ -46,7 +46,7 @@ Namespace UI.WebControls
         End Property
 
 
-        Private _UrljQueryUIJS As String = "http://code.jquery.com/ui/1.9.0/jquery-ui.js"
+        Private _UrljQueryUIJS As String = "https://code.jquery.com/ui/1.9.0/jquery-ui.js"
         Public Property UrljQueryUIJS() As String
             Get
                 Return _UrljQueryUIJS
@@ -56,7 +56,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        Private _UrljQueryUICSS As String = "http://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css"
+        Private _UrljQueryUICSS As String = "https://code.jquery.com/ui/1.9.0/themes/base/jquery-ui.css"
         Public Property UrljQueryUICSS() As String
             Get
                 Return _UrljQueryUICSS

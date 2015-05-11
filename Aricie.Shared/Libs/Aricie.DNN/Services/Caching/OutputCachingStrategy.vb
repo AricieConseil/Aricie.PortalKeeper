@@ -110,7 +110,7 @@ Namespace Services.Caching
 
 
         <ExtendedCategory("Policy")> _
-        Public Property VaryByStar As Boolean
+        Public Property VaryByStar As Boolean = True
 
         <XmlIgnore()> _
         <Browsable(False)> _
@@ -128,7 +128,7 @@ Namespace Services.Caching
         End Property
 
         <ExtendedCategory("Policy")> _
-        <ConditionalVisible("VaryByStar", True, True)> _
+        <ConditionalVisible("VaryByStar", True)> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(3), Width(400), LabelMode(LabelMode.Top)> _
         Public Property VaryBy As String
@@ -155,7 +155,7 @@ Namespace Services.Caching
 
         <ExtendedCategory("Policy")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(3), Width(400), LabelMode(LabelMode.Top)> _
+            <LineCount(3), Width(400)> _
         Public Property VaryByHeaders As String
             Get
                 Return _VaryByHeaders
@@ -246,6 +246,12 @@ Namespace Services.Caching
         End Function
 
         Public Sub SetCache(objContext As HttpContext)
+            SetCache(objContext, Nothing)
+
+
+        End Sub
+
+        Public Sub SetCache(objContext As HttpContext, callBackInfo As ValidationCallBackInfo)
             Dim objResponse As HttpResponse = objContext.Response
             If Me.ClearCookies Then
                 objResponse.Cookies.Clear()
@@ -286,8 +292,13 @@ Namespace Services.Caching
                 objResponse.Headers.Add("Arr-Disable-Session-Affinity", "True")
             End If
 
-
-            Dim callBackInfo As New ValidationCallBackInfo(timeStamp, True, expiration)
+            If callBackInfo Is Nothing Then
+                callBackInfo = New ValidationCallBackInfo(timeStamp, True, expiration)
+            Else
+                callBackInfo.Timestamp = timeStamp
+                callBackInfo.IsExpiresSet = True
+                callBackInfo.Expiration = expiration
+            End If
 
             objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)
 
