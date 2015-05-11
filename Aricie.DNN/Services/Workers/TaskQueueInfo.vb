@@ -24,6 +24,10 @@ Namespace Services.Workers
             Me._TaksWaitTime = New STimeSpan(taskWaitTime)
         End Sub
 
+        <ExtendedCategory("MainSettings")> _
+        Public Property Synchronous As Boolean
+
+
         ''' <summary>
         ''' Number of threads that will run the task
         ''' </summary>
@@ -31,7 +35,8 @@ Namespace Services.Workers
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
-         Public Property NbThreads() As Integer = 1
+        <ConditionalVisible("Synchronous", True)> _
+        Public Property NbThreads() As Integer = 1
 
 
         ''' <summary>
@@ -41,6 +46,7 @@ Namespace Services.Workers
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property TaksWaitTime() As New STimeSpan
 
         ''' <summary>
@@ -50,6 +56,7 @@ Namespace Services.Workers
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property InitialWaitTime() As New STimeSpan
 
         ''' <summary>
@@ -59,6 +66,7 @@ Namespace Services.Workers
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property WakeUpWaitTime() As New STimeSpan
 
 
@@ -72,20 +80,26 @@ Namespace Services.Workers
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property IsBackground() As Boolean = True
 
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property IdleTimeout As New STimeSpan(TimeSpan.FromMilliseconds(100))
 
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property ApartmentState As ApartmentState = ApartmentState.Unknown
 
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property ThreadPriority() As ThreadPriority = ThreadPriority.Lowest
 
         <ExtendedCategory("AdvancedSettings")> _
+        <ConditionalVisible("Synchronous", True)> _
         Public Property EnablePerformanceCounters As Boolean
 
+        <ConditionalVisible("Synchronous", True)> _
         <ConditionalVisible("EnablePerformanceCounters", False, True)> _
         <ExtendedCategory("AdvancedSettings")> _
         Public Property PerformanceCounterInstanceName As String = "Aricie-STP"

@@ -2,62 +2,31 @@ Imports Aricie.DNN.UI.Attributes
 
 Namespace Entities
 
-    <Flags()> _
-    Public Enum BoundsMode
-        UnBounded = 0
-        SetMinimum = 1
-        SetMaximum = 2
-    End Enum
-
-    <Serializable()> _
-    Public Class Range(Of T)
-
-        Private Shared ReadOnly DefaultComparer As Comparer(Of T) = Generic.Comparer(Of T).Default
-
-        Public Sub New()
-
-        End Sub
-
-        Public Sub New(initMin As T, initMax As T)
-            Me.Minimum = initMin
-            Me.Maximum = initMax
-        End Sub
-
-        Public Property Mode As BoundsMode = BoundsMode.UnBounded
-
-        '<Editor("DotNetNuke.UI.WebControls.VersionEditControl, DotNetNuke", GetType(DotNetNuke.UI.WebControls.EditControl))> _
-        <ConditionalVisible("Mode", False, True, BoundsMode.SetMinimum)> _
-        Public Property Minimum As T
-
-        <ConditionalVisible("Mode", False, True, BoundsMode.SetMaximum)> _
-        Public Property Maximum As T
-
-        Public Function Validate(value As T) As Boolean
-
-            Return (((Me.Mode And BoundsMode.SetMaximum) = BoundsMode.UnBounded) _
-                        OrElse DefaultComparer.Compare(value, Maximum) <= 0) _
-                    AndAlso (((Me.Mode And BoundsMode.SetMinimum) = BoundsMode.UnBounded) _
-                        OrElse DefaultComparer.Compare(value, Minimum) >= 0)
-
-        End Function
-
-
-    End Class
-
     Public Class EnabledFeature(Of T As {New})
 
+        Private _Entity As T
+
         Public Sub New()
-            Me.Entity = New T()
         End Sub
 
         Public Sub New(objSimple As T)
-            Me.Entity = objSimple
+            Me._Entity = objSimple
         End Sub
 
+        <AutoPostBack()> _
         Public Property Enabled As Boolean
 
         <ConditionalVisible("Enabled", False, True)>
-        Public Property Entity As New T()
-
+        Public Property Entity As T
+            Get
+                If _Entity Is Nothing AndAlso _Enabled Then
+                    _Entity = New T
+                End If
+                Return _Entity
+            End Get
+            Set(value As T)
+                _Entity = value
+            End Set
+        End Property
     End Class
 End Namespace
