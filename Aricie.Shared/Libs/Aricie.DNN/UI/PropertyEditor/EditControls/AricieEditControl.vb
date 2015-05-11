@@ -16,7 +16,7 @@ Namespace UI.WebControls.EditControls
         Protected ReadOnly EnumType As Type
 
         Public Sub New(objEnumType As Type)
-            MyBase.New(ReflectionHelper.GetSafeTypeName(objEnumType))
+            MyBase.New(objEnumType.AssemblyQualifiedName)
             EnumType = objEnumType
         End Sub
         Protected Overrides Sub RenderViewMode(writer As HtmlTextWriter)

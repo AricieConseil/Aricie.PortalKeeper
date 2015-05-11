@@ -208,6 +208,7 @@
     <Compile Include="Entities\ParsedUri.vb" />
     <Compile Include="Entities\PingUrlInfo.vb" />
     <Compile Include="Entities\LoginInfo.vb" />
+    <Compile Include="Entities\Range.vb" />
     <Compile Include="Entities\ScheduleInfo.vb" />
     <Compile Include="Entities\SimpleControlUrlInfo.vb" />
     <Compile Include="Images\Images.vb" />
