@@ -235,10 +235,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Dim objFiles As IEnumerable(Of String) = Aricie.DNN.Services.FileHelper.LoadFiles("*.as?x")
                         Dim fileList As List(Of String) = objFiles.Where(Function(file) file.ToLower().EndsWith("aspx") OrElse file.ToLower().EndsWith("ascx")).ToList()
                         fileList.Sort()
-                        For Each objFile As String In _ascxList
+                        For Each objFile As String In fileList
                             toReturn.Add(Aricie.DNN.Services.FileHelper.GetPathFromMapPath(objFile))
                         Next
                         _ascxList = toReturn
+                    Else
+                        toReturn = _ascxList
                     End If
             End Select
 

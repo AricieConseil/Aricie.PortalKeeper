@@ -334,6 +334,10 @@ Namespace Services.Caching
 
         Private Shared _HeaderSeparators() As Char = New Char() {","c, " "c}
 
+        Public Sub New()
+
+        End Sub
+
         Public Sub New(ByVal objTimestamp As DateTime, ByVal setExpiration As Boolean, ByVal objExpires As DateTime)
             Me.Timestamp = objTimestamp
             Me.Expiration = objExpires
@@ -347,7 +351,7 @@ Namespace Services.Caching
 
 
 
-        Public Function ValidateCacheCallback(ByVal context As HttpContext) As Boolean
+        Public Overridable Function ValidateCacheCallback(ByVal context As HttpContext) As Boolean
             Dim headerValues As String() = Nothing
             Dim cacheControlHeader As String = context.Request.Headers.Item("Cache-Control")
             If (cacheControlHeader IsNot Nothing) Then

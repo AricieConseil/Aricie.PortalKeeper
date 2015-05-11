@@ -39,9 +39,10 @@ Namespace Collections
         Public Sub ReadXml(ByVal reader As System.Xml.XmlReader) Implements System.Xml.Serialization.IXmlSerializable.ReadXml
             Dim depth As Integer = reader.Depth
             reader.ReadStartElement()
+            Dim typeNames As List(Of String) = Nothing
             Try
                 Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
-                Dim typeNames As List(Of String) = DirectCast(serializer.Deserialize(reader), List(Of String))
+                typeNames = DirectCast(serializer.Deserialize(reader), List(Of String))
                 Dim types As List(Of Type) = (From strType In typeNames Select objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType), False) Where objType IsNot Nothing).ToList()
                 serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
                 Dim objList As List(Of T) = DirectCast(serializer.Deserialize(reader), List(Of T))
@@ -49,7 +50,12 @@ Namespace Collections
                     Me.Add(objT)
                 Next
             Catch ex As Exception
-                ExceptionHelper.LogException(ex)
+                Dim strTypes As String = ""
+                If typeNames IsNot Nothing Then
+                    strTypes = String.Join(";", typeNames.ToArray())
+                End If
+                Dim newEx As New ApplicationException("Serializable list of " & GetType(T).AssemblyQualifiedName & " failed to deserialize, with list of inner types:" & strTypes, ex)
+                ExceptionHelper.LogException(newEx)
                 Dim limitCount As Integer = 0
                 While reader.Depth > depth AndAlso limitCount < 100000
                     reader.Skip()

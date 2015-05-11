@@ -192,7 +192,7 @@ Namespace UI.WebControls.EditControls
         Public Overrides Sub DataBind()
 
             If Me.Value IsNot Nothing Then
-                If TypeOf _InnerEditor Is AriciePropertyEditorControl AndAlso DirectCast(_InnerEditor, AriciePropertyEditorControl).PropertyDepth < 5 Then
+                If TypeOf _InnerEditor Is AriciePropertyEditorControl AndAlso DirectCast(_InnerEditor, AriciePropertyEditorControl).PropertyDepth < 10 Then
                     Me._InnerEditor.DataSource = Me.Value
                     Me._InnerEditor.DataBind()
                 End If
