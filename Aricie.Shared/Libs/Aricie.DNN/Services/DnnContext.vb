@@ -172,6 +172,19 @@ Namespace Services
             End Get
         End Property
 
+
+        Private _AbsoluteUri As String = String.Empty
+
+        Public ReadOnly Property AbsoluteUri As String
+            Get
+                If _AbsoluteUri.IsNullOrEmpty AndAlso Request IsNot Nothing Then
+                    _AbsoluteUri = Request.Url.AbsoluteUri
+                End If
+                Return _AbsoluteUri
+            End Get
+        End Property
+
+
         ''' <summary>
         '''  Returns response information from the HttpContext
         ''' </summary>
@@ -241,6 +254,22 @@ Namespace Services
                 Return NukeHelper.PortalSettings
             End Get
         End Property
+
+        Private _PortalAlias As PortalAliasInfo
+        Public ReadOnly Property PortalAlias As PortalAliasInfo
+            Get
+                If _PortalAlias Is Nothing Then
+                    _PortalAlias = Me.Portal.PortalAlias
+                    If _PortalAlias.HTTPAlias.IsNullOrEmpty() AndAlso Me.Request IsNot Nothing Then
+                        'Dim objDomainName As String = DotNetNuke.Common.Globals.GetDomainName(Me.Request)
+                        Dim objDomainName As String = Me.Request.Url.Authority & Me.Request.ApplicationPath
+                        _PortalAlias = NukeHelper.PortalAliasController.GetPortalAlias(objDomainName, Me.Portal.PortalId)
+                    End If
+                End If
+                Return _PortalAlias
+            End Get
+        End Property
+
 
         ''' <summary>
         ''' Returns DotNetNuke host settings

@@ -47,52 +47,7 @@ Namespace Services.Caching
             End Set
         End Property
 
-        <Browsable(False)> _
-        Public ReadOnly Property VerbsList() As List(Of String)
-            Get
-                If _VerbsList Is Nothing Then
-                    SyncLock _Verbs
-                        If _VerbsList Is Nothing Then
-                            _VerbsList = Common.ParseStringList(_Verbs)
-                        End If
-                    End SyncLock
-                End If
-                Return _VerbsList
-            End Get
-        End Property
-
-        <ExtendedCategory("Scope")> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(2), Width(400), LabelMode(LabelMode.Top)> _
-        Public Property Verbs() As String
-            Get
-                Return _Verbs
-            End Get
-            Set(ByVal value As String)
-                _Verbs = value
-                _VerbsList = Nothing
-            End Set
-        End Property
-
-        <ExtendedCategory("Scope")> _
-        Public Property EmptyPathInfoOnly() As Boolean
-            Get
-                Return _EmptyPathInfoOnly
-            End Get
-            Set(ByVal value As Boolean)
-                _EmptyPathInfoOnly = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Scope")> _
-        Public Property EmptyQueryStringOnly() As Boolean
-            Get
-                Return _EmptyQueryStringOnly
-            End Get
-            Set(ByVal value As Boolean)
-                _EmptyQueryStringOnly = value
-            End Set
-        End Property
+    
 
         <ExtendedCategory("Policy")> _
         Public Property Cacheability As HttpCacheability = HttpCacheability.Public
@@ -114,7 +69,7 @@ Namespace Services.Caching
 
         <XmlIgnore()> _
         <Browsable(False)> _
-         Public ReadOnly Property VaryByList() As List(Of String)
+        Public ReadOnly Property VaryByList() As List(Of String)
             Get
                 If _VaryByList Is Nothing Then
                     SyncLock _VaryBy
@@ -170,8 +125,8 @@ Namespace Services.Caching
         <Browsable(False)> _
         Public ReadOnly Property VaryByHeadersList() As List(Of String)
             Get
-                If _VaryByList Is Nothing Then
-                    SyncLock _VaryBy
+                If _VaryByHeadersList Is Nothing Then
+                    SyncLock _VaryByHeaders
                         If _VaryByHeadersList Is Nothing Then
                             _VaryByHeadersList = Common.ParseStringList(_VaryByHeaders)
                         End If
@@ -204,10 +159,10 @@ Namespace Services.Caching
 
         <XmlIgnore()> _
         <Browsable(False)> _
-         Public ReadOnly Property VaryByContentEncodingsList() As List(Of String)
+        Public ReadOnly Property VaryByContentEncodingsList() As List(Of String)
             Get
                 If _VaryByContentEncodingsList Is Nothing Then
-                    SyncLock _VaryBy
+                    SyncLock _VaryByContentEncodings
                         If _VaryByContentEncodingsList Is Nothing Then
                             _VaryByContentEncodingsList = Common.ParseStringList(_VaryByContentEncodings, ";"c)
                         End If
@@ -215,6 +170,54 @@ Namespace Services.Caching
                 End If
                 Return _VaryByContentEncodingsList
             End Get
+        End Property
+
+
+        <Browsable(False)> _
+        Public ReadOnly Property VerbsList() As List(Of String)
+            Get
+                If _VerbsList Is Nothing Then
+                    SyncLock _Verbs
+                        If _VerbsList Is Nothing Then
+                            _VerbsList = Common.ParseStringList(_Verbs)
+                        End If
+                    End SyncLock
+                End If
+                Return _VerbsList
+            End Get
+        End Property
+
+        <ExtendedCategory("Scope")> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+            <LineCount(2), Width(400), LabelMode(LabelMode.Top)> _
+        Public Property Verbs() As String
+            Get
+                Return _Verbs
+            End Get
+            Set(ByVal value As String)
+                _Verbs = value
+                _VerbsList = Nothing
+            End Set
+        End Property
+
+        <ExtendedCategory("Scope")> _
+        Public Property EmptyPathInfoOnly() As Boolean
+            Get
+                Return _EmptyPathInfoOnly
+            End Get
+            Set(ByVal value As Boolean)
+                _EmptyPathInfoOnly = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Scope")> _
+        Public Property EmptyQueryStringOnly() As Boolean
+            Get
+                Return _EmptyQueryStringOnly
+            End Get
+            Set(ByVal value As Boolean)
+                _EmptyQueryStringOnly = value
+            End Set
         End Property
 
 
@@ -308,7 +311,7 @@ Namespace Services.Caching
 
         Public Shared Sub ValidateCache(ByVal context As HttpContext, ByVal data As Object, ByRef status As HttpValidationStatus)
             Try
-              
+
                 If context.Request.IsAuthenticated Then
                     status = HttpValidationStatus.IgnoreThisRequest
                 Else

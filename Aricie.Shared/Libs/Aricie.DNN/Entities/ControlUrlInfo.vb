@@ -12,24 +12,6 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Portals
 
 Namespace Entities
-
-    Public Class DNNPortalAlias
-
-        <AutoPostBack()> _
-       <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-       <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)> _
-        Public Property PortalAlias As String = ""
-
-        Public Function GetUrl() As String
-            If Not PortalAlias.IsNullOrEmpty() Then
-                Return DotNetNuke.Common.Globals.AddHTTP(PortalAlias)
-            End If
-            Return ""
-        End Function
-
-    End Class
-
-
     <Flags()> _
     Public Enum UrlControlMode
         Empty = 0
@@ -221,7 +203,7 @@ Namespace Entities
                     Return False
                 End If
                 Dim target As String = Me.UrlPath
-                If queryUpdates IsNot Nothing OrElse queryRemoves IsNot Nothing Then
+                If (queryUpdates IsNot Nothing AndAlso queryUpdates.Count > 0) OrElse (queryRemoves IsNot Nothing AndAlso queryRemoves.Count > 0) Then
                     Dim targetUri As New Uri(target)
                     target = targetUri.ModifyQueryString(queryUpdates, queryRemoves)
                 End If

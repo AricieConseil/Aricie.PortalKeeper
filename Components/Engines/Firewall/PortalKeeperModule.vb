@@ -63,7 +63,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If Not Me.SecondaryModule Then
 
                     If keeperContext.LoggingLevel > LoggingLevel.None Then
-                        Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
+                        Dim objPair As New KeyValuePair(Of String, String)("Input Uri", keeperContext.DnnContext.AbsoluteUri)
                         keeperContext.LogStartEngine(objPair)
                     End If
                     keeperContext.Init(keeperContext.CurrentFirewallConfig)
@@ -241,7 +241,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(keeperConfig.RestartParam) Then
 
                 Dim config As Type = GetType(Config)
-                config.InvokeMember("Touch", BindingFlags.Public, Nothing, Nothing, Nothing)
+                config.InvokeMember("Touch", BindingFlags.Public Or BindingFlags.InvokeMethod, Nothing, Nothing, Nothing)
 
                 'Jesse: pb with suposedly different signatures between dnn versions
                 'todo: Not sure what's wrong with the following statement
@@ -255,8 +255,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
             If (Not keeperContext.Disabled AndAlso keeperContext.CurrentFirewallConfig.Enabled) AndAlso Not keeperContext.RequestOutOfScope Then
                 keeperContext.CurrentFirewallConfig.ProcessRules(keeperContext, newStep, False, True)
-                If endSequence Then
-                    Dim objPair As New KeyValuePair(Of String, String)("Input Uri", context.Request.Url.AbsoluteUri)
+                If endSequence AndAlso keeperContext.LoggingLevel > LoggingLevel.None Then
+                    Dim objPair As New KeyValuePair(Of String, String)("Input Uri", keeperContext.DnnContext.AbsoluteUri)
                     Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)
                     keeperContext.LogEndEngine(objPair, objPair2)
                 End If

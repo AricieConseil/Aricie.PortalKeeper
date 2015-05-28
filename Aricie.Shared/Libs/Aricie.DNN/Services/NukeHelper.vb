@@ -352,6 +352,9 @@ Namespace Services
 
         Private _PortalSettingsDebug As Boolean
 
+
+        Private _HostPortalsettings As PortalSettings
+
         ''' <summary>
         ''' Gets current portal settings
         ''' </summary>
@@ -360,17 +363,17 @@ Namespace Services
         ''' <remarks></remarks>
         Public ReadOnly Property PortalSettings() As PortalSettings
             Get
-                Try
-                    Return DotNetNuke.Common.Globals.GetPortalSettings()
-                Catch ex As Exception
-                    'todo: hacker le bug dnn ou isoler les versions incriminées
-                    If Not _PortalSettingsDebug Then
-                        _PortalSettingsDebug = True
-                        ExceptionHelper.LogException(ex)
+                Dim toReturn As PortalSettings = Nothing
+                If HttpContext.Current IsNot Nothing Then
+                    toReturn = DirectCast(HttpContext.Current.Items("PortalSettings"), PortalSettings)
+                End If
+                If toReturn Is Nothing Then
+                    If _HostPortalsettings Is Nothing Then
+                        _HostPortalsettings = Globals.GetHostPortalSettings()
                     End If
-
-                    Return Globals.GetHostPortalSettings()
-                End Try
+                    toReturn = _HostPortalsettings
+                End If
+                Return toReturn
             End Get
         End Property
 

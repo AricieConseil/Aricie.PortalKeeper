@@ -5925,8 +5925,8 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ControlAdapterSettings_UpgradeDynamicHandlers.Text" xml:space="preserve">
     <value>Upgrade to Typed Handlers</value>
   </data>
-  <data name="FleeExpressionInfo`1_ExpressionOwner.Header" xml:space="preserve">
-    <value>Expression Owner</value>
+  <data name="FleeExpressionInfo`1_Evaluation.Header" xml:space="preserve">
+    <value>Evaluation</value>
   </data>
   <data name="FleeExpressionInfo`1_NewOwner.Help" xml:space="preserve">
     <value>Enter here a Flee expression that will be evaluated in order to provide a new dedicated &lt;a href="http://flee.codeplex.com/wikipage?title=ExpressionOwner&amp;referringTitle=Examples" &gt; Expression Owner&lt;/a&gt; to the main expression. All members from the new owner (including private fields) are then available in the main expression.</value>
@@ -9499,5 +9499,59 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="SimpleOrExpressionBase`2_ResetInstance.Text" xml:space="preserve">
     <value>Reset Value</value>
+  </data>
+  <data name="TaskQueueInfo_Synchronous.Help" xml:space="preserve">
+    <value>Check to have the task queue process items synchronously rather than through an asynchronous smart thread pool.</value>
+  </data>
+  <data name="TaskQueueInfo_Synchronous.Text" xml:space="preserve">
+    <value>Synchronous</value>
+  </data>
+  <data name="CdnStrategy_CachingStrategy.Help" xml:space="preserve">
+    <value>This is the caching strategy that will be applied to all resources served through your CDN.</value>
+  </data>
+  <data name="CdnStrategy_CachingStrategy.Text" xml:space="preserve">
+    <value>CDN Caching Strategy</value>
+  </data>
+  <data name="CdnStrategy_PortalAlias.Help" xml:space="preserve">
+    <value>This is the DNN portal alias dedicated to serving your CDN content.</value>
+  </data>
+  <data name="CdnStrategy_PortalAlias.Text" xml:space="preserve">
+    <value>CDN Alias</value>
+  </data>
+  <data name="DnnPortalAlias_PortalAliasId.Help" xml:space="preserve">
+    <value>Select an alias from the available list.</value>
+  </data>
+  <data name="DnnPortalAlias_PortalAliasId.Text" xml:space="preserve">
+    <value>Portal Alias Selection</value>
+  </data>
+  <data name="FirewallSettings_ScopeCondition.Help" xml:space="preserve">
+    <value>Enter a dynamic expression that evaluated to a Boolean to determine if a given request should be processed by the Firewall.</value>
+  </data>
+  <data name="FirewallSettings_ScopeCondition.Text" xml:space="preserve">
+    <value>Scope Condition</value>
+  </data>
+  <data name="FleeExpressionInfo`1_KeepCloneExpression.Help" xml:space="preserve">
+    <value>Compiled Flee Expression are kept and normally have to be clone between each evaluation to account for a change contextual of Expression owner. If your expression is to be evaluated several time with the same owner, you can save the corresponding expression clone within the context lookup attached to that owner, in order to save the cloning phase.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_KeepCloneExpression.Text" xml:space="preserve">
+    <value>Keep Clone Expression</value>
+  </data>
+  <data name="FleeExpressionInfo`1_MakeConstant.Help" xml:space="preserve">
+    <value>When checked, the expression is evaluated only once and the result is then saved and returned on later evaluations.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_MakeConstant.Text" xml:space="preserve">
+    <value>Make Constant</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NoCloning.Help" xml:space="preserve">
+    <value>Compiled Flee Expression are kept and normally have to be cloned between each evaluation to account for a change of contextual Expression owner. If cloning is not necessary with your expression, you can skip that phase entirely.</value>
+  </data>
+  <data name="FleeExpressionInfo`1_NoCloning.Text" xml:space="preserve">
+    <value>No Cloning</value>
+  </data>
+  <data name="SelectionSetCondition`1_DynamicValues.Help" xml:space="preserve">
+    <value>You can also add dynamic values to be matched as dynamic expressions of integer values</value>
+  </data>
+  <data name="SelectionSetCondition`1_DynamicValues.Text" xml:space="preserve">
+    <value>Dynamic Values</value>
   </data>
 </root>

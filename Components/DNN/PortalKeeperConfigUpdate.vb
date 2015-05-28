@@ -12,7 +12,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Function GetConfigElements() As List(Of IConfigElementInfo) Implements IUpdateProvider.GetConfigElements
             Dim toReturn As New List(Of IConfigElementInfo)
             toReturn.Add(New SchedulerTaskElementInfo("PortalKeeper Bot Farm", GetType(PortalKeeperSchedule), TimeSpan.FromMinutes(1)))
-            Dim toAdd As WebServerElementInfo = New HttpModuleInfo("Aricie.PortalKeeper", GetType(PortalKeeperModule), "managedHandler")
+            Dim toAdd As WebServerElementInfo = New HttpModuleInfo("Aricie.PortalKeeper", GetType(PortalKeeperModule), "")
             If NukeHelper.DnnVersion.Major > 6 Then
                 toAdd.InsertBeforeKey = "RequestFilter"
             Else

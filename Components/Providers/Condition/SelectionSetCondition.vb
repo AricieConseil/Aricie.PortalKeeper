@@ -3,6 +3,8 @@ Imports System.ComponentModel
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -33,8 +35,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-
-
+        <ExtendedCategory("Condition")> _
+        Public Property DynamicValues As New EnabledFeature(Of List(Of FleeExpressionInfo(Of Integer)))
 
 
         Public Overrides Function Match(ByVal context As PortalKeeperContext(Of TEngineEvents)) As Boolean
@@ -45,6 +47,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             If Me.Items.Contains(currentItem) Then
                 Return True
+            End If
+            If Me.DynamicValues.Enabled Then
+                For Each objDynamicExpression As FleeExpressionInfo(Of Integer) In DynamicValues.Entity
+                    Dim dynValue As Integer = objDynamicExpression.Evaluate(context, context)
+                    If dynValue = currentItem Then
+                        Return True
+                    End If
+                Next
             End If
             Return False
         End Function
