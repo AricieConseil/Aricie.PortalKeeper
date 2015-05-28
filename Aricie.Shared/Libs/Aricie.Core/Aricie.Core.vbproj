@@ -85,8 +85,8 @@
     <Import Include="System.Diagnostics" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="..\Aricie.DNN\VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb">
-      <Link>VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb</Link>
+    <Compile Include="..\Aricie.DNN\VersionManagement\AricieSharedMustBeAtLeastVersion1_8.vb">
+      <Link>VersionManagement\AricieSharedMustBeAtLeastVersion1_8.vb</Link>
     </Compile>
     <Compile Include="Components\Collections\AutoInitHybridDictionary.vb" />
     <Compile Include="Components\Collections\CastingEnumerable.vb" />
