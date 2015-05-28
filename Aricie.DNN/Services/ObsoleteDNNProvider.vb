@@ -182,6 +182,9 @@ Namespace Services
             Return DateTime.MinValue
         End Function
 
+        Public Overridable Function IsIndexingAllowedForModule(ByVal objModule As DotNetNuke.Entities.Modules.ModuleInfo) As Boolean
+            Return True
+        End Function
 
 
 

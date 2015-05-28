@@ -1,3 +1,4 @@
+Imports System.IO
 Imports iTextSharp.text.pdf
 
 Namespace Aricie.Pdf
@@ -44,7 +45,7 @@ Namespace Aricie.Pdf
         ''' Génére le pdf résultant
         ''' </summary>
         ''' <param name="output">Stream dans lequel le pdf doit etre généré(fichier, sortie http ...)</param>
-        Public Sub FillPdf(ByRef output As IO.Stream)
+        Public Sub FillPdf(ByRef output As Stream)
             Dim ps As iTextSharp.text.pdf.PdfStamper
             Try
                 '// read existing PDF document
