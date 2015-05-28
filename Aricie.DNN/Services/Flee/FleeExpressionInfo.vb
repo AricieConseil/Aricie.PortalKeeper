@@ -89,8 +89,6 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("Variables")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        <LabelMode(LabelMode.Top)> _
         Public Property Variables() As Variables
             Get
                 Return InternalVariables
@@ -100,7 +98,36 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <ExtendedCategory("ExpressionOwner")> _
+        Private _ConstantIsSet As Boolean = False
+        Private _Constant As TResult = Nothing
+
+        <ExtendedCategory("Evaluation")> _
+        Public Property MakeConstant As Boolean
+
+        <ConditionalVisible("MakeConstant", True)> _
+        <ExtendedCategory("Evaluation")> _
+        Public Property NoCloning As Boolean
+            Get
+                Return InternalNoCloning
+            End Get
+            Set(value As Boolean)
+                InternalNoCloning = value
+            End Set
+        End Property
+
+        <ConditionalVisible("MakeConstant", True)> _
+        <ConditionalVisible("NoCloning", True)> _
+        <ExtendedCategory("Evaluation")> _
+        Public Property KeepCloneExpression As Boolean
+            Get
+                Return InternalKeepCloneExpression
+            End Get
+            Set(value As Boolean)
+                InternalKeepCloneExpression = value
+            End Set
+        End Property
+
+        <ExtendedCategory("Evaluation")> _
         <AutoPostBack()> _
         Public Property OverrideOwner As Boolean
             Get
@@ -118,7 +145,7 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <ExtendedCategory("ExpressionOwner")> _
+        <ExtendedCategory("Evaluation")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property OwnerMemberAccess As BindingFlags
             Get
@@ -131,7 +158,7 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <ExtendedCategory("ExpressionOwner")> _
+        <ExtendedCategory("Evaluation")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property NewOwner As FleeExpressionInfo(Of Object)
             Get
@@ -142,7 +169,7 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <ExtendedCategory("ExpressionOwner")> _
+        <ExtendedCategory("Evaluation")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property NewOwnerType As DotNetType
             Get
@@ -391,7 +418,16 @@ Namespace Services.Flee
             End Set
         End Property
 
-
+        Public Overrides Function Evaluate(owner As Object, globalVars As IContextLookup) As TResult
+            If Me.MakeConstant Then
+                If Not _ConstantIsSet Then
+                    _Constant = MyBase.Evaluate(owner, globalVars)
+                    _ConstantIsSet = True
+                End If
+                Return _Constant
+            End If
+            Return MyBase.Evaluate(owner, globalVars)
+        End Function
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
             Me.Variables.AddVariables(currentProvider, existingVars)

@@ -71,7 +71,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Overridable Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
-            Dim toReturn As Object
+            Dim toReturn As Object = Nothing
             Select Case Me._EvaluationMode
                 Case VarEvaluationMode.Constant
                     If _VarConstant Is Nothing Then
@@ -79,7 +79,12 @@ Namespace Services.Flee
                     End If
                     toReturn = _VarConstant
                 Case Else
-                    toReturn = Me.EvaluateOnce(owner, globalVars)
+                    If Me._Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
+                        globalVars.Items.TryGetValue(Me.Name, toReturn)
+                    End If
+                    If toReturn Is Nothing Then
+                        toReturn = Me.EvaluateOnce(owner, globalVars)
+                    End If
             End Select
             If Me._Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
                 globalVars.Items(Me.Name) = toReturn

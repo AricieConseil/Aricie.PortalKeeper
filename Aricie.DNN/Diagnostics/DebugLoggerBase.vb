@@ -310,7 +310,8 @@ Namespace Diagnostics
             objEventLogInfo.AddProperty("AppDomain Id", AppDomain.CurrentDomain.Id.ToString(CultureInfo.InvariantCulture))
             objEventLogInfo.AddProperty("Process Id", Process.GetCurrentProcess.Id.ToString(CultureInfo.InvariantCulture))
             objEventLogInfo.AddProperty("Server Name", objToLog.ServerName)
-            objEventLogInfo.AddProperty("IP Address", objToLog.IpAddress.ToString)
+            objEventLogInfo.AddProperty("IP Address", objToLog.IpAddress)
+            objEventLogInfo.AddProperty("Request Url", objToLog.RequestUrl)
             objEventLogInfo.AddProperty("Current User Name", objToLog.UserName)
 
         End Sub

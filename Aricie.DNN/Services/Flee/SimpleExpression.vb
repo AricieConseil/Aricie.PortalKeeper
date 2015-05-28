@@ -16,6 +16,7 @@ Namespace Services.Flee
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
     <ActionButton(IconName.Code, IconOptions.Normal)> _
+    <DefaultProperty("Expression")> _
     <Serializable()> _
     Public Class SimpleExpression(Of TResult)
 
@@ -38,8 +39,11 @@ Namespace Services.Flee
         Protected InternalStaticImports As New List(Of FleeImportInfo)
         Protected InternalImportBuiltinTypes As Boolean = True
 
+        Protected InternalNoCloning As Boolean
+        Protected InternalKeepCloneExpression As Boolean
         Protected InternalOverrideOwner As Boolean
         Protected InternalNewOwner As FleeExpressionInfo(Of Object)
+
 
         Protected InternalVariables As New Variables
 
@@ -173,7 +177,7 @@ Namespace Services.Flee
         ''' <param name="globalVars"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
+        Public Overridable Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
 
             Dim toReturn As TResult
             If Me._Expression <> "" Then
@@ -264,26 +268,40 @@ Namespace Services.Flee
                 End SyncLock
             End If
             If toReturn IsNot Nothing Then
-                toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
+                If InternalKeepCloneExpression Then
+                    Dim cloneExp As Object = Nothing
+                    globalVars.Items.TryGetValue("CloneExpression:" & Expression, cloneExp)
+                    If cloneExp IsNot Nothing Then
+                        toReturn = DirectCast(cloneExp, IGenericExpression(Of TResult))
+                    End If
+                End If
+                If (Not InternalNoCloning) AndAlso toReturn.Owner IsNot owner Then
+                    toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
+                    If Not _OwnerProviderSuplied Then
+                        If Not InternalOverrideOwner Then
+                            toReturn.Owner = owner
+                        Else
+                            Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                            toReturn.Owner = newOwner
+                        End If
+                    Else
+                        toReturn.Owner = DirectCast(owner, IContextOwnerProvider).ContextOwner
+                    End If
+                    If InternalKeepCloneExpression Then
+                        globalVars.Items("CloneExpression:" & Expression) = toReturn
+                    End If
+                End If
                 If Me.InternalVariables.Instances.Count > 0 Then
-                    Dim vars As Dictionary(Of String, Object) = Me.InternalVariables.EvaluateVariables(owner, globalVars)
+                    Dim vars As Dictionary(Of String, Object) = Nothing
                     For Each objVar As VariableInfo In Me.InternalVariables.Instances
                         If objVar.EvaluationMode = VarEvaluationMode.Dynamic Then
+                            If vars Is Nothing Then
+                                vars = Me.InternalVariables.EvaluateVariables(owner, globalVars)
+                            End If
                             toReturn.Context.Variables(objVar.Name) = vars(objVar.Name)
                         End If
                     Next
                 End If
-                If Not _OwnerProviderSuplied Then
-                    If InternalOverrideOwner Then
-                        Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
-                        toReturn.Owner = newOwner
-                    Else
-                        toReturn.Owner = owner
-                    End If
-                Else
-                    toReturn.Owner = DirectCast(owner, IContextOwnerProvider).ContextOwner
-                End If
-
             End If
 
             Return toReturn
