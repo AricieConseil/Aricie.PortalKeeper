@@ -383,6 +383,9 @@
       <SubType>Designer</SubType>
     </Content>
     <Content Include="Aricie.PortalKeeper.Light.Default.config" />
+    <Content Include="Aricie.PortalKeeper - Light.dnn">
+      <SubType>Designer</SubType>
+    </Content>
     <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
