@@ -7,6 +7,7 @@ using Aricie.DNN.Services;
 using DotNetNuke.ComponentModel;
 using DotNetNuke.Services.FileSystem;
 using FileInfo = DotNetNuke.Services.FileSystem.FileInfo;
+using System.Collections;
 
 namespace Aricie.DNN
 {
@@ -110,7 +111,24 @@ namespace Aricie.DNN
             DatabaseFolderProvider.ClearFileContent(objFileInfo.FileId);
         }
 
-       
+
+        public override Boolean IsIndexingAllowedForModule(DotNetNuke.Entities.Modules.ModuleInfo objModule)
+        {
+            DotNetNuke.Entities.Tabs.TabController objTabController = new DotNetNuke.Entities.Tabs.TabController();
+            Hashtable tabSettings = objTabController.GetTabSettings(objModule.TabID);
+            if (!tabSettings.Contains("AllowIndex") || tabSettings["AllowIndex"].ToString().ToLowerInvariant() == "true")
+            {
+                // Check if indexing is disabled for the current module
+                DotNetNuke.Entities.Modules.ModuleController objModuleController = new DotNetNuke.Entities.Modules.ModuleController();
+                Hashtable tabModuleSettings = objModuleController.GetTabModuleSettings(objModule.TabModuleID);
+                return (!tabModuleSettings.Contains("AllowIndex") || tabModuleSettings["AllowIndex"].ToString().ToLowerInvariant() == "true");
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
 

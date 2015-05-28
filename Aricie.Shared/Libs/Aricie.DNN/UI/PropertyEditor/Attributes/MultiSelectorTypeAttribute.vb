@@ -6,6 +6,12 @@ Namespace UI.Attributes
 
 #Region "Constructor"
 
+        Public Sub New(ByVal multiSelectorType As Type)
+
+            _multiSelectorType = multiSelectorType.AssemblyQualifiedName
+
+        End Sub
+
         Public Sub New(ByVal multiSelectorType As String)
 
             _multiSelectorType = multiSelectorType

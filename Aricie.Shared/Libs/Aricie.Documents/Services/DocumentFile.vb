@@ -16,9 +16,13 @@ Imports iTextSharp.text
 Namespace Services
 
     Public Class DocumentFile
+        Implements IDisposable
+
 
 #Region "Private Attributes"
         Private _fileName As String = String.Empty
+
+        Private _tempFile As Boolean
 
         Private _dicoReadFilters As Dictionary(Of String, IDocumentReader) = New Dictionary(Of String, IDocumentReader)()
 
@@ -33,7 +37,7 @@ Namespace Services
         Public Property PageNumber() As Integer
             Get
 
-                If _pageNumber = -1 AndAlso New FileInfo(_fileName).Extension.TrimStart("."c).ToLower() = "pdf" Then
+                If _pageNumber = -1 AndAlso New FileInfo(FileName).Extension.TrimStart("."c).ToLower() = "pdf" Then
                     'Dim pdf As PDDocument = Nothing
                     'Try
                     '    pdf = PDDocument.load(_fileName)
@@ -43,7 +47,7 @@ Namespace Services
                     '        pdf.close()
                     '    End If
                     'End Try
-                    Dim pdfReader As PdfReader = New PdfReader(_fileName)
+                    Dim pdfReader As PdfReader = New PdfReader(FileName)
                     Me._pageNumber = pdfReader.NumberOfPages
 
                 End If
@@ -53,6 +57,12 @@ Namespace Services
             Set(ByVal value As Integer)
                 _pageNumber = value
             End Set
+        End Property
+
+        Public ReadOnly Property FileName As String
+            Get
+                Return _fileName
+            End Get
         End Property
 
 #End Region
@@ -65,10 +75,17 @@ Namespace Services
         Public Sub New(ByVal fileName As String)
             _fileName = fileName
             InitDicoReadFilters()
-
-
-
         End Sub
+
+        Public Sub New(ByVal fileExtension As String, ByVal fileStream As Stream)
+            Dim tempFileName As String = Path.GetTempFileName()
+            _tempFile = True
+            _fileName = tempFileName.Replace(".tmp", "."c & fileExtension)
+            System.IO.File.Move(tempFileName, FileName)
+            System.IO.File.WriteAllBytes(FileName, ReadStream(fileStream))
+            InitDicoReadFilters()
+        End Sub
+
 #End Region
 
 #Region "Public Methods"
@@ -85,35 +102,39 @@ Namespace Services
         Public Function ReadDocumentText(ByVal maxLengthChars As Integer) As String
             Dim toReturn As String = String.Empty
 
-            If Not File.Exists(_fileName) Then
-                Exceptions.LogException(New Exception("Error trying reading file content, File " & _fileName & "doesn't exist"))
+            If Not File.Exists(FileName) Then
+                Exceptions.LogException(New Exception("An error occured when trying to read a file content: it seems that the file " & FileName & " doesn't exist!"))
             Else
                 '1) Read with IFilter
                 Dim iFiltReader As New IFilterReader()
-                toReturn = iFiltReader.GetDocumentText(_fileName)
+                toReturn = iFiltReader.GetDocumentText(FileName)
 
                 '2) Read with Other Methods si pas de IFilter
                 If Not iFiltReader.HasFilter Then
 
-                    Dim file As New FileInfo(_fileName)
+                    Dim file As New FileInfo(FileName)
 
                     Dim fileExtension As String = file.Extension.TrimStart(Convert.ToChar(".")).ToLower()
 
                     If _dicoReadFilters.ContainsKey(fileExtension) Then
-                        toReturn = _dicoReadFilters(fileExtension).GetDocumentText(_fileName)
+                        toReturn = _dicoReadFilters(fileExtension).GetDocumentText(FileName)
                         'Else
                         'Exceptions.LogException(New Exception("Error trying reading file content, Filter for " + _fileName + " doesn't exist"))
                     End If
 
                 End If
 
+                If toReturn <> String.Empty Then
+                    ' Process the content
 
-                'Clean string
-                toReturn = CleanDocumentText(toReturn)
+                    'Clean string
+                    toReturn = CleanDocumentText(toReturn)
 
-                'Limit string Length
-                If maxLengthChars > 0 Then
-                    toReturn = toReturn.Substring(0, (If((toReturn.Length > maxLengthChars), maxLengthChars, toReturn.Length)))
+                    'Limit string Length
+                    If maxLengthChars > 0 Then
+                        toReturn = toReturn.Substring(0, (If((toReturn.Length > maxLengthChars), maxLengthChars, toReturn.Length)))
+                    End If
+
                 End If
 
             End If
@@ -157,6 +178,45 @@ Namespace Services
             '_dicoReadFilters.Add("xlsx", New Excel2007Reader())
         End Sub
 
+#End Region
+
+#Region "IDisposable Support"
+        Private disposedValue As Boolean ' To detect redundant calls
+
+        ' IDisposable
+        Protected Overridable Sub Dispose(disposing As Boolean)
+            If Not Me.disposedValue Then
+                If disposing Then
+                    ' TODO: dispose managed state (managed objects).
+                End If
+
+                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
+                ' TODO: set large fields to null.
+                If _tempFile Then
+                    If System.IO.File.Exists(FileName) Then
+                        System.IO.File.Delete(FileName)
+                    End If
+
+                End If
+
+
+            End If
+            Me.disposedValue = True
+        End Sub
+
+        ' TODO: override Finalize() only if Dispose(ByVal disposing As Boolean) above has code to free unmanaged resources.
+        Protected Overrides Sub Finalize()
+            ' Do not change this code.  Put cleanup code in Dispose(ByVal disposing As Boolean) above.
+            Dispose(False)
+            MyBase.Finalize()
+        End Sub
+
+        ' This code added by Visual Basic to correctly implement the disposable pattern.
+        Public Sub Dispose() Implements IDisposable.Dispose
+            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
+            Dispose(True)
+            GC.SuppressFinalize(Me)
+        End Sub
 #End Region
 
     End Class

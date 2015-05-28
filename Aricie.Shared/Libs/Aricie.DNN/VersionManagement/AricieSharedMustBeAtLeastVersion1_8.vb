@@ -14,12 +14,18 @@ Namespace VersionManagement
     Public Class AricieSharedMustBeAtLeastVersion1_7_1
     End Class
 
-
     ''' <summary>
     ''' This class exists to ensure that a dependant DNN package can target this specific version of Aricie.Shared
     ''' </summary>
     ''' <remarks></remarks>
     Public Class AricieSharedMustBeAtLeastVersion1_7_8
+    End Class
+
+    ''' <summary>
+    ''' This class exists to ensure that a dependant DNN package can target this specific version of Aricie.Shared
+    ''' </summary>
+    ''' <remarks></remarks>
+    Public Class AricieSharedMustBeAtLeastVersion1_8_4
     End Class
 
 End Namespace

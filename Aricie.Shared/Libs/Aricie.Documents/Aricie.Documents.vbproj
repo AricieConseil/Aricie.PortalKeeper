@@ -80,6 +80,10 @@
     <Reference Include="IKVM.OpenJDK.SwingAWT, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>external\IKVM.OpenJDK.SwingAWT.dll</HintPath>
     </Reference>
+    <Reference Include="IKVM.OpenJDK.Text, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IKVM.OpenJDK.Text.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.Util, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <HintPath>external\IKVM.OpenJDK.Util.dll</HintPath>
     </Reference>
@@ -172,10 +176,18 @@
     <Content Include="external\commons-logging.dll" />
     <Content Include="external\IKVM.OpenJDK.Core.dll" />
     <Content Include="external\IKVM.OpenJDK.SwingAWT.dll" />
+    <Content Include="external\IKVM.OpenJDK.Text.dll" />
     <Content Include="external\IKVM.OpenJDK.Util.dll" />
     <Content Include="external\IKVM.Runtime.dll" />
     <Content Include="external\IKVM.Runtime.JNI.dll" />
     <Content Include="external\pdfbox-1.6.0.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ADA6635-4F81-4900-B392-DC0FD650FA52}</Project>
+      <Name>Aricie.Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

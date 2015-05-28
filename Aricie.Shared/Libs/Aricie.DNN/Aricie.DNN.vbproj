@@ -551,7 +551,7 @@
     <Compile Include="UI\WebControls\DesktopModuleSelector.vb" />
     <Compile Include="UI\WebControls\UploadControl.vb" />
     <Compile Include="UI\WebControls\YesNoCtl.vb" />
-    <Compile Include="VersionManagement\AricieSharedMustBeAtLeastVersion1_7.vb" />
+    <Compile Include="VersionManagement\AricieSharedMustBeAtLeastVersion1_8.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
