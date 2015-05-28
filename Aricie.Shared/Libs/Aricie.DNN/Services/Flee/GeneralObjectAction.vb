@@ -64,8 +64,6 @@ Namespace Services.Flee
         End Property
 
         
-
-
         '<ExtendedCategory("Action")> _
         <ConditionalVisible("HasType", False, True)> _
         Public Property ActionMode As ObjectActionMode
@@ -94,10 +92,11 @@ Namespace Services.Flee
        <ProvidersSelector("Key", "Value")> _
         Public Property MemberIndex As Integer = 1
 
-
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property HasParameters As Boolean
             Get
+                Dim toReturn As Boolean = False
                 Dim objSelectedMember As MemberInfo = Me.SelectedMember
                 If objSelectedMember IsNot Nothing Then
                     'If _UpdatePropertyValueSubtype Then
@@ -108,12 +107,15 @@ Namespace Services.Flee
                     '    End If
                     'End If
                     If TypeOf objSelectedMember Is PropertyInfo Then
-                        Return DirectCast(objSelectedMember, PropertyInfo).GetIndexParameters().Length > 0
+                        toReturn = DirectCast(objSelectedMember, PropertyInfo).GetIndexParameters().Length > 0
                     ElseIf TypeOf objSelectedMember Is MethodInfo Then
-                        Return DirectCast(objSelectedMember, MethodInfo).GetParameters().Length > 0
+                        toReturn = DirectCast(objSelectedMember, MethodInfo).GetParameters().Length > 0
+                    End If
+                    If (Not toReturn) AndAlso Me.Parameters.Instances.Count > 0 Then
+                        Me.Parameters.Instances.Clear()
                     End If
                 End If
-                Return False
+                Return toReturn
             End Get
         End Property
 
@@ -257,7 +259,7 @@ Namespace Services.Flee
 
 
 
-
+        Private _SelectedMember As MemberInfo
 
 
         Public Overrides Function Run(owner As Object, globalVars As IContextLookup) As Object
@@ -266,83 +268,64 @@ Namespace Services.Flee
                 If Not Me.HasType Then
                     Throw New ApplicationException("GeneralObjectAction has no Type Defined")
                 End If
+                If _SelectedMember Is Nothing Then
+                    _SelectedMember = SelectedMember
+                End If
+                Dim args As New List(Of Object)
+
+                For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
+                    args.Add(objParam.Value)
+                Next
                 Select Case Me.ActionMode
                     Case Flee.ObjectActionMode.SetProperty
-                        Dim args As New List(Of Object)
-                        For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                            args.Add(objParam.Value)
-                        Next
-                        'Dim potentialsMembers As List(Of MemberInfo) = Nothing
                         Dim targetProp As PropertyInfo
-                        'If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._PropertyName, potentialsMembers) Then
-                        For Each potentialMember As MemberInfo In Me.SelectedMembers
-                            If TypeOf potentialMember Is PropertyInfo Then
-                                targetProp = DirectCast(potentialMember, PropertyInfo)
-                                If targetProp.GetIndexParameters.Length = args.Count Then
-                                    Dim objValue As Object = Me.Value.GetValue(owner, globalVars)
-                                    If Not (targetProp.GetGetMethod().IsStatic OrElse Me.StaticCall) Then
-                                        Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                        If Me.LockTarget Then
-                                            SyncLock target
-                                                targetProp.SetValue(target, objValue, args.ToArray())
-                                            End SyncLock
-                                        Else
-                                            targetProp.SetValue(target, objValue, args.ToArray())
-                                        End If
-                                    Else
-                                        targetProp.SetValue(Nothing, objValue, args.ToArray())
-                                    End If
-                                    Return toReturn
+                        targetProp = DirectCast(_SelectedMember, PropertyInfo)
+                        If targetProp.GetIndexParameters.Length = args.Count Then
+                            Dim objValue As Object = Me.Value.GetValue(owner, globalVars)
+                            If Not (targetProp.GetGetMethod().IsStatic OrElse Me.StaticCall) Then
+                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                If Me.LockTarget Then
+                                    SyncLock target
+                                        targetProp.SetValue(target, objValue, args.ToArray())
+                                    End SyncLock
+                                Else
+                                    targetProp.SetValue(target, objValue, args.ToArray())
                                 End If
+                            Else
+                                targetProp.SetValue(Nothing, objValue, args.ToArray())
                             End If
-                        Next
-                        'End If
-                        Throw New Exception(String.Format("Property {0} with {1} parameters was not found in type {2}", _
-                                                          Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
-                    Case Flee.ObjectActionMode.CallMethod
-                        Dim args As New List(Of Object)
-                        For Each objParam As KeyValuePair(Of String, Object) In Me.Parameters.EvaluateVariables(owner, globalVars)
-                            args.Add(objParam.Value)
-                        Next
-                        'Dim potentialsMembers As List(Of MemberInfo) = Nothing
-                        Dim targetMethod As MethodInfo
-                        Dim found As Boolean
-                        'If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType()).TryGetValue(Me._MethodName, potentialsMembers) Then
-                        Dim index As Integer = 0
-                        For Each potentialMember As MemberInfo In SelectedMembers
-                            If TypeOf potentialMember Is MethodInfo Then
-                                index += 1
-                                targetMethod = DirectCast(potentialMember, MethodInfo)
-                                If targetMethod.GetParameters.Length = args.Count Then
-
-                                    If index = MemberIndex Then
-                                        found = True
-                                        If targetMethod.IsStatic OrElse Me.StaticCall Then
-                                            targetMethod.Invoke(Nothing, args.ToArray)
-                                        Else
-                                            Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
-                                            If target Is Nothing Then
-                                                Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
-                                            Else
-                                                If Me.LockTarget Then
-                                                    SyncLock target
-                                                        toReturn = targetMethod.Invoke(target, args.ToArray)
-                                                    End SyncLock
-                                                Else
-                                                    toReturn = targetMethod.Invoke(target, args.ToArray)
-                                                End If
-                                            End If
-                                        End If
-
-                                    End If
-                                End If
-                            End If
-                        Next
-                        'End If
-                        If Not found Then
-                            Throw New Exception(String.Format("Method {0} with {1} parameters was not found in type {2}", _
-                                                              Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                            Return toReturn
+                        Else
+                            Throw New Exception(String.Format("Property {0} with {1} parameters was not found in type {2}", _
+                                                         Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
                         End If
+                       
+                    Case Flee.ObjectActionMode.CallMethod
+                       
+                        Dim targetMethod As MethodInfo
+                        targetMethod = DirectCast(_SelectedMember, MethodInfo)
+                        If targetMethod.GetParameters.Length = args.Count Then
+                            If targetMethod.IsStatic OrElse Me.StaticCall Then
+                                targetMethod.Invoke(Nothing, args.ToArray)
+                            Else
+                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                If target Is Nothing Then
+                                    Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
+                                Else
+                                    If Me.LockTarget Then
+                                        SyncLock target
+                                            toReturn = targetMethod.Invoke(target, args.ToArray)
+                                        End SyncLock
+                                    Else
+                                        toReturn = targetMethod.Invoke(target, args.ToArray)
+                                    End If
+                                End If
+                            End If
+                        Else
+                            Throw New Exception(String.Format("Method {0} with {1} parameters was not found in type {2}", _
+                                                             Me.MemberName, args.Count, ReflectionHelper.GetSafeTypeName(Me.DotNetType.GetDotNetType())))
+                        End If
+
                     Case Flee.ObjectActionMode.AddEventHandler
                         Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
                         If target IsNot Nothing Then

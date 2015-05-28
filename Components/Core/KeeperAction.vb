@@ -19,7 +19,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits ProviderHost(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
         Implements IExpressionVarsProvider
 
-        Private Const DefaultEventStep As String = "Default"
+        Public Const DefaultEventStep As String = "Default"
 
         Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
@@ -49,23 +49,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Exit For
                 End If
                 Dim prov As IActionProvider(Of TEngineEvents) = element.GetProvider
-                Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
-                If element.LifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
-                        OrElse (element.LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
-                                AndAlso (prov.Config.DefaultTEngineEvents.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
-                                         OrElse (prov.Config.DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
-                                                 AndAlso (actionContext.CurrentRule Is Nothing _
-                                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent) _
-                                                        OrElse prov.Config.MinTEngineEvents.ToString(CultureInfo.InvariantCulture) = prov.Config.MaxTEngineEvents.ToString(CultureInfo.InvariantCulture)))) Then
-
+                'Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                'If element.LifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
+                '        OrElse (element.LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
+                '                AndAlso (prov.Config.DefaultTEngineEvents.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent _
+                '                         OrElse (prov.Config.DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = DefaultEventStep _
+                '                                 AndAlso (actionContext.CurrentRule Is Nothing _
+                '                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent) _
+                '                                        OrElse prov.Config.MinTEngineEvents.ToString(CultureInfo.InvariantCulture) = prov.Config.MaxTEngineEvents.ToString(CultureInfo.InvariantCulture)))) Then
+                If element.LifeCycleEvent.Equals(actionContext.CurrentEventStep) _
+                       OrElse (element.LifeCycleEventIsDefault _
+                               AndAlso (prov.Config.DefaultTEngineEvents.Equals(actionContext.CurrentEventStep) _
+                                        OrElse (prov.Config.DefaultTEngineEventsIsDefault _
+                                                AndAlso (actionContext.CurrentRule Is Nothing _
+                                                       OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.Equals(actionContext.CurrentEventStep)) _
+                                                       OrElse prov.Config.MinTEngineEvents.Equals(prov.Config.MaxTEngineEvents)))) Then
                     Try
-                        If intCurrEvent > 0 AndAlso prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _
-                       OrElse prov.Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < intCurrEvent Then
+                        Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                        If intCurrEvent > 0 AndAlso (prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _
+                                OrElse prov.Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < intCurrEvent) Then
                             ' curl up and die here
                             Throw New InvalidOperationException(String.Format("The action ""{0}"" cannot be executed at the current step {1}, its provider ""{2}"" covers only the steps {3} to {4}", _
                                                                               element.Name, actionContext.CurrentEventStep, prov.Config.Name, prov.Config.MinTEngineEvents, prov.Config.MaxTEngineEvents))
                         Else
-                            If (Not element.DisableLog) Then
+                            If (Not element.DisableLog) AndAlso actionContext.LoggingLevel >= element.LoggingLevel Then
                                 actionContext.LogStart(element.Name, element.LoggingLevel, False)
                             End If
 

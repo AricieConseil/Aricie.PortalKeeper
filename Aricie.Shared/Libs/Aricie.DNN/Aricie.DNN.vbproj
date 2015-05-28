@@ -199,6 +199,7 @@
     <Compile Include="Diagnostics\DebugEventArgs.vb" />
     <Compile Include="Diagnostics\DebugInfoScope.vb" />
     <Compile Include="Entities\APICredentials.vb" />
+    <Compile Include="Entities\DNNPortalAlias.vb" />
     <Compile Include="Entities\DomainName\DomainName.vb" />
     <Compile Include="Entities\DomainName\TLDRule.vb" />
     <Compile Include="Entities\DomainName\TLDRulesCache.vb" />
@@ -218,6 +219,7 @@
     <Compile Include="Security\EncryptionHelper.vb" />
     <Compile Include="Security\RSAParametersInfo.vb" />
     <Compile Include="Security\TrialPropertyMode.vb" />
+    <Compile Include="Services\Caching\CdnStrategy.vb" />
     <Compile Include="Services\ContextBase.vb" />
     <Compile Include="Services\Caching\CachedOutput.vb" />
     <Compile Include="Services\Caching\FileOutputSettings.vb" />

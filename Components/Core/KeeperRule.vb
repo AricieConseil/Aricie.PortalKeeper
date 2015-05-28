@@ -12,7 +12,7 @@ Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
+    <ActionButton(IconName.Gavel, IconOptions.Normal)> _
     <DefaultProperty("Summary")> _
     <Serializable()> _
     Public Class KeeperRule(Of TEngineEvents As IConvertible)

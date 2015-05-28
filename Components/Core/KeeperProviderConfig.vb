@@ -1,6 +1,7 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
+Imports System.Globalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -41,6 +42,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("HasEvent", False, True)> _
         <Category("RequestEvents")> _
         Public Property DefaultTEngineEvents() As TEngineEvents
-            
+
+
+        Private _DefaultTEngineEventsIsDefault As Nullable(Of Boolean)
+
+        <Browsable(False)> _
+        Public ReadOnly Property DefaultTEngineEventsIsDefault As Boolean
+            Get
+                If Not _DefaultTEngineEventsIsDefault.HasValue Then
+                    _DefaultTEngineEventsIsDefault = (DefaultTEngineEvents.ToString(CultureInfo.InvariantCulture) = KeeperAction(Of TEngineEvents).DefaultEventStep)
+                End If
+                Return _DefaultTEngineEventsIsDefault.Value
+            End Get
+        End Property
+
+
     End Class
 End Namespace

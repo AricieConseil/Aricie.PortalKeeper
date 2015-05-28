@@ -4,6 +4,7 @@ Imports Aricie.DNN.Services
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Entities
+Imports System.Globalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -24,6 +25,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _
         Public Property LifeCycleEvent() As TEngineEvents
+
+        Private _LifeCycleEventIsDefault As Nullable(Of Boolean)
+
+        <Browsable(False)> _
+        Public ReadOnly Property LifeCycleEventIsDefault As Boolean
+            Get
+                If Not _LifeCycleEventIsDefault.HasValue Then
+                    _LifeCycleEventIsDefault = (LifeCycleEvent.ToString(CultureInfo.InvariantCulture) = KeeperAction(Of TEngineEvents).DefaultEventStep)
+                End If
+                Return _LifeCycleEventIsDefault.Value
+            End Get
+        End Property
 
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _

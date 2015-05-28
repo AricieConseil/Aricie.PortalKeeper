@@ -154,7 +154,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public ReadOnly Property CurrentAliasId() As Integer
             Get
-                Return Me.DnnContext.Portal.PortalAlias.PortalAliasID
+                Return Me.DnnContext.PortalAlias.PortalAliasID
             End Get
         End Property
 
@@ -305,7 +305,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             For i As Integer = 0 To configRules.Count - 1
                 objRule = configRules(i)
                 If objRule.Enabled _
-                    AndAlso objRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture) Then
+                    AndAlso objRule.MatchingLifeCycleEvent.Equals(Me.CurrentEventStep) Then
+                    'AndAlso objRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture) Then
                     Try
                         If objRule.Condition.Match(Me) Then
                             toReturn.Add(objRule)
@@ -349,13 +350,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
         Private Sub LogStartEventStep(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
-            Me.LogStart(Me.CurrentEventStep.ToString(CultureInfo.InvariantCulture), LoggingLevel.Steps, False, additionalProperties)
+            Me.LogStart(Me.CurrentEventStep, LoggingLevel.Steps, False, additionalProperties)
         End Sub
 
-        Public Sub LogStart(eventStep As String, minLevel As LoggingLevel, endInnerCode As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+        Public Sub LogStart(eventStep As IConvertible, minLevel As LoggingLevel, endInnerCode As Boolean, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
             If (Me.LoggingLevel >= minLevel) Then
-                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{0} - {1} - Start", eventStep, _CurrentEngine.Name), _
+                Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("{{0}} - {0} - Start", _CurrentEngine.Name), _
                                             WorkingPhase.InProgress, False, False, -1, Me.FlowId, additionalProperties)
+                objStep.LabelInsert = eventStep
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub
@@ -365,14 +367,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub LogEndEventStep(ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
-            Me.LogEnd(Me._CurrentEventStep.ToString(CultureInfo.InvariantCulture), endSequence, endoverhead, LoggingLevel.Steps, Nothing)
+            Me.LogEnd(Me._CurrentEventStep, endSequence, endoverhead, LoggingLevel.Steps, Nothing)
         End Sub
 
         Public Sub LogEndEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
             Me.LogEnd("Agent", True, True, LoggingLevel.Simple, Me.CurrentEngine.LogEndDumpSettings, additionalProperties)
         End Sub
 
-        Public Sub LogEnd(eventStep As String, ByVal endSequence As Boolean, ByVal endoverhead As Boolean, minLevel As LoggingLevel, ByVal objDumpSettings As DumpSettings, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
+        Public Sub LogEnd(eventStep As IConvertible, ByVal endSequence As Boolean, ByVal endoverhead As Boolean, minLevel As LoggingLevel, ByVal objDumpSettings As DumpSettings, ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
             If (Me.LoggingLevel >= minLevel) Then
                 Dim tempItems As New List(Of KeyValuePair(Of String, String))()
                 'If endSequence AndAlso Me._CurrentEngine.LogDump Then
@@ -386,18 +388,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     tempItems = DumpToLogs(dump)
                 End If
                 Dim logTitle As String
-                If eventStep.IsNullOrEmpty() Then
-                    logTitle = String.Format("End - {0}", _CurrentEngine.Name)
-                Else
-                    logTitle = String.Format("End - {0} - {1}", eventStep, _CurrentEngine.Name)
-                End If
+               
                 Dim nextPhase As WorkingPhase = WorkingPhase.InProgress
                 If endoverhead Then
                     nextPhase = WorkingPhase.EndOverhead
                 End If
                 tempItems.AddRange(additionalProperties)
-                Dim objStep As StepInfo = New StepInfo(Debug.PKPDebugType, logTitle, _
+                Dim objStep As StepInfo 
+                If eventStep Is Nothing Then
+                    logTitle = String.Format("End - {0}", _CurrentEngine.Name)
+                    objStep = New StepInfo(Debug.PKPDebugType, logTitle, _
                                           nextPhase, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                Else
+                    logTitle = String.Format("End - {{0}} - {0}", _CurrentEngine.Name)
+                    objStep = New StepInfo(Debug.PKPDebugType, logTitle, _
+                                          nextPhase, endSequence, False, -1, Me.FlowId, tempItems.ToArray)
+                    objStep.LabelInsert = eventStep
+                End If
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
         End Sub

@@ -104,7 +104,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
          Public Property RecoveryParam() As String
             Get
                 If String.IsNullOrEmpty(_RecoveryParam) Then
-                    _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
+                    _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(10))
                 End If
                 Return _RecoveryParam
             End Get
@@ -120,7 +120,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
          Public Property RestartParam() As String
             Get
                 If String.IsNullOrEmpty(_RestartParam) Then
-                    _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(6))
+                    _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(10))
                 End If
                 Return _RestartParam
             End Get
@@ -142,6 +142,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _RequestScope = value
             End Set
         End Property
+
+        <ConditionalVisible("RequestScope", False, True, RequestScope.CustomCondition)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        <SortOrder(1000)> _
+        Public Property ScopeCondition As New FleeExpressionCondition(Of Boolean)()
+
 
         <ExtendedCategory("TechnicalSettings")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
