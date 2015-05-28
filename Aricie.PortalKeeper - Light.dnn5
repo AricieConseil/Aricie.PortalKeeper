@@ -86,14 +86,6 @@
               <sourceFileName>FileHelpers.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>Common.Logging.dll</name>
-              <sourceFileName>Common.Logging.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>PowerCollections.dll</name>
-              <sourceFileName>PowerCollections.dll</sourceFileName>
-            </assembly>
-            <assembly>
               <name>Google.GData.Client.dll</name>
               <sourceFileName>Google.GData.Client.dll</sourceFileName>
             </assembly>

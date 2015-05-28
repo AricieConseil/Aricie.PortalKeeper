@@ -78,6 +78,34 @@
               <sourceFileName>Aricie.PortalKeeper.XmlSerializers.dll</sourceFileName>
             </assembly>
             <assembly>
+              <name>Newtonsoft.Json.dll</name>
+              <sourceFileName>Newtonsoft.Json.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>FileHelpers.dll</name>
+              <sourceFileName>FileHelpers.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Google.GData.Client.dll</name>
+              <sourceFileName>Google.GData.Client.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Google.GData.Extensions.dll</name>
+              <sourceFileName>Google.GData.Extensions.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Google.GData.Spreadsheets.dll</name>
+              <sourceFileName>Google.GData.Spreadsheets.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>WatiN.Core.dll</name>
+              <sourceFileName>WatiN.Core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Interop.SHDocVw.dll</name>
+              <sourceFileName>Interop.SHDocVw.dll</sourceFileName>
+            </assembly>
+            <assembly>
               <name>Aricie.PortalKeeper.Bitcoin.dll</name>
               <sourceFileName>Aricie.PortalKeeper.Bitcoin.dll</sourceFileName>
             </assembly>
@@ -90,12 +118,20 @@
               <sourceFileName>Aricie.PortalKeeper.Reddit.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>RedditSharp.dll</name>
-              <sourceFileName>RedditSharp.dll</sourceFileName>
+              <name>IronPython.dll</name>
+              <sourceFileName>IronPython.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>Newtonsoft.Json.dll</name>
-              <sourceFileName>Newtonsoft.Json.dll</sourceFileName>
+              <name>Microsoft.Dynamic.dll</name>
+              <sourceFileName>Microsoft.Dynamic.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Microsoft.Scripting.Core.dll</name>
+              <sourceFileName>Microsoft.Scripting.Core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Microsoft.Scripting.dll</name>
+              <sourceFileName>Microsoft.Scripting.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>OpenRasta.dll</name>
@@ -106,8 +142,12 @@
               <sourceFileName>OpenRasta.Hosting.AspNet.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>FileHelpers.dll</name>
-              <sourceFileName>FileHelpers.dll</sourceFileName>
+              <name>RedditSharp.dll</name>
+              <sourceFileName>RedditSharp.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>MonoTorrent.dll</name>
+              <sourceFileName>MonoTorrent.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>SharpMap.dll</name>
@@ -168,46 +208,6 @@
             <assembly>
               <name>BruTile.Desktop.dll</name>
               <sourceFileName>BruTile.Desktop.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>MonoTorrent.dll</name>
-              <sourceFileName>MonoTorrent.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Google.GData.Client.dll</name>
-              <sourceFileName>Google.GData.Client.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Google.GData.Extensions.dll</name>
-              <sourceFileName>Google.GData.Extensions.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Google.GData.Spreadsheets.dll</name>
-              <sourceFileName>Google.GData.Spreadsheets.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>WatiN.Core.dll</name>
-              <sourceFileName>WatiN.Core.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Interop.SHDocVw.dll</name>
-              <sourceFileName>Interop.SHDocVw.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>IronPython.dll</name>
-              <sourceFileName>IronPython.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Microsoft.Dynamic.dll</name>
-              <sourceFileName>Microsoft.Dynamic.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Microsoft.Scripting.Core.dll</name>
-              <sourceFileName>Microsoft.Scripting.Core.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>Microsoft.Scripting.dll</name>
-              <sourceFileName>Microsoft.Scripting.dll</sourceFileName>
             </assembly>
           </assemblies>
         </component>
