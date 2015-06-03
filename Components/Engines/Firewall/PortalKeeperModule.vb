@@ -126,16 +126,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
             Dim keeperConfig As FirewallConfig = keeperContext.CurrentFirewallConfig
-            If keeperConfig.Enabled Then
-                If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
-                    Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
+
+            If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
+                Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
+                If keeperConfig.Enabled Then
+
                     AddHandler objPage.PreInit, AddressOf Me.Page_PreInit
                     AddHandler objPage.Init, AddressOf Me.Page_Init
                     AddHandler objPage.Load, AddressOf Me.Page_Load
                     AddHandler objPage.PreRender, AddressOf Me.Page_PreRender
                     AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
                 End If
+                If keeperContext.GlobalConfig.ControlAdapters.Enabled Then
+                    AddHandler objPage.PreInit, AddressOf Me.Page_PreInitAdapters
+                End If
             End If
+            
             'Catch ex As Exception
             '    Exceptions.LogException(ex)
             'End Try
@@ -143,11 +149,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
+        Private Sub Page_PreInitAdapters(ByVal sender As Object, ByVal args As EventArgs)
+            PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+        End Sub
+
+
+
+
+
         Private Sub Page_PreInit(ByVal sender As Object, ByVal args As EventArgs)
 
             'Try
             Dim context As HttpContext = HttpContext.Current
-            PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
             Me.ProcessStep(context, RequestEvent.PagePreInit, False)
             'Catch ex As Exception
             '    Exceptions.LogException(ex)
