@@ -238,6 +238,17 @@ Namespace Services.Flee
 <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
         Public Property Parameters() As New Variables
 
+        <ConditionalVisible("HasType", False, True)> _
+       <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)> _
+      <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Sub ResetInstance(ape As AriciePropertyEditorControl)
+            Me._Instance = Nothing
+            ape.ItemChanged = True
+            Dim message As String = Localization.GetString("InstanceReset.Message", ape.LocalResourceFile)
+            ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
+
+
         <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
        <ActionButton(IconName.Key, IconOptions.Normal)> _
         Public Sub SetParameters(ape As AriciePropertyEditorControl)

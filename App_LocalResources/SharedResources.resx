@@ -9554,4 +9554,19 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="SelectionSetCondition`1_DynamicValues.Text" xml:space="preserve">
     <value>Dynamic Values</value>
   </data>
+  <data name="LocationSettings_UseCache.Help" xml:space="preserve">
+    <value>If a singleton is not used, you can still use caching although it will take a little longer to retrieve the configuration each time it is accessed.</value>
+  </data>
+  <data name="LocationSettings_UseCache.Text" xml:space="preserve">
+    <value>Use Cache</value>
+  </data>
+  <data name="LocationSettings_UseSingleton.Help" xml:space="preserve">
+    <value>to minimize access time, configuration can be saved to a local singleton. The consequence is that if the corresponding configuration file is changed externally, it won't be automatically refreshed and you'll have to click the refresh command button to clear the local singleton.</value>
+  </data>
+  <data name="LocationSettings_UseSingleton.Text" xml:space="preserve">
+    <value>Use Singleton</value>
+  </data>
+  <data name="ModuleConfig`2_ClearSingleton.Text" xml:space="preserve">
+    <value>Reload Configuration</value>
+  </data>
 </root>
