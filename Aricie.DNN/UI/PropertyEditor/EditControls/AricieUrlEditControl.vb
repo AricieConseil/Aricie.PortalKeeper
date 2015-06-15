@@ -50,6 +50,12 @@ Namespace UI.WebControls.EditControls
             End Get
         End Property
 
+        Public ReadOnly Property UrlTypeStateKey() As String
+            Get
+                Return "CtlUrlTypeState-" & Me.ClientID.GetHashCode.ToString
+            End Get
+        End Property
+
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             MyBase.OnPreRender(e)
 
@@ -192,6 +198,16 @@ Namespace UI.WebControls.EditControls
         Protected Overrides Sub LoadViewState(ByVal savedState As Object)
             MyBase.LoadViewState(savedState)
         End Sub
+
+
+        Public Property CurrentUrlType As String
+            Get
+
+            End Get
+            Set(value As String)
+
+            End Set
+        End Property
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) _
           As Boolean

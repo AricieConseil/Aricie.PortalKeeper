@@ -67,7 +67,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <DebugSymbols>true</DebugSymbols>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-	<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />

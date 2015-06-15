@@ -47,7 +47,7 @@ Namespace Services
 #Region "Singleton Logic"
 
         Private Shared _Instance As ReflectionHelper
-        Private Shared _SingletonLock As New Object
+        Private Shared ReadOnly _SingletonLock As New Object
         Private Shared _HasUnrestrictedSecurityPermission As Nullable(Of Boolean)
 
         Public Shared Function HasUnrestrictedSecurityPermission() As Boolean
@@ -1765,54 +1765,7 @@ Namespace Services
         End Function
 
 
-        Public Class XmlSerializerBag
-
-            Public Sub New()
-
-            End Sub
-
-            Public Sub New(targetType As Type, rootName As String)
-                Me._TargetType = targetType
-                Me._RootName = rootName
-            End Sub
-
-            Public Sub New(targetType As Type, rootName As String, subTypes As IEnumerable(Of Type))
-                Me.New(targetType, rootName)
-                If subTypes IsNot Nothing Then
-                    For Each objtype As Type In subTypes
-                        Me._SubTypes.Add(objtype)
-                    Next
-                End If
-            End Sub
-
-            Private _TargetType As Type
-            Private _RootName As String
-
-            Private _SubTypes As New HashSet(Of Type)
-
-            Public Sub AddSubType(objType As Type)
-                If Not _SubTypes.Contains(objType) Then
-                    SyncLock Me
-                        _SubTypes.Add(objType)
-                        _Serializer = Nothing
-                    End SyncLock
-                End If
-            End Sub
-
-            Private _Serializer As XmlSerializer
-
-            Public ReadOnly Property Serializer As XmlSerializer
-                Get
-                    If _Serializer Is Nothing Then
-                        SyncLock Me
-                            _Serializer = BuildSerializer(_TargetType, _SubTypes.ToArray(), _RootName)
-                        End SyncLock
-                    End If
-                    Return _Serializer
-                End Get
-            End Property
-
-        End Class
+       
 
 
         Public Shared Function GetSerializer(ByVal objType As Type, ByVal extraTypes() As Type, ByVal useCache As Boolean, ByVal rootName As String) As XmlSerializer
@@ -1821,15 +1774,9 @@ Namespace Services
 
             If useCache Then
 
-                Dim targetXmlSerializerBag As XmlSerializerBag = Nothing
-                Dim key As String = objType.FullName & "||" & rootName
+                Dim targetXmlSerializerBag As XmlSerializerBag = GetXmlSerializerBag(objType, extraTypes, rootName)
 
-                If Not Instance._XmlSerializers.TryGetValue(key, targetXmlSerializerBag) Then
-                    targetXmlSerializerBag = New XmlSerializerBag(objType, rootName, extraTypes)
-                    SyncLock Instance._XmlSerializers
-                        Instance._XmlSerializers(key) = targetXmlSerializerBag
-                    End SyncLock
-                ElseIf extraTypes IsNot Nothing Then
+                If extraTypes IsNot Nothing Then
                     For Each extraType As Type In extraTypes
                         targetXmlSerializerBag.AddSubType(extraType)
                     Next
@@ -1846,7 +1793,12 @@ Namespace Services
 
         End Function
 
+        Public Shared Function GetSerializerTypes(objType As Type, ByVal rootName As String) As IList(Of Type)
+            Dim targetXmlSerializerBag As XmlSerializerBag = GetXmlSerializerBag(objType, Nothing, rootName)
+            Return targetXmlSerializerBag.SubTypes.ToList()
+        End Function
 
+       
 
 
 #End Region
@@ -1888,6 +1840,26 @@ Namespace Services
             Return objXmlSettings
         End Function
 
+
+        Private Shared writersDictionary As New Dictionary(Of XmlWriter, HashSet(Of Type))
+
+        ''' <summary>
+        ''' that method is a (dirty?) hack to minimize the number of xmlserializers that have to be generated, specifically for the serializablelist class.
+        ''' Since a global list of subtypes is maintained, it is included once for each generic type argument to create a complete serializer once at deserialization time.
+        ''' The method works only if the xmlwriter was created by the method below. 
+        ''' </summary>
+        ''' <returns>true if the subtypes have not been included yet, false otherwise</returns>
+        Public Shared Function AddSubtypes(objwriter As XmlWriter, objtype As Type) As Boolean
+            Dim currentTypes As HashSet(Of Type) = Nothing
+            If writersDictionary.TryGetValue(objwriter, currentTypes) Then
+                If Not currentTypes.Contains(objtype) Then
+                    currentTypes.Add(objtype)
+                    Return True
+                End If
+            End If
+            Return False
+        End Function
+
         Public Shared Sub Serialize(ByVal objObject As Object, ByVal omitDeclaration As Boolean, ByRef objTextWriter As TextWriter)
 
             'New XmlTextWriter(objTextWriter)
@@ -1895,12 +1867,21 @@ Namespace Services
             If omitDeclaration Then
                 objXmlSettings.OmitXmlDeclaration = True
             End If
-
             Using objXmlWriter As XmlWriter = XmlTextWriter.Create(objTextWriter, objXmlSettings)
-                ReflectionHelper.Serialize(objObject, objXmlWriter)
-                objXmlWriter.Flush()
+                Try
+                    SyncLock writersDictionary
+                        writersDictionary.Add(objXmlWriter, New HashSet(Of Type))
+                    End SyncLock
+                    ReflectionHelper.Serialize(objObject, objXmlWriter)
+                    objXmlWriter.Flush()
+                Catch
+                    Throw
+                Finally
+                    SyncLock writersDictionary
+                        writersDictionary.Remove(objXmlWriter)
+                    End SyncLock
+                End Try
             End Using
-
         End Sub
 
 
@@ -2031,6 +2012,75 @@ Namespace Services
 
 
 #Region "Private methods"
+
+        Private Shared Function GetXmlSerializerBag(objType As Type, ByVal extraTypes() As Type, ByVal rootName As String) As XmlSerializerBag
+            Dim targetXmlSerializerBag As XmlSerializerBag = Nothing
+            Dim key As String = objType.FullName & "||" & rootName
+            If Not Instance._XmlSerializers.TryGetValue(key, targetXmlSerializerBag) Then
+                targetXmlSerializerBag = New XmlSerializerBag(objType, rootName, extraTypes)
+                SyncLock Instance._XmlSerializers
+                    Instance._XmlSerializers(key) = targetXmlSerializerBag
+                End SyncLock
+            End If
+            Return targetXmlSerializerBag
+        End Function
+
+        Public Class XmlSerializerBag
+
+            Public Sub New()
+
+            End Sub
+
+            Public Sub New(targetType As Type, rootName As String)
+                Me._TargetType = targetType
+                Me._RootName = rootName
+            End Sub
+
+            Public Sub New(targetType As Type, rootName As String, subTypes As IEnumerable(Of Type))
+                Me.New(targetType, rootName)
+                If subTypes IsNot Nothing Then
+                    For Each objtype As Type In subTypes
+                        Me.SubTypes.Add(objtype)
+                    Next
+                End If
+            End Sub
+
+            Private _TargetType As Type
+            Private _RootName As String
+
+            Private _SubTypes As New HashSet(Of Type)
+
+            Public Sub AddSubType(objType As Type)
+                If Not SubTypes.Contains(objType) Then
+                    SyncLock Me
+                        SubTypes.Add(objType)
+                        _Serializer = Nothing
+                    End SyncLock
+                End If
+            End Sub
+
+            Private _Serializer As XmlSerializer
+
+            Public ReadOnly Property Serializer As XmlSerializer
+                Get
+                    If _Serializer Is Nothing Then
+                        SyncLock Me
+                            _Serializer = BuildSerializer(_TargetType, SubTypes.ToArray(), _RootName)
+                        End SyncLock
+                    End If
+                    Return _Serializer
+                End Get
+            End Property
+
+            Public Property SubTypes As HashSet(Of Type)
+                Get
+                    Return _SubTypes
+                End Get
+                Set(value As HashSet(Of Type))
+                    _SubTypes = value
+                End Set
+            End Property
+        End Class
 
         Private Shared Function BuildSerializer(ByVal objType As Type) As Object
 

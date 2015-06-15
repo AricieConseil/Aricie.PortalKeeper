@@ -189,13 +189,24 @@ Namespace ComponentModel
 
         Private Shared _instance As TConfigClass
 
+        <Browsable(False)> _
+        Public ReadOnly Property UseSingleton As Boolean
+            Get
+                Return LocationSettings.UseSingleton
+            End Get
+        End Property
 
         Public Shared ReadOnly Property Instance() As TConfigClass
             Get
-                If _Instance Is Nothing Then
-                    _Instance = Instance(SharedLocationSettings(True, False), False, False)
+                If _instance Is Nothing Then
+                    Dim locSettings = SharedLocationSettings(True, False)
+                    If locSettings.UseSingleton Then
+                        _instance = Instance(locSettings, False, False)
+                    Else
+                        Return Instance(locSettings, locSettings.UseCache, False)
+                    End If
                 End If
-                Return _Instance
+                Return _instance
             End Get
         End Property
 
@@ -241,6 +252,13 @@ Namespace ComponentModel
         Public Overridable Overloads Sub Cancel(pe As AriciePropertyEditorControl)
             pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
+
+        <ConditionalVisible("UseSingleton")> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        Public Overridable Overloads Sub ClearSingleton(pe As AriciePropertyEditorControl)
+            _instance = Nothing
+        End Sub
+
 
         <ActionButton(IconName.TrashO, IconOptions.Normal, "Reset.Warning")> _
         Public Overridable Overloads Sub Reset(pe As AriciePropertyEditorControl)
