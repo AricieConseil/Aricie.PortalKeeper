@@ -1,6 +1,7 @@
 Imports System.Xml.Serialization
 Imports Aricie.Services
 Imports System.Linq
+Imports System.Xml
 
 Namespace Collections
     ''' <summary>
@@ -11,6 +12,8 @@ Namespace Collections
         Inherits List(Of T)
         Implements IXmlSerializable
 
+
+        Private Shared _SubTypesSerializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
 
         Public Sub New()
             MyBase.New()
@@ -41,10 +44,18 @@ Namespace Collections
             reader.ReadStartElement()
             Dim typeNames As List(Of String) = Nothing
             Try
-                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
-                typeNames = DirectCast(serializer.Deserialize(reader), List(Of String))
-                Dim types As List(Of Type) = (From strType In typeNames Select objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType), False) Where objType IsNot Nothing).ToList()
-                serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
+                typeNames = DirectCast(_SubTypesSerializer.Deserialize(reader), List(Of String))
+
+                Dim serializer As XmlSerializer
+                If typeNames IsNot Nothing Then
+                    Dim types As List(Of Type) = (From strType In typeNames _
+                             Select objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType), False) _
+                             Where objType IsNot Nothing).ToList()
+                    serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
+                Else
+                    serializer = ReflectionHelper.GetSerializer(Of List(Of T))()
+                End If
+
                 Dim objList As List(Of T) = DirectCast(serializer.Deserialize(reader), List(Of T))
                 For Each objT As T In objList
                     Me.Add(objT)
@@ -69,18 +80,31 @@ Namespace Collections
             End Try
         End Sub
 
+
+
         Public Sub WriteXml(ByVal writer As System.Xml.XmlWriter) Implements System.Xml.Serialization.IXmlSerializable.WriteXml
             Dim types As New List(Of Type)
-            For Each value As T In Me
-                Dim tempType As Type = value.GetType
-                If Not types.Contains(tempType) Then
-                    types.Add(tempType)
+            Dim typeNames As List(Of String) = Nothing
+            If Me.Count > 0 Then
+                For Each value As T In Me
+                    Dim tempType As Type = value.GetType
+                    If Not types.Contains(tempType) Then
+                        types.Add(tempType)
+                    End If
+                Next
+                If ReflectionHelper.AddSubtypes(writer, GetType(T)) Then
+                    types = types.Union(ReflectionHelper.GetSerializerTypes(GetType(List(Of T)), "")).ToList()
                 End If
-            Next
-            Dim typeNames As List(Of String) = (From objtype In types Where objtype IsNot GetType(T) Select ReflectionHelper.GetSafeTypeName(objtype)).ToList()
-            Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of String))("SubTypes")
-            serializer.Serialize(writer, typeNames)
-            serializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
+               
+                typeNames = (From objtype In types _
+                                Where objtype IsNot GetType(T)
+                                    Select ReflectionHelper.GetSafeTypeName(objtype)).ToList()
+            Else
+                typeNames = New List(Of String)
+            End If
+            _SubTypesSerializer.Serialize(writer, typeNames)
+
+            Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Of List(Of T))(types.ToArray)
             serializer.Serialize(writer, New List(Of T)(Me))
         End Sub
 

@@ -4,7 +4,6 @@
 <div class="divPKP"> 
     <div id="divConfig" runat="server">
           <div class="divcenter" runat="server" visible="false" id="divDebug">
-              <aricie:UploadControl runat="server" id="cmdUpload"/>
                 <dnn:CommandButton ID="cmdDebug" runat="server" ImageUrl="~/images/icon_wizard_16px.gif"
                     ResourceKey="cmdDebug" />
             </div>

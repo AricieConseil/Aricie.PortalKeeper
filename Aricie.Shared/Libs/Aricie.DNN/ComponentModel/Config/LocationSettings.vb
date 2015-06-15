@@ -55,6 +55,10 @@ Namespace ComponentModel
             End Set
         End Property
 
+        Public Property UseSingleton As Boolean = True
+
+        <ConditionalVisible("UseSingleton", True)> _
+        Public Property UseCache As Boolean = True
 
 
         Public Shared CoreFile As New LocationSettings(False, "")

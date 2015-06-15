@@ -33,15 +33,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Protected WithEvents divDebug As Global.System.Web.UI.HtmlControls.HtmlGenericControl
 
         '''<summary>
-        '''cmdUpload control.
-        '''</summary>
-        '''<remarks>
-        '''Auto-generated field.
-        '''To modify move field declaration from designer file to code-behind file.
-        '''</remarks>
-        Protected WithEvents cmdUpload As Global.Aricie.DNN.UI.WebControls.UploadControl
-
-        '''<summary>
         '''cmdDebug control.
         '''</summary>
         '''<remarks>
