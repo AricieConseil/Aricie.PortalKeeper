@@ -32,17 +32,9 @@ Namespace UI.WebControls.EditControls
             End Try
         End Sub
 
-        Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
-            Try
-                MyBase.OnLoad(e)
-                'If Not Me.UrlControl.IsPostBack Then
-                '    Me.UrlControl.Url = Me.StringValue
-                'End If
-            Catch ex As Exception
-                Exceptions.ProcessModuleLoadException(Me, ex)
-            End Try
-            MyBase.OnLoad(e)
-        End Sub
+        'Protected Overrides Sub OnLoad(ByVal e As System.EventArgs)
+        '    MyBase.OnLoad(e)
+        'End Sub
 
         Public ReadOnly Property UrlStateKey() As String
             Get
@@ -60,12 +52,12 @@ Namespace UI.WebControls.EditControls
             MyBase.OnPreRender(e)
 
 
-            If Not Page Is Nothing And Me.EditMode = PropertyEditorMode.Edit Then
+            If (Page IsNot Nothing) AndAlso Me.EditMode = PropertyEditorMode.Edit Then
                 Me.Page.RegisterRequiresPostBack(Me)
-                Dim parentModule As AriciePortalModuleBase = Me.ParentAricieModule
+                Dim objParentModule As AriciePortalModuleBase = Me.ParentAricieModule
 
-                If parentModule IsNot Nothing Then
-                    AddHandler parentModule.PreRenderComplete, AddressOf PreRenderComplete
+                If objParentModule IsNot Nothing Then
+                    AddHandler objParentModule.PreRenderComplete, AddressOf PreRenderComplete
                 Else
                     AddHandler Me.Page.PreRenderComplete, AddressOf PreRenderComplete
                 End If
@@ -74,8 +66,8 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Private Sub PreRenderComplete(ByVal sender As Object, ByVal e As EventArgs)
-            Dim parentModule As AriciePortalModuleBase = Me.ParentAricieModule
-            If parentModule IsNot Nothing Then
+            Dim objParentModule As AriciePortalModuleBase = Me.ParentAricieModule
+            If objParentModule IsNot Nothing Then
                 DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = Me.UrlControl.Url
             Else
                 Me.ViewState(UrlStateKey) = Me.UrlControl.Url
@@ -107,55 +99,7 @@ Namespace UI.WebControls.EditControls
 
 
 
-        Protected Overridable Sub ResolveEditControl()
-
-            Me.Controls.Clear()
-
-            Me.UrlControl = CType(Me.Page.LoadControl("~/controls/URLControl.ascx"), UrlControl)
-
-            Me.UrlControl.ID = Me.ID & "Edit"
-            If Not Me.Required Then
-                Me.UrlControl.ShowNone = True
-            End If
-            Me.UrlControl.ShowLog = False
-            Me.UrlControl.ShowTrack = False
-            If TypeOf Me.ParentField.DataSource Is ControlUrlInfo Then
-                Dim objUrl As ControlUrlInfo = DirectCast(Me.ParentField.DataSource, ControlUrlInfo)
-                'Me.UrlControl.ShowNone = ((objUrl.FilterMode And UrlControlMode.None) = UrlControlMode.None)
-                Me.UrlControl.ShowUrls = ((objUrl.FilterMode And UrlControlMode.Url) = UrlControlMode.Url)
-                Me.UrlControl.ShowTabs = ((objUrl.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
-                Me.UrlControl.ShowFiles = ((objUrl.FilterMode And UrlControlMode.File) = UrlControlMode.File)
-                Me.UrlControl.ShowSecure = ((objUrl.FilterMode And UrlControlMode.Secure) = UrlControlMode.Secure)
-                Me.UrlControl.ShowDatabase = ((objUrl.FilterMode And UrlControlMode.Database) = UrlControlMode.Database)
-                Me.UrlControl.ShowUpLoad = ((objUrl.FilterMode And UrlControlMode.Upload) = UrlControlMode.Upload)
-                Me.UrlControl.ShowUsers = ((objUrl.FilterMode And UrlControlMode.Member) = UrlControlMode.Member)
-                Me.UrlControl.ShowTrack = ((objUrl.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
-                Me.UrlControl.ShowLog = ((objUrl.FilterMode And UrlControlMode.Log) = UrlControlMode.Log)
-                Me.UrlControl.ShowNewWindow = ((objUrl.FilterMode And UrlControlMode.NewWindow) = UrlControlMode.NewWindow)
-            End If
-
-
-            If Me.ParentAricieModule IsNot Nothing Then
-                Dim existingUrl As String = DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
-                If String.IsNullOrEmpty(existingUrl) Then
-                    Me.UrlControl.Url = Me.StringValue
-                Else
-                    DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = ""
-                End If
-            Else
-                'on est pas dans le cas d'un portalmodulebase(ex:settings)
-                Dim existingUrl As String = CStr(Me.ViewState(UrlStateKey))
-                If String.IsNullOrEmpty(existingUrl) Then
-                    Me.UrlControl.Url = Me.StringValue
-                Else
-                    Me.ViewState(UrlStateKey) = ""
-                End If
-            End If
-            'UrlControl.GetType().BaseType.GetField("_doReloadFiles", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
-            'UrlControl.GetType().BaseType.GetField("_doReloadFolders", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
-            Me.Controls.Add(Me.UrlControl)
-
-        End Sub
+        
 
         Protected Overrides Sub CreateChildControls()
             Try
@@ -191,48 +135,57 @@ Namespace UI.WebControls.EditControls
         End Sub
 
 
-        Protected Overrides Sub LoadControlState(ByVal savedState As Object)
-            MyBase.LoadControlState(savedState)
-        End Sub
+        'Protected Overrides Sub LoadControlState(ByVal savedState As Object)
+        '    MyBase.LoadControlState(savedState)
+        'End Sub
 
-        Protected Overrides Sub LoadViewState(ByVal savedState As Object)
-            MyBase.LoadViewState(savedState)
-        End Sub
+        'Protected Overrides Sub LoadViewState(ByVal savedState As Object)
+        '    MyBase.LoadViewState(savedState)
+        'End Sub
 
+        Public Property CurrentUrl As String
+            Get
+                Return DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
+            End Get
+            Set(value As String)
+                Me.Value = value
+                DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = value
+            End Set
+        End Property
 
         Public Property CurrentUrlType As String
             Get
-
+                Return DnnContext.Current.AdvancedClientVariable(Me, UrlTypeStateKey)
             End Get
             Set(value As String)
-
+                DnnContext.Current.AdvancedClientVariable(Me, UrlTypeStateKey) = value
             End Set
         End Property
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) _
           As Boolean
-
-            Dim currentUrl As String = Me.UrlControl.Url
-
+            Dim toReturn As Boolean = False
             'GetType(UrlControl).GetMethod("DoRenderTypes", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
             'GetType(UrlControl).GetMethod("DoRenderTypeControls", Reflection.BindingFlags.Instance Or Reflection.BindingFlags.NonPublic).Invoke(UrlControl, Nothing)
             Dim uid As String = UrlControl.UniqueID
             Dim postedUrlType As String = postCollection(uid & "$optType")
+
+
             If Not String.IsNullOrEmpty(postedUrlType) Then
+
+                CurrentUrlType = postedUrlType
                 UrlControl.UrlType = postedUrlType
+                Dim newValue As String = ""
                 If postedUrlType = "N" Then
-                    UrlControl.Url = ""
-                    Me.Value = ""
+                    newValue = ""
                 Else
                     Dim postedRawUrl As String = postCollection(uid & "$txtUrl")
                     If Not String.IsNullOrEmpty(postedRawUrl) AndAlso postedUrlType = "U" Then
-                        UrlControl.Url = postedRawUrl
-                        Me.Value = postedRawUrl
+                        newValue = postedRawUrl
                     Else
                         Dim postedTabId As String = postCollection(uid & "$cboTabs")
                         If Not String.IsNullOrEmpty(postedTabId) AndAlso postedUrlType = "T" Then
-                            UrlControl.Url = postedTabId
-                            Me.Value = postedTabId
+                            newValue = postedTabId
                         Else
                             Dim postedFileId As String = postCollection(uid & "$cboFiles")
                             If Not String.IsNullOrEmpty(postedFileId) AndAlso postedUrlType = "F" Then
@@ -245,31 +198,70 @@ Namespace UI.WebControls.EditControls
                                         If objFolder IsNot Nothing Then
                                             Dim objFiles As IEnumerable(Of FileInfo) = ObsoleteDNNProvider.Instance.GetFiles(objFolder)
                                             If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
-                                                Me.Value = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
-                                                UrlControl.Url = Me.Value.ToString
+                                                newValue = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
                                             Else
-                                                Me.Value = ""
-                                                UrlControl.Url = ""
+                                                newValue = ""
                                             End If
                                         End If
                                     End If
 
                                 Else
-                                    Me.Value = "FileID=" & postedFileId
-                                    UrlControl.Url = Me.Value.ToString
+                                    newValue = "FileID=" & postedFileId
                                 End If
                             End If
                         End If
                     End If
                 End If
+                If Me.CurrentUrl <> newValue Then
+                    Me.CurrentUrl = newValue
+                    toReturn = True
+                End If
             End If
 
 
-            Return True
+            Return toReturn
 
         End Function
 
+        Protected Overridable Sub ResolveEditControl()
 
+            Me.Controls.Clear()
+
+            Me.UrlControl = CType(Me.Page.LoadControl("~/controls/URLControl.ascx"), UrlControl)
+
+            Me.UrlControl.ID = Me.ID & "Edit"
+            If Not Me.Required Then
+                Me.UrlControl.ShowNone = True
+            End If
+            Me.UrlControl.ShowLog = False
+            Me.UrlControl.ShowTrack = False
+            If TypeOf Me.ParentField.DataSource Is ControlUrlInfo Then
+                Dim objUrl As ControlUrlInfo = DirectCast(Me.ParentField.DataSource, ControlUrlInfo)
+                'Me.UrlControl.ShowNone = ((objUrl.FilterMode And UrlControlMode.None) = UrlControlMode.None)
+                Me.UrlControl.ShowUrls = ((objUrl.FilterMode And UrlControlMode.Url) = UrlControlMode.Url)
+                Me.UrlControl.ShowTabs = ((objUrl.FilterMode And UrlControlMode.Tab) = UrlControlMode.Tab)
+                Me.UrlControl.ShowFiles = ((objUrl.FilterMode And UrlControlMode.File) = UrlControlMode.File)
+                Me.UrlControl.ShowSecure = ((objUrl.FilterMode And UrlControlMode.Secure) = UrlControlMode.Secure)
+                Me.UrlControl.ShowDatabase = ((objUrl.FilterMode And UrlControlMode.Database) = UrlControlMode.Database)
+                Me.UrlControl.ShowUpLoad = ((objUrl.FilterMode And UrlControlMode.Upload) = UrlControlMode.Upload)
+                Me.UrlControl.ShowUsers = ((objUrl.FilterMode And UrlControlMode.Member) = UrlControlMode.Member)
+                Me.UrlControl.ShowTrack = ((objUrl.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
+                Me.UrlControl.ShowLog = ((objUrl.FilterMode And UrlControlMode.Log) = UrlControlMode.Log)
+                Me.UrlControl.ShowNewWindow = ((objUrl.FilterMode And UrlControlMode.NewWindow) = UrlControlMode.NewWindow)
+            End If
+
+            If Not String.IsNullOrEmpty(CurrentUrlType) Then
+                Me.UrlControl.UrlType = CurrentUrlType
+            End If
+            If Not Me.CurrentUrl.IsNullOrEmpty() Then
+                Me.UrlControl.Url = Me.CurrentUrl
+            End If
+           
+            'UrlControl.GetType().BaseType.GetField("_doReloadFiles", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
+            'UrlControl.GetType().BaseType.GetField("_doReloadFolders", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
+            Me.Controls.Add(Me.UrlControl)
+
+        End Sub
 
     End Class
 
