@@ -47,7 +47,7 @@ Namespace Collections
                 typeNames = DirectCast(_SubTypesSerializer.Deserialize(reader), List(Of String))
 
                 Dim serializer As XmlSerializer
-                If typeNames IsNot Nothing Then
+                If typeNames IsNot Nothing AndAlso typeNames.Count > 0 Then
                     Dim types As List(Of Type) = (From strType In typeNames _
                              Select objType = ReflectionHelper.CreateType(ReflectionHelper.GetSafeTypeName(strType), False) _
                              Where objType IsNot Nothing).ToList()
