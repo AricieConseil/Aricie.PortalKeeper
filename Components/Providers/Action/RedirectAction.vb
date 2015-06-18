@@ -75,12 +75,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Function
 
-        Private Sub RedirectManually(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), target As String)
+        Private Sub RedirectManually(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), strTarget As String)
             If Me.AdditionalQuery.Instances.Count > 0 OrElse RemovedQuery.Count > 0 Then
-                Dim targetUri As Uri = New Uri(target)
-                target = targetUri.ModifyQueryString(Me.AdditionalQuery.EvaluateToNameValueCollection(actionContext, actionContext), RemovedQuery)
+                Dim targetUri As Uri = New Uri(strTarget)
+                strTarget = targetUri.ModifyQueryString(Me.AdditionalQuery.EvaluateToNameValueCollection(actionContext, actionContext), RemovedQuery)
             End If
-            actionContext.DnnContext.Response.Redirect(target, Me.EndResponse)
+            actionContext.DnnContext.Response.Redirect(strTarget, Me.EndResponse)
         End Sub
 
     End Class

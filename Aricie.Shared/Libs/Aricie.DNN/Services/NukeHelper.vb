@@ -1089,8 +1089,8 @@ Namespace Services
                 End If
 
             End If
-
-            Return LinkClick(toreturn, -1, -1, track)
+            Return ObsoleteDNNProvider.Instance.LinkClick(toreturn, -1, -1, track, False)
+            'Return LinkClick(toreturn, -1, -1, track)
 
         End Function
 
