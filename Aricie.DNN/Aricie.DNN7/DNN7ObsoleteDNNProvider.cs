@@ -4,7 +4,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using Aricie.DNN.Services;
+using DotNetNuke.Common;
 using DotNetNuke.ComponentModel;
+using DotNetNuke.Entities.Portals;
 using DotNetNuke.Services.FileSystem;
 using FileInfo = DotNetNuke.Services.FileSystem.FileInfo;
 using System.Collections;
@@ -127,6 +129,15 @@ namespace Aricie.DNN
             {
                 return false;
             }
+        }
+
+        public override string LinkClick(string link, int tabId, int moduleId, bool trackClicks, bool forceDownload)
+        {
+            PortalSettings currentPortalSettings = NukeHelper.PortalSettings;
+            int portalId = currentPortalSettings.PortalId;
+            bool enableUrlLanguage = currentPortalSettings.EnableUrlLanguage;
+            Guid gUID = currentPortalSettings.GUID;
+            return Globals.LinkClick(link, tabId, moduleId, trackClicks, forceDownload, portalId, enableUrlLanguage, gUID.ToString());
         }
 
     }

@@ -3,6 +3,7 @@ Imports System.Reflection
 Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Common.Utilities
 Imports System.IO
+Imports DotNetNuke.Entities.Portals
 
 Namespace Services
     Public Class ObsoleteDNNProvider
@@ -184,6 +185,34 @@ Namespace Services
 
         Public Overridable Function IsIndexingAllowedForModule(ByVal objModule As DotNetNuke.Entities.Modules.ModuleInfo) As Boolean
             Return True
+        End Function
+
+        Private _LinckClick8Parameters As MethodInfo
+        Private ReadOnly Property LinckClick8Parameters As MethodInfo
+            Get
+                If _LinckClick8Parameters Is Nothing Then
+                    Dim candidates As List(Of MemberInfo) = ReflectionHelper.GetFullMembersDictionary(GetType(PortalSettings))("LinkClick")
+                    For Each objCandidate As MemberInfo In candidates
+                        Dim candMethod As MethodInfo = DirectCast(objCandidate, MethodInfo)
+                        If candMethod.GetParameters().Count = 8 Then
+                            _LinckClick8Parameters = candMethod
+                        End If
+                    Next
+                End If
+                Return _LinckClick8Parameters
+            End Get
+        End Property
+
+        Public Overridable Function LinkClick(ByVal link As String, ByVal tabId As Integer, ByVal moduleId As Integer, ByVal trackClicks As Boolean, ByVal forceDownload As Boolean) As String
+            If NukeHelper.DnnVersion.Major < 6 Then
+                Return DotNetNuke.Common.Globals.LinkClick(link, tabId, moduleId, trackClicks, forceDownload)
+            Else
+                Dim currentPortalSettings As PortalSettings = NukeHelper.PortalSettings
+                Dim portalId As Integer = currentPortalSettings.PortalId
+                Dim enableUrlLanguage As Boolean = DirectCast(ReflectionHelper.GetPropertiesDictionary(Of PortalSettings)()("EnableUrlLanguage").GetValue(currentPortalSettings, Nothing), Boolean)
+                Dim gUID As System.Guid = currentPortalSettings.GUID
+                Return DirectCast(_LinckClick8Parameters.Invoke(currentPortalSettings, New Object() {link, tabId, moduleId, trackClicks, forceDownload, portalId, enableUrlLanguage, gUID.ToString()}), String)
+            End If
         End Function
 
 
