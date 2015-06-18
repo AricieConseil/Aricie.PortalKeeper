@@ -216,7 +216,13 @@ Namespace UI.WebControls.EditControls
                     Dim keyAddEntry As Object = entryKeyProp.GetValue(objAddEntry, Nothing)
                     If keyAddEntry IsNot Nothing AndAlso ReflectionHelper.IsSimpleType(keyAddEntry.GetType()) AndAlso Not keyAddEntry.ToString().IsNullOrEmpty() Then
                         Dim itemKeyProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(itemToAdd.GetType())("Key")
-                        itemKeyProp.SetValue(itemToAdd, keyAddEntry, Nothing)
+                        If itemKeyProp.CanWrite Then
+                            itemKeyProp.SetValue(itemToAdd, keyAddEntry, Nothing)
+                        Else
+                            Dim itemValueProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(itemToAdd.GetType())("Value")
+                            Dim itemValueEntry As Object = itemValueProp.GetValue(itemToAdd, Nothing)
+                            itemToAdd = Activator.CreateInstance(itemToAdd.GetType(), keyAddEntry, itemValueEntry)
+                        End If
                     End If
                 End If
                 Me.AddNewItem(itemToAdd)
