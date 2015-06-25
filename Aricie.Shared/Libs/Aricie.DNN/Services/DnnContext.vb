@@ -474,18 +474,26 @@ Namespace Services
         Public ReadOnly Property IPAddress() As IPAddress
             Get
                 If _IPAddress Is Nothing Then
-                    'todo: beware of the racing condition here (the request could be disposed during the parsing)
-                    If Me.Request IsNot Nothing AndAlso Not (Me.HttpContext.CurrentNotification >= RequestNotification.EndRequest AndAlso Me.HttpContext.IsPostNotification) Then
-                        IPAddress.TryParse(Common.GetExternalIPAddress(Me.Request), _IPAddress)
-                    Else
-                        For Each netif As NetworkInterface In NetworkInterface.GetAllNetworkInterfaces()
-                            Dim properties As IPInterfaceProperties = netif.GetIPProperties()
-                            For Each dns As IPAddress In properties.DnsAddresses
+                    Try
+                        'todo: beware of the racing condition here (the request could be disposed during the parsing)
+                        If Me.HttpContext IsNot Nothing _
+                                AndAlso Me.Request IsNot Nothing _
+                                AndAlso Not (Me.HttpContext.CurrentNotification >= RequestNotification.EndRequest _
+                                AndAlso Me.HttpContext.IsPostNotification) Then
+                            IPAddress.TryParse(Common.GetExternalIPAddress(Me.Request), _IPAddress)
+                        End If
+                    Catch ex As Exception
+                        ExceptionHelper.LogException(ex)
+                    Finally
+                        If _IPAddress Is Nothing Then
+                            Dim netif As NetworkInterface = NetworkInterface.GetAllNetworkInterfaces().First()
+                            If netif IsNot Nothing Then
+                                Dim properties As IPInterfaceProperties = netif.GetIPProperties()
+                                Dim dns As IPAddress = properties.DnsAddresses.First()
                                 _IPAddress = dns
-                                Return dns
-                            Next
-                        Next
-                    End If
+                            End If
+                        End If
+                    End Try
                 End If
                 Return _IPAddress
             End Get
