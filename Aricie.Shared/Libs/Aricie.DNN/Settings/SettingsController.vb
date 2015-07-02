@@ -1102,8 +1102,8 @@ Namespace Settings
                             Try
                                
                                 culture = DirectCast(GetPortalDefaultLanguageMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId}), String)
-                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, String.Empty})
-                                UpdatePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, value, True, culture})
+                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, culture})
+                                UpdatePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, value, True, String.Empty})
 
                             Catch ex As Exception
                                 NukeHelper.LogController.AddLog("UpdateSettingsDebug", String.Format("Erreur d'enregistrement des settings : ScopeId = {0} / key = {1} / value = {2} / culture = {3} //// Method : {4}", scopeId, key, value, culture, ex.Message), Nothing, -1, EventLogController.EventLogType.HOST_ALERT)
