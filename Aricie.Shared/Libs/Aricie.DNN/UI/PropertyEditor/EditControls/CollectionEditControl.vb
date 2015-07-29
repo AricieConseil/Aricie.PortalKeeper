@@ -1079,17 +1079,16 @@ Namespace UI.WebControls.EditControls
                         cmdAddButton.Visible = Not HideAddButton
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
+                        If Me.CollectionValue.Count > 0 Then
+                            cmdClearButton = New IconActionButton()
+                            pnAdd.Controls.Add(cmdClearButton)
+                            cmdClearButton.ActionItem.IconName = IconName.TrashO
+                            cmdClearButton.Text = "Clear " & Name
+                            cmdClearButton.ResourceKey = "ClearItems.Command"
+                            cmdClearButton.Visible = Not HideAddButton
+                            AddHandler cmdClearButton.Click, AddressOf ClearClick
+                        End If
 
-                        cmdClearButton = New IconActionButton()
-                        pnAdd.Controls.Add(cmdClearButton)
-                        cmdClearButton.ActionItem.IconName = IconName.TrashO
-                        cmdClearButton.Text = "Clear " & Name
-                        cmdClearButton.ResourceKey = "ClearItems.Command"
-                        cmdClearButton.Visible = Not HideAddButton
-                        AddHandler cmdClearButton.Click, AddressOf ClearClick
-
-
-                       
                     End If
 
 

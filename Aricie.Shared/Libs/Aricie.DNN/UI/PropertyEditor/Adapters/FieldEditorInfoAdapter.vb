@@ -1,6 +1,7 @@
 Imports DotNetNuke.UI.WebControls
 Imports System.Reflection
 Imports DotNetNuke.Entities.Users
+Imports Aricie.DNN.UI.WebControls.EditorInfos
 
 Namespace UI.WebControls
     Public Class FieldEditorInfoAdapter
@@ -38,7 +39,7 @@ Namespace UI.WebControls
 
         Private Overloads Function GetEditorInfo(ByVal objProperty As PropertyInfo) As EditorInfo
             If (Me._editInfo Is Nothing) Then
-                Me._editInfo = New EditorInfo
+                Me._editInfo = New AricieEditorInfo()
                 Me._editInfo.Name = objProperty.Name
                 Me._editInfo.Value = objProperty.GetValue(_dataSource, Nothing)
                 Me._editInfo.Type = objProperty.PropertyType.AssemblyQualifiedName

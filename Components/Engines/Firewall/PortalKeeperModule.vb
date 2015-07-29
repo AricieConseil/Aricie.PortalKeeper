@@ -117,6 +117,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
+
+        Private Shared _AdaptersRegistered As Boolean = False
+        Private Shared _RestServicesRegistered As Boolean = False
+
         Private Sub PreRequestHandlerExecute(ByVal s As Object, ByVal e As EventArgs)
 
             'Try
@@ -130,7 +134,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If context.CurrentHandler IsNot Nothing AndAlso TypeOf context.CurrentHandler Is Page Then
                 Dim objPage As Page = DirectCast(context.CurrentHandler, Page)
                 If keeperConfig.Enabled Then
-
                     AddHandler objPage.PreInit, AddressOf Me.Page_PreInit
                     AddHandler objPage.Init, AddressOf Me.Page_Init
                     AddHandler objPage.Load, AddressOf Me.Page_Load
@@ -138,7 +141,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
                 End If
                 If keeperContext.GlobalConfig.ControlAdapters.Enabled Then
-                    AddHandler objPage.PreInit, AddressOf Me.Page_PreInitAdapters
+                    If Not _AdaptersRegistered Then
+                        AddHandler objPage.PreInit, AddressOf Me.Page_PreInitAdapters
+                    End If
+                End If
+                
+            End If
+
+
+            If keeperContext.GlobalConfig.RestServices.Enabled Then
+                If Not _RestServicesRegistered Then
+                    SyncLock keeperContext.GlobalConfig.RestServices
+                        If Not _RestServicesRegistered Then
+                            keeperContext.GlobalConfig.RestServices.RegisteWebAPIServices()
+                            _RestServicesRegistered = True
+                        End If
+                    End SyncLock
                 End If
             End If
             
@@ -150,7 +168,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub Page_PreInitAdapters(ByVal sender As Object, ByVal args As EventArgs)
-            PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+            If Not _AdaptersRegistered Then
+                SyncLock PortalKeeperConfig.Instance.ControlAdapters
+                    If Not _AdaptersRegistered Then
+                        PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+                        _AdaptersRegistered = True
+                    End If
+                End SyncLock
+            End If
         End Sub
 
 

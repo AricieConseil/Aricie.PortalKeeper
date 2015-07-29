@@ -103,31 +103,31 @@ Namespace Services.Flee
 
         Private Shared ReadOnly _GenerictypeLessTypeDelegateVar As Type = GetType(DelegateVariableInfo(Of ))
 
-        <Category("")> _
-        Public Property ShowAvailableTypes() As Boolean
+        '<Category("")> _
+        'Public Property ShowAvailableTypes() As Boolean
 
-        <AutoPostBack()> _
-        <ConditionalVisible("ShowAvailableTypes", False, True)> _
-        Public Property AddDelegates As Boolean
+        '<AutoPostBack()> _
+        '<ConditionalVisible("ShowAvailableTypes", False, True)> _
+        'Public Property AddDelegates As Boolean
 
-        ''' <summary>
-        ''' Gets or sets expression types
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-        <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
-        <LabelMode(LabelMode.Top)> _
-        <ConditionalVisible("ShowAvailableTypes", False, True)> _
-        Public Property ExpressionTypes() As List(Of DotNetType)
-            Get
-                Return _ExpressionTypes
-            End Get
-            Set(ByVal value As List(Of DotNetType))
-                _ExpressionTypes = value
-            End Set
-        End Property
+        ' ''' <summary>
+        ' ''' Gets or sets expression types
+        ' ''' </summary>
+        ' ''' <value></value>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        '<Editor(GetType(ListEditControl), GetType(EditControl))> _
+        '<CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
+        '<LabelMode(LabelMode.Top)> _
+        '<ConditionalVisible("ShowAvailableTypes", False, True)> _
+        'Public Property ExpressionTypes() As List(Of DotNetType)
+        '    Get
+        '        Return _ExpressionTypes
+        '    End Get
+        '    Set(ByVal value As List(Of DotNetType))
+        '        _ExpressionTypes = value
+        '    End Set
+        'End Property
 
         ''' <summary>
         ''' Returns a list containing types String and boolean
@@ -143,24 +143,24 @@ Namespace Services.Flee
 
         Protected Overrides Function Genericize(simpleDotNetType As DotNetType) As Dictionary(Of String, DotNetType(Of VariableInfo))
             Dim toReturn As Dictionary(Of String, DotNetType(Of VariableInfo)) = MyBase.Genericize(simpleDotNetType)
-            If Me.AddDelegates Then
-                Dim simpleType As Type = simpleDotNetType.GetDotNetType()
-                If simpleType IsNot Nothing Then
-                    Dim toAddCtor As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeDelegateVar, simpleDotNetType)
-                    toReturn.Add(toAddCtor.Name, toAddCtor)
-                End If
-            End If
+            'If Me.AddDelegates Then
+            '    Dim simpleType As Type = simpleDotNetType.GetDotNetType()
+            '    If simpleType IsNot Nothing Then
+            '        Dim toAddCtor As New DotNetType(Of VariableInfo)(_GenerictypeLessTypeDelegateVar, simpleDotNetType)
+            '        toReturn.Add(toAddCtor.Name, toAddCtor)
+            '    End If
+            'End If
             Return toReturn
         End Function
 
-        <ConditionalVisible("ShowAvailableTypes", False, True)> _
-        <ActionButton("~/images/action_refresh.gif")> _
-        Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)
-            If pe IsNot Nothing Then
-                pe.ItemChanged = True
-                Me.ShowAvailableTypes = False
-            End If
-        End Sub
+        '<ConditionalVisible("ShowAvailableTypes", False, True)> _
+        '<ActionButton("~/images/action_refresh.gif")> _
+        'Public Sub ApplyUpdates(ByVal pe As AriciePropertyEditorControl)
+        '    If pe IsNot Nothing Then
+        '        pe.ItemChanged = True
+        '        'Me.ShowAvailableTypes = False
+        '    End If
+        'End Sub
 
     End Class
 

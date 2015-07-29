@@ -7,6 +7,8 @@ Namespace UI.Attributes
     Public Class ProvidersSelectorAttribute
         Inherits SelectorAttribute
 
+
+
         Public Sub New(nameFieldName As String, valueFieldName As String)
             MyBase.New(nameFieldName, valueFieldName, False, False, "", "", False, False)
         End Sub
@@ -80,6 +82,12 @@ Namespace UI.Attributes
             Me._SelectorInfo.IsIselector = True
         End Sub
 
+        Public Sub New(ByVal dataTextField As String, ByVal dataValueField As String, _
+                     ByVal exclusive As Boolean, ByVal addNullItem As Boolean, ByVal nullItemName As String, ByVal nullItemValue As String, ByVal localizeItems As Boolean, ByVal localizeNull As Boolean, ByVal localizeText As Boolean)
+            Me.New("", dataTextField, dataValueField, exclusive, addNullItem, nullItemName, nullItemValue, localizeItems, localizeNull)
+            Me._SelectorInfo.IsIselector = True
+            Me._SelectorInfo.LocalizeText = True
+        End Sub
 
 
 

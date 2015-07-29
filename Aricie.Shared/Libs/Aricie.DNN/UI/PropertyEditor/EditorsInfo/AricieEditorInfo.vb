@@ -1,4 +1,5 @@
 Imports DotNetNuke.UI.WebControls
+Imports Aricie.Services
 
 
 Namespace UI.WebControls.EditorInfos
@@ -35,6 +36,24 @@ Namespace UI.WebControls.EditorInfos
                 _length = value
             End Set
         End Property
+
+        Private _PropertyType As Type
+
+        Public Property PropertyType As Type
+            Get
+                If _PropertyType Is Nothing Then
+                    _PropertyType = ReflectionHelper.CreateType(Me.Type, True)
+                End If
+                Return _PropertyType
+            End Get
+            Set(value As Type)
+                _PropertyType = value
+                Me.Type = value.AssemblyQualifiedName
+            End Set
+        End Property
+           
+
+
     End Class
 End Namespace
 

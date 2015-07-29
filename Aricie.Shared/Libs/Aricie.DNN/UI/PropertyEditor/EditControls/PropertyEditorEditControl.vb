@@ -2,10 +2,17 @@
 Imports System.Web.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Security.Trial
+Imports Aricie.DNN.Services
 
 Namespace UI.WebControls.EditControls
+
+
+    
+
+
     Public Class PropertyEditorEditControl
         Inherits AricieEditControl
         Implements INamingContainer
@@ -17,6 +24,24 @@ Namespace UI.WebControls.EditControls
         Private _EnableExports As Nullable(Of Boolean)
 
         Private _ActionButton As ActionButtonInfo
+
+        Private Shared _Surrogates As New Dictionary(Of Type, IDynamicSurrogate)
+
+        Shared Sub New()
+            InitSurrogates()
+        End Sub
+
+
+        Private Shared Sub InitSurrogates()
+            _Surrogates.Add(GetType(Type), New DynamicSurrogate(Of Type, DotNetType) _
+                            With {.ConvertTo = (Function(objSource)
+                                                    Return New DotNetType(objSource)
+                                                End Function), _
+                                 .ConvertFrom = (Function(objSurrogate)
+                                                     Return objSurrogate.GetDotNetType()
+                                                 End Function)})
+        End Sub
+       
 
         Public ReadOnly Property InnerEditor() As PropertyEditorControl
             Get
@@ -31,14 +56,24 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub OnDataChanged(ByVal e As EventArgs)
+            Me.OnDataChanged()
+        End Sub
+
+        Private Overloads Sub OnDataChanged()
             'Me.EnsureChildControls()
             Dim args As New PropertyEditorEventArgs(Me.Name)
-            args.Value = Me._InnerEditor.DataSource
+            If _DynamicSurrogate IsNot Nothing Then
+                args.Value = _DynamicSurrogate.ConvertFromSurrogate(Me._InnerEditor.DataSource)
+            Else
+                args.Value = Me._InnerEditor.DataSource
+            End If
+
             args.OldValue = Me.OldValue
             'args.Changed = (Not args.Value Is args.OldValue)
             args.StringValue = Me.StringValue
             MyBase.OnValueChanged(args)
         End Sub
+
 
         Protected Overrides Sub OnAttributesChanged()
             If (CustomAttributes IsNot Nothing) Then
@@ -59,11 +94,17 @@ Namespace UI.WebControls.EditControls
         Protected Overridable Function GetNewEditor() As PropertyEditorControl
             Return New AriciePropertyEditorControl()
         End Function
-      
+
         Protected Overrides Sub CreateChildControls()
 
             Try
-                If Me.Value IsNot Nothing Then
+                For Each objSurrogatePair As KeyValuePair(Of Type, IDynamicSurrogate) In _Surrogates
+                    If (Me.Value IsNot Nothing AndAlso objSurrogatePair.Key.IsInstanceOfType(Me.Value)) _
+                        OrElse (Me.Value Is Nothing AndAlso objSurrogatePair.Key.IsAssignableFrom(Me.ParentAricieField.AricieEditorInfo.PropertyType)) Then
+                        _DynamicSurrogate = objSurrogatePair.Value
+                    End If
+                Next
+                If Me.Value IsNot Nothing OrElse _DynamicSurrogate IsNot Nothing Then
                     Me._InnerEditor = GetNewEditor()
                     If TypeOf Me._InnerEditor Is AriciePropertyEditorControl Then
                         Dim aEditor As AriciePropertyEditorControl = TryCast(Me._InnerEditor, AriciePropertyEditorControl)
@@ -100,7 +141,7 @@ Namespace UI.WebControls.EditControls
 
                         Dim ariciePropCt As AriciePropertyEditorControl = TryCast(_InnerEditor, AriciePropertyEditorControl)
                         If ariciePropCt IsNot Nothing Then
-                            If (Not ariciePropCt Is Nothing) Then
+                            If (ariciePropCt IsNot Nothing) Then
                                 If (ariciePropCt.PropertyDepth Mod 2 = 0) Then
                                     strCssClass = "even"
                                 End If
@@ -162,7 +203,7 @@ Namespace UI.WebControls.EditControls
 
 
 
-                    AddHandler Me._InnerEditor.ItemCreated, AddressOf Me.InnerEditor_ItemCreatedEventHandler
+                    'AddHandler Me._InnerEditor.ItemCreated, AddressOf Me.InnerEditor_ItemCreatedEventHandler
 
 
 
@@ -182,36 +223,52 @@ Namespace UI.WebControls.EditControls
 
         End Sub
 
-        Private Sub InnerEditor_ItemCreatedEventHandler(ByVal sender As Object, ByVal e As PropertyEditorItemEventArgs)
+        'Private Sub InnerEditor_ItemCreatedEventHandler(ByVal sender As Object, ByVal e As PropertyEditorItemEventArgs)
 
-            'Me.ParentField.
-            Me.OnItemChanged(sender, New PropertyEditorEventArgs(e.Editor.Name))
+        '    'Me.ParentField.
+        '    Me.OnItemChanged(sender, New PropertyEditorEventArgs(e.Editor.Name))
 
-        End Sub
+        'End Sub
+
+        Private _DynamicSurrogate As IDynamicSurrogate
 
         Public Overrides Sub DataBind()
-
-            If Me.Value IsNot Nothing Then
-                If TypeOf _InnerEditor Is AriciePropertyEditorControl AndAlso DirectCast(_InnerEditor, AriciePropertyEditorControl).PropertyDepth < 10 Then
-                    Me._InnerEditor.DataSource = Me.Value
-                    Me._InnerEditor.DataBind()
-                End If
-                'AddHandler _InnerEditor.ItemCreated, New EditorCreatedEventHandler(AddressOf Me.EditorItemCreated)
-                'MyBase.DataBind()
+            Dim objValue As Object
+            If _DynamicSurrogate IsNot Nothing Then
+                objValue = _DynamicSurrogate.ConvertToSurrogate(Me.Value)
+            Else
+                objValue = Me.Value
             End If
+            If objValue IsNot Nothing Then
 
+                If Not ParentAricieEditor.BoundEntities.Contains(objValue) Then
+                    If TypeOf _InnerEditor Is AriciePropertyEditorControl AndAlso DirectCast(_InnerEditor, AriciePropertyEditorControl).PropertyDepth < 10 Then
+                        Me._InnerEditor.DataSource = objValue
+                        Me._InnerEditor.DataBind()
+                        'AddHandler _InnerEditor.ItemCreated, New EditorCreatedEventHandler(AddressOf Me.EditorItemCreated)
+                        'MyBase.DataBind()
+                    End If
+                    If Me.Value IsNot Nothing Then
+                        Me.ParentAricieEditor.BoundEntities.Add(objValue)
+                    End If
+                End If
+            End If
         End Sub
 
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As System.Collections.Specialized.NameValueCollection) As Boolean
-            Return False
+            Return _DynamicSurrogate IsNot Nothing
         End Function
 
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
+            If Me._DynamicSurrogate IsNot Nothing Then
+                Me.OnDataChanged()
+
+            End If
             MyBase.OnPreRender(e)
 
-            If Not Page Is Nothing And Me.EditMode = PropertyEditorMode.Edit Then
+            If (Page IsNot Nothing) AndAlso Me.EditMode = PropertyEditorMode.Edit Then
                 Me.Page.RegisterRequiresPostBack(Me)
             End If
         End Sub
@@ -222,8 +279,9 @@ Namespace UI.WebControls.EditControls
         Public Overrides Sub EnforceTrialMode(ByVal mode As TrialPropertyMode)
             MyBase.EnforceTrialMode(mode)
             For Each subField As AricieFieldEditorControl In Me.InnerEditor.Fields
-                If TypeOf subField.Editor Is Aricie.DNN.UI.WebControls.EditControls.CollectionEditControl Then
-                    DirectCast(subField.Editor, CollectionEditControl).EnforceTrialMode(mode)
+                Dim collectionEditControl = TryCast(subField.Editor, CollectionEditControl)
+                If (collectionEditControl IsNot Nothing) Then
+                    collectionEditControl.EnforceTrialMode(mode)
                 End If
             Next
         End Sub

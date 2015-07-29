@@ -125,7 +125,7 @@ Namespace UI.WebControls
         End Function
 
         Public Function GetCloneEditor(ByVal previousEditor As EditorInfo, ByVal objValue As Object) As EditorInfo
-            Dim toReturn As New EditorInfo
+            Dim toReturn As New AricieEditorInfo()
             toReturn.Name = previousEditor.Name
             toReturn.Type = previousEditor.Type
             toReturn.Attributes = previousEditor.Attributes
@@ -185,7 +185,7 @@ Namespace UI.WebControls
             
 
             'Get the type of the property
-            editInfo.Type = _CurrentProperty.PropertyType().AssemblyQualifiedName
+            editInfo.PropertyType = _CurrentProperty.PropertyType
 
             'Get the Custom Attributes for the property
             Dim attrList As New List(Of Object)(ReflectionHelper.GetCustomAttributes(_CurrentProperty))

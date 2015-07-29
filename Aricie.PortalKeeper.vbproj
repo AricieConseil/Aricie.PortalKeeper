@@ -41,7 +41,7 @@
     <NoWarn>42353,42354,42355</NoWarn>
     <WarningsAsErrors>41999,42016,42017,42018,42019,42020,42021,42022,42032,42036</WarningsAsErrors>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-	<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -177,6 +177,8 @@
     <Compile Include="Components\Core\DumpSettings.vb" />
     <Compile Include="Components\Core\KeeperObjectAction.vb" />
     <Compile Include="Components\Core\LoggingLevel.vb" />
+    <Compile Include="Components\Core\RuleEngineMode.vb" />
+    <Compile Include="Components\Core\SimpleRuleEngine.vb" />
     <Compile Include="Components\Engines\ControlAdapters\DynamicControlAdapter.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdaptersConfig.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdapterSettings.vb" />
@@ -189,6 +191,18 @@
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlersConfig.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlerSettings.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpSubHandlerSettings.vb" />
+    <Compile Include="Components\Engines\RestServices\ControllerAttributes.vb" />
+    <Compile Include="Components\Engines\RestServices\CreateHttpResponseInfo.vb" />
+    <Compile Include="Components\Engines\RestServices\DNNRouteInfo.vb" />
+    <Compile Include="Components\Engines\RestServices\DumbPropertyDescriptor.vb" />
+    <Compile Include="Components\Engines\RestServices\DynamicAction.vb" />
+    <Compile Include="Components\Engines\RestServices\DynamicControllerInfo.vb" />
+    <Compile Include="Components\Engines\RestServices\DynamicRoute.vb" />
+    <Compile Include="Components\Engines\RestServices\DynamicWebAPIAttributes.vb" />
+    <Compile Include="Components\Engines\RestServices\HttpResponseMode.vb" />
+    <Compile Include="Components\Engines\RestServices\MediaTypeFormatterInfo.vb" />
+    <Compile Include="Components\Engines\RestServices\MediaTypeHeaderInfo.vb" />
+    <Compile Include="Components\Services\ObsoleteDotNetProvider.vb" />
     <Compile Include="Components\Engines\Scheduler\UserBotStorage.vb" />
     <Compile Include="Components\Engines\Scheduler\UserParameterWrapper.vb" />
     <Compile Include="Components\Providers\Action\DefineVariableActionProvider.vb" />
@@ -207,10 +221,12 @@
     <Compile Include="Components\Providers\Action\ProfileLoadActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileSaveActionProvider.vb" />
     <Compile Include="Components\Providers\Action\ProfileType.vb" />
-    <Compile Include="Components\Engines\RestServices\DynamicRestMethod.vb" />
+    <Compile Include="Components\Engines\RestServices\DynamicParameter.vb" />
     <Compile Include="Components\Engines\RestServices\OperationResultType.vb" />
     <Compile Include="Components\Engines\RestServices\RestHandlerType.vb" />
     <Compile Include="Components\Providers\Action\RunPython.vb" />
+    <Compile Include="Components\Services\IronPython\ExtendedHtmlScrap.vb" />
+    <Compile Include="Components\Services\IronPython\ExtendedHtmlScraps.vb" />
     <Compile Include="Components\Services\IronPython\IronPython.vb" />
     <Compile Include="Components\Services\IronPython\IronPythonScriptHost.vb" />
     <Compile Include="Components\Services\IronPython\ScriptBase.vb" />

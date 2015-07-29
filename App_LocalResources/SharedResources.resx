@@ -4278,7 +4278,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="RestServicesSettings_EnableOpenRastaLogger.Text" xml:space="preserve">
     <value>Enable OpenRasta Logger</value>
   </data>
-  <data name="RestServicesSettings_Services.Text" xml:space="preserve">
+  <data name="RestServicesSettings_RestServices.Text" xml:space="preserve">
     <value>List of REST Services</value>
   </data>
   <data name="RestService_AlternateUris.Text" xml:space="preserve">
@@ -9568,5 +9568,302 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="ModuleConfig`2_ClearSingleton.Text" xml:space="preserve">
     <value>Reload Configuration</value>
+  </data>
+  <data name="Accepted.Text" xml:space="preserve">
+    <value>202 - Accepted</value>
+  </data>
+  <data name="ActionNotFound.Message" xml:space="preserve">
+    <value>Action not found at url:{0}  for dynamic controller {1} and action name {2}</value>
+  </data>
+  <data name="BadGateway.Text" xml:space="preserve">
+    <value>502 - Bad Gateway</value>
+  </data>
+  <data name="BadRequest.Text" xml:space="preserve">
+    <value>400 - Bad Request</value>
+  </data>
+  <data name="Conflict.Text" xml:space="preserve">
+    <value>409 - Conflict</value>
+  </data>
+  <data name="Continue.Text" xml:space="preserve">
+    <value>100 - Continue</value>
+  </data>
+  <data name="Created.Text" xml:space="preserve">
+    <value>201 - Created</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomFormatter.Help" xml:space="preserve">
+    <value>The formatter is normally automatically negociated according to the request headers and return object type, but you can also specify a formatter here</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomFormatter.Text" xml:space="preserve">
+    <value>Define Media Type Formatter</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomMediaType.Help" xml:space="preserve">
+    <value>The media type header is normally automatically negociated according to request headers and return object type, but you can also specify a Media type header.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomMediaType.Text" xml:space="preserve">
+    <value>Define Media Type Header</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomObject.Help" xml:space="preserve">
+    <value>Define a list of typed properties, to be compiled into a dynamic type and evaluated to the corresponding custom object. A content negociator will then figure out how to serialize and include the object within the Http Response.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomObject.Text" xml:space="preserve">
+    <value>Custom Properties</value>
+  </data>
+  <data name="CreateHttpResponseInfo_ResponseMode.Help" xml:space="preserve">
+    <value>Select whether to return no content object, a single typed object, or a custom anonymous object made from dynamic properties</value>
+  </data>
+  <data name="CreateHttpResponseInfo_ResponseMode.Text" xml:space="preserve">
+    <value>Return Type</value>
+  </data>
+  <data name="CreateHttpResponseInfo_StatusCode.Help" xml:space="preserve">
+    <value>Select the Http Status code to return as part of the Http Response message.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_StatusCode.Text" xml:space="preserve">
+    <value>Http Status Code</value>
+  </data>
+  <data name="CreateHttpResponseInfo_TypedReturn.Help" xml:space="preserve">
+    <value>Define here the default object to be included within your response. A content negociator will be used to determine how to serialize and include the return object.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_TypedReturn.Text" xml:space="preserve">
+    <value>Typed Return</value>
+  </data>
+  <data name="CustomObject.Text" xml:space="preserve">
+    <value>Custom Object</value>
+  </data>
+  <data name="DNNRouteInfo_FolderName.Help" xml:space="preserve">
+    <value>This is the folder name for the real or virtual extension this service is based on.</value>
+  </data>
+  <data name="DNNRouteInfo_FolderName.Text" xml:space="preserve">
+    <value>Folder Name</value>
+  </data>
+  <data name="DNNRouteInfo_Namespaces.Text" xml:space="preserve">
+    <value>Namespaces</value>
+  </data>
+  <data name="DynamicAction_DefaultResponse.Help" xml:space="preserve">
+    <value>Check to define a default response to be returned when no specific response was returned within the action flow.</value>
+  </data>
+  <data name="DynamicAction_DefaultResponse.Text" xml:space="preserve">
+    <value>Default Response</value>
+  </data>
+  <data name="DynamicAction_EnforceActionName.Help" xml:space="preserve">
+    <value>Check if you want your action to be triggered only by providing the corresponding name in a route parameter.</value>
+  </data>
+  <data name="DynamicAction_EnforceActionName.Text" xml:space="preserve">
+    <value>Enforce action name</value>
+  </data>
+  <data name="DynamicAction_HttpVerbs.Help" xml:space="preserve">
+    <value>This is a list of supported Http Verbs</value>
+  </data>
+  <data name="DynamicAction_HttpVerbs.Text" xml:space="preserve">
+    <value>Http Verbs</value>
+  </data>
+  <data name="DynamicAction_Parameters.Help" xml:space="preserve">
+    <value>Enter a list of input parameters to your action. As with regular .Net controller method arguments, the web API pipeline will try to bind those parameters to request data. Those parameters will be included in the agent context, and available for use within your actions to be executed.</value>
+  </data>
+  <data name="DynamicAction_Parameters.Text" xml:space="preserve">
+    <value>Dynamic Parameters</value>
+  </data>
+  <data name="DynamicAction_WebAction.Header" xml:space="preserve">
+    <value>Web Method</value>
+  </data>
+  <data name="DynamicControllerInfo_DynamicActions.Help" xml:space="preserve">
+    <value>Dynamic Actions are online agents replacing traditional controller methods. Declare their parameters according to your routes.</value>
+  </data>
+  <data name="DynamicControllerInfo_DynamicActions.Text" xml:space="preserve">
+    <value>Dynamic Actions</value>
+  </data>
+  <data name="DynamicParameter_DotNetType.Help" xml:space="preserve">
+    <value>This is the expected type for your dynamic parameter. Web API will try to bind it to a simple or compound request input.</value>
+  </data>
+  <data name="DynamicParameter_DotNetType.Text" xml:space="preserve">
+    <value>.Net Type</value>
+  </data>
+  <data name="DynamicParameter_IsOptional.Help" xml:space="preserve">
+    <value>Check if the parameter is to be declared as optional within the parent Web API action.</value>
+  </data>
+  <data name="DynamicParameter_IsOptional.Text" xml:space="preserve">
+    <value>Optional</value>
+  </data>
+  <data name="DynamicRoute_DNNRoute.Help" xml:space="preserve">
+    <value>You can optionnally declare a route the DNN way by providing a module folder and target namespaces.</value>
+  </data>
+  <data name="DynamicRoute_DNNRoute.Text" xml:space="preserve">
+    <value>Make DNN Route</value>
+  </data>
+  <data name="DynamicRoute_Template.Help" xml:space="preserve">
+    <value>This is the url pattern your service will respond to. For more information on how to build Web API routes, refer to the &lt;a href="http://www.asp.net/web-api/overview/web-api-routing-and-actions/routing-in-aspnet-web-api"&gt;following documentation&lt;/a&gt;.</value>
+  </data>
+  <data name="DynamicRoute_Template.Text" xml:space="preserve">
+    <value>Template</value>
+  </data>
+  <data name="ExpectationFailed.Text" xml:space="preserve">
+    <value>417 - Expectation Failed</value>
+  </data>
+  <data name="Forbidden.Text" xml:space="preserve">
+    <value>403 - Forbidden</value>
+  </data>
+  <data name="GatewayTimeout.Text" xml:space="preserve">
+    <value>504 - Gateway Timeout</value>
+  </data>
+  <data name="Gone.Text" xml:space="preserve">
+    <value>410 - Gone</value>
+  </data>
+  <data name="HttpVersionNotSupported.Text" xml:space="preserve">
+    <value>505 - Http Version Not Supported</value>
+  </data>
+  <data name="InternalServerError.Text" xml:space="preserve">
+    <value>500 - Internal Server Error</value>
+  </data>
+  <data name="KnownFormatter.NullSelect" xml:space="preserve">
+    <value>Custom Formatter Expression</value>
+  </data>
+  <data name="KnownHeader.NullSelect" xml:space="preserve">
+    <value>Custom Media Type Header</value>
+  </data>
+  <data name="LengthRequired.Text" xml:space="preserve">
+    <value>411 - Length Required</value>
+  </data>
+  <data name="MediaTypeFormatterInfo_FormatterExpression.Help" xml:space="preserve">
+    <value>Enter an expression that resolves to a MediaTypeFormatter object.</value>
+  </data>
+  <data name="MediaTypeFormatterInfo_FormatterExpression.Text" xml:space="preserve">
+    <value>Formatter Expression</value>
+  </data>
+  <data name="MediaTypeFormatterInfo_KnownFormatter.Help" xml:space="preserve">
+    <value>Select a formatter from those available in the configuration or specify a custom formatter through a dedicated dynamic expression.</value>
+  </data>
+  <data name="MediaTypeFormatterInfo_KnownFormatter.Text" xml:space="preserve">
+    <value>Media Type Formatter</value>
+  </data>
+  <data name="MediaTypeHeaderInfo_CustomHeader.Help" xml:space="preserve">
+    <value>Enter a string or an expression that evaluates to a string to define the media type header to write in the response header.</value>
+  </data>
+  <data name="MediaTypeHeaderInfo_CustomHeader.Text" xml:space="preserve">
+    <value>Custom Media Type Header</value>
+  </data>
+  <data name="MediaTypeHeaderInfo_KnownHeader.Help" xml:space="preserve">
+    <value>Select a media type from those supported by the formatters declared globally, or specify a custom media type manually.</value>
+  </data>
+  <data name="MediaTypeHeaderInfo_KnownHeader.Text" xml:space="preserve">
+    <value>Media Type Header</value>
+  </data>
+  <data name="MethodNotAllowed.Text" xml:space="preserve">
+    <value>405 - Method Not Allowed</value>
+  </data>
+  <data name="MovedPermanently.Text" xml:space="preserve">
+    <value>301 - Moved Permanently</value>
+  </data>
+  <data name="MultipleChoices.Text" xml:space="preserve">
+    <value>300 - Multiple Choices</value>
+  </data>
+  <data name="NoContent.Text" xml:space="preserve">
+    <value>204 - No Content</value>
+  </data>
+  <data name="NonAuthoritativeInformation.Text" xml:space="preserve">
+    <value>203 - Non Authorative Information</value>
+  </data>
+  <data name="NotAcceptable.Text" xml:space="preserve">
+    <value>406 - Not Acceptable</value>
+  </data>
+  <data name="NotFound.Text" xml:space="preserve">
+    <value>404 - Not Found</value>
+  </data>
+  <data name="NotImplemented.Text" xml:space="preserve">
+    <value>501 - Not Implemented</value>
+  </data>
+  <data name="NotModified.Text" xml:space="preserve">
+    <value>304 - Not Modified</value>
+  </data>
+  <data name="OK.Text" xml:space="preserve">
+    <value>200 - OK</value>
+  </data>
+  <data name="PartialContent.Text" xml:space="preserve">
+    <value>206 - Partial Content</value>
+  </data>
+  <data name="PaymentRequired.Text" xml:space="preserve">
+    <value>402 - Payment Required</value>
+  </data>
+  <data name="PreconditionFailed.Text" xml:space="preserve">
+    <value>412 - Precondition Failed</value>
+  </data>
+  <data name="ProxyAuthenticationRequired.Text" xml:space="preserve">
+    <value>407 - Proxy Authentication Required</value>
+  </data>
+  <data name="Redirect.Text" xml:space="preserve">
+    <value>302 - Redirect</value>
+  </data>
+  <data name="RequestedRangeNotSatisfiable.Text" xml:space="preserve">
+    <value>416 - Requested Range Not Satisfiable</value>
+  </data>
+  <data name="RequestEntityTooLarge.Text" xml:space="preserve">
+    <value>413 - Request Entity Too Large</value>
+  </data>
+  <data name="RequestTimeout.Text" xml:space="preserve">
+    <value>408 - Request Timeout</value>
+  </data>
+  <data name="RequestUriTooLong.Text" xml:space="preserve">
+    <value>414 - Request Uri Too Long</value>
+  </data>
+  <data name="ResetContent.Text" xml:space="preserve">
+    <value>205 - Reset Content</value>
+  </data>
+  <data name="RestServicesSettings_DNNServicesAvailable.Help" xml:space="preserve">
+    <value>Indicates if the Web API based dedicated DNN layer is available, which is required to host dynamic Rest services.</value>
+  </data>
+  <data name="RestServicesSettings_DNNServicesAvailable.Text" xml:space="preserve">
+    <value>DNN Service Framework available</value>
+  </data>
+  <data name="RestServicesSettings_RestServices.Help" xml:space="preserve">
+    <value>This is a list of dynamically declared Rest Services bound to typed or dynamic controllers.</value>
+  </data>
+  <data name="RestService_DynamicControllers.Help" xml:space="preserve">
+    <value>In addition to the regular Web API or DNN specific controllers, which you can still use thanks to dependency injection, you can build dynamic controllers with agent based actions.</value>
+  </data>
+  <data name="RestService_DynamicControllers.Text" xml:space="preserve">
+    <value>Dynamic Controllers</value>
+  </data>
+  <data name="RestService_GlobalParameters.Help" xml:space="preserve">
+    <value>Global parameters can be shared amongst all dynamic methods' rule engine, within each of your dynamic controllers.</value>
+  </data>
+  <data name="RestService_GlobalParameters.Text" xml:space="preserve">
+    <value>Global Parameters</value>
+  </data>
+  <data name="RestService_Routes.Help" xml:space="preserve">
+    <value>Enter here the Url patterns that your service should answer to. Use curling braces for dynamic parameters, while making sure they correspond to the dynamic actions' parameters</value>
+  </data>
+  <data name="RestService_Routes.Text" xml:space="preserve">
+    <value>Url Routes</value>
+  </data>
+  <data name="SeeOther.Text" xml:space="preserve">
+    <value>303 - See Other</value>
+  </data>
+  <data name="ServiceUnavailable.Text" xml:space="preserve">
+    <value>503 - Service Unavailable</value>
+  </data>
+  <data name="StatusOnly.Text" xml:space="preserve">
+    <value>Status Only</value>
+  </data>
+  <data name="SwitchingProtocols.Text" xml:space="preserve">
+    <value>101 - Switching Protocols</value>
+  </data>
+  <data name="TemporaryRedirect.Text" xml:space="preserve">
+    <value>307 - Temporary Redirect</value>
+  </data>
+  <data name="TypedReturn.Text" xml:space="preserve">
+    <value>Typed Return</value>
+  </data>
+  <data name="Unauthorized.Text" xml:space="preserve">
+    <value>401 - Unauthorized</value>
+  </data>
+  <data name="UnsupportedMediaType.Text" xml:space="preserve">
+    <value>415 - Unsupported Media Type</value>
+  </data>
+  <data name="Unused.Text" xml:space="preserve">
+    <value>306 - Unused</value>
+  </data>
+  <data name="UpgradeRequired.Text" xml:space="preserve">
+    <value>426 - Upgrade Required</value>
+  </data>
+  <data name="UseProxy.Text" xml:space="preserve">
+    <value>305 -  Use Proxy</value>
   </data>
 </root>

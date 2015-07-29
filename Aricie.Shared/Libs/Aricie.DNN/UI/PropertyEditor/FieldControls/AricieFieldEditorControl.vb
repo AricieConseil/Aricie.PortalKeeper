@@ -1,5 +1,6 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
+Imports Aricie.DNN.UI.WebControls.EditorInfos
 Imports Microsoft.VisualBasic.CompilerServices
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
@@ -79,6 +80,14 @@ Public Class AricieFieldEditorControl
     'Public Sub OnItemChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
     '    'Me.ListItemChanged(sender, )
     'End Sub
+    Public Property EditorInfo As EditorInfo
+
+    Public ReadOnly Property AricieEditorInfo As AricieEditorInfo
+        Get
+            Return DirectCast(Me.EditorInfo, AricieEditorInfo)
+        End Get
+    End Property
+
 
     Public Overloads ReadOnly Property Editor() As EditControl
         Get
@@ -146,7 +155,7 @@ Public Class AricieFieldEditorControl
             MyBase.CreateEditor()
 
         Else
-            Dim objEditor As EditorInfo = Me.EditorInfoAdapter.CreateEditControl
+            Dim objEditor As EditorInfo = Me.EditorInfoAdapter.CreateEditControl()
 
             If (objEditor.EditMode = PropertyEditorMode.Edit) Then
                 objEditor.EditMode = Me.EditMode
@@ -177,13 +186,10 @@ Public Class AricieFieldEditorControl
                 End If
 
             Next
-
-            Me.BuildLtDiv(objEditor)
-
-
+            Me.EditorInfo = objEditor
+            Me.BuildLtDiv()
 
         End If
-
 
 
     End Sub
@@ -304,7 +310,8 @@ Public Class AricieFieldEditorControl
 
                     Else
 
-                        If editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
+                        'If editorInfo.Value IsNot Nothing AndAlso ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
+                        If ReflectionHelper.IsTrueReferenceType(objType) OrElse Not objType.Namespace.StartsWith("System") Then
                             If objType.GetInterface("ICollection") IsNot Nothing Then
                                 editorInfo.LabelMode = LabelMode.Top
                                 If objType.GetInterface("IDictionary") IsNot Nothing Then
@@ -322,6 +329,7 @@ Public Class AricieFieldEditorControl
                                 ctc.LineCount = RestrictedLineCount(strValue, 3, 200)
                                 objEditControl = ctc
                             Else
+
                                 editorInfo.LabelMode = LabelMode.Top
                                 objEditControl = New PropertyEditorEditControl()
                             End If
@@ -422,7 +430,7 @@ Public Class AricieFieldEditorControl
 
 #Region "private Methods"
 
-    Private Sub BuildLtDiv(ByVal editInfo As EditorInfo)
+    Private Sub BuildLtDiv()
 
         Dim label As PropertyLabelControl = Nothing
 
@@ -432,27 +440,27 @@ Public Class AricieFieldEditorControl
         '    control.Attributes.Add("style", str3)
         'End If
 
-        Dim ctlEditControl As EditControl = Me.BuildEditor(editInfo, Nothing)
+        Dim ctlEditControl As EditControl = Me.BuildEditor(Me.EditorInfo, Nothing)
         'Me._Editor = ctlEditControl
 
 
-        If editInfo.LabelMode = LabelMode.Top OrElse editInfo.LabelMode = LabelMode.Bottom OrElse editInfo.LabelMode = LabelMode.None Then
+        If Me.EditorInfo.LabelMode = LabelMode.Top OrElse Me.EditorInfo.LabelMode = LabelMode.Bottom OrElse Me.EditorInfo.LabelMode = LabelMode.None Then
             Me._FullWidth = True
         End If
 
-        If (editInfo.LabelMode <> LabelMode.None) Then
-            label = Me.BuildLtLabel(editInfo)
+        If (Me.EditorInfo.LabelMode <> LabelMode.None) Then
+            label = Me.BuildLtLabel(Me.EditorInfo)
             label.EditControl = ctlEditControl
         End If
         Dim divEditControl As New HtmlGenericControl("div")
 
-        Dim ctlVisibility As VisibilityControl = Me.BuildVisibility(editInfo)
+        Dim ctlVisibility As VisibilityControl = Me.BuildVisibility(Me.EditorInfo)
         If (ctlVisibility IsNot Nothing) Then
             ctlVisibility.Attributes.Add("class", "ctRight")
             divEditControl.Controls.Add(ctlVisibility)
         End If
         divEditControl.Controls.Add(ctlEditControl)
-        Dim image As Image = Me.BuildRequiredIcon(editInfo)
+        Dim image As Image = Me.BuildRequiredIcon(Me.EditorInfo)
         If (image IsNot Nothing) Then
             divEditControl.Controls.Add(image)
         End If
@@ -471,11 +479,11 @@ Public Class AricieFieldEditorControl
 
 
             If label IsNot Nothing Then
-                If (editInfo.LabelMode <> LabelMode.None) Then
+                If (Me.EditorInfo.LabelMode <> LabelMode.None) Then
                     divLabel = New HtmlGenericControl("div")
                     divLabel.EnableViewState = False
 
-                    Select Case editInfo.LabelMode
+                    Select Case Me.EditorInfo.LabelMode
                         Case LabelMode.Left
                             divLabel.Attributes.Add("class", "ctLeft")
                         Case LabelMode.Right
@@ -485,19 +493,19 @@ Public Class AricieFieldEditorControl
 
 
                     '  Dim str2 As String = ("float: " & editInfo.LabelMode.ToString.ToLower)
-                    If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
+                    If ((Me.EditorInfo.LabelMode = LabelMode.Left) Or (Me.EditorInfo.LabelMode = LabelMode.Right)) AndAlso Me.LabelWidth <> Unit.Empty Then
                         'str2 = (str2 & "; width: " & Me.LabelWidth.ToString)
                         divLabel.Attributes.Add("style", String.Format("width:{0}", Me.LabelWidth.ToString))
                     End If
 
-                    label = Me.BuildLtLabel(editInfo)
+                    label = Me.BuildLtLabel(Me.EditorInfo)
                 End If
 
 
                 divLabel.Controls.Add(label)
             End If
 
-            If ((editInfo.LabelMode = LabelMode.Left) Or (editInfo.LabelMode = LabelMode.Top)) Then
+            If ((Me.EditorInfo.LabelMode = LabelMode.Left) Or (Me.EditorInfo.LabelMode = LabelMode.Top)) Then
                 Me.Controls.Add(divLabel)
                 Me.Controls.Add(divEditControl)
             Else

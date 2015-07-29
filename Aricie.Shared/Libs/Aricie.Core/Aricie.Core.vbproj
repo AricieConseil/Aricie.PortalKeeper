@@ -121,7 +121,9 @@
     <Compile Include="Components\CompareIPs.vb" />
     <Compile Include="Components\ComponentModel\CData.vb" />
     <Compile Include="Components\ComponentModel\DateHelper.vb" />
+    <Compile Include="Components\ComponentModel\DynamicSurrogate.vb" />
     <Compile Include="Components\ComponentModel\IChildEntity.vb" />
+    <Compile Include="Components\ComponentModel\IDynamicSurrogate.vb" />
     <Compile Include="Components\ComponentModel\IEncrypter.vb" />
     <Compile Include="Components\ComponentModel\IMergeable.vb" />
     <Compile Include="Components\ComponentModel\ISimpleEntity.vb" />
@@ -168,6 +170,7 @@
     <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Components\Services\ExceptionHelper.vb" />
     <Compile Include="Components\Services\FileHelper.vb" />
+    <Compile Include="Components\Services\TypeMerger.vb" />
     <Compile Include="Components\UriExtensions.vb" />
     <Compile Include="Components\STimeSpan.vb" />
     <Compile Include="Components\Text\SimpleEncoding.vb" />

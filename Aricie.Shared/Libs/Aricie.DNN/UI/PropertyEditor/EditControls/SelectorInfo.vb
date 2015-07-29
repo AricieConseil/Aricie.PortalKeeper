@@ -93,6 +93,8 @@ Namespace UI.WebControls.EditControls
             End Set
         End Property
 
+        Public Property LocalizeText As Boolean
+
         Public Property LocalizeNull() As Boolean
             Get
                 Return _LocalizeNull

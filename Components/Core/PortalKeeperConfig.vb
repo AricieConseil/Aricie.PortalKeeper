@@ -51,8 +51,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case GetType(ScheduleEvent).Name
                     toReturn.AddRange(From objBot In Me.SchedulerFarm.Bots.Instances Select DirectCast(DirectCast(objBot, Object), RuleEngineSettings(Of TEngineEvents)))
                 Case GetType(SimpleEngineEvent).Name
-                    toReturn.AddRange(From objservice In Me.RestServices.Services.Instances _
-                                        From objDynamicMethod In objservice.DynamicMethods _
+                    toReturn.AddRange(From objservice In Me.RestServices.RestServices _
+                                        From objDynamicController As DynamicControllerInfo In objservice.DynamicControllers
+                                        From objDynamicMethod As DynamicAction In objDynamicController.DynamicActions
                                         Select DirectCast(DirectCast(objDynamicMethod, Object), RuleEngineSettings(Of TEngineEvents)))
                     toReturn.AddRange(From objAdapter In Me.ControlAdapters.Adapters _
                                         From objDynAdapter In objAdapter.DynamicHandlers _
