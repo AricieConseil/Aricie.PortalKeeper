@@ -257,6 +257,7 @@ Namespace ComponentModel
         <ActionButton(IconName.Refresh, IconOptions.Normal)> _
         Public Overridable Overloads Sub ClearSingleton(pe As AriciePropertyEditorControl)
             _instance = Nothing
+            pe.Page.Response.Redirect(DotNetNuke.Common.Globals.NavigateURL())
         End Sub
 
 

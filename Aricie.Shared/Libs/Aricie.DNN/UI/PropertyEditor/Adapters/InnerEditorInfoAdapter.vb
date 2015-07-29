@@ -2,6 +2,7 @@
 Imports DotNetNuke.UI.WebControls
 Imports System.Web.UI.WebControls
 Imports DotNetNuke.Entities.Users
+Imports Aricie.DNN.UI.WebControls.EditorInfos
 
 Namespace UI.WebControls
 
@@ -87,7 +88,7 @@ Namespace UI.WebControls
 
 
         Private Function GetEditorInfo() As EditorInfo
-            Dim editInfo As New EditorInfo
+            Dim editInfo As New AricieEditorInfo
 
             'Add the Name 
             editInfo.Name = _Name
@@ -152,7 +153,7 @@ Namespace UI.WebControls
 
 
         Public Function CreateEditControl() As EditorInfo Implements IEditorInfoAdapter.CreateEditControl
-            Return Me.GetEditorInfo
+            Return Me.GetEditorInfo()
         End Function
 
         Public Function UpdateValue(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateValue

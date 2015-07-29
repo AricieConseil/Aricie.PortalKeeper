@@ -20,7 +20,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\bin\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -28,7 +28,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
+    <OutputPath>..\..\..\bin\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -36,24 +36,36 @@
   <ItemGroup>
     <Reference Include="DotNetNuke">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.HttpModules">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.HttpModules.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Instrumentation">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.Instrumentation.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Web">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.Web.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.Web.Client">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.Web.Client.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.WebControls">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.WebControls.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="DotNetNuke.WebUtility">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.WebUtility.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\external\JsonNet\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -61,6 +73,7 @@
     <Reference Include="System.Net.Http.Formatting, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Http, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Web.Http.WebHost, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -68,21 +81,36 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="RestServices\BrowserJsonFormatter.cs" />
+    <Compile Include="RestServices\CreateHttpResponseAction.cs" />
+    <Compile Include="Dnn7ObsoleteDotNetProvider.cs" />
+    <Compile Include="RestServices\DynamicActionSelector.cs" />
+    <Compile Include="RestServices\DynamicController.cs" />
+    <Compile Include="RestServices\DynamicControllerDescriptor.cs" />
+    <Compile Include="RestServices\DynamicControllerSelector.cs" />
+    <Compile Include="RestServices\DynamicHttpActionDescriptor.cs" />
+    <Compile Include="RestServices\DynamicHttpParameterDescriptor.cs" />
+    <Compile Include="RestServices\DynamicServiceRouteMapper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RestServices\Surrogates\SupportedModulesSurrogateAttribute.cs" />
+    <Compile Include="RestServices\WebApiConfig.cs" />
+    <Compile Include="RestServices\WebApiExtensions.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aricie.PortalKeeper.vbproj">
       <Project>{e16cb689-af6f-4919-bc7b-1d345a2d48ce}</Project>
       <Name>Aricie.PortalKeeper</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

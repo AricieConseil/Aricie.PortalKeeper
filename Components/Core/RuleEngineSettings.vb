@@ -1,13 +1,11 @@
 ﻿
 Imports Aricie.DNN.ComponentModel
-Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
-Imports System.Xml.Serialization
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Services
 Imports DotNetNuke.Services.Localization
@@ -17,43 +15,6 @@ Imports System.Linq
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-    Public Enum RuleEngineMode
-        Actions
-        Rules
-    End Enum
-
-    Public Class SimpleRuleEngine
-        Inherits RuleEngineSettings(Of SimpleEngineEvent)
-
-
-
-        <XmlIgnore()> _
-      <Browsable(False)> _
-        Public Overrides Property Mode As RuleEngineMode
-            Get
-                Return RuleEngineMode.Actions
-            End Get
-            Set(value As RuleEngineMode)
-                'do nothing
-            End Set
-        End Property
-
-        <XmlIgnore()> _
-         <Browsable(False)> _
-        Public Overrides Property Rules As List(Of KeeperRule(Of SimpleEngineEvent))
-            Get
-                Return Nothing
-            End Get
-            Set(value As List(Of KeeperRule(Of SimpleEngineEvent)))
-                'do nothing
-            End Set
-        End Property
-
-
-    End Class
-
-
     <Serializable()> _
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
@@ -70,13 +31,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Me.ImportDefaultProviders()
         End Sub
 
+        <ExtendedCategory("Rules")> _
         Public Overridable Property Mode As RuleEngineMode
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ExtendedCategory("Variables")> _
+        <ExtendedCategory("Variables")> _
             <SortOrder(2)> _
-        Public Property Variables() As Variables = New Variables
+        Public Property Variables As New Variables()
 
 
 

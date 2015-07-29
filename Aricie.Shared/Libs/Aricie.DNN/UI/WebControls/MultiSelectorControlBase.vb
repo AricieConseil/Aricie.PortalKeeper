@@ -26,6 +26,11 @@ Namespace UI.WebControls
 
 #End Region
 
+        Public Sub New()
+            Me.RepeatColumns = 3
+        End Sub
+
+
 #Region "Public Properties"
 
         Public Property ExclusiveSelector() As Boolean

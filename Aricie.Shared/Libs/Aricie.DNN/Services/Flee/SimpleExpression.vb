@@ -165,7 +165,7 @@ Namespace Services.Flee
         End Sub
 
 
-        Public Function Evaluate(ByVal globalVars As IContextLookup) As TResult
+        Public Overloads Function Evaluate(ByVal globalVars As IContextLookup) As TResult
             Return Me.Evaluate(globalVars, globalVars)
         End Function
 
@@ -177,7 +177,7 @@ Namespace Services.Flee
         ''' <param name="globalVars"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overridable Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
+        Public Overridable Overloads Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
 
             Dim toReturn As TResult
             If Me._Expression <> "" Then

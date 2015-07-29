@@ -70,7 +70,7 @@
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <DebugSymbols>true</DebugSymbols>
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
-	<GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Ciloci.Flee, Version=0.9.26.1, Culture=neutral, processorArchitecture=MSIL">
@@ -130,6 +130,7 @@
     <Compile Include="ComponentModel\ActionButtonInfo.vb" />
     <Compile Include="ComponentModel\ConditionalVisibleInfo.vb" />
     <Compile Include="ComponentModel\Config\LocationSettings.vb" />
+    <Compile Include="ComponentModel\DynamicAttributes.vb" />
     <Compile Include="ComponentModel\EntityKey.vb" />
     <Compile Include="ComponentModel\IGenericizer.vb" />
     <Compile Include="ComponentModel\IKeyPathFormatter.vb" />
@@ -175,7 +176,9 @@
     <Compile Include="ComponentModel\Providers\ProviderConfig.vb" />
     <Compile Include="ComponentModel\Providers\ProviderConfigHelper.vb" />
     <Compile Include="ComponentModel\Providers\ProviderList.vb" />
+    <Compile Include="ComponentModel\Providers\ReflectedProviderContainer.vb" />
     <Compile Include="ComponentModel\Providers\SimpleList.vb" />
+    <Compile Include="ComponentModel\Providers\SimpleProviderContainer.vb" />
     <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
     <Compile Include="ComponentModel\RelationCardinality.vb" />
     <Compile Include="ComponentModel\RelationNature.vb" />
@@ -207,6 +210,8 @@
     <Compile Include="Entities\EnabledFeature.vb" />
     <Compile Include="Entities\FileUpload.vb" />
     <Compile Include="Entities\HtmlPageScrapInfo.vb" />
+    <Compile Include="Entities\HtmlPageScrapsInfo.vb" />
+    <Compile Include="Entities\OneOrMore.vb" />
     <Compile Include="Entities\ParsedUri.vb" />
     <Compile Include="Entities\PingUrlInfo.vb" />
     <Compile Include="Entities\LoginInfo.vb" />

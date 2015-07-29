@@ -22,54 +22,6 @@ Namespace Entities
         Browser
     End Enum
 
-    <ActionButton(IconName.Search, IconOptions.Normal)> _
-    <Serializable()> _
-    Public Class HtmlPageScrapsInfo(Of TScrap As HtmlPageScrapInfo)
-
-        <ExtendedCategory("PageScraps")> _
-        Public Property PageScraps As New SerializableList(Of TScrap)
-
-        <ExtendedCategory("Global")> _
-        Public Property MaxNbPages As Integer
-
-        <ExtendedCategory("Global")> _
-        Public Property MaxResultsPerPage As Integer
-
-        <ExtendedCategory("Global")> _
-        Public Property PrimaryKeys As New List(Of String)
-
-        <ExtendedCategory("Advanced")> _
-        Public Property Custom As New SerializableDictionary(Of String, String)
-
-        <ExtendedCategory("Advanced")> _
-        Public Property AdditionalColumns As New SerializableDictionary(Of String, FilteredString)
-
-        Public Function GetPrimaryKey(input As Dictionary(Of String, String)) As String
-            Dim tempKey As String = Nothing
-            Return (From objPrimaryKey In PrimaryKeys Where input.TryGetValue(objPrimaryKey, tempKey)).Aggregate("", Function(current, objPrimaryKey) current & tempKey)
-        End Function
-
-    End Class
-
-    <Serializable()> _
-    Public Class OneOrMore(Of T As New)
-
-        Public Property One As New T
-
-        Public Property More As New List(Of T)
-
-        <Browsable(False)> _
-        Public ReadOnly Property All As IEnumerable(Of T)
-            Get
-                Dim toReturn As New List(Of T)(More.Count + 1)
-                toReturn.Add(One)
-                toReturn.AddRange(More)
-                Return toReturn
-            End Get
-        End Property
-
-    End Class
-
 
     <ActionButton(IconName.Search, IconOptions.Normal)> _
     <Serializable()> _

@@ -547,7 +547,51 @@ Public Module Common
 
 #Region "Collection methods"
 
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function TryGetValue(Of T)(collection As IDictionary(Of String, Object), key As String, ByRef value As T) As Boolean
+        If collection Is Nothing Then
+            Throw New ArgumentNullException("collection")
+        End If
+        Dim obj As Object = Nothing
+        If collection.TryGetValue(key, obj) AndAlso TypeOf obj Is T Then
+            value = DirectCast(obj, T)
+            Return True
+        Else
+            value = Nothing
+            Return False
+        End If
+    End Function
 
+    <System.Runtime.CompilerServices.Extension> _
+    Public Function FindKeysWithPrefix(Of TValue)(dictionary As IDictionary(Of String, TValue), prefix As String) As IEnumerable(Of KeyValuePair(Of String, TValue))
+        Dim toReturn As New List(Of KeyValuePair(Of String, TValue))
+        If dictionary Is Nothing Then
+            Throw New ArgumentNullException("dictionary")
+        End If
+        If prefix Is Nothing Then
+            Throw New ArgumentNullException("prefix")
+        End If
+        Dim exactMatchValue As TValue
+        If dictionary.TryGetValue(prefix, exactMatchValue) Then
+            toReturn.Add(New KeyValuePair(Of String, TValue)(prefix, exactMatchValue))
+        End If
+        For Each keyValuePair As KeyValuePair(Of String, TValue) In DirectCast(dictionary, IEnumerable(Of KeyValuePair(Of String, TValue)))
+            Dim key As String = keyValuePair.Key
+            If key.Length > prefix.Length AndAlso key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase) Then
+                If prefix.Length = 0 Then
+                    toReturn.Add(keyValuePair)
+                Else
+                    Dim charAfterPrefix As Char = key(prefix.Length)
+                    Select Case charAfterPrefix
+                        Case "."c, "["c
+                            toReturn.Add(keyValuePair)
+                        Case Else
+                    End Select
+                End If
+            End If
+        Next
+        Return toReturn
+    End Function
     Public Sub ShuffleList(Of T)(ByRef listToShuffle As IList(Of T))
         If listToShuffle IsNot Nothing AndAlso listToShuffle.Count > 1 Then
             Dim tempSwap As T
