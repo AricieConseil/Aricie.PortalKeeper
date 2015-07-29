@@ -18,6 +18,14 @@ Namespace Services.Flee
     Public Class GeneralVariableInfo(Of T)
         Inherits GeneralVariableInfo
 
+        Public Sub New()
+            MyBase.New()
+        End Sub
+
+        Public Sub New(strName As String)
+            MyBase.New(strName)
+        End Sub
+
         Private _ConstDotNetType As New DotNetType(GetType(T))
 
         <Browsable(False)> _
@@ -39,9 +47,23 @@ Namespace Services.Flee
         Implements IExpressionVarsProvider
 
 
+       
+
+
         Private _Instance As Object
         Private _SimpleExpression As SimpleExpression(Of Object)
         Private _FleeExpression As New FleeExpressionInfo(Of Object)
+
+
+
+        Public Sub New()
+
+        End Sub
+
+        Public Sub New(strName As String)
+            Me.Name = strName
+        End Sub
+
 
         Public Overridable Property DotNetType As New DotNetType()
 

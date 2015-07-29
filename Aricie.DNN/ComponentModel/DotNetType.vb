@@ -87,7 +87,7 @@ Namespace ComponentModel
 
         Private _TypeSelector As Nullable(Of TypeSelector)
 
-
+        <EditOnly()> _
         <XmlIgnore()> _
         Public Property TypeSelector As TypeSelector
             Get
@@ -106,7 +106,7 @@ Namespace ComponentModel
             End Set
         End Property
 
-
+        <EditOnly()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
         <Selector("Name", "TypeName", False, True, "<Select Type By Name>", "", False, True)> _
@@ -123,7 +123,7 @@ Namespace ComponentModel
             End Set
         End Property
 
-
+        <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
        <IsReadOnly(True)> _
         Public Property TypeName() As String
@@ -137,13 +137,14 @@ Namespace ComponentModel
             End Set
         End Property
 
-
+        <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         <Selector("Name", "FullName", False, True, "<Select an Assembly>", "", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <XmlIgnore()> _
         Public Property AssemblyNameSelect As String = ""
 
+        <EditOnly()> _
         <ConditionalVisible("IsGenericParameter", True, True)> _
          <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
@@ -153,7 +154,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property NamespaceSelect As String = ""
 
-
+        <EditOnly()> _
         <AutoPostBack()> _
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
@@ -191,7 +192,7 @@ Namespace ComponentModel
         '<ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         '<ConditionalVisible("IsSelectedGeneric", False, True, TypeSelector.BrowseHierarchy)> _
         ' Public Property IncludeGenericTypes As Boolean
-
+        <EditOnly()> _
         <ConditionalVisible("IsSelectedGeneric", False, True)> _
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <XmlIgnore()> _

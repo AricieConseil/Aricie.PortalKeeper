@@ -71,6 +71,8 @@ Namespace UI.WebControls
         Private _CurrentTab As Tab
         Public WithEvents ActionButton As ActionButtonInfo
 
+        Private _BoundEntities As HashSet(Of Object)
+
         'Private Const LOAD_COUNTER As String = "LoadCounter"
         'Private Const PRERENDER_COUNTER As String = "PreRenderCounter"
 
@@ -139,6 +141,14 @@ Namespace UI.WebControls
         End Property
 
 
+        Public ReadOnly Property BoundEntities As HashSet(Of Object)
+            Get
+                If Me.RootEditor._BoundEntities Is Nothing Then
+                    Me.RootEditor._BoundEntities = New HashSet(Of Object)
+                End If
+                Return Me.RootEditor._BoundEntities
+            End Get
+        End Property
 
 
         Public WriteOnly Property IsHidden() As Boolean
@@ -167,7 +177,7 @@ Namespace UI.WebControls
             Get
                 If Me._ParentEditor Is Nothing Then
                     Dim parentControl As PropertyEditorControl = Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of PropertyEditorControl)(Me)
-                    If Not parentControl Is Nothing Then
+                    If parentControl IsNot Nothing Then
                         Me._ParentEditor = parentControl
                     End If
                 End If
@@ -195,13 +205,18 @@ Namespace UI.WebControls
             End Get
         End Property
 
+        Private _RootEditor As AriciePropertyEditorControl
+
         Public ReadOnly Property RootEditor As AriciePropertyEditorControl
             Get
-                Dim objParentEditor As AriciePropertyEditorControl = Me
-                While objParentEditor.ParentAricieEditor IsNot Nothing
-                    objParentEditor = objParentEditor.ParentAricieEditor
-                End While
-                Return objParentEditor
+                If _RootEditor Is Nothing Then
+                    Dim objParentEditor As AriciePropertyEditorControl = Me
+                    While objParentEditor.ParentAricieEditor IsNot Nothing
+                        objParentEditor = objParentEditor.ParentAricieEditor
+                    End While
+                    _RootEditor = objParentEditor
+                End If
+                Return _RootEditor
             End Get
         End Property
 
@@ -561,6 +576,9 @@ Namespace UI.WebControls
         Private _QueryStringParsed As Boolean
         Public Overrides Sub DataBind()
 
+            If Me._BoundEntities IsNot Nothing Then
+                Me._BoundEntities.Clear()
+            End If
 
             'Invoke OnDataBinding so DataBinding Event is raised
             MyBase.OnDataBinding(EventArgs.Empty)
@@ -601,16 +619,25 @@ Namespace UI.WebControls
                 If Not MyBase.GetRowVisibility(info) Then
                     Return False
                 End If
-                If ReflectionHelper.IsTrueReferenceType(info.PropertyType) Then
-                    Try
-                        If info.GetValue(Me.DataSource, Nothing) Is Nothing Then
-                            Return False
-                        End If
-                    Catch
-                        Return False
-                    End Try
+                If info.PropertyType Is GetType(Object) AndAlso Not info.DeclaringType.Assembly.FullName.StartsWith("Aricie") Then
+                    Return False
                 End If
+                'If ReflectionHelper.IsTrueReferenceType(info.PropertyType) Then
+                '    Try
+                '        Dim obj As Object = info.GetValue(Me.DataSource, Nothing)
+                '        If obj Is Nothing Then
+                '            Return False
+                '        End If
+                '    Catch
+                '        Return False
+                '    End Try
+                'End If
+
             End If
+            If member.GetCustomAttributes(GetType(SingleEditorModeAttribute), True).Cast(Of SingleEditorModeAttribute)().Any(Function(singleEditModeAttributes) Not Me.EditMode = singleEditModeAttributes.EditorMode) Then
+                Return False
+            End If
+
             Dim condVisibles As IList(Of ConditionalVisibleInfo) = ConditionalVisibleInfo.FromMember(member)
             Return ComputeVisibility(condVisibles, member)
         End Function

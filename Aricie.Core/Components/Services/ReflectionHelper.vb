@@ -18,10 +18,11 @@ Imports System.Linq.Expressions
 Imports Aricie.Business.Filters
 Imports Aricie.Collections
 Imports System.Reflection.Emit
+Imports System.Collections.Generic
 
 Namespace Services
 
-    
+
 
 
     ''' <summary>
@@ -1765,7 +1766,7 @@ Namespace Services
         End Function
 
 
-       
+
 
 
         Public Shared Function GetSerializer(ByVal objType As Type, ByVal extraTypes() As Type, ByVal useCache As Boolean, ByVal rootName As String) As XmlSerializer
@@ -1798,7 +1799,7 @@ Namespace Services
             Return targetXmlSerializerBag.SubTypes.ToList()
         End Function
 
-       
+
 
 
 #End Region

@@ -193,9 +193,11 @@ Namespace UI.WebControls.EditControls
         Private Sub BuildButtons()
             Dim items As Dictionary(Of String, IconInfo) = Me.GetValueKeys()
             Dim counter As Integer = 0
-            For Each objItem In items
+            Dim globalCounter As Integer = 0
+            For Each objItem As KeyValuePair(Of String, IconInfo) In items
+                globalCounter += 1
                 'Dim objButton As New LinkButton With {.Text = objItem.Value, .CommandArgument = objItem.Key, .CssClass = "dnnTertiaryAction"}
-                If Not objItem.Key.EndsWith(objItem.Value.Text) Then
+                If Not objItem.Key.EndsWith(objItem.Value.Text) OrElse globalCounter = items.Count Then
                     Dim objButton As New IconActionButton With {.ID = "btn" & counter.ToString(CultureInfo.InvariantCulture), .Text = objItem.Value.Text, .ActionItem = objItem.Value.Icon, .CommandArgument = objItem.Key}
                     ' objButton.ActionItem.IconName = IconName.Home
                     AddHandler objButton.Command, AddressOf ButtonClick
@@ -207,7 +209,7 @@ Namespace UI.WebControls.EditControls
                         Me.Controls.Add(objLabel)
                     End If
                 End If
-                
+
             Next
         End Sub
 
