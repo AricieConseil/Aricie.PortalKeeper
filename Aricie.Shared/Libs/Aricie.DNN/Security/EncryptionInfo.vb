@@ -15,19 +15,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Text
 
 Namespace Security.Cryptography
-
-  
-
-    Public Enum PublicKeyDisplay
-        Xml
-        CSPBlob
-        RSAParameters
-    End Enum
-
-   
-
-
-    <Serializable()> _
     Public Class EncryptionInfo
         Implements IEncrypter
 
@@ -232,7 +219,7 @@ Namespace Security.Cryptography
        <LineCount(36)> _
       <Width(500)> _
       <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
-       Public Property EncryptionPrivateKey As CData
+        Public Property EncryptionPrivateKey As CData
             Get
                 Try
                     If Me.SealType = KeyProtectionMode.None Then
@@ -313,7 +300,7 @@ Namespace Security.Cryptography
             Get
                 If _AsymmetricAlgo Is Nothing Then
                     If Me._EncryptedPrivateKey.Length > 0 Then
-                        
+
                         Dim objBytes As Byte() = Me._EncryptedPrivateKey
 
                         If (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData Then
@@ -326,7 +313,7 @@ Namespace Security.Cryptography
                         If (Me.SealType And KeyProtectionMode.Application) = KeyProtectionMode.Application Then
                             objBytes = objBytes.Decrypt(Me.DnnDecrypter)
                         End If
-                       
+
                         Dim keyContainer As CspParameters = CryptoHelper.CSPCreateNewKey(String.Empty, AsymmetricKeySize, True, True)
                         Dim rsaAlgo As New RSACryptoServiceProvider(keyContainer)
                         rsaAlgo.ImportCspBlob(objBytes)
@@ -432,7 +419,7 @@ Namespace Security.Cryptography
         End Property
 
 
-       
+
 
 
 
@@ -513,6 +500,23 @@ Namespace Security.Cryptography
             ape.DisplayLocalizedMessage("ResetEncryption.Completed", ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
+        Public Function DoEncrypt(clearText As String) As EncryptionResult
+
+            Dim clearTextBytes As Byte() = clearText.ToUTF8()
+            Dim saltBytes As Byte() = Nothing
+            Dim cypherBytes As Byte() = Me.DoEncrypt(clearTextBytes, saltBytes)
+            Dim toReturn As New EncryptionResult() With {.CypherText = cypherBytes.ToBase64(), _
+                                                         .Salt = DirectCast(IIf(saltBytes IsNot Nothing, saltBytes.ToBase64(), String.Empty), String)}
+            Return toReturn
+        End Function
+
+        Public Function Decrypt(encrypted As EncryptionResult) As String
+
+            Dim cypherTextBytes As Byte() = encrypted.CypherText.FromBase64()
+            Dim saltBytes As Byte() = encrypted.Salt.FromBase64()
+            Dim clearTextBytes As Byte() = Decrypt(cypherTextBytes, saltBytes)
+            Return clearTextBytes.FromUTF8()
+        End Function
 
         Public Function DoEncrypt(payload As Byte(), ByRef salt() As Byte) As Byte() Implements IEncrypter.Encrypt
             Dim objBytes As Byte() = payload
@@ -540,7 +544,7 @@ Namespace Security.Cryptography
                     objBytes = DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).EncryptByKeyExchange(objBytes)
                 End If
             Next
-            
+
             Return objBytes
         End Function
 

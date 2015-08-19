@@ -47,16 +47,11 @@ namespace Aricie.PortalKeeper.DNN7
                 string actionName = null;
                 bool hasActionRouteKey = controllerContext.RouteData.Values.TryGetValue<string>("action", ref actionName);
 
-                var candidateActions = new List<DynamicAction>();
-                foreach (DynamicAction candidateAction in dynController.ControllerInfo.DynamicActions)
-                {
-                    if (candidateAction.Enabled
-                          && candidateAction.HttpVerbs.All.Contains(controllerContext.Request.Method.ToWebMethod())
-                          && ((!hasActionRouteKey && !candidateAction.EnforceActionName) || (StringComparer.OrdinalIgnoreCase.Compare(candidateAction.Name, actionName) == 0)))
-                    {
-                        candidateActions.Add(candidateAction);
-                    }
-                }
+                var candidateActions = dynController.ControllerInfo.DynamicActions
+                    .Where(candidateAction => candidateAction.Enabled && candidateAction.HttpVerbs.All.Contains(controllerContext.Request.Method.ToWebMethod()) 
+                        && ((!hasActionRouteKey && !candidateAction.EnforceActionName) 
+                        || (StringComparer.OrdinalIgnoreCase.Compare(candidateAction.Name, actionName) == 0)))
+                    .ToList();
 
                 if (candidateActions.Count > 1)
                 {
@@ -103,16 +98,16 @@ namespace Aricie.PortalKeeper.DNN7
                     case 0:
                         templatedMessage= DotNetNuke.Services.Localization.Localization.GetString("ActionNotFound.Message", PortalKeeperContext<RequestEvent>.SharedResourceFile);
                         throw new HttpResponseException(controllerContext.Request.CreateErrorResponse(HttpStatusCode.NotFound,
-                            string.Format(templatedMessage, new object[3] { (object)controllerContext.Request.RequestUri.ToString(), controllerContext.ControllerDescriptor.ControllerName, actionName })));
+                            string.Format(templatedMessage, new object[3] { controllerContext.Request.RequestUri != null ? controllerContext.Request.RequestUri.ToString() : "", controllerContext.ControllerDescriptor.ControllerName, actionName })));
                     case 1:
                         var candidateDynamicMethod = candidateActions[0]; 
-                        var toReturn = new DynamicHttpActionDescriptor(candidateDynamicMethod, reflectedCandidate);
+                        var toReturn = new DynamicHttpActionDescriptor(dynController, candidateDynamicMethod, reflectedCandidate);
                         
                         return toReturn;
                     default:
                         templatedMessage = DotNetNuke.Services.Localization.Localization.GetString("AmbiguousAction.Message", PortalKeeperContext<RequestEvent>.SharedResourceFile);
                         throw new HttpResponseException(controllerContext.Request.CreateErrorResponse(HttpStatusCode.Ambiguous,
-                            string.Format(templatedMessage, new object[3] { controllerContext.Request.RequestUri.ToString(), controllerContext.ControllerDescriptor.ControllerName, actionName })));
+                            string.Format(templatedMessage, new object[3] {controllerContext.Request.RequestUri != null ? controllerContext.Request.RequestUri.ToString() : "", controllerContext.ControllerDescriptor.ControllerName, actionName })));
                 }
 
             }

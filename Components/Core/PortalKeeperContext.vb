@@ -253,7 +253,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overloads Sub InitParams(ByVal params As VariablesBase)
-            If params IsNot Nothing Then
+            If params IsNot Nothing AndAlso params.Instances.Count > 0 Then
                 'Me.LogStart("Init Params", PortalKeeper.LoggingLevel.Steps, False)
                 Dim vars As Dictionary(Of String, Object) = params.EvaluateVariables(Me, Me)
                 Me.InitParams(vars)

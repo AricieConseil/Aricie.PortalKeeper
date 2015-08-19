@@ -35,7 +35,9 @@ Namespace UI.WebControls.EditControls
         Private Shared Sub InitSurrogates()
             _Surrogates.Add(GetType(Type), New DynamicSurrogate(Of Type, DotNetType) _
                             With {.ConvertTo = (Function(objSource)
-                                                    Return New DotNetType(objSource)
+                                                    Dim toReturn As New DotNetType(objSource)
+                                                    toReturn.TypeSelector = TypeSelector.NewType
+                                                    Return toReturn
                                                 End Function), _
                                  .ConvertFrom = (Function(objSurrogate)
                                                      Return objSurrogate.GetDotNetType()
@@ -63,7 +65,11 @@ Namespace UI.WebControls.EditControls
             'Me.EnsureChildControls()
             Dim args As New PropertyEditorEventArgs(Me.Name)
             If _DynamicSurrogate IsNot Nothing Then
-                args.Value = _DynamicSurrogate.ConvertFromSurrogate(Me._InnerEditor.DataSource)
+                Dim newVal As Object = _DynamicSurrogate.ConvertFromSurrogate(Me._InnerEditor.DataSource)
+                If newVal Is Me.Value Then
+                    Exit Sub
+                End If
+                args.Value = newVal
             Else
                 args.Value = Me._InnerEditor.DataSource
             End If
@@ -258,6 +264,7 @@ Namespace UI.WebControls.EditControls
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As System.Collections.Specialized.NameValueCollection) As Boolean
             Return _DynamicSurrogate IsNot Nothing
+            'Return False
         End Function
 
 

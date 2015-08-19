@@ -2,14 +2,25 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Entities
 Imports System.Xml.Serialization
 Imports System.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
+Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.CodeFork, IconOptions.Normal)> _
     <Serializable()> _
     Public Class DynamicAction
         Inherits RuleEngineSettings(Of SimpleEngineEvent)
+
+        Public Overrides Function GetFriendlyDetails() As String
+            Return String.Format("{0}{1}{2} args{1}{3}", _
+                        MyBase.GetFriendlyDetails(), _
+                        UIConstants.TITLE_SEPERATOR, _
+                        Me.Parameters.Count, _
+                        Me.HttpVerbs.All.Select(Function(objHttpVerb) objHttpVerb.ToString()) _
+                           .Aggregate(Function(strHttpVerb1, strHttpVerb2) strHttpVerb1 & ", " & strHttpVerb2))
+        End Function
 
         Public Property DynamicAttributes As New ActionAttributes()
 

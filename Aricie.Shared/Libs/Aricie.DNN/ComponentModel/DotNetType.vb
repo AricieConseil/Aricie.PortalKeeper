@@ -222,7 +222,11 @@ Namespace ComponentModel
                         Next
                         toReturn = toReturn.MakeGenericType(passedParams.ToArray())
                     End If
+                    If toReturn IsNot Nothing AndAlso Me.MakeArray Then
+                        toReturn = toReturn.MakeArrayType()
+                    End If
                 End If
+               
                 Return toReturn
             End Get
         End Property
@@ -247,7 +251,9 @@ Namespace ComponentModel
         '<ActionButton(IconName.Refresh, IconOptions.Normal)> _
         'Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
         'End Sub
-
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <AutoPostBack()> _
+        Public Property MakeArray As Boolean
 
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
@@ -327,9 +333,11 @@ Namespace ComponentModel
                         If objAssembly IsNot Nothing Then
                             Try
                                 toReturn.AddRange(From objType In objAssembly.GetTypes() _
-                                                    Where objType.Namespace = Me.NamespaceSelect _
-                                                    AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) _
-                                                From objTypeOrChild In New Type() {objType}.Union(objType.GetNestedTypes())
+                                                        Where objType.Namespace = Me.NamespaceSelect _
+                                                        AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) _
+                                                    From objTypeOrChild In New Type() {objType} _
+                                                        .Union(objType.GetNestedTypes() _
+                                                            .Where(Function(objNestedType) Not objNestedType.AssemblyQualifiedName.IsNullOrEmpty()))
                                                 Select New DotNetType(objTypeOrChild))
                             Catch ex As ReflectionTypeLoadException
                                 Dim sb As New StringBuilder()
@@ -353,7 +361,10 @@ Namespace ComponentModel
                         End If
                     End If
             End Select
-            Return toReturn.OrderBy(Function(objDotNetType) IIf(objDotNetType.GetDotNetType() IsNot Nothing, objDotNetType.GetDotNetType().Name, "")).ToList()
+            Return toReturn.OrderBy(
+                Function(objDotNetType)
+                    Return IIf(objDotNetType.GetDotNetType() IsNot Nothing, objDotNetType.GetDotNetType().Name, "")
+                End Function).ToList()
         End Function
 
         'Public Overrides Function Equals(ByVal obj As Object) As Boolean

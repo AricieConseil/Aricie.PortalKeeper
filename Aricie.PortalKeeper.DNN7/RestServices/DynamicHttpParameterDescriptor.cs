@@ -26,7 +26,7 @@ namespace Aricie.PortalKeeper.DNN7
 
         public override Type ParameterType
         {
-            get { return _DynamicParameter.DotNetType.GetType(); }
+            get { return _DynamicParameter.EditableType.GetDotNetType(); }
         }
 
         public override bool IsOptional
