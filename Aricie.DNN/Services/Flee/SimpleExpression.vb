@@ -366,6 +366,7 @@ Namespace Services.Flee
                 toReturn.Imports.AddType(GetType(System.Linq.Enumerable), "Enumerable")
                 toReturn.Imports.AddType(GetType(DateTime), "DateTime")
                 toReturn.Imports.AddType(GetType(HttpUtility), "HttpUtility")
+                toReturn.Imports.AddType(GetType(Common), "Common")
                 'toReturn.Imports.AddType(GetType(ReflectionHelper), "ReflectionHelper")
                 'toReturn.Imports.AddType(GetType(System.Linq.Expressions.Expression), "Expression")
             End If

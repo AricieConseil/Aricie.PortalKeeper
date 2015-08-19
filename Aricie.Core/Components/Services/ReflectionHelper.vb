@@ -402,7 +402,7 @@ Namespace Services
         End Function
 
         Public Shared Function IsSimpleType(ByVal objType As Type) As Boolean
-            Return objType.IsPrimitive OrElse objType Is GetType(String)
+            Return objType.IsPrimitive OrElse objType Is GetType(String) OrElse objType.IsEnum
         End Function
 
 

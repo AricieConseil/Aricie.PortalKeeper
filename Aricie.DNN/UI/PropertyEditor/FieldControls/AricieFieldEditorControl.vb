@@ -228,19 +228,11 @@ Public Class AricieFieldEditorControl
             MyBase.ValueChanged(sender, e)
             If Me.IsDirty Then
                 If Me.ParentAricieEditor IsNot Nothing Then
+                    'If e.Changed Then
                     'Me.ParentAricieEditor.ItemChanged = True
                     Me.ParentAricieEditor.RootEditor.ItemChanged = True
+                    'End If
                 End If
-                'Dim ae As AricieEditControl = TryCast(Me.Editor, AricieEditControl)
-                'If ae IsNot Nothing AndAlso ae.ParentAricieEditor IsNot Nothing Then
-
-                '    'If ae.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                '    '    ae.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
-                '    '    If ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
-                '    '        ae.ParentAricieEditor.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
-                '    '    End If
-                '    'End If
-                'End If
             End If
         Catch ex As Exception
             If Me.ParentAricieEditor IsNot Nothing Then
@@ -583,6 +575,7 @@ Public Class AricieFieldEditorControl
     End Function
 
     Private Sub SubValueChanged(ByVal sender As Object, ByVal e As PropertyEditorEventArgs)
+
         Dim pe As New PropertyEditorEventArgs(Me.Editor.Name, Me.Editor.Value, Me.Editor.OldValue)
         Me.ValueChanged(sender, pe)
     End Sub
