@@ -82,10 +82,10 @@ Namespace Entities
 
 
      Public Overrides Function GetFriendlyDetails() As String
-            Return String.Format("{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, _
+            Return String.Format("{4}{0}{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, _
                                  IIf(Me.UsePager, "max " & Me.MaxNbPage & " ", "No ").ToString() & "page" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _
                                 IIf(Me.ScrapDetail, Me.ScrapDetails.Count().ToString(CultureInfo.InvariantCulture) & " ", "No ").ToString() & "detail scrap" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _
-                                Me.Requests.One.ClientMode.ToString())
+                                Me.Requests.One.ClientMode.ToString(), MyBase.GetFriendlyDetails())
 
         End Function
 

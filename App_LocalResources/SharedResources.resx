@@ -4759,7 +4759,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Import Methods</value>
   </data>
   <data name="PortalKeeperConfig_RestServices.Header" xml:space="preserve">
-    <value>Web services (soon)</value>
+    <value>Web services</value>
   </data>
   <data name="RestService_DynamicMethods.Help" xml:space="preserve">
     <value>Here you can define individual methods for your web service. Each method is associated to one or several http verbs, and runs a dedicated rule engine with dedicated actions to deal with operation results.</value>
@@ -9671,10 +9671,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="DynamicControllerInfo_DynamicActions.Text" xml:space="preserve">
     <value>Dynamic Actions</value>
   </data>
-  <data name="DynamicParameter_DotNetType.Help" xml:space="preserve">
+  <data name="DynamicParameter_EditableType.Help" xml:space="preserve">
     <value>This is the expected type for your dynamic parameter. Web API will try to bind it to a simple or compound request input.</value>
   </data>
-  <data name="DynamicParameter_DotNetType.Text" xml:space="preserve">
+  <data name="DynamicParameter_EditableType.Text" xml:space="preserve">
     <value>.Net Type</value>
   </data>
   <data name="DynamicParameter_IsOptional.Help" xml:space="preserve">
@@ -9865,5 +9865,167 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="UseProxy.Text" xml:space="preserve">
     <value>305 -  Use Proxy</value>
+  </data>
+  <data name="Admin.Text" xml:space="preserve">
+    <value>Admin</value>
+  </data>
+  <data name="Anonymous.Text" xml:space="preserve">
+    <value>Anonymous</value>
+  </data>
+  <data name="ApiExplorerSettingsAttribute_IgnoreApi.Help" xml:space="preserve">
+    <value>Check to exclude the method or the controller that attribute applies to, from the API explorer scope.</value>
+  </data>
+  <data name="ApiExplorerSettingsAttribute_IgnoreApi.Text" xml:space="preserve">
+    <value>Ignore API</value>
+  </data>
+  <data name="AuthorizeAttribute_Roles.Help" xml:space="preserve">
+    <value>Enter a comma separated list of ASP.Net user principal Roles allowed to access your controller / action. Note that DNN roles are available through a distinct attribute.</value>
+  </data>
+  <data name="AuthorizeAttribute_Roles.Text" xml:space="preserve">
+    <value>Authorized Roles</value>
+  </data>
+  <data name="AuthorizeAttribute_Users.Help" xml:space="preserve">
+    <value>Enter a comma separated list of ASP.Net user principal names allowed to access your controller / action. Note that DNN users are available through a distinct attribute.</value>
+  </data>
+  <data name="AuthorizeAttribute_Users.Text" xml:space="preserve">
+    <value>Authorized Users</value>
+  </data>
+  <data name="ControlPanel.Text" xml:space="preserve">
+    <value>Control Panel</value>
+  </data>
+  <data name="CreateHttpResponseAction_CreateResponseInfo.Help" xml:space="preserve">
+    <value>Define here the status and the content of the Web API response to return.</value>
+  </data>
+  <data name="CreateHttpResponseAction_CreateResponseInfo.Text" xml:space="preserve">
+    <value>Http Response Content</value>
+  </data>
+  <data name="DnnAuthorizeAttribute_DenyRoles.Help" xml:space="preserve">
+    <value>Enter a comma separated list of DNN Role names explicitally denied access your controller / action.</value>
+  </data>
+  <data name="DnnAuthorizeAttribute_DenyRoles.Text" xml:space="preserve">
+    <value>Denied Roles</value>
+  </data>
+  <data name="DnnAuthorizeAttribute_StaticRoles.Help" xml:space="preserve">
+    <value>Enter a comma separated list of DNN Role names allowed to access your controller / action. </value>
+  </data>
+  <data name="DnnAuthorizeAttribute_StaticRoles.Text" xml:space="preserve">
+    <value>Authorized Roles</value>
+  </data>
+  <data name="DnnExceptionFilterAttribute_LocalResourceFile.Help" xml:space="preserve">
+    <value>Enter the relative path to your exception message resource file. If empty, the path "~/App_GlobalResources/Exceptions.resx" will be used</value>
+  </data>
+  <data name="DnnExceptionFilterAttribute_LocalResourceFile.Text" xml:space="preserve">
+    <value>Local Resource File</value>
+  </data>
+  <data name="DnnExceptionFilterAttribute_MessageKey.Help" xml:space="preserve">
+    <value>Enter an optional resource key for your exception message. If empty, a key will be constructed with the format "controllerName_actionName"</value>
+  </data>
+  <data name="DnnExceptionFilterAttribute_MessageKey.Text" xml:space="preserve">
+    <value>Message Resx Key</value>
+  </data>
+  <data name="DnnModuleAuthorizeAttribute_AccessLevel.Help" xml:space="preserve">
+    <value>Select the access level for your controller / action (select EDIT for a custom permission)</value>
+  </data>
+  <data name="DnnModuleAuthorizeAttribute_AccessLevel.Text" xml:space="preserve">
+    <value>Access Level</value>
+  </data>
+  <data name="DnnModuleAuthorizeAttribute_PermissionKey.Help" xml:space="preserve">
+    <value>Enter the required permission Key to access the service</value>
+  </data>
+  <data name="DnnModuleAuthorizeAttribute_PermissionKey.Text" xml:space="preserve">
+    <value>Permission Key</value>
+  </data>
+  <data name="DnnPagePermissionAttribute_PermissionKey.Help" xml:space="preserve">
+    <value>Enter the page permission key to access the service (provided the page information is included within the call)</value>
+  </data>
+  <data name="DnnPagePermissionAttribute_PermissionKey.Text" xml:space="preserve">
+    <value>Page Permission Key</value>
+  </data>
+  <data name="DotNetType_MakeArray.Help" xml:space="preserve">
+    <value>Check to select an array type for the currently selected type</value>
+  </data>
+  <data name="DotNetType_MakeArray.Text" xml:space="preserve">
+    <value>Make Array Type</value>
+  </data>
+  <data name="DynamicAction_DynamicAttributes.Help" xml:space="preserve">
+    <value>You can add dynamic attributes at the action level, as you would do on a ApiController class method. Simply choose the attribute type to add, and fill in the corresponding properties accordingly.</value>
+  </data>
+  <data name="DynamicAction_DynamicAttributes.Text" xml:space="preserve">
+    <value>Dynamic Attributes</value>
+  </data>
+  <data name="DynamicControllerInfo_DynamicAttributes.Help" xml:space="preserve">
+    <value>You can add dynamic attributes at the controller level, as you would do on a ApiController class. Simply choose the attribute type to add, and fill in the corresponding properties accordingly.</value>
+  </data>
+  <data name="DynamicControllerInfo_DynamicAttributes.Text" xml:space="preserve">
+    <value>Dynamic Attributes</value>
+  </data>
+  <data name="DynamicParameter_DynamicAttributes.Help" xml:space="preserve">
+    <value>You can add dynamic attributes at the parameter level, as you would do on a ApiController class method argument. Simply choose the attribute type to add, and fill in the corresponding properties accordingly.</value>
+  </data>
+  <data name="DynamicParameter_DynamicAttributes.Text" xml:space="preserve">
+    <value>Dynamic Attributes</value>
+  </data>
+  <data name="Edit.Text" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="FilterAttribute_AllowMultiple.Help" xml:space="preserve">
+    <value>Readonly property that states whether the attribute can be added multiple times to the same target.</value>
+  </data>
+  <data name="FilterAttribute_AllowMultiple.Text" xml:space="preserve">
+    <value>Allow Multiple</value>
+  </data>
+  <data name="GeneralVariableInfo_ResetInstance.Text" xml:space="preserve">
+    <value>Reset Instance</value>
+  </data>
+  <data name="Host.Text" xml:space="preserve">
+    <value>Host</value>
+  </data>
+  <data name="SimpleProviderContainer`1_Items.Help" xml:space="preserve">
+    <value>This is the list of items of your dynamic list. Select the corresponding provider to add new items.</value>
+  </data>
+  <data name="SimpleProviderContainer`1_Items.Text" xml:space="preserve">
+    <value>Items</value>
+  </data>
+  <data name="SupportedModulesSurrogateAttribute_SupportedModules.Help" xml:space="preserve">
+    <value>Select the list of modules that can access the service, through the usual DNN module identification mechanism.</value>
+  </data>
+  <data name="SupportedModulesSurrogateAttribute_SupportedModules.Text" xml:space="preserve">
+    <value>Supported Modules</value>
+  </data>
+  <data name="View.Text" xml:space="preserve">
+    <value>View</value>
+  </data>
+  <data name="ViewPermissions.Text" xml:space="preserve">
+    <value>View permissions</value>
+  </data>
+  <data name="DynamicControllerInfo_GlobalParameters.Help" xml:space="preserve">
+    <value>Define parameters here available to all dynamic actions of your controller.</value>
+  </data>
+  <data name="DynamicControllerInfo_GlobalParameters.Text" xml:space="preserve">
+    <value>Global Parameters</value>
+  </data>
+  <data name="DynamicRoute_Constraints.Help" xml:space="preserve">
+    <value>Optionally create constraints for some of your dynamic placeholder, by specifying their name and a corresponding value as a string regex, or a custom IHttpRouteConstraint value.</value>
+  </data>
+  <data name="DynamicRoute_Constraints.Text" xml:space="preserve">
+    <value>Placeholder Constraints</value>
+  </data>
+  <data name="DynamicRoute_Defaults.Help" xml:space="preserve">
+    <value>Optionally create default values for some of your dynamic placeholder, by specifying their name and a corresponding value (RouteParameter.Optional is available)</value>
+  </data>
+  <data name="DynamicRoute_Defaults.Text" xml:space="preserve">
+    <value>Placeholder Defaults</value>
+  </data>
+  <data name="KeeperAction`1_ThrowAllExceptions.Help" xml:space="preserve">
+    <value>By default, you can choose to throw exceptions individually for each actions. Check to throw exceptions systematically.</value>
+  </data>
+  <data name="KeeperAction`1_ThrowAllExceptions.Text" xml:space="preserve">
+    <value>Throw all exceptions</value>
+  </data>
+  <data name="RestService_SpecificRoutes.Help" xml:space="preserve">
+    <value>You can optionally register routes with placeholders specific to your actions. The default {controller}/{action} does not need to be registered for each dynamic service.</value>
+  </data>
+  <data name="RestService_SpecificRoutes.Text" xml:space="preserve">
+    <value>Register Specific Routes</value>
   </data>
 </root>

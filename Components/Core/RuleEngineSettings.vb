@@ -13,6 +13,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
 Imports System.Linq
 Imports Aricie.Services
+Imports System.Globalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
@@ -22,9 +23,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Implements IContextSource
 
         Public Overrides Function GetFriendlyDetails() As String
-            Return String.Format("{1} Parameters{0}{2} {3}", UIConstants.TITLE_SEPERATOR, Me.Variables.Instances.Count.ToString(), _
-                                 IIf(Mode = RuleEngineMode.Actions, Actions.Instances.Count.ToString(), Rules.Count.ToString()), _
-                                 IIf(Mode = RuleEngineMode.Actions, "Actions", "Rules"))
+            Dim actionRuleCount As Integer
+            Dim actionRuleSuffix As String = "actions"
+            If Mode = RuleEngineMode.Actions Then
+                actionRuleCount = Actions.Instances.Count
+            Else
+                actionRuleCount = Rules.Count
+                actionRuleSuffix = "rules"
+            End If
+            Return String.Format("{4}{0}{1} params{0}{2} {3}", UIConstants.TITLE_SEPERATOR, _
+                                 Me.Variables.Instances.Count.ToString(), _
+                                 actionRuleCount.ToString(), _
+                                 actionRuleSuffix, _
+                                 MyBase.GetFriendlyDetails())
         End Function
 
         Public Sub New()

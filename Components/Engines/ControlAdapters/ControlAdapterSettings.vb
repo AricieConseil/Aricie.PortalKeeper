@@ -41,15 +41,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overrides Function GetFriendlyDetails() As String
+            Dim toReturn As String = ""
             Select Case Me.AdaptedMode
                 Case AdaptedControlMode.Type
                     If Me.ResolvedAdaptedControlType IsNot Nothing Then
-                        Return ResolvedAdaptedControlType.FullName
+                        toReturn &= ResolvedAdaptedControlType.FullName
                     End If
                 Case AdaptedControlMode.Path
-                    Return Me.AdaptedControlPath
+                    toReturn &= Me.AdaptedControlPath
             End Select
-            Return ""
+            Return String.Format("{1} {0} {2}", UIConstants.TITLE_SEPERATOR, MyBase.GetFriendlyDetails(), toReturn)
         End Function
 
         '<Browsable(False)> _

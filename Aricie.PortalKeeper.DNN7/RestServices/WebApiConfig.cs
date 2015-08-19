@@ -33,7 +33,7 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                 {
                     if (objService.Enabled)
                     {
-                        foreach (DynamicRoute objRoute in objService.Routes.All)
+                        foreach (DynamicRoute objRoute in objService.SpecificRoutes)
                         {
                             if (objRoute.Enabled)
                             {
@@ -41,8 +41,9 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                                 {
                                     config.Routes.MapHttpRoute(
                                         name: objRoute.Name,
-                                        routeTemplate: objRoute.Template /*,
-                                    defaults: new { id = RouteParameter.Optional }*/
+                                        routeTemplate: objRoute.Template,
+                                        defaults:  objRoute.Defaults.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance), 
+                                        constraints: objRoute.Constraints.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance)
                                         );
                                 }
                                

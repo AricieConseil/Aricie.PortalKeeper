@@ -5,6 +5,7 @@ Imports System.Reflection
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
@@ -207,12 +208,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits SimpleRuleEngine
 
         Public Overrides Function GetFriendlyDetails() As String
-            Dim typed As Boolean = Me.GetType().IsGenericType
-            If typed Then
-                Return "Typed"
-            Else
-                Return "Untyped"
+            Dim toReturn As String = "Typed"
+            If Not Me.GetType().IsGenericType Then
+                toReturn = "Untyped"
             End If
+            Return String.Format("{1} {0} {2}", UIConstants.TITLE_SEPERATOR, MyBase.GetFriendlyDetails(), toReturn)
         End Function
 
         Public Property MainControlStep As ControlStep

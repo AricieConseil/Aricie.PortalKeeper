@@ -47,7 +47,22 @@ Namespace Services.Flee
         Implements IExpressionVarsProvider
 
 
-       
+        Public Overrides Function GetFriendlyDetails() As String
+            Dim toReturn As String = MyBase.GetFriendlyDetails()
+            Dim nextSegment As String = ""
+            Select Case Me.VariableMode
+                Case Flee.VariableMode.Constructor
+                    nextSegment = "cTor " & Me.MethodName
+                Case Flee.VariableMode.Delegate
+                    nextSegment = "Delegate " & Me.TargetInstance.Expression
+                Case Flee.VariableMode.Expression
+                    nextSegment = "Expression " & Me.SimpleExpression.Expression
+                Case Flee.VariableMode.Instance
+                    nextSegment = "Instance " & Me.Instance.ToString()
+            End Select
+            toReturn = String.Format("{0} {2} {1}", toReturn, UIConstants.TITLE_SEPERATOR, nextSegment)
+            Return toReturn
+        End Function
 
 
         Private _Instance As Object

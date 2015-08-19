@@ -223,9 +223,12 @@
     <Compile Include="Modules\ModuleHelper.vb" />
     <Compile Include="Providers\DotNetNukeServiceProvider.vb" />
     <Compile Include="Security\EncryptionHelper.vb" />
+    <Compile Include="Security\EncryptionResult.vb" />
+    <Compile Include="Security\PublicKeyDisplay.vb" />
     <Compile Include="Security\RSAParametersInfo.vb" />
     <Compile Include="Security\TrialPropertyMode.vb" />
     <Compile Include="Services\Caching\CdnStrategy.vb" />
+    <Compile Include="Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Services\ContextBase.vb" />
     <Compile Include="Services\Caching\CachedOutput.vb" />
     <Compile Include="Services\Caching\FileOutputSettings.vb" />
@@ -473,6 +476,7 @@
     <Compile Include="UI\PropertyEditor\EditControls\AricieCalendarEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\AricieCheckBoxListEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\AricieEditControl.vb" />
+    <Compile Include="UI\PropertyEditor\EditControls\AricieEnumEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\BreadCrumbsEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\FilesDownloadEditControl.vb" />
     <Compile Include="UI\PropertyEditor\EditControls\IndexedDiv.vb" />

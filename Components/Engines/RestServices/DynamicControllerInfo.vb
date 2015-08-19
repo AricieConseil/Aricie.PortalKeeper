@@ -2,6 +2,7 @@ Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -12,6 +13,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property DynamicAttributes As New ControllerAttributes()
 
         Public Property DynamicActions As New List(Of DynamicAction)
+
+        Public Property GlobalParameters As New Variables()
 
 
     End Class

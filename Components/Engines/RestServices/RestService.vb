@@ -15,8 +15,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         'Public Property ResourceType As New DotNetType
 
-        Public Property Routes As New OneOrMore(Of DynamicRoute)(New DynamicRoute("default", "{controller}/{action}"))
+        'Public Property Routes As New OneOrMore(Of DynamicRoute)(New DynamicRoute("default", "{controller}/{action}"))
 
+        Public Property SpecificRoutes As New List(Of DynamicRoute)()
 
 
         'Public Property AtUri As String = "/MyResource"

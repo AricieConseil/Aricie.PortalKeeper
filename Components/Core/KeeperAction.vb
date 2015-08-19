@@ -23,6 +23,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
+        Public Property ThrowAllExceptions As Boolean
+
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             'Dim enableStopWatch As Boolean = actionContext.EnableStopWatch
 
@@ -107,7 +109,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Else
                             toReturn = False
                         End If
-                        If element.RethrowException Then
+                        If Me.ThrowAllExceptions OrElse element.RethrowException Then
                             Throw newEx
                         End If
 

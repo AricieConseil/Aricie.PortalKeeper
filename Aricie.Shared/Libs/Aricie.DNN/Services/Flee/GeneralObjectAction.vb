@@ -162,7 +162,7 @@ Namespace Services.Flee
         <LabelMode(LabelMode.Top)>
         Public Property Value As SimpleOrExpression(Of Object)
             Get
-                If _Value IsNot Nothing AndAlso _Value.Mode = SimpleOrExpressionMode.Simple _
+                If Me.ActionMode = ObjectActionMode.SetProperty AndAlso _Value IsNot Nothing AndAlso _Value.Mode = SimpleOrExpressionMode.Simple _
                     AndAlso (_Value.Simple Is Nothing) Then
                     Me.InitializeSimpleValue()
                 End If
