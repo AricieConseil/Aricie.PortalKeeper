@@ -160,7 +160,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Dim objInterfaces As New List(Of Type)(objType.GetInterfaces())
                         Dim found As Boolean
                         If objInterfaces.Contains(GetType(IConditionProvider(Of TEngineEvents))) Then
-                            If Me.ConditionProviders.Any(Function(objProvider) objProvider.ProviderType Is objType) Then
+                            If Me.ConditionProviders.Any(Function(objProvider) objProvider.ProviderType.IsAssignableFrom(objType)) Then
                                 found = True
                             Else
                                 found = False
@@ -170,7 +170,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 toReturn += 1
                             End If
                         ElseIf objInterfaces.Contains(GetType(IActionProvider(Of TEngineEvents))) Then
-                            If Me.ActionProviders.Any(Function(objProvider) objProvider.ProviderType Is objType) Then
+                            If Me.ActionProviders.Any(Function(objProvider) objProvider.ProviderType.IsAssignableFrom(objType)) Then
                                 found = True
                             Else
                                 found = False
