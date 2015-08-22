@@ -6,6 +6,7 @@ Imports System.Web
 Imports System.Text
 Imports Aricie.Services
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Caching
     <Serializable()> _
@@ -51,7 +52,13 @@ Namespace Services.Caching
         <ExtendedCategory("Policy")> _
         Public Property Cacheability As HttpCacheability = HttpCacheability.Public
 
+        <ExtendedCategory("Policy")> _
+        Public Property SetExpire As Boolean = True
 
+        <ExtendedCategory("Policy")> _
+        Public Property SetValidUntilExpires As Boolean = True
+
+        <ConditionalVisible("SetExpire")> _
         <ExtendedCategory("Policy")> _
         Public Property Duration() As STimeSpan
             Get
@@ -62,6 +69,16 @@ Namespace Services.Caching
             End Set
         End Property
 
+
+        <ExtendedCategory("Policy")> _
+        Public Property SetLastModified As Boolean = True
+
+        <ExtendedCategory("Policy")> _
+        Public Property SetEtag As Boolean
+
+        <ExtendedCategory("Policy")> _
+        <ConditionalVisible("SetEtag")> _
+        Public Property EtagExpression As New SimpleExpression(Of String)()
 
         <ExtendedCategory("Policy")> _
         Public Property VaryByStar As Boolean = True
@@ -259,13 +276,22 @@ Namespace Services.Caching
                 objResponse.Cookies.Clear()
             End If
             objResponse.Cache.SetCacheability(Me.Cacheability)
-            Dim timeStamp As DateTime = Now.ToUniversalTime()
-            Dim expiration As DateTime = timeStamp.Add(Me.Duration)
-            objResponse.Cache.SetExpires(expiration)
+            Dim timeStamp As DateTime = Now
+            Dim expiration As DateTime = DateTime.MaxValue
+            If Me.SetExpire Then
+                expiration = timeStamp.Add(Me.Duration)
+                objResponse.Cache.SetExpires(expiration)
+                If SetValidUntilExpires Then
+                    objResponse.Cache.SetValidUntilExpires(True)
+                End If
+            End If
+            If Me.SetLastModified Then
+                objResponse.Cache.SetLastModified(timeStamp)
+            End If
+            If Me.SetEtag Then
+                objResponse.Cache.SetETag(Me.EtagExpression.Evaluate(DnnContext.Current(objContext)))
+            End If
 
-            objResponse.Cache.SetLastModified(timeStamp)
-
-            objResponse.Cache.SetValidUntilExpires(True)
             If Me.VaryByStar Then
                 objResponse.Cache.VaryByParams("*") = True
             Else
@@ -297,11 +323,20 @@ Namespace Services.Caching
             End If
 
             If callBackInfo Is Nothing Then
-                callBackInfo = New ValidationCallBackInfo(timeStamp, True, expiration)
+                If SetLastModified Then
+                    callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration, timeStamp)
+                Else
+                    callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration)
+                End If
+
             Else
                 callBackInfo.Timestamp = timeStamp
                 callBackInfo.IsExpiresSet = True
                 callBackInfo.Expiration = expiration
+                If SetLastModified Then
+                    callBackInfo.LastModified.Enabled = True
+                    callBackInfo.LastModified.Entity = timeStamp
+                End If
             End If
 
             objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)
@@ -317,11 +352,7 @@ Namespace Services.Caching
                     status = HttpValidationStatus.IgnoreThisRequest
                 Else
                     Dim callBackInfo As ValidationCallBackInfo = DirectCast(data, ValidationCallBackInfo)
-                    If callBackInfo Is Nothing OrElse callBackInfo.ValidateCacheCallback(context) Then
-                        status = HttpValidationStatus.Valid
-                    Else
-                        status = HttpValidationStatus.Invalid
-                    End If
+                    status = callBackInfo.ValidateCacheCallback(context)
                 End If
             Catch ex As Exception
                 status = HttpValidationStatus.IgnoreThisRequest
