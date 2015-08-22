@@ -58,7 +58,7 @@ Namespace Services.Flee
                 Case Flee.VariableMode.Expression
                     nextSegment = "Expression " & Me.SimpleExpression.Expression
                 Case Flee.VariableMode.Instance
-                    nextSegment = "Instance " & Me.Instance.ToString()
+                    nextSegment = "Instance " & ReflectionHelper.GetFriendlyName(Me.Instance)
             End Select
             toReturn = String.Format("{0} {2} {1}", toReturn, UIConstants.TITLE_SEPERATOR, nextSegment)
             Return toReturn

@@ -10028,4 +10028,34 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="RestService_SpecificRoutes.Text" xml:space="preserve">
     <value>Register Specific Routes</value>
   </data>
+  <data name="OutputCachingStrategy_EtagExpression.Help" xml:space="preserve">
+    <value>Define a custom Flee Expression to evaluated with an expression owner of type DnnContext.</value>
+  </data>
+  <data name="OutputCachingStrategy_EtagExpression.Text" xml:space="preserve">
+    <value>Etag Expression</value>
+  </data>
+  <data name="OutputCachingStrategy_SetEtag.Help" xml:space="preserve">
+    <value>Check to include a custom etag header to the Response.</value>
+  </data>
+  <data name="OutputCachingStrategy_SetEtag.Text" xml:space="preserve">
+    <value>Set Etag</value>
+  </data>
+  <data name="OutputCachingStrategy_SetExpire.Help" xml:space="preserve">
+    <value>Check to include an expiration header to the Response.</value>
+  </data>
+  <data name="OutputCachingStrategy_SetExpire.Text" xml:space="preserve">
+    <value>Set Expiration</value>
+  </data>
+  <data name="OutputCachingStrategy_SetLastModified.Help" xml:space="preserve">
+    <value>Check to include a last-modified header to the Response, set to the time of caching.</value>
+  </data>
+  <data name="OutputCachingStrategy_SetLastModified.Text" xml:space="preserve">
+    <value>Set Last-Modified</value>
+  </data>
+  <data name="OutputCachingStrategy_SetValidUntilExpires.Help" xml:space="preserve">
+    <value>Indicates that the server should ignore the cache-control client headers to invalidate the cache. </value>
+  </data>
+  <data name="OutputCachingStrategy_SetValidUntilExpires.Text" xml:space="preserve">
+    <value>Set Valid Until Expire</value>
+  </data>
 </root>

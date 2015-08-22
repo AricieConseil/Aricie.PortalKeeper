@@ -22,7 +22,7 @@ Namespace ComponentModel
             MyBase.New(objType)
         End Sub
 
-        Public Function GetTypedProvider() As T Implements IProviderConfig(Of T).GetTypedProvider
+        Public Overridable Function GetTypedProvider() As T Implements IProviderConfig(Of T).GetTypedProvider
             Dim toReturn As T = DirectCast(Me.GetProvider, T)
             If toReturn IsNot Nothing Then
                 toReturn.SetConfig(Me)
