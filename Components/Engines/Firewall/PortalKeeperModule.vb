@@ -118,7 +118,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Private Shared _AdaptersRegistered As Boolean = False
+        Private Shared _AdaptersRegistered As New Dictionary(Of String, Integer)
         Private Shared _RestServicesRegistered As Boolean = False
 
         Private Sub PreRequestHandlerExecute(ByVal s As Object, ByVal e As EventArgs)
@@ -141,7 +141,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     AddHandler objPage.PreRenderComplete, AddressOf Me.Page_PreRenderComplete
                 End If
                 If keeperContext.GlobalConfig.ControlAdapters.Enabled Then
-                    If Not _AdaptersRegistered Then
+                    Dim nbRegistered As Integer
+                    If Not _AdaptersRegistered.TryGetValue(context.Request.Browser.Id, nbRegistered) OrElse context.Request.Browser.Adapters.Count < nbRegistered Then
                         AddHandler objPage.PreInit, AddressOf Me.Page_PreInitAdapters
                     End If
                 End If
@@ -168,14 +169,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub Page_PreInitAdapters(ByVal sender As Object, ByVal args As EventArgs)
-            If Not _AdaptersRegistered Then
-                SyncLock PortalKeeperConfig.Instance.ControlAdapters
-                    If Not _AdaptersRegistered Then
-                        PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
-                        _AdaptersRegistered = True
-                    End If
-                End SyncLock
-            End If
+            Dim id As String = HttpContext.Current.Request.Browser.Id
+            Dim nbRegistered As Integer = PortalKeeperConfig.Instance.ControlAdapters.RegisterAdapters()
+            SyncLock _AdaptersRegistered
+                _AdaptersRegistered(id) = nbRegistered
+            End SyncLock
         End Sub
 
 

@@ -18,26 +18,13 @@ Namespace Services.Caching
             Me.IsExpiresSet = setExpiration
         End Sub
 
-        Public Sub New(ByVal objTimestamp As DateTime, ByVal setExpiration As Boolean, ByVal objExpires As DateTime, ByVal objLastModified As DateTime)
-            Me.Timestamp = objTimestamp
-            Me.Expiration = objExpires
-            Me.IsExpiresSet = setExpiration
-            Me.LastModified.Enabled = True
-            Me.LastModified.Entity = objLastModified.Date().Add(TimeSpan.FromHours(objLastModified.Hour)).Add(TimeSpan.FromMinutes(objLastModified.Minute)).Add(TimeSpan.FromSeconds(objLastModified.Second))
-        End Sub
-
+      
         Public Property Timestamp As DateTime
         Public Property IsExpiresSet As Boolean
         Public Property Expiration As DateTime
 
 
-        Public Property LastModified As New EnabledFeature(Of DateTime)
-
-
-
-        'Public FriendlyUrl As String = ""
-
-
+       
 
         Public Overridable Function ValidateCacheCallback(ByVal context As HttpContext) As HttpValidationStatus
             If Me.IsExpiresSet Then
@@ -65,21 +52,21 @@ Namespace Services.Caching
                             maxAgeSeconds = -1
                         End Try
                         If (maxAgeSeconds >= 0) Then
-                            Dim currentAgeSeconds As Integer = CInt(((context.Timestamp.Ticks - Me.Timestamp.Ticks) \ 10000000))
+                            Dim currentAgeSeconds As Integer = CInt(((context.Timestamp.Ticks - Me.Timestamp.Ticks) \ TimeSpan.TicksPerSecond))
                             If (currentAgeSeconds >= maxAgeSeconds) Then
                                 Return HttpValidationStatus.IgnoreThisRequest
                             End If
                         End If
                     ElseIf headerValue.StartsWith("min-fresh=") Then
-                        Dim num5 As Integer
+                        Dim minFreshSec As Integer
                         Try
-                            num5 = Convert.ToInt32(headerValue.Substring(10), CultureInfo.InvariantCulture)
+                            minFreshSec = Convert.ToInt32(headerValue.Substring(10), CultureInfo.InvariantCulture)
                         Catch
-                            num5 = -1
+                            minFreshSec = -1
                         End Try
-                        If (num5 >= 0 AndAlso Me.IsExpiresSet) Then
-                            Dim num7 As Integer = CInt((Me.Expiration.Ticks - context.Timestamp.Ticks) \ 10000000)
-                            If (num7 < num5) Then
+                        If (minFreshSec >= 0 AndAlso Me.IsExpiresSet) Then
+                            Dim num7 As Integer = CInt((Me.Expiration.Ticks - context.Timestamp.Ticks) \ TimeSpan.TicksPerSecond)
+                            If (num7 < minFreshSec) Then
                                 Return HttpValidationStatus.IgnoreThisRequest
                             End If
                         End If
@@ -96,22 +83,7 @@ Namespace Services.Caching
                 Next
             End If
 
-            If Me.LastModified.Enabled Then
-                Dim rawIfModifiedSince As String = context.Request.Headers.[Get]("If-Modified-Since")
-                If Not rawIfModifiedSince.IsNullOrEmpty() Then
-                    Dim ifModifiedSince As DateTime = DateTime.Parse(rawIfModifiedSince)
-
-                    ' HTTP does not provide milliseconds, so remove it from the comparison
-                    If Me.LastModified.Entity <= ifModifiedSince Then
-                        ' The requested file has not changed
-                        context.Response.StatusCode = 304
-                        context.Response.StatusDescription = "Not Modified"
-                        context.Response.SuppressContent = True
-                    End If
-                End If
-            End If
-
-            
+          
             Return HttpValidationStatus.Valid
 
         End Function
