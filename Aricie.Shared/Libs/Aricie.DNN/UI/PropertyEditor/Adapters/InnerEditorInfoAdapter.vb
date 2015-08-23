@@ -97,7 +97,10 @@ Namespace UI.WebControls
             editInfo.Value = Me._Value
 
             'Add the type of the value object
-            editInfo.Type = Me._Value.GetType().AssemblyQualifiedName
+            If Me._Value IsNot Nothing Then
+                editInfo.Type = Me._Value.GetType().AssemblyQualifiedName
+            End If
+
 
             'Add the Custom Attributes 
             editInfo.Attributes = _InnerAttributes
@@ -106,7 +109,10 @@ Namespace UI.WebControls
             editInfo.Required = False
             editInfo.ControlStyle = New Style
             editInfo.LabelMode = LabelMode.Left
-            editInfo.ResourceKey = String.Format("{0}", Me.Value.GetType.Name)
+            If Me._Value IsNot Nothing Then
+                editInfo.ResourceKey = String.Format("{0}", Me._Value.GetType.Name)
+            End If
+
             editInfo.ValidationExpression = String.Empty
             editInfo.Visibility = UserVisibilityMode.AllUsers
 

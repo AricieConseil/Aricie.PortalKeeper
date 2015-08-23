@@ -899,10 +899,12 @@ Namespace UI.WebControls.EditControls
         Private Sub DisplaySubItems(index As Integer, plItemContainer As Control, item As Object)
             Me._ItemIndex = index
             Me._DataItem = item
-            Me.CreateRow(plItemContainer, item)
-            Dim emptyDiv As New HtmlGenericControl("div")
-            emptyDiv.Attributes.Add("class", "clear")
-            plItemContainer.Controls.Add(emptyDiv)
+            If item IsNot Nothing Then
+                Me.CreateRow(plItemContainer, item)
+                Dim emptyDiv As New HtmlGenericControl("div")
+                emptyDiv.Attributes.Add("class", "clear")
+                plItemContainer.Controls.Add(emptyDiv)
+            End If
         End Sub
 
 

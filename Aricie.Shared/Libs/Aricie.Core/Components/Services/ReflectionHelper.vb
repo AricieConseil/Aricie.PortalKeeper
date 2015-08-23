@@ -940,12 +940,15 @@ Namespace Services
 
         Public Shared Function GetCollectionElementType(ByVal collection As ICollection, throwOnerror As Boolean) As Type
 
-            Dim objetType As Type
+            Dim objetType As Type = Nothing
 
             If collection IsNot Nothing AndAlso collection.Count > 0 Then
-                Dim enumTor As IEnumerator = collection.GetEnumerator
-                enumTor.MoveNext()
-                objetType = enumTor.Current.GetType()
+                For Each objVal As Object In collection
+                    If objVal IsNot Nothing Then
+                        objetType = objVal.GetType()
+                        Exit For
+                    End If
+                Next
             Else
                 objetType = GetCollectionTypeElementType(collection.GetType, throwOnerror)
 

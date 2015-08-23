@@ -1,7 +1,9 @@
 Imports System.IO
+Imports System.IO.Compression
 Imports System.Web
 Imports System.Text
 Imports Aricie.ComponentModel
+Imports Aricie
 
 Namespace IO
 
@@ -156,11 +158,42 @@ Namespace IO
         End Function
 
         Friend Function OnTransformCompleteStringInternal(ByVal ms As MemoryStream) As MemoryStream
-            Dim str As String = Me._http.Response.ContentEncoding.GetString(ms.ToArray())
+            Dim clearBytes As Byte() = ms.ToArray()
+
+            Dim contentEncodingHeader As String = _http.Response.Headers.Item("Content-Encoding")
+
+            If Not contentEncodingHeader.IsNullOrEmpty() Then
+                contentEncodingHeader = contentEncodingHeader.ToLowerInvariant()
+                Select Case contentEncodingHeader
+                    Case "gzip"
+                        clearBytes = clearBytes.Decompress(CompressionMethod.Gzip)
+                    Case "deflate"
+                        clearBytes = clearBytes.Decompress(CompressionMethod.Deflate)
+                End Select
+            End If
+
+
+            Dim str As String = Me._http.Response.ContentEncoding.GetString(clearBytes)
+
             str = OnTransformCompleteString(str)
+
+
             Dim bytes As Byte() = Me._http.Response.ContentEncoding.GetBytes(str)
+
+            If Not contentEncodingHeader.IsNullOrEmpty() Then
+                Select Case contentEncodingHeader
+                    Case "gzip"
+                        bytes = bytes.Compress(CompressionMethod.Gzip)
+                    Case "deflate"
+                        bytes = bytes.Compress(CompressionMethod.Deflate)
+                End Select
+            End If
+
+
             ms = New MemoryStream()
+           
             ms.Write(bytes, 0, CInt(bytes.Length))
+           
             Return ms
         End Function
 
