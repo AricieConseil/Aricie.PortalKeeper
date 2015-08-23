@@ -323,20 +323,12 @@ Namespace Services.Caching
             End If
 
             If callBackInfo Is Nothing Then
-                If SetLastModified Then
-                    callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration, timeStamp)
-                Else
-                    callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration)
-                End If
-
+                callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration)
             Else
                 callBackInfo.Timestamp = timeStamp
                 callBackInfo.IsExpiresSet = True
                 callBackInfo.Expiration = expiration
-                If SetLastModified Then
-                    callBackInfo.LastModified.Enabled = True
-                    callBackInfo.LastModified.Entity = timeStamp
-                End If
+
             End If
 
             objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)

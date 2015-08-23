@@ -32,7 +32,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Sub RegisterAdapters()
+        Public Function RegisterAdapters() As Integer
             If Me.Enabled Then
                 Dim browser As HttpBrowserCapabilities = HttpContext.Current.Request.Browser
                 For Each objTypeAdapter As KeyValuePair(Of Type, ControlAdapterSettings) In Me.AdaptersDictionary
@@ -51,8 +51,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                     End If
                 Next
+                Return browser.Adapters.Count
             End If
-        End Sub
+        End Function
 
     End Class
 End NameSpace
