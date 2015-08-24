@@ -92,7 +92,7 @@ Namespace Services.Errors
                     If targetStatus <> 0 Then
                         Dim targets As New List(Of ControlUrlInfo)
                         For Each objCustomError As CustomErrorInfo In objCustomErrors.CustomErrors
-                            If all OrElse objCustomError.StatusCode = targetStatus Then
+                            If all OrElse CInt(objCustomError.Status) = targetStatus Then
                                 targets.Add(objCustomError.Redirect)
                             End If
                         Next

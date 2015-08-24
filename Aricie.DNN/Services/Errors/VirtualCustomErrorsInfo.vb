@@ -36,17 +36,8 @@ Namespace Services.Errors
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
-            <MainCategory()> _
+            <SortOrder(0)> _
         Public Property CustomErrorsType() As CustomErrorsType = Errors.CustomErrorsType.VirtualHandler
-
-        ''' <summary>
-        ''' Gets or sets whether to use ashx as error handler
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("HandlerSettings")> _
-        Public Property UseAshx() As Boolean
 
         ''' <summary>
         ''' Gets or sets the virtual handler name
@@ -67,6 +58,15 @@ Namespace Services.Errors
         <ExtendedCategory("HandlerSettings")> _
         <Required(True)> _
         Public Property VirtualHandlerPath() As String = "Error.aspx"
+
+        ''' <summary>
+        ''' Gets or sets whether to use ashx as error handler
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("HandlerSettings")> _
+        Public Property UseAshx() As Boolean
 
         ''' <summary>
         ''' Gets or sets the dynamic handler type
@@ -127,17 +127,10 @@ Namespace Services.Errors
             Return Me.VirtualHandlerPath
         End Function
 
-        ''' <summary>
-        ''' Applies the currenct configuration to the web.config file
-        ''' </summary>
-        ''' <param name="pmb"></param>
-        ''' <remarks></remarks>
-        <ActionButton("~/images/fwd.gif")> _
-        Public Sub Apply(pmb As AriciePortalModuleBase)
-            Dim customErrorsUpdater As IUpdateProvider = Me.GetUpdateProvider
-            Configuration.ConfigHelper.ProcessModuleUpdate(Configuration.ConfigActionType.Install, customErrorsUpdater)
-            Skin.AddModuleMessage(pmb, Localization.GetString("CustomErrorsSaved.Message", pmb.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
-        End Sub
+        Public Overrides Function IsInstalled() As Boolean
+            Dim adapter As IUpdateProvider = Me.GetUpdateProvider()
+            Return ConfigHelper.IsInstalled(adapter, False)
+        End Function
 
         ''' <summary>
         ''' Returns an updater based on current Custom Errors configuration
@@ -147,6 +140,11 @@ Namespace Services.Errors
         Public Function GetUpdateProvider() As IUpdateProvider
             Return New VirtualCustomErrorUpdater(Me)
         End Function
+
+        Public Overrides Sub ProcessConfig(actionType As ConfigActionType)
+            Dim adapter As IUpdateProvider = Me.GetUpdateProvider()
+            ConfigHelper.ProcessModuleUpdate(actionType, adapter)
+        End Sub
 
     End Class
 

@@ -17,22 +17,28 @@ Namespace Configuration
 
         End Sub
 
-
+        <AutoPostBack()> _
         Public Property DoStaticCompression As Boolean
 
+        <AutoPostBack()> _
         Public Property DoDynamicCompression As Boolean
 
+        <AutoPostBack()> _
         <ConditionalVisible("DoDynamicCompression")> _
         Public Property DynamicCompressionBeforeCache As Boolean = True
 
 
         Public Overrides Function IsInstalled(ByVal xmlConfig As XmlDocument) As Boolean
-            Dim xPath As String = NukeHelper.DefineWebServerElementPath("system.webServer") & "/urlCompression[@doStaticCompression='" & DoStaticCompression.ToString(CultureInfo.InvariantCulture) & "'"
+            Dim xPath As String = NukeHelper.DefineWebServerElementPath("system.webServer") & "/urlCompression[@doStaticCompression='" & DoStaticCompression.ToString(CultureInfo.InvariantCulture).ToLower() & "'"
             If DoDynamicCompression Then
-                xPath &= " and @doDynamicCompression='" & DoDynamicCompression.ToString(CultureInfo.InvariantCulture) & "'"
+                xPath &= " and @doDynamicCompression='true'"
                 If DynamicCompressionBeforeCache Then
-                    xPath &= " and @dynamicCompressionBeforeCache='" & DynamicCompressionBeforeCache.ToString(CultureInfo.InvariantCulture) & "'"
+                    xPath &= " and @dynamicCompressionBeforeCache='true'"
+                Else
+                    xPath &= " and (not(@dynamicCompressionBeforeCache) or @dynamicCompressionBeforeCache='false')"
                 End If
+            Else
+                xPath &= " and (not(@doDynamicCompression) or @doDynamicCompression='false')"
             End If
             xPath &= "]"
             Dim moduleNode As XmlNode = xmlConfig.SelectSingleNode(xPath)

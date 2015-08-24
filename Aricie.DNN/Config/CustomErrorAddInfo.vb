@@ -1,4 +1,5 @@
-﻿Imports System.Xml.Serialization
+﻿Imports System.Globalization
+Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Errors
 
 Namespace Configuration
@@ -17,7 +18,7 @@ Namespace Configuration
 
 
         Public Sub New(ByVal objError As CustomErrorInfo)
-            Me.Attributes("statusCode") = objError.StatusCode.ToString
+            Me.Attributes("statusCode") = CInt(objError.Status).ToString(CultureInfo.InvariantCulture)
             Me.Attributes("redirect") = objError.Redirect.UrlPath
         End Sub
 
