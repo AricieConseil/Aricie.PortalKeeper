@@ -31,7 +31,6 @@ Namespace Services.Errors
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
-            <MainCategory()> _
         Public Property Mode() As CustomErrorsMode = CustomErrorsMode.On
 
         ''' <summary>
@@ -41,8 +40,7 @@ Namespace Services.Errors
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-        Public Property DefaultRedirect() As New ControlUrlInfo
+        Public Property DefaultRedirect() As New ControlUrlInfo(UrlControlMode.Url Or UrlControlMode.File Or UrlControlMode.Tab)
 
         ''' <summary>
         ''' Gets or sets custom errors
@@ -51,9 +49,6 @@ Namespace Services.Errors
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("CustomErrors")> _
-            <Editor(GetType(ListEditControl), GetType(EditControl))> _
-            <CollectionEditor(False, False, True, True, 10)> _
-            <LabelMode(LabelMode.Top)> _
         Public Property CustomErrors() As New List(Of CustomErrorInfo)
 
         ''' <summary>

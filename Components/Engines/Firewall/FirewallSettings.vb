@@ -26,9 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private _RecoveryParam As String
-
-        Private _RestartParam As String
+      
 
 
         Private _RequestScope As RequestScope = RequestScope.DNNPageOnly
@@ -98,36 +96,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("TechnicalSettings")> _
-        <Width(450)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-         Public Property RecoveryParam() As String
-            Get
-                If String.IsNullOrEmpty(_RecoveryParam) Then
-                    _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(10))
-                End If
-                Return _RecoveryParam
-            End Get
-            Set(ByVal value As String)
-                _RecoveryParam = value
-            End Set
-        End Property
-
-
-        <ExtendedCategory("TechnicalSettings")> _
-        <Width(450)> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-         Public Property RestartParam() As String
-            Get
-                If String.IsNullOrEmpty(_RestartParam) Then
-                    _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(10))
-                End If
-                Return _RestartParam
-            End Get
-            Set(ByVal value As String)
-                _RestartParam = value
-            End Set
-        End Property
+        
 
 
 
