@@ -8,6 +8,7 @@ Imports System.Reflection
 Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.Services.FileSystem
 Imports System.IO
+Imports System.Net
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Entities.Portals
 
@@ -15,7 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class CreateHttpResponseInfo
 
 
-        Public Property StatusCode As System.Net.HttpStatusCode = Net.HttpStatusCode.OK
+        Public Property StatusCode As HttpStatusCode = HttpStatusCode.OK
 
         Public Property ResponseMode As HttpResponseMode = HttpResponseMode.StatusOnly
 

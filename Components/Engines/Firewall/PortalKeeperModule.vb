@@ -269,12 +269,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Sub ProcessRecovery(ByVal keeperContext As PortalKeeperContext(Of RequestEvent))
             Dim keeperConfig As FirewallConfig = keeperContext.CurrentFirewallConfig
-            For Each recoveryParam In keeperConfig.RecoveryParam.Split(","c)
-                If (Not String.IsNullOrEmpty(recoveryParam.Trim)) AndAlso keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(recoveryParam) Then
-                    keeperConfig.Enabled = False
-                End If
-            Next
-            If keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(keeperConfig.RestartParam) Then
+            If keeperConfig.EnableRecoveryParams Then
+                For Each recoveryParam In keeperConfig.RecoveryParam.Split(","c)
+                    If (Not String.IsNullOrEmpty(recoveryParam.Trim)) AndAlso keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(recoveryParam) Then
+                        keeperConfig.Enabled = False
+                    End If
+                Next
+            End If
+            If keeperConfig.EnableRecoveryParams AndAlso keeperContext.DnnContext.HttpContext.Request.RawUrl.Contains(keeperConfig.RestartParam) Then
 
                 Dim config As Type = GetType(Config)
                 config.InvokeMember("Touch", BindingFlags.Public Or BindingFlags.InvokeMethod, Nothing, Nothing, Nothing)
@@ -284,8 +286,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 'DotNetNuke.Common.Utilities.Config.Touch()
             End If
         End Sub
-
-
 
         Protected Sub ProcessStep(ByVal context As HttpContext, ByVal newStep As RequestEvent, ByVal endSequence As Boolean)
             Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)

@@ -145,7 +145,11 @@ Namespace UI.WebControls.EditControls
 
         Public Property CurrentUrl As String
             Get
-                Return DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
+                Dim toReturn As String = DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
+                If toReturn.IsNullOrEmpty() Then
+                    toReturn = DirectCast(Value, String)
+                End If
+                Return toReturn
             End Get
             Set(value As String)
                 Me.Value = value

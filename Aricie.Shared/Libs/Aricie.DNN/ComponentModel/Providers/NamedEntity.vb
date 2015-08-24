@@ -19,18 +19,20 @@ Namespace ComponentModel
             Me._Decription = strDescription
         End Sub
 
+        <SortOrder(0)> _
+        <XmlAttribute("name")> _
         <Required(True)> _
         <Width(300)> _
         Public Overridable Property Name() As String = ""
 
+        <XmlElement("Name")> _
         <Browsable(False)> _
-        <XmlAttribute("name")> _
-        Public Property TempName As String
+        Public Property OldName As String
             Get
-                Return Name
+                Return Nothing
             End Get
             Set(value As String)
-
+                Name = value
             End Set
         End Property
 
@@ -49,8 +51,8 @@ Namespace ComponentModel
         End Property
 
 
-
-        Public Overridable Property Decription() As CData = ""
+        <SortOrder(1)> _
+         Public Overridable Property Decription() As CData = ""
 
         Public Overridable Function GetFriendlyDetails() As String
             Return ""
@@ -69,7 +71,7 @@ Namespace ComponentModel
             MyBase.New(strName, strDescription)
         End Sub
 
-        <SortOrder(0)> _
+        <XmlAttribute("name")> _
         <RegularExpressionValidator(Constants.Content.RegularNameValidator)> _
         <Required(True)> _
         <Width(300)> _

@@ -6,6 +6,8 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.Services.Errors
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.DNN.UI.WebControls.EditControls
+Imports DotNetNuke.Entities.Users
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -15,9 +17,58 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits FirewallSettings
         Implements IMergeable(Of FirewallSettings, FirewallConfig)
 
+
+        Private _RecoveryParam As String
+
+        Private _RestartParam As String
+
+
         <ExtendedCategory("")> _
         <MainCategory()> _
         Public Property EnablePortalLevelSettings() As Boolean
+
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property EnableRecoveryParams As Boolean
+
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("EnableRecoveryParams")> _
+        <Width(450)> _
+                    <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        Public Property RecoveryParam() As String
+            Get
+                If Not Me.EnableRecoveryParams Then
+                    Return String.Empty
+                End If
+                If String.IsNullOrEmpty(_RecoveryParam) Then
+                    _RecoveryParam = HttpUtility.UrlEncode(UserController.GeneratePassword(15))
+                End If
+                Return _RecoveryParam
+            End Get
+            Set(ByVal value As String)
+                _RecoveryParam = value
+            End Set
+        End Property
+
+
+        <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("EnableRecoveryParams")> _
+        <Width(450)> _
+                    <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
+        Public Property RestartParam() As String
+            Get
+                If Not Me.EnableRecoveryParams Then
+                    Return String.Empty
+                End If
+                If String.IsNullOrEmpty(_RestartParam) Then
+                    _RestartParam = HttpUtility.UrlEncode(UserController.GeneratePassword(15))
+                End If
+                Return _RestartParam
+            End Get
+            Set(ByVal value As String)
+                _RestartParam = value
+            End Set
+        End Property
 
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(1000)> _
@@ -41,6 +92,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Not portalConfig.Enabled Then
                 Return Me
             End If
+            'todo: review and complete that method
 
             Dim newKey As String = Me.cacheKey & portalConfig.cacheKey
 
@@ -48,7 +100,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             If toReturn Is Nothing Then
                 toReturn = ReflectionHelper.CloneObject(Of FirewallConfig)(Me)
-                toReturn.RecoveryParam = toReturn.RecoveryParam & "," & portalConfig.RecoveryParam
+                'toReturn.RecoveryParam = toReturn.RecoveryParam & "," & portalConfig.RecoveryParam
                 toReturn.RequestScope = portalConfig.RequestScope
                 toReturn.IgnoredExtensions = toReturn.IgnoredExtensions & "," & portalConfig.IgnoredExtensions
                 toReturn.Rules.AddRange(portalConfig.Rules)

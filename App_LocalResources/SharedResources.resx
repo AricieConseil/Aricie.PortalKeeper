@@ -300,26 +300,20 @@ DnnContext.User.Email.Contains("aricie.fr")&lt;/li&gt;
 DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
 &lt;/ul&gt;</value>
   </data>
-  <data name="FirewallSettings_RecoveryParam.Help" xml:space="preserve">
+  <data name="FirewallConfig_RecoveryParam.Help" xml:space="preserve">
     <value>&lt;p&gt;Portal Keeper applies restrictions on authorized accesses to your portal according to specific conditions; accordingly you might find yourself locked out without a mean to log as an admin user anymore (for instance if your ISP changes your static IP without prior notice... yes, we had that one once !).&lt;/p&gt;&lt;p&gt;Enter here a secret string, which when found in the url -for instance as a querystring parameter- will temporarily disable the firewall. Make sure to choose a complex string, to test it with your target settings enabled, and keep it in a safe location&lt;/p&gt;</value>
   </data>
-  <data name="FirewallSettings_RecoveryParam.Text" xml:space="preserve">
+  <data name="FirewallConfig_RecoveryParam.Text" xml:space="preserve">
     <value>Recovery String</value>
   </data>
   <data name="FirewallConfig_CustomErrorPage.Header" xml:space="preserve">
-    <value>Custom Errors (Obsolete)</value>
+    <value>Custom Errors</value>
   </data>
   <data name="PortalKeeperConfig_MainSettings.Header" xml:space="preserve">
     <value>MainSettings</value>
   </data>
   <data name="PortalKeeperConfig_Rules.Header" xml:space="preserve">
     <value>Rules</value>
-  </data>
-  <data name="FirewallConfig_CustomErrorPage.Help" xml:space="preserve">
-    <value>Custom Page</value>
-  </data>
-  <data name="FirewallConfig_CustomErrorPage.Text" xml:space="preserve">
-    <value>Custom Page</value>
   </data>
   <data name="FirewallConfig_IncludeRandomDelay.Text" xml:space="preserve">
     <value>Add Random Delay</value>
@@ -369,7 +363,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="cmdInstallCustomErrors.Text" xml:space="preserve">
     <value>Update custom errors in web.config</value>
   </data>
-  <data name="CustomErrorInfo_StatusCode.Text" xml:space="preserve">
+  <data name="CustomErrorInfo_Status.Text" xml:space="preserve">
     <value>Status Code</value>
   </data>
   <data name="CustomErrorsInfo_DefaultRedirectPath.Text" xml:space="preserve">
@@ -2643,10 +2637,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="BotFarmInfo`1_DisplayBotConfig.Text" xml:space="preserve">
     <value>Display Bot Config</value>
   </data>
-  <data name="FirewallSettings_RestartParam.Help" xml:space="preserve">
+  <data name="FirewallConfig_RestartParam.Help" xml:space="preserve">
     <value>Enter here a string, which when found in the url will trigger an app restart. As with recovery string, it should be secret, secured and complex enough</value>
   </data>
-  <data name="FirewallSettings_RestartParam.Text" xml:space="preserve">
+  <data name="FirewallConfig_RestartParam.Text" xml:space="preserve">
     <value>Restart Param</value>
   </data>
   <data name="VariableInfo_VariableType.Help" xml:space="preserve">
@@ -4210,7 +4204,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Resource File</value>
   </data>
   <data name="PortalKeeperConfig_RestServices.Text" xml:space="preserve">
-    <value>Here, you can define a series of custom REST web services to be hosted through the OpenRasta engine.</value>
+    <value>Here, you can define a series of custom REST web services to be hosted through the DNN Web API service framework.</value>
   </data>
   <data name="Delete.Text" xml:space="preserve">
     <value>Delete</value>
@@ -10057,5 +10051,26 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="OutputCachingStrategy_SetValidUntilExpires.Text" xml:space="preserve">
     <value>Set Valid Until Expire</value>
+  </data>
+  <data name="ActionProvider`1_RunDurationVarName.Required" xml:space="preserve">
+    <value>Run Duration Variable Name Required</value>
+  </data>
+  <data name="CustomErrorInfo_Status.Help" xml:space="preserve">
+    <value>This is the Http status code for that custom error.</value>
+  </data>
+  <data name="FirewallConfig_EnableRecoveryParams.Help" xml:space="preserve">
+    <value>In order to prevent locking conditions while configuring the firewall, you can have secret strings, to be inserted in a portal url (typically in the querystring), to temporarily disable the firewall or restart the DNN instance</value>
+  </data>
+  <data name="FirewallConfig_EnableRecoveryParams.Text" xml:space="preserve">
+    <value>Enable Recovery Params</value>
+  </data>
+  <data name="FirewallConfig_TechnicalSettings.Header" xml:space="preserve">
+    <value>Technical Settings</value>
+  </data>
+  <data name="VirtualCustomErrorsInfo_DynamicHandlerType.Help" xml:space="preserve">
+    <value>This is the type that will be registered to handle all errors.</value>
+  </data>
+  <data name="VirtualCustomErrorsInfo_DynamicHandlerType.Text" xml:space="preserve">
+    <value>Dynamic Handler Type</value>
   </data>
 </root>

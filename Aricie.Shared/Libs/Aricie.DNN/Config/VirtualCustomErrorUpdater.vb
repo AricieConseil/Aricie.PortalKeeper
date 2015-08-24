@@ -22,7 +22,7 @@ Namespace Configuration
                 Return MyBase.GetConfigElements
             Else
                 Dim toReturn As New List(Of IConfigElementInfo)
-                toReturn.Add(Me.VirtualCustomErrors.ToLegacy)
+                toReturn.Add(Me.VirtualCustomErrors.ToLegacy())
                 Me.UpdateConfig(toReturn)
                 Return toReturn
             End If
@@ -32,7 +32,7 @@ Namespace Configuration
 
         Protected Overridable Sub UpdateConfig(ByRef objList As List(Of IConfigElementInfo))
             If Not Me.VirtualCustomErrors.UseAshx Then
-                objList.Add(New HttpHandlerInfo(Me.VirtualCustomErrors.VirtualHandlerName, Me.VirtualCustomErrors.DynamicHandlerType.GetDotNetType, Me.VirtualCustomErrors.VirtualHandlerPath, "GET,HEAD", "integratedMode"))
+                objList.Add(New HttpHandlerInfo(Me.VirtualCustomErrors.VirtualHandlerName, Me.VirtualCustomErrors.DynamicHandlerType.GetDotNetType(), Me.VirtualCustomErrors.VirtualHandlerPath, "GET,HEAD", "integratedMode"))
             End If
         End Sub
 

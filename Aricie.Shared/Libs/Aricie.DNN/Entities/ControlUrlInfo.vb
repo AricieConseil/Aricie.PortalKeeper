@@ -218,8 +218,12 @@ Namespace Entities
                             End If
                         End If
                     End If
-
+                    'If targetStatus <> 0 Then
+                    '    context.Response.StatusCode = targetStatus
+                    'End If
+                    context.Handler = context.CurrentHandler
                     context.Server.Execute(target)
+                    'context.Server.TransferRequest(target)
                     If targetStatus <> 0 Then
                         context.Response.StatusCode = targetStatus
                     End If

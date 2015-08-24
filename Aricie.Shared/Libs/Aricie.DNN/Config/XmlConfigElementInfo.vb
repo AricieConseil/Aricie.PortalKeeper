@@ -28,7 +28,7 @@ Namespace Configuration
 
         Public MustOverride Sub AddConfigNodes(ByRef targetNodes As NodesInfo, ByVal actionType As ConfigActionType)
 
-        Public Overloads Function IsInstalled() As Boolean Implements IConfigElementInfo.IsInstalled
+        Public Overridable Overloads Function IsInstalled() As Boolean Implements IConfigElementInfo.IsInstalled
             Return IsInstalled(NukeHelper.WebConfigDocument)
         End Function
 
@@ -89,7 +89,7 @@ Namespace Configuration
         End Sub
 
 
-        Public Sub ProcessConfig(ByVal actionType As ConfigActionType) Implements IConfigElementInfo.ProcessConfig
+        Public Overridable Sub ProcessConfig(ByVal actionType As ConfigActionType) Implements IConfigElementInfo.ProcessConfig
 
             Dim nodes As New NodesInfo
 
