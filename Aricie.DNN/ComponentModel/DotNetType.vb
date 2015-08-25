@@ -8,6 +8,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
 Imports System.IO
 Imports System.Text
+Imports Aricie.DNN.Entities
 
 Namespace ComponentModel
 
@@ -43,7 +44,7 @@ Namespace ComponentModel
         Private Shared _CommonTypes As New Dictionary(Of String, DotNetType)
 
 
-        Private Function AddCommonType(strType As String) As String
+        Private Function AddCommonType(ByVal strType As String) As String
             Dim tmpType As Type = Nothing
             Dim tmpDNT As DotNetType = Nothing
             If Not _CommonTypes.TryGetValue(strType, tmpDNT) Then
@@ -80,7 +81,7 @@ Namespace ComponentModel
         <Browsable(False)> _
         Public Overridable ReadOnly Property Name() As String
             Get
-                Dim objType As Type = Me.GetDotNetType
+                Dim objType As Type = Me.GetDotNetType()
                 Return ReflectionHelper.GetSimpleTypeName(objType)
             End Get
         End Property
@@ -139,11 +140,46 @@ Namespace ComponentModel
 
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+       <XmlIgnore> _
+        Public Property MakeArray As Boolean
+
+        <AutoPostBack()> _
+        <EditOnly()> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <ConditionalVisible("MakeArray")> _
+        <XmlIgnore> _
+        Public Property Rank As Integer = 1
+
+        Private _ArrayType As DotNetType
+
+        <EditOnly()> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+       <ConditionalVisible("MakeArray")> _
+        <XmlIgnore()> _
+        Public Property ArrayType As DotNetType
+            Get
+                If Not MakeArray Then
+                    Return Nothing
+                End If
+                If _ArrayType Is Nothing Then
+                    _ArrayType = New DotNetType()
+                End If
+                Return _ArrayType
+            End Get
+            Set(value As DotNetType)
+                _ArrayType = value
+            End Set
+        End Property
+
+        <ConditionalVisible("MakeArray", True)> _
+        <EditOnly()> _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         <Selector("Name", "FullName", False, True, "<Select an Assembly>", "", False, True)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <XmlIgnore()> _
         Public Property AssemblyNameSelect As String = ""
 
+        <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <ConditionalVisible("IsGenericParameter", True, True)> _
          <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
@@ -154,6 +190,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property NamespaceSelect As String = ""
 
+        <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <AutoPostBack()> _
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
@@ -167,13 +204,6 @@ Namespace ComponentModel
             End Get
             Set(value As String)
                 If _TypeNameSelect <> value Then
-                    '_TypeNameSelect = value
-                    'Dim objType As Type = Me.GetDotNetType(_TypeNameSelect, False)
-                    'If objType IsNot Nothing Then
-                    '    If objType.IsGenericType Then
-                    '        PrepareGenericType(objType)
-                    '    End If
-                    'End If
                     Me.SetTypeName(value)
                 End If
             End Set
@@ -205,28 +235,37 @@ Namespace ComponentModel
         Public ReadOnly Property CurrentlySelectedType As Type
             Get
                 Dim toReturn As Type = Nothing
-                If Not String.IsNullOrEmpty(TypeNameSelect) Then
-                    toReturn = Me.GetDotNetType(TypeNameSelect, False)
-                    If toReturn IsNot Nothing AndAlso toReturn.IsGenericTypeDefinition Then
-                        Dim genParams As Type() = toReturn.GetGenericArguments()
-                        Dim passedParams As New List(Of Type)
-                        For i As Integer = 0 To genParams.Count - 1
-                            Dim genericParam As Type = Nothing
-                            If Me.GenericTypes.Count > i Then
-                                genericParam = Me.GenericTypes(i).GetDotNetType()
-                            End If
-                            If genericParam Is Nothing Then
-                                genericParam = genParams(i)
-                            End If
-                            passedParams.Add(genericParam)
-                        Next
-                        toReturn = toReturn.MakeGenericType(passedParams.ToArray())
+
+                If Me.MakeArray Then
+                    toReturn = Me.ArrayType.GetDotNetType()
+                    If toReturn IsNot Nothing Then
+                        If Rank > 1 Then
+                            toReturn = toReturn.MakeArrayType(Rank)
+                        Else
+                            toReturn = toReturn.MakeArrayType()
+                        End If
                     End If
-                    If toReturn IsNot Nothing AndAlso Me.MakeArray Then
-                        toReturn = toReturn.MakeArrayType()
+                Else
+                    If Not String.IsNullOrEmpty(TypeNameSelect) Then
+                        toReturn = Me.GetDotNetType(TypeNameSelect, False)
+                        If toReturn IsNot Nothing AndAlso toReturn.IsGenericTypeDefinition Then
+                            Dim genParams As Type() = toReturn.GetGenericArguments()
+                            Dim passedParams As New List(Of Type)
+                            For i As Integer = 0 To genParams.Count - 1
+                                Dim genericParam As Type = Nothing
+                                If Me.GenericTypes.Count > i Then
+                                    genericParam = Me.GenericTypes(i).GetDotNetType()
+                                End If
+                                If genericParam Is Nothing Then
+                                    genericParam = genParams(i)
+                                End If
+                                passedParams.Add(genericParam)
+                            Next
+                            toReturn = toReturn.MakeGenericType(passedParams.ToArray())
+                        End If
                     End If
                 End If
-               
+
                 Return toReturn
             End Get
         End Property
@@ -251,9 +290,7 @@ Namespace ComponentModel
         '<ActionButton(IconName.Refresh, IconOptions.Normal)> _
         'Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
         'End Sub
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-        <AutoPostBack()> _
-        Public Property MakeArray As Boolean
+       
 
 
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
@@ -283,7 +320,7 @@ Namespace ComponentModel
 
 
 
-       
+
 
         Public Function GetDotNetType() As Type
             If _Type Is Nothing AndAlso Not String.IsNullOrEmpty(Me._TypeName) Then
@@ -292,14 +329,14 @@ Namespace ComponentModel
             Return _Type
         End Function
 
-        Public Function GetDotNetType(strTypeName As String, throwException As Boolean) As Type
+        Public Function GetDotNetType(ByVal strTypeName As String, ByVal throwException As Boolean) As Type
             If Not String.IsNullOrEmpty(strTypeName) Then
                 Return ReflectionHelper.CreateType(strTypeName, throwException)
             End If
             Return Nothing
         End Function
 
-        Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
+        Public Function GetSelector(ByVal propertyName As String) As IList Implements ISelector.GetSelector
             Dim toReturn As IList = Nothing
             Select Case propertyName
                 Case "CommonType"
@@ -317,7 +354,7 @@ Namespace ComponentModel
 
 
 
-        Public Function GetSelectorG(propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
+        Public Function GetSelectorG(ByVal propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
             Dim toReturn As New List(Of DotNetType)
             Select Case propertyName
                 Case "CommonType"
@@ -378,7 +415,7 @@ Namespace ComponentModel
         '    Return Me.TypeName.GetHashCode()
         'End Function
 
-        Public Function GetSelectorG1(propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
+        Public Function GetSelectorG1(ByVal propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
             Dim toReturn As New List(Of AssemblyName)
             For Each objAssembly As Assembly In AppDomain.CurrentDomain.GetAssemblies()
                 Dim toAdd As AssemblyName = objAssembly.GetName()
@@ -391,7 +428,7 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
-        Public Function GetSelectorG2(propertyName As String) As IList(Of String) Implements ISelector(Of String).GetSelectorG
+        Public Function GetSelectorG2(ByVal propertyName As String) As IList(Of String) Implements ISelector(Of String).GetSelectorG
             Dim toReturnSet As New HashSet(Of String)
             If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                 Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
@@ -430,24 +467,30 @@ Namespace ComponentModel
         End Function
 
 
-        Private Sub SetTypeName(value As String)
+        Private Sub SetTypeName(ByVal value As String)
             Me._TypeName = value
             Me._EditableTypeName = Me._TypeName
             Me._Type = Nothing
             Dim objType As Type = Me.GetDotNetType(_TypeName, False)
             If objType IsNot Nothing Then
-                Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
-                Me.NamespaceSelect = objType.Namespace
-                If objType.IsGenericType Then
-                    Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
-                    PrepareGenericType(objType)
+                If objType.IsArray Then
+                    Me.MakeArray = True
+                    Me.Rank = objType.GetArrayRank()
+                    Me.ArrayType = New DotNetType(objType.GetElementType())
                 Else
-                    Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType)
+                    Me.AssemblyNameSelect = objType.Assembly.GetName().FullName
+                    Me.NamespaceSelect = objType.Namespace
+                    If objType.IsGenericType Then
+                        Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType.GetGenericTypeDefinition())
+                        PrepareGenericType(objType)
+                    Else
+                        Me._TypeNameSelect = ReflectionHelper.GetSafeTypeName(objType)
+                    End If
                 End If
             End If
         End Sub
 
-        Private Sub PrepareGenericType(objType As Type)
+        Private Sub PrepareGenericType(ByVal objType As Type)
             Dim argTypes As Type() = objType.GetGenericArguments()
             If argTypes.Count > 0 Then
                 Me.GenericTypes.Clear()
@@ -458,18 +501,18 @@ Namespace ComponentModel
         End Sub
 
 
-        Public Overrides Function Equals(obj As Object) As Boolean
-            If obj IsNot Nothing Then
-                If TypeOf obj Is DotNetType Then
-                    Return Me.TypeName = DirectCast(obj, DotNetType).TypeName
-                End If
-            End If
-            Return False
-        End Function
+        'Public Overrides Function Equals(obj As Object) As Boolean
+        '    If obj IsNot Nothing Then
+        '        If TypeOf obj Is DotNetType Then
+        '            Return Me.TypeName = DirectCast(obj, DotNetType).TypeName
+        '        End If
+        '    End If
+        '    Return False
+        'End Function
 
-        Public Overrides Function GetHashCode() As Integer
-            Return Me.TypeName.GetHashCode()
-        End Function
+        'Public Overrides Function GetHashCode() As Integer
+        '    Return Me.TypeName.GetHashCode()
+        'End Function
 
     End Class
 
@@ -504,7 +547,7 @@ Namespace ComponentModel
             Return Me
         End Function
 
-        Public Sub SetConfig(config As IProviderConfig) Implements IProvider.SetConfig
+        Public Sub SetConfig(ByVal config As IProviderConfig) Implements IProvider.SetConfig
             ReflectionHelper.MergeObjects(config, Me)
         End Sub
 

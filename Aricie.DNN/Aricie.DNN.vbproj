@@ -438,6 +438,7 @@
     <Compile Include="UI\PropertyEditor\Attributes\ActionButtonAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\AutoEraseAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\AutoPostBackAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\EditOnlyAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\ExtendedCategoryAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\CollectionEditorAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\EnableExportsAttribute.vb" />
@@ -446,8 +447,10 @@
     <Compile Include="UI\PropertyEditor\Attributes\MultiSelectorTypeAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\OrderedAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\PasswordModeAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\SingleEditorModeAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\TrialLimitedAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\UserControlAttribute.vb" />
+    <Compile Include="UI\PropertyEditor\Attributes\ViewOnlyAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\WidthAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\ConditionalVisibleAttribute.vb" />
     <Compile Include="UI\PropertyEditor\Attributes\OrientationAttribute.vb" />

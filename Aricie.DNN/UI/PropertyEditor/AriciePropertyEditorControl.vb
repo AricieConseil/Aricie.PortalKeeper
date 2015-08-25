@@ -656,16 +656,19 @@ Namespace UI.WebControls
 
         Public Sub DisplayLocalizedMessage(strKey As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
             Dim localized As String = Localization.GetString(strKey, Me.LocalResourceFile)
-            Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, localized, messageType)
-            moduleMessage.EnableViewState = False
-            _headerControl.Controls.Add(moduleMessage)
+            DisplayMessage(localized, messageType, heading)
         End Sub
 
 
         Public Sub DisplayMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
-            Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
-            moduleMessage.EnableViewState = False
-            _headerControl.Controls.Add(moduleMessage)
+            If Me.IsRoot OrElse Not Me.ItemChanged Then
+                Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
+                moduleMessage.EnableViewState = False
+                _headerControl.Controls.Add(moduleMessage)
+            Else
+                Me.RootEditor.DisplayMessage(strMessage, messageType, heading)
+            End If
+            
         End Sub
 
 #End Region
