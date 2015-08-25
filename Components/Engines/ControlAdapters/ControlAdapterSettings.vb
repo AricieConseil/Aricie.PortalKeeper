@@ -12,6 +12,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Linq
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
+Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -202,7 +203,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Next
                 Me.DynamicHandlers = tempList
             End SyncLock
-
+            ape.ItemChanged = True
+            ape.DisplayLocalizedMessage("DynamicHandlersUpgraded.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
         <ActionButton(IconName.Suitcase, IconOptions.Normal)> _
@@ -220,6 +222,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Next
                 Me.DynamicHandlers = tempList
             End SyncLock
+            ape.ItemChanged = True
+            ape.DisplayLocalizedMessage("DynamicHandlersDowngraded.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
         Private Shared _ascxList As ListItemCollection

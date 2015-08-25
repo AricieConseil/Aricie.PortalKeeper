@@ -10073,4 +10073,28 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="VirtualCustomErrorsInfo_DynamicHandlerType.Text" xml:space="preserve">
     <value>Dynamic Handler Type</value>
   </data>
+  <data name="DotNetType_ArrayType.Help" xml:space="preserve">
+    <value>Select the .Net Type to make an array from.</value>
+  </data>
+  <data name="DotNetType_ArrayType.Text" xml:space="preserve">
+    <value>Array Type</value>
+  </data>
+  <data name="DotNetType_Rank.Help" xml:space="preserve">
+    <value>Defines the number of dimensions of your array</value>
+  </data>
+  <data name="DotNetType_Rank.Text" xml:space="preserve">
+    <value>Rank</value>
+  </data>
+  <data name="AdaptersRegistered.Message" xml:space="preserve">
+    <value>Control Adapters were activated in the hosting environment. They will be automatically registered on subsequent application restarts.</value>
+  </data>
+  <data name="ControlAdaptersConfig_RegisterAdapters.Text" xml:space="preserve">
+    <value>Renew Control Adapters Registration</value>
+  </data>
+  <data name="RestServicesRegistered.Message" xml:space="preserve">
+    <value>Rest Services were activated in the hosting environment. They will be automatically registered on subsequent application restarts.</value>
+  </data>
+  <data name="RestServicesSettings_RegisterRestServices.Text" xml:space="preserve">
+    <value>Renew Rest Services Registration</value>
+  </data>
 </root>

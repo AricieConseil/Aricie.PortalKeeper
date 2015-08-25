@@ -6,6 +6,7 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Services
+Imports Aricie.Services
 
 Namespace UI.WebControls.EditControls
 
@@ -238,10 +239,40 @@ Namespace UI.WebControls.EditControls
 
         Private _DynamicSurrogate As IDynamicSurrogate
 
+        Public ReadOnly Property UrlStateKey() As String
+            Get
+                Return "CtlUrlState-" & Me.ClientID.GetHashCode.ToString
+            End Get
+        End Property
+
+
+        Private _CurrentSurrogateValue As Object
+
+        Public Property CurrentSurrogateValue As Object
+            Get
+                If _CurrentSurrogateValue Is Nothing Then
+                    Dim serializedSurrogate As String = DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
+                    If Not serializedSurrogate.IsNullOrEmpty() Then
+                        _CurrentSurrogateValue = ReflectionHelper.Deserialize(Of Serializable(Of Object))(serializedSurrogate).Value
+                    Else
+                        CurrentSurrogateValue = _DynamicSurrogate.ConvertToSurrogate(Me.Value)
+                    End If
+                End If
+                
+                Return _CurrentSurrogateValue
+            End Get
+            Set(value As Object)
+                _CurrentSurrogateValue = value
+                Dim objSerialized As New Serializable(Of Object)(value)
+                DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = ReflectionHelper.Serialize(objSerialized).Beautify()
+            End Set
+        End Property
+
+
         Public Overrides Sub DataBind()
             Dim objValue As Object
             If _DynamicSurrogate IsNot Nothing Then
-                objValue = _DynamicSurrogate.ConvertToSurrogate(Me.Value)
+                objValue = CurrentSurrogateValue
             Else
                 objValue = Me.Value
             End If
