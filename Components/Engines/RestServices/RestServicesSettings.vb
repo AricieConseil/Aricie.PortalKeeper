@@ -9,6 +9,7 @@ Imports System.Xml.Serialization
 Imports System.ComponentModel
 Imports System.Reflection
 Imports Aricie.Services
+Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -37,93 +38,24 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Public Property EnableDigestAuthentication As Boolean
 
 
-        'Public Property Services As SimpleList(Of RestService)
-        '    Get
-        '        Return Nothing
-        '    End Get
-        '    Set(value As SimpleList(Of RestService))
-        '        Me.RestServices = value.Instances
-        '    End Set
-        'End Property
 
         Public Property RestServices As New List(Of RestService)
 
 
-
-        ' Private _ServicesByControllerName As Dictionary(Of String, RestService)
-
-        ' <XmlIgnore()> _
-        '<Browsable(False)> _
-        ' Public ReadOnly Property ServicesByControllerName As Dictionary(Of String, RestService)
-        '     Get
-        '         If _ServicesByControllerName Is Nothing Then
-        '             SyncLock Me
-        '                 Dim newDico As New Dictionary(Of String, RestService)
-        '                 For Each objSettings As RestService In RestServices
-        '                     If objSettings.Enabled Then
-        '                         For Each objController As DynamicControllerInfo In objSettings.DynamicControllers
-        '                             If objController.Enabled Then
-        '                                 newDico(objController.Name) = objSettings
-        '                             End If
-        '                         Next
-        '                     End If
-        '                 Next
-        '                 _ServicesByControllerName = newDico
-        '             End SyncLock
-        '         End If
-        '         Return _ServicesByControllerName
-        '     End Get
-        ' End Property
-
-
-
-        'Private Shared _ReflectedRegisterMethod As MethodInfo
-
-        'Private Shared ReadOnly Property ReflectedRegisterMethod As MethodInfo
-        '    Get
-        '        If _ReflectedRegisterMethod Is Nothing Then
-        '            Dim objModuleType As Type = ReflectionHelper.CreateType("Aricie.PortalKeeper.DNN7.WebAPI.WebApiConfig, Aricie.PortalKeeper.DNN7")
-        '            _ReflectedRegisterMethod = DirectCast(ReflectionHelper.GetMember(objModuleType, "RegisterWebHosted"), MethodInfo)
-        '        End If
-        '        Return _ReflectedRegisterMethod
-        '    End Get
-        'End Property
-
-
-        Public Sub RegisteWebAPIServices()
+        Public Overloads Sub RegisterRestServices()
             ObsoleteDotNetProvider.Instance.RegisterWebAPI()
 
-            'ReflectedRegisterMethod.Invoke(Nothing, Nothing)
         End Sub
 
 
+        <ActionButton(IconName.Magic, IconOptions.Normal)> _
+        Public Overloads Sub RegisterRestServices(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
+            PortalKeeperModule.RegisterAdapters()
+            ape.ItemChanged = True
+            ape.DisplayLocalizedMessage("RestServicesRegistered.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+        End Sub
 
-
-        'Public Function FindServiceByKey(resourceKey As Object) As RestService
-        '    Dim toReturn As RestService = Nothing
-        '    Dim resourceType As Type = TryCast(resourceKey, Type)
-        '    If resourceType IsNot Nothing Then
-        '        For Each objService As RestService In Me.Services.Instances
-        '            If objService.ResourceType.GetDotNetType() Is resourceType Then
-        '                toReturn = objService
-        '            End If
-        '        Next
-        '    End If
-        '    Return toReturn
-        'End Function
-
-        'Public Function FindServiceByKey(resourceKey As Object) As RestService
-        '    Dim toReturn As RestService = Nothing
-        '    Dim resourceType As Type = TryCast(resourceKey, Type)
-        '    If resourceType IsNot Nothing Then
-        '        For Each objService As RestService In Me.Services.Instances
-        '            If objService.ResourceType.GetDotNetType() Is resourceType Then
-        '                toReturn = objService
-        '            End If
-        '        Next
-        '    End If
-        '    Return toReturn
-        'End Function
+       
 
 
 

@@ -228,8 +228,8 @@ Public Class AricieFieldEditorControl
             MyBase.ValueChanged(sender, e)
             If Me.IsDirty Then
                 If Me.ParentAricieEditor IsNot Nothing Then
-                    'If e.Changed Then
                     'Me.ParentAricieEditor.ItemChanged = True
+                    'If e.Changed Then
                     Me.ParentAricieEditor.RootEditor.ItemChanged = True
                     'End If
                 End If

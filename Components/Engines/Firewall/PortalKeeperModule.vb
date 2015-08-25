@@ -121,6 +121,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Shared _AdaptersRegistered As New Dictionary(Of String, Integer)
         Private Shared _RestServicesRegistered As Boolean = False
 
+        Public Shared Sub RegisterAdapters()
+            SyncLock _AdaptersRegistered
+                _AdaptersRegistered = New Dictionary(Of String, Integer)
+            End SyncLock
+        End Sub
+
+        Public Shared Sub RegisterServices()
+            _RestServicesRegistered = False
+        End Sub
+
         Private Sub PreRequestHandlerExecute(ByVal s As Object, ByVal e As EventArgs)
 
             'Try
@@ -154,7 +164,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If Not _RestServicesRegistered Then
                     SyncLock keeperContext.GlobalConfig.RestServices
                         If Not _RestServicesRegistered Then
-                            keeperContext.GlobalConfig.RestServices.RegisteWebAPIServices()
+                            keeperContext.GlobalConfig.RestServices.RegisterRestServices()
                             _RestServicesRegistered = True
                         End If
                     End SyncLock
