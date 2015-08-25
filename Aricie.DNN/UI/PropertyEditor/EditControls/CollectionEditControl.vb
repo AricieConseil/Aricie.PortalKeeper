@@ -655,34 +655,37 @@ Namespace UI.WebControls.EditControls
 #Region "Private methods"
 
         Private Sub BindData()
-            If Me.rpContentList Is Nothing Then
-                Me.rpContentList = New Repeater()
+            If Me.CollectionValue IsNot Nothing Then
+                If Me.rpContentList Is Nothing Then
+                    Me.rpContentList = New Repeater()
 
-                If Me._DisplayStyle = CollectionDisplayStyle.Accordion Then
-                    Dim accordion As New HtmlGenericControl("div")
-                    accordion.Attributes.Add("class", "aricie_pe_accordion-" & Me.ParentEditor.ClientID)
-                    accordion.Attributes.Add("hash", Me.ParentEditor.ClientID.GetHashCode().ToString())
-                    'accordion.Attributes.Add("data-activeaccordion", Me.GetCurrentAccordionIndex().ToString(CultureInfo.InvariantCulture))
-                    Me.Controls.Add(accordion)
-                    accordion.Controls.Add(Me.rpContentList)
-                Else
-                    Me.Controls.Add(Me.rpContentList)
+                    If Me._DisplayStyle = CollectionDisplayStyle.Accordion Then
+                        Dim accordion As New HtmlGenericControl("div")
+                        accordion.Attributes.Add("class", "aricie_pe_accordion-" & Me.ParentEditor.ClientID)
+                        accordion.Attributes.Add("hash", Me.ParentEditor.ClientID.GetHashCode().ToString())
+                        'accordion.Attributes.Add("data-activeaccordion", Me.GetCurrentAccordionIndex().ToString(CultureInfo.InvariantCulture))
+                        Me.Controls.Add(accordion)
+                        accordion.Controls.Add(Me.rpContentList)
+                    Else
+                        Me.Controls.Add(Me.rpContentList)
+                    End If
+
+                    AddHandler Me.rpContentList.ItemDataBound, AddressOf ReapeaterItemDataBound
+                    AddHandler Me.rpContentList.ItemCommand, AddressOf RepeaterItemCommand
                 End If
 
-                AddHandler Me.rpContentList.ItemDataBound, AddressOf ReapeaterItemDataBound
-                AddHandler Me.rpContentList.ItemCommand, AddressOf RepeaterItemCommand
+                If Me.PagedCollection.IsPaginated Then
+                    Me.InjectPager()
+                End If
+
+                Me.rpContentList.DataSource = Me.PagedCollection
+
+                Me.rpContentList.Controls.Clear()
+                Me.rpContentList.ID = "rp" & Me.ParentField.ID & Me.PageIndex
+
+                Me.rpContentList.DataBind()
             End If
-
-            If Me.PagedCollection.IsPaginated Then
-                Me.InjectPager()
-            End If
-
-            Me.rpContentList.DataSource = Me.PagedCollection
-
-            Me.rpContentList.Controls.Clear()
-            Me.rpContentList.ID = "rp" & Me.ParentField.ID & Me.PageIndex
-
-            Me.rpContentList.DataBind()
+           
         End Sub
 
         Private Sub InjectPager()
