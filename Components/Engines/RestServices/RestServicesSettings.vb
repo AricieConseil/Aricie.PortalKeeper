@@ -48,12 +48,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        <ActionButton(IconName.Magic, IconOptions.Normal)> _
-        Public Overloads Sub RegisterRestServices(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
-            PortalKeeperModule.RegisterAdapters()
-            ape.ItemChanged = True
-            ape.DisplayLocalizedMessage("RestServicesRegistered.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
-        End Sub
+        'todo: figure out a way to perform the registration again
+        '<ActionButton(IconName.Magic, IconOptions.Normal)> _
+        'Public Overloads Sub RegisterRestServices(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
+
+
+
+        '    ape.ItemChanged = True
+        '    ape.DisplayLocalizedMessage("RestServicesRegistered.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+        'End Sub
 
        
 

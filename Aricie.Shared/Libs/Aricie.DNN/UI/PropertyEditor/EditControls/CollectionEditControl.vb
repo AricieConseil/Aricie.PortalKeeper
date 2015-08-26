@@ -154,10 +154,15 @@ Namespace UI.WebControls.EditControls
             Get
                 EnsureChildControls()
                 If _PageIndex = -1 Then
-                    Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
-                    Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
-                    If cookie IsNot Nothing Then
-                        Integer.TryParse(cookie.Value, _PageIndex)
+
+                    'Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
+                    'Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(cookieName)
+                    'If cookie IsNot Nothing Then
+                    '    Integer.TryParse(cookie.Value, _PageIndex)
+                    'End If
+                    Dim strIndex As String = DnnContext.Instance.AdvancedClientVariable(Me, "PageIndex")
+                    If Not strIndex.IsNullOrEmpty() Then
+                        Integer.TryParse(strIndex, NumberStyles.Integer, CultureInfo.InvariantCulture, _PageIndex)
                     End If
                     If _PageIndex = -1 Then
                         _PageIndex = 0
@@ -169,15 +174,16 @@ Namespace UI.WebControls.EditControls
             End Get
             Set(ByVal value As Integer)
                 Me._PageIndex = value
-                Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
-                Dim cookie As HttpCookie = HttpContext.Current.Response.Cookies(cookieName)
-                If cookie IsNot Nothing Then
-                    HttpContext.Current.Response.Cookies.Remove(cookieName)
-                End If
-                cookie = New HttpCookie(cookieName)
-                cookie.Value = value.ToString(CultureInfo.InvariantCulture)
-                cookie.Expires = Now.AddHours(1)
-                Me.Page.Response.Cookies.Add(cookie)
+                'Dim cookieName As String = "pagerIndex" & Me.ClientID.GetHashCode()
+                'Dim cookie As HttpCookie = HttpContext.Current.Response.Cookies(cookieName)
+                'If cookie IsNot Nothing Then
+                '    HttpContext.Current.Response.Cookies.Remove(cookieName)
+                'End If
+                'cookie = New HttpCookie(cookieName)
+                'cookie.Value = value.ToString(CultureInfo.InvariantCulture)
+                'cookie.Expires = Now.AddHours(1)
+                'Me.Page.Response.Cookies.Add(cookie)
+                DnnContext.Instance.AdvancedClientVariable(Me, "PageIndex") = value.ToString(CultureInfo.InvariantCulture)
                 Me.PagedCollection.PageIndex = value
             End Set
         End Property

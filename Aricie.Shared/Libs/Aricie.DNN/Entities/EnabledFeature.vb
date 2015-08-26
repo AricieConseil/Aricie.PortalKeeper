@@ -13,6 +13,11 @@ Namespace Entities
             Me._Entity = objSimple
         End Sub
 
+        Public Sub New(objSimple As T, enabled As Boolean)
+            Me.New(objSimple)
+            Me.Enabled = True
+        End Sub
+
         <AutoPostBack()> _
         Public Property Enabled As Boolean
 

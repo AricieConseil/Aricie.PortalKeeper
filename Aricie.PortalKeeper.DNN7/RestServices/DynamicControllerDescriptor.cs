@@ -26,6 +26,16 @@ namespace Aricie.PortalKeeper.DNN7
         {
         }
 
+        public DynamicControllerInfo ControllerInfo
+        {
+            get { return _ControllerInfo; }
+        }
+
+        public RestService Service
+        {
+            get { return _RestService; }
+        }
+
         public override System.Collections.ObjectModel.Collection<T> GetCustomAttributes<T>()
         {
 

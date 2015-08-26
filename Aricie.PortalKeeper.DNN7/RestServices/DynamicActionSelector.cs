@@ -32,6 +32,41 @@ namespace Aricie.PortalKeeper.DNN7
 
         }
 
+        public override ILookup<string, HttpActionDescriptor> GetActionMapping(HttpControllerDescriptor controllerDescriptor)
+        {
+            var baseLookup = base.GetActionMapping(controllerDescriptor);
+
+            var dynController = controllerDescriptor as DynamicControllerDescriptor;
+            if (dynController != null)
+            {
+                var candidateActions = dynController.ControllerInfo.DynamicActions
+                    .Where(candidateAction => candidateAction.Enabled);
+                var toReturnList = new List<HttpActionDescriptor>();
+                foreach (DynamicAction objMethod in candidateActions)
+                {
+                    foreach (string verb in objMethod.HttpVerbs.All.Select(objVerb => objVerb.ToString()))
+                    {
+                        if (baseLookup.Contains(verb))
+                        {
+                            ReflectedHttpActionDescriptor originalDescriptor = baseLookup[verb].First() as ReflectedHttpActionDescriptor;
+                            if (originalDescriptor != null)
+                            {
+                                toReturnList.Add(new DynamicHttpActionDescriptor(dynController.Service,
+                                    dynController.ControllerInfo, objMethod, originalDescriptor));
+                                break;
+                            }
+                            
+                            
+                        }
+                    }
+                }
+
+                return toReturnList.ToLookup<HttpActionDescriptor, string>(objActionDesc => objActionDesc.ActionName);
+            }
+            return baseLookup;
+
+        }
+
         public override HttpActionDescriptor SelectAction(HttpControllerContext controllerContext)
         {
             var dynController = controllerContext.Controller as DynamicController;
@@ -100,8 +135,8 @@ namespace Aricie.PortalKeeper.DNN7
                         throw new HttpResponseException(controllerContext.Request.CreateErrorResponse(HttpStatusCode.NotFound,
                             string.Format(templatedMessage, new object[3] { controllerContext.Request.RequestUri != null ? controllerContext.Request.RequestUri.ToString() : "", controllerContext.ControllerDescriptor.ControllerName, actionName })));
                     case 1:
-                        var candidateDynamicMethod = candidateActions[0]; 
-                        var toReturn = new DynamicHttpActionDescriptor(dynController, candidateDynamicMethod, reflectedCandidate);
+                        var candidateDynamicMethod = candidateActions[0];
+                        var toReturn = new DynamicHttpActionDescriptor(dynController.Service,dynController.ControllerInfo, candidateDynamicMethod, reflectedCandidate);
                         
                         return toReturn;
                     default:

@@ -49,6 +49,10 @@ namespace Aricie.PortalKeeper.DNN7
                 && objType.GetConstructor(Type.EmptyTypes) != null;
         }
 
+        public override System.Collections.Generic.IEnumerable<string> GetSampleRoutes(string basePath, DynamicControllerInfo controller)
+        {
+            return WebApiConfig.GetSampleRoutes(basePath, controller);
+        }
 
     }
 }

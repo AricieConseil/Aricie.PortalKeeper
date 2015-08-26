@@ -68,5 +68,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return New List(Of Type)()
         End Function
 
+        Public Overridable Function GetSampleRoutes(basePath As String, controller As DynamicControllerInfo) As IEnumerable(Of String)
+            Return New List(Of String)
+        End Function
+
+
     End Class
 End NameSpace
