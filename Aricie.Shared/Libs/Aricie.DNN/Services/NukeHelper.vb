@@ -350,10 +350,15 @@ Namespace Services
             End Get
         End Property
 
-        Private _PortalSettingsDebug As Boolean
-
 
         Private _HostPortalsettings As PortalSettings
+
+        Public ReadOnly Property BaseUrl As String
+            Get
+                Return DotNetNuke.Common.Globals.AddHTTP(NukeHelper.PortalSettings.PortalAlias.HTTPAlias)
+            End Get
+        End Property
+
 
         ''' <summary>
         ''' Gets current portal settings

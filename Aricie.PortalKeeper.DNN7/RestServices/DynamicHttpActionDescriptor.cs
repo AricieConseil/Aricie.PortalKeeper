@@ -12,14 +12,16 @@ namespace Aricie.PortalKeeper.DNN7
 {
     public class DynamicHttpActionDescriptor : ReflectedHttpActionDescriptor
     {
-        private DynamicController _Controller;
+        private RestService _Service;
+        private DynamicControllerInfo _Controller;
         private DynamicAction _DynamicMethod;
-        private ReflectedHttpActionDescriptor _OriginalDescriptor;
+        private HttpActionDescriptor _OriginalDescriptor;
         private Collection<HttpParameterDescriptor> _Parameters;
 
-        public DynamicHttpActionDescriptor(DynamicController controller, DynamicAction objMethod, ReflectedHttpActionDescriptor originalDescriptor)
+        public DynamicHttpActionDescriptor(RestService service, DynamicControllerInfo controller, DynamicAction objMethod, ReflectedHttpActionDescriptor originalDescriptor)
             : base(originalDescriptor.ControllerDescriptor, originalDescriptor.MethodInfo)
         {
+            _Service = service;
             _Controller = controller;
             _DynamicMethod = objMethod;
             _OriginalDescriptor = originalDescriptor;
@@ -29,8 +31,8 @@ namespace Aricie.PortalKeeper.DNN7
             IDictionary<string, object> arguments, CancellationToken cancellationToken)
         {
             var objContext = _DynamicMethod.InitContext(arguments);
-            objContext.InitParams(_Controller.Service.GlobalParameters);
-            objContext.InitParams(_Controller.ControllerInfo.GlobalParameters);
+            objContext.InitParams(_Service.GlobalParameters);
+            objContext.InitParams(_Controller.GlobalParameters);
             objContext.SetVar("Request", controllerContext.Request);
             objContext.SetVar("RouteData", controllerContext.RouteData);
             var newDico = new Dictionary<string, object>(1) {{DynamicController.ActionContextParameterName, objContext}};

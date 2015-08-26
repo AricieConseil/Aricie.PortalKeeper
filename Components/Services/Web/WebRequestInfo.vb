@@ -337,7 +337,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 targetUrl = Me._UrlExpression.Evaluate(actionContext, actionContext)
             End If
             If targetUrl.StartsWith("~") Then
-                targetUrl = "http://" & (PortalAliasesByPortalId(PortalIds(0))(0).HTTPAlias) & targetUrl.Substring(1)
+                targetUrl = NukeHelper.BaseUrl & targetUrl.Substring(1)
             ElseIf targetUrl.IndexOf("://", System.StringComparison.Ordinal) = -1 Then
                 targetUrl = "http://" & targetUrl
             End If

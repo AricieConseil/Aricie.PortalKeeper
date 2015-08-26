@@ -19,15 +19,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Me.New(strName, strPattern)
             If makeDNNRoute Then
                 Me.DNNRoute.Enabled = True
-                Me.DNNRoute.Entity.FolderName = "Aricie.Portalkeeper"
-                Me.DNNRoute.Entity.Namespaces.Add("Aricie.PortalKeeper.DNN7")
+            Else
+                Me.DNNRoute.Enabled = False
             End If
         End Sub
 
         Public Property Template As String = "{controller}/{action}"
 
 
-        Public Property DNNRoute As New EnabledFeature(Of DNNRouteInfo)
+        Public Property DNNRoute As New EnabledFeature(Of DNNRouteInfo)(New DNNRouteInfo(PortalKeeperContext(Of SimpleEngineEvent).MODULE_NAME, _
+                                                                                         PortalKeeperContext(Of SimpleEngineEvent).DYNAMIC_CONTROLLER_NAMESPACE), True)
 
 
         Public Property Defaults As New Variables()

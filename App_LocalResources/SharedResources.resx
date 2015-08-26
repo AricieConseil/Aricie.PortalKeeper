@@ -10097,4 +10097,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="RestServicesSettings_RegisterRestServices.Text" xml:space="preserve">
     <value>Renew Rest Services Registration</value>
   </data>
+  <data name="DynamicControllerInfo_RegisteredRoutes.Help" xml:space="preserve">
+    <value>This is a list of Routes found to match your controller in the registered Web API configuration.</value>
+  </data>
+  <data name="DynamicControllerInfo_RegisteredRoutes.Text" xml:space="preserve">
+    <value>Registered Routes</value>
+  </data>
 </root>

@@ -28,6 +28,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 #Region "Constants"
 
         Public Const MODULE_NAME As String = "Aricie.PortalKeeper"
+        Public Const DYNAMIC_CONTROLLER_NAMESPACE = "Aricie.PortalKeeper.DNN7"
 
 #End Region
 

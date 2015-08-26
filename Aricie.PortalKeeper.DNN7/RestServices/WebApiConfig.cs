@@ -1,5 +1,9 @@
+using System;
+using System.Linq;
+using System.Collections.Generic;
 using System.Web.Http;
 using System.Web.Http.Controllers;
+using System.Web.Http.Description;
 using System.Web.Http.Dispatcher;
 using Aricie.DNN.Modules.PortalKeeper;
 
@@ -54,5 +58,25 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                 }
             }
         }
+
+        public static IEnumerable<string> GetSampleRoutes(string basePath, DynamicControllerInfo controller)
+        {
+            var toReturn = new List<string>();
+            IApiExplorer apiExplorer = GetConfiguration().Services.GetApiExplorer();
+
+            foreach (ApiDescription api in apiExplorer.ApiDescriptions)
+            {
+                if (DotNetNuke.Web.Api.RouteExtensions.GetName(api.Route).StartsWith(PortalKeeperContext<SimpleEngineEvent>.MODULE_NAME, StringComparison.OrdinalIgnoreCase)
+                    && api.ActionDescriptor.ControllerDescriptor.ControllerName == controller.Name)
+                {
+                    toReturn.Add(api.ActionDescriptor.ActionName + " : "
+                        + api.HttpMethod.ToString() + " : "
+                        + basePath + "/" + api.RelativePath);
+                }
+            }
+            return toReturn;
+        }
+
+
     }
 }

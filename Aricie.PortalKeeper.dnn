@@ -43,6 +43,9 @@
           <name>Aricie.PortalKeeper.XmlSerializers.dll</name>
         </file>
         <file>
+          <name>Aricie.PortalKeeper.DNN7.dll</name>
+        </file>
+        <file>
           <name>Newtonsoft.Json.dll</name>
         </file>
         <file>
