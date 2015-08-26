@@ -10,7 +10,16 @@
         <email><![CDATA[<a href="mailto:support@aricie.fr">support@aricie.fr</a>]]></email>
       </owner>
       <iconFile>PKP-Logo.png</iconFile>
-      <license>You are granted a license to install the SOFTWARE PRODUCT on a single production web server, and use it for a SINGLE DotNetNuke installation (instance). You are also permitted to use the same license for non-production development or staging servers.  If you purchased a SOURCE LICENSE: You are further licensed to view the source code of the SOFTWARE PRODUCT and modify it for use as described above. Under no circumstances may the source code or products developed by using the source code be re-distributed in any form.</license>
+      <license>
+        The MIT License (MIT)
+        Copyright (c) 2013 Aricie
+
+        Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+        The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+        THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+      </license>
       <releaseNotes src="ReleaseNotes.html" />
       <dependencies>
         <dependency type="Package">Aricie.Shared</dependency>
