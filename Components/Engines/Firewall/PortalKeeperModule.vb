@@ -45,12 +45,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                 AddHandler application.PostRequestHandlerExecute, AddressOf Me.PostRequestHandlerExecute
 
+                AddHandler application.ReleaseRequestState, AddressOf Me.ReleaseRequestState
+
                 AddHandler application.EndRequest, AddressOf Me.OnEndRequest
-            Else
 
             End If
 
         End Sub
+
+        
 
         Private Sub OnBeginRequest(ByVal sender As Object, ByVal e As EventArgs)
             'Try
@@ -254,6 +257,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             '    Exceptions.LogException(ex)
             'End Try
 
+        End Sub
+
+        Public Const ResponseLengthMessageKey As String = "ResponseLength"
+        Private Sub ReleaseRequestState(sender As Object, e As EventArgs)
+            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+            Me.ProcessStep(context, RequestEvent.ReleaseRequestState, False)
+            'If context.Response IsNot Nothing AndAlso context.Response.Filter IsNot Nothing Then
+            '    Dim responseSize As Long = context.Response.Filter.Length
+            '    Dim keeperContext As PortalKeeperContext(Of RequestEvent) = PortalKeeperContext(Of RequestEvent).Instance(context)
+            '    keeperContext.OnSendMessage(Of Long)(ResponseLengthMessageKey, responseSize)
+            'End If
         End Sub
 
         Private Sub OnEndRequest(ByVal sender As Object, ByVal e As EventArgs)

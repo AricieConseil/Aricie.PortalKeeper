@@ -29,7 +29,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
       
 
 
-        Private _RequestScope As RequestScope = RequestScope.DNNPageOnly
+        Private _RequestScope As RequestScope = RequestScope.Any
 
         Private _IgnoredExtensions As String = "jpg,jpeg,png,axd,js,css,gif,bmp"
 

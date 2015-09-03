@@ -59,7 +59,7 @@ Friend MustInherit Class LiteralElement
 	End Sub
 
 	Private Shared Sub EmitSuperShort(ByVal value As Int32, ByVal ilg As FleeILGenerator)
-		Dim ldcOpcode As OpCode
+        Dim ldcOpcode As OpCode = Nothing
 
 		Select Case value
 			Case 0

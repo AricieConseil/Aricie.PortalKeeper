@@ -1031,12 +1031,12 @@ Namespace Services
                     If TypeOf attr Is DefaultPropertyAttribute Then
                         Dim defPropAttr As DefaultPropertyAttribute = DirectCast(attr, DefaultPropertyAttribute)
                         toReturn = objType.GetProperty(defPropAttr.Name)
-                        SyncLock _DefaultProperties
-                            _DefaultProperties(objType) = toReturn
-                        End SyncLock
                         Exit For
                     End If
                 Next
+                SyncLock _DefaultProperties
+                    _DefaultProperties(objType) = toReturn
+                End SyncLock
             End If
             Return toReturn
         End Function

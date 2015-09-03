@@ -10,19 +10,21 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
 Imports System.Globalization
+Imports System.IO
+Imports Aricie.IO
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
 
     <ActionButton(IconName.ExclamationTriangle, IconOptions.Normal)> _
     <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class RequestsCapInfo
 
-        'Private _CountStartTime As DateTime = Now
-        'Private _RecordLock As New Object
+
         <NonSerialized()> _
-        Private _LockDico As New ReaderWriterLock()
-        Private _Record As New Dictionary(Of String, ClientSourceCapLog)
+        Private ReadOnly _LockDico As New ReaderWriterLock()
+        Private ReadOnly _Record As New Dictionary(Of String, ClientSourceCapLog)
 
         Private _Enabled As Boolean = True
         Private _CappedRequestScope As RequestScope
@@ -32,7 +34,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _RequestRateSpan As TimeSpan = TimeSpan.Zero
         Private _MaxNbRequest As Integer = 100
         Private _MaxNbNewSources As Integer = 0
-        Private _MaxTotalBytes As Integer = 100000000
 
 
         Public Sub BeginRead()
@@ -67,7 +68,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public ReadOnly Property FriendlyName() As String
             Get
-                Return String.Format("Max {0} Requests ({1}) / sec per {2} over {3}", Me.Rate.ToString(CultureInfo.InvariantCulture), Me.CappedRequestScope.ToString(), Me.RequestSource.SourceType.ToString(), Me.Duration.ToString())
+                Return String.Format("Max {1} Requests ({2}) / sec{0} per {3} over {4}{0}Max{5} KB{0}Max {6} new sources", _
+                                     UIConstants.TITLE_SEPERATOR, Me.Rate.ToString(CultureInfo.InvariantCulture), Me.CappedRequestScope.ToString(), _
+                                     Me.RequestSource.SourceType.ToString(), Me.Duration.ToString(), _
+                                     Me.MaxTotalKBs.ToString(CultureInfo.InvariantCulture), Me.MaxNbNewSources.ToString(CultureInfo.InvariantCulture))
             End Get
         End Property
 
@@ -81,10 +85,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("")> _
-          <Width(300)> _
-          <LineCount(4)> _
-          <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         Public Property Decription() As New CData
 
 
@@ -150,14 +150,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        Public Property MaxTotalBytes As Integer
-            Get
-                Return _MaxTotalBytes
-            End Get
-            Set(value As Integer)
-                _MaxTotalBytes = value
-            End Set
-        End Property
+        Public Property MaxTotalKBs As Integer = 100000
+
+
+        Public Property MeasureResponseSize As Boolean
 
 
 
@@ -176,9 +172,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Private _CurrentCapWindow As DateTime = PerformanceLogger.Now
-        Private _LockCapWindow As New Object
+        Private ReadOnly _LockCapWindow As New Object
         Private _CurrentWindowCount As Integer
-        Private _BannedWindows As New Dictionary(Of DateTime, Boolean)
+        Private ReadOnly _BannedWindows As New Dictionary(Of DateTime, Boolean)
 
         Private Function IsInScope(context As PortalKeeperContext(Of RequestEvent)) As Boolean
             Select Case Me._CappedRequestScope
@@ -194,6 +190,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
+
         Public Function IsValid(ByVal context As PortalKeeperContext(Of RequestEvent), ByRef clue As Object, ByRef key As String) As Boolean
             If Not Me._Enabled OrElse Not Me.IsInScope(context) Then
                 Return True
@@ -207,11 +204,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 End SyncLock
             End If
+            Dim currentHttpContext As HttpContext = DnnContext.Current.HttpContext
 
-            Dim requestLength As Integer
-            If DnnContext.Current.HttpContext IsNot Nothing Then
-                requestLength = DnnContext.Current.HttpContext.Request.ContentLength
-            End If
 
             Dim currentLog As ClientSourceCapLog
             key = Me._RequestSource.GenerateKey(context)
@@ -222,51 +216,74 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             EndRead()
             Dim toReturn As Boolean
 
+            Dim requestLength As Integer
+            If currentHttpContext IsNot Nothing Then
+                requestLength = currentHttpContext.Request.ContentLength
+                If Me.MeasureResponseSize Then
+                    Dim nonByRefKey As String = key
+                    Dim measuringFilter As New ResponseFilterStream(currentHttpContext.Response.Filter, currentHttpContext, ResponseFilterType.SignalLengths)
+                    currentHttpContext.Response.Filter = measuringFilter
+                    AddHandler measuringFilter.SignalLengths, Sub(sender As Object, e As ChangedEventArgs(Of Long))
+                                                                  Dim responseLength As Long = e.NewValue
+                                                                  Dim responseCurrentLog As ClientSourceCapLog
+                                                                  BeginRead()
+                                                                  Dim responseExists As Boolean = Me._Record.TryGetValue(nonByRefKey, responseCurrentLog)
+                                                                  EndRead()
+                                                                  If responseExists Then
+                                                                      responseCurrentLog = New ClientSourceCapLog(responseCurrentLog.FirstRequestTime, _
+                                                                                                             responseCurrentLog.NbRequests, _
+                                                                                                             responseCurrentLog.CapWindow, _
+                                                                                                             responseCurrentLog.TotalBytes + responseLength)
+                                                                      BeginWrite()
+                                                                      Me._Record(nonByRefKey) = responseCurrentLog
+                                                                      EndWrite()
+                                                                  End If
+                                                              End Sub
+
+                End If
+            End If
+
             If Not exists Then
                 currentLog = New ClientSourceCapLog(dateNow, 1, Me._CurrentCapWindow, requestLength)
                 Interlocked.Increment(_CurrentWindowCount)
                 If Me._MaxNbNewSources > 0 AndAlso _CurrentWindowCount > Me._MaxNbNewSources Then
-                    SyncLock _LockCapWindow
-                        If _CurrentWindowCount > Me._MaxNbNewSources Then
-                            _BannedWindows(_CurrentCapWindow) = True
-                        End If
+                    SyncLock _BannedWindows
+                        _BannedWindows(_CurrentCapWindow) = True
                     End SyncLock
                 End If
                 toReturn = True
             Else
-                If dateNow.Subtract(currentLog.LastRequestTime) > Duration.Value Then
+                Dim localWindowSpan As TimeSpan = dateNow.Subtract(currentLog.FirstRequestTime)
+                If localWindowSpan > Duration.Value Then
+                    'the current individual window has reached duration, reset window 
                     toReturn = True
-                    Dim nb As Integer = Math.Max(1, currentLog.NbRequests - 1)
-                    currentLog = New ClientSourceCapLog(dateNow.Subtract(Duration.Value).Add(RequestRateSpan), nb, currentLog.CapWindow, currentLog.TotalBytes - currentLog.TotalBytes \ nb)
-                    'Thread.Sleep(Convert.ToInt32(Math.Pow(100, nb / Me._MaxNbRequest)))
+
+                    currentLog = New ClientSourceCapLog(dateNow, 1, currentLog.CapWindow, requestLength)
                 Else
-                    Dim totalBytes As Integer = currentLog.TotalBytes + requestLength
-                    If currentLog.NbRequests < Me._MaxNbRequest AndAlso totalBytes < Me.MaxTotalBytes Then
-                        currentLog = New ClientSourceCapLog(currentLog.LastRequestTime, currentLog.NbRequests + 1, currentLog.CapWindow, totalBytes)
+                    'the current individual window is still below duration, keep counting within existing window
+                    Dim totalBytes As Long = currentLog.TotalBytes + requestLength
+                    If currentLog.NbRequests < Me._MaxNbRequest AndAlso (Me.MaxTotalKBs = 0 OrElse totalBytes < Me.MaxTotalKBs * 1000) Then
+                        'the request is below cap, increment existing counter without changing reference window
+                        currentLog = New ClientSourceCapLog(currentLog.FirstRequestTime, currentLog.NbRequests + 1, currentLog.CapWindow, totalBytes)
                         toReturn = True
                     Else
-                        If currentLog.LastRequestTime < dateNow.Subtract(RequestRateSpan) Then
-                            currentLog = New ClientSourceCapLog(currentLog.LastRequestTime.Add(RequestRateSpan), currentLog.NbRequests, currentLog.CapWindow, totalBytes)
-                        End If
+
+                        'the request reached limit, slide window with ratespan and same request number, leaving the opportunity to recover
+                        Dim nb As Integer = Math.Max(1, currentLog.NbRequests - 1)
+                        currentLog = New ClientSourceCapLog(currentLog.FirstRequestTime.Add(RequestRateSpan), nb, currentLog.CapWindow, totalBytes * (nb - 1) \ nb)
                     End If
                 End If
             End If
-            If toReturn AndAlso _BannedWindows.ContainsKey(currentLog.CapWindow) Then
+            If toReturn AndAlso Me._MaxNbNewSources > 0 AndAlso _BannedWindows.ContainsKey(currentLog.CapWindow) Then
                 toReturn = False
             End If
-            'currentFlag = New KeyValuePair(Of DateTime, Integer)(currentFlag.Key.Add(TimeSpan.FromSeconds(1)), currentFlag.Value - CInt(Math.Ceiling(Me.Rate)))
 
 
-            'SyncLock _RecordLock
             BeginWrite()
             Me._Record(key) = currentLog
             EndWrite()
-            'End SyncLock
             Return toReturn
         End Function
-
-
-
 
 
     End Class

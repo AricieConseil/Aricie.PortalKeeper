@@ -15,6 +15,7 @@
         PagePreRender
         PagePreRenderComplete
         PostRequestHandlerExecute
+        ReleaseRequestState
         EndRequest
     End Enum
 End Namespace

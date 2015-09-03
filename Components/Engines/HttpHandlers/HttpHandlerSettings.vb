@@ -20,12 +20,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <Browsable(False)> _
         Public Overrides ReadOnly Property FriendlyName As String
             Get
+                Dim handlerName As String = String.Empty
                 If HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler Then
-                    Return String.Format("{1}{0}{2}{0}{3}{0}{4}", UIConstants.TITLE_SEPERATOR, Me.DynamicHandler.Name, Me.FriendlyPathsAndVerbs, _
-                                         IIf(Me.DynamicHandler.Enabled, "enabled", "disabled"), IIf(Me.IsInstalled, "registered", "unregistered"))
+                    handlerName = Me.DynamicHandler.Name
                 Else
-                    Return MyBase.FriendlyName
+                    handlerName = Me.StaticHandlerName.Name
                 End If
+                Return String.Format("{1}{0}{2}{0}{3}{0}{4}", UIConstants.TITLE_SEPERATOR, handlerName, Me.FriendlyPathsAndVerbs, _
+                                         IIf(Me.DynamicHandler.Enabled, "enabled", "disabled"), IIf(Me.IsInstalled, "registered", "unregistered"))
             End Get
         End Property
 
@@ -39,8 +41,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("HttpHandlerMode", False, True, HttpHandlerMode.DynamicHandler)> _
         Public Property DynamicHandler As New SimpleRuleEngine()
 
-
-
+        <ExtendedCategory("MainHandler")> _
+        <ConditionalVisible("HttpHandlerMode", True, True, HttpHandlerMode.DynamicHandler)> _
+        Public Property StaticHandlerName As New NamedEntity()
 
 
 

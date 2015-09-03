@@ -10,6 +10,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports HtmlAgilityPack
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Filtering
 
@@ -52,7 +53,7 @@ Namespace Services.Filtering
     ''' </summary>
     ''' <remarks></remarks>
     <ActionButton(IconName.Code, IconOptions.Normal)> _
-    <DefaultProperty("SelectExpression")> _
+    <DefaultProperty("Expression")> _
     <Serializable()> _
     Public Class XPathInfo
 
@@ -61,11 +62,10 @@ Namespace Services.Filtering
 
 
         Public Sub New(selectExpression As String, isSingle As Boolean, isHtml As Boolean)
-            Me._SelectExpression = selectExpression
+            Me.Expression.Simple = selectExpression
             Me._SingleSelect = isSingle
             Me._IsHtmlContent = isHtml
         End Sub
-
 
         ''' <summary>
         ''' XPath selection expression
@@ -73,11 +73,19 @@ Namespace Services.Filtering
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-           <LineCount(2)> _
-           <Width(500)> _
-           <Required(True)> _
-        Public Property SelectExpression() As String = ""
+        Public Property Expression As New SimpleOrSimpleExpression(Of CData)("")
+
+
+        'todo: remove obsolete property
+        <Browsable(False)> _
+        Public Property SelectExpression() As String
+            Get
+                Return Nothing
+            End Get
+            Set(value As String)
+                Expression.Simple = value
+            End Set
+        End Property
 
         ''' <summary>
         ''' Selection is against Html content using HtmlAgilityPack rather than regular Xml content using System.Xml
@@ -86,6 +94,14 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Overridable Property IsHtmlContent() As Boolean = True
+
+
+        <ExtendedCategory("XPathSettings")> _
+        Public Property UseNamespaceManager As Boolean
+
+        <ExtendedCategory("XPathSettings")> _
+        <ConditionalVisible("UseNamespaceManager")> _
+        Public Property DefaultNamespacePrefix As String = ""
 
         <ExtendedCategory("XPathSettings")> _
         Public Property EvaluateExpression As Boolean
@@ -99,7 +115,7 @@ Namespace Services.Filtering
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
         <ConditionalVisible("OutputMode", False, True, XPathOutputMode.Selection)> _
-         Public Property SelectMode As XPathSelectMode = XPathSelectMode.SelectionString
+        Public Property SelectMode As XPathSelectMode = XPathSelectMode.SelectionString
 
 
         ''' <summary>
@@ -112,7 +128,7 @@ Namespace Services.Filtering
         <ConditionalVisible("EvaluateExpression", True, True)> _
         Public Property SingleSelect() As Boolean = True
 
-        
+
 
         ''' <summary>
         ''' Selection of whole tree
@@ -220,16 +236,59 @@ Namespace Services.Filtering
             End If
         End Sub
 
+
+
+
+        ''' <summary>
+        ''' Select against a string that will be converted to HTML
+        ''' </summary>
+        ''' <param name="source"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Overloads Function DoSelect(ByVal source As String) As Object
+            Return DoSelect(source, Nothing)
+        End Function
+
+        ''' <summary>
+        ''' Select against a string that will be converted to HTML
+        ''' </summary>
+        ''' <param name="source"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Overloads Function DoSelect(ByVal source As String, dataContext As IContextLookup) As Object
+
+            If Not String.IsNullOrEmpty(source) Then
+                Dim navigable As IXPathNavigable = Me.GetNavigable(source)
+                Return DoSelect(navigable, dataContext)
+            End If
+            Return Nothing
+        End Function
+
+        Public Overloads Function DoSelect(ByVal source As IXPathNavigable) As Object
+            Return DoSelect(source, Nothing)
+        End Function
+
         ''' <summary>
         ''' Select against a navigable entity
         ''' </summary>
         ''' <param name="source"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function DoSelect(ByVal source As IXPathNavigable) As Object
-            If source IsNot Nothing And Not String.IsNullOrEmpty(Me._SelectExpression) Then
-                Dim navigator As XPathNavigator = source.CreateNavigator()
-                Dim toReturn As Object = Me.SelectNavigate(navigator)
+        Public Overloads Function DoSelect(ByVal source As IXPathNavigable, dataContext As IContextLookup) As Object
+            If source IsNot Nothing Then
+                Dim navigator As XPathNavigator = Nothing
+                If UseNamespaceManager Then
+                    Select Case source.GetType().Name
+                        Case "HtmlDocument"
+                            navigator = DirectCast(source, HtmlDocument).DocumentNode.CreateRootNavigator()
+                        Case "XmlDocument"
+                            navigator = DirectCast(source, XmlDocument).DocumentElement.CreateNavigator()
+                    End Select
+                Else
+                    navigator = source.CreateNavigator()
+                End If
+
+                Dim toReturn As Object = Me.SelectNavigate(navigator, dataContext)
                 If Not Me.EvaluateExpression Then
                     Select Case OutputMode
                         Case XPathOutputMode.DocumentNavigable
@@ -249,24 +308,24 @@ Namespace Services.Filtering
             Return Nothing
         End Function
 
-        ''' <summary>
-        ''' Select against a string that will be converted to HTML
-        ''' </summary>
-        ''' <param name="source"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function DoSelect(ByVal source As String) As Object
-
-            If Not String.IsNullOrEmpty(source) AndAlso Not String.IsNullOrEmpty(Me._SelectExpression) Then
-                Dim navigable As IXPathNavigable = Me.GetNavigable(source)
-                Return DoSelect(navigable)
-            End If
-            Return Nothing
-        End Function
 
 
         Private _CompiledExpression As XPathExpression
         Private _CompiledExpressionSource As String = ""
+
+
+        Public Overloads Function SelectNavigate(ByVal navigator As XPathNavigator) As Object
+            Return SelectNavigate(navigator, Nothing, Nothing)
+        End Function
+
+
+        Public Overloads Function SelectNavigate(ByVal navigator As XPathNavigator, dataContext As IContextLookup) As Object
+            Return SelectNavigate(navigator, Nothing, dataContext)
+        End Function
+
+        Public Overloads Function SelectNavigate(ByVal navigator As XPathNavigator, objIterator As XPathNodeIterator) As Object
+            Return SelectNavigate(navigator, objIterator, Nothing)
+        End Function
 
         ''' <summary>
         ''' Runs selection against a navigator
@@ -274,11 +333,25 @@ Namespace Services.Filtering
         ''' <param name="navigator"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function SelectNavigate(ByVal navigator As XPathNavigator, objIterator As XPathNodeIterator) As Object
-            If _CompiledExpression Is Nothing OrElse Me.SelectExpression <> _CompiledExpressionSource Then
+        Public Overloads Function SelectNavigate(ByVal navigator As XPathNavigator, objIterator As XPathNodeIterator, dataContext As IContextLookup) As Object
+            Dim selExp As String = Me.Expression.GetValue(dataContext)
+            If _CompiledExpression Is Nothing OrElse selExp <> _CompiledExpressionSource Then
                 SyncLock Me
-                    _CompiledExpressionSource = Me.SelectExpression
-                    _CompiledExpression = XPathExpression.Compile(Me.SelectExpression)
+                    _CompiledExpressionSource = selExp
+                    If UseNamespaceManager Then
+                        Dim nsman As New XmlNamespaceManager(navigator.NameTable)
+                        For Each nskvp As KeyValuePair(Of String, String) In navigator.GetNamespacesInScope(XmlNamespaceScope.All)
+                            If nskvp.Key.IsNullOrEmpty() Then
+                                nsman.AddNamespace(Me.DefaultNamespacePrefix, nskvp.Value)
+                            Else
+                                nsman.AddNamespace(nskvp.Key, nskvp.Value)
+                            End If
+                        Next
+                        _CompiledExpression = XPathExpression.Compile(selExp, nsman)
+                    Else
+                        _CompiledExpression = XPathExpression.Compile(selExp)
+                    End If
+
                 End SyncLock
             End If
             If Me.EvaluateExpression Then
@@ -379,7 +452,7 @@ Namespace Services.Filtering
                         End If
 
                         For Each subSelectPair As KeyValuePair(Of String, XPathInfo) In Me._SubSelects
-                            Dim objSubResult As Object = subSelectPair.Value.SelectNavigate(result, TryCast(results, XPathNodeIterator))
+                            Dim objSubResult As Object = subSelectPair.Value.SelectNavigate(result, TryCast(results, XPathNodeIterator), dataContext)
                             If objSubResult IsNot Nothing Then
                                 If Me.SelectMode = XPathSelectMode.SelectionNodes Then
                                     currentDicoNodes(subSelectPair.Key) = objSubResult
@@ -419,15 +492,8 @@ Namespace Services.Filtering
             End If
         End Function
 
-        ''' <summary>
-        ''' Runs selection against a navigator
-        ''' </summary>
-        ''' <param name="navigator"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Function SelectNavigate(ByVal navigator As XPathNavigator) As Object
-            Return SelectNavigate(navigator, Nothing)
-        End Function
+
+
 
 
         Public Function GetOutputType() As Type

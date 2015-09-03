@@ -6,6 +6,7 @@ Imports System.Web
 Imports System.Text
 Imports Aricie.Services
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Caching
@@ -153,9 +154,6 @@ Namespace Services.Caching
         End Property
 
         <ExtendedCategory("Policy")> _
-        Public Property ClearCookies As Boolean = True
-
-        <ExtendedCategory("Policy")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <LineCount(2), Width(400)>
         Public Property VaryByContentEncodings As String
@@ -168,7 +166,16 @@ Namespace Services.Caching
         End Property
 
         <ExtendedCategory("Policy")> _
+        Public Property ClearCookies As Boolean = True
+
+        <ExtendedCategory("Policy")> _
         Public Property AddArrOptOutHeaders As Boolean
+
+        <ExtendedCategory("Policy")> _
+        Public Property ToggleDynamicCompression As New EnabledFeature(Of Boolean)
+
+        <ExtendedCategory("Policy")> _
+        Public Property ToggleBandwidthThrottling As New EnabledFeature(Of ResponseThrottlerInfo)
 
 
         Private _VaryByContentEncodingsList As List(Of String)
@@ -180,7 +187,7 @@ Namespace Services.Caching
                 If _VaryByContentEncodingsList Is Nothing Then
                     SyncLock _VaryByContentEncodings
                         If _VaryByContentEncodingsList Is Nothing Then
-                            _VaryByContentEncodingsList = Common.ParseStringList(_VaryByContentEncodings, ";"c)
+                            _VaryByContentEncodingsList = _VaryByContentEncodings.ParseStringList(";"c)
                         End If
                     End SyncLock
                 End If
@@ -195,7 +202,7 @@ Namespace Services.Caching
                 If _VerbsList Is Nothing Then
                     SyncLock _Verbs
                         If _VerbsList Is Nothing Then
-                            _VerbsList = Common.ParseStringList(_Verbs)
+                            _VerbsList = _Verbs.ParseStringList()
                         End If
                     End SyncLock
                 End If
@@ -270,71 +277,87 @@ Namespace Services.Caching
 
         End Sub
 
-        Public Sub SetCache(objContext As HttpContext, callBackInfo As ValidationCallBackInfo)
-            Dim objResponse As HttpResponse = objContext.Response
-            If Me.ClearCookies Then
-                objResponse.Cookies.Clear()
-            End If
-            objResponse.Cache.SetCacheability(Me.Cacheability)
-            Dim timeStamp As DateTime = Now
-            Dim expiration As DateTime = DateTime.MaxValue
-            If Me.SetExpire Then
-                expiration = timeStamp.Add(Me.Duration)
-                objResponse.Cache.SetExpires(expiration)
-                If SetValidUntilExpires Then
-                    objResponse.Cache.SetValidUntilExpires(True)
+        Public Sub SetCache(ByVal objContext As HttpContext, ByVal callBackInfo As ValidationCallBackInfo)
+            If Me.Enabled Then
+                Dim objResponse As HttpResponse = objContext.Response
+                If Me.ClearCookies Then
+                    objResponse.Cookies.Clear()
+                End If
+                objResponse.Cache.SetCacheability(Me.Cacheability)
+                Dim timeStamp As DateTime = Now
+                Dim expiration As DateTime = DateTime.MaxValue
+                If Me.SetExpire Then
+                    expiration = timeStamp.Add(Me.Duration)
+                    objResponse.Cache.SetExpires(expiration)
+                    If SetValidUntilExpires Then
+                        objResponse.Cache.SetValidUntilExpires(True)
+                    End If
+                End If
+                If Me.SetLastModified Then
+                    objResponse.Cache.SetLastModified(timeStamp)
+                End If
+                If Me.SetEtag Then
+                    objResponse.Cache.SetETag(Me.EtagExpression.Evaluate(DnnContext.Current(objContext)))
+                End If
+
+                If Me.VaryByStar Then
+                    objResponse.Cache.VaryByParams("*") = True
+                Else
+                    For Each objVaryBy As String In Me.VaryByList
+                        objResponse.Cache.VaryByParams(objVaryBy) = True
+                    Next
+                End If
+                If VaryByUserLanguage Then
+                    objResponse.Cache.VaryByHeaders.UserLanguage = True
+                End If
+                If VaryByUserAgent Then
+                    objResponse.Cache.VaryByHeaders.UserAgent = True
+                End If
+                If VaryByUserCharSet Then
+                    objResponse.Cache.VaryByHeaders.UserCharSet = True
+                End If
+                For Each objHeader As String In VaryByHeadersList
+                    objResponse.Cache.VaryByHeaders(objHeader) = True
+                Next
+
+                If Me.VaryByBrowser Then
+                    objResponse.Cache.SetVaryByCustom("browser")
+                End If
+                For Each strEncoding As String In VaryByContentEncodingsList
+                    objResponse.Cache.VaryByContentEncodings.Item(strEncoding) = True
+                Next
+                If AddArrOptOutHeaders Then
+                    objResponse.Headers.Add("Arr-Disable-Session-Affinity", "True")
+                End If
+
+                If callBackInfo Is Nothing Then
+                    callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration)
+                Else
+                    callBackInfo.Timestamp = timeStamp
+                    callBackInfo.IsExpiresSet = True
+                    callBackInfo.Expiration = expiration
+
+                End If
+                callBackInfo.CachingStrategy = Me
+
+                objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)
+
+                If Me.ToggleDynamicCompression.Enabled Then
+                    If Me.ToggleDynamicCompression.Entity Then
+                        objContext.Request.ServerVariables("IIS_EnableDynamicCompression") = "1"
+                    Else
+                        objContext.Request.ServerVariables("IIS_EnableDynamicCompression") = "0"
+                    End If
+                End If
+
+                If Me.ToggleBandwidthThrottling.Enabled Then
+                    Me.ToggleBandwidthThrottling.Entity.ApplyBandwidthThrottling(objContext)
                 End If
             End If
-            If Me.SetLastModified Then
-                objResponse.Cache.SetLastModified(timeStamp)
-            End If
-            If Me.SetEtag Then
-                objResponse.Cache.SetETag(Me.EtagExpression.Evaluate(DnnContext.Current(objContext)))
-            End If
-
-            If Me.VaryByStar Then
-                objResponse.Cache.VaryByParams("*") = True
-            Else
-                For Each objVaryBy As String In Me.VaryByList
-                    objResponse.Cache.VaryByParams(objVaryBy) = True
-                Next
-            End If
-            If VaryByUserLanguage Then
-                objResponse.Cache.VaryByHeaders.UserLanguage = True
-            End If
-            If VaryByUserAgent Then
-                objResponse.Cache.VaryByHeaders.UserAgent = True
-            End If
-            If VaryByUserCharSet Then
-                objResponse.Cache.VaryByHeaders.UserCharSet = True
-            End If
-            For Each objHeader As String In VaryByHeadersList
-                objResponse.Cache.VaryByHeaders(objHeader) = True
-            Next
-
-            If Me.VaryByBrowser Then
-                objResponse.Cache.SetVaryByCustom("browser")
-            End If
-            For Each strEncoding As String In VaryByContentEncodingsList
-                objResponse.Cache.VaryByContentEncodings.Item(strEncoding) = True
-            Next
-            If AddArrOptOutHeaders Then
-                objResponse.Headers.Add("Arr-Disable-Session-Affinity", "True")
-            End If
-
-            If callBackInfo Is Nothing Then
-                callBackInfo = New ValidationCallBackInfo(timeStamp, expiration <> DateTime.MaxValue, expiration)
-            Else
-                callBackInfo.Timestamp = timeStamp
-                callBackInfo.IsExpiresSet = True
-                callBackInfo.Expiration = expiration
-
-            End If
-
-            objResponse.Cache.AddValidationCallback(New HttpCacheValidateHandler(AddressOf ValidateCache), callBackInfo)
 
 
         End Sub
+
 
 
         Public Shared Sub ValidateCache(ByVal context As HttpContext, ByVal data As Object, ByRef status As HttpValidationStatus)

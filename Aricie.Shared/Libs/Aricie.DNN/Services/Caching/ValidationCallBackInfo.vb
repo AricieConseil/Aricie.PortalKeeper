@@ -23,16 +23,19 @@ Namespace Services.Caching
         Public Property IsExpiresSet As Boolean
         Public Property Expiration As DateTime
 
-
+        Public Property CachingStrategy As OutputCachingStrategy
        
 
         Public Overridable Function ValidateCacheCallback(ByVal context As HttpContext) As HttpValidationStatus
+
+           
+
             If Me.IsExpiresSet Then
                 If Now > Expiration Then
                     Return HttpValidationStatus.Invalid
                 End If
             End If
-           
+
 
             Dim headerValues As String() = Nothing
             Dim cacheControlHeader As String = context.Request.Headers.Item("Cache-Control")
@@ -83,7 +86,9 @@ Namespace Services.Caching
                 Next
             End If
 
-          
+            If CachingStrategy IsNot Nothing AndAlso CachingStrategy.ToggleBandwidthThrottling.Enabled Then
+                CachingStrategy.ToggleBandwidthThrottling.Entity.ApplyBandwidthThrottling(context)
+            End If
             Return HttpValidationStatus.Valid
 
         End Function

@@ -8,9 +8,11 @@ Imports System.IO.Compression
 Imports System.Net
 Imports System.Xml
 Imports System.Linq
+Imports System.Net.Sockets
 Imports Aricie.Security.Cryptography
 Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
+Imports Microsoft.VisualBasic.Devices
 
 
 ''' <summary>
@@ -23,7 +25,7 @@ Public Module Common
 
 #Region "Generics"
 
-
+    <Extension()> _
     Public Function IsAssignableToGenericType(givenType As Type, genericType As Type) As Boolean
         Dim interfaceTypes = givenType.GetInterfaces()
 
@@ -45,8 +47,8 @@ Public Module Common
         Return IsAssignableToGenericType(baseType, genericType)
     End Function
 
-
-    Public Function InlineAssignHelper(Of T)(ByRef target As T, ByVal value As T) As T
+    <Extension()> _
+    Public Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
         target = value
         Return value
     End Function
@@ -56,7 +58,8 @@ Public Module Common
 
 #Region " Enum methods "
 
-    Public Function GetEnum(Of T)(ByVal strEnum As String) As T
+    <Extension()> _
+    Public Function GetEnum(Of T)(strEnum As String) As T
         Return DirectCast([Enum].Parse(GetType(T), strEnum), T)
     End Function
 
@@ -67,9 +70,9 @@ Public Module Common
     Public Function GetNextCyclicFlag(Of T As {IConvertible})(current As T, availableValues As T) As T
         Dim toReturn As T
         Dim foundNext As Boolean
-        Dim foundBefore As Boolean = False
+        Dim foundBefore = False
         Dim firstAvailable As T
-        For Each flagOption As T In Common.GetEnumMembers(Of T)()
+        For Each flagOption As T In GetEnumMembers(Of T)()
             If Convert.ToInt32(flagOption) <> 0 Then
                 If Convert.ToInt32(current) < Convert.ToInt32(flagOption) Then
                     If ((Convert.ToInt32(availableValues) And Convert.ToInt32(flagOption)) = Convert.ToInt32(flagOption)) Then
@@ -95,12 +98,12 @@ Public Module Common
 
 #Region "String methods "
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function IsNullOrEmpty(value As String) As Boolean
         Return String.IsNullOrEmpty(value)
     End Function
 
-   
+
 
     Public Function StringToByteArray(hexInput As String) As Byte()
         Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
@@ -114,65 +117,66 @@ Public Module Common
 
 
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function GetBase64FromUtf8(ByVal strUtf8 As String) As String
+    <Extension> _
+    Public Function GetBase64FromUtf8(strUtf8 As String) As String
         Return Convert.ToBase64String(Encoding.UTF8.GetBytes(strUtf8))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function GetBase64FromEncoding(ByVal strToEncode As String, ByVal objEncoding As Encoding) As String
+    <Extension> _
+    Public Function GetBase64FromEncoding(strToEncode As String, objEncoding As Encoding) As String
         Return Convert.ToBase64String(objEncoding.GetBytes(strToEncode))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function GetFromBase64(ByVal strBase64 As String, ByVal objEncoding As Encoding) As String
+    <Extension> _
+    Public Function GetFromBase64(strBase64 As String, objEncoding As Encoding) As String
         Return objEncoding.GetString(Convert.FromBase64String(strBase64))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function GetUtf8FromBase64(ByVal strBase64 As String) As String
+    <Extension> _
+    Public Function GetUtf8FromBase64(strBase64 As String) As String
         Return Encoding.UTF8.GetString(Convert.FromBase64String(strBase64))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function GetUtf8FromBase64(objBytes As Byte()) As Byte()
         Return Encoding.UTF8.GetBytes(Convert.ToBase64String(objBytes))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function GetBase64FromUtf8(objBytes As Byte()) As Byte()
         Return Convert.FromBase64String(Encoding.UTF8.GetString(objBytes))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function ToBase64(objBytes As Byte()) As String
         Return Convert.ToBase64String(objBytes)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function FromBase64(value As String) As Byte()
         Return Convert.FromBase64String(value)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function FromUTF8(objBytes As Byte()) As String
         Return Encoding.UTF8.GetString(objBytes)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function ToUTF8(value As String) As Byte()
         Return Encoding.UTF8.GetBytes(value)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function AppendBytes(first As Byte(), second As Byte()) As Byte()
-        Dim ret As Byte() = New Byte(first.Length + (second.Length - 1)) {}
+        Dim ret = New Byte(first.Length + (second.Length - 1)) {}
         Buffer.BlockCopy(first, 0, ret, 0, first.Length)
         Buffer.BlockCopy(second, 0, ret, first.Length, second.Length)
         Return ret
     End Function
 
-    Public Function OnlyAlphaNumericChars(ByVal objString As String) As String
+    <Extension()> _
+    Public Function OnlyAlphaNumericChars(objString As String) As String
 
         objString = Trim(objString)
         Dim lLen As Integer
@@ -192,14 +196,14 @@ Public Module Common
 
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function IsAlphaNumeric(ByVal sChr As String) As Boolean
+    <Extension> _
+    Public Function IsAlphaNumeric(sChr As String) As Boolean
         IsAlphaNumeric = sChr Like "[0-9A-Za-z ]"
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function IsNumber(ByVal sChr As String) As Boolean
-        For i As Integer = 0 To sChr.Length - 1
+    <Extension> _
+    Public Function IsNumber(sChr As String) As Boolean
+        For i = 0 To sChr.Length - 1
             If Not Char.IsDigit(sChr, i) Then
                 Return False
             End If
@@ -222,18 +226,18 @@ Public Module Common
     Public WordRegex As New Regex("\p{Lu}\p{Ll}+|\p{Lu}+(?!\p{Ll})|\p{Ll}+|\d+", RegexOptions.Compiled)
     Public SplitRegex As New Regex("(?<!^)([A-Z][a-z]|(?<=[a-z])[A-Z])", RegexOptions.Compiled)
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function ToPascalCase(input As String) As String
         Return WordRegex.Replace(input, AddressOf EvaluatePascal)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function ToCamelCase(input As String) As String
         Dim pascal As String = ToPascalCase(input)
         Return WordRegex.Replace(pascal, AddressOf EvaluateFirstCamel, 1)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function ToTitleCase(input As String) As String
         Dim pascal As String = ToPascalCase(input)
         Return SplitRegex.Replace(pascal, " $1")
@@ -258,35 +262,35 @@ Public Module Common
         End If
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function IsWordUpper(word As String) As Boolean
         Return word.All(Function(c) Not [Char].IsLower(c))
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function Compress(ByVal source As String, ByVal method As CompressionMethod) As String
-        Dim sourceBytes As Byte() = System.Text.Encoding.UTF8.GetBytes(source)
+    <Extension> _
+    Public Function Compress(source As String, method As CompressionMethod) As String
+        Dim sourceBytes As Byte() = Encoding.UTF8.GetBytes(source)
         Dim returnBytes As Byte() = Compress(sourceBytes, method)
-        Return System.Convert.ToBase64String(returnBytes)
+        Return Convert.ToBase64String(returnBytes)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function Decompress(ByVal source As String, ByVal method As CompressionMethod) As String
-        Dim sourceBytes As Byte() = System.Convert.FromBase64String(source)
+    <Extension> _
+    Public Function Decompress(source As String, method As CompressionMethod) As String
+        Dim sourceBytes As Byte() = Convert.FromBase64String(source)
         Dim returnBytes As Byte() = Decompress(sourceBytes, method)
         Return Encoding.UTF8.GetString(returnBytes)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function Compress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
-        Using ms As MemoryStream = New MemoryStream
+    <Extension> _
+    Public Function Compress(bytes As Byte(), method As CompressionMethod) As Byte()
+        Using ms = New MemoryStream
             Select Case method
                 Case CompressionMethod.Deflate
-                    Using gzs As DeflateStream = New DeflateStream(ms, CompressionMode.Compress, False)
+                    Using gzs = New DeflateStream(ms, CompressionMode.Compress, False)
                         gzs.Write(bytes, 0, bytes.Length)
                     End Using
                 Case CompressionMethod.Gzip
-                    Using gzs As GZipStream = New GZipStream(ms, CompressionMode.Compress, False)
+                    Using gzs = New GZipStream(ms, CompressionMode.Compress, False)
                         gzs.Write(bytes, 0, bytes.Length)
                     End Using
             End Select
@@ -296,16 +300,16 @@ Public Module Common
         End Using
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
-    Public Function Decompress(ByVal bytes As Byte(), ByVal method As CompressionMethod) As Byte()
+    <Extension> _
+    Public Function Decompress(bytes As Byte(), method As CompressionMethod) As Byte()
         Dim toReturn As Byte() = Nothing
-        Using ms As MemoryStream = New MemoryStream(bytes, False)
+        Using ms = New MemoryStream(bytes, False)
             Select Case method
                 Case CompressionMethod.Deflate
-                    Using gzs As DeflateStream = New DeflateStream(ms, CompressionMode.Decompress, False)
-                        Using dest As MemoryStream = New MemoryStream
+                    Using gzs = New DeflateStream(ms, CompressionMode.Decompress, False)
+                        Using dest = New MemoryStream
                             Dim read As Integer
-                            Dim tmp As Byte() = New Byte(bytes.Length - 1) {}
+                            Dim tmp = New Byte(bytes.Length - 1) {}
                             read = gzs.Read(tmp, 0, tmp.Length)
                             Do While (read <> 0)
                                 dest.Write(tmp, 0, read)
@@ -316,10 +320,10 @@ Public Module Common
                         End Using
                     End Using
                 Case CompressionMethod.Gzip
-                    Using gzs As GZipStream = New GZipStream(ms, CompressionMode.Decompress, False)
-                        Using dest As MemoryStream = New MemoryStream
+                    Using gzs = New GZipStream(ms, CompressionMode.Decompress, False)
+                        Using dest = New MemoryStream
                             Dim read As Integer
-                            Dim tmp As Byte() = New Byte(bytes.Length - 1) {}
+                            Dim tmp = New Byte(bytes.Length - 1) {}
                             read = gzs.Read(tmp, 0, tmp.Length)
                             Do While (read <> 0)
                                 dest.Write(tmp, 0, read)
@@ -357,8 +361,8 @@ Public Module Common
         Return source.Replace(vbCrLf, "<br/>").Replace(vbLf, "<br/>")
     End Function
 
-
-    Public Function ParseStringList(ByVal listAsString As String, Optional ByVal separator As Char = ","c) As List(Of String)
+    <Extension()> _
+    Public Function ParseStringList(listAsString As String, Optional ByVal separator As Char = ","c) As List(Of String)
         Dim strArray As String() = listAsString.Trim.Trim(separator).Split(New String() {separator}, StringSplitOptions.RemoveEmptyEntries)
         Dim list As New List(Of String)(strArray.Length)
         For Each str As String In strArray
@@ -370,9 +374,9 @@ Public Module Common
         Return list
     End Function
 
-    Public Function ParsePairs(ByVal listAsString As String, invertPairs As Boolean, Optional ByVal itemSeparator As Char = ";"c, Optional ByVal pairSeparator As Char = "="c) As Dictionary(Of String, String)
+    Public Function ParsePairs(listAsString As String, invertPairs As Boolean, Optional ByVal itemSeparator As Char = ";"c, Optional ByVal pairSeparator As Char = "="c) As Dictionary(Of String, String)
         Dim fieldNames As New Dictionary(Of String, String)
-        Dim dumpVars As List(Of String) = Common.ParseStringList(listAsString, itemSeparator)
+        Dim dumpVars As List(Of String) = ParseStringList(listAsString, itemSeparator)
         For Each dumpVar As String In dumpVars
             Dim splitVar() As String = dumpVar.Split("="c)
             If splitVar.Length = 2 Then
@@ -386,12 +390,12 @@ Public Module Common
         Return fieldNames
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function Beautify(doc As XmlDocument) As String
         Return doc.Beautify(False)
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function Beautify(doc As XmlDocument, omitDeclaration As Boolean) As String
         Dim sb As New StringBuilder()
         Dim settings As New XmlWriterSettings()
@@ -415,8 +419,8 @@ Public Module Common
 
 
     <Obsolete("Use methods in the CryptoHelper module")>
-    Public Function Encrypt(ByVal plainText As String, _
-                         ByVal key As String, _
+    Public Function Encrypt(plainText As String, _
+                         key As String, _
                                Optional ByVal initVector As String = defaultInitVector, _
                               Optional ByVal salt As String = defaultSalt) _
                        As String
@@ -432,7 +436,7 @@ Public Module Common
 
 
     <Obsolete("Use methods in the CryptoHelper module")>
-    Public Function Decrypt(ByVal encryptedText As String, _
+    Public Function Decrypt(encryptedText As String, _
                                 Optional ByVal key As String = defaultKey, _
                                 Optional ByVal initVector As String = defaultInitVector, _
                                 Optional ByVal salt As String = defaultSalt) As String
@@ -461,26 +465,31 @@ Public Module Common
 
     Public ReadOnly UnixEpoch As New DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)
 
+    <Extension> _
     Public Function ConvertToUnixTimestamp(inputDate As DateTime) As Long
         Return CType((inputDate - UnixEpoch).TotalSeconds, Long)
     End Function
 
+    <Extension> _
     Public Function ConvertFromUnixTimestamp(unixtimestamp As Long) As DateTime
         Return UnixEpoch.AddSeconds(unixtimestamp)
     End Function
 
-    Public Function GetMicroSeconds(ByVal span As TimeSpan) As Integer
+    <Extension> _
+    Public Function GetMicroSeconds(span As TimeSpan) As Integer
         Return Convert.ToInt32(span.Ticks Mod TimeSpan.TicksPerMillisecond) \ 10
     End Function
 
-    Public Function FormatTimeSpan(ByVal duration As TimeSpan) As String
-        Return FormatTimeSpan(duration, False)
+    <Extension> _
+    Public Function FormatTimeSpan(duration As TimeSpan) As String
+        Return duration.FormatTimeSpan(True)
     End Function
 
-    Public Function FormatTimeSpan(ByVal duration As TimeSpan, ByVal smartFormat As Boolean) As String
-        Dim toReturn As String = ""
+    <Extension> _
+    Public Function FormatTimeSpan(duration As TimeSpan, smartFormat As Boolean) As String
+        Dim toReturn = ""
         If duration <> TimeSpan.MaxValue Then
-            Dim stopNb As Integer = 0
+            Dim stopNb = 0
             If Not smartFormat OrElse duration.Days > 0 Then
                 toReturn &= duration.Days.ToString & " d "
                 stopNb += 1
@@ -510,7 +519,7 @@ Public Module Common
                 stopNb += 1
             End If
             If Not smartFormat OrElse stopNb < 2 Then
-                toReturn &= Aricie.Common.GetMicroSeconds(duration).ToString & " µs "
+                toReturn &= duration.GetMicroSeconds().ToString & " µs "
             End If
         Else
             toReturn = "Not Available"
@@ -521,9 +530,10 @@ Public Module Common
 
 #End Region
 
-    Public Sub CopyStream(ByVal source As Stream, ByVal destination As Stream)
+    <Extension> _
+    Public Sub CopyStream(source As Stream, destination As Stream)
         Dim num As Integer
-        Dim buffer As Byte() = New Byte(&H1000 - 1) {}
+        Dim buffer = New Byte(&H1000 - 1) {}
         num = source.Read(buffer, 0, buffer.Length)
         While num <> 0
             destination.Write(buffer, 0, num)
@@ -531,9 +541,9 @@ Public Module Common
         End While
     End Sub
 
-
+    <Extension> _
     Public Function ReadStream(input As Stream) As Byte()
-        Dim buffer As Byte() = New Byte(16 * 1024 - 1) {}
+        Dim buffer = New Byte(16 * 1024 - 1) {}
         Using ms As New MemoryStream()
             Dim read As Integer = input.Read(buffer, 0, buffer.Length)
             While (read > 0)
@@ -547,7 +557,7 @@ Public Module Common
 
 #Region "Collection methods"
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function TryGetValue(Of T)(collection As IDictionary(Of String, Object), key As String, ByRef value As T) As Boolean
         If collection Is Nothing Then
             Throw New ArgumentNullException("collection")
@@ -562,7 +572,7 @@ Public Module Common
         End If
     End Function
 
-    <System.Runtime.CompilerServices.Extension> _
+    <Extension> _
     Public Function FindKeysWithPrefix(Of TValue)(dictionary As IDictionary(Of String, TValue), prefix As String) As IEnumerable(Of KeyValuePair(Of String, TValue))
         Dim toReturn As New List(Of KeyValuePair(Of String, TValue))
         If dictionary Is Nothing Then
@@ -592,6 +602,8 @@ Public Module Common
         Next
         Return toReturn
     End Function
+
+    <Extension> _
     Public Sub ShuffleList(Of T)(ByRef listToShuffle As IList(Of T))
         If listToShuffle IsNot Nothing AndAlso listToShuffle.Count > 1 Then
             Dim tempSwap As T
@@ -606,7 +618,7 @@ Public Module Common
         End If
     End Sub
 
-    Public Function GetUnifiedInstances(ByVal referenceList As IList, ByVal idPropertyName As String, ByVal externalList As IList) As IList
+    Public Function GetUnifiedInstances(referenceList As IList, idPropertyName As String, externalList As IList) As IList
 
         Dim toReturn As New ArrayList
 
@@ -629,9 +641,9 @@ Public Module Common
 
     End Function
 
-    Public Function GetUnifiedInstances(Of T As Class)(ByVal referenceList As IList(Of T), _
-                                                         ByVal idPropertyName As String, _
-                                                         ByVal externalList As IList(Of T)) As IList(Of T)
+    Public Function GetUnifiedInstances(Of T As Class)(referenceList As IList(Of T), _
+                                                         idPropertyName As String, _
+                                                         externalList As IList(Of T)) As IList(Of T)
 
         Dim toReturn As New List(Of T)
 
@@ -652,14 +664,14 @@ Public Module Common
 
     End Function
 
-    Public Function GetUnifiedInstance(Of T As Class)(ByVal referenceList As IList(Of T), _
-                                                        ByVal idPropertyName As String, ByVal externalObject As T) As T
+    Public Function GetUnifiedInstance(Of T As Class)(referenceList As IList(Of T), _
+                                                        idPropertyName As String, externalObject As T) As T
 
         Return DirectCast(GetUnifiedInstance(referenceList, idPropertyName, externalObject), T)
 
     End Function
 
-    Public Function GetUnifiedInstance(ByVal referenceList As IList, ByVal idPropertyName As String, ByVal externalObject As Object) As Object
+    Public Function GetUnifiedInstance(referenceList As IList, idPropertyName As String, externalObject As Object) As Object
 
         Dim toReturn As Object = Nothing
 
@@ -678,8 +690,8 @@ Public Module Common
 
     End Function
 
-    Public Function GetComplementList(Of Y As Class)(ByVal sourceList As IList(Of Y), ByVal complement As IList(Of Y), _
-                                                       ByVal unifyingPropertyName As String) As IList(Of Y)
+    Public Function GetComplementList(Of Y As Class)(sourceList As IList(Of Y), complement As IList(Of Y), _
+                                                       unifyingPropertyName As String) As IList(Of Y)
         Dim innerComplement As IList(Of Y) = GetUnifiedInstances(Of Y)(sourceList, unifyingPropertyName, complement)
         Dim toReturn As New List(Of Y)(sourceList)
         For Each complementItem As Y In innerComplement
@@ -689,7 +701,7 @@ Public Module Common
 
     End Function
 
-    Public Function GetComplementList(ByVal sourceList As IList, ByVal complement As IList, ByVal unifyingPropertyName As String) As IList
+    Public Function GetComplementList(sourceList As IList, complement As IList, unifyingPropertyName As String) As IList
         Dim innerComplement As IList = GetUnifiedInstances(sourceList, unifyingPropertyName, complement)
         Dim toReturn As New ArrayList(sourceList)
         For Each complementItem As Object In innerComplement
@@ -722,8 +734,8 @@ Public Module Common
 #End Region
 
 
-
-    Public Sub ClearBytes(ByVal buffer() As Byte)
+    <Extension> _
+    Public Sub ClearBytes(buffer() As Byte)
         ' Check arguments.
         If buffer Is Nothing Then
             Throw New ArgumentException("buffer")
@@ -742,21 +754,21 @@ Public Module Common
     Private Const defaultInitVector As String = "Similarity"
 
     Public Sub CopyDirectory(sourceDir As String, targetDir As String, overwrite As Boolean)
-        Dim cmp As New Microsoft.VisualBasic.Devices.Computer()
+        Dim cmp As New Computer()
         cmp.FileSystem.CopyDirectory(sourceDir, targetDir, overwrite)
     End Sub
 
 #Region " HTML methods "
 
-    <Extension()> _
-    Public Function HtmlEncode(ByVal text As String) As String
+    <Extension> _
+    Public Function HtmlEncode(text As String) As String
 
         Return HttpUtility.HtmlEncode(text)
 
     End Function
 
-    <Extension()> _
-    Public Function HtmlDecode(ByVal text As String) As String
+    <Extension> _
+    Public Function HtmlDecode(text As String) As String
 
         Return HttpUtility.HtmlDecode(text)
 
@@ -768,7 +780,7 @@ Public Module Common
     ''' <param name="CookieName">The Name of the cookie</param>
     ''' <returns>The Value of the cookie</returns>
     ''' <remarks></remarks>
-    Public Function GetCookieValue(ByVal CookieName As String) As Object
+    Public Function GetCookieValue(CookieName As String) As Object
         If HttpContext.Current.Request.Cookies(CookieName) IsNot Nothing Then
             Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(CookieName)
             If cookie IsNot Nothing Then
@@ -785,7 +797,7 @@ Public Module Common
     ''' <param name="CookieValue">The value of the cookie</param>
     ''' <param name="Duration">The duration of the cookie in days</param>
     ''' <remarks></remarks>
-    Public Sub SetCookieValue(ByVal CookieName As String, ByVal CookieValue As Object, _
+    Public Sub SetCookieValue(CookieName As String, CookieValue As Object, _
                                Optional ByVal Duration As Integer = 0)
         Dim cookie As HttpCookie = HttpContext.Current.Request.Cookies(CookieName)
         cookie = New HttpCookie(CookieName)
@@ -805,7 +817,7 @@ Public Module Common
     ''' <param name="CurrentPage">Current Page</param>
     ''' <param name="Url">Url to open</param>
     ''' <remarks></remarks>
-    Public Sub ShowHasPopup(ByVal CurrentPage As Page, ByVal Url As String)
+    Public Sub ShowHasPopup(CurrentPage As Page, Url As String)
 
         Dim Script As String = String.Format("window.open(""{0}"", ""_Blank"");", Url)
         CurrentPage.ClientScript.RegisterStartupScript(CurrentPage.GetType(), "Redirect", Script, True)
@@ -820,12 +832,12 @@ Public Module Common
     ''' <param name="source">La string dont on veux le hashcode</param>
     ''' <returns>un Entier représentant le hashcode de la string</returns>
     ''' <remarks>Adaptation en VB de la méthode GetHashCode de la classe String de .Net 32 Bits</remarks>
-    Public Function GetStringHashCode(ByVal source As String) As Integer
+    Public Function GetStringHashCode(source As String) As Integer
 
-        Dim num As Integer = &H15051505
+        Dim num = &H15051505
         Dim num2 As Integer = num
 
-        Dim sourceBytes As Byte() = System.Text.Encoding.UTF8.GetBytes(source)
+        Dim sourceBytes As Byte() = Encoding.UTF8.GetBytes(source)
 
         Dim indexNumPtr = 0
         For index As Int32 = source.Length To 0 Step -4
@@ -847,7 +859,7 @@ Public Module Common
 
     End Function
 
-
+    <Extension> _
     Public Function GetExternalIPAddress(request As HttpRequest) As String
 
         Dim toReturn As String
@@ -908,12 +920,12 @@ Public Module Common
 #Region "Private methods"
 
 
-    Private Function IsExternalIPAddress(ByVal address As String) As Boolean
+    Private Function IsExternalIPAddress(address As String) As Boolean
         If Not String.IsNullOrEmpty(address) Then
             address = address.Trim
             Dim ipAdd As IPAddress = Nothing
             If IPAddress.TryParse(address, ipAdd) Then
-                If ipAdd.AddressFamily = Sockets.AddressFamily.InterNetwork Then
+                If ipAdd.AddressFamily = AddressFamily.InterNetwork Then
                     For Each privateIPRange As List(Of IPAddress) In PrivateIps
                         If CompareIPs.IsGreaterOrEqual(ipAdd, privateIPRange(0)) AndAlso CompareIPs.IsLessOrEqual(ipAdd, privateIPRange(0)) Then
                             Return False
@@ -941,7 +953,7 @@ Public Module Common
                 SyncLock _PrivateIps
                     If _PrivateIps.Count = 0 Then
                         Dim tempList As New List(Of List(Of IPAddress))
-                        For i As Integer = 0 To _PrivateIPStringArray.GetUpperBound(0)
+                        For i = 0 To _PrivateIPStringArray.GetUpperBound(0)
                             Dim ipPair As New List(Of IPAddress)
                             Dim lowerBoundIP As String = _PrivateIPStringArray(i, 0)
                             Dim upperBoundIP As String = _PrivateIPStringArray(i, 1)
@@ -969,7 +981,7 @@ Public Module Common
     ''' <param name="longValue">un long</param>
     ''' <returns>un int constitué des 4 premiers octets du long</returns>
     ''' <remarks></remarks>
-    Private Function Long2Int(ByVal longValue As Long) As Integer
+    Private Function Long2Int(longValue As Long) As Integer
         Dim numByte As Byte() = BitConverter.GetBytes(longValue)
         Return (CInt(numByte(3)) << 24) + (CInt(numByte(2)) << 16) + (CInt(numByte(1)) << 8) + numByte(0)
     End Function
@@ -981,7 +993,7 @@ Public Module Common
     ''' <param name="indexNumPtr">La position désiré</param>
     ''' <returns>Un entier constitué de des 2 octets à partir de l'index</returns>
     ''' <remarks></remarks>
-    Private Function GetPtr(ByVal sourceBytes As Byte(), ByVal indexNumPtr As Integer) As Integer
+    Private Function GetPtr(sourceBytes As Byte(), indexNumPtr As Integer) As Integer
         If indexNumPtr >= sourceBytes.Length Then
             Return 0
         Else

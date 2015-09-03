@@ -6,11 +6,12 @@
 
 
 
-        Public Sub New(ByVal lastRequestTime As DateTime, ByVal nbRequests As Integer, ByVal capWindow As DateTime, totalBytes As Integer)
+        Public Sub New(ByVal lastRequestTime As DateTime, ByVal nbRequests As Integer, ByVal capWindow As DateTime, longTotalBytes As Long)
 
-            Me.LastRequestTime = lastRequestTime
+            Me.FirstRequestTime = lastRequestTime
             Me.NbRequests = nbRequests
             Me.CapWindow = capWindow
+            Me.TotalBytes = longTotalBytes
             'SyncLock capWindowLock
             '    If lastRequestTime > capWindow.Add(rateSpan) Then
             '        capWindow = lastRequestTime
@@ -20,9 +21,9 @@
         End Sub
 
         Public CapWindow As DateTime
-        Public LastRequestTime As DateTime
+        Public FirstRequestTime As DateTime
         Public NbRequests As Integer
-        Public TotalBytes As Integer
+        Public TotalBytes As Long
 
     End Structure
 End Namespace

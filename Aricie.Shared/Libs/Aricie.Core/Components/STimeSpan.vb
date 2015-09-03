@@ -122,10 +122,10 @@ Public Class STimeSpan
     <Category("Details")> _
     Public Property Microseconds() As Integer
         Get
-            Return Aricie.Common.GetMicroSeconds(Me._Value)
+            Return Me._Value.GetMicroSeconds()
         End Get
         Set(ByVal value As Integer)
-            Me._Value = Me._Value.Subtract(TimeSpan.FromTicks(10 * Aricie.Common.GetMicroSeconds(Me._Value))).Add(TimeSpan.FromTicks(10 * value))
+            Me._Value = Me._Value.Subtract(TimeSpan.FromTicks(10 * Me._Value.GetMicroSeconds())).Add(TimeSpan.FromTicks(10 * value))
         End Set
     End Property
 
@@ -143,7 +143,7 @@ Public Class STimeSpan
 
 
     Public Overrides Function ToString() As String
-        Return Common.FormatTimeSpan(Me._Value, True)
+        Return Me._Value.FormatTimeSpan(True)
     End Function
 
 

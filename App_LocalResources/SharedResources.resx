@@ -3015,11 +3015,11 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="XPathInfo_IsHtmlContent.Text" xml:space="preserve">
     <value>Html Content</value>
   </data>
-  <data name="XPathInfo_SelectExpression.Help" xml:space="preserve">
-    <value>Enter here the text of your XPath query</value>
+  <data name="XPathInfo_Expression.Help" xml:space="preserve">
+    <value>Enter here your XPath query or an dynamic expression of it</value>
   </data>
-  <data name="XPathInfo_SelectExpression.Text" xml:space="preserve">
-    <value>Select Expression</value>
+  <data name="XPathInfo_Expression.Text" xml:space="preserve">
+    <value>XPath Expression</value>
   </data>
   <data name="XPathInfo_SelectTree.Help" xml:space="preserve">
     <value>If checked, you can choose to return dictionaries of string and sub queries results rather than scalars.</value>
@@ -5433,11 +5433,11 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="AdditionalFilters_Copy.Text" xml:space="preserve">
     <value>Copy Filters</value>
   </data>
-  <data name="RequestsCapInfo_MaxTotalBytes.Help" xml:space="preserve">
-    <value>This sets a limit in the max total size of requests for the selected source and the selected period of time.</value>
+  <data name="RequestsCapInfo_MaxTotalKBs.Help" xml:space="preserve">
+    <value>This sets a limit in the max total size of requests for the selected source and the selected period of time. Note that only request size is included by default.</value>
   </data>
-  <data name="RequestsCapInfo_MaxTotalBytes.Text" xml:space="preserve">
-    <value>Max Total Bytes</value>
+  <data name="RequestsCapInfo_MaxTotalKBs.Text" xml:space="preserve">
+    <value>Max Total KBs</value>
   </data>
   <data name="TransformList_Copy.Text" xml:space="preserve">
     <value>Copy Transforms</value>
@@ -10102,5 +10102,89 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="DynamicControllerInfo_RegisteredRoutes.Text" xml:space="preserve">
     <value>Registered Routes</value>
+  </data>
+  <data name="HttpHandlerSettings_StaticHandlerName.Help" xml:space="preserve">
+    <value>Enter a friendly name and a description for your handler, additionally to the web.config name provided above.</value>
+  </data>
+  <data name="HttpHandlerSettings_StaticHandlerName.Text" xml:space="preserve">
+    <value>Friendly Name</value>
+  </data>
+  <data name="XPathInfo_DefaultNamespacePrefix.Help" xml:space="preserve">
+    <value>If the Xml document declares a custom default namespace, you will need to declare a custom prefix here instead and use it in your xpath expression, (see https://msdn.microsoft.com/en-us/library/e5t11tzt.aspx for more details)</value>
+  </data>
+  <data name="XPathInfo_DefaultNamespacePrefix.Text" xml:space="preserve">
+    <value>Default Namespace Prefix</value>
+  </data>
+  <data name="XPathInfo_UseNamespaceManager.Help" xml:space="preserve">
+    <value>If checked, an XPathNavigator will be explicitally created from the document root node rather than the document itself and an Xml Manager will be fed with the root namespaces to compile the XPath expression. </value>
+  </data>
+  <data name="XPathInfo_UseNamespaceManager.Text" xml:space="preserve">
+    <value>Use Namespace Manager</value>
+  </data>
+  <data name="CdnStrategy_XPathQuery.Help" xml:space="preserve">
+    <value>This query is evaluated against the outbound Html Document to select html tag attributes with Urls to be updated with the dedicated CDN Alias. The default query select images, stylesheets, scripts, and anchors with urls to resources below the /Portals/ folder.</value>
+  </data>
+  <data name="CdnStrategy_XPathQuery.Text" xml:space="preserve">
+    <value>XPath Query</value>
+  </data>
+  <data name="SimpleOrSimpleExpression`1_Expression.Help" xml:space="preserve">
+    <value>Enter below a Flee expression to be evaluated at runtime given a context owner, local and global variables, and static imports. Lookup the &lt;a href="http://flee.codeplex.com/wikipage?title=LanguageReference&amp;referringTitle=Home"&gt; language reference &lt;/a&gt; for more information.</value>
+  </data>
+  <data name="SimpleOrSimpleExpression`1_Expression.Text" xml:space="preserve">
+    <value>Dynamic Expression</value>
+  </data>
+  <data name="BitRateModule.Text" xml:space="preserve">
+    <value>IIS Bit Rate Throttling Module</value>
+  </data>
+  <data name="ManagedStream.Text" xml:space="preserve">
+    <value>Managed Response Filter Stream</value>
+  </data>
+  <data name="OutputCachingStrategy_ToggleBandwidthThrottling.Help" xml:space="preserve">
+    <value>You can choose to switch Bandwidth Throttling individually for that request regardless of the global web server settings. Throttling settings will be applied on the original cached response and subsequent responses generated from cache.</value>
+  </data>
+  <data name="OutputCachingStrategy_ToggleBandwidthThrottling.Text" xml:space="preserve">
+    <value>Toggle Bandwidth Throttling</value>
+  </data>
+  <data name="OutputCachingStrategy_ToggleDynamicCompression.Help" xml:space="preserve">
+    <value>You can choose to switch dynamic compression individually on or off for that request regardless of the global web server settings</value>
+  </data>
+  <data name="OutputCachingStrategy_ToggleDynamicCompression.Text" xml:space="preserve">
+    <value>Toggle Dynamic Compression</value>
+  </data>
+  <data name="RequestsCapInfo_MeasureResponseSize.Help" xml:space="preserve">
+    <value>You can optionally include Response size in the volume usage monitoring.</value>
+  </data>
+  <data name="RequestsCapInfo_MeasureResponseSize.Text" xml:space="preserve">
+    <value>Measure Response Size</value>
+  </data>
+  <data name="ResponseThrottlerInfo_BlockSize.Help" xml:space="preserve">
+    <value>Packets larger than BlockSize are splitted to make the throttling smoother</value>
+  </data>
+  <data name="ResponseThrottlerInfo_BlockSize.Text" xml:space="preserve">
+    <value>Block Size</value>
+  </data>
+  <data name="ResponseThrottlerInfo_Disable.Help" xml:space="preserve">
+    <value>This overrides the web server setting to disable bandwidth throttling for that particular request</value>
+  </data>
+  <data name="ResponseThrottlerInfo_Disable.Text" xml:space="preserve">
+    <value>Disable Throttling</value>
+  </data>
+  <data name="ResponseThrottlerInfo_InitialSendSizeKB.Help" xml:space="preserve">
+    <value>The initial send size, specified in kilobytes (KB), that is initially sent to the client at an unthrottled rate to provide the Fast Start experience</value>
+  </data>
+  <data name="ResponseThrottlerInfo_InitialSendSizeKB.Text" xml:space="preserve">
+    <value>Initial Send Size (KB)</value>
+  </data>
+  <data name="ResponseThrottlerInfo_Mode.Help" xml:space="preserve">
+    <value>There are 2 modes available. You can attached a managed throttling Filter Stream to the Http Response or manipulate Server variables to leverage the Bit Rate Throttling Module, which can be installed as an IIS extension (http://www.iis.net/downloads/microsoft/bit-rate-throttling). </value>
+  </data>
+  <data name="ResponseThrottlerInfo_Mode.Text" xml:space="preserve">
+    <value>Throttling Mode</value>
+  </data>
+  <data name="ResponseThrottlerInfo_RateKBs.Help" xml:space="preserve">
+    <value>The throttle rate, specified in kilobytes per second (KBps), at which the response will be throttled after any specified Fast Start burst is delivered.</value>
+  </data>
+  <data name="ResponseThrottlerInfo_RateKBs.Text" xml:space="preserve">
+    <value>Rate (KB/s)</value>
   </data>
 </root>
