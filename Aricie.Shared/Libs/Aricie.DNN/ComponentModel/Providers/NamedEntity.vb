@@ -71,6 +71,7 @@ Namespace ComponentModel
             MyBase.New(strName, strDescription)
         End Sub
 
+        <SortOrder(0)> _
         <XmlAttribute("name")> _
         <RegularExpressionValidator(Constants.Content.RegularNameValidator)> _
         <Required(True)> _

@@ -275,7 +275,7 @@ Namespace Services.Flee
                         toReturn = DirectCast(cloneExp, IGenericExpression(Of TResult))
                     End If
                 End If
-                If (Not InternalNoCloning) AndAlso toReturn.Owner IsNot owner Then
+                If (Not InternalNoCloning) AndAlso owner IsNot Nothing AndAlso toReturn.Owner IsNot owner Then
                     toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
                     If Not _OwnerProviderSuplied Then
                         If Not InternalOverrideOwner Then
@@ -320,27 +320,32 @@ Namespace Services.Flee
         Private Function GetExpressionContext(ByVal owner As Object, ByVal globalVars As IContextLookup) As ExpressionContext
 
             Dim toReturn As ExpressionContext
-            If TypeOf owner Is IContextOwnerProvider Then
-                Dim ownerProvider As IContextOwnerProvider = DirectCast(owner, IContextOwnerProvider)
-                If ownerProvider.ContextOwner IsNot Nothing Then
-                    toReturn = New ExpressionContext(ownerProvider.ContextOwner)
-                    _OwnerProviderSuplied = True
+            If owner IsNot Nothing Then
+                If TypeOf owner Is IContextOwnerProvider Then
+                    Dim ownerProvider As IContextOwnerProvider = DirectCast(owner, IContextOwnerProvider)
+                    If ownerProvider.ContextOwner IsNot Nothing Then
+                        toReturn = New ExpressionContext(ownerProvider.ContextOwner)
+                        _OwnerProviderSuplied = True
+                    Else
+                        If InternalOverrideOwner Then
+                            Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                            toReturn = New ExpressionContext(newOwner)
+                        Else
+                            toReturn = New ExpressionContext(owner)
+                        End If
+
+                    End If
                 Else
                     If InternalOverrideOwner Then
                         Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
                         toReturn = New ExpressionContext(newOwner)
-                    Else
-                        toReturn = New ExpressionContext(owner)
                     End If
-
+                    toReturn = New ExpressionContext(owner)
                 End If
             Else
-                If InternalOverrideOwner Then
-                    Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
-                    toReturn = New ExpressionContext(newOwner)
-                End If
-                toReturn = New ExpressionContext(owner)
+                toReturn = New ExpressionContext()
             End If
+            
 
             toReturn.ParserOptions.DateTimeFormat = Me.InternalDateTimeFormat
             toReturn.ParserOptions.RequireDigitsBeforeDecimalPoint = Me.InternalRequireDigitsBeforeDecimalPoint
@@ -348,6 +353,8 @@ Namespace Services.Flee
             toReturn.ParserOptions.FunctionArgumentSeparator = Me.InternalFunctionArgumentSeparator
             toReturn.ParserOptions.RecreateParser()
             Select Case Me.InternalParseCultureMode
+                Case CultureInfoMode.Invariant
+                    toReturn.Options.ParseCulture = CultureInfo.InvariantCulture
                 Case CultureInfoMode.Current
                     toReturn.Options.ParseCulture = DirectCast(Thread.CurrentThread.CurrentCulture.Clone, CultureInfo)
                 Case CultureInfoMode.CurrentUI
@@ -429,7 +436,10 @@ Namespace Services.Flee
                 Dim obj As Object = Nothing
                 If _Context IsNot Nothing AndAlso _Context.Items.TryGetValue(e.VariableName, obj) Then
                     If obj IsNot Nothing Then
-                        e.VariableType = obj.GetType
+                        e.VariableType = obj.GetType()
+                        While Not e.VariableType.IsVisible
+                            e.VariableType = e.VariableType.BaseType
+                        End While
                     Else
                         e.VariableType = GetType(Object)
                     End If

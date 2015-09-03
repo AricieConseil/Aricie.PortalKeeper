@@ -228,6 +228,7 @@
     <Compile Include="Security\RSAParametersInfo.vb" />
     <Compile Include="Security\TrialPropertyMode.vb" />
     <Compile Include="Services\Caching\CdnStrategy.vb" />
+    <Compile Include="Services\Caching\ResponseThrottlerInfo.vb" />
     <Compile Include="Services\Caching\ValidationCallBackInfo.vb" />
     <Compile Include="Services\ContextBase.vb" />
     <Compile Include="Services\Caching\CachedOutput.vb" />

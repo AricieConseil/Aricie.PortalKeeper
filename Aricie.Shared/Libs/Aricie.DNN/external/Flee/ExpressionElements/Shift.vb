@@ -87,7 +87,7 @@ Friend Class ShiftElement
 
 	Private Sub EmitShift(ByVal ilg As FleeILGenerator)
 		Dim tc As TypeCode = Type.GetTypeCode(MyLeftChild.ResultType)
-		Dim op As OpCode
+        Dim op As OpCode = Nothing
 
 		Select Case tc
 			Case TypeCode.Byte, TypeCode.SByte, TypeCode.Int16, TypeCode.UInt16, TypeCode.Int32, TypeCode.Int64

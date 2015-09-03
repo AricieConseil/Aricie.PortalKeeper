@@ -152,7 +152,7 @@ Namespace Entities
         <Browsable(False)> _
         Public ReadOnly Property FriendlyName As String
             Get
-                Return Join({Me.DetailUrlColumn, Me.ClientMode.ToString(), Me.FrameId, Me.XPath.SelectExpression}, UIConstants.TITLE_SEPERATOR)
+                Return Join({Me.DetailUrlColumn, Me.ClientMode.ToString(), Me.FrameId, Me.XPath.Expression.FriendlyName}, UIConstants.TITLE_SEPERATOR)
             End Get
         End Property
 

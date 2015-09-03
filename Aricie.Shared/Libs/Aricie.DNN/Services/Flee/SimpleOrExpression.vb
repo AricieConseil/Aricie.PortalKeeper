@@ -86,6 +86,9 @@ Namespace Services.Flee
             End Select
         End Function
 
+        Public Function GetValue(dataContext As IContextLookup) As T
+            Return GetValue(dataContext, dataContext)
+        End Function
 
 
     End Class

@@ -3,6 +3,7 @@ Imports Aricie.DNN.Services
 Imports System.Globalization
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
+Imports Aricie.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.Services
 
@@ -18,11 +19,24 @@ Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
+    Public Class MessageEventArgs
+        Inherits GenericEventArgs(Of KeyValuePair(Of String, Object))
+
+        Public Sub New()
+            MyBase.New()
+        End Sub
+
+        Public Sub New(ByVal key As String, ByVal value As Object)
+            MyBase.New(New KeyValuePair(Of String, Object)(key, value))
+        End Sub
+
+    End Class
 
     <Serializable()> _
     Public Class PortalKeeperContext(Of TEngineEvents As IConvertible)
         Inherits ContextBase(Of PortalKeeperContext(Of TEngineEvents))
 
+        Public Event SendMessage As EventHandler(Of MessageEventArgs)
 
 
 #Region "Constants"
@@ -242,6 +256,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public Methods"
 
+        Friend Sub OnSendMessage(Of TMessage)(ByVal key As String, ByVal value As TMessage)
+            RaiseEvent SendMessage(Me, New MessageEventArgs(key, value))
+        End Sub
+
         Friend Sub SetEngine(newEngine As RuleEngineSettings(Of TEngineEvents))
             Me._CurrentEngine = newEngine
         End Sub
@@ -298,7 +316,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-       
+
 
         Public Function MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents))) As List(Of KeeperRule(Of TEngineEvents))
             Dim toReturn As New List(Of KeeperRule(Of TEngineEvents))
@@ -389,13 +407,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     tempItems = DumpToLogs(dump)
                 End If
                 Dim logTitle As String
-               
+
                 Dim nextPhase As WorkingPhase = WorkingPhase.InProgress
                 If endoverhead Then
                     nextPhase = WorkingPhase.EndOverhead
                 End If
                 tempItems.AddRange(additionalProperties)
-                Dim objStep As StepInfo 
+                Dim objStep As StepInfo
                 If eventStep Is Nothing Then
                     logTitle = String.Format("End - {0}", _CurrentEngine.Name)
                     objStep = New StepInfo(Debug.PKPDebugType, logTitle, _
@@ -431,7 +449,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Function
 
 
-      
+
         Public Function GetDump() As SerializableDictionary(Of String, Object)
 
 

@@ -113,9 +113,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             navigable = tempXpath.GetNavigable(input)
                             actionContext.SetVar(XPathNavigableVarName, navigable)
                         End If
-                        Return tempXpath.DoSelect(navigable)
+                        Return tempXpath.DoSelect(navigable, actionContext)
                     End If
-                    Return (tempXpath.DoSelect(input))
+                    Return (tempXpath.DoSelect(input, actionContext))
                 Case StringFilterMode.TokenReplace
                     Dim atr As AdvancedTokenReplace = actionContext.GetAdvancedTokenReplace()
                     If UseAdditionalTokens Then

@@ -37,7 +37,11 @@ Namespace Services
         End Sub
 
         Public Sub New(existingLookup As IContextLookup)
-            Me._Items = New SerializableDictionary(Of String, Object)(existingLookup.Items)
+            If existingLookup IsNot Nothing Then
+                Me._Items = New SerializableDictionary(Of String, Object)(existingLookup.Items)
+            Else
+                Me._Items = New SerializableDictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase)
+            End If
         End Sub
 
         Private _Items As SerializableDictionary(Of String, Object)
