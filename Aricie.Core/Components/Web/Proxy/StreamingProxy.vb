@@ -1,306 +1,455 @@
 ﻿Imports System
+Imports System.Globalization
 Imports System.IO
 Imports System.Net
-Imports System.Runtime.InteropServices
-Imports System.Text
 Imports System.Threading
 Imports System.Web
 Imports System.Web.Caching
 Imports Aricie.IO
-Imports System.Web.SessionState
 
 Namespace Web.Proxy
-    Public Class StreamingProxy
-        Implements IHttpAsyncHandler, IHttpHandler
-        Implements IRequiresSessionState
 
 
-        ' Fields
+    Public Class SteamingProxy
+        Implements IHttpAsyncHandler
+        Implements IHttpHandler
+
+
+        Const BUFFER_SIZE As Integer = 8 * 1024
+        Private Const STR_ContentEncoding As String = "Content-Encoding"
+        Private Const STR_ContentLength As String = "Content-Length"
+        Private Const STR_ContentDisposition As String = "Content-Disposition"
+        Private Const STR_METHOD As String = "m"
+        Private Const STR_GET As String = "GET"
+        Private Const STR_URL As String = "u"
+        Private Const STR_CACHE_DURATION As String = "c"
+        Private Const STR_CONTENTTYPE As String = "t"
+        Private Const STR_DEFAULT_CACHE_DURATION As String = "0"
+
         Private _PipeStream As PipeStream
         Private _ResponseStream As Stream
 
-        Private url As String
-        Private cacheDuration As Integer
-        Private contentType As String
+#Region "Http Sync Handler ProcessRequest"
 
-        Private Const BUFFER_SIZE As Integer = 8192
+        Public Overridable Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
+            Dim method As String = If(context.Request(STR_METHOD), STR_GET)
+            Dim url As String = context.Request(STR_URL)
 
+            If String.IsNullOrEmpty(url) Then
+                context.Response.[End]()
+                Return
+            End If
 
-#Region "Implementations"
+            Dim cacheDuration As Integer = Convert.ToInt32(If(context.Request(STR_CACHE_DURATION), STR_DEFAULT_CACHE_DURATION))
+            Dim contentType As String = If(context.Request(STR_CONTENTTYPE), String.Empty)
 
-        ' Properties
-        Public ReadOnly Property IsReusable() As Boolean Implements System.Web.IHttpHandler.IsReusable
+            Log.WriteLine(Convert.ToString((Convert.ToString((method & Convert.ToString(" ")) + cacheDuration.ToString() + " ") & contentType) + " ") & url)
+            ' If cache duration specified, emit response header so that browser caches the response for specified duration.
+            If cacheDuration > 0 Then
+                If context.Cache(url) IsNot Nothing Then
+                    Dim content As CachedContent = TryCast(context.Cache(url), CachedContent)
+
+                    If Not String.IsNullOrEmpty(content.ContentEncoding) Then
+                        context.Response.AppendHeader(STR_ContentEncoding, content.ContentEncoding)
+                    End If
+                    If Not String.IsNullOrEmpty(content.ContentLength) Then
+                        context.Response.AppendHeader(STR_ContentLength, content.ContentLength)
+                    End If
+
+                    context.Response.ContentType = content.ContentType
+
+                    content.Content.Position = 0
+                    content.Content.WriteTo(context.Response.OutputStream)
+                End If
+            End If
+
+            Using New TimedLog(Convert.ToString("StreamingProxy" & vbTab) & url)
+                Dim outRequest As HttpWebRequest = ProxyHelper.CreateScalableHttpWebRequest(url)
+                ' As we will stream the response, don't want to automatically decompress the content
+                ' when source sends compressed content
+                outRequest.AutomaticDecompression = DecompressionMethods.None
+
+                CopyCookies(context.Request, outRequest)
+
+                If Not String.IsNullOrEmpty(contentType) Then
+                    outRequest.ContentType = contentType
+                End If
+
+                outRequest.Method = method
+
+                ' If there's a body provided then upload that            
+                If DoesRequestHaveBody(method) Then
+                    If context.Request.ContentLength > 0 Then
+                        outRequest.ContentLength = context.Request.ContentLength
+                    End If
+
+                    Using outStream As Stream = outRequest.GetRequestStream()
+                        CopyRequestStream(context.Request.InputStream, outStream)
+                    End Using
+                End If
+
+                Using New TimedLog("StreamingProxy" & vbTab & "Total GetResponse and transmit data")
+                    Using response As HttpWebResponse = TryCast(outRequest.GetResponse(), HttpWebResponse)
+                        Me.DownloadData(outRequest, response, context, cacheDuration)
+                    End Using
+                End Using
+            End Using
+        End Sub
+
+        Public ReadOnly Property IsReusable() As Boolean Implements IHttpHandler.IsReusable
             Get
                 Return False
             End Get
         End Property
 
+#End Region
 
+#Region "Http Async Handler Begin/End ProcessRequest"
 
-        Public Sub ProcessRequest(ByVal context As HttpContext) Implements System.Web.IHttpHandler.ProcessRequest
-            Me.PreProcessRequest(context)
+        Public Overridable Function BeginProcessRequest(context As HttpContext, cb As AsyncCallback, extraData As Object) As IAsyncResult Implements IHttpAsyncHandler.BeginProcessRequest
+            Dim method As String = If(context.Request(STR_METHOD), STR_GET)
+            Dim url As String = context.Request(STR_URL)
+            Dim cacheDuration As Integer = Convert.ToInt32(If(context.Request(STR_CACHE_DURATION), STR_DEFAULT_CACHE_DURATION))
+            Dim contentType As String = context.Request(STR_CONTENTTYPE)
 
-            If ((cacheDuration > 0) AndAlso (Not context.Cache.Item(url) Is Nothing)) Then
-                Dim content As CachedContent = TryCast(context.Cache.Item(url), CachedContent)
-                Me.ProcessCacheContent(context.Response, content)
-
+            If String.IsNullOrEmpty(url) Then
+                context.Response.[End]()
+                Return Nothing
             End If
-            Dim request As HttpWebRequest = BuildHttpRequest(context)
 
-            Using response As HttpWebResponse = TryCast(request.GetResponse, HttpWebResponse)
-                Me.DownloadData(request, response, context, cacheDuration)
-            End Using
-        End Sub
-
-
-
-
-        ' Methods
-        Public Function BeginProcessRequest(ByVal context As HttpContext, ByVal cb As AsyncCallback, ByVal extraData As Object) As IAsyncResult Implements System.Web.IHttpAsyncHandler.BeginProcessRequest
-            Me.PreProcessRequest(context)
-
-            If ((cacheDuration > 0) AndAlso (Not context.Cache.Item(url) Is Nothing)) Then
-                Dim toReturn As New SyncResult()
-                toReturn.Context = context
-                toReturn.Content = TryCast(context.Cache.Item(url), CachedContent)
+            If cacheDuration > 0 Then
+                If context.Cache(url) IsNot Nothing Then
+                    ' We have response to this URL already cached
+                    Dim result As New SyncResult()
+                    result.Context = context
+                    result.Content = TryCast(context.Cache(url), CachedContent)
+                    Return result
+                End If
             End If
-            Dim request As HttpWebRequest = Me.BuildHttpRequest(context)
+
+            Dim outRequest As HttpWebRequest = ProxyHelper.CreateScalableHttpWebRequest(url)
+            ' As we will stream the response, don't want to automatically decompress the content
+            ' when source sends compressed content
+            outRequest.AutomaticDecompression = DecompressionMethods.None
+            outRequest.Method = method
+
+            CopyCookies(context.Request, outRequest)
+
+            If Not String.IsNullOrEmpty(contentType) Then
+                outRequest.ContentType = contentType
+            End If
+
             Dim state As New AsyncState()
+            state.Method = method
             state.Context = context
             state.Url = url
             state.CacheDuration = cacheDuration
-            state.Request = request
-            Return request.BeginGetResponse(cb, state)
+            state.OutboundRequest = outRequest
+
+            ' If there's a body provided then upload that            
+            If DoesRequestHaveBody(method) Then
+                If context.Request.ContentLength > 0 Then
+                    outRequest.ContentLength = context.Request.ContentLength
+                End If
+
+                Return outRequest.BeginGetRequestStream(cb, state)
+            Else
+                Return outRequest.BeginGetResponse(cb, state)
+            End If
         End Function
 
+        Public Overridable Sub EndProcessRequest(result As IAsyncResult) Implements IHttpAsyncHandler.EndProcessRequest
+            If result.CompletedSynchronously Then
+                ' Content is already available in the cache and can be delivered from cache
+                Dim syncResult As SyncResult = TryCast(result, SyncResult)
+                If syncResult IsNot Nothing Then
+                    syncResult.Context.Response.ContentType = syncResult.Content.ContentType
+                    If Not syncResult.Content.ContentEncoding.IsNullOrEmpty() Then
+                        syncResult.Context.Response.AppendHeader(STR_ContentEncoding, syncResult.Content.ContentEncoding)
+                    End If
+                    syncResult.Context.Response.AppendHeader(STR_ContentLength, syncResult.Content.ContentLength)
+                    If Not syncResult.Content.ContentDisposition.IsNullOrEmpty() Then
+                        syncResult.Context.Response.AppendHeader(STR_ContentDisposition, syncResult.Content.ContentDisposition)
+                    End If
 
-
-        Public Sub EndProcessRequest(ByVal result As IAsyncResult) Implements System.Web.IHttpAsyncHandler.EndProcessRequest
-            Dim syncResult As SyncResult = TryCast(result, SyncResult)
-            If (result.CompletedSynchronously AndAlso (Not syncResult Is Nothing)) Then
-                Me.ProcessCacheContent(syncResult.Context.Response, syncResult.Content)
+                    syncResult.Content.Content.Seek(0, SeekOrigin.Begin)
+                    syncResult.Content.Content.WriteTo(syncResult.Context.Response.OutputStream)
+                End If
             Else
+                ' Content is not available in cache and needs to be downloaded from external source
                 Dim state As AsyncState = TryCast(result.AsyncState, AsyncState)
-                state.Context.Response.Buffer = False
-                Dim request As HttpWebRequest = state.Request
-                Using response As HttpWebResponse = TryCast(request.EndGetResponse(result), HttpWebResponse)
-                    Me.DownloadData(request, response, state.Context, state.CacheDuration)
-                End Using
+                If state IsNot Nothing Then
+                    state.Context.Response.Buffer = False
+                    Dim outRequest As HttpWebRequest = state.OutboundRequest
+
+                    If DoesRequestHaveBody(state.Method) Then
+                        Using outStream As Stream = outRequest.EndGetRequestStream(result)
+                            Me.CopyRequestStream(state.Context.Request.InputStream, outStream)
+
+                            Using outResponse As HttpWebResponse = TryCast(outRequest.GetResponse(), HttpWebResponse)
+                                Me.DownloadData(outRequest, outResponse, state.Context, state.CacheDuration)
+                            End Using
+                        End Using
+                    Else
+                        Using outResponse As HttpWebResponse = TryCast(outRequest.EndGetResponse(result), HttpWebResponse)
+                            Me.DownloadData(outRequest, outResponse, state.Context, state.CacheDuration)
+                        End Using
+                    End If
+                End If
             End If
         End Sub
 
-
-
-
 #End Region
 
-#Region "virtual methods"
+#Region "Private stuff"
 
-        Protected Overridable Function ProcessUrl(ByVal url As String) As String
-            Return url
-        End Function
 
-#End Region
 
-#Region "Private methods"
-
-        Private Sub DownloadData(ByVal request As HttpWebRequest, ByVal response As HttpWebResponse, ByVal context As HttpContext, ByVal cacheDuration As Integer)
-            Dim responseBuffer As New MemoryStream
-            context.Response.Buffer = False
-            Try
-                If (response.StatusCode <> HttpStatusCode.OK) Then
-                    context.Response.StatusCode = CInt(response.StatusCode)
+        Private Sub CopyCookies(request As HttpRequest, outRequest As HttpWebRequest)
+            Dim cookieContainer As New CookieContainer()
+            outRequest.CookieContainer = cookieContainer
+            For Each cookieName As String In request.Cookies
+                Dim cookie As HttpCookie = request.Cookies(cookieName)
+                If cookie.Domain.IsNullOrEmpty() Then
+                    cookieContainer.Add(New Cookie(cookie.Name, cookie.Value, cookie.Path, outRequest.RequestUri.Host))
                 Else
-                    Using readStream As Stream = response.GetResponseStream
-                        If context.Response.IsClientConnected Then
-                            Dim contentLength As String = String.Empty
-                            Dim contentEncoding As String = String.Empty
-                            Me.ProduceResponseHeader(response, context, cacheDuration, contentLength, contentEncoding)
-                            Dim totalBytesWritten As Integer = Me.TransmitDataAsyncOptimized(context, readStream, responseBuffer)
-                            If (cacheDuration > 0) Then
-                                Dim objCache As New CachedContent()
-                                objCache.Content = responseBuffer
-                                objCache.ContentEncoding = contentEncoding
-                                objCache.ContentLength = contentLength
-                                objCache.ContentType = response.ContentType
-                                context.Cache.Insert(request.RequestUri.ToString, objCache, Nothing, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(CDbl(cacheDuration)), CacheItemPriority.Normal, Nothing)
-                            End If
+                    cookieContainer.Add(New Cookie(cookie.Name, cookie.Value, cookie.Path, cookie.Domain))
+                End If
+            Next
+        End Sub
+        Private Sub DownloadData(request As HttpWebRequest, response As HttpWebResponse, context As HttpContext, cacheDuration As Integer)
+            Dim responseBuffer As New MemoryStream()
+            context.Response.Buffer = False
+
+            Try
+                If response.StatusCode <> HttpStatusCode.OK Then
+                    context.Response.StatusCode = CInt(response.StatusCode)
+                    Return
+                End If
+                Using readStream As Stream = response.GetResponseStream()
+                    If context.Response.IsClientConnected Then
+                        Dim contentLength As String = String.Empty
+                        Dim contentEncoding As String = String.Empty
+                        Dim contentDisposition As String = String.Empty
+                        ProduceResponseHeader(response, context, cacheDuration, contentLength, contentEncoding, contentDisposition)
+
+                        'int totalBytesWritten = TransmitDataInChunks(context, readStream, responseBuffer);
+                        'int totalBytesWritten = TransmitDataAsync(context, readStream, responseBuffer);
+                        Dim totalBytesWritten As Integer = TransmitDataAsyncOptimized(context, readStream, responseBuffer)
+
+                        Log.WriteLine("Response generated: " + DateTime.Now.ToString())
+                        Log.WriteLine(String.Format("Content Length vs Bytes Written: {0} vs {1} ", contentLength, totalBytesWritten))
+
+                        If cacheDuration > 0 Then
+                            '#Region "Cache Response in memory"
+                            ' Cache the content on server for specified duration
+                            Dim objCache As New CachedContent()
+                            objCache.Content = responseBuffer
+                            objCache.ContentEncoding = contentEncoding
+                            objCache.ContentDisposition = contentDisposition
+                            objCache.ContentLength = contentLength
+                            objCache.ContentType = response.ContentType
+
+                            '#End Region
+                            context.Cache.Insert(request.RequestUri.ToString(), objCache, Nothing, Cache.NoAbsoluteExpiration, TimeSpan.FromMinutes(cacheDuration), CacheItemPriority.Normal, _
+                                Nothing)
                         End If
+                    End If
+
+                    Using New TimedLog("StreamingProxy" & vbTab & "Response Flush")
                         context.Response.Flush()
                     End Using
-                End If
+                End Using
             Catch x As Exception
+                Log.WriteLine(x.ToString())
                 request.Abort()
             End Try
+
         End Sub
 
+        Private Function TransmitDataInChunks(context As HttpContext, readStream As Stream, responseBuffer As MemoryStream) As Integer
+            Dim buffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+            Dim bytesRead As Integer
+            Dim totalBytesWritten As Integer = 0
 
+            Using New TimedLog("StreamingProxy" & vbTab & "Total read from socket and write to response")
+                While (bytesRead.InlineAssignHelper(readStream.Read(buffer, 0, BUFFER_SIZE))) > 0
+                    Using New TimedLog("StreamingProxy" & vbTab & "Write " & bytesRead.ToString(CultureInfo.InvariantCulture) & " to response")
+                        context.Response.OutputStream.Write(buffer, 0, bytesRead)
+                    End Using
 
-        Private Sub ProduceResponseHeader(ByVal response As HttpWebResponse, ByVal context As HttpContext, ByVal cacheDuration As Integer, <Out()> ByRef contentLength As String, <Out()> ByRef contentEncoding As String)
-            If (cacheDuration > 0) Then
-                HttpHelper.CacheResponse(context, cacheDuration)
+                    responseBuffer.Write(buffer, 0, bytesRead)
+
+                    totalBytesWritten += bytesRead
+                End While
+            End Using
+
+            Return totalBytesWritten
+        End Function
+
+        Private Function TransmitDataAsync(context As HttpContext, readStream As Stream, responseBuffer As MemoryStream) As Integer
+            Me._ResponseStream = readStream
+
+            _PipeStream = New PipeStreamBlock(5000)
+
+            Dim objBuffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+
+            Dim readerThread As New Thread(New ThreadStart(AddressOf Me.ReadData))
+            readerThread.Start()
+            'ThreadPool.QueueUserWorkItem(new WaitCallback(this.ReadData));
+
+            Dim totalBytesWritten As Integer = 0
+            Dim dataReceived As Integer
+
+            Using New TimedLog("StreamingProxy" & vbTab & "Total read and write")
+                While (dataReceived.InlineAssignHelper(Me._PipeStream.Read(objBuffer, 0, BUFFER_SIZE))) > 0
+                    Using New TimedLog("StreamingProxy" & vbTab & "Write " & dataReceived.ToString(CultureInfo.InvariantCulture) & " to response")
+                        context.Response.OutputStream.Write(objBuffer, 0, dataReceived)
+                        responseBuffer.Write(objBuffer, 0, dataReceived)
+                        totalBytesWritten += dataReceived
+                    End Using
+                End While
+            End Using
+
+            _PipeStream.Dispose()
+
+            Return totalBytesWritten
+
+        End Function
+
+        Private Function TransmitDataAsyncOptimized(context As HttpContext, readStream As Stream, responseBuffer As MemoryStream) As Integer
+            Me._ResponseStream = readStream
+
+            _PipeStream = New PipeStreamBlock(10000)
+            '_PipeStream = new Utility.PipeStream(10000);
+
+            Dim objBuffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+
+            ' Asynchronously read content form response stream
+            Dim readerThread As New Thread(New ThreadStart(AddressOf Me.ReadData))
+            readerThread.Start()
+            'ThreadPool.QueueUserWorkItem(new WaitCallback(this.ReadData));
+
+            ' Write to response 
+            Dim totalBytesWritten As Integer = 0
+            Dim dataReceived As Integer
+
+            Dim outputBuffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+            Dim responseBufferPos As Integer = 0
+
+            Using New TimedLog("StreamingProxy" & vbTab & "Total read and write")
+                While (dataReceived.InlineAssignHelper(Me._PipeStream.Read(objBuffer, 0, BUFFER_SIZE))) > 0
+                    ' if about to overflow, transmit the response buffer and restart
+                    Dim bufferSpaceLeft As Integer = BUFFER_SIZE - responseBufferPos
+
+                    If bufferSpaceLeft < dataReceived Then
+                        Buffer.BlockCopy(objBuffer, 0, outputBuffer, responseBufferPos, bufferSpaceLeft)
+
+                        Using New TimedLog("StreamingProxy" & vbTab & "Write " & BUFFER_SIZE.ToString(CultureInfo.InvariantCulture) & " to response")
+                            context.Response.OutputStream.Write(outputBuffer, 0, BUFFER_SIZE)
+                            responseBuffer.Write(outputBuffer, 0, BUFFER_SIZE)
+                            totalBytesWritten += BUFFER_SIZE
+                        End Using
+
+                        ' Initialize response buffer and copy the bytes that were not sent
+                        responseBufferPos = 0
+                        Dim bytesLeftOver As Integer = dataReceived - bufferSpaceLeft
+                        Buffer.BlockCopy(objBuffer, bufferSpaceLeft, outputBuffer, 0, bytesLeftOver)
+                        responseBufferPos = bytesLeftOver
+                    Else
+                        Buffer.BlockCopy(objBuffer, 0, outputBuffer, responseBufferPos, dataReceived)
+                        responseBufferPos += dataReceived
+                    End If
+                End While
+
+                ' If some data left in the response buffer, send it
+                If responseBufferPos > 0 Then
+                    Using New TimedLog("StreamingProxy" & vbTab & "Write " & responseBufferPos.ToString(CultureInfo.InvariantCulture) & " to response")
+                        context.Response.OutputStream.Write(outputBuffer, 0, responseBufferPos)
+                        responseBuffer.Write(outputBuffer, 0, responseBufferPos)
+                        totalBytesWritten += responseBufferPos
+                    End Using
+                End If
+            End Using
+
+            Log.WriteLine("StreamingProxy" & vbTab & "Socket read " & Me._PipeStream.TotalWrite.ToString(CultureInfo.InvariantCulture) & " bytes and response written " & totalBytesWritten.ToString(CultureInfo.InvariantCulture) & " bytes")
+
+            _PipeStream.Dispose()
+
+            Return totalBytesWritten
+
+        End Function
+
+        Private Sub ProduceResponseHeader(response As HttpWebResponse, context As HttpContext, cacheDuration As Integer, _
+                                          ByRef contentLength As String, ByRef contentEncoding As String, ByRef contentDisposition As String)
+            ' produce cache headers for response caching
+            If cacheDuration > 0 Then
+                ProxyHelper.CacheResponse(context, cacheDuration)
             Else
-                HttpHelper.DoNotCacheResponse(context)
+                ProxyHelper.DoNotCacheResponse(context)
             End If
-            contentLength = response.GetResponseHeader("Content-Length")
+
+            ' If content length is not specified, this the response will be sent as Transfer-Encoding: chunked
+            contentLength = response.GetResponseHeader(STR_ContentLength)
             If Not String.IsNullOrEmpty(contentLength) Then
-                context.Response.AppendHeader("Content-Length", contentLength)
+                context.Response.AppendHeader(STR_ContentLength, contentLength)
             End If
-            contentEncoding = response.GetResponseHeader("Content-Encoding")
+
+            ' If downloaded data is compressed, Content-Encoding will have either gzip or deflate
+            contentEncoding = response.GetResponseHeader(STR_ContentEncoding)
             If Not String.IsNullOrEmpty(contentEncoding) Then
-                context.Response.AppendHeader("Content-Encoding", contentEncoding)
+                context.Response.AppendHeader(STR_ContentEncoding, contentEncoding)
             End If
+
+            contentDisposition = response.GetResponseHeader(STR_ContentDisposition)
+            If Not String.IsNullOrEmpty(contentDisposition) Then
+                context.Response.AppendHeader(STR_ContentDisposition, contentDisposition)
+            End If
+
             context.Response.ContentType = response.ContentType
         End Sub
 
         Private Sub ReadData()
-            Dim buffer As Byte() = New Byte(&H2000 - 1) {}
+            Dim buffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+            Dim dataReceived As Integer
             Dim totalBytesFromSocket As Integer = 0
-            Try
+
+            Using New TimedLog("StreamingProxy" & vbTab & "Total Read from socket")
                 Try
-                    Dim dataReceived As Integer = Me._ResponseStream.Read(buffer, 0, &H2000)
-                    Do While (dataReceived > 0)
-                        dataReceived = Me._ResponseStream.Read(buffer, 0, &H2000)
+                    While (dataReceived.InlineAssignHelper(Me._ResponseStream.Read(buffer, 0, BUFFER_SIZE))) > 0
                         Me._PipeStream.Write(buffer, 0, dataReceived)
-                        totalBytesFromSocket = (totalBytesFromSocket + dataReceived)
-                    Loop
+                        totalBytesFromSocket += dataReceived
+                    End While
                 Catch x As Exception
+                    Log.WriteLine(x.ToString())
+                Finally
+                    Log.WriteLine("Total bytes read from socket " & totalBytesFromSocket.ToString(CultureInfo.InvariantCulture) & " bytes")
+                    Me._ResponseStream.Dispose()
+                    Me._PipeStream.Flush()
                 End Try
-            Finally
-                Me._ResponseStream.Dispose()
-                Me._PipeStream.Flush()
-            End Try
+            End Using
         End Sub
 
-        Private Function TransmitDataAsync(ByVal context As HttpContext, ByVal readStream As Stream, ByVal responseBuffer As MemoryStream) As Integer
-            Dim dataReceived As Integer
-            Me._ResponseStream = readStream
-            Me._PipeStream = New PipeStreamBlock(&H1388)
-            Dim buffer As Byte() = New Byte(&H2000 - 1) {}
-            Dim objThread As New Thread(New ThreadStart(AddressOf Me.ReadData))
-            objThread.Start()
-            Dim totalBytesWritten As Integer = 0
-            dataReceived = Me._PipeStream.Read(buffer, 0, &H2000)
-            Do While (dataReceived > 0)
-                dataReceived = Me._PipeStream.Read(buffer, 0, &H2000)
-                context.Response.OutputStream.Write(buffer, 0, dataReceived)
-                responseBuffer.Write(buffer, 0, dataReceived)
-                totalBytesWritten = (totalBytesWritten + dataReceived)
-            Loop
-            Me._PipeStream.Dispose()
-            Return totalBytesWritten
+        Private Function DoesRequestHaveBody(method As String) As Boolean
+            Return (method = "POST" OrElse method = "PUT")
         End Function
 
-        Private Function TransmitDataAsyncOptimized(ByVal context As HttpContext, ByVal readStream As Stream, ByVal responseBuffer As MemoryStream) As Integer
-            Dim dataReceived As Integer
-            Me._ResponseStream = readStream
-            Me._PipeStream = New PipeStreamBlock(&H2710)
-            Dim objBuffer As Byte() = New Byte(&H2000 - 1) {}
-            Dim objThread As New Thread(New ThreadStart(AddressOf Me.ReadData))
-            objThread.Start()
-            Dim totalBytesWritten As Integer = 0
-            Dim outputBuffer As Byte() = New Byte(&H2000 - 1) {}
-            Dim responseBufferPos As Integer = 0
-            dataReceived = Me._PipeStream.Read(objBuffer, 0, &H2000)
-            Do While (dataReceived > 0)
-                dataReceived = Me._PipeStream.Read(objBuffer, 0, &H2000)
-                Dim bufferSpaceLeft As Integer = (&H2000 - responseBufferPos)
-                If (bufferSpaceLeft < dataReceived) Then
-                    Buffer.BlockCopy(objBuffer, 0, outputBuffer, responseBufferPos, bufferSpaceLeft)
-                    context.Response.OutputStream.Write(outputBuffer, 0, &H2000)
-                    responseBuffer.Write(outputBuffer, 0, &H2000)
-                    totalBytesWritten = (totalBytesWritten + &H2000)
-                    responseBufferPos = 0
-                    Dim bytesLeftOver As Integer = (dataReceived - bufferSpaceLeft)
-                    Buffer.BlockCopy(objBuffer, bufferSpaceLeft, outputBuffer, 0, bytesLeftOver)
-                    responseBufferPos = bytesLeftOver
-                Else
-                    Buffer.BlockCopy(objBuffer, 0, outputBuffer, responseBufferPos, dataReceived)
-                    responseBufferPos = (responseBufferPos + dataReceived)
-                End If
-            Loop
-            If (responseBufferPos > 0) Then
-                context.Response.OutputStream.Write(outputBuffer, 0, responseBufferPos)
-                responseBuffer.Write(outputBuffer, 0, responseBufferPos)
-                totalBytesWritten = (totalBytesWritten + responseBufferPos)
-            End If
-            Me._PipeStream.Dispose()
-            Return totalBytesWritten
-        End Function
+        Private Sub CopyRequestStream(inputStream As Stream, outStream As Stream)
 
-        Private Function TransmitDataInChunks(ByVal context As HttpContext, ByVal readStream As Stream, ByVal responseBuffer As MemoryStream) As Integer
-            Dim bytesRead As Integer
-            Dim buffer As Byte() = New Byte(&H2000 - 1) {}
-            Dim totalBytesWritten As Integer = 0
-            bytesRead = readStream.Read(buffer, 0, &H2000)
-            Do While (bytesRead > 0)
-                bytesRead = readStream.Read(buffer, 0, &H2000)
-                context.Response.OutputStream.Write(buffer, 0, bytesRead)
-                responseBuffer.Write(buffer, 0, bytesRead)
-                totalBytesWritten = (totalBytesWritten + bytesRead)
-            Loop
-            Return totalBytesWritten
-        End Function
-
-
-        Private Sub ProcessCacheContent(ByRef objResponse As HttpResponse, ByVal objCachedContent As CachedContent)
-
-            If Not String.IsNullOrEmpty(objCachedContent.ContentEncoding) Then
-                objResponse.AppendHeader("Content-Encoding", objCachedContent.ContentEncoding)
-            End If
-            If Not String.IsNullOrEmpty(objCachedContent.ContentLength) Then
-                objResponse.AppendHeader("Content-Length", objCachedContent.ContentLength)
-            End If
-            objResponse.ContentType = objCachedContent.ContentType
-            objCachedContent.Content.Seek(0, SeekOrigin.Begin)
-            objCachedContent.Content.WriteTo(objResponse.OutputStream)
-
+            Dim bytesRead As Integer = 0
+            Dim buffer As Byte() = New Byte(BUFFER_SIZE - 1) {}
+            While (bytesRead.InlineAssignHelper(inputStream.Read(buffer, 0, BUFFER_SIZE))) > 0
+                outStream.Write(buffer, 0, bytesRead)
+            End While
+            outStream.Flush()
+            outStream.Close()
         End Sub
-
-        Private Sub PreProcessRequest(ByVal context As HttpContext)
-            Me.url = context.Request.Item("proxy-distant-url")
-            Me.cacheDuration = Convert.ToInt32(IIf(context.Request.Item("cache") <> Nothing, context.Request.Item("cache"), "0"))
-            Me.contentType = context.Request.Item("type")
-            Dim item As String
-            For Each item In context.Request.QueryString.Keys
-                If (item <> "proxy-distant-url") Then
-                    If url.Contains("?") Then
-                        url = (url & String.Format("&{0}={1}", item, context.Request.QueryString.Item(item)))
-                    Else
-                        url = (url & String.Format("?{0}={1}", item, context.Request.QueryString.Item(item)))
-                    End If
-                End If
-            Next
-            url = Me.ProcessUrl(url)
-        End Sub
-
-        Private Function BuildHttpRequest(ByVal context As HttpContext) As HttpWebRequest
-            Dim request As HttpWebRequest = HttpHelper.CreateScalableHttpWebRequest(url)
-            request.AutomaticDecompression = DecompressionMethods.None
-            request.Method = context.Request.RequestType
-            Dim cookieContainer As New CookieContainer
-            request.CookieContainer = cookieContainer
-            If (request.Method = "POST") Then
-                Dim encodedData As New UTF8Encoding
-                Dim post As String = context.Request.Form.ToString
-                request.ContentType = "application/x-www-form-urlencoded"
-                request.ContentLength = post.Length
-                Dim stOut As New StreamWriter(request.GetRequestStream, Encoding.ASCII)
-                stOut.Write(post)
-                stOut.Close()
-            End If
-            If Not String.IsNullOrEmpty(contentType) Then
-                request.ContentType = contentType
-            End If
-            Return request
-        End Function
+        'Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
+        '    target = value
+        '    Return value
+        'End Function
 
 #End Region
-
-
-
-
-
 
 
 

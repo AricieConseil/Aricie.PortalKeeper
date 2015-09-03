@@ -114,10 +114,10 @@ Namespace Services.Flee
 
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
-            Dim currentProviderAsVariable As VariableInfo = Nothing
-            If currentProvider IsNot Nothing Then
-                currentProviderAsVariable = TryCast(currentProvider, VariableInfo)
-            End If
+            'Dim currentProviderAsVariable As VariableInfo = Nothing
+            'If currentProvider IsNot Nothing Then
+            '    currentProviderAsVariable = TryCast(currentProvider, VariableInfo)
+            'End If
             For Each objVar As VariableInfo In Me.Instances
                 'If objVar.Scope = VariableScope.Global _
                 '        OrElse (objVar.Scope = VariableScope.LocalAndSiblings AndAlso currentProviderAsVariable IsNot Nothing AndAlso Me.Instances.Contains(currentProviderAsVariable)) _

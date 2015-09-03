@@ -16,6 +16,7 @@ Namespace IO
         TransformWriteString = 8
         CaptureStream = 16
         CaptureString = 32
+        SignalLengths = 64
     End Enum
 
 
@@ -31,6 +32,9 @@ Namespace IO
 
         Private _cachePointer As Integer
 
+        Private _InboundLength As Long
+
+        Private _OutboundLength As Long
 
         Private _FilterType As ResponseFilterType = ResponseFilterType.TransformString Or ResponseFilterType.TransformStream _
                                                     Or ResponseFilterType.TransformWrite Or ResponseFilterType.TransformWriteString _
@@ -109,26 +113,35 @@ Namespace IO
             Me._stream.Close()
         End Sub
 
+        Private _Flushed As Boolean
+
         Public Overrides Sub Flush()
-            If (Me.IsCaptured AndAlso Me._cacheStream.Length > CLng(0)) Then
-                If (Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream Then
-                    Me._cacheStream = Me.OnTransformCompleteStream(Me._cacheStream)
+            If Not _Flushed Then
+                If (Me.IsCaptured AndAlso Me._cacheStream.Length > CLng(0)) Then
+                    If (Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream Then
+                        Me._cacheStream = Me.OnTransformCompleteStream(Me._cacheStream)
+                    End If
+                    If (Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString Then
+                        Me._cacheStream = Me.OnTransformCompleteStringInternal(Me._cacheStream)
+                    End If
+                    If (Me._FilterType And ResponseFilterType.CaptureStream) = ResponseFilterType.CaptureStream Then
+                        Me.OnCaptureStream(Me._cacheStream)
+                    End If
+                    If (Me._FilterType And ResponseFilterType.CaptureString) = ResponseFilterType.CaptureString Then
+                        Me.OnCaptureStringInternal(Me._cacheStream)
+                    End If
+                    If (Me.IsOutputDelayed) Then
+                        _OutboundLength = _cacheStream.Length
+                        Me._stream.Write(Me._cacheStream.ToArray(), 0, CInt(Me._cacheStream.Length))
+                    End If
+                    Me._cacheStream.SetLength(CLng(0))
                 End If
-                If (Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString Then
-                    Me._cacheStream = Me.OnTransformCompleteStringInternal(Me._cacheStream)
+                Me._stream.Flush()
+                If (Me._FilterType And ResponseFilterType.SignalLengths) = ResponseFilterType.SignalLengths Then
+                    Me.OnSignalLengths()
                 End If
-                If (Me._FilterType And ResponseFilterType.CaptureStream) = ResponseFilterType.CaptureStream Then
-                    Me.OnCaptureStream(Me._cacheStream)
-                End If
-                If (Me._FilterType And ResponseFilterType.CaptureString) = ResponseFilterType.CaptureString Then
-                    Me.OnCaptureStringInternal(Me._cacheStream)
-                End If
-                If (Me.IsOutputDelayed) Then
-                    Me._stream.Write(Me._cacheStream.ToArray(), 0, CInt(Me._cacheStream.Length))
-                End If
-                Me._cacheStream.SetLength(CLng(0))
+                _Flushed = True
             End If
-            Me._stream.Flush()
         End Sub
 
         Protected Overridable Sub OnCaptureStream(ByVal ms As MemoryStream)
@@ -191,9 +204,9 @@ Namespace IO
 
 
             ms = New MemoryStream()
-           
+
             ms.Write(bytes, 0, CInt(bytes.Length))
-           
+
             Return ms
         End Function
 
@@ -215,6 +228,11 @@ Namespace IO
             Return contentEncoding.GetBytes(str)
         End Function
 
+        Private Sub OnSignalLengths()
+            Dim args As New ChangedEventArgs(Of Long)(_InboundLength, _OutboundLength)
+            RaiseEvent SignalLengths(Me, args)
+        End Sub
+
         Public Overrides Function Read(ByVal buffer As Byte(), ByVal offset As Integer, ByVal count As Integer) As Integer
             Return Me._stream.Read(buffer, offset, count)
         End Function
@@ -228,19 +246,34 @@ Namespace IO
         End Sub
 
         Public Overrides Sub Write(ByVal buffer As Byte(), ByVal offset As Integer, ByVal count As Integer)
+            Me._InboundLength += count
             If (Me.IsCaptured) Then
                 Me._cacheStream.Write(buffer, 0, count)
                 Me._cachePointer = Me._cachePointer + count
             End If
+            Dim newBuffer As Byte() = Nothing
             If (Me._FilterType And ResponseFilterType.TransformWrite) = ResponseFilterType.TransformWrite Then
-                buffer = Me.OnTransformWrite(buffer)
+                ReDim newBuffer(count)
+                Array.ConstrainedCopy(buffer, offset, newBuffer, 0, count)
+                newBuffer = Me.OnTransformWrite(newBuffer)
             End If
 
             If (Me._FilterType And ResponseFilterType.TransformWriteString) = ResponseFilterType.TransformWriteString Then
-                buffer = Me.OnTransformWriteStringInternal(buffer)
+                If newBuffer Is Nothing Then
+                    ReDim newBuffer(count)
+                    Array.ConstrainedCopy(buffer, offset, newBuffer, 0, count)
+                End If
+                newBuffer = Me.OnTransformWriteStringInternal(newBuffer)
             End If
             If (Not Me.IsOutputDelayed) Then
-                Me._stream.Write(buffer, offset, count)
+                If newBuffer IsNot Nothing Then
+                    Me._OutboundLength += newBuffer.Length
+                    Me._stream.Write(newBuffer, 0, newBuffer.Length)
+                Else
+                    Me._OutboundLength += count
+                    Me._stream.Write(buffer, offset, count)
+                End If
+
             End If
         End Sub
 
@@ -257,6 +290,8 @@ Namespace IO
         Public Event TransformWrite As EventHandler(Of ChangedEventArgs(Of Byte()))
 
         Public Event TransformWriteString As EventHandler(Of ChangedEventArgs(Of String))
+
+        Public Event SignalLengths As EventHandler(Of ChangedEventArgs(Of Long))
     End Class
 
 
