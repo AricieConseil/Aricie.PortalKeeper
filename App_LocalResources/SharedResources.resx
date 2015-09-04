@@ -10187,4 +10187,22 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ResponseThrottlerInfo_RateKBs.Text" xml:space="preserve">
     <value>Rate (KB/s)</value>
   </data>
+  <data name="EmptySelectedFolder.Message" xml:space="preserve">
+    <value>Selected folder is empty</value>
+  </data>
+  <data name="ModelBinderAttribute_BinderType.Help" xml:space="preserve">
+    <value>Select a Type that resolves to a IModelBinder </value>
+  </data>
+  <data name="ModelBinderAttribute_BinderType.Text" xml:space="preserve">
+    <value>Binder Type</value>
+  </data>
+  <data name="CircularReferenceHidden.Message" xml:space="preserve">
+    <value>Entity from a Circular Reference was hidden</value>
+  </data>
+  <data name="MethodName.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Method --&gt;</value>
+  </data>
+  <data name="NullEntityHidden.Message" xml:space="preserve">
+    <value>Null Entity was hidden</value>
+  </data>
 </root>

@@ -204,6 +204,7 @@ Namespace ComponentModel
             End Get
             Set(value As String)
                 If _TypeNameSelect <> value Then
+                    Me._TypeNameSelect = value
                     Me.SetTypeName(value)
                 End If
             End Set
