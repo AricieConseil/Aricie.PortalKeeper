@@ -243,7 +243,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="External Assemblies\FileHelpers.dll" />
+    <Content Include="external\FileHelpers.dll" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">

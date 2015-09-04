@@ -56,22 +56,22 @@ Namespace UI.WebControls.EditControls
                 Me.Page.RegisterRequiresPostBack(Me)
                 Dim objParentModule As AriciePortalModuleBase = Me.ParentAricieModule
 
-                If objParentModule IsNot Nothing Then
-                    AddHandler objParentModule.PreRenderComplete, AddressOf PreRenderComplete
-                Else
-                    AddHandler Me.Page.PreRenderComplete, AddressOf PreRenderComplete
-                End If
+                'If objParentModule IsNot Nothing Then
+                '    AddHandler objParentModule.PreRenderComplete, AddressOf PreRenderComplete
+                'Else
+                AddHandler Me.Page.PreRenderComplete, AddressOf PreRenderComplete
+                'End If
             End If
 
         End Sub
 
         Private Sub PreRenderComplete(ByVal sender As Object, ByVal e As EventArgs)
-            Dim objParentModule As AriciePortalModuleBase = Me.ParentAricieModule
-            If objParentModule IsNot Nothing Then
-                DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = Me.UrlControl.Url
-            Else
-                Me.ViewState(UrlStateKey) = Me.UrlControl.Url
-            End If
+            'Dim objParentModule As AriciePortalModuleBase = Me.ParentAricieModule
+            'If objParentModule IsNot Nothing Then
+            DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = Me.UrlControl.Url
+            'Else
+            'Me.ViewState(UrlStateKey) = Me.UrlControl.Url
+            'End If
         End Sub
 
         Protected Overrides Sub OnDataChanged(ByVal e As System.EventArgs)
@@ -204,7 +204,8 @@ Namespace UI.WebControls.EditControls
                                             If objFiles IsNot Nothing AndAlso objFiles.Count > 0 Then
                                                 newValue = "FileID=" & objFiles(0).FileId.ToString(CultureInfo.InvariantCulture)
                                             Else
-                                                newValue = ""
+                                                newValue = Me.CurrentUrl
+                                                Me.ParentAricieEditor.DisplayLocalizedMessage("EmptySelectedFolder.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
                                             End If
                                         End If
                                     End If
