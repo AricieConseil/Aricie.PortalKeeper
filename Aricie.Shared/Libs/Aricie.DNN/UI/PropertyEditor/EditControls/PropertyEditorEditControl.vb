@@ -41,7 +41,10 @@ Namespace UI.WebControls.EditControls
                                                     Return toReturn
                                                 End Function), _
                                  .ConvertFrom = (Function(objSurrogate)
-                                                     Return objSurrogate.GetDotNetType()
+                                                     If objSurrogate IsNot Nothing Then
+                                                         Return objSurrogate.GetDotNetType()
+                                                     End If
+                                                     Return Nothing
                                                  End Function)})
         End Sub
        
@@ -67,16 +70,17 @@ Namespace UI.WebControls.EditControls
             Dim args As New PropertyEditorEventArgs(Me.Name)
             If _DynamicSurrogate IsNot Nothing Then
                 Dim newVal As Object = _DynamicSurrogate.ConvertFromSurrogate(Me._InnerEditor.DataSource)
-                If newVal Is Me.Value Then
-                    Exit Sub
-                End If
+                SaveCurrentSurrogateValue()
+                'If ReflectionHelper.AreEqual(newVal, Me.Value) Then
+                '    Exit Sub
+                'End If
                 args.Value = newVal
             Else
                 args.Value = Me._InnerEditor.DataSource
             End If
 
             args.OldValue = Me.OldValue
-            'args.Changed = (Not args.Value Is args.OldValue)
+            args.Changed = ReflectionHelper.AreEqual(Me.Value, Me.OldValue)
             args.StringValue = Me.StringValue
             MyBase.OnValueChanged(args)
         End Sub
@@ -248,25 +252,23 @@ Namespace UI.WebControls.EditControls
 
         Private _CurrentSurrogateValue As Object
 
-        Public Property CurrentSurrogateValue As Object
+        Public ReadOnly Property CurrentSurrogateValue As Object
             Get
                 If _CurrentSurrogateValue Is Nothing Then
+                    'todo: this does not work with dotnettype since it does not serialize its entire state. Find another trick (session state? ughh...)
                     Dim serializedSurrogate As String = DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey)
                     If Not serializedSurrogate.IsNullOrEmpty() Then
                         _CurrentSurrogateValue = ReflectionHelper.Deserialize(Of Serializable(Of Object))(serializedSurrogate).Value
                     Else
-                        CurrentSurrogateValue = _DynamicSurrogate.ConvertToSurrogate(Me.Value)
+                        _CurrentSurrogateValue = _DynamicSurrogate.ConvertToSurrogate(Me.Value)
                     End If
                 End If
-                
+
                 Return _CurrentSurrogateValue
             End Get
-            Set(value As Object)
-                _CurrentSurrogateValue = value
-                Dim objSerialized As New Serializable(Of Object)(value)
-                DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = ReflectionHelper.Serialize(objSerialized).Beautify()
-            End Set
         End Property
+
+        
 
 
         Public Overrides Sub DataBind()
@@ -288,7 +290,11 @@ Namespace UI.WebControls.EditControls
                     If Me.Value IsNot Nothing Then
                         Me.ParentAricieEditor.BoundEntities.Add(objValue)
                     End If
+                Else
+                    Me.ParentAricieEditor.DisplayLocalizedMessage("CircularReferenceHidden.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
                 End If
+            Else
+                Me.ParentAricieEditor.DisplayLocalizedMessage("NullEntityHidden.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
             End If
         End Sub
 
@@ -301,8 +307,8 @@ Namespace UI.WebControls.EditControls
 
         Protected Overrides Sub OnPreRender(ByVal e As EventArgs)
             If Me._DynamicSurrogate IsNot Nothing Then
-                Me.OnDataChanged()
 
+                Me.OnDataChanged()
             End If
             MyBase.OnPreRender(e)
 
@@ -314,6 +320,11 @@ Namespace UI.WebControls.EditControls
             RenderChildren(writer)
         End Sub
 
+        Private Sub SaveCurrentSurrogateValue()
+            _CurrentSurrogateValue = Me._InnerEditor.DataSource
+            Dim objSerialized As New Serializable(Of Object)(_CurrentSurrogateValue)
+            DnnContext.Current.AdvancedClientVariable(Me, UrlStateKey) = ReflectionHelper.Serialize(objSerialized).Beautify()
+        End Sub
         Public Overrides Sub EnforceTrialMode(ByVal mode As TrialPropertyMode)
             MyBase.EnforceTrialMode(mode)
             For Each subField As AricieFieldEditorControl In Me.InnerEditor.Fields

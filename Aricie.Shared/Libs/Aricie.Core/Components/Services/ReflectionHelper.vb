@@ -405,6 +405,17 @@ Namespace Services
             Return objType.IsPrimitive OrElse objType Is GetType(String) OrElse objType.IsEnum
         End Function
 
+        Public Shared Function AreEqual(ByVal source As Object, ByVal target As Object) As Boolean
+            If source Is Nothing Then
+                Return target Is Nothing
+            Else
+                Dim sourceType As Type = source.GetType()
+                Dim typeIsSimple As Boolean = ReflectionHelper.IsSimpleType(sourceType)
+                Return (Not typeIsSimple AndAlso Not Object.ReferenceEquals(source, target)) _
+                        OrElse (typeIsSimple AndAlso Not source.Equals(target))
+            End If
+
+        End Function
 
         Public Shared Function IsStatic(ByVal objType As Type) As Boolean
             Return objType.IsAbstract AndAlso objType.IsSealed

@@ -113,10 +113,11 @@ Namespace UI.WebControls
         End Property
 
 
-        Private _ExceptionsToProcess As New List(Of Exception)
+        Private _ExceptionsToProcess As New Dictionary(Of Exception, Control)
+        Private _MessagesToShow As New Dictionary(Of DisplayMessageInfo, AriciePropertyEditorControl)
 
         Public Sub ProcessException(ex As Exception)
-            _ExceptionsToProcess.Add(ex)
+            Me.RootEditor._ExceptionsToProcess.Add(ex, Me)
         End Sub
 
 
@@ -542,9 +543,10 @@ Namespace UI.WebControls
 
             End If
 
-            If Me._ExceptionsToProcess.Count > 0 Then
-                Me._ExceptionsToProcess.ForEach(Sub(ex As Exception) DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex))
+            If Me.IsRoot Then
+                AddHandler Me.Page.PreRenderComplete, AddressOf PreRenderComplete
             End If
+
 
             'If NukeHelper.DnnVersion.Major > 6 And Me Is ParentAricieEditor Then
             '    Me.CssClass += " dnnForm"
@@ -571,6 +573,7 @@ Namespace UI.WebControls
             _FriendlyName = String.Empty
             _OnDemandSections = Nothing
             _SectionsCollapsedByDefault = Nothing
+            Me.BoundEntities.Clear()
         End Sub
 
         Private _QueryStringParsed As Boolean
@@ -660,15 +663,45 @@ Namespace UI.WebControls
         End Sub
 
 
-        Public Sub DisplayMessage(strMessage As String, messageType As DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType, Optional heading As String = "")
-            If Me.IsRoot OrElse Not Me.ItemChanged Then
-                Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(heading, strMessage, messageType)
-                moduleMessage.EnableViewState = False
-                _headerControl.Controls.Add(moduleMessage)
-            Else
-                Me.RootEditor.DisplayMessage(strMessage, messageType, heading)
-            End If
+        
+
+        Public Sub DisplayMessage(strMessage As String, messageType As ModuleMessage.ModuleMessageType, Optional heading As String = "")
             
+            Me.RootEditor._MessagesToShow(New DisplayMessageInfo(strMessage, messageType, heading)) = Me
+
+        End Sub
+
+        Private Sub DisplayExceptions()
+
+            If Me._ExceptionsToProcess.Count > 0 Then
+                For Each objExPair As KeyValuePair(Of Exception, Control) In Me._ExceptionsToProcess
+                    If objExPair.Value IsNot Nothing AndAlso objExPair.Value.Page IsNot Nothing Then
+                        DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(objExPair.Value, objExPair.Key)
+                    Else
+                        DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, objExPair.Key)
+                    End If
+                Next
+            End If
+        End Sub
+
+        Private Sub DisplayMessages()
+            For Each objPair As KeyValuePair(Of DisplayMessageInfo, AriciePropertyEditorControl) In _MessagesToShow
+                Dim targetEditor As AriciePropertyEditorControl
+                If objPair.Value IsNot Nothing AndAlso objPair.Value.Page IsNot Nothing Then
+                    targetEditor = objPair.Value
+                Else
+                    targetEditor = Me
+                End If
+                Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(objPair.Key.Heading, objPair.Key.Message, objPair.Key.MessageType)
+                moduleMessage.EnableViewState = False
+                targetEditor._headerControl.Controls.Add(moduleMessage)
+            Next
+        End Sub
+
+
+        Private Sub PreRenderComplete(ByVal sender As Object, ByVal e As EventArgs)
+            Me.DisplayMessages()
+            Me.DisplayExceptions()
         End Sub
 
 #End Region
@@ -863,6 +896,8 @@ Namespace UI.WebControls
                     Me._headerControl.Controls.Add(myPeIco)
                 End If
                 Me.DisplayElement(Me.FieldsDictionary, False)
+            Else
+                Me.DisplayLocalizedMessage("NullEntityHidden.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.YellowWarning)
             End If
         End Sub
 
@@ -1423,8 +1458,9 @@ Namespace UI.WebControls
                         If (objAttr.LimitationMode And TrialPropertyMode.NoAdd) = TrialPropertyMode.NoAdd _
                                 OrElse (objAttr.LimitationMode And TrialPropertyMode.NoDelete) = TrialPropertyMode.NoDelete Then
 
-                            If TypeOf objField.Editor Is AricieEditControl Then
-                                DirectCast(objField.Editor, AricieEditControl).EnforceTrialMode(objAttr.LimitationMode)
+                            Dim aricieEditControl = TryCast(objField.Editor, AricieEditControl)
+                            If (aricieEditControl IsNot Nothing) Then
+                                aricieEditControl.EnforceTrialMode(objAttr.LimitationMode)
                             End If
                         End If
                     End If
@@ -1886,5 +1922,19 @@ Namespace UI.WebControls
         Public Const SubPathQuery As String = "SubPath"
 
     End Class
+
+    Public Structure DisplayMessageInfo
+
+        Public Sub New(strMessage As String, objMessageType As ModuleMessage.ModuleMessageType, strHeading As String)
+            Me.Message = strMessage
+            Me.MessageType = objMessageType
+            Me.Heading = strHeading
+        End Sub
+
+        Public Message As String
+        Public MessageType As ModuleMessage.ModuleMessageType
+        Public Heading As String
+
+    End Structure
 
 End Namespace

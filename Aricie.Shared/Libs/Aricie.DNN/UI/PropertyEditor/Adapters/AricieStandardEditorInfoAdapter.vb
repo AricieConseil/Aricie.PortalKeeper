@@ -96,10 +96,8 @@ Namespace UI.WebControls
         Public Function UpdateValue(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateValue
             If e.Value IsNot Nothing Then
                 Dim eType As Type = e.Value.GetType
-                'If e.Changed _
-                '    OrElse (Not ReflectionHelper.IsSimpleType(eType) AndAlso Not Object.ReferenceEquals(e.Value, e.OldValue)) _
-                '    OrElse (ReflectionHelper.IsSimpleType(eType) AndAlso Not e.Value.Equals(e.OldValue)) Then
-                If (Not (e.Value Is e.OldValue)) OrElse e.Changed Then
+                If e.Changed OrElse ReflectionHelper.AreEqual(e.Value, e.OldValue) Then
+                    'If (Not (e.Value Is e.OldValue)) OrElse e.Changed Then
                     Try
 
                         Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType

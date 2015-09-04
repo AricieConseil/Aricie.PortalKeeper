@@ -452,6 +452,7 @@
     <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.Extensions.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.Extensions.pdb" />
+    <Content Include="Libraries\SharpMap\Assemblies\Ionic.Zip.Reduced.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\NetTopologySuite.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\PowerCollections.dll" />
     <Content Include="Libraries\SharpMap\Assemblies\ProjNet.dll" />
