@@ -49,15 +49,16 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="bcmail-jdk14-132, Version=0.0.0.0, Culture=neutral">
+    <Reference Include="bcmail-jdk15-1.44, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\bcmail-jdk14-132.dll</HintPath>
+      <HintPath>external\bcmail-jdk15-1.44.dll</HintPath>
     </Reference>
-    <Reference Include="bcprov-jdk14-132, Version=0.0.0.0, Culture=neutral">
+    <Reference Include="bcprov-jdk15-1.44, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\bcprov-jdk14-132.dll</HintPath>
+      <HintPath>external\bcprov-jdk15-1.44.dll</HintPath>
     </Reference>
     <Reference Include="commons-logging, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>external\commons-logging.dll</HintPath>
     </Reference>
     <Reference Include="DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -74,10 +75,28 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>ExternalAssemblies\EPocalipse.IFilter.dll</HintPath>
     </Reference>
+    <Reference Include="fontbox-1.8.9, Version=1.8.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\fontbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="icu4j-3.8, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\icu4j-3.8.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.Core, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
+    <Reference Include="IKVM.OpenJDK.Media, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IKVM.OpenJDK.Media.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.OpenJDK.Security, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IKVM.OpenJDK.Security.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.SwingAWT, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.OpenJDK.SwingAWT.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Text, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
@@ -85,23 +104,36 @@
       <HintPath>external\IKVM.OpenJDK.Text.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Util, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.OpenJDK.Util.dll</HintPath>
     </Reference>
-    <Reference Include="IKVM.Runtime, Version=0.30.0.0, Culture=neutral, PublicKeyToken=13235d27fcbfff58">
+    <Reference Include="IKVM.OpenJDK.XML.API, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Website\bin\IKVM.Runtime.dll</HintPath>
+      <HintPath>external\IKVM.OpenJDK.XML.API.dll</HintPath>
+    </Reference>
+    <Reference Include="IKVM.Runtime, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI, Version=0.46.0.1, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
-    <Reference Include="itextsharp, Version=5.0.2.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+    <Reference Include="itextsharp, Version=5.4.0.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\itextsharp.dll</HintPath>
     </Reference>
-    <Reference Include="pdfbox-1.6.0, Version=1.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>external\pdfbox-1.6.0.dll</HintPath>
+    <Reference Include="jempbox-1.8.9, Version=1.8.9.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\jempbox-1.8.9.dll</HintPath>
+    </Reference>
+    <Reference Include="junit, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\junit.dll</HintPath>
+    </Reference>
+    <Reference Include="pdfbox-1.8.9, Version=1.8.9.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\pdfbox-1.8.9.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -109,6 +141,7 @@
     <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -166,21 +199,27 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <None Include="external\bcmail-jdk14-132.dll" />
-    <None Include="external\bcprov-jdk14-132.dll" />
     <None Include="external\DocumentFormat.OpenXml.dll" />
     <None Include="external\EPocalipse.IFilter.dll" />
     <None Include="external\itextsharp.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="external\bcmail-jdk15-1.44.dll" />
+    <Content Include="external\bcprov-jdk15-1.44.dll" />
     <Content Include="external\commons-logging.dll" />
+    <Content Include="external\fontbox-1.8.9.dll" />
+    <Content Include="external\icu4j-3.8.dll" />
     <Content Include="external\IKVM.OpenJDK.Core.dll" />
+    <Content Include="external\IKVM.OpenJDK.Media.dll" />
+    <Content Include="external\IKVM.OpenJDK.Security.dll" />
     <Content Include="external\IKVM.OpenJDK.SwingAWT.dll" />
     <Content Include="external\IKVM.OpenJDK.Text.dll" />
     <Content Include="external\IKVM.OpenJDK.Util.dll" />
+    <Content Include="external\IKVM.OpenJDK.XML.API.dll" />
     <Content Include="external\IKVM.Runtime.dll" />
-    <Content Include="external\IKVM.Runtime.JNI.dll" />
-    <Content Include="external\pdfbox-1.6.0.dll" />
+    <Content Include="external\jempbox-1.8.9.dll" />
+    <Content Include="external\junit.dll" />
+    <Content Include="external\pdfbox-1.8.9.dll" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aricie.Core\Aricie.Core.vbproj">

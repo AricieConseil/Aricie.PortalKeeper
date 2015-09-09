@@ -99,7 +99,7 @@ Namespace UI.WebControls.EditControls
 
 
 
-        
+
 
         Protected Overrides Sub CreateChildControls()
             Try
@@ -261,7 +261,7 @@ Namespace UI.WebControls.EditControls
             If Not Me.CurrentUrl.IsNullOrEmpty() Then
                 Me.UrlControl.Url = Me.CurrentUrl
             End If
-           
+
             'UrlControl.GetType().BaseType.GetField("_doReloadFiles", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
             'UrlControl.GetType().BaseType.GetField("_doReloadFolders", System.Reflection.BindingFlags.Instance Or System.Reflection.BindingFlags.NonPublic).SetValue(UrlControl, True)
             Me.Controls.Add(Me.UrlControl)

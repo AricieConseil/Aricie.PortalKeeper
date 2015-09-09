@@ -179,7 +179,7 @@ Namespace Services
             Return NukeHelper.FileController.GetFile(filename, objfolderInfo.PortalID, objfolderInfo.FolderID)
         End Function
 
-        Public Overridable Function GetFileLastModificationDate(objFile as DotNetNuke.Services.FileSystem.FileInfo) As DateTime
+        Public Overridable Function GetFileLastModificationDate(objFile As DotNetNuke.Services.FileSystem.FileInfo) As DateTime
             Return DateTime.MinValue
         End Function
 
