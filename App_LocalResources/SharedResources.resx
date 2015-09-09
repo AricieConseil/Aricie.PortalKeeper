@@ -168,7 +168,7 @@
   <data name="KeeperRule`1_Enabled.Text" xml:space="preserve">
     <value>Enabled</value>
   </data>
-  <data name="KeeperRule`1_Policy.Header" xml:space="preserve">
+  <data name="KeeperRule`1_Action.Header" xml:space="preserve">
     <value>Actions</value>
   </data>
   <data name="PortalAliases_AddNew.Text" xml:space="preserve">
@@ -10204,5 +10204,23 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="NullEntityHidden.Message" xml:space="preserve">
     <value>Null Entity was hidden</value>
+  </data>
+  <data name="KeeperObjectAction`1_SetHandlerEvent.Help" xml:space="preserve">
+    <value>The action context might be at a later unknown step when the event is fired. Check to define a custom temporary step set before the action sequence is executed.</value>
+  </data>
+  <data name="KeeperObjectAction`1_SetHandlerEvent.Text" xml:space="preserve">
+    <value>Set Handler event Step</value>
+  </data>
+  <data name="KeeperRule`1_LateRunEvent.Help" xml:space="preserve">
+    <value>You can postpone the rule actions evaluation as a whole, or you can also do that individually for each action.</value>
+  </data>
+  <data name="KeeperRule`1_LateRunEvent.Text" xml:space="preserve">
+    <value>Run Step later than Evaluation step</value>
+  </data>
+  <data name="KeeperRule`1_RunLifeCycleEvent.Help" xml:space="preserve">
+    <value>This is when the rule's actions will be effectively run, according to the previous parameters.</value>
+  </data>
+  <data name="KeeperRule`1_RunLifeCycleEvent.Text" xml:space="preserve">
+    <value>Effective Run Step</value>
   </data>
 </root>

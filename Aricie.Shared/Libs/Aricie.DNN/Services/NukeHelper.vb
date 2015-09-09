@@ -355,7 +355,12 @@ Namespace Services
 
         Public ReadOnly Property BaseUrl As String
             Get
-                Return DotNetNuke.Common.Globals.AddHTTP(NukeHelper.PortalSettings.PortalAlias.HTTPAlias)
+                Dim objPortalSettings As PortalSettings = NukeHelper.PortalSettings
+                Dim toReturn As String = NukeHelper.PortalSettings.PortalAlias.HTTPAlias
+                If toReturn Is Nothing Then
+                    toReturn = NukeHelper.PortalAliasesByPortalId(0)(0).HTTPAlias
+                End If
+                Return DotNetNuke.Common.Globals.AddHTTP(toReturn)
             End Get
         End Property
 

@@ -1,6 +1,7 @@
 Imports Aricie.DNN.Settings
 Imports Aricie.DNN.Services
 Imports System.Globalization
+Imports System.Runtime.CompilerServices
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
 Imports Aricie.ComponentModel
@@ -289,6 +290,42 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
+        Private _LateRunningRules As Dictionary(Of TEngineEvents, List(Of KeeperRule(Of TEngineEvents)))
+
+        Private ReadOnly Property LateRunningRules As Dictionary(Of TEngineEvents, List(Of KeeperRule(Of TEngineEvents)))
+            Get
+                If _LateRunningRules Is Nothing Then
+                    _LateRunningRules = New Dictionary(Of TEngineEvents, List(Of KeeperRule(Of TEngineEvents)))
+                End If
+                Return _LateRunningRules
+            End Get
+        End Property
+
+
+        Private _LateRunningActions As Dictionary(Of TEngineEvents, KeeperRule(Of TEngineEvents))
+
+        Private ReadOnly Property LateRunningActions As Dictionary(Of TEngineEvents, KeeperRule(Of TEngineEvents))
+            Get
+                If _LateRunningActions Is Nothing Then
+                    _LateRunningActions = New Dictionary(Of TEngineEvents, KeeperRule(Of TEngineEvents))
+                End If
+                Return _LateRunningActions
+            End Get
+        End Property
+
+        Friend Sub AddLateRunningAction(objAction As ActionProviderSettings(Of TEngineEvents))
+            Dim targetRule As KeeperRule(Of TEngineEvents) = Nothing
+            If Not LateRunningActions.TryGetValue(objAction.LifeCycleEvent, targetRule) Then
+                targetRule = New KeeperRule(Of TEngineEvents) With {.Name = "Late Actions Rule", _
+                                                                  .Enabled = True, _
+                                                                  .MatchingLifeCycleEvent = objAction.LifeCycleEvent}
+                targetRule.Action.Instances.Add(objAction)
+                LateRunningActions(objAction.LifeCycleEvent) = targetRule
+            End If
+        End Sub
+
+
+
         Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
             If Me._CurrentEngine IsNot configRules Then
                 Me._CurrentEngine = configRules
@@ -297,9 +334,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If configRules.Mode = RuleEngineMode.Rules Then
                 Me.LogStartEventStep()
                 Dim matchedRules = Me.MatchRules(configRules.Rules)
+                Dim lateRules As List(Of KeeperRule(Of TEngineEvents)) = Nothing
+                If LateRunningRules.Count > 0 AndAlso LateRunningRules.TryGetValue(Me.CurrentEventStep, lateRules) Then
+                    matchedRules.AddRange(lateRules)
+                End If
+                Dim lateActions As KeeperRule(Of TEngineEvents) = Nothing
+                If LateRunningActions.Count > 0 AndAlso LateRunningActions.TryGetValue(Me.CurrentEventStep, lateActions) Then
+                    matchedRules.Add(lateActions)
+                End If
                 If matchedRules.Count > 0 Then
                     For Each matchedRule As KeeperRule(Of TEngineEvents) In matchedRules
-                        matchedRule.RunActions(Me)
+                        If matchedRule.RunLifeCycleEvent.Equals(Me.CurrentEventStep) Then
+                            matchedRule.RunActions(Me)
+                        Else
+                            Dim intCurrEvent As Integer = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                            Dim intMatchedRuleRunEvent = matchedRule.RunLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture)
+                            If intMatchedRuleRunEvent < intCurrEvent Then
+                                Throw New ApplicationException("Cannot set rule to run before it is evaluated")
+                            End If
+                            Dim postPoneList As List(Of KeeperRule(Of TEngineEvents)) = Nothing
+                            If Not LateRunningRules.TryGetValue(matchedRule.RunLifeCycleEvent, postPoneList) Then
+                                postPoneList = New List(Of KeeperRule(Of TEngineEvents))
+                                LateRunningRules(matchedRule.RunLifeCycleEvent) = postPoneList
+                            End If
+                            postPoneList.Add(matchedRule)
+                        End If
                     Next
                 End If
                 Me.LogEndEventStep(False, endoverhead)
@@ -315,7 +374,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
-
+        Public Function IsDefaultStep(objStep As TEngineEvents) As Boolean
+            Return (objStep.ToString(CultureInfo.InvariantCulture) = KeeperAction(Of TEngineEvents).DefaultEventStep)
+        End Function
 
 
         Public Function MatchRules(ByVal configRules As List(Of KeeperRule(Of TEngineEvents))) As List(Of KeeperRule(Of TEngineEvents))

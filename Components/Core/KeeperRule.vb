@@ -7,6 +7,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Services.Flee
 
@@ -33,7 +34,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("Action")> _
        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
        <LabelMode(LabelMode.Top)> _
         Public Property Action() As KeeperAction(Of TEngineEvents) = New KeeperAction(Of TEngineEvents)
@@ -52,7 +53,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ConditionalVisible("HasEvent", False, True)> _
+         <ExtendedCategory("RuleSettings")> _
         Public Property MatchingLifeCycleEvent() As TEngineEvents
+
+        <ConditionalVisible("HasEvent", False, True)> _
+         <ExtendedCategory("RuleSettings")> _
+        Public Property LateRunEvent As New EnabledFeature(Of TEngineEvents)
+
+        Public ReadOnly Property RunLifeCycleEvent As TEngineEvents
+            Get
+                If LateRunEvent.Enabled Then
+                    Return LateRunEvent.Entity
+                End If
+                Return MatchingLifeCycleEvent
+            End Get
+        End Property
 
         <ExtendedCategory("RuleSettings")> _
         Public Property StopRule() As Boolean

@@ -187,7 +187,7 @@ Public Module Common
 
         For lCtr = 1 To lLen
             sChar = Mid(objString, lCtr, 1)
-            If IsAlphaNumeric(sChar) Then
+            If sChar.IsAlphaNumeric() Then
                 sAns.Append(sChar)
             End If
         Next
@@ -233,13 +233,13 @@ Public Module Common
 
     <Extension> _
     Public Function ToCamelCase(input As String) As String
-        Dim pascal As String = ToPascalCase(input)
+        Dim pascal As String = input.ToPascalCase()
         Return WordRegex.Replace(pascal, AddressOf EvaluateFirstCamel, 1)
     End Function
 
     <Extension> _
     Public Function ToTitleCase(input As String) As String
-        Dim pascal As String = ToPascalCase(input)
+        Dim pascal As String = input.ToPascalCase()
         Return SplitRegex.Replace(pascal, " $1")
     End Function
 
@@ -254,7 +254,7 @@ Public Module Common
         If valueLength = 1 Then
             Return value.ToUpper()
         Else
-            If valueLength <= 2 AndAlso IsWordUpper(value) Then
+            If valueLength <= 2 AndAlso value.IsWordUpper() Then
                 Return value
             Else
                 Return value.Substring(0, 1).ToUpper() + value.Substring(1, valueLength - 1).ToLower()
@@ -270,73 +270,122 @@ Public Module Common
     <Extension> _
     Public Function Compress(source As String, method As CompressionMethod) As String
         Dim sourceBytes As Byte() = Encoding.UTF8.GetBytes(source)
-        Dim returnBytes As Byte() = Compress(sourceBytes, method)
+        Dim returnBytes As Byte() = sourceBytes.Compress(method)
         Return Convert.ToBase64String(returnBytes)
     End Function
 
     <Extension> _
     Public Function Decompress(source As String, method As CompressionMethod) As String
         Dim sourceBytes As Byte() = Convert.FromBase64String(source)
-        Dim returnBytes As Byte() = Decompress(sourceBytes, method)
+        Dim returnBytes As Byte() = sourceBytes.Decompress(method)
         Return Encoding.UTF8.GetString(returnBytes)
     End Function
 
+
+
+
     <Extension> _
     Public Function Compress(bytes As Byte(), method As CompressionMethod) As Byte()
-        Using ms = New MemoryStream
-            Select Case method
-                Case CompressionMethod.Deflate
-                    Using gzs = New DeflateStream(ms, CompressionMode.Compress, False)
-                        gzs.Write(bytes, 0, bytes.Length)
-                    End Using
-                Case CompressionMethod.Gzip
-                    Using gzs = New GZipStream(ms, CompressionMode.Compress, False)
-                        gzs.Write(bytes, 0, bytes.Length)
-                    End Using
-            End Select
+        'Using ms = New MemoryStream
+        '    Select Case method
+        '        Case CompressionMethod.Deflate
+        '            Using gzs = New DeflateStream(ms, CompressionMode.Compress, False)
+        '                gzs.Write(bytes, 0, bytes.Length)
+        '            End Using
+        '        Case CompressionMethod.Gzip
+        '            Using gzs = New GZipStream(ms, CompressionMode.Compress, False)
+        '                gzs.Write(bytes, 0, bytes.Length)
+        '            End Using
+        '    End Select
 
-            ms.Close()
-            Return ms.ToArray
+        '    ms.Close()
+        '    Return ms.ToArray
+        'End Using
+        Using ms = New MemoryStream(bytes, False)
+            Using destStream As MemoryStream = ms.Compress(method)
+                Return destStream.ToArray()
+            End Using
         End Using
     End Function
+
+    <Extension> _
+    Public Function Compress(objStream As Stream, method As CompressionMethod) As MemoryStream
+        Dim toreturn As New MemoryStream()
+        'Dim read As Integer
+        'Dim tmp = New Byte(CInt(objStream.Length - 1)) {}
+        Select Case method
+            Case CompressionMethod.Deflate
+                Using gzs As New DeflateStream(toreturn, CompressionMode.Compress, True)
+                    objStream.CopyStream(gzs)
+                    'read = objStream.Read(tmp, 0, tmp.Length)
+                    'Do While (read <> 0)
+                    '    gzs.Write(tmp, 0, read)
+                    '    read = objStream.Read(tmp, 0, tmp.Length)
+                    'Loop
+                    'gzs.Close()
+                End Using
+            Case CompressionMethod.Gzip
+                Using gzs As New GZipStream(toreturn, CompressionMode.Compress, True)
+                    objStream.CopyStream(gzs)
+                    'read = objStream.Read(tmp, 0, tmp.Length)
+                    'Do While (read <> 0)
+                    '    gzs.Write(tmp, 0, read)
+                    '    read = objStream.Read(tmp, 0, tmp.Length)
+                    'Loop
+                    'gzs.Close()
+                End Using
+        End Select
+
+        toreturn.Seek(0, SeekOrigin.Begin)
+        Return toreturn
+    End Function
+
 
     <Extension> _
     Public Function Decompress(bytes As Byte(), method As CompressionMethod) As Byte()
-        Dim toReturn As Byte() = Nothing
         Using ms = New MemoryStream(bytes, False)
-            Select Case method
-                Case CompressionMethod.Deflate
-                    Using gzs = New DeflateStream(ms, CompressionMode.Decompress, False)
-                        Using dest = New MemoryStream
-                            Dim read As Integer
-                            Dim tmp = New Byte(bytes.Length - 1) {}
-                            read = gzs.Read(tmp, 0, tmp.Length)
-                            Do While (read <> 0)
-                                dest.Write(tmp, 0, read)
-                                read = gzs.Read(tmp, 0, tmp.Length)
-                            Loop
-                            dest.Close()
-                            toReturn = dest.ToArray
-                        End Using
-                    End Using
-                Case CompressionMethod.Gzip
-                    Using gzs = New GZipStream(ms, CompressionMode.Decompress, False)
-                        Using dest = New MemoryStream
-                            Dim read As Integer
-                            Dim tmp = New Byte(bytes.Length - 1) {}
-                            read = gzs.Read(tmp, 0, tmp.Length)
-                            Do While (read <> 0)
-                                dest.Write(tmp, 0, read)
-                                read = gzs.Read(tmp, 0, tmp.Length)
-                            Loop
-                            dest.Close()
-                            toReturn = dest.ToArray
-                        End Using
-                    End Using
-            End Select
+            Using destStream As MemoryStream = ms.Decompress(method)
+                Return destStream.ToArray()
+            End Using
         End Using
-        Return toReturn
     End Function
+    
+
+
+    <Extension> _
+    Public Function Decompress(objStream As Stream, method As CompressionMethod) As MemoryStream
+        Dim toreturn As New MemoryStream()
+        'Dim read As Integer
+        'Dim tmp = New Byte(CInt(objStream.Length - 1)) {}
+        Select Case method
+            Case CompressionMethod.Deflate
+                Using gzs = New DeflateStream(objStream, CompressionMode.Decompress, False)
+                    'read = gzs.Read(tmp, 0, tmp.Length)
+                    'Do While (read <> 0)
+                    '    toreturn.Write(tmp, 0, read)
+                    '    read = gzs.Read(tmp, 0, tmp.Length)
+                    'Loop
+                    gzs.CopyStream(toreturn)
+                    'gzs.Close()
+                End Using
+            Case CompressionMethod.Gzip
+                Using gzs = New GZipStream(objStream, CompressionMode.Decompress, False)
+                    'read = gzs.Read(tmp, 0, tmp.Length)
+                    'Do While (read <> 0)
+                    '    toreturn.Write(tmp, 0, read)
+                    '    read = gzs.Read(tmp, 0, tmp.Length)
+                    'Loop
+                    gzs.CopyStream(toreturn)
+                    'gzs.Close()
+                End Using
+        End Select
+        toreturn.Seek(0, SeekOrigin.Begin)
+        Return toreturn
+    End Function
+
+
+
+
 
     <Extension> _
     Public Function LinesCount(s As String) As Integer
@@ -908,10 +957,18 @@ Public Module Common
     End Function
 
     Public Sub CallDebuggerBreak()
-        If Not Debugger.IsAttached Then
-            Debugger.Launch()
+        CallDebuggerBreak(True)
+    End Sub
+
+    Private debuggerCalled As Boolean
+    Public Sub CallDebuggerBreak(onceOnly As Boolean)
+        If Not debuggerCalled Then
+            debuggerCalled = True
+            If Not Debugger.IsAttached Then
+                Debugger.Launch()
+            End If
+            Debugger.Break()
         End If
-        Debugger.Break()
     End Sub
 
 #End Region

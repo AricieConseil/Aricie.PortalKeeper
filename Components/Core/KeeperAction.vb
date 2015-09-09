@@ -59,15 +59,17 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 '                                 AndAlso (actionContext.CurrentRule Is Nothing _
                 '                                        OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture) = intCurrEvent) _
                 '                                        OrElse prov.Config.MinTEngineEvents.ToString(CultureInfo.InvariantCulture) = prov.Config.MaxTEngineEvents.ToString(CultureInfo.InvariantCulture)))) Then
-                If element.LifeCycleEvent.Equals(actionContext.CurrentEventStep) _
-                       OrElse (element.LifeCycleEventIsDefault _
-                               AndAlso (prov.Config.DefaultTEngineEvents.Equals(actionContext.CurrentEventStep) _
-                                        OrElse (prov.Config.DefaultTEngineEventsIsDefault _
-                                                AndAlso (actionContext.CurrentRule Is Nothing _
-                                                       OrElse actionContext.CurrentRule.MatchingLifeCycleEvent.Equals(actionContext.CurrentEventStep)) _
-                                                       OrElse prov.Config.MinTEngineEvents.Equals(prov.Config.MaxTEngineEvents)))) Then
-                    Try
-                        Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                Dim intCurrEvent As Integer = actionContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                Try
+                    If element.LifeCycleEvent.Equals(actionContext.CurrentEventStep) _
+                           OrElse (element.LifeCycleEventIsDefault _
+                                   AndAlso (prov.Config.DefaultTEngineEvents.Equals(actionContext.CurrentEventStep) _
+                                            OrElse (prov.Config.DefaultTEngineEventsIsDefault _
+                                                    AndAlso (actionContext.CurrentRule Is Nothing _
+                                                           OrElse actionContext.CurrentRule.RunLifeCycleEvent.Equals(actionContext.CurrentEventStep)) _
+                                                           OrElse prov.Config.MinTEngineEvents.Equals(prov.Config.MaxTEngineEvents)))) Then
+
+
                         If intCurrEvent > 0 AndAlso (prov.Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > intCurrEvent _
                                 OrElse prov.Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < intCurrEvent) Then
                             ' curl up and die here
@@ -80,54 +82,61 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                             toReturn = toReturn And prov.Run(actionContext)
                         End If
-                    Catch ex As Exception
-                        If element.CaptureException Then
-                            actionContext.Items(element.ExceptionVarName) = ex
+
+                        If (Not toReturn) AndAlso element.StopOnFailure Then
+                            Return False
+                        ElseIf toReturn AndAlso element.ExitAction Then
+                            Exit For
                         End If
-                        Dim xmlDump As String = ""
-                        If actionContext.CurrentEngine.ExceptionDumpSettings.EnableDump Then
-                            Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(actionContext.CurrentEngine.ExceptionDumpSettings)
-                            xmlDump = ReflectionHelper.Serialize(dump).Beautify(True)
-                        End If
-                        Dim message As String
-                        If actionContext.CurrentRule IsNot Nothing Then
-                            message = String.Format("Action Exception,  Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0}, InnerException: {1} {0} Dumped Vars: {5}", _
-                                                   UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
+                    Else
+                        Dim intElementEvent = element.LifeCycleEvent.ToInt32(CultureInfo.InvariantCulture)
+                        If intElementEvent > intCurrEvent Then
+                            actionContext.AddLateRunningAction(element)
                         Else
-                            message = String.Format("Action Exception, Engine Name: {2} {0} No Rule {0} Action Name: {3} {0}, InnerException: {1} {0}  Dumped Vars: {4}", _
-                                                   UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, element.Name, xmlDump)
+                            Throw New ApplicationException("Cannot set element to run before it is first encountered")
                         End If
-
-                        Dim newEx As New ApplicationException(message, ex)
-                        If Not element.DontLogExceptions Then
-                            DotNetNuke.Services.Exceptions.LogException(newEx)
-                        End If
-
-
-                        If element.ExceptionActions.Enabled Then
-                            toReturn = element.ExceptionActions.Entity.Run(actionContext)
-                        Else
-                            toReturn = False
-                        End If
-                        If Me.ThrowAllExceptions OrElse element.RethrowException Then
-                            Throw newEx
-                        End If
-
-                    Finally
-                        If (Not element.DisableLog) AndAlso actionContext.LoggingLevel >= element.LoggingLevel Then
-                            Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
-                            'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
-                            'PerformanceLogger.Instance.AddDebugInfo(objStep)
-                            actionContext.LogEnd(element.Name, False, False, element.LoggingLevel, element.LogDumpSettings, actionResult)
-                        End If
-                    End Try
-                    If (Not toReturn) AndAlso element.StopOnFailure Then
-                        Return False
-                    ElseIf toReturn AndAlso element.ExitAction Then
-                        Exit For
                     End If
-                End If
+                Catch ex As Exception
+                    If element.CaptureException Then
+                        actionContext.Items(element.ExceptionVarName) = ex
+                    End If
+                    Dim xmlDump As String = ""
+                    If actionContext.CurrentEngine.ExceptionDumpSettings.EnableDump Then
+                        Dim dump As SerializableDictionary(Of String, Object) = actionContext.GetDump(actionContext.CurrentEngine.ExceptionDumpSettings)
+                        xmlDump = ReflectionHelper.Serialize(dump).Beautify(True)
+                    End If
+                    Dim message As String
+                    If actionContext.CurrentRule IsNot Nothing Then
+                        message = String.Format("Action Exception,  Engine Name: {2} {0} Rule Name: {3} {0} Action Name: {4} {0}, InnerException: {1} {0} Dumped Vars: {5}", _
+                                               UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, actionContext.CurrentRule.Name, element.Name, xmlDump)
+                    Else
+                        message = String.Format("Action Exception, Engine Name: {2} {0} No Rule {0} Action Name: {3} {0}, InnerException: {1} {0}  Dumped Vars: {4}", _
+                                               UIConstants.TITLE_SEPERATOR & vbCrLf, ex.ToString(), actionContext.CurrentEngine.Name, element.Name, xmlDump)
+                    End If
 
+                    Dim newEx As New ApplicationException(message, ex)
+                    If Not element.DontLogExceptions Then
+                        DotNetNuke.Services.Exceptions.LogException(newEx)
+                    End If
+
+
+                    If element.ExceptionActions.Enabled Then
+                        toReturn = element.ExceptionActions.Entity.Run(actionContext)
+                    Else
+                        toReturn = False
+                    End If
+                    If Me.ThrowAllExceptions OrElse element.RethrowException Then
+                        Throw newEx
+                    End If
+
+                Finally
+                    If (Not element.DisableLog) AndAlso actionContext.LoggingLevel >= element.LoggingLevel Then
+                        Dim actionResult As New KeyValuePair(Of String, String)("Action Result", toReturn.ToString(CultureInfo.InvariantCulture))
+                        'Dim objStep As New StepInfo(Debug.PKPDebugType, String.Format("End - {0}", element.Name), WorkingPhase.InProgress, False, False, -1, actionContext.FlowId, actionResult)
+                        'PerformanceLogger.Instance.AddDebugInfo(objStep)
+                        actionContext.LogEnd(element.Name, False, False, element.LoggingLevel, element.LogDumpSettings, actionResult)
+                    End If
+                End Try
             Next
             Return toReturn
         End Function

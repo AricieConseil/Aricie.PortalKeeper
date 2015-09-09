@@ -340,7 +340,7 @@ Namespace Services.Filtering
                     _CompiledExpressionSource = selExp
                     If UseNamespaceManager Then
                         Dim nsman As New XmlNamespaceManager(navigator.NameTable)
-                        For Each nskvp As KeyValuePair(Of String, String) In navigator.GetNamespacesInScope(XmlNamespaceScope.All)
+                        For Each nskvp As KeyValuePair(Of String, String) In navigator.GetNamespacesInScope(XmlNamespaceScope.Local)
                             If nskvp.Key.IsNullOrEmpty() Then
                                 nsman.AddNamespace(Me.DefaultNamespacePrefix, nskvp.Value)
                             Else

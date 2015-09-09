@@ -2,6 +2,7 @@
 Imports System.Globalization
 Imports System.IO
 Imports System.Net
+Imports System.Text
 Imports System.Threading
 Imports System.Web
 Imports System.Web.Caching
@@ -179,7 +180,8 @@ Namespace Web.Proxy
                 ' Content is not available in cache and needs to be downloaded from external source
                 Dim state As AsyncState = TryCast(result.AsyncState, AsyncState)
                 If state IsNot Nothing Then
-                    state.Context.Response.Buffer = False
+                    'state.Context.Response.Buffer = False
+                    state.Context.Response.Buffer = True
                     Dim outRequest As HttpWebRequest = state.OutboundRequest
 
                     If DoesRequestHaveBody(state.Method) Then
@@ -219,8 +221,8 @@ Namespace Web.Proxy
         End Sub
         Private Sub DownloadData(request As HttpWebRequest, response As HttpWebResponse, context As HttpContext, cacheDuration As Integer)
             Dim responseBuffer As New MemoryStream()
-            context.Response.Buffer = False
-
+            'context.Response.Buffer = False
+            context.Response.Buffer = True
             Try
                 If response.StatusCode <> HttpStatusCode.OK Then
                     context.Response.StatusCode = CInt(response.StatusCode)
@@ -261,7 +263,8 @@ Namespace Web.Proxy
                     End Using
                 End Using
             Catch x As Exception
-                Log.WriteLine(x.ToString())
+                'Log.WriteLine(x.ToString())
+                Aricie.Services.ExceptionHelper.LogException(x)
                 request.Abort()
             End Try
 
@@ -343,6 +346,9 @@ Namespace Web.Proxy
                     Dim bufferSpaceLeft As Integer = BUFFER_SIZE - responseBufferPos
 
                     If bufferSpaceLeft < dataReceived Then
+                        If Not context.Response.Buffer Then
+                            context.Response.Buffer = True
+                        End If
                         Buffer.BlockCopy(objBuffer, 0, outputBuffer, responseBufferPos, bufferSpaceLeft)
 
                         Using New TimedLog("StreamingProxy" & vbTab & "Write " & BUFFER_SIZE.ToString(CultureInfo.InvariantCulture) & " to response")
@@ -402,11 +408,28 @@ Namespace Web.Proxy
             End If
 
             contentDisposition = response.GetResponseHeader(STR_ContentDisposition)
+            If contentDisposition.IsNullOrEmpty() Then
+                Dim fileName As String = response.ResponseUri.GetComponents(UriComponents.Path, UriFormat.Unescaped).Trim("/"c)
+                If Not fileName.IsNullOrEmpty() Then
+                    contentDisposition = "filename=" + System.IO.Path.GetFileName(fileName)
+                End If
+
+            End If
             If Not String.IsNullOrEmpty(contentDisposition) Then
                 context.Response.AppendHeader(STR_ContentDisposition, contentDisposition)
             End If
 
             context.Response.ContentType = response.ContentType
+
+            Dim charSet As String = response.CharacterSet
+            Dim targetEncoding As Encoding
+            If Not String.IsNullOrEmpty(charSet) Then
+                context.Response.ContentEncoding = Encoding.GetEncoding(charSet)
+            Else
+                context.Response.ContentEncoding = Encoding.Default
+            End If
+
+
         End Sub
 
         Private Sub ReadData()
@@ -421,7 +444,8 @@ Namespace Web.Proxy
                         totalBytesFromSocket += dataReceived
                     End While
                 Catch x As Exception
-                    Log.WriteLine(x.ToString())
+                    'Log.WriteLine(x.ToString())
+                    Aricie.Services.ExceptionHelper.LogException(x)
                 Finally
                     Log.WriteLine("Total bytes read from socket " & totalBytesFromSocket.ToString(CultureInfo.InvariantCulture) & " bytes")
                     Me._ResponseStream.Dispose()
