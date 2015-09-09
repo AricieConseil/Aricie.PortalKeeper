@@ -1,8 +1,9 @@
 Imports Aricie.DNN.UI.Attributes
+Imports Aricie.Services
 
 Namespace Entities
 
-    Public Class EnabledFeature(Of T As {New})
+    Public Class EnabledFeature(Of T)
 
         Private _Entity As T
 
@@ -25,7 +26,7 @@ Namespace Entities
         Public Property Entity As T
             Get
                 If _Entity Is Nothing AndAlso _Enabled Then
-                    _Entity = New T
+                    _Entity = ReflectionHelper.CreateObject(Of T)()
                 End If
                 Return _Entity
             End Get

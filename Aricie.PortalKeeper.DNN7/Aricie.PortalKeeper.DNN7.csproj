@@ -62,10 +62,22 @@
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.WebUtility.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SharpMap\Assemblies\Ionic.Zip.Reduced.dll</HintPath>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\external\JsonNet\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="SharpKml, Version=2.1.0.0, Culture=neutral, PublicKeyToken=9bb853c026a5c0ac, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SharpMap\Assemblies\SharpKml.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpKml.Kmz, Version=2.0.2.0, Culture=neutral, PublicKeyToken=9bb853c026a5c0ac, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Libraries\SharpMap\Assemblies\SharpKml.Kmz.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -98,6 +110,7 @@
     <Compile Include="RestServices\Surrogates\SupportedModulesSurrogateAttribute.cs" />
     <Compile Include="RestServices\WebApiConfig.cs" />
     <Compile Include="RestServices\WebApiExtensions.cs" />
+    <Compile Include="Services\KmzResponseCodec.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Aricie.PortalKeeper.vbproj">
@@ -116,6 +129,7 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

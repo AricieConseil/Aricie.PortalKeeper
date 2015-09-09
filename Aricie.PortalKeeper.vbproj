@@ -176,6 +176,7 @@
   <ItemGroup>
     <Compile Include="Components\Core\DumpSettings.vb" />
     <Compile Include="Components\Core\KeeperObjectAction.vb" />
+    <Compile Include="Components\Core\KeeperObjectActionDelegateInfo.vb" />
     <Compile Include="Components\Core\LoggingLevel.vb" />
     <Compile Include="Components\Core\RuleEngineMode.vb" />
     <Compile Include="Components\Core\SimpleRuleEngine.vb" />

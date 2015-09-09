@@ -2,16 +2,6 @@
 Imports System.ComponentModel
 
 Namespace ComponentModel
-
-    Public Interface IAttributeSurrogate
-
-        Function GetAttribute() As Attribute
-
-
-    End Interface
-
-
-
     Public MustInherit Class DynamicAttributes
         Inherits ReflectedProviderContainer(Of Attribute)
 

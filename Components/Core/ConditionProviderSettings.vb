@@ -78,14 +78,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return Nothing
         End Function
 
-        Protected Friend Sub CheckIsCorrectStepRange(KC As PortalKeeperContext(Of TEngineEvents))
+        Protected Friend Sub CheckIsCorrectStepRange(keeperContext As PortalKeeperContext(Of TEngineEvents))
             If (Config IsNot Nothing) Then
-                Dim CurrentStep = KC.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
-                If (Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > CurrentStep _
-                    OrElse Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < CurrentStep) Then
+                Dim objCurrentStep = keeperContext.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                If objCurrentStep > 0 AndAlso (Config.MinTEngineEvents.ToInt32(CultureInfo.InvariantCulture) > objCurrentStep _
+                    OrElse Config.MaxTEngineEvents.ToInt32(CultureInfo.InvariantCulture) < objCurrentStep) Then
                     ' curl up and die here
                     Throw New InvalidOperationException(String.Format("The condition ""{0}"" cannot be evaluated at the current step {1}, its provider ""{2}"" covers only the steps {3} to {4}", _
-                                                                      Name, KC.CurrentEventStep, Config.Name, Config.MinTEngineEvents, Config.MaxTEngineEvents))
+                                                                      Name, keeperContext.CurrentEventStep, Config.Name, Config.MinTEngineEvents, Config.MaxTEngineEvents))
                 End If
             End If
         End Sub

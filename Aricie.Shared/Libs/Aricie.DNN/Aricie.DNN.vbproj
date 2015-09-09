@@ -132,6 +132,7 @@
     <Compile Include="ComponentModel\Config\LocationSettings.vb" />
     <Compile Include="ComponentModel\DynamicAttributes.vb" />
     <Compile Include="ComponentModel\EntityKey.vb" />
+    <Compile Include="ComponentModel\IAttributeSurrogate.vb" />
     <Compile Include="ComponentModel\IGenericizer.vb" />
     <Compile Include="ComponentModel\IKeyPathFormatter.vb" />
     <Compile Include="ComponentModel\Providers\AutoProvider.vb" />
@@ -159,6 +160,7 @@
     <Compile Include="ComponentModel\IModuleDescriptor.vb" />
     <Compile Include="ComponentModel\ModuleDescriptionProvider.vb" />
     <Compile Include="ComponentModel\ModuleDescriptor.vb" />
+    <Compile Include="ComponentModel\Providers\AutoProviderContainer.vb" />
     <Compile Include="ComponentModel\Providers\AutoProviderSettings.vb" />
     <Compile Include="ComponentModel\DotNetType.vb" />
     <Compile Include="ComponentModel\Providers\IAutoProvider.vb" />
@@ -166,6 +168,7 @@
     <Compile Include="ComponentModel\Providers\IProviderConfig.vb" />
     <Compile Include="ComponentModel\Providers\IProviderSettings.vb" />
     <Compile Include="ComponentModel\ISelector.vb" />
+    <Compile Include="ComponentModel\Providers\LocalizedSimpleProviderContainer.vb" />
     <Compile Include="ComponentModel\Providers\ModuleProviderConfig.vb">
       <SubType>Code</SubType>
     </Compile>

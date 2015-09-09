@@ -9,6 +9,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
+Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
 
@@ -346,8 +347,21 @@ Namespace Services.Flee
                         toReturn = ReflectionHelper.CreateObject(Me.DotNetType.GetDotNetType())
                     End If
                 Case Flee.VariableMode.Constructor
-                    Dim args As Object() = (From objParam In Me.Parameters.EvaluateVariables(owner, globalVars) Select objParam.Value).ToArray()
-                    toReturn = System.Activator.CreateInstance(Me.DotNetType.GetDotNetType(), args)
+                    Dim args As Object()
+                    args = (From objParam In Me.Parameters.EvaluateVariables(owner, globalVars) Select objParam.Value).ToArray()
+                    Try
+                        toReturn = System.Activator.CreateInstance(Me.DotNetType.GetDotNetType(), args)
+                    Catch ex As Exception
+                        Dim newEx As ApplicationException
+                        If args IsNot Nothing Then
+                            Dim argsList As New SerializableList(Of Object)(args)
+                            newEx = New ApplicationException(String.Format("Error calling constructor for type {0} with args {1}", Me.DotNetType.GetDotNetType, ReflectionHelper.Serialize(argsList).Beautify()), ex)
+                        Else
+                            newEx = New ApplicationException(String.Format("Error calling constructor for type {0} ", Me.DotNetType.GetDotNetType), ex)
+                        End If
+
+                        Throw newEx
+                    End Try
                 Case Flee.VariableMode.Expression
                     If Me._AsCompiledExpression Then
                         toReturn = Me.FleeExpression.GetCompiledExpression(owner, globalVars)

@@ -459,7 +459,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 obfuscatedParams(objKey) = New String("x"c, inputParams(objKey).Length)
                             End If
                         Next
-                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", FormatTimeSpan(Now.Subtract(start)), targetUrl, Me.GetParamQueryString(obfuscatedParams), FormatTimeSpan(objTimeout))
+                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", _
+                                                              Now.Subtract(start).FormatTimeSpan(), targetUrl, Me.GetParamQueryString(obfuscatedParams), objTimeout.FormatTimeSpan())
                         Dim newEx As New ApplicationException(message, ex)
                         Throw newEx
                     End If
@@ -471,7 +472,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 obfuscatedParams(objKey) = New String("x"c, inputParams(objKey).Length)
                             End If
                         Next
-                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", FormatTimeSpan(Now.Subtract(start)), targetUrl, Me.GetParamQueryString(obfuscatedParams), FormatTimeSpan(objTimeout))
+                        Dim message As String = String.Format("WebAction Exception: Duration:{0}, Target Url: {1}, Params: {2}, TimeOut: {3}", _
+                                                              Now.Subtract(start).FormatTimeSpan(), targetUrl, Me.GetParamQueryString(obfuscatedParams), objTimeout.FormatTimeSpan())
                         Dim newEx As New ApplicationException(message, ex)
                         Throw newEx
                     End If
