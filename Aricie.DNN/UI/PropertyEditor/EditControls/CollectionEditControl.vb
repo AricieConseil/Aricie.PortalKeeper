@@ -957,19 +957,19 @@ Namespace UI.WebControls.EditControls
 
 
 
-                    Dim cmdFocus As New IconActionButton
-                    plAction.Controls.Add(cmdFocus)
-                    With cmdFocus
-                        .ActionItem.IconName = IconName.SearchPlus
-                        .CommandName = "Expand"
-                        .CommandArgument = commandIndex.ToString()
-                        '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
-                        '   .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}});jQuery('#{0}').unbind('click');jQuery('#{0}').click();", headerLink.ClientID))
-                        .Attributes.Add("onclick", "SelectAndActivateParentHeader(this);")
-                        AddHandler cmdFocus.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                    End With
+                    'Dim cmdFocus As New IconActionButton
+                    'plAction.Controls.Add(cmdFocus)
+                    'With cmdFocus
+                    '    .ActionItem.IconName = IconName.SearchPlus
+                    '    .CommandName = "Expand"
+                    '    .CommandArgument = commandIndex.ToString()
+                    '    '.Attributes.Add("onclick", String.Format("jQuery('#{0}').attr('onclick','');jQuery('#{0}').click();", headerLink.ClientID))
+                    '    '   .Attributes.Add("onclick", String.Format("jQuery('#{0}').click(function(e){{return false;}});jQuery('#{0}').unbind('click');jQuery('#{0}').click();", headerLink.ClientID))
+                    '    .Attributes.Add("onclick", "SelectAndActivateParentHeader(this);")
+                    '    AddHandler cmdFocus.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    'End With
 
-                    sm.RegisterPostBackControl(cmdFocus)
+                    'sm.RegisterPostBackControl(cmdFocus)
 
                 End If
 

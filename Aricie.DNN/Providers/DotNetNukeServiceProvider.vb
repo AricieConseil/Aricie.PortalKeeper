@@ -119,9 +119,12 @@ Namespace Providers
             If currentModule IsNot Nothing Then
                 If DnnContext.Current.User.IsSuperUser Then
                     DnnContext.Current.AddModuleMessage(ex.ToString, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.RedError)
+                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
                 Else
-                    DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)
+                    'DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)
+                    DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
                 End If
+                'DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)
             Else
                 DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
             End If

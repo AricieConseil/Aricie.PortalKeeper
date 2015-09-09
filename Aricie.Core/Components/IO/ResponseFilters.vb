@@ -6,7 +6,6 @@ Imports Aricie.ComponentModel
 Imports Aricie
 
 Namespace IO
-
     <Flags()> _
     Public Enum ResponseFilterType
         None = 0
@@ -39,6 +38,21 @@ Namespace IO
         Private _FilterType As ResponseFilterType = ResponseFilterType.TransformString Or ResponseFilterType.TransformStream _
                                                     Or ResponseFilterType.TransformWrite Or ResponseFilterType.TransformWriteString _
                                                     Or ResponseFilterType.CaptureStream Or ResponseFilterType.CaptureString
+
+
+        Public Sub New()
+            Codecs = New List(Of HttpResponseCodecBase)
+        End Sub
+
+        Public Sub New(codecs As IEnumerable(Of HttpResponseCodecBase))
+            codecs = New List(Of HttpResponseCodecBase)(codecs)
+        End Sub
+
+        Private Shared ReadOnly defaultCodec As New DefaultHttpResponseCodec()
+
+
+        Public Property Codecs As List(Of HttpResponseCodecBase)
+
 
         Public Overrides ReadOnly Property CanRead As Boolean
             Get
@@ -117,6 +131,7 @@ Namespace IO
 
         Public Overrides Sub Flush()
             If Not _Flushed Then
+                _Flushed = True
                 If (Me.IsCaptured AndAlso Me._cacheStream.Length > CLng(0)) Then
                     If (Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream Then
                         Me._cacheStream = Me.OnTransformCompleteStream(Me._cacheStream)
@@ -140,7 +155,6 @@ Namespace IO
                 If (Me._FilterType And ResponseFilterType.SignalLengths) = ResponseFilterType.SignalLengths Then
                     Me.OnSignalLengths()
                 End If
-                _Flushed = True
             End If
         End Sub
 
@@ -171,43 +185,37 @@ Namespace IO
         End Function
 
         Friend Function OnTransformCompleteStringInternal(ByVal ms As MemoryStream) As MemoryStream
-            Dim clearBytes As Byte() = ms.ToArray()
+            'Dim clearBytes As Byte() = ms.ToArray()
 
-            Dim contentEncodingHeader As String = _http.Response.Headers.Item("Content-Encoding")
 
-            If Not contentEncodingHeader.IsNullOrEmpty() Then
-                contentEncodingHeader = contentEncodingHeader.ToLowerInvariant()
-                Select Case contentEncodingHeader
-                    Case "gzip"
-                        clearBytes = clearBytes.Decompress(CompressionMethod.Gzip)
-                    Case "deflate"
-                        clearBytes = clearBytes.Decompress(CompressionMethod.Deflate)
-                End Select
+            Dim targetCodec As HttpResponseCodecBase = defaultCodec
+            For Each objCodec As HttpResponseCodecBase In Me.Codecs
+                If objCodec.CanProcess(_http) Then
+                    targetCodec = objCodec
+                    Exit For
+                End If
+            Next
+
+            Dim state As Object = Nothing
+            ms.Seek(0, SeekOrigin.Begin)
+            Dim responseString As String = targetCodec.Decode(_http, ms, state)
+
+            responseString = OnTransformCompleteString(responseString)
+
+
+            Dim tempStream As Stream = targetCodec.Encode(_http, responseString, state)
+
+
+            Dim toReturn As MemoryStream = TryCast(tempStream, MemoryStream)
+            If toReturn Is Nothing Then
+                toReturn = New MemoryStream(CInt(tempStream.Length))
+                tempStream.CopyStream(toReturn)
             End If
+            toReturn.Seek(0, SeekOrigin.Begin)
+            'ms.Write(bytes, 0, CInt(bytes.Length))
 
-
-            Dim str As String = Me._http.Response.ContentEncoding.GetString(clearBytes)
-
-            str = OnTransformCompleteString(str)
-
-
-            Dim bytes As Byte() = Me._http.Response.ContentEncoding.GetBytes(str)
-
-            If Not contentEncodingHeader.IsNullOrEmpty() Then
-                Select Case contentEncodingHeader
-                    Case "gzip"
-                        bytes = bytes.Compress(CompressionMethod.Gzip)
-                    Case "deflate"
-                        bytes = bytes.Compress(CompressionMethod.Deflate)
-                End Select
-            End If
-
-
-            ms = New MemoryStream()
-
-            ms.Write(bytes, 0, CInt(bytes.Length))
-
-            Return ms
+            'Return ms
+            Return toReturn
         End Function
 
         Protected Overridable Function OnTransformWrite(ByVal buffer As Byte()) As Byte()

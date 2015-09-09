@@ -70,6 +70,9 @@
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Fasterflect">
+      <HintPath>..\..\..\packages\fasterflect.2.1.3\lib\net35\Fasterflect.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -153,6 +156,9 @@
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />
     <Compile Include="Components\ComponentModel\GenericEventArgs.vb" />
+    <Compile Include="Components\IO\CompressionResponseCodec.vb" />
+    <Compile Include="Components\IO\DefaultResponseCodec.vb" />
+    <Compile Include="Components\IO\IHttpResponseCodec.vb" />
     <Compile Include="Components\Security\CertificateException.vb" />
     <Compile Include="Components\Security\CryptoHelper.vb" />
     <Compile Include="Components\Security\HashProvider.vb" />
@@ -241,6 +247,7 @@
       <CustomToolNamespace>My</CustomToolNamespace>
       <LastGenOutput>Settings.Designer.vb</LastGenOutput>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="external\FileHelpers.dll" />

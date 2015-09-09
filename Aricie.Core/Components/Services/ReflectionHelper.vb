@@ -23,7 +23,7 @@ Imports System.Collections.Generic
 Namespace Services
 
 
-
+    'todo: progressively migrate to fasterflect
 
     ''' <summary>
     ''' Global Helper with many Reflection related methods.
@@ -332,6 +332,14 @@ Namespace Services
                         ReflectionHelper.CreateType(toReturn)
                     Catch
                         toReturn = objAssemblyQualifiedName
+                        If objAssemblyQualifiedName.Contains(", System, Version=4.0.0.0") Then
+                            toReturn = toReturn.Replace(", System, Version=4.0.0.0", ", System, Version=2.0.0.0")
+                            Try
+                                ReflectionHelper.CreateType(toReturn)
+                            Catch
+                                toReturn = objAssemblyQualifiedName
+                            End Try
+                        End If
                     End Try
                 End Try
                 SyncLock _SafeTypeNames

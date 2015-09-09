@@ -10,23 +10,34 @@ Namespace Web.Proxy
 
         Public Function ProxifyUrl(ByVal originalUrl As String, baseProxyUrl As String) As String
 
+            If originalUrl.StartsWith("//") Then
+                originalUrl = "http:" & originalUrl
+            End If
             Dim proxifiedUrl As String = System.Web.HttpUtility.UrlEncode(originalUrl)
             Return String.Format("{0}?u={1}", baseProxyUrl, proxifiedUrl)
 
         End Function
 
+        Public Function ProxifyUrl(ByVal originalUrl As String, baseProxyUrl As String, ByVal minutesCacheDuration As Integer) As String
+
+
+
+            Dim toReturn As String = ProxifyUrl(originalUrl, baseProxyUrl)
+
+            If minutesCacheDuration > 0 Then
+                toReturn = String.Format("{0}&c={1}", toReturn, minutesCacheDuration.ToString(CultureInfo.InvariantCulture))
+            End If
+            Return toReturn
+        End Function
+
         Public Function ProxifyUrl(ByVal originalUrl As String, baseProxyUrl As String, ByVal httpVerb As HttpVerb, ByVal minutesCacheDuration As Integer) As String
 
-            Dim proxifiedUrl As String = System.Web.HttpUtility.UrlEncode(originalUrl)
-
-            Dim toReturn As String = String.Format("{0}?u={1}", baseProxyUrl, proxifiedUrl)
+            Dim toReturn As String = ProxifyUrl(originalUrl, baseProxyUrl, minutesCacheDuration)
 
             If httpVerb <> Web.HttpVerb.Get Then
                 toReturn = String.Format("{0}&m={1}", toReturn, httpVerb.ToString())
             End If
-            If minutesCacheDuration > 0 Then
-                toReturn = String.Format("{0}&c={1}", toReturn, minutesCacheDuration.ToString(CultureInfo.InvariantCulture))
-            End If
+           
             Return toReturn
         End Function
 
