@@ -10244,4 +10244,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="StringTransformInfo_UseCallBack.Text" xml:space="preserve">
     <value>Use Dynamic callback</value>
   </data>
+  <data name="TokenSourceInfo_TokenVariables.Help" xml:space="preserve">
+    <value>You can define a list of dynamic variables, to be registered with their name as prefix, and their submembers available as suffixes.</value>
+  </data>
+  <data name="TokenSourceInfo_TokenVariables.Text" xml:space="preserve">
+    <value>Token Variables</value>
+  </data>
 </root>
