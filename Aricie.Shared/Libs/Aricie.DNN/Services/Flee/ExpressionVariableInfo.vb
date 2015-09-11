@@ -89,7 +89,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function EvaluateOnce(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             If Me._AsCompiledExpression Then
-                Return Me.FleeExpression.GetCompiledExpression(owner, globalVars)
+                Return Me.FleeExpression.GetCompiledExpression(owner, globalVars, Nothing)
             Else
                 Return Me.FleeExpression.Evaluate(owner, globalVars)
             End If

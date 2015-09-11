@@ -64,8 +64,9 @@ Namespace Services.Flee
         Protected InternalThrowCompileExceptions As Boolean = True
         Protected InternalThrowEvaluateExceptions As Boolean = True
 
+        'todo: move to individual compiled expressions when needed (possible ambiguity now)
         Private Shared ReadOnly _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
-
+        'Private ReadOnly _CompiledExpressions As IGenericExpression(Of TResult)
 
         Public Sub New()
         End Sub
@@ -166,7 +167,7 @@ Namespace Services.Flee
 
 
         Public Overloads Function Evaluate(ByVal globalVars As IContextLookup) As TResult
-            Return Me.Evaluate(globalVars, globalVars)
+            Return Me.Evaluate(globalVars, globalVars, Nothing)
         End Function
 
 
@@ -177,12 +178,24 @@ Namespace Services.Flee
         ''' <param name="globalVars"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Overridable Overloads Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
+        Public Overloads Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As TResult
+            Return Evaluate(owner, globalVars, Nothing)
+        End Function
+
+
+        ''' <summary>
+        ''' Evaluates the flee expression
+        ''' </summary>
+        ''' <param name="owner"></param>
+        ''' <param name="globalVars"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Overridable Overloads Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup, objType As Type) As TResult
 
             Dim toReturn As TResult
             If Me._Expression <> "" Then
 
-                Dim clone As IGenericExpression(Of TResult) = Me.GetCompiledExpression(owner, globalVars)
+                Dim clone As IGenericExpression(Of TResult) = Me.GetCompiledExpression(owner, globalVars, objType)
                 If clone IsNot Nothing Then
                     Using onDemand As New OnDemandVariableLookup(globalVars)
                         AddHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
@@ -226,13 +239,16 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
-        Public Function GetCompiledExpression(ByVal owner As Object, ByVal globalVars As IContextLookup) As IGenericExpression(Of TResult)
+        Public Function GetCompiledExpression(ByVal owner As Object, ByVal globalVars As IContextLookup, objType As Type) As IGenericExpression(Of TResult)
             Dim toReturn As IGenericExpression(Of TResult) = Nothing
-
-            If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
+            If objType Is Nothing Then
+                objType = GetType(TResult)
+            End If
+            Dim key As String = Me._Expression & objType.AssemblyQualifiedName
+            If Not _CompiledExpressions.TryGetValue(key, toReturn) Then
                 SyncLock Me
                     'SyncLock expWriterLock
-                    If Not _CompiledExpressions.TryGetValue(Me._Expression, toReturn) Then
+                    If Not _CompiledExpressions.TryGetValue(key, toReturn) Then
 
                         If Me.InternalBreakAtCompileTime Then
                             Common.CallDebuggerBreak()
@@ -245,7 +261,7 @@ Namespace Services.Flee
                         Try
                             toReturn = context.CompileGeneric(Of TResult)(Me._Expression)
                             SyncLock _CompiledExpressions
-                                _CompiledExpressions(Me._Expression) = toReturn
+                                _CompiledExpressions(key) = toReturn
                             End SyncLock
                         Catch ex As Ciloci.Flee.ExpressionCompileException
                             If Me.InternalBreakOnException Then
@@ -345,7 +361,7 @@ Namespace Services.Flee
             Else
                 toReturn = New ExpressionContext()
             End If
-            
+
 
             toReturn.ParserOptions.DateTimeFormat = Me.InternalDateTimeFormat
             toReturn.ParserOptions.RequireDigitsBeforeDecimalPoint = Me.InternalRequireDigitsBeforeDecimalPoint

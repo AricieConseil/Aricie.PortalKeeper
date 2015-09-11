@@ -1,6 +1,5 @@
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
-Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Services.Filtering
 Imports Aricie.Collections
 Imports Aricie.ComponentModel
@@ -81,7 +80,7 @@ Namespace Entities
         Public Property ScrapDetails As New SerializableList(Of HtmlScrapDetailRequestInfo)
 
 
-     Public Overrides Function GetFriendlyDetails() As String
+        Public Overrides Function GetFriendlyDetails() As String
             Return String.Format("{4}{0}{1}{0}{2}{0}{3}", UIConstants.TITLE_SEPERATOR, _
                                  IIf(Me.UsePager, "max " & Me.MaxNbPage & " ", "No ").ToString() & "page" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _
                                 IIf(Me.ScrapDetail, Me.ScrapDetails.Count().ToString(CultureInfo.InvariantCulture) & " ", "No ").ToString() & "detail scrap" & IIf(Me.MaxNbPage > 1, "s", "").ToString(), _
@@ -172,22 +171,4 @@ Namespace Entities
 
 
     End Class
-
-
-    Public Class FilteredString
-
-
-        Public Property Source As New SimpleExpression(Of String)
-
-        Public Property Filter As New ExpressionFilterInfo()
-
-
-        Public Function Process(ByVal owner As Object, ByVal items As Aricie.DNN.Services.IContextLookup) As String
-            Return Filter.Process(Source.Evaluate(owner, items))
-        End Function
-
-
-    End Class
-
-
 End Namespace

@@ -71,7 +71,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Fasterflect">
-      <HintPath>..\..\..\packages\fasterflect.2.1.3\lib\net35\Fasterflect.dll</HintPath>
+      <HintPath>..\..\packages\fasterflect.2.1.3\lib\net35\Fasterflect.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
@@ -177,6 +177,12 @@
     <Compile Include="Components\Services\ExceptionHelper.vb" />
     <Compile Include="Components\Services\FileHelper.vb" />
     <Compile Include="Components\Services\TypeMerger.vb" />
+    <Compile Include="Components\Text\Base64Convert.vb" />
+    <Compile Include="Components\Text\CaseChange.vb" />
+    <Compile Include="Components\Text\EncodingHelper.vb" />
+    <Compile Include="Components\Text\EventBasedMatchEvaluator.vb" />
+    <Compile Include="Components\Text\HtmlEncodeMethod.vb" />
+    <Compile Include="Components\Text\TrimType.vb" />
     <Compile Include="Components\UriExtensions.vb" />
     <Compile Include="Components\STimeSpan.vb" />
     <Compile Include="Components\Text\SimpleEncoding.vb" />

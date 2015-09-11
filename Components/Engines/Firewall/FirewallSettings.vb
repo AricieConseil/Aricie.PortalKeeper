@@ -172,10 +172,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim fileExtension As String = DirectCast(context.Items("Extension"), String)
             If String.IsNullOrEmpty(fileExtension) Then
-                fileExtension = Path.GetExtension(context.Request.FilePath)
-                If Not String.IsNullOrEmpty(fileExtension) Then
-                    fileExtension = fileExtension.TrimStart("."c)
-                    context.Items("Extension") = fileExtension
+                'todo: quick fix here, could do more efficient
+                If Not context.Request.FilePath.PathHasInvalidChars() Then
+                    fileExtension = Path.GetExtension(context.Request.FilePath)
+                    If Not String.IsNullOrEmpty(fileExtension) Then
+                        fileExtension = fileExtension.TrimStart("."c)
+                        context.Items("Extension") = fileExtension
+                    End If
+                Else
+                    fileExtension = ""
                 End If
             End If
             If Me.IgnoredExtensionList.Contains(fileExtension) Then

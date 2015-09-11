@@ -211,6 +211,11 @@ Public Module Common
         Return True
     End Function
 
+    <Extension> _
+    Public Function PathHasInvalidChars(path As String) As Boolean
+        Return (Not String.IsNullOrEmpty(path) AndAlso path.IndexOfAny(System.IO.Path.GetInvalidPathChars()) >= 0)
+    End Function
+
     Public Function BytesToString(byteCount As Long) As [String]
         Dim suf As String() = {"B", "KB", "MB", "GB", "TB", "PB", "EB"}
         'Longs run out around EB

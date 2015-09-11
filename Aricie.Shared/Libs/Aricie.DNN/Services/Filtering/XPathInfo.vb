@@ -363,7 +363,7 @@ Namespace Services.Filtering
                 End If
                 If Me.ApplyFilter Then
                     Dim strFilter As String = toReturn.ToString()
-                    strFilter = Me.Filter.Process(strFilter)
+                    strFilter = Me.Filter.Process(strFilter, dataContext)
                     toReturn = strFilter
                 End If
                 Return toReturn
@@ -392,7 +392,7 @@ Namespace Services.Filtering
 
                         Dim resultValue As String = result.Value
                         If Me.ApplyFilter Then
-                            resultValue = Me.Filter.Process(resultValue)
+                            resultValue = Me.Filter.Process(resultValue, dataContext)
                             If Me.UpdateNodes Then
                                 If TypeOf result Is HtmlNodeNavigator Then
                                     DirectCast(result, HtmlAgilityPack.HtmlNodeNavigator).CurrentNode.InnerHtml = resultValue

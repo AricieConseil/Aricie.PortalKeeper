@@ -22,8 +22,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _SourceType As RequestSourceType
         Private _ExpressionFilter As New ExpressionFilterInfo(-1, False, EncodeProcessing.None, DefaultTransforms.None)
 
-        <NonSerialized()> _
-        Private _Escaper As StringEscaper
+        '<NonSerialized()> _
+        'Private _Escaper As StringEscaper
 
         <ExtendedCategory("")> _
         <MainCategory()> _
@@ -101,22 +101,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case Else
                     toReturn = String.Empty
             End Select
-            Return ExpressionFilter.Process(toReturn)
+            Return ExpressionFilter.Process(toReturn, context)
         End Function
 
     End Class
-
-
-    <Flags()> _
-    Public Enum RequestSourceType
-        Any = 0
-        Country = 1
-        IPAddress = 2
-        Session = 4
-        UrlPath = 8
-        Url = 16
-        XForwardedIP = 32
-    End Enum
-
-
 End Namespace

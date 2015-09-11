@@ -187,6 +187,7 @@
     <Compile Include="Components\Engines\ControlAdapters\DynamicHandlerStep.vb" />
     <Compile Include="Components\Core\ActionCommand.vb" />
     <Compile Include="Components\Core\ActionTree.vb" />
+    <Compile Include="Components\Engines\Firewall\RequestSourceType.vb" />
     <Compile Include="Components\Engines\HttpHandlers\DynamicHttpHandler.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlerMode.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlersConfig.vb" />

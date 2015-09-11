@@ -1,10 +1,12 @@
 
 
 Namespace Services.Filtering
+
     ''' <summary>
     ''' Class that runs the ExpressionFilterInfo transformation on a input
     ''' </summary>
     ''' <remarks></remarks>
+    <Obsolete("Use Process method Directly")> _
     Public Class StringEscaper
 
 

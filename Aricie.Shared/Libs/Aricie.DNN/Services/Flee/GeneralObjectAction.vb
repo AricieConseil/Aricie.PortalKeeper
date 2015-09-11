@@ -283,7 +283,10 @@ Namespace Services.Flee
                         If targetProp.GetIndexParameters.Length = args.Count Then
                             Dim objValue As Object = Me.Value.GetValue(owner, globalVars)
                             If Not (targetProp.GetGetMethod().IsStatic OrElse Me.StaticCall) Then
-                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars, DotNetType.GetDotNetType())
+                                If target Is Nothing Then
+                                    Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
+                                End If
                                 If Me.LockTarget Then
                                     SyncLock target
                                         targetProp.SetValue(target, objValue, args.ToArray())
@@ -308,7 +311,7 @@ Namespace Services.Flee
                             If targetMethod.IsStatic OrElse Me.StaticCall Then
                                 targetMethod.Invoke(Nothing, args.ToArray)
                             Else
-                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                                Dim target As Object = Me.Instance.Evaluate(owner, globalVars, DotNetType.GetDotNetType())
                                 If target Is Nothing Then
                                     Throw New ApplicationException(String.Format("Expression {0} returns nothing", Me.Instance.Expression))
                                 Else
@@ -327,7 +330,7 @@ Namespace Services.Flee
                         End If
 
                     Case Flee.ObjectActionMode.AddEventHandler
-                        Dim target As Object = Me.Instance.Evaluate(owner, globalVars)
+                        Dim target As Object = Me.Instance.Evaluate(owner, globalVars, DotNetType.GetDotNetType())
                         If target IsNot Nothing Then
                             AddEventHandler(owner, globalVars, target)
                         Else
