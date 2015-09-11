@@ -1071,16 +1071,16 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="StringTransformInfo_FilterType.Text" xml:space="preserve">
     <value>Filter Type</value>
   </data>
-  <data name="StringTransformInfo_ReplaceValue.Help" xml:space="preserve">
-    <value>Enter the target regex/string/chars according to the type of filter selected</value>
+  <data name="StringTransformInfo_Replace.Help" xml:space="preserve">
+    <value>Enter the target regex pattern/string/chars according to the type of filter selected. For char replaces, leave empty to remove source chars, enter a single char to replace all source chars by the single target char, or enter the same number of chars as in source value, for individual char replacements.</value>
   </data>
-  <data name="StringTransformInfo_ReplaceValue.Text" xml:space="preserve">
+  <data name="StringTransformInfo_Replace.Text" xml:space="preserve">
     <value>Replace Value</value>
   </data>
-  <data name="StringTransformInfo_SourceValue.Help" xml:space="preserve">
-    <value>Enter the source regex/string/chars according to the type of filter selected</value>
+  <data name="StringTransformInfo_Source.Help" xml:space="preserve">
+    <value>Enter the source regex/string/chars according to the type of filter selected, or enter an expression that evaluates to it.</value>
   </data>
-  <data name="StringTransformInfo_SourceValue.Text" xml:space="preserve">
+  <data name="StringTransformInfo_Source.Text" xml:space="preserve">
     <value>Source Value</value>
   </data>
   <data name="TransformList_AddNew.Text" xml:space="preserve">
@@ -10222,5 +10222,26 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="KeeperRule`1_RunLifeCycleEvent.Text" xml:space="preserve">
     <value>Effective Run Step</value>
+  </data>
+  <data name="ReleaseRequestState.Text" xml:space="preserve">
+    <value>Release Request State</value>
+  </data>
+  <data name="StringTransformInfo_CallBack.Help" xml:space="preserve">
+    <value>Enter an expression that evaluate to a MatchEvaluator function. Use an EventBasedMatchEvaluator isntance for an easy event based implementation.</value>
+  </data>
+  <data name="StringTransformInfo_CallBack.Text" xml:space="preserve">
+    <value>MatchEvaluator Expression</value>
+  </data>
+  <data name="StringTransformInfo_EmptyReplace.Help" xml:space="preserve">
+    <value>Check to supply an empty string as replace value</value>
+  </data>
+  <data name="StringTransformInfo_EmptyReplace.Text" xml:space="preserve">
+    <value>Empty Replace</value>
+  </data>
+  <data name="StringTransformInfo_UseCallBack.Help" xml:space="preserve">
+    <value>Instead of using a static regex replace pattern, you can provide a callback function with signature of delegate MatchEvaluator, to process each match dynamically</value>
+  </data>
+  <data name="StringTransformInfo_UseCallBack.Text" xml:space="preserve">
+    <value>Use Dynamic callback</value>
   </data>
 </root>

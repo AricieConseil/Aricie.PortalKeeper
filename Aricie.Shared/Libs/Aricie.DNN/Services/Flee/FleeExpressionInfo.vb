@@ -418,15 +418,15 @@ Namespace Services.Flee
             End Set
         End Property
 
-        Public Overrides Function Evaluate(owner As Object, globalVars As IContextLookup) As TResult
+        Public Overrides Function Evaluate(owner As Object, globalVars As IContextLookup, objType As Type) As TResult
             If Me.MakeConstant Then
                 If Not _ConstantIsSet Then
-                    _Constant = MyBase.Evaluate(owner, globalVars)
+                    _Constant = MyBase.Evaluate(owner, globalVars, objType)
                     _ConstantIsSet = True
                 End If
                 Return _Constant
             End If
-            Return MyBase.Evaluate(owner, globalVars)
+            Return MyBase.Evaluate(owner, globalVars, objType)
         End Function
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables

@@ -70,7 +70,7 @@ namespace Aricie.PortalKeeper.DNN7
                     else
                     {
                         selectedFormatter =
-                            objCreateHttpResponseInfo.CustomFormatter.Entity.FormatterExpression.Evaluate(objContext, objContext) as
+                            objCreateHttpResponseInfo.CustomFormatter.Entity.FormatterExpression.Evaluate(objContext, objContext, typeof (MediaTypeFormatter)) as
                                 MediaTypeFormatter;
                     }
 

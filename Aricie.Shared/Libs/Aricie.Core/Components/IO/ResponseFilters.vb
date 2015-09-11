@@ -23,7 +23,7 @@ Namespace IO
         Inherits Stream
         Private ReadOnly _stream As Stream
 
-        Private ReadOnly _http As HttpContext
+        Private ReadOnly _httpContext As HttpContext
 
         Private _position As Long
 
@@ -90,8 +90,8 @@ Namespace IO
                 '    Return False
                 'End If
                 'Return True
-                Return ((Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream) _
-                   OrElse ((Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString)
+                Return Not _OptedOutFromDelay AndAlso (((Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream) _
+                   OrElse ((Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString))
             End Get
         End Property
 
@@ -110,16 +110,22 @@ Namespace IO
             End Set
         End Property
 
+        Public ReadOnly Property Context As HttpContext
+            Get
+                Return _httpContext
+            End Get
+        End Property
+
         Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext)
             MyBase.New()
             Me._stream = responseStream
-            Me._http = context
+            Me._httpContext = context
         End Sub
 
         Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext, objFilterType As ResponseFilterType)
             MyBase.New()
             Me._stream = responseStream
-            Me._http = context
+            Me._httpContext = context
             Me._FilterType = objFilterType
         End Sub
 
@@ -133,11 +139,13 @@ Namespace IO
             If Not _Flushed Then
                 _Flushed = True
                 If (Me.IsCaptured AndAlso Me._cacheStream.Length > CLng(0)) Then
-                    If (Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream Then
-                        Me._cacheStream = Me.OnTransformCompleteStream(Me._cacheStream)
-                    End If
-                    If (Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString Then
-                        Me._cacheStream = Me.OnTransformCompleteStringInternal(Me._cacheStream)
+                    If (Me.IsOutputDelayed) Then
+                        If (Me._FilterType And ResponseFilterType.TransformStream) = ResponseFilterType.TransformStream Then
+                            Me._cacheStream = Me.OnTransformCompleteStream(Me._cacheStream)
+                        End If
+                        If (Me._FilterType And ResponseFilterType.TransformString) = ResponseFilterType.TransformString Then
+                            Me._cacheStream = Me.OnTransformCompleteStringInternal(Me._cacheStream)
+                        End If
                     End If
                     If (Me._FilterType And ResponseFilterType.CaptureStream) = ResponseFilterType.CaptureStream Then
                         Me.OnCaptureStream(Me._cacheStream)
@@ -168,7 +176,7 @@ Namespace IO
         End Sub
 
         Private Sub OnCaptureStringInternal(ByVal ms As MemoryStream)
-            Dim str As String = Me._http.Response.ContentEncoding.GetString(ms.ToArray())
+            Dim str As String = Me._httpContext.Response.ContentEncoding.GetString(ms.ToArray())
             Me.OnCaptureString(str)
         End Sub
 
@@ -190,7 +198,7 @@ Namespace IO
 
             Dim targetCodec As HttpResponseCodecBase = defaultCodec
             For Each objCodec As HttpResponseCodecBase In Me.Codecs
-                If objCodec.CanProcess(_http) Then
+                If objCodec.CanProcess(_httpContext) Then
                     targetCodec = objCodec
                     Exit For
                 End If
@@ -198,12 +206,12 @@ Namespace IO
 
             Dim state As Object = Nothing
             ms.Seek(0, SeekOrigin.Begin)
-            Dim responseString As String = targetCodec.Decode(_http, ms, state)
+            Dim responseString As String = targetCodec.Decode(_httpContext, ms, state)
 
             responseString = OnTransformCompleteString(responseString)
 
 
-            Dim tempStream As Stream = targetCodec.Encode(_http, responseString, state)
+            Dim tempStream As Stream = targetCodec.Encode(_httpContext, responseString, state)
 
 
             Dim toReturn As MemoryStream = TryCast(tempStream, MemoryStream)
@@ -231,7 +239,7 @@ Namespace IO
         End Function
 
         Private Function OnTransformWriteStringInternal(ByVal buffer As Byte()) As Byte()
-            Dim contentEncoding As Encoding = Me._http.Response.ContentEncoding
+            Dim contentEncoding As Encoding = Me._httpContext.Response.ContentEncoding
             Dim str As String = Me.OnTransformWriteString(contentEncoding.GetString(buffer))
             Return contentEncoding.GetBytes(str)
         End Function
@@ -249,11 +257,21 @@ Namespace IO
             Return Me._stream.Seek(offset, direction)
         End Function
 
+
+        Private _OptOutFired As Boolean
+
+        Private _OptedOutFromDelay As Boolean
+
         Public Overrides Sub SetLength(ByVal length As Long)
             Me._stream.SetLength(length)
         End Sub
 
         Public Overrides Sub Write(ByVal buffer As Byte(), ByVal offset As Integer, ByVal count As Integer)
+            If IsOutputDelayed AndAlso Not _OptOutFired Then
+                Dim args As New ChangedEventArgs(Of Boolean)(False, False)
+                RaiseEvent OptOutDelay(Me, args)
+                _OptedOutFromDelay = args.NewValue
+            End If
             Me._InboundLength += count
             If (Me.IsCaptured) Then
                 Me._cacheStream.Write(buffer, 0, count)
@@ -300,6 +318,8 @@ Namespace IO
         Public Event TransformWriteString As EventHandler(Of ChangedEventArgs(Of String))
 
         Public Event SignalLengths As EventHandler(Of ChangedEventArgs(Of Long))
+
+        Public Event OptOutDelay As EventHandler(Of ChangedEventArgs(Of Boolean))
     End Class
 
 

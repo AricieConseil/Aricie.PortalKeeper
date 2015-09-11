@@ -48,7 +48,7 @@ Namespace Services.Flee
         End Property
 
         <ConditionalVisible("RequiresInstance", False, True)>
-        Public Property TargetInstance As New SimpleExpression(Of Object)
+        Public Property TargetInstance As New SimpleExpression(Of TParentType)
 
         Public Overrides Function EvaluateOnce(owner As Object, globalVars As IContextLookup) As Object
             Dim toReturn As [Delegate]

@@ -123,7 +123,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                     Return atr.ReplaceAllTokens(input)
                 Case Else
-                    Return Me.Filter.Process(input)
+                    Return Me.Filter.Process(input, actionContext)
             End Select
         End Function
 

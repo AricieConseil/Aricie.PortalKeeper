@@ -11,7 +11,7 @@ Imports Aricie.IO
 Namespace Web.Proxy
 
 
-    Public Class SteamingProxy
+    Public Class StreamingProxy
         Implements IHttpAsyncHandler
         Implements IHttpHandler
 
@@ -20,11 +20,11 @@ Namespace Web.Proxy
         Private Const STR_ContentEncoding As String = "Content-Encoding"
         Private Const STR_ContentLength As String = "Content-Length"
         Private Const STR_ContentDisposition As String = "Content-Disposition"
-        Private Const STR_METHOD As String = "m"
+        Public Const STR_METHOD As String = "m"
         Private Const STR_GET As String = "GET"
-        Private Const STR_URL As String = "u"
-        Private Const STR_CACHE_DURATION As String = "c"
-        Private Const STR_CONTENTTYPE As String = "t"
+        Public Const STR_URL As String = "u"
+        Public Const STR_CACHE_DURATION As String = "c"
+        Public Const STR_CONTENTTYPE As String = "t"
         Private Const STR_DEFAULT_CACHE_DURATION As String = "0"
 
         Private _PipeStream As PipeStream
@@ -32,17 +32,20 @@ Namespace Web.Proxy
 
 #Region "Http Sync Handler ProcessRequest"
 
-        Public Overridable Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
-            Dim method As String = If(context.Request(STR_METHOD), STR_GET)
-            Dim url As String = context.Request(STR_URL)
 
+
+
+        Public Overridable Sub ProcessRequest(context As HttpContext) Implements IHttpHandler.ProcessRequest
+            Dim method As String = Nothing
+            Dim url As String = Nothing
+            Dim cacheDuration As Integer
+            Dim contentType As String = Nothing
+            InitParams(context, url, method, cacheDuration, contentType)
             If String.IsNullOrEmpty(url) Then
                 context.Response.[End]()
-                Return
+                Exit Sub
             End If
 
-            Dim cacheDuration As Integer = Convert.ToInt32(If(context.Request(STR_CACHE_DURATION), STR_DEFAULT_CACHE_DURATION))
-            Dim contentType As String = If(context.Request(STR_CONTENTTYPE), String.Empty)
 
             Log.WriteLine(Convert.ToString((Convert.ToString((method & Convert.ToString(" ")) + cacheDuration.ToString() + " ") & contentType) + " ") & url)
             ' If cache duration specified, emit response header so that browser caches the response for specified duration.
@@ -77,6 +80,7 @@ Namespace Web.Proxy
                 End If
 
                 outRequest.Method = method
+                outRequest.UserAgent = context.Request.UserAgent
 
                 ' If there's a body provided then upload that            
                 If DoesRequestHaveBody(method) Then
@@ -108,10 +112,11 @@ Namespace Web.Proxy
 #Region "Http Async Handler Begin/End ProcessRequest"
 
         Public Overridable Function BeginProcessRequest(context As HttpContext, cb As AsyncCallback, extraData As Object) As IAsyncResult Implements IHttpAsyncHandler.BeginProcessRequest
-            Dim method As String = If(context.Request(STR_METHOD), STR_GET)
-            Dim url As String = context.Request(STR_URL)
-            Dim cacheDuration As Integer = Convert.ToInt32(If(context.Request(STR_CACHE_DURATION), STR_DEFAULT_CACHE_DURATION))
-            Dim contentType As String = context.Request(STR_CONTENTTYPE)
+            Dim method As String = Nothing
+            Dim url As String = Nothing
+            Dim cacheDuration As Integer
+            Dim contentType As String = Nothing
+            InitParams(context, url, method, cacheDuration, contentType)
 
             If String.IsNullOrEmpty(url) Then
                 context.Response.[End]()
@@ -119,11 +124,12 @@ Namespace Web.Proxy
             End If
 
             If cacheDuration > 0 Then
-                If context.Cache(url) IsNot Nothing Then
+                Dim cachedResult As CachedContent = TryCast(context.Cache(url), CachedContent)
+                If cachedResult IsNot Nothing Then
                     ' We have response to this URL already cached
                     Dim result As New SyncResult()
                     result.Context = context
-                    result.Content = TryCast(context.Cache(url), CachedContent)
+                    result.Content = cachedResult
                     Return result
                 End If
             End If
@@ -422,7 +428,6 @@ Namespace Web.Proxy
             context.Response.ContentType = response.ContentType
 
             Dim charSet As String = response.CharacterSet
-            Dim targetEncoding As Encoding
             If Not String.IsNullOrEmpty(charSet) Then
                 context.Response.ContentEncoding = Encoding.GetEncoding(charSet)
             Else
@@ -472,6 +477,15 @@ Namespace Web.Proxy
         '    target = value
         '    Return value
         'End Function
+
+
+        Private Sub InitParams(context As HttpContext, ByRef url As String, ByRef method As String, ByRef cacheDuration As Integer, ByRef contentType As String)
+            method = If(context.Request(STR_METHOD), context.Request.HttpMethod)
+            url = ProxyHelper.GetOriginalUrl(context.Request)
+            'Dim tempProxyUrl As String = ProxyHelper.GetProxyBaseUrl(context.Request)
+            cacheDuration = Convert.ToInt32(If(context.Request(STR_CACHE_DURATION), STR_DEFAULT_CACHE_DURATION))
+            contentType = If(context.Request(STR_CONTENTTYPE), String.Empty)
+        End Sub
 
 #End Region
 
