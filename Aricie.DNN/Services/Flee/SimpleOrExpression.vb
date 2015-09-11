@@ -265,7 +265,15 @@ Namespace Services.Flee
             Return Nothing
         End Function
 
+        Public Overrides Function Equals(obj As Object) As Boolean
+            Dim typedObj As SimpleOrExpressionBase(Of TSimple, TExpression) = TryCast(obj, SimpleOrExpressionBase(Of TSimple, TExpression))
+            If typedObj Is Nothing Then
+                Return False
+            End If
+            Return (Me.Mode = SimpleOrExpressionMode.Simple AndAlso Me.Simple.Equals(typedObj.Simple)) _
+                OrElse (Me.Mode = SimpleOrExpressionMode.Expression AndAlso Me.GetExpression().Expression.Equals(typedObj.GetExpression().Expression))
 
+        End Function
 
     End Class
 End Namespace

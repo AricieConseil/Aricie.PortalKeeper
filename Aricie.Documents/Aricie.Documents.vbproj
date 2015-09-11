@@ -170,6 +170,7 @@
     <Compile Include="Services\DocumentFile.vb" />
     <Compile Include="Services\IDocumentReader.vb" />
     <Compile Include="Services\IFilter\IFilterReader.vb" />
+    <None Include="app.config" />
     <None Include="Services\OpenXML\Excel2007Reader.vb" />
     <None Include="Services\OpenXML\Word2007Reader.vb" />
     <Compile Include="Services\OpenXML\xlsxColumnInfo.vb" />

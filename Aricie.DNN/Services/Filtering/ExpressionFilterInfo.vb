@@ -13,6 +13,7 @@ Imports Aricie.Text
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Entities
 Imports System.Threading
+Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Filtering
     ''' <summary>
@@ -26,10 +27,10 @@ Namespace Services.Filtering
         Private _TransformList As New List(Of StringTransformInfo)
 
         'confort members
-        Private _StringMap As Dictionary(Of String, String)
-        Private _CharsMap As Dictionary(Of Char, Char)
-        Private _RegexMap As Dictionary(Of Regex, String)
-        Private _BuildLock As New Object
+        'Private _StringMap As Dictionary(Of String, String)
+        'Private _CharsMap As Dictionary(Of Char, Char)
+        'Private _RegexMap As Dictionary(Of Regex, Object)
+        'Private _BuildLock As New Object
         Private _Encryption As EncryptionInfo
 
 
@@ -134,27 +135,8 @@ Namespace Services.Filtering
             End Get
             Set(ByVal value As List(Of StringTransformInfo))
                 _TransformList = value
-                Me.ClearMap()
+                'Me.ClearMap()
             End Set
-        End Property
-
-        ''' <summary>
-        ''' returns default char replacement
-        ''' </summary>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("Transformations")> _
-        Public ReadOnly Property DefaultCharReplacement() As String
-            Get
-                If _DefaultCharReplacement Is Nothing Then
-                    If Me.CharsMap.ContainsKey(" "c) Then
-                        _DefaultCharReplacement = Me.CharsMap(" "c).ToString
-                    ElseIf Not Me.StringMap.TryGetValue(" ", _DefaultCharReplacement) Then
-                        _DefaultCharReplacement = "-"
-                    End If
-                End If
-                Return _DefaultCharReplacement
-            End Get
         End Property
 
         ''' <summary>
@@ -165,6 +147,35 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ExtendedCategory("Transformations")> _
         Public Property PreventDoubleDefaults As Boolean = True
+
+        ''' <summary>
+        ''' returns default char replacement
+        ''' </summary>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("Transformations")> _
+        Public ReadOnly Property DefaultCharReplacement() As String
+            Get
+                If _DefaultCharReplacement Is Nothing Then
+
+                    Dim tempChar As String = Nothing
+                    Try
+                        tempChar = Me.ProcessTransformations(" "c, Nothing, False, "-"c, True)
+                    Catch ex As Exception
+                        Aricie.Services.ExceptionHelper.LogException(ex)
+                    End Try
+                    If tempChar.IsNullOrEmpty() OrElse tempChar = " "c Then
+                        _DefaultCharReplacement = "-"c
+                    Else
+                        _DefaultCharReplacement = tempChar
+                    End If
+
+                End If
+                Return _DefaultCharReplacement
+            End Get
+        End Property
+
+       
 
         <ExtendedCategory("Categorization")> _
         Public Property Categorization As New EnabledFeature(Of CategorizationInfo)
@@ -305,7 +316,7 @@ Namespace Services.Filtering
         <ActionButton(IconName.Refresh, IconOptions.Normal)> _
         Public Sub RunSimulation(ByVal pe As AriciePropertyEditorControl)
             If Not String.IsNullOrEmpty(Me.SimulationData.Value) Then
-                Dim toReturn As String = Me.Process(Me.SimulationData.Value)
+                Dim toReturn As String = Me.Process(Me.SimulationData.Value, Nothing)
                 If toReturn IsNot Nothing Then
                     Me._SimulationResult = toReturn
                 End If
@@ -315,65 +326,65 @@ Namespace Services.Filtering
 
 
 
-        ''' <summary>
-        ''' Char-based transformation map
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <XmlIgnore(), Browsable(False)> _
-        Public ReadOnly Property CharsMap() As Dictionary(Of Char, Char)
-            Get
-                If _CharsMap Is Nothing Then
-                    SyncLock _BuildLock
-                        If _CharsMap Is Nothing Then
-                            Me.BuildMap()
-                        End If
-                    End SyncLock
-                End If
-                Return _CharsMap
-            End Get
-        End Property
+        ' ''' <summary>
+        ' ''' Char-based transformation map
+        ' ''' </summary>
+        ' ''' <value></value>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        '<XmlIgnore(), Browsable(False)> _
+        'Public ReadOnly Property CharsMap() As Dictionary(Of Char, Char)
+        '    Get
+        '        If _CharsMap Is Nothing Then
+        '            SyncLock _BuildLock
+        '                If _CharsMap Is Nothing Then
+        '                    Me.BuildMap()
+        '                End If
+        '            End SyncLock
+        '        End If
+        '        Return _CharsMap
+        '    End Get
+        'End Property
 
-        ''' <summary>
-        ''' string-based transformation map
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <XmlIgnore(), Browsable(False)> _
-        Public ReadOnly Property StringMap() As Dictionary(Of String, String)
-            Get
-                If _StringMap Is Nothing Then
-                    SyncLock _BuildLock
-                        If _StringMap Is Nothing Then
-                            Me.BuildMap()
-                        End If
-                    End SyncLock
-                End If
-                Return _StringMap
-            End Get
-        End Property
+        ' ''' <summary>
+        ' ''' string-based transformation map
+        ' ''' </summary>
+        ' ''' <value></value>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        '<XmlIgnore(), Browsable(False)> _
+        'Public ReadOnly Property StringMap() As Dictionary(Of String, String)
+        '    Get
+        '        If _StringMap Is Nothing Then
+        '            SyncLock _BuildLock
+        '                If _StringMap Is Nothing Then
+        '                    Me.BuildMap()
+        '                End If
+        '            End SyncLock
+        '        End If
+        '        Return _StringMap
+        '    End Get
+        'End Property
 
-        ''' <summary>
-        ''' Regex-based transformation map
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <XmlIgnore(), Browsable(False)> _
-        Public ReadOnly Property RegexMap() As Dictionary(Of Regex, String)
-            Get
-                If _RegexMap Is Nothing Then
-                    SyncLock _BuildLock
-                        If _RegexMap Is Nothing Then
-                            Me.BuildMap()
-                        End If
-                    End SyncLock
-                End If
-                Return _RegexMap
-            End Get
-        End Property
+        ' ''' <summary>
+        ' ''' Regex-based transformation map
+        ' ''' </summary>
+        ' ''' <value></value>
+        ' ''' <returns></returns>
+        ' ''' <remarks></remarks>
+        '<XmlIgnore(), Browsable(False)> _
+        'Public ReadOnly Property RegexMap() As Dictionary(Of Regex, Object)
+        '    Get
+        '        If _RegexMap Is Nothing Then
+        '            SyncLock _BuildLock
+        '                If _RegexMap Is Nothing Then
+        '                    Me.BuildMap()
+        '                End If
+        '            End SyncLock
+        '        End If
+        '        Return _RegexMap
+        '    End Get
+        'End Property
 
 
 #Region "Public methods"
@@ -408,7 +419,9 @@ Namespace Services.Filtering
 
 
 
-
+        Public Function Process(ByVal originalString As String) As String
+            Return Me.Process(originalString, Nothing)
+        End Function
 
 
         ''' <summary>
@@ -417,11 +430,11 @@ Namespace Services.Filtering
         ''' <param name="originalString"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function Process(ByVal originalString As String) As String
+        Public Function Process(ByVal originalString As String, contextVars As IContextLookup) As String
 
             Dim toReturn As String = originalString
-            Dim maxLength As Integer = Me._MaxLength
-            Dim noMaxLentgth As Boolean = (maxLength = -1)
+            'Dim intMaxLength As Integer = Me._MaxLength
+            Dim noMaxLength As Boolean = (Me._MaxLength = -1)
 
 
 
@@ -462,56 +475,8 @@ Namespace Services.Filtering
                 End Select
             End If
 
-
-            'dealing with regexs
-            For Each objRegexReplace As KeyValuePair(Of Regex, String) In Me.RegexMap
-                If String.IsNullOrEmpty(objRegexReplace.Value) Then
-                    toReturn = objRegexReplace.Key.Replace(toReturn, String.Empty)
-                Else
-                    toReturn = objRegexReplace.Key.Replace(toReturn, objRegexReplace.Value)
-                End If
-
-            Next
-
-            'dealing with string replaces
-            For Each objStringReplace As KeyValuePair(Of String, String) In Me.StringMap
-                If String.IsNullOrEmpty(objStringReplace.Value) Then
-                    toReturn = toReturn.Replace(objStringReplace.Key, String.Empty)
-                Else
-                    toReturn = toReturn.Replace(objStringReplace.Key, objStringReplace.Value)
-                End If
-
-            Next
-
-            'dealing with char replaces
-            If Me.CharsMap.Count > 0 Then
-
-                Dim toReturnBuilder As New StringBuilder()
-
-                Dim sourceChar, replaceChar As Char
-                Dim i As Integer = 0
-                Dim previousChar As Char = Char.MinValue
-                Dim previousCharIsReplace As Boolean = False
-                While i < toReturn.Length AndAlso (noMaxLentgth OrElse toReturnBuilder.Length <= maxLength)
-                    sourceChar = toReturn(i)
-                    If Me._CharsMap.TryGetValue(sourceChar, replaceChar) Then
-                        If replaceChar <> Char.MinValue Then
-                            If replaceChar <> previousChar OrElse replaceChar <> DefaultCharReplacement() OrElse Not PreventDoubleDefaults Then
-                                previousChar = replaceChar
-                                toReturnBuilder.Append(replaceChar)
-                            End If
-                        End If
-                    Else
-                        previousChar = sourceChar
-                        toReturnBuilder.Append(sourceChar)
-                    End If
-
-                    i += 1
-                End While
-
-                toReturn = toReturnBuilder.ToString()
-
-            End If
+            toReturn = ProcessTransformations(toReturn, contextVars)
+            
 
             If Me.Trim <> TrimType.None Then
                 If Not String.IsNullOrEmpty(TrimChar) Then
@@ -581,8 +546,8 @@ Namespace Services.Filtering
             End Select
 
             'limited Length
-            If Not noMaxLentgth AndAlso toReturn.Length > maxLength Then
-                toReturn = toReturn.Substring(0, maxLength)
+            If Not noMaxLength AndAlso toReturn.Length > Me._MaxLength Then
+                toReturn = toReturn.Substring(0, Me._MaxLength)
             End If
 
             If Me.Categorization.Enabled Then
@@ -591,7 +556,7 @@ Namespace Services.Filtering
 
             'recursive call to process additional filters sequentially
 
-            Return Me.AdditionalFilters.Aggregate(toReturn, Function(current, subExpression) subExpression.Process(current))
+            Return Me.AdditionalFilters.Aggregate(toReturn, Function(current, subExpression) subExpression.Process(current, contextVars))
 
         End Function
 
@@ -602,110 +567,85 @@ Namespace Services.Filtering
 
 #Region "Private methods"
 
-        ''' <summary>
-        ''' Builds the transformation map from the transformations configured
-        ''' </summary>
-        ''' <remarks></remarks>
-        Private Sub BuildMap()
+        Private Function ProcessTransformations(ByVal inputString As String, contextVars As IContextLookup) As String
+            Return Me.ProcessTransformations(inputString, contextVars, Me.PreventDoubleDefaults, Me.DefaultCharReplacement)
+        End Function
 
-            Dim tempStringMap As New Dictionary(Of String, String)
-            Dim tempcharsMap As New Dictionary(Of Char, Char)
-            Dim tempRegexMap As New Dictionary(Of Regex, String)
+        Private Function ProcessTransformations(ByVal inputString As String, contextVars As IContextLookup, boolPreventDoubleDefaults As Boolean, charDefaultCharReplacement As String) As String
+            Return ProcessTransformations(inputString, contextVars, boolPreventDoubleDefaults, charDefaultCharReplacement, False)
+        End Function
 
-
-
-            'If Me.TransformList.Count = 0 Then
-            '    Me.BuildDefault()
-            'Else
-            SyncLock _TransformList
-                For Each transform As StringTransformInfo In Me._TransformList
-                    Select Case transform.FilterType
-                        Case StringFilterType.CharsReplace
-                            If transform.ReplaceValue.Length = 0 Then
-                                AddCharsTrim(tempcharsMap, transform.SourceValue)
-                            ElseIf transform.ReplaceValue.Length > 1 OrElse transform.SourceValue.Length = 1 Then
-                                AddCharsMap(tempcharsMap, transform.SourceValue, transform.ReplaceValue)
-                            Else
-                                AddCharsDefault(tempcharsMap, transform.SourceValue, transform.ReplaceValue(0))
-                            End If
-                        Case StringFilterType.StringReplace
-                            tempStringMap(transform.SourceValue) = transform.ReplaceValue
-                        Case StringFilterType.RegexReplace
-                            Try
-                                Dim objRegex As New Regex(transform.SourceValue, transform.RegexOptions)
-                                tempRegexMap(objRegex) = transform.ReplaceValue
-                            Catch ex As Exception
-                                Aricie.Services.ExceptionHelper.LogException(ex)
-                            End Try
-                    End Select
-                Next
-            End SyncLock
-
-            Me._StringMap = tempStringMap
-            Me._CharsMap = tempcharsMap
-            Me._RegexMap = tempRegexMap
-            'End If
-
-        End Sub
-
-        ''' <summary>
-        '''  Clears the transformation map
-        ''' </summary>
-        ''' <remarks></remarks>
-        Private Sub ClearMap()
-            Me._StringMap = Nothing
-            Me._CharsMap = Nothing
-            Me._RegexMap = Nothing
-        End Sub
-
-
-        ''' <summary>
-        ''' Add char map to the transformation map
-        ''' </summary>
-        ''' <param name="targetDico"></param>
-        ''' <param name="fromStr"></param>
-        ''' <param name="toStr"></param>
-        ''' <remarks></remarks>
-        Private Sub AddCharsMap(ByRef targetDico As Dictionary(Of Char, Char), ByVal fromStr As String, ByVal toStr As String)
-
-            If fromStr.Length <> toStr.Length Then
-                Throw New ArgumentException("characters map source string and match replace have different lengths")
-            End If
-
-            For i As Integer = 0 To fromStr.Length - 1
-                targetDico(fromStr(i)) = toStr(i)
+        Private Function ProcessTransformations(ByVal inputString As String, contextVars As IContextLookup, boolPreventDoubleDefaults As Boolean, charDefaultCharReplacement As String, charReplaceOnly As Boolean) As String
+            Dim toreturn As String = inputString
+            For Each transform As StringTransformInfo In Me._TransformList
+                If Not charReplaceOnly OrElse transform.FilterType = StringFilterType.CharsReplace Then
+                    toreturn = transform.Process(toreturn, contextVars, boolPreventDoubleDefaults, charDefaultCharReplacement)
+                End If
             Next
+            Return toreturn
+        End Function
 
-        End Sub
+        ' ''' <summary>
+        ' ''' Builds the transformation map from the transformations configured
+        ' ''' </summary>
+        ' ''' <remarks></remarks>
+        'Private Sub BuildMap()
 
-        ''' <summary>
-        ''' Add char trim to the transformation map
-        ''' </summary>
-        ''' <param name="targetDico"></param>
-        ''' <param name="escapeString"></param>
-        ''' <remarks></remarks>
-        Private Sub AddCharsTrim(ByRef targetDico As Dictionary(Of Char, Char), ByVal escapeString As String)
+        '    Dim tempStringMap As New Dictionary(Of String, String)
+        '    Dim tempcharsMap As New Dictionary(Of Char, Char)
+        '    Dim tempRegexMap As New Dictionary(Of Regex, Object)
 
-            For i As Integer = 0 To escapeString.Length - 1
-                targetDico(escapeString(i)) = Char.MinValue
-            Next
 
-        End Sub
 
-        ''' <summary>
-        ''' Add char default to the transformation map
-        ''' </summary>
-        ''' <param name="targetDico"></param>
-        ''' <param name="escapeString"></param>
-        ''' <param name="defaultChar"></param>
-        ''' <remarks></remarks>
-        Private Sub AddCharsDefault(ByRef targetDico As Dictionary(Of Char, Char), ByVal escapeString As String, ByVal defaultChar As Char)
+        '    'If Me.TransformList.Count = 0 Then
+        '    '    Me.BuildDefault()
+        '    'Else
+        '    SyncLock _TransformList
+        '        For Each transform As StringTransformInfo In Me._TransformList
+        '            Select Case transform.FilterType
+        '                Case StringFilterType.CharsReplace
+        '                    If transform.ReplaceValue.Length = 0 Then
+        '                        AddCharsTrim(tempcharsMap, transform.SourceValue)
+        '                    ElseIf transform.ReplaceValue.Length > 1 OrElse transform.SourceValue.Length = 1 Then
+        '                        AddCharsMap(tempcharsMap, transform.SourceValue, transform.ReplaceValue)
+        '                    Else
+        '                        AddCharsDefault(tempcharsMap, transform.SourceValue, transform.ReplaceValue(0))
+        '                    End If
+        '                Case StringFilterType.StringReplace
+        '                    tempStringMap(transform.SourceValue) = transform.ReplaceValue
+        '                Case StringFilterType.RegexReplace
+        '                    Try
+        '                        Dim objRegex As New Regex(transform.SourceValue, transform.RegexOptions)
+        '                        If transform.UseCallBack Then
+        '                            tempRegexMap(objRegex) = transform.CallBack
+        '                        Else
+        '                            tempRegexMap(objRegex) = transform.ReplaceValue
+        '                        End If
 
-            For i As Integer = 0 To escapeString.Length - 1
-                targetDico(escapeString(i)) = defaultChar
-            Next
+        '                    Catch ex As Exception
+        '                        Aricie.Services.ExceptionHelper.LogException(ex)
+        '                    End Try
+        '            End Select
+        '        Next
+        '    End SyncLock
 
-        End Sub
+        '    Me._StringMap = tempStringMap
+        '    Me._CharsMap = tempcharsMap
+        '    Me._RegexMap = tempRegexMap
+        '    'End If
+
+        'End Sub
+
+        ' ''' <summary>
+        ' '''  Clears the transformation map
+        ' ''' </summary>
+        ' ''' <remarks></remarks>
+        'Private Sub ClearMap()
+        '    Me._StringMap = Nothing
+        '    Me._CharsMap = Nothing
+        '    Me._RegexMap = Nothing
+        'End Sub
+
 
 
 #End Region

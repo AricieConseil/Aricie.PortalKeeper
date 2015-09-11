@@ -9,6 +9,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Reflection
+Imports System.Text
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
@@ -354,8 +355,18 @@ Namespace Services.Flee
                     Catch ex As Exception
                         Dim newEx As ApplicationException
                         If args IsNot Nothing Then
-                            Dim argsList As New SerializableList(Of Object)(args)
-                            newEx = New ApplicationException(String.Format("Error calling constructor for type {0} with args {1}", Me.DotNetType.GetDotNetType, ReflectionHelper.Serialize(argsList).Beautify()), ex)
+                            Dim argsList As New StringBuilder()
+                            For Each obj As Object In args
+                                If obj Is Nothing Then
+                                    argsList.Append("Null")
+                                Else
+                                    argsList.Append(ReflectionHelper.GetFriendlyName(obj))
+                                End If
+                                argsList.Append(", ")
+                            Next
+                            Dim strArgs As String = argsList.ToString()
+                            strArgs = strArgs.Substring(0, strArgs.Length - 2)
+                            newEx = New ApplicationException(String.Format("Error calling constructor for type {0} with args {1}", Me.DotNetType.GetDotNetType, strArgs), ex)
                         Else
                             newEx = New ApplicationException(String.Format("Error calling constructor for type {0} ", Me.DotNetType.GetDotNetType), ex)
                         End If
@@ -364,16 +375,16 @@ Namespace Services.Flee
                     End Try
                 Case Flee.VariableMode.Expression
                     If Me._AsCompiledExpression Then
-                        toReturn = Me.FleeExpression.GetCompiledExpression(owner, globalVars)
+                        toReturn = Me.FleeExpression.GetCompiledExpression(owner, globalVars, Me.DotNetType.GetDotNetType())
                     Else
-                        toReturn = Me.FleeExpression.Evaluate(owner, globalVars)
+                        toReturn = Me.FleeExpression.Evaluate(owner, globalVars, Me.DotNetType.GetDotNetType())
                     End If
                 Case Flee.VariableMode.Delegate
                     Dim potentialsMembers As List(Of MemberInfo) = Nothing
                     Dim targetMethod As MethodInfo = Me.GetMethodInfo()
                     If targetMethod IsNot Nothing Then
                         If RequiresInstance Then
-                            Dim target As Object = Me.TargetInstance.Evaluate(owner, globalVars)
+                            Dim target As Object = Me.TargetInstance.Evaluate(owner, globalVars, Me.DotNetType.GetDotNetType())
                             toReturn = [Delegate].CreateDelegate(Me.DotNetType.GetDotNetType(), target, targetMethod)
                         Else
                             toReturn = [Delegate].CreateDelegate(Me.DotNetType.GetDotNetType(), targetMethod)
