@@ -46,9 +46,12 @@ Namespace Web.Proxy
         End Function
 
         Private Function UnCloakScheme(ByVal url As String) As String
-            Dim slashShortcut As Integer = url.IndexOf("/"c)
-            If slashShortcut < url.IndexOf("."c) OrElse slashShortcut > 0 AndAlso url.IndexOf(":"c) < 0 Then
-                url = url.Substring(0, slashShortcut) & ":/" & url.Substring(slashShortcut)
+            Dim slashShortcut As Integer = url.Substring(0, Math.Min(8, url.Length)).IndexOf("/"c)
+            If slashShortcut > 0 Then
+                Dim colonIndex As Integer = url.IndexOf(":"c)
+                If colonIndex < 0 OrElse slashShortcut < colonIndex Then
+                    url = url.Substring(0, slashShortcut) & ":/" & url.Substring(slashShortcut)
+                End If
             End If
             Return url
         End Function
