@@ -193,8 +193,8 @@ Namespace UI.WebControls.EditControls
                 keyType = genArgs(0)
                 valueType = genArgs(1)
             Else
-                keyType = ReflectionHelper.GetCollectionElementType(DictionaryValue.Keys)
-                valueType = ReflectionHelper.GetCollectionElementType(DictionaryValue.Values)
+                keyType = ReflectionHelper.GetCollectionElementType(DictionaryValue.Keys, True)
+                valueType = ReflectionHelper.GetCollectionElementType(DictionaryValue.Values, True)
                 'Throw New NotImplementedException("Cet EditControl ne marche qu'avec des collection generiques.")
             End If
 

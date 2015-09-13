@@ -185,6 +185,8 @@
     <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
     <Compile Include="ComponentModel\RelationCardinality.vb" />
     <Compile Include="ComponentModel\RelationNature.vb" />
+    <Compile Include="ComponentModel\TypeDictionaryConverter.vb" />
+    <Compile Include="ComponentModel\TypePickerMode.vb" />
     <Compile Include="Config\AddInfo.vb" />
     <Compile Include="Config\AppSettingAddInfo.vb" />
     <Compile Include="Config\ComplexNodeInfo.vb" />
@@ -334,6 +336,7 @@
     <Compile Include="Services\Flee\SimpleOrExpression.vb" />
     <Compile Include="Services\Flee\SimpleOrExpressionMode.vb" />
     <Compile Include="Services\Flee\SimpleOrSimpleExpression.vb" />
+    <Compile Include="Services\Flee\StringVariables.vb" />
     <Compile Include="Services\Flee\VariablesBase.vb" />
     <Compile Include="Services\Flee\CultureInfoMode.vb" />
     <Compile Include="Services\Flee\ExpressionVariableInfo.vb" />
