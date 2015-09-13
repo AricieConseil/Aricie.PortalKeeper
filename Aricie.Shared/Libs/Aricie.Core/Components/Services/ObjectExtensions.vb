@@ -1,30 +1,33 @@
 Imports System.Reflection.Emit
 Imports System.ComponentModel
+Imports System.Linq
 Imports System.Reflection
+Imports System.Text
 Imports System.Threading
+Imports System.Globalization
 
 Namespace Services
     ''' <summary>
     ''' A Utility class used to merge the properties of
     ''' heterogenious objects
     ''' </summary>
-    Public Class TypeMerger
+    Public Module ObjectExtensions
         'assembly/module builders
-        Private Shared asmBuilder As System.Reflection.Emit.AssemblyBuilder = Nothing
-        Private Shared modBuilder As ModuleBuilder = Nothing
+        Private asmBuilder As System.Reflection.Emit.AssemblyBuilder = Nothing
+        Private modBuilder As ModuleBuilder = Nothing
 
         'object type cache
-        Private Shared anonymousTypes As IDictionary(Of [String], Type) = New Dictionary(Of [String], Type)()
+        Private anonymousMergeTypes As IDictionary(Of [String], Type) = New Dictionary(Of [String], Type)()
 
         'used for thread-safe access to Type Dictionary
-        Private Shared _syncLock As New [Object]()
+        Private _syncLock As New [Object]()
 
         ''' <summary>
         ''' Merge two different object instances into a single
         ''' object which is a super-set
         ''' of the properties of both objects
         ''' </summary>
-        Public Shared Function MergeTypes(values1 As [Object], values2 As [Object]) As [Object]
+        Public Function MergeTypes(values1 As [Object], values2 As [Object]) As [Object]
             'create a name from the names of both Types
             Dim name As [String] = [String].Format("{0}_{1}", values1.[GetType](), values2.[GetType]())
             Dim name2 As [String] = [String].Format("{0}_{1}", values2.[GetType](), values1.[GetType]())
@@ -57,26 +60,200 @@ Namespace Services
                 Dim newType As Type = CreateType(name, pdc)
 
                 'add it to the cache
-                anonymousTypes.Add(name, newType)
+                anonymousMergeTypes.Add(name, newType)
 
                 'return an instance of the new Type
                 Return CreateInstance(name, values1, values2)
             End SyncLock
         End Function
 
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(Of T)(source As IDictionary(Of String, Object)) As T
+            Return DirectCast(GetType(T).ToObject(source), T)
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, Object)) As Object
+            Dim someObject As Object = ReflectionHelper.CreateObject(someObjectType)
+            For Each item As KeyValuePair(Of String, Object) In source
+                ReflectionHelper.GetPropertiesDictionary(someObjectType)(item.Key).SetValue(someObject, item.Value, Nothing)
+            Next
+
+            Return someObject
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String)) As Object
+            Dim someObject As Object = ReflectionHelper.CreateObject(someObjectType)
+            For Each item As KeyValuePair(Of String, String) In source
+                Dim objProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(someObjectType)(item.Key)
+
+                objProp.SetValue(someObject, ConvertFromString(objProp.PropertyType, item.Value), Nothing)
+            Next
+
+            Return someObject
+        End Function
+
+
+
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function AsDictionary(source As Object) As IDictionary(Of String, Object)
+            Return ReflectionHelper.GetPropertiesDictionary(source.[GetType]).ToDictionary(Function(propInfo) propInfo.Key, Function(propInfo) propInfo.Value.GetValue(source, Nothing))
+
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function AsStringDictionary(source As Object) As IDictionary(Of String, String)
+            Return ReflectionHelper.GetPropertiesDictionary(source.GetType()) _
+                .ToDictionary(Function(propInfo) propInfo.Key, _
+                              Function(propInfo) ObjectExtensions.ConvertToString(propInfo.Value.GetValue(source, Nothing)))
+
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ConvertToString(source As Object) As String
+            Dim convertibleSource As IConvertible = TryCast(source, IConvertible)
+            If convertibleSource IsNot Nothing Then
+                Return convertibleSource.ToString(CultureInfo.InvariantCulture)
+            End If
+            Return ReflectionHelper.Serialize(source).Beautify()
+        End Function
+
+        Public Function ConvertFromString(targetType As Type, source As String) As Object
+            If GetType(IConvertible).IsAssignableFrom(targetType) Then
+                Return DirectCast(source, IConvertible).ToType(targetType, CultureInfo.InvariantCulture)
+            End If
+            Return ReflectionHelper.Deserialize(targetType, source)
+        End Function
+
+
+        'Private _DynamicTypes As New Dictionary(Of String, Type)
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToCustomObject(fromProperties As IDictionary(Of String, Object), customTypeName As String) As Object
+            Dim propDescriptors As New List(Of PropertyDescriptor)
+            'If customTypeName.IsNullOrEmpty Then
+            '    Dim objNameBuilder As New StringBuilder()
+            '    For Each objPair As KeyValuePair(Of String, Object) In fromProperties
+            '        objNameBuilder.Append(objPair.Key)
+            '        If objPair.Value Is Nothing Then
+            '            objNameBuilder.Append("Nothing")
+            '        Else
+            '            Dim objType As Type = objPair.Value.GetType()
+            '            objNameBuilder.Append(objType.Name)
+            '            objNameBuilder.Append(objType.AssemblyQualifiedName)
+            '        End If
+            '    Next
+            '    customTypeName = "CustomType" & objNameBuilder.ToString().GetHashCode()
+            'End If
+
+            For Each objPair As KeyValuePair(Of String, Object) In fromProperties
+                Dim objDumbProp As DumbPropertyDescriptor
+                If objPair.Value Is Nothing Then
+                    objDumbProp = New DumbPropertyDescriptor(objPair.Key, GetType(Object))
+                Else
+                    Dim objType As Type = objPair.Value.GetType()
+                    objDumbProp = New DumbPropertyDescriptor(objPair.Key, objType)
+                End If
+                propDescriptors.Add(objDumbProp)
+            Next
+
+            Dim dynType As Type = Nothing
+            'If Not _DynamicTypes.TryGetValue(customTypeName, dynType) Then
+            '    SyncLock _DynamicTypes
+            '        If Not _DynamicTypes.TryGetValue(customTypeName, dynType) Then
+            '            dynType = CreateType(customTypeName, propDescriptors.ToArray)
+            '            _DynamicTypes(customTypeName) = dynType
+            '        End If
+            '    End SyncLock
+            'End If
+            dynType = CreateType(customTypeName, propDescriptors.ToArray)
+            Dim toReturn As Object = Activator.CreateInstance(dynType, fromProperties.Values.ToArray())
+            Return toReturn
+        End Function
+
+
+        Private Function GetCustomTypeID(pdc As PropertyDescriptor()) As String
+            Dim objNameBuilder As New StringBuilder()
+            For Each objPair As PropertyDescriptor In pdc
+                objNameBuilder.Append(objPair.Name)
+                objNameBuilder.Append(objPair.PropertyType.AssemblyQualifiedName)
+            Next
+            Return "Custom" & objNameBuilder.ToString().GetHashCode().ToString(CultureInfo.InvariantCulture).Trim("-"c)
+        End Function
+
+
+        'Private createTypeLock As New Object
+
+        Private _DynamicTypes As New Dictionary(Of String, Type)
+
+        ''' <summary>
+        ''' Create a new Type definition from the list
+        ''' of PropertyDescriptors
+        ''' </summary>
+        Public Function CreateType(name As [String], pdc As PropertyDescriptor()) As Type
+
+            InitializeAssembly()
+            If Not name.IsNullOrEmpty() Then
+                name = "." & name
+            End If
+
+            Dim typeName As String = GetCustomTypeID(pdc) & name
+            Dim typeFullName As String = String.Format("{0}, {1}", typeName, modBuilder.Assembly.GetName().Name)
+
+            Dim toReturn As Type = Nothing
+            If Not _DynamicTypes.TryGetValue(typeFullName, toReturn) Then
+                'create TypeBuilder
+                Dim typeBuilder As TypeBuilder = CreateTypeBuilder(typeName)
+
+                'get list of types for ctor definition
+                Dim propertyTypes As Type() = GetTypes(pdc)
+
+                'create priate fields for use w/in the ctor body and properties
+                Dim fields As FieldBuilder() = BuildFields(typeBuilder, pdc)
+
+                If propertyTypes.Length > 0 Then
+                    'define/emit the empty Ctor
+                    BuildCtor(typeBuilder, New List(Of FieldBuilder)().ToArray(), New List(Of Type)().ToArray())
+                End If
+
+
+                'define/emit the Ctor
+                BuildCtor(typeBuilder, fields, propertyTypes)
+
+                'define/emit the properties
+                BuildProperties(typeBuilder, fields)
+
+                'return Type definition
+                Dim newToReturn As Type = typeBuilder.CreateType()
+                SyncLock _DynamicTypes
+                    If Not _DynamicTypes.TryGetValue(typeFullName, toReturn) Then
+                        toReturn = newToReturn
+                        _DynamicTypes(typeFullName) = toReturn
+                    End If
+                End SyncLock
+            End If
+
+
+            Return toReturn
+          
+        End Function
+
+
         ''' <summary>
         ''' Instantiates an instance of an existing Type from cache
         ''' </summary>
-        Private Shared Function CreateInstance(name As [String], values1 As [Object], values2 As [Object]) As [Object]
+        Private Function CreateInstance(name As [String], values1 As [Object], values2 As [Object]) As [Object]
             Dim newValues As [Object] = Nothing
 
             'merge all values together into an array
             Dim allValues As [Object]() = MergeValues(values1, values2)
 
             'check to see if type exists
-            If anonymousTypes.ContainsKey(name) Then
+            If anonymousMergeTypes.ContainsKey(name) Then
                 'get type
-                Dim type As Type = anonymousTypes(name)
+                Dim type As Type = anonymousMergeTypes(name)
 
                 'make sure it isn't null for some reason
                 If type IsNot Nothing Then
@@ -85,7 +262,7 @@ Namespace Services
                 Else
                     'remove null type entry
                     SyncLock _syncLock
-                        anonymousTypes.Remove(name)
+                        anonymousMergeTypes.Remove(name)
                     End SyncLock
                 End If
             End If
@@ -97,7 +274,7 @@ Namespace Services
         ''' <summary>
         ''' Merge PropertyDescriptors for both objects
         ''' </summary>
-        Private Shared Function GetProperties(values1 As [Object], values2 As [Object]) As PropertyDescriptor()
+        Private Function GetProperties(values1 As [Object], values2 As [Object]) As PropertyDescriptor()
             'dynamic list to hold merged list of properties
             Dim properties As New List(Of PropertyDescriptor)()
 
@@ -122,7 +299,7 @@ Namespace Services
         ''' <summary>
         ''' Get the type of each property
         ''' </summary>
-        Private Shared Function GetTypes(pdc As PropertyDescriptor()) As Type()
+        Private Function GetTypes(pdc As PropertyDescriptor()) As Type()
             Dim types As New List(Of Type)()
 
             For i As Integer = 0 To pdc.Length - 1
@@ -135,7 +312,7 @@ Namespace Services
         ''' <summary>
         ''' Merge the values of the two types into an object array
         ''' </summary>
-        Private Shared Function MergeValues(values1 As [Object], values2 As [Object]) As [Object]()
+        Private Function MergeValues(values1 As [Object], values2 As [Object]) As [Object]()
             Dim pdc1 As PropertyDescriptorCollection = TypeDescriptor.GetProperties(values1)
             Dim pdc2 As PropertyDescriptorCollection = TypeDescriptor.GetProperties(values2)
 
@@ -154,13 +331,13 @@ Namespace Services
         ''' <summary>
         ''' Initialize static objects
         ''' </summary>
-        Private Shared Sub InitializeAssembly()
+        Private Sub InitializeAssembly()
             'check to see if we've already instantiated
             'the static objects
             If asmBuilder Is Nothing Then
                 'create a new dynamic assembly
                 Dim assembly As New AssemblyName()
-                assembly.Name = "Aricie.AnonymousTypeExentions"
+                assembly.Name = CustomTypesAssemblyName
 
                 'get the current application domain
                 Dim domain As AppDomain = Thread.GetDomain()
@@ -171,39 +348,12 @@ Namespace Services
             End If
         End Sub
 
-        ''' <summary>
-        ''' Create a new Type definition from the list
-        ''' of PropertyDescriptors
-        ''' </summary>
-        Public Shared Function CreateType(name As [String], pdc As PropertyDescriptor()) As Type
-
-            InitializeAssembly()
-            'create TypeBuilder
-            Dim typeBuilder As TypeBuilder = CreateTypeBuilder(name)
-
-            'get list of types for ctor definition
-            Dim types As Type() = GetTypes(pdc)
-
-            'create priate fields for use w/in the ctor body and properties
-            Dim fields As FieldBuilder() = BuildFields(typeBuilder, pdc)
-
-            'define/emit the empty Ctor
-            BuildCtor(typeBuilder, New List(Of FieldBuilder)().ToArray(), New List(Of Type)().ToArray())
-
-            'define/emit the Ctor
-            BuildCtor(typeBuilder, fields, types)
-
-            'define/emit the properties
-            BuildProperties(typeBuilder, fields)
-
-            'return Type definition
-            Return typeBuilder.CreateType()
-        End Function
+        Private Const CustomTypesAssemblyName = "Aricie.CustomTypes"
 
         ''' <summary>
         ''' Create a type builder with the specified name
         ''' </summary>
-        Private Shared Function CreateTypeBuilder(typeName As String) As TypeBuilder
+        Private Function CreateTypeBuilder(typeName As String) As TypeBuilder
             'define class attributes
             Dim typeBuilder As TypeBuilder = modBuilder.DefineType(typeName, _
                                                                    TypeAttributes.Public _
@@ -220,10 +370,15 @@ Namespace Services
         ''' <summary>
         ''' Define/emit the ctor and ctor body
         ''' </summary>
-        Private Shared Sub BuildCtor(typeBuilder As TypeBuilder, fields As FieldBuilder(), types As Type())
+        Private Sub BuildCtor(typeBuilder As TypeBuilder, fields As FieldBuilder(), types As Type())
             'define ctor()
             Dim ctor As ConstructorBuilder = typeBuilder.DefineConstructor(MethodAttributes.[Public], CallingConventions.Standard, types)
+            'Dim params = ctor.GetParameters()
+            For i As Integer = 0 To fields.Length - 1
+                'Dim parameter As ParameterInfo = fields(i)
+                Dim parameterBuilder = ctor.DefineParameter(i + 1, Nothing, fields(i).Name.Trim("_"c).ToCamelCase())
 
+            Next
             'build ctor()
             Dim ctorGen As ILGenerator = ctor.GetILGenerator()
 
@@ -244,7 +399,7 @@ Namespace Services
         ''' <summary>
         ''' Define fields based on the list of PropertyDescriptors
         ''' </summary>
-        Private Shared Function BuildFields(typeBuilder As TypeBuilder, pdc As PropertyDescriptor()) As FieldBuilder()
+        Private Function BuildFields(typeBuilder As TypeBuilder, pdc As PropertyDescriptor()) As FieldBuilder()
             Dim fields As New List(Of FieldBuilder)()
 
             'build/define fields
@@ -264,7 +419,7 @@ Namespace Services
         ''' <summary>
         ''' Build a list of Properties to match the list of private fields
         ''' </summary>
-        Private Shared Sub BuildProperties(typeBuilder As TypeBuilder, fields As FieldBuilder())
+        Private Sub BuildProperties(typeBuilder As TypeBuilder, fields As FieldBuilder())
             'build properties
             For i As Integer = 0 To fields.Length - 1
                 'remove '_' from name for public property name
@@ -273,7 +428,7 @@ Namespace Services
                 'define the property
                 Dim objProp As PropertyBuilder = typeBuilder.DefineProperty(propertyName, PropertyAttributes.None, fields(i).FieldType, Nothing)
 
-                'define 'Get' method only (anonymous types are read-only)
+                'define 'Get' method 
                 Dim getMethod As MethodBuilder = typeBuilder.DefineMethod([String].Format("Get_{0}", propertyName), _
                                                                           MethodAttributes.HideBySig Or MethodAttributes.Public Or MethodAttributes.SpecialName, fields(i).FieldType, Type.EmptyTypes)
 
@@ -308,5 +463,5 @@ Namespace Services
 
             Next
         End Sub
-    End Class
-End NameSpace
+    End Module
+End Namespace

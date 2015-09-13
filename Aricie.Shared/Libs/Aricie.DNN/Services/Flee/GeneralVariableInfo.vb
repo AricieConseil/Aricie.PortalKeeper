@@ -51,6 +51,7 @@ Namespace Services.Flee
 
         Public Overrides Function GetFriendlyDetails() As String
             Dim toReturn As String = MyBase.GetFriendlyDetails()
+            Dim typeName As String = ReflectionHelper.GetSimpleTypeName(Me.DotNetType.GetDotNetType())
             Dim nextSegment As String = ""
             Select Case Me.VariableMode
                 Case Flee.VariableMode.Constructor
@@ -58,18 +59,18 @@ Namespace Services.Flee
                 Case Flee.VariableMode.Delegate
                     nextSegment = "Delegate: " & Me.TargetInstance.Expression
                 Case Flee.VariableMode.Expression
-                    nextSegment = "Expression: """ & Me.SimpleExpression.Expression & """"
+                    nextSegment = "Expression: " & Me.SimpleExpression.Expression
                 Case Flee.VariableMode.Instance
                     nextSegment = "Instance: " & ReflectionHelper.GetFriendlyName(Me.Instance)
             End Select
-            toReturn = String.Format("{0} {2} {1}", toReturn, UIConstants.TITLE_SEPERATOR, nextSegment)
+            toReturn = String.Format("{0}{1}{2}{1}{3}", toReturn, UIConstants.TITLE_SEPERATOR, typeName, nextSegment)
             Return toReturn
         End Function
 
 
         Private _Instance As Object
         Private _SimpleExpression As SimpleExpression(Of Object)
-        Private _FleeExpression As New FleeExpressionInfo(Of Object)
+        Private _FleeExpression As New FleeExpressionInfo(Of Object)()
 
 
 
@@ -150,6 +151,7 @@ Namespace Services.Flee
                                                                             OrElse (Me._Instance.GetType() IsNot Me.DotNetType.GetDotNetType() _
                                                                                     AndAlso Not ReflectionHelper.CanConvert(Me._Instance.GetType(), Me.DotNetType.GetDotNetType()))) _
                                                                         AndAlso (Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode = Flee.InstanceMode.ContextLess) Then
+
                     Me._Instance = Me.EvaluateOnce(DnnContext.Current, DnnContext.Current)
                 End If
                 Return Me._Instance

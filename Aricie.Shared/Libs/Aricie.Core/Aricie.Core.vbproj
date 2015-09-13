@@ -78,6 +78,8 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Security" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Workflow.Activities" />
+    <Reference Include="System.Workflow.ComponentModel" />
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
@@ -174,9 +176,10 @@
     <Compile Include="Components\Security\SerializableSecureString.vb" />
     <Compile Include="Components\Services\Caching\CacheHelper.vb" />
     <Compile Include="Components\Services\Caching\ValidationCallBackInfo.vb" />
+    <Compile Include="Components\Services\DumbPropertyDescriptor.vb" />
     <Compile Include="Components\Services\ExceptionHelper.vb" />
     <Compile Include="Components\Services\FileHelper.vb" />
-    <Compile Include="Components\Services\TypeMerger.vb" />
+    <Compile Include="Components\Services\ObjectExtensions.vb" />
     <Compile Include="Components\Text\Base64Convert.vb" />
     <Compile Include="Components\Text\CaseChange.vb" />
     <Compile Include="Components\Text\EncodingHelper.vb" />

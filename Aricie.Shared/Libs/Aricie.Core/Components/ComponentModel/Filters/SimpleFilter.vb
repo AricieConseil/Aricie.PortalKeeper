@@ -1,5 +1,7 @@
 Imports System.CodeDom
+Imports System.Linq
 Imports System.Reflection
+Imports System.Workflow.Activities.Rules
 Imports Aricie.Services
 
 'Imports System.Workflow.Activities.Rules
@@ -116,20 +118,20 @@ Namespace Business.Filters
             Return Me.GetSimpleMatch(Of Y)(content)
         End Function
 
-        'Public Function Evaluate(ByVal obj As Object) As Object
-        '    'Dim codeExp As CodeExpression = Me.GetCodeExpression()
-        '    'Dim args As New Dictionary(Of String, String)
-        '    'args.Add("f-", Me.GetArgs())
-        '    'Dim ruleValid As RuleValidation = CacheHelper.GetGlobal(Of RuleValidation)(args)
-        '    'Dim ruleExec As RuleExecution
-        '    'If (ruleValid Is Nothing) Then
-        '    '    ruleValid = New RuleValidation(GetType(T), Nothing)
-        '    '    RuleExpressionWalker.Validate(ruleValid, codeExp, False)
-        '    '    CacheHelper.SetGlobal(Of RuleValidation)(ruleValid, args)
-        '    'End If
-        '    'ruleExec = New RuleExecution(ruleValid, Me)
-        '    'Return RuleExpressionWalker.Evaluate(ruleExec, codeExp).Value
-        'End Function
+        Public Function Evaluate(ByVal obj As Object) As Object
+            Dim codeExp As CodeExpression = Me.GetCodeExpression()
+            Dim args As New Dictionary(Of String, String)
+            args.Add("f-", Me.GetArgs())
+            Dim ruleValid As RuleValidation = CacheHelper.GetGlobal(Of RuleValidation)(args.Keys.ToArray())
+            Dim ruleExec As RuleExecution
+            If (ruleValid Is Nothing) Then
+                ruleValid = New RuleValidation(GetType(T), Nothing)
+                RuleExpressionWalker.Validate(ruleValid, codeExp, False)
+                CacheHelper.SetGlobal(Of RuleValidation)(ruleValid, args.Keys.ToArray())
+            End If
+            ruleExec = New RuleExecution(ruleValid, Me)
+            Return RuleExpressionWalker.Evaluate(ruleExec, codeExp).Value
+        End Function
 
 
         Public Overridable Function GetCodeExpression() As CodeExpression Implements IFilter.GetCodeExpression

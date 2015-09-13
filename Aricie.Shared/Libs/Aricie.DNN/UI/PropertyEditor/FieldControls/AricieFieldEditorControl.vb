@@ -245,7 +245,12 @@ Public Class AricieFieldEditorControl
 
     Protected Overrides Sub RenderChildren(ByVal writer As HtmlTextWriter)
         Dim newHtmlTextWriter As New FieldEditorHtmlWriter(Me, writer, Me._AutoPostBack, Me.PasswordMode)
+        'Try
         MyBase.RenderChildren(newHtmlTextWriter)
+        'Catch ex As Exception
+        '    ExceptionHelper.LogException(ex)
+        'End Try
+
     End Sub
 
 
@@ -285,11 +290,7 @@ Public Class AricieFieldEditorControl
                     'End If
                     objEditControl = New CustomTextEditControl()
                 Case "System.Version"
-                    If NukeHelper.DnnVersion.Major > 5 Then
-                        objEditControl = DirectCast(ReflectionHelper.CreateObject("DotNetNuke.UI.WebControls.VersionEditControl, DotNetNuke"), EditControl)
-                    Else
-                        objEditControl = New TextEditControl(editorInfo.Type)
-                    End If
+                    objEditControl = ObsoleteDNNProvider.Instance.CreateVersionEditControl()
                 Case Else
 
                     If objType.IsEnum Then
@@ -317,8 +318,11 @@ Public Class AricieFieldEditorControl
                             ElseIf objType Is GetType(CData) Then
                                 Dim ctc As New CustomTextEditControl()
                                 ctc.Width = 600
-                                Dim strValue = Conversions.ToString(editorInfo.Value)
-                                ctc.LineCount = RestrictedLineCount(strValue, 3, 200)
+                                If editorInfo.Value IsNot Nothing Then
+                                    Dim strValue = Conversions.ToString(editorInfo.Value)
+                                    ctc.LineCount = RestrictedLineCount(strValue, 3, 200)
+                                Else : ctc.LineCount = 3
+                                End If
                                 objEditControl = ctc
                             Else
 

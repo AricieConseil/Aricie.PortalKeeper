@@ -10,6 +10,7 @@ using DotNetNuke.Entities.Portals;
 using DotNetNuke.Services.FileSystem;
 using FileInfo = DotNetNuke.Services.FileSystem.FileInfo;
 using System.Collections;
+using Aricie.DNN7.Web.UI;
 
 namespace Aricie.DNN
 {
@@ -138,6 +139,11 @@ namespace Aricie.DNN
             bool enableUrlLanguage = currentPortalSettings.EnableUrlLanguage;
             Guid gUID = currentPortalSettings.GUID;
             return Globals.LinkClick(link, tabId, moduleId, trackClicks, forceDownload, portalId, enableUrlLanguage, gUID.ToString());
+        }
+
+        public override DotNetNuke.UI.WebControls.EditControl CreateVersionEditControl()
+        {
+            return new AricieVersionEditControl();
         }
 
     }

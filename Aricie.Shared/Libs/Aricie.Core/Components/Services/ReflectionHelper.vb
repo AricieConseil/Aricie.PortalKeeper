@@ -265,9 +265,12 @@ Namespace Services
 
                 ' use reflection to get the type of the class
                 toReturn = BuildManager.GetType(typeName, throwOnError, True)
-                SyncLock ReflectionHelper.Instance._TypesByTypeName
-                    ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
-                End SyncLock
+                If toReturn IsNot Nothing Then
+                    SyncLock ReflectionHelper.Instance._TypesByTypeName
+                        ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
+                    End SyncLock
+                End If
+                
 
 
                 'CacheHelper.SetGlobal(Of Type)(toReturn, typeName)
@@ -961,16 +964,17 @@ Namespace Services
 
             Dim objetType As Type = Nothing
 
-            If collection IsNot Nothing AndAlso collection.Count > 0 Then
-                For Each objVal As Object In collection
-                    If objVal IsNot Nothing Then
-                        objetType = objVal.GetType()
-                        Exit For
-                    End If
-                Next
-            Else
-                objetType = GetCollectionTypeElementType(collection.GetType, throwOnerror)
-
+            If collection IsNot Nothing Then
+                If collection.Count > 0 Then
+                    For Each objVal As Object In collection
+                        If objVal IsNot Nothing Then
+                            objetType = objVal.GetType()
+                            Exit For
+                        End If
+                    Next
+                Else
+                    objetType = GetCollectionTypeElementType(collection.GetType, throwOnerror)
+                End If
             End If
 
 

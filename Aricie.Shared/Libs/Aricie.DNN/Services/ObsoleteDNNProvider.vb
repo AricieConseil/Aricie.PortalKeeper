@@ -4,6 +4,7 @@ Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Common.Utilities
 Imports System.IO
 Imports DotNetNuke.Entities.Portals
+Imports DotNetNuke.UI.WebControls
 
 Namespace Services
     Public Class ObsoleteDNNProvider
@@ -215,7 +216,13 @@ Namespace Services
             End If
         End Function
 
-
+        Public Overridable Function CreateVersionEditControl() As EditControl
+            If NukeHelper.DnnVersion.Major > 5 Then
+                Return DirectCast(ReflectionHelper.CreateObject("DotNetNuke.UI.WebControls.VersionEditControl, DotNetNuke"), EditControl)
+            Else
+                Return New TextEditControl()
+            End If
+        End Function
 
 #Region "Private members"
 

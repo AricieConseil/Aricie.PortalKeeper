@@ -7,25 +7,11 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
-Imports System.Collections.Specialized
+Imports Aricie.DNN.Entities
 
 Namespace Services.Flee
 
-    <Serializable()> _
-     Public Class StringVariables
-        Inherits Variables(Of String)
-
-        Public Function EvaluateToNameValueCollection(ByVal owner As Object, ByVal globalVars As IContextLookup) As NameValueCollection
-            Dim tempDico As SerializableDictionary(Of String, Object) = Me.EvaluateVariables(owner, globalVars)
-            Dim toReturn As New NameValueCollection(tempDico.Count)
-            For Each tempPair As KeyValuePair(Of String, Object) In tempDico
-                toReturn.Add(tempPair.Key, tempPair.Value.ToString())
-            Next
-            Return toReturn
-        End Function
-
-    End Class
-
+   
 
     ''' <summary>
     ''' Generics version of VariablesBase
@@ -69,7 +55,7 @@ Namespace Services.Flee
         End Function
 
         Public Overrides Function GetAvailableProviders() As System.Collections.Generic.IDictionary(Of String, DotNetType(Of VariableInfo))
-           
+
             Dim toReturn As New Dictionary(Of String, DotNetType(Of VariableInfo))
             Dim objGeneralDotNetType As New DotNetType(Of VariableInfo)(GetType(GeneralVariableInfo(Of )), New DotNetType(GetType(TResult)))
             toReturn.Add(ReflectionHelper.GetSimpleTypeName(objGeneralDotNetType.GetDotNetType()), objGeneralDotNetType)
@@ -95,6 +81,15 @@ Namespace Services.Flee
                 Dim newVar As New GeneralVariableInfo()
                 newVar.Name = objParameter.Name
                 newVar.DotNetType = New DotNetType(objParameter.ParameterType)
+                If Not ReflectionHelper.CanCreateObject(objParameter.ParameterType) Then
+                    newVar.VariableMode = VariableMode.Expression
+                    newVar.FleeExpression.Expression = "null"
+                Else
+                    newVar.VariableMode = VariableMode.Instance
+                    If objParameter.DefaultValue IsNot Nothing Then
+                        newVar.Instance = objParameter.DefaultValue
+                    End If
+                End If
                 toReturn.Instances.Add(newVar)
             Next
             Return toReturn

@@ -84,47 +84,47 @@ Namespace ComponentModel
         End Function
 
         Public Function ToBoolean(ByVal provider As System.IFormatProvider) As Boolean Implements System.IConvertible.ToBoolean
-            Return Convert.ToBoolean(Me._value, provider)
+            Return Convert.ToBoolean(Me.Value, provider)
         End Function
 
         Public Function ToByte(ByVal provider As System.IFormatProvider) As Byte Implements System.IConvertible.ToByte
-            Return Convert.ToByte(Me._value, provider)
+            Return Convert.ToByte(Me.Value, provider)
         End Function
 
         Public Function ToChar(ByVal provider As System.IFormatProvider) As Char Implements System.IConvertible.ToChar
-            Return Convert.ToChar(Me._value, provider)
+            Return Convert.ToChar(Me.Value, provider)
         End Function
 
         Public Function ToDateTime(ByVal provider As System.IFormatProvider) As Date Implements System.IConvertible.ToDateTime
-            Return Convert.ToDateTime(Me._value, provider)
+            Return Convert.ToDateTime(Me.Value, provider)
         End Function
 
         Public Function ToDecimal(ByVal provider As System.IFormatProvider) As Decimal Implements System.IConvertible.ToDecimal
-            Return Convert.ToDecimal(Me._value, provider)
+            Return Convert.ToDecimal(Me.Value, provider)
         End Function
 
         Public Function ToDouble(ByVal provider As System.IFormatProvider) As Double Implements System.IConvertible.ToDouble
-            Return Convert.ToDouble(Me._value, provider)
+            Return Convert.ToDouble(Me.Value, provider)
         End Function
 
         Public Function ToInt16(ByVal provider As System.IFormatProvider) As Short Implements System.IConvertible.ToInt16
-            Return Convert.ToInt16(Me._value, provider)
+            Return Convert.ToInt16(Me.Value, provider)
         End Function
 
         Public Function ToInt32(ByVal provider As System.IFormatProvider) As Integer Implements System.IConvertible.ToInt32
-            Return Convert.ToInt32(Me._value, provider)
+            Return Convert.ToInt32(Me.Value, provider)
         End Function
 
         Public Function ToInt64(ByVal provider As System.IFormatProvider) As Long Implements System.IConvertible.ToInt64
-            Return Convert.ToInt64(Me._value, provider)
+            Return Convert.ToInt64(Me.Value, provider)
         End Function
 
         Public Function ToSByte(ByVal provider As System.IFormatProvider) As SByte Implements System.IConvertible.ToSByte
-            Return Convert.ToSByte(Me._value, provider)
+            Return Convert.ToSByte(Me.Value, provider)
         End Function
 
         Public Function ToSingle(ByVal provider As System.IFormatProvider) As Single Implements System.IConvertible.ToSingle
-            Return Convert.ToSingle(Me._value, provider)
+            Return Convert.ToSingle(Me.Value, provider)
         End Function
 
         Public Overloads Function ToString(ByVal provider As System.IFormatProvider) As String Implements System.IConvertible.ToString
@@ -140,15 +140,15 @@ Namespace ComponentModel
         End Function
 
         Public Function ToUInt16(ByVal provider As System.IFormatProvider) As UShort Implements System.IConvertible.ToUInt16
-            Return Convert.ToUInt16(Me._value, provider)
+            Return Convert.ToUInt16(Me.Value, provider)
         End Function
 
         Public Function ToUInt32(ByVal provider As System.IFormatProvider) As UInteger Implements System.IConvertible.ToUInt32
-            Return Convert.ToUInt32(Me._value, provider)
+            Return Convert.ToUInt32(Me.Value, provider)
         End Function
 
         Public Function ToUInt64(ByVal provider As System.IFormatProvider) As ULong Implements System.IConvertible.ToUInt64
-            Return Convert.ToUInt64(Me._value, provider)
+            Return Convert.ToUInt64(Me.Value, provider)
         End Function
 
 
@@ -187,7 +187,7 @@ Namespace ComponentModel
                     If (destinationType Is GetType(InstanceDescriptor)) Then
                         Dim constructor As ConstructorInfo = GetType(CData).GetConstructor(New Type() {GetType(String)})
                         If (Not constructor Is Nothing) Then
-                            Return New InstanceDescriptor(constructor, New Object() {value.ToString})
+                            Return New InstanceDescriptor(constructor, New Object() {value.ToString()})
                         End If
                     ElseIf destinationType Is GetType(String) Then
                         Return DirectCast(value, CData).Value

@@ -9,9 +9,10 @@ Imports System.Reflection
 Imports System.IO
 Imports System.Text
 Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.Services
 
 Namespace ComponentModel
-
     Public Enum TypeSelector
         CommonTypes
         BrowseHierarchy
@@ -77,17 +78,49 @@ Namespace ComponentModel
 
 
 
-
         <Browsable(False)> _
         Public Overridable ReadOnly Property Name() As String
             Get
                 Dim objType As Type = Me.GetDotNetType()
+
                 Return ReflectionHelper.GetSimpleTypeName(objType)
             End Get
         End Property
 
+
+       
+
+
+        Public Property PickerMode As TypePickerMode
+
+
+        <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
+        Public Property CustomTypeIdentifier As New EnabledFeature(Of NamedIdentifierEntity)
+
+
+        <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
+        Public Property CustomObject As New Variables()
+
+
+        <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
+       <ActionButton(IconName.Refresh, IconOptions.Normal, "CustomTypeReset.Alert")> _
+        Public Sub ResetCustomType(ByVal pe As AriciePropertyEditorControl)
+            Try
+                _Type = Nothing
+                pe.DisplayLocalizedMessage("TypeReset.Message", DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.GreenSuccess)
+
+                pe.ItemChanged = True
+            Catch ex As Exception
+                Dim newEx As New ApplicationException("There was an error trying to create your type. See the complete Stack for more details", ex)
+                Throw newEx
+            End Try
+        End Sub
+
+
+
         Private _TypeSelector As Nullable(Of TypeSelector)
 
+        <ConditionalVisible("PickerMode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <XmlIgnore()> _
         Public Property TypeSelector As TypeSelector
@@ -107,6 +140,7 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
@@ -124,9 +158,13 @@ Namespace ComponentModel
             End Set
         End Property
 
-        <EditOnly()> _
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
-       <IsReadOnly(True)> _
+
+
+        '<ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
+        '<EditOnly()> _
+        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.CommonTypes)> _
+        '<IsReadOnly(True)> _
+        <Browsable(False)> _
         Public Property TypeName() As String
             Get
                 Return _TypeName
@@ -138,11 +176,13 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
        <XmlIgnore> _
         Public Property MakeArray As Boolean
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <AutoPostBack()> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
@@ -152,6 +192,7 @@ Namespace ComponentModel
 
         Private _ArrayType As DotNetType
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
        <ConditionalVisible("MakeArray")> _
@@ -171,6 +212,7 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
@@ -179,6 +221,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property AssemblyNameSelect As String = ""
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <ConditionalVisible("IsGenericParameter", True, True)> _
@@ -190,6 +233,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property NamespaceSelect As String = ""
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <AutoPostBack()> _
@@ -223,6 +267,7 @@ Namespace ComponentModel
         '<ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         '<ConditionalVisible("IsSelectedGeneric", False, True, TypeSelector.BrowseHierarchy)> _
         ' Public Property IncludeGenericTypes As Boolean
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("IsSelectedGeneric", False, True)> _
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
@@ -271,13 +316,15 @@ Namespace ComponentModel
             End Get
         End Property
 
-        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-        Public ReadOnly Property CurrentlySelectedTypeName As String
-            Get
-                Return ReflectionHelper.GetSafeTypeName(CurrentlySelectedType)
-            End Get
-        End Property
+        '<ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
+        '<ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        'Public ReadOnly Property CurrentlySelectedTypeName As String
+        '    Get
+        '        Return ReflectionHelper.GetSafeTypeName(CurrentlySelectedType)
+        '    End Get
+        'End Property
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
         <Required(True)> _
         <Width(500)> _
@@ -291,18 +338,18 @@ Namespace ComponentModel
         '<ActionButton(IconName.Refresh, IconOptions.Normal)> _
         'Public Sub Refresh(ByVal pe As AriciePropertyEditorControl)
         'End Sub
-       
 
 
+        <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType, TypeSelector.BrowseHierarchy)> _
         <ActionButton("~/images/action_import.gif")> _
         Public Sub ValidateNewType(ByVal pe As AriciePropertyEditorControl)
             Try
                 Dim objType As Type = Nothing
                 Select Case Me.TypeSelector
-                    Case ComponentModel.TypeSelector.NewType
+                    Case TypeSelector.NewType
                         objType = Me.GetDotNetType(EditableTypeName, True)
-                    Case ComponentModel.TypeSelector.BrowseHierarchy
+                    Case TypeSelector.BrowseHierarchy
                         objType = CurrentlySelectedType
                 End Select
                 If objType IsNot Nothing Then
@@ -320,13 +367,38 @@ Namespace ComponentModel
         End Sub
 
 
-
+        Public Overridable ReadOnly Property FullName() As String
+            Get
+                Dim objType As Type = Me.GetDotNetType()
+                If objType IsNot Nothing Then
+                    Return ReflectionHelper.GetSafeTypeName(objType)
+                End If
+                Return String.Empty
+            End Get
+        End Property
 
 
         Public Function GetDotNetType() As Type
-            If _Type Is Nothing AndAlso Not String.IsNullOrEmpty(Me._TypeName) Then
-                _Type = Me.GetDotNetType(Me._TypeName, False)
+            If _Type Is Nothing Then
+
+                Select Case PickerMode
+                    Case TypePickerMode.SelectType
+                        If Not String.IsNullOrEmpty(Me._TypeName) Then
+                            _Type = Me.GetDotNetType(Me._TypeName, False)
+                        End If
+                    Case TypePickerMode.CustomObject
+                        Dim objProps = Me.CustomObject.EvaluateVariables(DnnContext.Current, DnnContext.Current)
+                        If Me.CustomTypeIdentifier.Enabled Then
+                            _Type = objProps.ToCustomObject(Me.CustomTypeIdentifier.Entity.Name).GetType()
+                        Else
+                            _Type = objProps.ToCustomObject("").GetType()
+                        End If
+
+                End Select
+
             End If
+
+
             Return _Type
         End Function
 
