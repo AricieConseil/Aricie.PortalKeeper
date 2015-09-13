@@ -3,6 +3,7 @@ Imports System.Web.UI
 Imports System.Globalization
 
 Namespace UI.WebControls.EditControls
+
     Public Class AricieEnumEditControl
         Inherits EnumEditControl
 
@@ -24,4 +25,4 @@ Namespace UI.WebControls.EditControls
         End Sub
 
     End Class
-End NameSpace
+End Namespace

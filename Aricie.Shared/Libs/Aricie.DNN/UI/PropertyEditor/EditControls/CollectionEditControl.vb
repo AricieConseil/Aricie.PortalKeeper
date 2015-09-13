@@ -484,14 +484,14 @@ Namespace UI.WebControls.EditControls
                 Dim addEvent As New PropertyEditorEventArgs(Me.Name)
                 addEvent.OldValue = New ArrayList(Me.CollectionValue)
                 Page.Validate()
-                If Me.Page.IsValid Then
-                    Me.AddNewItem(Me.AddEntry)
+                'If Me.Page.IsValid Then
+                Me.AddNewItem(Me.AddEntry)
 
-                    addEvent.Value = Me.CollectionValue
-                    addEvent.Changed = True
-                    Me.OnValueChanged(addEvent)
+                addEvent.Value = Me.CollectionValue
+                addEvent.Changed = True
+                Me.OnValueChanged(addEvent)
 
-                End If
+                'End If
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
             End Try
@@ -504,17 +504,17 @@ Namespace UI.WebControls.EditControls
                 Dim clearEvent As New PropertyEditorEventArgs(Me.Name)
                 clearEvent.OldValue = New ArrayList(Me.CollectionValue)
                 Page.Validate()
-                If Me.Page.IsValid Then
+                'If Me.Page.IsValid Then
 
-                    For i As Integer = Me.CollectionValue.Count - 1 To 0 Step -1
-                        Me.DeleteItem(i)
-                    Next
+                For i As Integer = Me.CollectionValue.Count - 1 To 0 Step -1
+                    Me.DeleteItem(i)
+                Next
 
-                    clearEvent.Value = Me.CollectionValue
-                    clearEvent.Changed = True
-                    Me.OnValueChanged(clearEvent)
-                    Me.ParentAricieEditor.RootEditor.ClearBackPath()
-                End If
+                clearEvent.Value = Me.CollectionValue
+                clearEvent.Changed = True
+                Me.OnValueChanged(clearEvent)
+                Me.ParentAricieEditor.RootEditor.ClearBackPath()
+                'End If
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
             End Try
@@ -525,10 +525,10 @@ Namespace UI.WebControls.EditControls
         Private Sub CopyClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
                 Page.Validate()
-                If Me.Page.IsValid Then
+                'If Me.Page.IsValid Then
 
-                    Me.Copy(Me.CollectionValue)
-                End If
+                Me.Copy(Me.CollectionValue)
+                'End If
 
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
@@ -539,10 +539,10 @@ Namespace UI.WebControls.EditControls
         Private Sub ExportClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
                 Page.Validate()
-                If Me.Page.IsValid Then
+                'If Me.Page.IsValid Then
 
-                    Me.Download(CollectionValue)
-                End If
+                Me.Download(CollectionValue)
+                'End If
 
             Catch ex As Exception
                 DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
@@ -642,7 +642,7 @@ Namespace UI.WebControls.EditControls
                 toReturn = DirectCast(Me.ParentField.DataSource, IProviderContainer).GetNewItem(Me.ParentField.DataField, Me.addSelector.SelectedValue)
             End If
             If toReturn Is Nothing Then
-                Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue)
+                Dim objetType As Type = ReflectionHelper.GetCollectionElementType(Me.CollectionValue, True)
                 toReturn = ReflectionHelper.CreateObject(objetType.AssemblyQualifiedName)
             End If
 

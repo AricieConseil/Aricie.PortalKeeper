@@ -72,7 +72,13 @@ Namespace UI.WebControls
             Dim key As String = currentType.Name & "."c & Me._CurrentProperty.Name
             Dim value As Object = Nothing
             If Me.DataSource IsNot Nothing OrElse _CurrentProperty.GetGetMethod.IsStatic Then
-                value = Me._CurrentProperty.GetValue(DataSource, Nothing)
+                Try
+                    value = Me._CurrentProperty.GetValue(DataSource, Nothing)
+                Catch ex As Exception
+                    ExceptionHelper.LogException(ex)
+                    value = Nothing
+                End Try
+
             End If
             If value IsNot Nothing Then
                 key &= "."c & value.GetType.Name
@@ -83,7 +89,7 @@ Namespace UI.WebControls
             End If
 
             If Not _EditorClones.TryGetValue(key, toReturn) Then
-                toReturn = GetEditorInfo()
+                toReturn = GetEditorInfo(value)
                 SyncLock _EditorClones
                     _EditorClones(key) = toReturn
                 End SyncLock
@@ -166,25 +172,18 @@ Namespace UI.WebControls
         ''' GetEditorInfo builds an EditorInfo object for a propoerty
         ''' </summary>
         ''' -----------------------------------------------------------------------------
-        Private Function GetEditorInfo() As EditorInfo
+        Private Function GetEditorInfo(value As Object) As EditorInfo
 
-            'Dim objType As Type
-            'If DataSource IsNot Nothing Then
-            '    objType = Me.DataSource.GetType
-            'Else
-            '    objType = _CurrentProperty.DeclaringType
-            'End If
+            
 
             Dim editInfo As New AricieEditorInfo()
 
             'Get the Name of the property
             editInfo.Name = _CurrentProperty.Name()
 
-            If Me.DataSource IsNot Nothing OrElse _CurrentProperty.GetGetMethod.IsStatic Then
-                'Get the value of the property
-                editInfo.Value = _CurrentProperty.GetValue(Me.DataSource, Nothing)
-            End If
-            
+         
+            editInfo.Value = value
+
 
             'Get the type of the property
             editInfo.PropertyType = _CurrentProperty.PropertyType

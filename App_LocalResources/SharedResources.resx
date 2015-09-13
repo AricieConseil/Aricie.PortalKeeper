@@ -6033,10 +6033,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="DotNetType_TypeNameSelect.Text" xml:space="preserve">
     <value>Type</value>
   </data>
-  <data name="DotNetType_CurrentlySelectedTypeName.Help" xml:space="preserve">
+  <data name="DotNetType_FullName.Help" xml:space="preserve">
     <value>This is the selected type accounting for open or closed generic parameters </value>
   </data>
-  <data name="DotNetType_CurrentlySelectedTypeName.Text" xml:space="preserve">
+  <data name="DotNetType_FullName.Text" xml:space="preserve">
     <value>Currently Selected Type</value>
   </data>
   <data name="DotNetType_GenericTypes.Help" xml:space="preserve">
@@ -10249,5 +10249,44 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="TokenSourceInfo_TokenVariables.Text" xml:space="preserve">
     <value>Token Variables</value>
+  </data>
+  <data name="CustomTypeReset.Alert" xml:space="preserve">
+    <value>Resetting will attempt to recompile a new custom Type with actualised variable-deriverd properties</value>
+  </data>
+  <data name="DotNetType_CustomObject.Help" xml:space="preserve">
+    <value>Enter a list of variables to define the properties of your custom type with default values.</value>
+  </data>
+  <data name="DotNetType_CustomObject.Text" xml:space="preserve">
+    <value>Custom Object</value>
+  </data>
+  <data name="DotNetType_CustomTypeIdentifier.Help" xml:space="preserve">
+    <value>You can let the compiler pick an arbitrary name for your type, or define a Name explicitely</value>
+  </data>
+  <data name="DotNetType_CustomTypeIdentifier.Text" xml:space="preserve">
+    <value>Name Custom Type</value>
+  </data>
+  <data name="DotNetType_PickerMode.Help" xml:space="preserve">
+    <value>There are 2 ways to pick a .Net, you can either select an existing type using the supplied selectors, or you can build a custom object type from a sample object defined by its Properties with default values.</value>
+  </data>
+  <data name="DotNetType_PickerMode.Text" xml:space="preserve">
+    <value>Type Picker Mode</value>
+  </data>
+  <data name="DotNetType_ResetCustomType.Text" xml:space="preserve">
+    <value>Reset Custom Type</value>
+  </data>
+  <data name="InstanceReset.Message" xml:space="preserve">
+    <value>Instance was reset to be created again</value>
+  </data>
+  <data name="ParametersCreated.Message" xml:space="preserve">
+    <value>A set of named and typed Parameters was sucessfully initialized according to the selected method signature.</value>
+  </data>
+  <data name="SelectType.Text" xml:space="preserve">
+    <value>Select .Net Type</value>
+  </data>
+  <data name="SignalLengths.Text" xml:space="preserve">
+    <value>Signal Response Lengths</value>
+  </data>
+  <data name="TypeReset.Message" xml:space="preserve">
+    <value>Custom Type was reset to be Built again</value>
   </data>
 </root>
