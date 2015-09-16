@@ -16,7 +16,7 @@ Namespace Entities
 
         Public Sub New(objSimple As T, enabled As Boolean)
             Me.New(objSimple)
-            Me.Enabled = True
+            Me.Enabled = enabled
         End Sub
 
         <AutoPostBack()> _

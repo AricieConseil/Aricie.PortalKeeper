@@ -1,7 +1,9 @@
+Imports System.ComponentModel
 Imports System.Globalization
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 
 Namespace ComponentModel
@@ -9,22 +11,58 @@ Namespace ComponentModel
 
         Public Property SelectedType As New DotNetType()
 
+
+        Public Property ParsingCulture As New CulturePicker
+
         Public Property CustomObjectToDictionary As New EnabledFeature(Of Variables(Of String))
+
+        <Browsable(False)> _
+        Public ReadOnly Property CustomToDictionaryIsEnabeld As Boolean
+            Get
+                Return CustomObjectToDictionary.Enabled
+            End Get
+        End Property
+
+
+        <ConditionalVisible("CustomToDictionaryIsEnabeld")> _
+        Public Property CustomObjectVariableName As String = "CustomObject"
 
         Public Property CustomDictionaryToObject As New EnabledFeature(Of Variables)
 
-        Public Function GetDictionary(objContext As IContextLookup, value As Object) As IDictionary(Of String, String)
+        <Browsable(False)> _
+        Public ReadOnly Property CustomToObjectIsEnabeld As Boolean
+            Get
+                Return CustomDictionaryToObject.Enabled
+            End Get
+        End Property
+
+        <ConditionalVisible("CustomToObjectIsEnabeld")> _
+        Public Property CustomDictionaryVariableName As String = "CustomDictionary"
+
+        <ConditionalVisible("CustomToObjectIsEnabeld", True)> _
+        Public Property CreateEmptyObjects As Boolean
+
+        <ConditionalVisible("CustomToObjectIsEnabeld", True)> _
+        <ConditionalVisible("CreateEmptyObjects")> _
+        Public Property InitializeLists As Boolean
+
+
+        Public Function GetDictionary(objContext As IContextLookup, value As Object) As Dictionary(Of String, String)
             If Not CustomObjectToDictionary.Enabled Then
-                Return ObjectExtensions.AsStringDictionary(value)
+                Return ObjectExtensions.AsStringDictionary(value, ParsingCulture.GetCulture())
             End If
+            objContext.Items(CustomObjectVariableName) = value
             Dim objectDictionary As Dictionary(Of String, Object) = Me.CustomObjectToDictionary.Entity.EvaluateVariables(objContext, objContext)
+
             Return objectDictionary.ToDictionary(Function(objPair) objPair.Key, Function(objPair) DirectCast(objPair.Value, IConvertible).ToString(CultureInfo.InvariantCulture))
         End Function
 
-        Public Function GetObject(objContext As IContextLookup, value As IDictionary(Of String, String)) As Object
+
+        Public Function GetObject(objContext As IContextLookup, value As Dictionary(Of String, String)) As Object
             If Not CustomObjectToDictionary.Enabled Then
-                Return Me.SelectedType.GetDotNetType().ToObject(value)
+                Return Me.SelectedType.GetDotNetType().ToObject(value, ParsingCulture.GetCulture(), CreateEmptyObjects, InitializeLists)
             End If
+            objContext.Items(CustomDictionaryVariableName) = value
             Dim objectDictionary As Dictionary(Of String, Object) = Me.CustomDictionaryToObject.Entity.EvaluateVariables(objContext, objContext)
             Return Me.SelectedType.GetDotNetType().ToObject(objectDictionary)
         End Function
