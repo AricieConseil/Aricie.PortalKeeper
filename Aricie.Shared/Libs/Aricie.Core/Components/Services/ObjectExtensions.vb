@@ -23,6 +23,14 @@ Namespace Services
         'used for thread-safe access to Type Dictionary
         Private _syncLock As New [Object]()
 
+        Private _DynamicTypes As New Dictionary(Of String, Type)
+
+        Public ReadOnly Property DynamicTypes As Dictionary(Of String, Type)
+            Get
+                Return _DynamicTypes
+            End Get
+        End Property
+
         ''' <summary>
         ''' Merge two different object instances into a single
         ''' object which is a super-set
@@ -167,16 +175,16 @@ Namespace Services
             Return ConvertFromString(targetType, source, culture, createEmptyObjects, False)
         End Function
 
-        Private _JavascriptSerializer As JavaScriptSerializer
+        'Private _JavascriptSerializer As JavaScriptSerializer
 
-        Public ReadOnly Property JavascriptSerializer As JavaScriptSerializer
-            Get
-                If _JavascriptSerializer Is Nothing Then
-                    _JavascriptSerializer = New JavaScriptSerializer()
-                End If
-                Return _JavascriptSerializer
-            End Get
-        End Property
+        'Public ReadOnly Property JavascriptSerializer As JavaScriptSerializer
+        '    Get
+        '        If _JavascriptSerializer Is Nothing Then
+        '            _JavascriptSerializer = New JavaScriptSerializer()
+        '        End If
+        '        Return _JavascriptSerializer
+        '    End Get
+        'End Property
 
         Public Function ConvertFromString(targetType As Type, source As String, culture As CultureInfo, createEmptyObjects As Boolean, initializeLists As Boolean) As Object
             Dim typeConverter As TypeConverter = TypeDescriptor.GetConverter(targetType)
@@ -309,7 +317,7 @@ Namespace Services
 
         'Private createTypeLock As New Object
 
-        Private _DynamicTypes As New Dictionary(Of String, Type)
+
 
         ''' <summary>
         ''' Instantiates an instance of an existing Type from cache
