@@ -317,20 +317,25 @@ Namespace Services.Flee
 
             If Me._Instance IsNot Nothing Then
                 If Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode <> Flee.InstanceMode.Off Then
-                    If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
-                        globalVars.Items(Me.Name) = Me._Instance
+                    toReturn = Me._Instance
+                    If _UseClone Then
+                        toReturn = ReflectionHelper.CloneObject(toReturn)
                     End If
-                    Return Me._Instance
+                    If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
+                        globalVars.Items(Me.Name) = toReturn
+                    End If
+                    
+                    Return toReturn
                 Else
                     Me._Instance = Nothing
                 End If
             End If
             toReturn = MyBase.Evaluate(owner, globalVars)
+            If _UseClone Then
+                toReturn = ReflectionHelper.CloneObject(toReturn)
+            End If
             If Me._InstanceMode = InstanceMode.InContextEval Then
                 Me._Instance = toReturn
-            End If
-            If _UseClone Then
-                Return ReflectionHelper.CloneObject(toReturn)
             End If
             Return toReturn
         End Function
