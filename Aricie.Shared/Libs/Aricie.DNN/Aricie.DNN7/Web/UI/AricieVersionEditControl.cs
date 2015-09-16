@@ -15,16 +15,7 @@ namespace Aricie.DNN7.Web.UI
             writer.RenderBeginTag(HtmlTextWriterTag.Span);
             if (Version != null)
             {
-                String toWrite;
-                if (Version.Build>0)
-                {
-                    toWrite = Version.ToString(3);
-                }
-                else
-                {
-                    toWrite = Version.ToString(2);
-                }
-                writer.Write(toWrite);
+                writer.Write(Version.ToString());
             }
             writer.RenderEndTag();
         }

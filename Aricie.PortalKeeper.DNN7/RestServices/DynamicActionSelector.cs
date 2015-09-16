@@ -92,28 +92,49 @@ namespace Aricie.PortalKeeper.DNN7
                 {
                     
                     IDictionary<string, object> values = controllerContext.RouteData.Values;
-                    var strs = new HashSet<string>(values.Keys, StringComparer.OrdinalIgnoreCase);
-                    strs.Remove("controller");
+                    var strRouteParams = new HashSet<string>(values.Keys, StringComparer.OrdinalIgnoreCase);
+                    strRouteParams.Remove("controller");
                     if (hasActionRouteKey)
                     {
-                        strs.Remove("action");
+                        strRouteParams.Remove("action");
                     }
                     if (controllerContext.Request.RequestUri != null && !string.IsNullOrEmpty(controllerContext.Request.RequestUri.Query))
                     {
                         foreach (KeyValuePair<string, string> queryNameValuePair in controllerContext.Request.GetQueryNameValuePairs())
                         {
-                            strs.Add(queryNameValuePair.Key);
+                            strRouteParams.Add(queryNameValuePair.Key);
                         }
                     }
                     foreach (DynamicAction objMethod in new List<DynamicAction>(candidateActions))
                     {
-                        foreach (string strRouteParam in strs)
+                        //removing actions with dynamic parameters not found in routeData
+                        foreach (var pairActionDynamicParam in objMethod.ParametersDictionary)
                         {
-                            if (!objMethod.ParametersDictionary.ContainsKey(strRouteParam))
+                            if (!pairActionDynamicParam.Value.IsOptional)
                             {
-                                candidateActions.Remove(objMethod);
+                                if (!pairActionDynamicParam.Value.DynamicAttributes.Items.Any(objAttr => objAttr is FromBodyAttribute))
+                                {
+                                    if (!strRouteParams.Contains(pairActionDynamicParam.Key))
+                                    {
+                                        candidateActions.Remove(objMethod);
+                                    }    
+                                }
+                                
                             }
-                        }     
+                        }
+                        if (candidateActions.Count>1)
+                        {
+                            Object objDefaultValue = null;
+                            foreach (string strRouteParam in strRouteParams)
+                            {
+                                if (!objMethod.ParametersDictionary.ContainsKey(strRouteParam) 
+                                        && (!controllerContext.RouteData.Route.Defaults.TryGetValue(strRouteParam,out objDefaultValue) 
+                                             || objDefaultValue != RouteParameter.Optional))
+                                {
+                                    candidateActions.Remove(objMethod);
+                                }
+                            }         
+                        }
                     }
                     
                 }

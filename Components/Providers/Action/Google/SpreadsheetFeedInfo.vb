@@ -45,7 +45,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Function GetWorkSheetAndFeed(actionContext As PortalKeeperContext(Of TEngineEvents), mode As GoogleSpreadSheetMode) As KeyValuePair(Of WorksheetEntry, AbstractFeed)
+        Public Function GetWorkSheetAndFeed(actionContext As PortalKeeperContext(Of TEngineEvents), mode As GoogleSpreadSheetMode, feedQueryInfo As FeedQueryInfo) As KeyValuePair(Of WorksheetEntry, AbstractFeed)
             Dim objWorksheetEntry As WorksheetEntry = Nothing
             If Me.UseExistingWorksheetEntry Then
                 objWorksheetEntry = WorksheetEntryExpression.Evaluate(actionContext, actionContext)
@@ -66,6 +66,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Else
                 Dim listFeedLink As AtomLink = objWorksheetEntry.Links.FindService(GDataSpreadsheetsNameTable.ListRel, Nothing)
                 Dim query As New ListQuery(listFeedLink.HRef.ToString())
+                If feedQueryInfo IsNot Nothing Then
+                    feedQueryInfo.SetQuery(query, actionContext)
+                End If
                 objFeed = DirectCast(objWorksheetEntry.Service, SpreadsheetsService).Query(query)
             End If
 
@@ -97,4 +100,4 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     End Class
-End NameSpace
+End Namespace

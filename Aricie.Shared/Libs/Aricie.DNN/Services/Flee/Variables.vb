@@ -86,9 +86,9 @@ Namespace Services.Flee
                     newVar.FleeExpression.Expression = "null"
                 Else
                     newVar.VariableMode = VariableMode.Instance
-                    If objParameter.DefaultValue IsNot Nothing Then
-                        newVar.Instance = objParameter.DefaultValue
-                    End If
+                    'If objParameter.DefaultValue IsNot Nothing AndAlso Not IsDBNull(objParameter.DefaultValue) Then
+                    '    newVar.Instance = objParameter.DefaultValue
+                    'End If
                 End If
                 toReturn.Instances.Add(newVar)
             Next

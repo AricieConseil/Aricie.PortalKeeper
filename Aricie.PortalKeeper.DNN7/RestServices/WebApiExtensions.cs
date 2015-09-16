@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
@@ -85,11 +86,7 @@ namespace Aricie.PortalKeeper.DNN7
                     ContentNegotiationResult contentNegotiationResult = contentNegotiator.Negotiate(objContentType, request, formatters);
                     if (contentNegotiationResult == null)
                     {
-                        return new HttpResponseMessage()
-                        {
-                            StatusCode = HttpStatusCode.NotAcceptable,
-                            RequestMessage = request
-                        };
+                        throw new System.Web.Http.HttpResponseException(HttpStatusCode.NotAcceptable);
                     }
                     selectedFormatter = contentNegotiationResult.Formatter;
                     mediaType = contentNegotiationResult.MediaType;
@@ -119,6 +116,24 @@ namespace Aricie.PortalKeeper.DNN7
                 toReturn.Content = new ObjectContent(objContentType, objContent, selectedFormatter,
                     mediaType);
             }
+            if (objCreateHttpResponseInfo.CustomHttpHeaders.Enabled)
+            {
+                foreach (var objPair in objCreateHttpResponseInfo.CustomHttpHeaders.Entity.EvaluateVariables(objContext, objContext))
+                {
+                    if (objPair.Value==null)
+                    {
+                        throw new InvalidOperationException("Header \""+ objPair.Key +"\" has a null value");
+                    }
+                    var collectionCast = objPair.Value as IEnumerable<String>;
+                    if (collectionCast != null)
+                    {
+                        toReturn.Headers.Add(objPair.Key, collectionCast);    
+                    }
+                    else toReturn.Headers.Add(objPair.Key, objPair.Value.ToString());    
+                }
+                
+            }
+            
             return toReturn;
         }
 

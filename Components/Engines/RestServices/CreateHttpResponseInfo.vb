@@ -9,6 +9,8 @@ Imports Aricie.DNN.ComponentModel
 Imports DotNetNuke.Services.FileSystem
 Imports System.IO
 Imports System.Net
+Imports Aricie.Collections
+Imports Aricie.ComponentModel
 Imports Aricie.Services
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Entities.Portals
@@ -28,13 +30,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("ResponseMode", False, True, HttpResponseMode.CustomObject)> _
         Public Property CustomObject As New Variables
 
+        <ConditionalVisible("ResponseMode", False, True, HttpResponseMode.CustomObject)> _
+        Public Property CustomTypeName As New EnabledFeature(Of String)
+
 
         Public Property CustomFormatter As New EnabledFeature(Of MediaTypeFormatterInfo)
 
 
         Public Property CustomMediaType As New EnabledFeature(Of MediaTypeHeaderInfo)
 
-
+        Public Property CustomHttpHeaders As New EnabledFeature(Of Variables)
 
 
         Public Function EvaluateToReturn(objContext As IContextLookup) As Object
@@ -45,7 +50,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     toReturn = TypedReturn.Evaluate(objContext, objContext)
                 Case HttpResponseMode.CustomObject
                     Dim objProps = Me.CustomObject.EvaluateVariables(objContext, objContext)
-                    toReturn = objProps.ToCustomObject("")
+                    If Not CustomTypeName.Enabled Then
+                        toReturn = objProps.ToCustomObject("")
+                    Else
+                        toReturn = objProps.ToCustomObject(CustomTypeName.Entity)
+                    End If
+
                 Case Else
                     toReturn = Nothing
             End Select

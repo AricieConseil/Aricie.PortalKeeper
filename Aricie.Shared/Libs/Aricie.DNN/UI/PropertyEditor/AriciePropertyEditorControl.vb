@@ -1179,7 +1179,7 @@ Namespace UI.WebControls
             Return Nothing
         End Function
 
-
+        Private _btnCounter As Integer
 
         Private Sub AddActionButton(objButtonInfo As ActionButtonInfo, container As Control)
 
@@ -1204,10 +1204,10 @@ Namespace UI.WebControls
                     Dim iconbtn As New IconActionButton()
                     btn = iconbtn
                     'iconbtn.CssClass = "dnnTertiaryAction"
-                    iconbtn.ID = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name
+                    'iconbtn.ID = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name
                     iconbtn.ActionItem = objButtonInfo.IconAction
                     iconbtn.Text = objButtonInfo.Method.Name
-                    iconbtn.ResourceKey = iconbtn.ID & ".Text"
+                    iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
             End Select
 
             container.Controls.Add(btn)

@@ -10017,10 +10017,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Throw all exceptions</value>
   </data>
   <data name="RestService_SpecificRoutes.Help" xml:space="preserve">
-    <value>You can optionally register routes with placeholders specific to your actions. The default {controller}/{action} does not need to be registered for each dynamic service.</value>
+    <value>You can optionally register routes with placeholders specific to your service, shared amongst controllers.</value>
   </data>
   <data name="RestService_SpecificRoutes.Text" xml:space="preserve">
-    <value>Register Specific Routes</value>
+    <value>Service Routes</value>
   </data>
   <data name="OutputCachingStrategy_EtagExpression.Help" xml:space="preserve">
     <value>Define a custom Flee Expression to evaluated with an expression owner of type DnnContext.</value>
@@ -10250,6 +10250,9 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="TokenSourceInfo_TokenVariables.Text" xml:space="preserve">
     <value>Token Variables</value>
   </data>
+  <data name="Atom.Text" xml:space="preserve">
+    <value>Atom</value>
+  </data>
   <data name="CustomTypeReset.Alert" xml:space="preserve">
     <value>Resetting will attempt to recompile a new custom Type with actualised variable-deriverd properties</value>
   </data>
@@ -10274,11 +10277,125 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="DotNetType_ResetCustomType.Text" xml:space="preserve">
     <value>Reset Custom Type</value>
   </data>
+  <data name="FeedQueryInfo_Author.Help" xml:space="preserve">
+    <value>the requested author name or email</value>
+  </data>
+  <data name="FeedQueryInfo_Author.Text" xml:space="preserve">
+    <value>Author</value>
+  </data>
+  <data name="FeedQueryInfo_EndDate.Help" xml:space="preserve">
+    <value>sets the maximum (inclusive) date/time value for the requested element</value>
+  </data>
+  <data name="FeedQueryInfo_EndDate.Text" xml:space="preserve">
+    <value>End Date</value>
+  </data>
+  <data name="FeedQueryInfo_Etag.Help" xml:space="preserve">
+    <value>the Etag value that should be used in the query. Setting this will create an if-match or if-not match header</value>
+  </data>
+  <data name="FeedQueryInfo_Etag.Text" xml:space="preserve">
+    <value>Etag</value>
+  </data>
+  <data name="FeedQueryInfo_ExtraParameters.Help" xml:space="preserve">
+    <value>ExtraParameters holds a string that just gets added to the query string per se. The parameter should honor URL encoding, the library will not touch its value, but just append it to the existing query. The URL parameter characters will be inserted by the FeedQuery object.</value>
+  </data>
+  <data name="FeedQueryInfo_ExtraParameters.Text" xml:space="preserve">
+    <value>Extra Parameters</value>
+  </data>
+  <data name="FeedQueryInfo_FeedFormat.Help" xml:space="preserve">
+    <value>One of the supported GData feed formats</value>
+  </data>
+  <data name="FeedQueryInfo_FeedFormat.Text" xml:space="preserve">
+    <value>Feed Format</value>
+  </data>
+  <data name="FeedQueryInfo_MaxPublication.Help" xml:space="preserve">
+    <value>sets the maximum (inclusive) publication date/time value for the requested element</value>
+  </data>
+  <data name="FeedQueryInfo_MaxPublication.Text" xml:space="preserve">
+    <value>Max Publication</value>
+  </data>
+  <data name="FeedQueryInfo_MinPublication.Help" xml:space="preserve">
+    <value>sets the mininum (inclusive) publication date/time value for the requested element</value>
+  </data>
+  <data name="FeedQueryInfo_MinPublication.Text" xml:space="preserve">
+    <value>Min Publication</value>
+  </data>
+  <data name="FeedQueryInfo_ModifiedSince.Help" xml:space="preserve">
+    <value>sets the ModifiedSince date. If this is set to something different than DateTime.MinValue, and the FeedQuery object is used for a Service.Query call, this will cause an ifmodified Since header to be created.</value>
+  </data>
+  <data name="FeedQueryInfo_ModifiedSince.Text" xml:space="preserve">
+    <value>Modified Since</value>
+  </data>
+  <data name="FeedQueryInfo_NumberToRetrieve.Help" xml:space="preserve">
+    <value>the number of entries to retrieve</value>
+  </data>
+  <data name="FeedQueryInfo_NumberToRetrieve.Text" xml:space="preserve">
+    <value>Number to Retrieve</value>
+  </data>
+  <data name="FeedQueryInfo_Query.Help" xml:space="preserve">
+    <value>Gets or Sets the q query string parameter of the feed query</value>
+  </data>
+  <data name="FeedQueryInfo_Query.Text" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="FeedQueryInfo_StartDate.Help" xml:space="preserve">
+    <value>sets the mininum (inclusive) date/time value for the requested element</value>
+  </data>
+  <data name="FeedQueryInfo_StartDate.Text" xml:space="preserve">
+    <value>Start Date</value>
+  </data>
+  <data name="FeedQueryInfo_StartIndex.Help" xml:space="preserve">
+    <value>the start-index query parameter, a 1-based index indicating the first result to be retrieved.</value>
+  </data>
+  <data name="FeedQueryInfo_StartIndex.Text" xml:space="preserve">
+    <value>Start Index</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Query.Help" xml:space="preserve">
+    <value>You can optionally add a series of filtering parameters to your query</value>
+  </data>
+  <data name="GoogleSpreadSheetActionProvider`1_Query.Text" xml:space="preserve">
+    <value>Custom Query</value>
+  </data>
   <data name="InstanceReset.Message" xml:space="preserve">
     <value>Instance was reset to be created again</value>
   </data>
+  <data name="ListQueryInfo_OrderByColumn.Help" xml:space="preserve">
+    <value>The header of the column to sort results by. Sets OrderByPosition to false. Important: The column name used in the orderby parameter is case sensitive and must match the name of the column as it appears in the API. The column names are the header values of the worksheet lowercased and with all non-alpha-numeric characters removed. For example, if the cell A1 contains the value "Time 2 Eat!" the column name would be "time2eat".</value>
+  </data>
+  <data name="ListQueryInfo_OrderByColumn.Text" xml:space="preserve">
+    <value>Order by Column</value>
+  </data>
+  <data name="ListQueryInfo_OrderByPosition.Help" xml:space="preserve">
+    <value>If true, then results will be ordered by the position in the spreadsheet. Sets OrderByColumn to null.</value>
+  </data>
+  <data name="ListQueryInfo_OrderByPosition.Text" xml:space="preserve">
+    <value>Order by Position</value>
+  </data>
+  <data name="ListQueryInfo_Reverse.Help" xml:space="preserve">
+    <value>If true, then however the results are ordered will be reversed.</value>
+  </data>
+  <data name="ListQueryInfo_Reverse.Text" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="ListQueryInfo_Specifics.Header" xml:space="preserve">
+    <value>Specifics</value>
+  </data>
+  <data name="ListQueryInfo_SpreadsheetQuery.Help" xml:space="preserve">
+    <value>A spreadsheet query string, if set to a non-null value, then the FullTextQuery will be set to null</value>
+  </data>
+  <data name="ListQueryInfo_SpreadsheetQuery.Text" xml:space="preserve">
+    <value>Spreadsheet Query</value>
+  </data>
+  <data name="OpenSearchRss.Text" xml:space="preserve">
+    <value>Open Search Rss</value>
+  </data>
   <data name="ParametersCreated.Message" xml:space="preserve">
     <value>A set of named and typed Parameters was sucessfully initialized according to the selected method signature.</value>
+  </data>
+  <data name="QueryInfo_General.Header" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="Rss.Text" xml:space="preserve">
+    <value>Rss</value>
   </data>
   <data name="SelectType.Text" xml:space="preserve">
     <value>Select .Net Type</value>
@@ -10286,7 +10403,91 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="SignalLengths.Text" xml:space="preserve">
     <value>Signal Response Lengths</value>
   </data>
+  <data name="TypeDictionaryConverter_CustomDictionaryToObject.Help" xml:space="preserve">
+    <value>You can choose to define the building of the custom object explicitly in the form of a list of object variables making for the property names and corresponding typed values to be updated over a new instantiated object.</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomDictionaryToObject.Text" xml:space="preserve">
+    <value>Custom To Object Conversion</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomDictionaryVariableName.Help" xml:space="preserve">
+    <value>In order to build the property dictionary of typed values, the string dictionary is inserted in the available contextual variables with the following name.</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomDictionaryVariableName.Text" xml:space="preserve">
+    <value>Custom Dictionary Variable Name</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomObjectToDictionary.Help" xml:space="preserve">
+    <value>You can choose to define the building of the dictionary explicitly in the form of a list of string variables making for the keys and values to be inserted.</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomObjectToDictionary.Text" xml:space="preserve">
+    <value>Custom To Dictionary Conversion</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomObjectVariableName.Help" xml:space="preserve">
+    <value>In order to build the dictionary, the object is inserted in the available contextual variables with the following name.</value>
+  </data>
+  <data name="TypeDictionaryConverter_CustomObjectVariableName.Text" xml:space="preserve">
+    <value>Custom Object Variable Name</value>
+  </data>
+  <data name="TypeDictionaryConverter_SelectedType.Help" xml:space="preserve">
+    <value>This is the type to be converted to and from a dictionary of string, string by serializing its properties. </value>
+  </data>
+  <data name="TypeDictionaryConverter_SelectedType.Text" xml:space="preserve">
+    <value>Target Type</value>
+  </data>
   <data name="TypeReset.Message" xml:space="preserve">
     <value>Custom Type was reset to be Built again</value>
+  </data>
+  <data name="FeedQueryInfo_General.Header" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="AmbiguousAction.Message" xml:space="preserve">
+    <value>Ambigous action selection for API call with URL {0} , controller "{1}" and action name "{2}"</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomHttpHeaders.Help" xml:space="preserve">
+    <value>You can optionally define custom http headers to return together with your http response. Define corresponding variables with key the http hreader name and value type either string or some enumerable of string depending whether the target http header accepts a value or a collection of values.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomHttpHeaders.Text" xml:space="preserve">
+    <value>Custom Http Headers</value>
+  </data>
+  <data name="CulturePicker_CultureMode.Help" xml:space="preserve">
+    <value>You can choose to pick an invariant, the current culture or to select a culture manually</value>
+  </data>
+  <data name="CulturePicker_CultureMode.Text" xml:space="preserve">
+    <value>Culture Mode</value>
+  </data>
+  <data name="CulturePicker_CustomCulture.Help" xml:space="preserve">
+    <value>Choose among the supported cultures</value>
+  </data>
+  <data name="CulturePicker_CustomCulture.Text" xml:space="preserve">
+    <value>Custom Culture</value>
+  </data>
+  <data name="DynamicControllerInfo_SpecificRoutes.Help" xml:space="preserve">
+    <value>Those routes are registered at the controller level.</value>
+  </data>
+  <data name="DynamicControllerInfo_SpecificRoutes.Text" xml:space="preserve">
+    <value>Controller Routes</value>
+  </data>
+  <data name="RestServicesSettings_GlobalRoutes.Help" xml:space="preserve">
+    <value>Those are routes available to all services. Note that because of the way web API and DNN deal with routes, it is important that general purpose rules be registered after more specific rules to resolve ambiguities. Accordingly, those routes are registered at the end, and you should account for that when ordering your services, controllers and routes.</value>
+  </data>
+  <data name="RestServicesSettings_GlobalRoutes.Text" xml:space="preserve">
+    <value>Global Routes</value>
+  </data>
+  <data name="TypeDictionaryConverter_CreateEmptyObjects.Help" xml:space="preserve">
+    <value>Check if you want structured objects to be initialized from empty strings rather than set to null at deserialization time.</value>
+  </data>
+  <data name="TypeDictionaryConverter_CreateEmptyObjects.Text" xml:space="preserve">
+    <value>Create Empty Objects</value>
+  </data>
+  <data name="TypeDictionaryConverter_InitializeLists.Help" xml:space="preserve">
+    <value>For test purpose, you can also automatically add a single item to empty lists from empty strings.</value>
+  </data>
+  <data name="TypeDictionaryConverter_InitializeLists.Text" xml:space="preserve">
+    <value>Initialize Lists</value>
+  </data>
+  <data name="TypeDictionaryConverter_ParsingCulture.Help" xml:space="preserve">
+    <value>When converting typed properties to and from target strings, define what culture to use</value>
+  </data>
+  <data name="TypeDictionaryConverter_ParsingCulture.Text" xml:space="preserve">
+    <value>Parsing Culture</value>
   </data>
 </root>

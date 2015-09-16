@@ -10,6 +10,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <Serializable()> _
     Public Class RestService
         Inherits NamedConfig
+        Implements IExpressionVarsProvider
+
 
 
 
@@ -74,5 +76,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Public Property AsXmlSerializer As Boolean = True
 
 
+        Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables
+            Me.GlobalParameters.AddVariables(currentProvider, existingVars)
+        End Sub
     End Class
 End Namespace

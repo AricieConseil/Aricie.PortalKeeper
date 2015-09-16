@@ -229,6 +229,9 @@ Public Class AricieFieldEditorControl
             If Me.IsDirty Then
                 If Me.ParentAricieEditor IsNot Nothing Then
                     Me.ParentAricieEditor.ItemChanged = True
+                    If Me.ParentAricieEditor.ParentAricieEditor IsNot Nothing Then
+                        Me.ParentAricieEditor.ParentAricieEditor.ItemChanged = True
+                    End If
                     If e.Changed Then
                         Me.ParentAricieEditor.RootEditor.ItemChanged = True
                     End If

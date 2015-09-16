@@ -33,6 +33,7 @@ namespace Aricie.PortalKeeper.DNN7
             var objContext = _DynamicMethod.InitContext(arguments);
             objContext.InitParams(_Service.GlobalParameters);
             objContext.InitParams(_Controller.GlobalParameters);
+            objContext.SetVar("Controller", controllerContext.Controller);
             objContext.SetVar("Request", controllerContext.Request);
             objContext.SetVar("RouteData", controllerContext.RouteData);
             var newDico = new Dictionary<string, object>(1) {{DynamicController.ActionContextParameterName, objContext}};

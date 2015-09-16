@@ -37,7 +37,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Public Property EnableOpenRastaLogger As Boolean
         'Public Property EnableDigestAuthentication As Boolean
 
-
+        Public Property GlobalRoutes As New List(Of DynamicRoute)()
 
         Public Property RestServices As New List(Of RestService)
 

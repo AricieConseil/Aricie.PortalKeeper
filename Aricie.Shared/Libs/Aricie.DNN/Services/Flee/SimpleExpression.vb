@@ -194,6 +194,10 @@ Namespace Services.Flee
 
             Dim toReturn As TResult
             If Me._Expression <> "" Then
+                Dim tempVar As Object = Nothing
+                If globalVars IsNot Nothing AndAlso globalVars.Items.TryGetValue(Me._Expression, tempVar) Then
+                    Return DirectCast(tempVar, TResult)
+                End If
 
                 Dim clone As IGenericExpression(Of TResult) = Me.GetCompiledExpression(owner, globalVars, objType)
                 If clone IsNot Nothing Then
@@ -456,6 +460,9 @@ Namespace Services.Flee
                         While Not e.VariableType.IsVisible
                             e.VariableType = e.VariableType.BaseType
                         End While
+                        'If e.VariableType.Assembly.GetName().Name = ObjectExtensions.CustomTypesAssemblyName Then
+                        '    e.VariableType = GetType(Object)
+                        'End If
                     Else
                         e.VariableType = GetType(Object)
                     End If
