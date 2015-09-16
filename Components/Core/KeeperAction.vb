@@ -79,8 +79,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             If (Not element.DisableLog) AndAlso actionContext.LoggingLevel >= element.LoggingLevel Then
                                 actionContext.LogStart(element.Name, element.LoggingLevel, False)
                             End If
-
-                            toReturn = toReturn And prov.Run(actionContext)
+                            'toReturn And 
+                            toReturn = prov.Run(actionContext)
                         End If
 
                         If (Not toReturn) AndAlso element.StopOnFailure Then
@@ -121,9 +121,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
                     If element.ExceptionActions.Enabled Then
-                        toReturn = element.ExceptionActions.Entity.Run(actionContext)
+                        'toReturn = 
+                        element.ExceptionActions.Entity.Run(actionContext)
                     Else
-                        toReturn = False
+                        'toReturn = False
                     End If
                     If Me.ThrowAllExceptions OrElse element.RethrowException Then
                         Throw newEx
@@ -138,7 +139,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     End If
                 End Try
             Next
-            Return toReturn
+            Return True
         End Function
 
 

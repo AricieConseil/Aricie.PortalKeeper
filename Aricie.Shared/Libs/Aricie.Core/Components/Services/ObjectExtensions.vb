@@ -5,6 +5,7 @@ Imports System.Reflection
 Imports System.Text
 Imports System.Threading
 Imports System.Globalization
+Imports System.Web.Script.Serialization
 
 Namespace Services
     ''' <summary>
@@ -84,11 +85,28 @@ Namespace Services
 
         <System.Runtime.CompilerServices.Extension> _
         Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String)) As Object
+            Return someObjectType.ToObject(source, CultureInfo.InvariantCulture)
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String), culture As CultureInfo) As Object
+            Return someObjectType.ToObject(source, CultureInfo.InvariantCulture, False)
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String), culture As CultureInfo, createEmptyObjects As Boolean) As Object
+            Return someObjectType.ToObject(source, CultureInfo.InvariantCulture, createEmptyObjects, False)
+
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String), culture As CultureInfo, createEmptyObjects As Boolean, initializeLists As Boolean) As Object
             Dim someObject As Object = ReflectionHelper.CreateObject(someObjectType)
             For Each item As KeyValuePair(Of String, String) In source
-                Dim objProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(someObjectType)(item.Key)
-
-                objProp.SetValue(someObject, ConvertFromString(objProp.PropertyType, item.Value), Nothing)
+                Dim objProp As PropertyInfo = Nothing
+                If ReflectionHelper.GetPropertiesDictionary(someObjectType).TryGetValue(item.Key, objProp) AndAlso objProp.CanWrite Then
+                    objProp.SetValue(someObject, ConvertFromString(objProp.PropertyType, item.Value, culture, createEmptyObjects, initializeLists), Nothing)
+                End If
             Next
 
             Return someObject
@@ -104,27 +122,98 @@ Namespace Services
         End Function
 
         <System.Runtime.CompilerServices.Extension> _
-        Public Function AsStringDictionary(source As Object) As IDictionary(Of String, String)
+        Public Function AsStringDictionary(source As Object) As Dictionary(Of String, String)
+            Return AsStringDictionary(source, CultureInfo.InvariantCulture)
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function AsStringDictionary(source As Object, culture As CultureInfo) As Dictionary(Of String, String)
             Return ReflectionHelper.GetPropertiesDictionary(source.GetType()) _
                 .ToDictionary(Function(propInfo) propInfo.Key, _
-                              Function(propInfo) ObjectExtensions.ConvertToString(propInfo.Value.GetValue(source, Nothing)))
+                              Function(propInfo) ObjectExtensions.ConvertToString(propInfo.Value.GetValue(source, Nothing), culture))
 
         End Function
 
         <System.Runtime.CompilerServices.Extension> _
         Public Function ConvertToString(source As Object) As String
-            Dim convertibleSource As IConvertible = TryCast(source, IConvertible)
-            If convertibleSource IsNot Nothing Then
-                Return convertibleSource.ToString(CultureInfo.InvariantCulture)
+            Return ConvertToString(source, CultureInfo.InvariantCulture)
+        End Function
+
+        <System.Runtime.CompilerServices.Extension> _
+        Public Function ConvertToString(source As Object, culture As CultureInfo) As String
+            If source Is Nothing Then
+                Return String.Empty
+            End If
+            'Dim convertibleSource As IConvertible = TryCast(source, IConvertible)
+            'If convertibleSource IsNot Nothing Then
+            '    Return convertibleSource.ToString(CultureInfo.InvariantCulture)
+            'End If
+            Dim typeConverter As TypeConverter = TypeDescriptor.GetConverter(source.GetType())
+
+            If typeConverter IsNot Nothing AndAlso typeConverter.CanConvertTo(GetType(String)) _
+                    AndAlso (Not typeConverter.GetType() Is GetType(TypeConverter) _
+                    OrElse TypeOf source Is IFormattable) Then
+                Return DirectCast(typeConverter.ConvertTo(Nothing, culture, source, GetType(String)), String)
             End If
             Return ReflectionHelper.Serialize(source).Beautify()
+            'Return JavascriptSerializer.Serialize(source)
+        End Function
+
+        Public Function ConvertFromString(targetType As Type, source As String, culture As CultureInfo) As Object
+            Return ConvertFromString(targetType, source, culture, False)
+        End Function
+
+        Public Function ConvertFromString(targetType As Type, source As String, culture As CultureInfo, createEmptyObjects As Boolean) As Object
+            Return ConvertFromString(targetType, source, culture, createEmptyObjects, False)
+        End Function
+
+        Private _JavascriptSerializer As JavaScriptSerializer
+
+        Public ReadOnly Property JavascriptSerializer As JavaScriptSerializer
+            Get
+                If _JavascriptSerializer Is Nothing Then
+                    _JavascriptSerializer = New JavaScriptSerializer()
+                End If
+                Return _JavascriptSerializer
+            End Get
+        End Property
+
+        Public Function ConvertFromString(targetType As Type, source As String, culture As CultureInfo, createEmptyObjects As Boolean, initializeLists As Boolean) As Object
+            Dim typeConverter As TypeConverter = TypeDescriptor.GetConverter(targetType)
+
+            If typeConverter IsNot Nothing AndAlso typeConverter.CanConvertFrom(GetType(String)) Then
+                Return typeConverter.ConvertFrom(Nothing, culture, source)
+            End If
+            'If GetType(IConvertible).IsAssignableFrom(targetType) Then
+            '    Return DirectCast(source, IConvertible).ToType(targetType, CultureInfo.InvariantCulture)
+            'End If
+            If Not source.IsNullOrEmpty() Then
+                Try
+                    'Return JavascriptSerializer.Deserialize(Of Object)(source)
+                    Return ReflectionHelper.Deserialize(targetType, source)
+                Catch ex As Exception
+                    ExceptionHelper.LogException(ex)
+                    Return Nothing
+                End Try
+            End If
+            If createEmptyObjects AndAlso ReflectionHelper.CanCreateObject(targetType) Then
+                Dim toReturn As Object = ReflectionHelper.CreateObject(targetType)
+                If initializeLists Then
+                    Dim enumerable As IList = TryCast(toReturn, IList)
+                    If enumerable IsNot Nothing Then
+                        Dim innerType As Type = ReflectionHelper.GetCollectionElementType(enumerable)
+                        If ReflectionHelper.CanCreateObject(innerType) Then
+                            enumerable.Add(ReflectionHelper.CreateObject(innerType))
+                        End If
+                    End If
+                End If
+                Return toReturn
+            End If
+            Return Nothing
         End Function
 
         Public Function ConvertFromString(targetType As Type, source As String) As Object
-            If GetType(IConvertible).IsAssignableFrom(targetType) Then
-                Return DirectCast(source, IConvertible).ToType(targetType, CultureInfo.InvariantCulture)
-            End If
-            Return ReflectionHelper.Deserialize(targetType, source)
+            Return ConvertFromString(targetType, source, CultureInfo.InvariantCulture)
         End Function
 
 
@@ -133,20 +222,7 @@ Namespace Services
         <System.Runtime.CompilerServices.Extension> _
         Public Function ToCustomObject(fromProperties As IDictionary(Of String, Object), customTypeName As String) As Object
             Dim propDescriptors As New List(Of PropertyDescriptor)
-            'If customTypeName.IsNullOrEmpty Then
-            '    Dim objNameBuilder As New StringBuilder()
-            '    For Each objPair As KeyValuePair(Of String, Object) In fromProperties
-            '        objNameBuilder.Append(objPair.Key)
-            '        If objPair.Value Is Nothing Then
-            '            objNameBuilder.Append("Nothing")
-            '        Else
-            '            Dim objType As Type = objPair.Value.GetType()
-            '            objNameBuilder.Append(objType.Name)
-            '            objNameBuilder.Append(objType.AssemblyQualifiedName)
-            '        End If
-            '    Next
-            '    customTypeName = "CustomType" & objNameBuilder.ToString().GetHashCode()
-            'End If
+
 
             For Each objPair As KeyValuePair(Of String, Object) In fromProperties
                 Dim objDumbProp As DumbPropertyDescriptor
@@ -160,33 +236,14 @@ Namespace Services
             Next
 
             Dim dynType As Type = Nothing
-            'If Not _DynamicTypes.TryGetValue(customTypeName, dynType) Then
-            '    SyncLock _DynamicTypes
-            '        If Not _DynamicTypes.TryGetValue(customTypeName, dynType) Then
-            '            dynType = CreateType(customTypeName, propDescriptors.ToArray)
-            '            _DynamicTypes(customTypeName) = dynType
-            '        End If
-            '    End SyncLock
-            'End If
+
             dynType = CreateType(customTypeName, propDescriptors.ToArray)
             Dim toReturn As Object = Activator.CreateInstance(dynType, fromProperties.Values.ToArray())
             Return toReturn
         End Function
 
 
-        Private Function GetCustomTypeID(pdc As PropertyDescriptor()) As String
-            Dim objNameBuilder As New StringBuilder()
-            For Each objPair As PropertyDescriptor In pdc
-                objNameBuilder.Append(objPair.Name)
-                objNameBuilder.Append(objPair.PropertyType.AssemblyQualifiedName)
-            Next
-            Return "Custom" & objNameBuilder.ToString().GetHashCode().ToString(CultureInfo.InvariantCulture).Trim("-"c)
-        End Function
 
-
-        'Private createTypeLock As New Object
-
-        Private _DynamicTypes As New Dictionary(Of String, Type)
 
         ''' <summary>
         ''' Create a new Type definition from the list
@@ -199,7 +256,7 @@ Namespace Services
                 name = "." & name
             End If
 
-            Dim typeName As String = GetCustomTypeID(pdc) & name
+            Dim typeName As String = GetCustomTypeId(pdc) & name
             Dim typeFullName As String = String.Format("{0}, {1}", typeName, modBuilder.Assembly.GetName().Name)
 
             Dim toReturn As Type = Nothing
@@ -237,9 +294,22 @@ Namespace Services
 
 
             Return toReturn
-          
+
         End Function
 
+        Private Function GetCustomTypeId(pdc As PropertyDescriptor()) As String
+            Dim objNameBuilder As New StringBuilder()
+            For Each objPair As PropertyDescriptor In pdc
+                objNameBuilder.Append(objPair.Name)
+                objNameBuilder.Append(ReflectionHelper.GetSimpleTypeName(objPair.PropertyType))
+            Next
+            Return "Custom" & Common.GetStringHashCode(objNameBuilder.ToString()).ToString(CultureInfo.InvariantCulture).Trim("-"c)
+        End Function
+
+
+        'Private createTypeLock As New Object
+
+        Private _DynamicTypes As New Dictionary(Of String, Type)
 
         ''' <summary>
         ''' Instantiates an instance of an existing Type from cache
@@ -270,6 +340,10 @@ Namespace Services
             'return values (if any)
             Return newValues
         End Function
+
+
+
+
 
         ''' <summary>
         ''' Merge PropertyDescriptors for both objects
@@ -348,7 +422,7 @@ Namespace Services
             End If
         End Sub
 
-        Private Const CustomTypesAssemblyName = "Aricie.CustomTypes"
+        Public Const CustomTypesAssemblyName = "Aricie.CustomTypes"
 
         ''' <summary>
         ''' Create a type builder with the specified name

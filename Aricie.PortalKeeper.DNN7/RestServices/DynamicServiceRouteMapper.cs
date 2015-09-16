@@ -17,25 +17,47 @@ namespace Aricie.PortalKeeper.DNN7
                 {
                     if (objService.Enabled )
                     {
+
+                        foreach (DynamicControllerInfo objController in objService.DynamicControllers)
+                        {
+                            if (objController.Enabled)
+                            {
+                                foreach (DynamicRoute objRoute in objController.SpecificRoutes)
+                                {
+                                    RegisterRoute(mapRouteManager, objRoute);
+                                }
+                            }
+                        }
                         foreach (DynamicRoute objRoute in objService.SpecificRoutes)
                         {
-                            if (objRoute.Enabled)
-                            {
-                                if (objRoute.DNNRoute.Enabled)
-                                {
-                                    mapRouteManager.MapHttpRoute(objRoute.DNNRoute.Entity.FolderName, objRoute.Name, objRoute.Template, 
-                                        objRoute.Defaults.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance), 
-                                        objRoute.Constraints.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance), 
-                                        objRoute.DNNRoute.Entity.Namespaces.ToArray());
-
-                                }
-
-                            }
+                            RegisterRoute(mapRouteManager, objRoute);
                         }
                     }
 
                 }
+
+                foreach (DynamicRoute objRoute in PortalKeeperConfig.Instance.RestServices.GlobalRoutes)
+                {
+                    RegisterRoute(mapRouteManager, objRoute);
+                }
             }
         }
+
+        private static void RegisterRoute(IMapRoute mapRouteManager , DynamicRoute objRoute)
+        {
+            if (objRoute.Enabled)
+            {
+                if (objRoute.DNNRoute.Enabled)
+                {
+                    mapRouteManager.MapHttpRoute(objRoute.DNNRoute.Entity.FolderName, objRoute.Name, objRoute.Template,
+                        objRoute.Defaults.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance),
+                        objRoute.Constraints.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance),
+                        objRoute.DNNRoute.Entity.Namespaces.ToArray());
+
+                }
+
+            }
+        }
+
     }
 }

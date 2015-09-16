@@ -30,7 +30,7 @@ Namespace Entities
          <ConditionalVisible("ScheduleType", False, True, ScheduleType.FixedTimes, ScheduleType.Combined)> _
         <ConditionalVisible("YearMode", False, True, FixedTimeMode.Specifics)> _
         Public Property SpecificYears As New List(Of Integer)
-       
+
         <ExtendedCategory("Config")> _
         <ConditionalVisible("ScheduleType", False, True, ScheduleType.FixedTimes, ScheduleType.Combined)> _
         Public Property MonthMode As FixedTimeMode = FixedTimeMode.Every
@@ -73,9 +73,9 @@ Namespace Entities
 
         <ExtendedCategory("Config")> _
         <ConditionalVisible("ScheduleType", False, True, ScheduleType.Period, ScheduleType.Combined)> _
-       Public Property Period As New STimeSpan(TimeSpan.FromHours(1))
+        Public Property Period As New STimeSpan(TimeSpan.FromHours(1))
 
-       
+
 
         <ExtendedCategory("Config")> _
         Public ReadOnly Property FormattedValueShort As String
@@ -339,9 +339,9 @@ Namespace Entities
                             End If
                             toReturn = New DateTime(target.Year, target.Month, target.Day, target.Hour, 0, 0)
                             toReturn = toReturn.AddHours(nbHours)
-                    End If
+                        End If
                     Else
-                    toReturn = DateTime.MaxValue
+                        toReturn = DateTime.MaxValue
                     End If
             End Select
             Return toReturn

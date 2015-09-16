@@ -7,6 +7,7 @@ Imports System.Globalization
 Imports Google.GData.Client
 Imports Google.GData.Spreadsheets
 Imports System.Linq
+Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -53,15 +54,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
       <ExtendedCategory("Commands")> _
         Public Property ListMode As GoogleSpreadsheetListmode = GoogleSpreadsheetListmode.ReadList
 
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
+     <ExtendedCategory("Commands")> _
+        Public Property Query As New EnabledFeature(Of ListQueryInfo)
+
+
         <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry, GoogleSpreadsheetListmode.DeleteEntry)> _
         <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
       <ExtendedCategory("Commands")> _
         Public Property ListEntryExpression As New FleeExpressionInfo(Of ListEntry)
 
+        
         <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.InsertEntry, GoogleSpreadsheetListmode.UpdateEntry)> _
         <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
       <ExtendedCategory("Commands")> _
-        Public Property InputDictionaryExpression As New FleeExpressionInfo(Of SerializableDictionary(Of String, String))
+        Public Property InputDictionaryExpression As New FleeExpressionInfo(Of Dictionary(Of String, String))
 
         <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry)> _
         <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
@@ -158,7 +165,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 objWorkSheetEntry = WorksheetEntryExpression.Evaluate(actionContext)
             End If
             If (Not UseExistingFeed) OrElse ((objFeed Is Nothing OrElse objWorkSheetEntry Is Nothing) AndAlso CreateIfNull) Then 'CreateIf.Match(actionContext)) Then
-                Dim resultPair As KeyValuePair(Of WorksheetEntry, AbstractFeed) = Me.FeedInfo.GetWorkSheetAndFeed(actionContext, Me.SpreadSheetMode)
+                Dim resultPair As KeyValuePair(Of WorksheetEntry, AbstractFeed)
+                If Me.Query.Enabled Then
+                    resultPair = Me.FeedInfo.GetWorkSheetAndFeed(actionContext, Me.SpreadSheetMode, Me.Query.Entity)
+                Else
+                    resultPair = Me.FeedInfo.GetWorkSheetAndFeed(actionContext, Me.SpreadSheetMode, Nothing)
+                End If
+
                 If objWorkSheetEntry Is Nothing Then
                     objWorkSheetEntry = resultPair.Key
                     'If Me.CaptureWorksheetEntry Then
@@ -238,7 +251,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 lastCommandTime = Now
                             Next
                         Case Else
-                            Dim input As SerializableDictionary(Of String, String)
+                            Dim input As IDictionary(Of String, String)
                             Dim objListEntry As ListEntry
                             If Me.ListMode = GoogleSpreadsheetListmode.DeleteEntry Or Me.ListMode = GoogleSpreadsheetListmode.UpdateEntry Then
                                 objListEntry = Me.ListEntryExpression.Evaluate(actionContext, actionContext)
@@ -307,9 +320,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     If Me.ReturnDictionary Then
                         Return GetType(SerializableDictionary(Of String, SerializableDictionary(Of String, String)))
                     Else
-                        Return GetType(List(Of SerializableDictionary(Of String, String)))
+                        Select Case Me.ListMode
+                            Case GoogleSpreadsheetListmode.ReadList
+                                Return GetType(List(Of SerializableDictionary(Of String, String)))
+                            Case GoogleSpreadsheetListmode.InsertEntry, GoogleSpreadsheetListmode.UpdateEntry
+                                Return GetType(ListEntry)
+                            Case Else
+                                Return GetType(Boolean)
+                        End Select
                     End If
-
             End Select
         End Function
 

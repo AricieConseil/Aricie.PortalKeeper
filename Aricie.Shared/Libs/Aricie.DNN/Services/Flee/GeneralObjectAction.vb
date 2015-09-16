@@ -309,7 +309,7 @@ Namespace Services.Flee
                         targetMethod = DirectCast(_SelectedMember, MethodInfo)
                         If targetMethod.GetParameters.Length = args.Count Then
                             If targetMethod.IsStatic OrElse Me.StaticCall Then
-                                targetMethod.Invoke(Nothing, args.ToArray)
+                                toReturn = targetMethod.Invoke(Nothing, args.ToArray)
                             Else
                                 Dim target As Object = Me.Instance.Evaluate(owner, globalVars, DotNetType.GetDotNetType())
                                 If target Is Nothing Then

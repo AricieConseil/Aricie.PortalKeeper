@@ -45,16 +45,23 @@ Namespace ComponentModel
         Private Shared _CommonTypes As New Dictionary(Of String, DotNetType)
 
 
-        Private Function AddCommonType(ByVal strType As String) As String
+        Private Function AddCommonType(ByVal strType As String, objDotNetType As DotNetType) As String
             Dim tmpType As Type = Nothing
             Dim tmpDNT As DotNetType = Nothing
             If Not _CommonTypes.TryGetValue(strType, tmpDNT) Then
                 If Not String.IsNullOrEmpty(strType) Then
-                    tmpType = ReflectionHelper.CreateType(strType, False)
-                    If tmpType IsNot Nothing Then
-                        strType = ReflectionHelper.GetSafeTypeName(tmpType)
-                        tmpDNT = New DotNetType(tmpType)
+                    If objDotNetType Is Nothing Then
+                        tmpType = ReflectionHelper.CreateType(strType, False)
+                        If tmpType IsNot Nothing Then
+                            strType = ReflectionHelper.GetSafeTypeName(tmpType)
+                            tmpDNT = New DotNetType(tmpType)
+                        Else
+                            tmpDNT = New DotNetType(strType)
+                        End If
+                    Else
+                        tmpDNT = objDotNetType
                     End If
+                    
                 Else
                     tmpDNT = New DotNetType()
                 End If
@@ -63,6 +70,10 @@ Namespace ComponentModel
                 End SyncLock
             End If
             Return strType
+        End Function
+
+        Private Function AddCommonType(ByVal strType As String) As String
+            Return AddCommonType(strType, Nothing)
         End Function
 
 
@@ -92,6 +103,7 @@ Namespace ComponentModel
 
 
         Public Property PickerMode As TypePickerMode
+
 
 
         <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
@@ -393,11 +405,9 @@ Namespace ComponentModel
                         Else
                             _Type = objProps.ToCustomObject("").GetType()
                         End If
-
+                        'AddCommonType(ReflectionHelper.GetSafeTypeName(_Type), Me)
                 End Select
-
             End If
-
 
             Return _Type
         End Function
@@ -473,7 +483,10 @@ Namespace ComponentModel
             End Select
             Return toReturn.OrderBy(
                 Function(objDotNetType)
-                    Return IIf(objDotNetType.GetDotNetType() IsNot Nothing, objDotNetType.GetDotNetType().Name, "")
+                    If objDotNetType.GetDotNetType() IsNot Nothing Then
+                        Return objDotNetType.GetDotNetType().Name
+                    End If
+                    Return ""
                 End Function).ToList()
         End Function
 

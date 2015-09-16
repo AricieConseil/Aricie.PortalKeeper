@@ -204,7 +204,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If (Not Me._ConditionalAction) OrElse Me._Condition.Match(actionContext) Then
                 toreturn = Me.Run(actionContext)
             Else
-                toreturn = Me._AlternateAction.Run(actionContext)
+                Me._AlternateAction.Run(actionContext)
+                toreturn = False
             End If
             If Me._AddSleepTime AndAlso Me._SleepTime <> TimeSpan.Zero Then
 
