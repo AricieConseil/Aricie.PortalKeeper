@@ -234,14 +234,17 @@ Namespace Services
             Dim toReturn As Type = Nothing
 
 
-
-
-
-
-
+            
+            
 
 #If DEBUG Then
-            toReturn = BuildManager.GetType(typeName, throwOnError, True)
+             If Not (ObjectExtensions.DynamicTypes.Count > 0 _
+                    AndAlso typeName.Contains(CustomTypesAssemblyName) _
+                    AndAlso ObjectExtensions.DynamicTypes.TryGetValue(ReflectionHelper.GetSafeTypeName(typeName), toReturn)) Then
+                    ' use reflection to get the type of the class
+                   toReturn = BuildManager.GetType(typeName, throwOnError, True)
+                End If
+
             If toReturn IsNot Nothing Then
                 Dim debugType As Type = Nothing
                 If _DebugSurrogates IsNot Nothing Then
@@ -259,18 +262,22 @@ Namespace Services
                 End If
             End If
 #Else
-             If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
+            If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
+
+                If Not (ObjectExtensions.DynamicTypes.Count > 0 _
+                    AndAlso typeName.Contains(CustomTypesAssemblyName) _
+                    AndAlso ObjectExtensions.DynamicTypes.TryGetValue(ReflectionHelper.GetSafeTypeName(typeName), toReturn)) Then
+                    ' use reflection to get the type of the class
+                    toReturn = BuildManager.GetType(typeName, throwOnError, True)
+                End If
 
 
-
-                ' use reflection to get the type of the class
-                toReturn = BuildManager.GetType(typeName, throwOnError, True)
                 If toReturn IsNot Nothing Then
                     SyncLock ReflectionHelper.Instance._TypesByTypeName
                         ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
                     End SyncLock
                 End If
-                
+
 
 
                 'CacheHelper.SetGlobal(Of Type)(toReturn, typeName)
@@ -327,24 +334,30 @@ Namespace Services
             Dim toReturn As String = ""
             If Not String.IsNullOrEmpty(objAssemblyQualifiedName) AndAlso Not _SafeTypeNames.TryGetValue(objAssemblyQualifiedName, toReturn) Then
                 toReturn = _RegexSafeTypeName.Replace(objAssemblyQualifiedName, "$1")
-                Try
-                    ReflectionHelper.CreateType(toReturn)
-                Catch
-                    toReturn = _RegexSafeTypeNameMinusSystem.Replace(objAssemblyQualifiedName, "$1")
+                If Not objAssemblyQualifiedName = toReturn Then
                     Try
                         ReflectionHelper.CreateType(toReturn)
                     Catch
-                        toReturn = objAssemblyQualifiedName
-                        If objAssemblyQualifiedName.Contains(", System, Version=4.0.0.0") Then
-                            toReturn = toReturn.Replace(", System, Version=4.0.0.0", ", System, Version=2.0.0.0")
+                        toReturn = _RegexSafeTypeNameMinusSystem.Replace(objAssemblyQualifiedName, "$1")
+                        If Not objAssemblyQualifiedName = toReturn Then
                             Try
                                 ReflectionHelper.CreateType(toReturn)
                             Catch
                                 toReturn = objAssemblyQualifiedName
+                                If objAssemblyQualifiedName.Contains(", System, Version=4.0.0.0") Then
+                                    toReturn = toReturn.Replace(", System, Version=4.0.0.0", ", System, Version=2.0.0.0")
+                                    Try
+                                        ReflectionHelper.CreateType(toReturn)
+                                    Catch
+                                        toReturn = objAssemblyQualifiedName
+                                    End Try
+                                End If
                             End Try
                         End If
+                       
                     End Try
-                End Try
+                End If
+
                 SyncLock _SafeTypeNames
                     _SafeTypeNames(objAssemblyQualifiedName) = toReturn
                 End SyncLock
