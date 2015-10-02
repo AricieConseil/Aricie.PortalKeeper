@@ -444,6 +444,7 @@ Namespace UI.WebControls.EditControls
 
                             Me.OnValueChanged(delEvent)
                             Me.ParentAricieEditor.RootEditor.ClearBackPath()
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemDeleted.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                         Case "Up"
                             RaiseEvent MoveUp(commandIndex)
                             Dim addEvent As New PropertyEditorEventArgs(Me.Name)
@@ -452,6 +453,7 @@ Namespace UI.WebControls.EditControls
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
                             'Me.BindData()
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemOneUp.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
 
                         Case "Down"
                             RaiseEvent MoveDown(commandIndex)
@@ -460,20 +462,19 @@ Namespace UI.WebControls.EditControls
                             addEvent.Value = Me.CollectionValue
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemOneDown.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                         Case "Copy"
                             Me.Copy(Me.ExportItem(commandIndex))
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemCopied.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                         Case "Export"
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
-                        Case "Copy"
-                            Dim singleList As ICollection = Me.ExportItem(commandIndex)
-                            Me.Copy(singleList)
                         Case Else
 
                     End Select
                 End If
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
 
         End Sub
@@ -490,10 +491,10 @@ Namespace UI.WebControls.EditControls
                 addEvent.Value = Me.CollectionValue
                 addEvent.Changed = True
                 Me.OnValueChanged(addEvent)
-
+                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemAdded.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 'End If
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
 
 
@@ -514,9 +515,11 @@ Namespace UI.WebControls.EditControls
                 clearEvent.Changed = True
                 Me.OnValueChanged(clearEvent)
                 Me.ParentAricieEditor.RootEditor.ClearBackPath()
+                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsCleared.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 'End If
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
+
             End Try
         End Sub
 
@@ -529,9 +532,10 @@ Namespace UI.WebControls.EditControls
 
                 Me.Copy(Me.CollectionValue)
                 'End If
+                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsCopied.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
 
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
         End Sub
 
@@ -545,7 +549,7 @@ Namespace UI.WebControls.EditControls
                 'End If
 
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
         End Sub
 
@@ -553,9 +557,10 @@ Namespace UI.WebControls.EditControls
             Try
                 If CopiedCollection IsNot Nothing Then
                     ImportItems(CopiedCollection)
+                    Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsPasted.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 End If
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
         End Sub
 
@@ -571,6 +576,7 @@ Namespace UI.WebControls.EditControls
                         importCollect = DirectCast(ReflectionHelper.Deserialize(Me.CollectionValue.GetType, objReader), ICollection)
                     End Using
                     ImportItems(importCollect)
+                    Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsImported.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 Else
                     Me.ParentAricieEditor.DisplayLocalizedMessage("MissingFile.Message", ModuleMessage.ModuleMessageType.YellowWarning)
                     '    Dim path As String = Aricie.DNN.Services.FileHelper.GetAbsoluteMapPath(GetExportFileName(), False)
@@ -579,7 +585,7 @@ Namespace UI.WebControls.EditControls
 
 
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
         End Sub
 
@@ -590,7 +596,7 @@ Namespace UI.WebControls.EditControls
                 Me.PageIndex = CInt(e.CommandArgument) - 1
                 Me.BindData()
             Catch ex As Exception
-                DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(Me, ex)
+                Me.ParentAricieEditor.ProcessException(ex)
             End Try
 
 
@@ -655,6 +661,11 @@ Namespace UI.WebControls.EditControls
         Protected Overridable Function GetPagedCollection() As PagedCollection
             Return New PagedCollection(Me.CollectionValue, Me._PageSize, Me.PageIndex) ', Me._SortFieldName)
         End Function
+
+        Protected Overridable Function GetItemFriendlyName(dataItem As Object) As String
+            Return ReflectionHelper.GetFriendlyName(dataItem)
+        End Function
+
 
 #End Region
 
@@ -813,7 +824,7 @@ Namespace UI.WebControls.EditControls
 
 
 
-            Dim accordionHeaderText As String = ReflectionHelper.GetFriendlyName(item.DataItem)
+            Dim accordionHeaderText As String = GetItemFriendlyName(item.DataItem)
 
             Dim commandIndex As Integer = Me.ItemIndex(item.ItemIndex)
 
@@ -996,7 +1007,7 @@ Namespace UI.WebControls.EditControls
                     AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
                     plAction.Controls.Add(cmdCopy)
 
-                    sm.RegisterPostBackControl(cmdCopy)
+                    'sm.RegisterPostBackControl(cmdCopy)
 
                 End If
 
@@ -1016,7 +1027,7 @@ Namespace UI.WebControls.EditControls
                             .CommandArgument = commandIndex.ToString()
                         End With
                         AddHandler cmdDown.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                        sm.RegisterPostBackControl(cmdDown)
+                        'sm.RegisterPostBackControl(cmdDown)
 
                     End If
 
@@ -1029,7 +1040,7 @@ Namespace UI.WebControls.EditControls
                             .CommandArgument = commandIndex.ToString()
                         End With
                         AddHandler cmdUp.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                        sm.RegisterPostBackControl(cmdUp)
+                        'sm.RegisterPostBackControl(cmdUp)
                     End If
 
                 End If
@@ -1042,7 +1053,7 @@ Namespace UI.WebControls.EditControls
                         .CommandArgument = commandIndex.ToString()
                     End With
                     AddHandler cmdDelete.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                    sm.RegisterPostBackControl(cmdDelete)
+                    'sm.RegisterPostBackControl(cmdDelete)
                     DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdDelete, Localization.GetString("DeleteItem.Text", Localization.SharedResourceFile))
                     Me._DeleteControls.Add(cmdDelete)
                 End If
@@ -1112,7 +1123,7 @@ Namespace UI.WebControls.EditControls
                             cmdCopyButton.Text = "Copy " & Name
                             cmdCopyButton.ResourceKey = "Copy.Command"
                             AddHandler cmdCopyButton.Click, AddressOf CopyClick
-                            RegisterControlForPostbackManagement(cmdCopyButton)
+                            'RegisterControlForPostbackManagement(cmdCopyButton)
                         End If
 
                         If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
@@ -1123,7 +1134,7 @@ Namespace UI.WebControls.EditControls
                             cmdPasteButton.Text = "Paste " & Name
                             cmdPasteButton.ResourceKey = "Paste.Command"
                             AddHandler cmdPasteButton.Click, AddressOf PasteClick
-                            RegisterControlForPostbackManagement(cmdPasteButton)
+                            'RegisterControlForPostbackManagement(cmdPasteButton)
                         End If
 
 
@@ -1150,7 +1161,7 @@ Namespace UI.WebControls.EditControls
                         cmdImportButton.ResourceKey = "Import.Command"
                         AddHandler cmdImportButton.Click, AddressOf ImportClick
 
-                        RegisterControlForPostbackManagement(cmdImportButton)
+                        'RegisterControlForPostbackManagement(cmdImportButton)
                     End If
 
 

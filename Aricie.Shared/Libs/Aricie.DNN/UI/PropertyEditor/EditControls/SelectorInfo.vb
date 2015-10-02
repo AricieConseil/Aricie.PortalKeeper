@@ -123,8 +123,12 @@ Namespace UI.WebControls.EditControls
                 Throw New HttpException("selector not correctly configured for field " & parentField.Editor.Name)
             End If
 
-
-            toReturn.ID = "ddl" & parentField.DataField 'toReturn.GetType.Name
+            If parentField IsNot Nothing Then
+                toReturn.ID = "ddl" & parentField.DataField
+                toReturn.ExclusiveScopeControl = parentField.NamingContainer
+            End If
+            
+            'toReturn.GetType.Name
             '_selector.Enabled = (Me.EditMode = PropertyEditorMode.Edit)
 
 
@@ -136,7 +140,7 @@ Namespace UI.WebControls.EditControls
                 toReturn.DataValueField = Me._DataValueField
             End If
             toReturn.ExclusiveSelector = Me._IsExclusive
-            toReturn.ExclusiveScopeControl = parentField.NamingContainer
+
             If Me._InsertNullItem Then
                 toReturn.InsertNullItem = True
                 toReturn.NullItemText = Me.NullItemText

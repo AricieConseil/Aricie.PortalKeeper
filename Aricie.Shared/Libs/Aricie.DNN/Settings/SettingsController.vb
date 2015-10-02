@@ -864,6 +864,8 @@ Namespace Settings
         ''' <remarks></remarks>
         Public Sub SaveToModuleSettings(ByVal scope As SettingsScope, ByVal scopeId As Integer, ByVal key As String, _
                                          ByVal strXmlToSave As String)
+            DeleteFromModuleSettings(scope, scopeId, key, Nothing)
+            'todo: will not work with petapoco, no workaround unless maybe they start supporting system transaction scope
             Using dbt As System.Data.Common.DbTransaction = DotNetNuke.Data.DataProvider.Instance.GetTransaction()
 
                 Dim nbMaxChars As Integer
@@ -873,7 +875,7 @@ Namespace Settings
                     Case Else
                         nbMaxChars = 2000
                 End Select
-                DeleteFromModuleSettings(scope, scopeId, key, Nothing)
+
                 If strXmlToSave.Length < nbMaxChars Then
                     UpdateSettings(scope, scopeId, key, strXmlToSave)
                 Else
@@ -895,7 +897,8 @@ Namespace Settings
                 End If
                 ' Suppression du cache
                 'DotNetNuke.Common.Utilities.DataCache.RemoveCache(String.Format("PortalSettings{0}", PortalId))
-                ' tout s'est bien passé, on confirme la transaction
+
+                'tout s 'est bien passé, on confirme la transaction
                 DotNetNuke.Data.DataProvider.Instance.CommitTransaction(dbt)
             End Using
 
@@ -1053,6 +1056,16 @@ Namespace Settings
                             Try
                                 culture = DirectCast(GetPortalDefaultLanguageMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId}), String)
                                 DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, culture})
+                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, String.Empty})
+
+                                'todo: corresponding dnn bug:
+                                'https://dnntracker.atlassian.net/browse/DNN-7652
+                                Dim dictionaryKey = [String].Format("PortalSettingsDictionary{0}{1}", scopeId, String.Empty)
+                                If HttpContext.Current IsNot Nothing Then
+                                    HttpContext.Current.Items.Remove(dictionaryKey)
+                                    dictionaryKey = [String].Format("PortalSettingsDictionary{0}{1}", scopeId, culture)
+                                    HttpContext.Current.Items.Remove(dictionaryKey)
+                                End If
 
                             Catch ex As Exception
                                 NukeHelper.LogController.AddLog("DeleteSettingsDebug", String.Format("Erreur d'enregistrement des settings : ScopeId = {0} / key = {1} / culture = {2} /// Exceptions => {3} :", scopeId, key, culture, ex.Message), Nothing, -1, EventLogController.EventLogType.HOST_ALERT)
@@ -1102,7 +1115,7 @@ Namespace Settings
                             Try
                                
                                 culture = DirectCast(GetPortalDefaultLanguageMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId}), String)
-                                DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, culture})
+                                'DeletePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, culture})
                                 UpdatePortalsettingMethod.Invoke(NukeHelper.PortalController, New Object() {scopeId, key, value, True, String.Empty})
 
                             Catch ex As Exception

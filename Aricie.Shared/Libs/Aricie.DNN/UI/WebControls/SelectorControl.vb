@@ -64,7 +64,7 @@ Namespace UI.WebControls
         Public Property ExclusiveScopeControl() As Control 'Implements 'ISelectorControl.ExclusiveScopeControl
             Get
                 If Me._ExclusiveScopeControl Is Nothing Then
-                    Me._ExclusiveScopeControl = Web.UI.ControlHelper.FindControl(Me, Me.ExclusiveScopeControlId)
+                    Me._ExclusiveScopeControl = Aricie.Web.UI.ControlHelper.FindControl(Me, Me.ExclusiveScopeControlId)
                 End If
                 Return _ExclusiveScopeControl
             End Get
@@ -89,7 +89,9 @@ Namespace UI.WebControls
         Public ReadOnly Property ExcludedScopeId() As String
             Get
                 If Me._ExcludedScopeId = "" Then
-                    Me._ExcludedScopeId = Me.AllItemsScopeId & "-Excluded-" & Me.ExclusiveScopeControl.ClientID
+                    If Me.ExclusiveScopeControl IsNot Nothing Then
+                        Me._ExcludedScopeId = Me.AllItemsScopeId & "-Excluded-" & Me.ExclusiveScopeControl.ClientID
+                    End If
                 End If
                 Return Me._ExcludedScopeId
             End Get
@@ -139,26 +141,31 @@ Namespace UI.WebControls
                 Return Nothing
             End Get
             Set(ByVal value As Object)
-                'first get a unified instance of value for equality comparison
-                Dim unifiedValue As Object
-                If Me.UnifyInstances AndAlso value IsNot Nothing Then
-                    unifiedValue = GetUnifiedInstance(Me.AllItems, Me.DataValueField, value)
-                Else
-                    unifiedValue = value
-                End If
 
-                'save previous value for further event notification.
-                Me._PreviousSelectedObject = Me.SelectedObject
-
-                If value IsNot Nothing Then
-
-                    Me.SelectedIndex = Me.BoundItems.IndexOf(unifiedValue) + Me.GetNullBias
-                Else
-                    Me.SelectedIndex = Me.GetNullBias - 1
-
-                End If
+                Me.SelectedIndex = GetItemIndex(value)
             End Set
         End Property
+
+        Public Function GetItemIndex(value As Object) As Integer
+            'first get a unified instance of value for equality comparison
+            Dim unifiedValue As Object
+            If Me.UnifyInstances AndAlso value IsNot Nothing Then
+                unifiedValue = GetUnifiedInstance(Me.AllItems, Me.DataValueField, value)
+            Else
+                unifiedValue = value
+            End If
+
+            'save previous value for further event notification.
+            Me._PreviousSelectedObject = Me.SelectedObject
+
+            If value IsNot Nothing Then
+
+                Return Me.BoundItems.IndexOf(unifiedValue) + Me.GetNullBias
+            Else
+                Return Me.GetNullBias - 1
+
+            End If
+        End Function
 
         Public Property BoundItems() As IList
             Get
