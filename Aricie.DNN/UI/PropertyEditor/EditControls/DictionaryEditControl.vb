@@ -8,6 +8,7 @@ Imports Aricie.Services
 Imports System.Drawing
 Imports DotNetNuke.Services.Localization
 Imports System.Reflection
+Imports Aricie.ComponentModel
 
 Namespace UI.WebControls.EditControls
 
@@ -232,19 +233,10 @@ Namespace UI.WebControls.EditControls
         End Sub
 
         Protected Overrides Sub AddNewItem(ByVal item As Object)
-            Dim key As Object
-            Dim value As Object
-            If TypeOf item Is DictionaryEntry Then
-                Dim de As DictionaryEntry = DirectCast(item, DictionaryEntry)
-                key = de.Key
-                value = de.Value
-            Else
-                Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(item.GetType)
-                key = props("Key").GetValue(item, Nothing)
-                value = props("Value").GetValue(item, Nothing)
-            End If
-            If Not Me.DictionaryValue.Contains(key) Then
-                DictionaryValue.Add(key, value)
+            Dim objPair As KeyValuePair(Of Object, Object) = GetPairFromItem(item)
+            
+            If Not Me.DictionaryValue.Contains(objPair.Key) Then
+                DictionaryValue.Add(objPair.Key, objPair.Value)
                 Me.PagedCollection.ClearCurrentItems()
             Else
                 Dim errorLabel As New Label
@@ -260,6 +252,19 @@ Namespace UI.WebControls.EditControls
 
         End Sub
 
+        Private Function GetPairFromItem(item As Object) As KeyValuePair(Of Object, Object)
+
+           
+            If TypeOf item Is DictionaryEntry Then
+                Dim de As DictionaryEntry = DirectCast(item, DictionaryEntry)
+                Return New KeyValuePair(Of Object, Object)(de.Key, de.Value)
+            Else
+                Dim props As Dictionary(Of String, PropertyInfo) = ReflectionHelper.GetPropertiesDictionary(item.GetType)
+                Return New KeyValuePair(Of Object, Object)(props("Key").GetValue(item, Nothing), props("Value").GetValue(item, Nothing))
+            End If
+
+        End Function
+
         Protected Overrides Function ExportItem(index As Integer) As System.Collections.ICollection
             Dim dico As IDictionary = DirectCast(ReflectionHelper.CreateObject(Me.DictionaryValue.GetType), IDictionary)
             Dim en As IDictionaryEnumerator = DictionaryValue.GetEnumerator()
@@ -274,6 +279,25 @@ Namespace UI.WebControls.EditControls
             Return dico
         End Function
 
+        'todo: change that ugly hack
+        Protected Overrides Function GetItemFriendlyName(dataItem As Object) As String
+            Dim objPair As KeyValuePair(Of Object, Object) = GetPairFromItem(dataItem)
+            Dim keyEditorInfo As EditorInfo = Me.BuildEditInfo(dataItem, "Key", PropertyEditorMode.Edit)
+            If GetType(SelectorEditControl).AssemblyQualifiedName.StartsWith(keyEditorInfo.Editor) Then
+                Dim objSelector As SelectorEditControl = DirectCast(Me.BuildEditor(keyEditorInfo, Me), SelectorEditControl)
+                Me.Controls.Add(objSelector)
+                Dim objItem As ListItem = objSelector.Selector.Items.FindByValue(objPair.Key.ToString())
+                If objItem IsNot Nothing Then
+                    Dim keyHeader As String = objItem.Text
+                    Dim valueHeader As String = MyBase.GetItemFriendlyName(objPair.Value)
+                    Me.Controls.Remove(objSelector)
+                    Return String.Format("{0}{1}{2}", keyHeader, UIConstants.TITLE_SEPERATOR, valueHeader)
+                End If
+                Me.Controls.Remove(objSelector)
+            End If
+
+            Return MyBase.GetItemFriendlyName(dataItem)
+        End Function
 
 #End Region
 

@@ -4,7 +4,8 @@
 
 Namespace UI.WebControls
     <ParseChildren(True), PersistChildren(True)> _
-     Public Class AutoCompleteTextBox
+     <ValidationPropertyAttribute("Text")> _
+    Public Class AutoCompleteTextBox
         Inherits System.Web.UI.WebControls.Panel
         Implements INamingContainer, IScriptControl
 
@@ -22,6 +23,34 @@ Namespace UI.WebControls
             End Get
             Set(ByVal value As String)
                 _urlWS = value
+            End Set
+        End Property
+        Private _additionalSelectFunction As String
+        Public Property AdditionalSelectFunction() As String
+            Get
+                Return _additionalSelectFunction
+            End Get
+            Set(ByVal value As String)
+                _additionalSelectFunction = value
+            End Set
+        End Property
+        Private _additionalFunctionForWSResponse As String
+
+        Public Property AdditionalFunctionForWSResponse() As String
+            Get
+                Return _AdditionalFunctionForWSResponse
+            End Get
+            Set(ByVal value As String)
+                _additionalFunctionForWSResponse = value
+            End Set
+        End Property
+        Private _additionalOnClickFunction As String
+        Public Property AdditionalOnClickFunction() As String
+            Get
+                Return _additionalOnClickFunction
+            End Get
+            Set(ByVal value As String)
+                _additionalOnClickFunction = value
             End Set
         End Property
 
@@ -82,6 +111,11 @@ Namespace UI.WebControls
             myScriptD.AddProperty("TbClientId", Me.FindControl("Tb").ClientID)
             myScriptD.AddProperty("HfClientId", Me.FindControl("Hf").ClientID)
             myScriptD.AddProperty("UrlWS", String.Format("http://{0}/{1}", System.Web.HttpContext.Current.Request.Url.Host, ResolveClientUrl(Me.UrlWS)))
+            myScriptD.AddProperty("AdditionalFunctionForWSResponse", Me.AdditionalFunctionForWSResponse)
+            myScriptD.AddProperty("AdditionalSelectFunction", Me.AdditionalSelectFunction)
+            myScriptD.AddProperty("AdditionalOnClickFunction", Me.AdditionalOnClickFunction)
+            myScriptD.AddProperty("EmptyText", Me.EmptyText)
+            myScriptD.AddProperty("AdditionalParam", Me.AdditionalParam)
             toReturn.Add(myScriptD)
             Return toReturn
         End Function
@@ -95,12 +129,21 @@ Namespace UI.WebControls
                 _EmptyText = value
             End Set
         End Property
+        Private _AdditionalParam As Integer
+        Public Property AdditionalParam() As Integer
+            Get
+                Return _AdditionalParam
+            End Get
+            Set(ByVal value As Integer)
+                _AdditionalParam = value
+            End Set
+        End Property
 
 
         Public Function GetScriptReferences() As System.Collections.Generic.IEnumerable(Of System.Web.UI.ScriptReference) Implements System.Web.UI.IScriptControl.GetScriptReferences
             Dim toReturn As New List(Of ScriptReference)
-            toReturn.Add(New ScriptReference("Aricie.DNN.AutoCompleteTextBox.js",
-                                             GetType(AutoCompleteTextBox).Assembly.FullName))
+            toReturn.Add(New ScriptReference("Aricie.DNN.AutoCompleteTextBox.js", GetType(AutoCompleteTextBox).Assembly.FullName))
+
             '  toReturn.Add(New ScriptReference(UrljQueryUIJS))
 
             Return toReturn

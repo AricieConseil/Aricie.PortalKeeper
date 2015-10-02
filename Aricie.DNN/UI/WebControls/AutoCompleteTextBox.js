@@ -8,7 +8,11 @@ Aricie.DNN.AutoCompleteTextBox = function (element) {
     this._TbClientId = null;
     this._HfClientId = null;
     this._UrlWS = null;
-  
+    this._AdditionalFunctionForWSResponse = null;
+    this._AdditionalSelectFunction = null;
+    this._AdditionalOnClickFunction = null;
+    this._EmptyText = null;
+    this._AdditionalParam = null;
 }
 
 Aricie.DNN.AutoCompleteTextBox.prototype = {
@@ -27,18 +31,36 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
     initComponent: function () {
         var myTBAutoComplete = this;
         jQuery("#" + myTBAutoComplete.get_TbClientId()).click(function () {
-            jQuery("#" + myTBAutoComplete.get_TbClientId()).val("");
-            jQuery("#" + myTBAutoComplete.get_HfClientId()).attr("value","");
+            var emptyBox = myTBAutoComplete.get_EmptyText();
+            if (jQuery("#" + myTBAutoComplete.get_TbClientId()).val() == emptyBox) {
+                jQuery("#" + myTBAutoComplete.get_TbClientId()).val("");
+                jQuery("#" + myTBAutoComplete.get_HfClientId()).attr("value", "");
+            }
+            else {
+                var actualLabel = jQuery("#" + myTBAutoComplete.get_TbClientId()).val();
+                var AdditionalOnClickFunction = myTBAutoComplete.get_AdditionalOnClickFunction();
+                if (AdditionalOnClickFunction != null) {
+                    var strParam = actualLabel;
+                    var fn = window[AdditionalOnClickFunction];
+                    actualLabel = fn(strParam);
+                    jQuery("#" + myTBAutoComplete.get_TbClientId()).val(actualLabel);
+                }
+            }
         });
         jQuery("#" + myTBAutoComplete.get_TbClientId()).autocomplete({
             source: function (request, response) {
+
+                var additionalParameter = '';
+                if (myTBAutoComplete.get_AdditionalParam() != null) {
+                    additionalParameter = ',"AdditionalParam":"' + myTBAutoComplete.get_AdditionalParam() + '"}';
+                }
 
                 jQuery.ajax({
                     type: "POST",
                     contentType: "application/json; charset=utf-8",
                     url: myTBAutoComplete.get_UrlWS(),
                     dataType: "json",
-                    data: '{"searchText":"' + request.term + '"}',
+                    data: '{"searchText":"' + request.term + '"' + additionalParameter,
                     success: function (data) {
                         var objects = null;
                         if (typeof JSON != "undefined") {
@@ -55,6 +77,11 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
                         }
                         })*/
                         response(objects);
+
+                        var AdditionalFunctionForWSResponse = myTBAutoComplete.get_AdditionalFunctionForWSResponse();
+                        if (AdditionalFunctionForWSResponse != null) {
+                            window[AdditionalFunctionForWSResponse]();
+                        }
                     }
                 });
             },
@@ -64,9 +91,16 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
                 "Selected: " + ui.item.label :
                 "Nothing selected, input was " + this.value);*/
                 event.preventDefault();
-                jQuery("#" + myTBAutoComplete.get_TbClientId()).val(ui.item.label);
-                jQuery("#" + myTBAutoComplete.get_HfClientId()).attr("value", ui.item.value);
 
+                var toDisplay = ui.item.label;
+                var AdditionalSelectFunction = myTBAutoComplete.get_AdditionalSelectFunction();
+                if (AdditionalSelectFunction != null) {
+                    var strParam = toDisplay;
+                    var fn = window[AdditionalSelectFunction];
+                    toDisplay = fn(strParam);
+                }
+                jQuery("#" + myTBAutoComplete.get_TbClientId()).val(toDisplay);
+                jQuery("#" + myTBAutoComplete.get_HfClientId()).attr("value", ui.item.value);
             },
             open: function () {
                 jQuery(this).removeClass("ui-corner-all").addClass("ui-corner-top");
@@ -102,6 +136,36 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
     },
     set_UrlWS: function (value) {
         this._UrlWS = value;
+    },
+    get_AdditionalFunctionForWSResponse: function () {
+        return this._AdditionalFunctionForWSResponse;
+    },
+    set_AdditionalFunctionForWSResponse: function (value) {
+        this._AdditionalFunctionForWSResponse = value;
+    },
+    get_AdditionalSelectFunction: function () {
+        return this._AdditionalSelectFunction;
+    },
+    set_AdditionalSelectFunction: function (value) {
+        this._AdditionalSelectFunction = value;
+    },
+    get_AdditionalOnClickFunction: function () {
+        return this._AdditionalOnClickFunction;
+    },
+    set_AdditionalOnClickFunction: function (value) {
+        this._AdditionalOnClickFunction = value;
+    },
+    get_AdditionalParam: function () {
+        return this._AdditionalParam;
+    },
+    set_AdditionalParam: function (value) {
+        this._AdditionalParam = value;
+    },
+    get_EmptyText: function () {
+        return this._EmptyText;
+    },
+    set_EmptyText: function (value) {
+        this._EmptyText = value;
     }
 
 }
