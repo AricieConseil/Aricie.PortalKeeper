@@ -21,6 +21,13 @@ Namespace UI.WebControls.EditControls
         'Private _nullItemValue As String
         Private _SelectorInfo As New SelectorInfo
 
+        Public ReadOnly Property Selector As SelectorControl
+            Get
+                Me.EnsureChildControls()
+                Return _selector
+            End Get
+        End Property
+
         Protected Overrides Sub OnInit(ByVal e As EventArgs)
             MyBase.OnInit(e)
             Me.EnsureChildControls()
@@ -64,59 +71,59 @@ Namespace UI.WebControls.EditControls
 
         Protected Overrides Sub CreateChildControls()
 
-            Try
-                Me._selector = Me._SelectorInfo.BuildSelector(Me.ParentField)
-                Me.Controls.Add(_selector)
-                _selector.DataBind()
+            'Try
+            Me._selector = Me._SelectorInfo.BuildSelector(Me.ParentField)
+            Me.Controls.Add(_selector)
+            _selector.DataBind()
 
 
 
-                If Me.EditMode = PropertyEditorMode.Edit Then
+            If Me.EditMode = PropertyEditorMode.Edit Then
 
 
 
-                    If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
-                        Dim objItem As ListItem = _selector.Items.FindByValue(Value.ToString())
-                        If objItem IsNot Nothing Then
-                            _selector.SelectedIndex = _selector.Items.IndexOf(objItem)
-                        End If
-                    ElseIf _selector.Items.Count > 0 Then
-                        'If _selector.InsertNullItem Then
-
-                        'End If
-                        _selector.SelectedIndex = 0
+                If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
+                    Dim objItem As ListItem = _selector.Items.FindByValue(Value.ToString())
+                    If objItem IsNot Nothing Then
+                        _selector.SelectedIndex = _selector.Items.IndexOf(objItem)
                     End If
-                    'If Value IsNot Nothing AndAlso String.IsNullOrEmpty(Value.ToString()) Then
-                    '    _selector.SelectedValue = Value.ToString()
-                    'ElseIf _selector.Items.Count > 0 Then
-                    '    _selector.SelectedIndex = 0
+                ElseIf _selector.Items.Count > 0 Then
+                    'If _selector.InsertNullItem Then
+
                     'End If
-
-                    AddHandler _selector.SelectedIndexChanged, AddressOf Me.SelectorSelectedIndexChanged
-                    _selector.Enabled = True
-                Else
-                    _selector.Visible = False
-                    Dim label As New Label
-
-                    If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
-                        Dim objItem As ListItem = _selector.Items.FindByValue(Value.ToString())
-                        If objItem IsNot Nothing Then
-                            _selector.SelectedIndex = _selector.Items.IndexOf(objItem)
-                            label.Text = objItem.Text
-                        Else
-                            label.Text = Value.ToString()
-                        End If
-                    End If
-
-                    label.CssClass = "SubHead"
-                    label.EnableViewState = False
-                    'AddHandler label.Unload, AddressOf _selector.OnSelectorUnload
-                    Me.Controls.Add(label)
-
+                    _selector.SelectedIndex = 0
                 End If
-            Finally
-                Me.ChildControlsCreated = True
-            End Try
+                'If Value IsNot Nothing AndAlso String.IsNullOrEmpty(Value.ToString()) Then
+                '    _selector.SelectedValue = Value.ToString()
+                'ElseIf _selector.Items.Count > 0 Then
+                '    _selector.SelectedIndex = 0
+                'End If
+
+                AddHandler _selector.SelectedIndexChanged, AddressOf Me.SelectorSelectedIndexChanged
+                _selector.Enabled = True
+            Else
+                _selector.Visible = False
+                Dim label As New Label
+
+                If Value IsNot Nothing AndAlso Not String.IsNullOrEmpty(Value.ToString()) Then
+                    Dim objItem As ListItem = _selector.Items.FindByValue(Value.ToString())
+                    If objItem IsNot Nothing Then
+                        _selector.SelectedIndex = _selector.Items.IndexOf(objItem)
+                        label.Text = objItem.Text
+                    Else
+                        label.Text = Value.ToString()
+                    End If
+                End If
+
+                label.CssClass = "SubHead"
+                label.EnableViewState = False
+                'AddHandler label.Unload, AddressOf _selector.OnSelectorUnload
+                Me.Controls.Add(label)
+
+            End If
+            'Finally
+            '    Me.ChildControlsCreated = True
+            'End Try
         End Sub
 
         Public Overrides Function LoadPostData(ByVal postDataKey As String, ByVal postCollection As NameValueCollection) As Boolean

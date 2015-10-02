@@ -149,9 +149,12 @@ Namespace Web.UI
             Dim toReturn As Control = Nothing
             If (control IsNot control.Page) Then
                 Do While ((toReturn Is Nothing) AndAlso (namingContainer IsNot control.Page))
-                    namingContainer = namingContainer.NamingContainer
-                    If (namingContainer Is Nothing) Then
-                        Throw New ArgumentException("No Naming Container: check controlId ", controlId)
+                    Dim tempNamingContainer = namingContainer.NamingContainer
+                    If (tempNamingContainer Is Nothing) Then
+                        'Throw New ArgumentException("No Naming Container: check controlId ", controlId)
+                        namingContainer = namingContainer.Parent
+                    Else
+                        namingContainer = tempNamingContainer
                     End If
                     toReturn = namingContainer.FindControl(controlId)
                 Loop
