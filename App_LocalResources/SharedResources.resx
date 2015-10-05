@@ -280,7 +280,7 @@ If you wish to continue using it, please purchase our module on &lt;a href="http
 &lt;p&gt;The expression is evaluated using &lt;a href="http://flee.codeplex.com/"&gt; Fast Lightweight Expression Evaluator&lt;/a&gt;, an open source expression engine, which allows fast computation thanks to byte code emission.&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;All expressions are dynamically built on first call and then cached for very fast retrieval and evaluation.&lt;/li&gt;
-&lt;li&gt;You should refer to the &lt;a href="http://flee.codeplex.com/Wiki/View.aspx?title=LanguageReference"&gt;language reference&lt;/a&gt; to build your expressions.&lt;/li&gt;
+&lt;li&gt;You should refer to the &lt;a href="https://flee.codeplex.com/wikipage?title=LanguageReference"&gt;language reference&lt;/a&gt; to build your expressions.&lt;/li&gt;
 &lt;li&gt;The engine uses &lt;a href="http://flee.codeplex.com/Wiki/View.aspx?title=ImportingTypes"&gt;static type imports&lt;/a&gt; to enhance the set of available methods. the import includes all methods from the "System.Math" static class and all methods from the default types (object, int, char, string etc.)&lt;/li&gt;
 &lt;li&gt;The engine uses the concept of a dedicated &lt;a href="http://flee.codeplex.com/Wiki/View.aspx?title=ExpressionOwner"&gt;Expression owner&lt;/a&gt; to supply the available variables. The expression owner is of type "Aricie.DNN.Modules.PortalKeeper.PortalKeeperContext, Aricie.PortalKeeper", which contains many properties giving access to the Http and DotNetNuke context.&lt;/li&gt;
 &lt;/ul&gt;
@@ -1366,7 +1366,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Decimal Separator</value>
   </data>
   <data name="SimpleExpression`1_Expression.Help" xml:space="preserve">
-    <value>Enter here the Flee expression to be evaluated. See  the &lt;a href="http://flee.codeplex.com/Wiki/View.aspx?title=LanguageReference"&gt;language reference&lt;/a&gt; to get started. You can control the set of functions and variables available in the following sections.</value>
+    <value>Enter here the Flee expression to be evaluated. See  the &lt;a href="https://flee.codeplex.com/wikipage?title=LanguageReference"&gt;language reference&lt;/a&gt; to get started. You can control the set of functions and variables available in the following sections.</value>
   </data>
   <data name="SimpleExpression`1_Expression.Text" xml:space="preserve">
     <value>Expression Text</value>

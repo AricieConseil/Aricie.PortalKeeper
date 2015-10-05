@@ -19,6 +19,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
+Imports Aricie.Web.UI.Controls
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditorScripts.js", "text/javascript", PerformSubstitution:=True)> 
@@ -663,10 +664,10 @@ Namespace UI.WebControls
         End Sub
 
 
-        
+
 
         Public Sub DisplayMessage(strMessage As String, messageType As ModuleMessage.ModuleMessageType, Optional heading As String = "")
-            
+
             Me.RootEditor._MessagesToShow(New DisplayMessageInfo(strMessage, messageType, heading)) = Me
 
         End Sub
@@ -1058,7 +1059,7 @@ Namespace UI.WebControls
             Return _CurrentPath
         End Function
 
-       
+
 
         Protected Function AddSections(ByVal element As Element, ByVal container As Control, ByVal keepHidden As Boolean) As Integer
 
@@ -1144,13 +1145,14 @@ Namespace UI.WebControls
         Protected Function AddActionButtons(ByVal element As Element, ByVal keepHidden As Boolean) As Integer
             Dim nbControls As Integer
             Dim buttonContainer As Panel = Nothing
+            Dim levelid As Integer = 1
             For Each buttonList As List(Of ActionButtonInfo) In element.ActionButtons
                 For Each objActionButton As ActionButtonInfo In buttonList
                     If Me.ComputeVisibility(objActionButton.ConditionalVisibles, objActionButton.Method) Then
                         If buttonContainer Is Nothing Then
-                            buttonContainer = New Panel()
+                            buttonContainer = New NamingContainerPanel()
                             buttonContainer.EnableViewState = False
-                            'buttonContainer.ID = "divCmdButtons" & element.Name
+                            buttonContainer.ID = "divActions" & levelid.ToString(CultureInfo.InvariantCulture) & element.Name
                             buttonContainer.CssClass = "aricieActions"
                             element.Container.Controls.Add(buttonContainer)
                         End If
@@ -1159,6 +1161,7 @@ Namespace UI.WebControls
                     End If
                 Next
                 buttonContainer = Nothing
+                levelid += 1
             Next
             Return nbControls
         End Function
@@ -1204,7 +1207,7 @@ Namespace UI.WebControls
                     Dim iconbtn As New IconActionButton()
                     btn = iconbtn
                     'iconbtn.CssClass = "dnnTertiaryAction"
-                    'iconbtn.ID = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name
+                    iconbtn.ID = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name
                     iconbtn.ActionItem = objButtonInfo.IconAction
                     iconbtn.Text = objButtonInfo.Method.Name
                     iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
@@ -1677,7 +1680,7 @@ Namespace UI.WebControls
             End Property
 
             Public Property Loaded() As Boolean
-           
+
 
 
             Public Property Columns As New Dictionary(Of Integer, List(Of PropertyInfo))
