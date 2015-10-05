@@ -206,6 +206,7 @@
     <Compile Include="Components\IO\ThrottledStream.vb" />
     <Compile Include="Components\Web\Proxy\TimedLog.vb" />
     <Compile Include="Components\Web\WebControls\GridView\Fields\ForeignKeyBoundField.vb" />
+    <Compile Include="Components\Web\WebControls\NamingContainerPanel.vb" />
     <Compile Include="Components\Web\WebControls\Pager.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
