@@ -118,51 +118,60 @@ Namespace Web.Proxy
             Dim contentType As String = Nothing
             InitParams(context, url, method, cacheDuration, contentType)
 
-            If String.IsNullOrEmpty(url) Then
-                context.Response.[End]()
-                Return Nothing
-            End If
-
-            If cacheDuration > 0 Then
-                Dim cachedResult As CachedContent = TryCast(context.Cache(url), CachedContent)
-                If cachedResult IsNot Nothing Then
-                    ' We have response to this URL already cached
-                    Dim result As New SyncResult()
-                    result.Context = context
-                    result.Content = cachedResult
-                    Return result
-                End If
-            End If
-
-            Dim outRequest As HttpWebRequest = ProxyHelper.CreateScalableHttpWebRequest(url)
-            ' As we will stream the response, don't want to automatically decompress the content
-            ' when source sends compressed content
-            outRequest.AutomaticDecompression = DecompressionMethods.None
-            outRequest.Method = method
-
-            CopyCookies(context.Request, outRequest)
-
-            If Not String.IsNullOrEmpty(contentType) Then
-                outRequest.ContentType = contentType
-            End If
-
-            Dim state As New AsyncState()
-            state.Method = method
-            state.Context = context
-            state.Url = url
-            state.CacheDuration = cacheDuration
-            state.OutboundRequest = outRequest
-
-            ' If there's a body provided then upload that            
-            If DoesRequestHaveBody(method) Then
-                If context.Request.ContentLength > 0 Then
-                    outRequest.ContentLength = context.Request.ContentLength
+            Try
+                If String.IsNullOrEmpty(url) Then
+                    context.Response.[End]()
+                    Return Nothing
                 End If
 
-                Return outRequest.BeginGetRequestStream(cb, state)
-            Else
-                Return outRequest.BeginGetResponse(cb, state)
-            End If
+                If cacheDuration > 0 Then
+                    Dim cachedResult As CachedContent = TryCast(context.Cache(url), CachedContent)
+                    If cachedResult IsNot Nothing Then
+                        ' We have response to this URL already cached
+                        Dim result As New SyncResult()
+                        result.Context = context
+                        result.Content = cachedResult
+                        Return result
+                    End If
+                End If
+
+                Dim outRequest As HttpWebRequest = ProxyHelper.CreateScalableHttpWebRequest(url)
+                ' As we will stream the response, don't want to automatically decompress the content
+                ' when source sends compressed content
+                outRequest.AutomaticDecompression = DecompressionMethods.None
+                outRequest.Method = method
+
+                CopyCookies(context.Request, outRequest)
+
+                If Not String.IsNullOrEmpty(contentType) Then
+                    outRequest.ContentType = contentType
+                End If
+
+                Dim state As New AsyncState()
+                state.Method = method
+                state.Context = context
+                state.Url = url
+                state.CacheDuration = cacheDuration
+                state.OutboundRequest = outRequest
+
+                ' If there's a body provided then upload that            
+                If DoesRequestHaveBody(method) Then
+                    If context.Request.ContentLength > 0 Then
+                        outRequest.ContentLength = context.Request.ContentLength
+                    End If
+
+                    Return outRequest.BeginGetRequestStream(cb, state)
+                Else
+                    Return outRequest.BeginGetResponse(cb, state)
+                End If
+
+            Catch ex As Exception
+                Dim message As String = String.Format("Error in streaming proxy while processing url {0} from original url {1}", url, HttpContext.Current.Request.Url.ToString())
+                Dim appEx As New ApplicationException(message, ex)
+                Throw appEx
+            End Try
+            Return Nothing
+           
         End Function
 
         Public Overridable Sub EndProcessRequest(result As IAsyncResult) Implements IHttpAsyncHandler.EndProcessRequest
@@ -189,20 +198,27 @@ Namespace Web.Proxy
                     'state.Context.Response.Buffer = False
                     state.Context.Response.Buffer = True
                     Dim outRequest As HttpWebRequest = state.OutboundRequest
+                    Try
+                        If DoesRequestHaveBody(state.Method) Then
+                            Using outStream As Stream = outRequest.EndGetRequestStream(result)
+                                Me.CopyRequestStream(state.Context.Request.InputStream, outStream)
 
-                    If DoesRequestHaveBody(state.Method) Then
-                        Using outStream As Stream = outRequest.EndGetRequestStream(result)
-                            Me.CopyRequestStream(state.Context.Request.InputStream, outStream)
-
-                            Using outResponse As HttpWebResponse = TryCast(outRequest.GetResponse(), HttpWebResponse)
+                                Using outResponse As HttpWebResponse = TryCast(outRequest.GetResponse(), HttpWebResponse)
+                                    Me.DownloadData(outRequest, outResponse, state.Context, state.CacheDuration)
+                                End Using
+                            End Using
+                        Else
+                            Using outResponse As HttpWebResponse = TryCast(outRequest.EndGetResponse(result), HttpWebResponse)
                                 Me.DownloadData(outRequest, outResponse, state.Context, state.CacheDuration)
                             End Using
-                        End Using
-                    Else
-                        Using outResponse As HttpWebResponse = TryCast(outRequest.EndGetResponse(result), HttpWebResponse)
-                            Me.DownloadData(outRequest, outResponse, state.Context, state.CacheDuration)
-                        End Using
-                    End If
+                        End If
+                    Catch ex As Exception
+
+                        Dim message As String = String.Format("Error in streaming proxy while processing url {0} from original url {1}", state.Url, state.Context.Request.Url.ToString())
+                        Dim appEx As New ApplicationException(message, ex)
+                        Throw appEx
+                    End Try
+
                 End If
             End If
         End Sub

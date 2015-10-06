@@ -11,6 +11,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
 Imports System.Globalization
 Imports System.IO
+Imports Aricie.DNN.ComponentModel
 Imports Aricie.IO
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -20,6 +21,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <DefaultProperty("FriendlyName")> _
     <Serializable()> _
     Public Class RequestsCapInfo
+        Implements IEnabled
+
 
 
         <NonSerialized()> _
@@ -76,7 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        Public Property Enabled() As Boolean
+        Public Property Enabled() As Boolean Implements IEnabled.Enabled
             Get
                 Return _Enabled
             End Get
@@ -284,6 +287,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             EndWrite()
             Return toReturn
         End Function
+
 
 
     End Class

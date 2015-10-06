@@ -160,6 +160,7 @@ Namespace ComponentModel
         Public Sub RestoreBackup(pe As AriciePropertyEditorControl)
             If SettingsController.RestoreBackup(GetFilePath(True), BackupToRestore) Then
                 pe.ItemChanged = True
+                _instance = Nothing
                 pe.DataSource = Instance
                 pe.DisplayLocalizedMessage("BackupRestored.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("BackupRestored.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -171,11 +172,12 @@ Namespace ComponentModel
         End Sub
 
         <ExtendedCategory("", "LocationSettings")> _
-        <ActionButton(IconName.FloppyO, IconOptions.Normal, "Save Current Form?")> _
+        <ActionButton(IconName.FloppyO, IconOptions.Normal, "SaveLocationSettings.Warning")> _
         Public Sub SaveLocationSettings(pe As AriciePropertyEditorControl)
             If pe.IsValid Then
                 SharedLocationSettings(True, False) = LocationSettings
                 _LocationSettings = Nothing
+                Me.Save()
                 pe.DisplayLocalizedMessage("LocationSettingsSaved.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 'DotNetNuke.UI.Skins.Skin.AddModuleMessage(pe.ParentModule, Localization.GetString("LocationSettingsSaved.Message", pe.LocalResourceFile), ModuleMessage.ModuleMessageType.GreenSuccess)
                 Save(pe)
