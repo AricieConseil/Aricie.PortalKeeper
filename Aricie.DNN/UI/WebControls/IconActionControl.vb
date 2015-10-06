@@ -11,6 +11,8 @@ Namespace UI.WebControls
 
         Public Overridable Property Text() As String = String.Empty
 
+        Public Property LocalResourceFile As String = ""
+
         Public Property ResourceKey As String = ""
 
         <PersistenceMode(PersistenceMode.InnerProperty)> _
@@ -31,7 +33,9 @@ Namespace UI.WebControls
                 Dim currentControl As Control = Me
 
 
-
+                If Not Me.ResourceKey.IsNullOrEmpty() AndAlso Not Me.LocalResourceFile.IsNullOrEmpty() Then
+                    Me.ToolTip = DotNetNuke.Services.Localization.Localization.GetString(Me.ResourceKey & ".ToolTip", Me.LocalResourceFile)
+                End If
                 'Dim htmlToAdd As New System.Text.StringBuilder()
                 If Me.Enabled AndAlso (Not String.IsNullOrEmpty(Me.Url)) Then
                     Dim hl As New HyperLink
@@ -65,7 +69,7 @@ Namespace UI.WebControls
                     If Not String.IsNullOrEmpty(CssClass) AndAlso Not cssDefinedTop AndAlso Not cssDefinedChild Then
                         iconLabel.CssClass &= " " & CssClass
                     End If
-
+                   
                 End If
 
 

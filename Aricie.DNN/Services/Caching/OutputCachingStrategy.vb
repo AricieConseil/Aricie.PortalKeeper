@@ -6,12 +6,14 @@ Imports System.Web
 Imports System.Text
 Imports Aricie.Services
 Imports System.Xml.Serialization
+Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Caching
     <Serializable()> _
     Public Class OutputCachingStrategy
+        Implements IEnabled
 
         Private _Enabled As Boolean = True
         Private _Mode As OutputCacheMode = OutputCacheMode.Cache
@@ -29,7 +31,7 @@ Namespace Services.Caching
         Private _VaryByContentEncodings As String = "gzip;deflate"
 
 
-        Public Property Enabled() As Boolean
+        Public Property Enabled() As Boolean Implements IEnabled.Enabled
             Get
                 Return _Enabled
             End Get

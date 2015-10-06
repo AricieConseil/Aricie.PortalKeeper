@@ -1,9 +1,11 @@
+Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 
 Namespace Entities
 
     Public Class EnabledFeature(Of T)
+        Implements IEnabled
 
         Private _Entity As T
 
@@ -20,7 +22,7 @@ Namespace Entities
         End Sub
 
         <AutoPostBack()> _
-        Public Property Enabled As Boolean
+        Public Property Enabled As Boolean Implements IEnabled.Enabled
 
         <ConditionalVisible("Enabled", False, True)>
         Public Property Entity As T

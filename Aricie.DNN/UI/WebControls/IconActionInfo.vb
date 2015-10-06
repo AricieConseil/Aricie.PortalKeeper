@@ -430,8 +430,8 @@
 {IconName.SheqelAlias, "fa-sheqel Alias"}, _
 {IconName.Slideshare, "fa-slideshare"}, _
 {IconName.SoccerBallOAlias, "fa-soccer-ballO Alias"}, _
-{IconName.ToggleOff, "fa-toggleOff"}, _
-{IconName.ToggleOn, "fa-toggleOn"}, _
+{IconName.ToggleOff, "fa-toggle-off"}, _
+{IconName.ToggleOn, "fa-toggle-on"}, _
 {IconName.Trash, "fa-trash"}, _
 {IconName.Tty, "fa-tty"}, _
 {IconName.Twitch, "fa-twitch"}, _

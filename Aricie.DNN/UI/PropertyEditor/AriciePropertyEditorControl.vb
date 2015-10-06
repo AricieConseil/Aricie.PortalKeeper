@@ -687,11 +687,19 @@ Namespace UI.WebControls
 
         Private Sub DisplayMessages()
             For Each objPair As KeyValuePair(Of DisplayMessageInfo, AriciePropertyEditorControl) In _MessagesToShow
-                Dim targetEditor As AriciePropertyEditorControl
-                If objPair.Value IsNot Nothing AndAlso objPair.Value.Page IsNot Nothing Then
-                    targetEditor = objPair.Value
-                Else
-                    targetEditor = Me
+                Dim targetEditor As AriciePropertyEditorControl = Me
+                'Apparently Control.RemovedControl only deals with properly unregistering first level children (so objPair.Value.Page is not good enough)
+                If objPair.Value IsNot Nothing Then
+                    If Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of Page)(objPair.Value) IsNot Nothing Then
+                        targetEditor = objPair.Value
+                    Else
+                        'try to find the new replacing control
+                        For Each objEditor As AriciePropertyEditorControl In Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of AriciePropertyEditorControl)(Me)
+                            If objEditor.ClientID = objPair.Value.ClientID Then
+                                targetEditor = objEditor
+                            End If
+                        Next
+                    End If
                 End If
                 Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(objPair.Key.Heading, objPair.Key.Message, objPair.Key.MessageType)
                 moduleMessage.EnableViewState = False
@@ -1211,6 +1219,7 @@ Namespace UI.WebControls
                     iconbtn.ActionItem = objButtonInfo.IconAction
                     iconbtn.Text = objButtonInfo.Method.Name
                     iconbtn.ResourceKey = objButtonInfo.Method.GetBaseDefinition().DeclaringType.Name & "_" & objButtonInfo.Method.Name & ".Text"
+                    iconbtn.LocalResourceFile = Me.LocalResourceFile
             End Select
 
             container.Controls.Add(btn)
