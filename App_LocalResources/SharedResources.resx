@@ -10490,4 +10490,112 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="TypeDictionaryConverter_ParsingCulture.Text" xml:space="preserve">
     <value>Parsing Culture</value>
   </data>
+  <data name="AddNew.Command.ToolTip" xml:space="preserve">
+    <value>Adds a new item at the end of the collection. For dictionaries, a new key must be provided.</value>
+  </data>
+  <data name="BotFarmInfo`1_RunForcedBots.Text.ToolTip" xml:space="preserve">
+    <value>Runs all bots with forced run enabled. Note that a bot can be disabled for scheduled execution and still included in forced runs. This is the most convenient way to develop and test your bots. Also note that user bots can still take over master bot execution if enabled. </value>
+  </data>
+  <data name="ClearItems.Command.ToolTip" xml:space="preserve">
+    <value>Clears all items from the collection</value>
+  </data>
+  <data name="ClearItems.Warning" xml:space="preserve">
+    <value>This will remove all items from the collection. Are you sure?</value>
+  </data>
+  <data name="ControlAdaptersConfig_RegisterAdapters.Text.ToolTip" xml:space="preserve">
+    <value>Clears the current state of registered adapters, to account for the last changes in the saved configuration.</value>
+  </data>
+  <data name="ControlAdapterSettings_DowngradeDynamicHandlers.Text.ToolTip" xml:space="preserve">
+    <value>Transforms currently typed dynamic handlers to untyped counterparts, with less configuration assistance, but required in case of user control adapters for portability. If you have user control adapters, you should upgrade before editing, and downgrade before saving.</value>
+  </data>
+  <data name="ControlAdapterSettings_UpgradeDynamicHandlers.Text.ToolTip" xml:space="preserve">
+    <value>Transforms currently untyped dynamic handlers to handlers tied to the adapted control type, with easier configuration capabilities. User controls, though, have types dynamically compiled at runtime and subject to changes. Accordingly, dynamic handlers for user control adapters should be downgraded for exports and to support future updates.</value>
+  </data>
+  <data name="Copy.Command.ToolTip" xml:space="preserve">
+    <value>Copies the selected item(s). You can then paste them to a compatible collection elsewhere in the form. Note that if you don't have a paste button, then the collections are deemed incompatible.</value>
+  </data>
+  <data name="Delete.Command.ToolTip" xml:space="preserve">
+    <value>Deletes the selected item from the collection.</value>
+  </data>
+  <data name="Disable.Command.ToolTip" xml:space="preserve">
+    <value>Disables the selected entity.</value>
+  </data>
+  <data name="Down.Command.ToolTip" xml:space="preserve">
+    <value>Moves the selected item one down in the ordered collection.</value>
+  </data>
+  <data name="Enable.Command.ToolTip" xml:space="preserve">
+    <value>Enables the selected entity.</value>
+  </data>
+  <data name="Export.Command.ToolTip" xml:space="preserve">
+    <value>Exports the selected item(s) to a file to be downloaded for offline usage.</value>
+  </data>
+  <data name="HttpHandlerSettings_AddTestFiddle.Text.ToolTip" xml:space="preserve">
+    <value>Adds a set of predefined sub handlers, for html, js and css content to test your dynamic handler.</value>
+  </data>
+  <data name="Import.Command.ToolTip" xml:space="preserve">
+    <value>Imports items from a previously exported file. Note that except for dictionaries, imported items will not overwrite existing items, it is up to you to do the clean up manually. Also, for dictionary items, if and only if a single item is imported, the currently selected key replaces the one found in the import file.</value>
+  </data>
+  <data name="ItemAdded.Message" xml:space="preserve">
+    <value>An item was added at the end of the collection. Click the new row to edit its property, and don't forget to save your changes when you're done.</value>
+  </data>
+  <data name="ItemCopied.Message" xml:space="preserve">
+    <value>The selected item was copied. You can paste and add it to a compatible collection somewhere else in the hierarchy.</value>
+  </data>
+  <data name="ItemDeleted.Message" xml:space="preserve">
+    <value>The selected item was deleted from the collection. Don't forget to save your changes to apply your modifications.</value>
+  </data>
+  <data name="ItemOneDown.Message" xml:space="preserve">
+    <value>Selected item was moved one down within the ordered collection. Don't forget to save your changes to apply your modifications.</value>
+  </data>
+  <data name="ItemOneUp.Message" xml:space="preserve">
+    <value>Selected item was moved one up within the ordered collection. Don't forget to save your changes to apply your modifications.</value>
+  </data>
+  <data name="ItemsCleared.Message" xml:space="preserve">
+    <value>The entire collection was cleared. Don't forget to save your changes to apply your modifications.</value>
+  </data>
+  <data name="ItemsCopied.Message" xml:space="preserve">
+    <value>The collection was copied. You can paste and add it to a compatible collection somewhere else in the hierarchy. </value>
+  </data>
+  <data name="ModuleConfig`2_Cancel.Text.ToolTip" xml:space="preserve">
+    <value>Cancels all editing since last save and reloads the original form.</value>
+  </data>
+  <data name="ModuleConfig`2_ClearSingleton.Text.ToolTip" xml:space="preserve">
+    <value>If Singleton is define in the configuration file settings for optimal performances, manual modification of the configuration file won't be detected (that's not the case with regular cache). Click here to reload the configuration from file at any point.</value>
+  </data>
+  <data name="ModuleConfig`2_Reset.Text.ToolTip" xml:space="preserve">
+    <value>Resets to the default configuration. Note that all changes since installation will be lost. The default configuration file is available at the root of the Module installation folder.</value>
+  </data>
+  <data name="ModuleConfig`2_RestoreBackup.Text.ToolTip" xml:space="preserve">
+    <value>Restores the selected backup configuration.</value>
+  </data>
+  <data name="ModuleConfig`2_Save.Text.ToolTip" xml:space="preserve">
+    <value>Saves the entire configuration according to the storage settings in the top configuration file section. Note that no change is persisted until you click here, and you should not leave the page if you have modifications to save.</value>
+  </data>
+  <data name="ModuleConfig`2_SaveLocationSettings.Text.ToolTip" xml:space="preserve">
+    <value>Saves your new configuration storage settings. and save the configuration file accordingly.</value>
+  </data>
+  <data name="Navigate.Command.ToolTip" xml:space="preserve">
+    <value>Navigates to the corresponding entity. You can bookmark the corresponding url, to save you next times from having to navigate the hierarchy.</value>
+  </data>
+  <data name="RuleEngineSettings`1_ImportAvailableProviders.Text.ToolTip" xml:space="preserve">
+    <value>Analyses all available .Net type to import available condition and action providers. </value>
+  </data>
+  <data name="SaveLocationSettings.Warning" xml:space="preserve">
+    <value>This will change the configuration storage settings. Have you noted the new location of your configuration file? </value>
+  </data>
+  <data name="SubPathContainer_CloseSubEditor.Text.ToolTip" xml:space="preserve">
+    <value>Removes the hierarchical browser and reloads the main configuration form.</value>
+  </data>
+  <data name="SubPathContainer_LevelUp.Text.ToolTip" xml:space="preserve">
+    <value>Sets the hierarchical browser to the parent entity, one level up  the currently displayed entity.</value>
+  </data>
+  <data name="Up.Command.ToolTip" xml:space="preserve">
+    <value>Moves the selected item one up in the ordered collection.</value>
+  </data>
+  <data name="XmlConfigElementInfo_Install.Text.ToolTip" xml:space="preserve">
+    <value>Registered the corresponding Xml component in the main web.config application configuration file located at the root of your web application.</value>
+  </data>
+  <data name="XmlConfigElementInfo_Update.Text.ToolTip" xml:space="preserve">
+    <value>Updates the corresponding registered Xml component in the main web.config configuration file.</value>
+  </data>
 </root>

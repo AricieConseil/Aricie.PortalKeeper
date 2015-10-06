@@ -17,6 +17,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.CloudDownload, IconOptions.Normal)> _
    <Serializable()> _
     Public Class RestServicesSettings
+        Implements IEnabled
 
         Public ReadOnly Property DNNServicesAvailable As Boolean
             Get
@@ -24,7 +25,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        Public Property Enabled As Boolean
+        Public Property Enabled As Boolean Implements IEnabled.Enabled
 
         'Public ReadOnly Property OpenRastaIsInstalled As Boolean
         '    Get
@@ -32,7 +33,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-       
+
 
         'Public Property EnableOpenRastaLogger As Boolean
         'Public Property EnableDigestAuthentication As Boolean
@@ -58,7 +59,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    ape.DisplayLocalizedMessage("RestServicesRegistered.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
         'End Sub
 
-       
+
 
 
 

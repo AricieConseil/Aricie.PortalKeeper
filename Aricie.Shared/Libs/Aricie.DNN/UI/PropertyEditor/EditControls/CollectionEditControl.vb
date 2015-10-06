@@ -469,6 +469,17 @@ Namespace UI.WebControls.EditControls
                         Case "Export"
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
+                        Case "Enable", "Disable"
+                            Dim dataItem As IEnabled = DirectCast(Me.PagedCollection(commandIndex), IEnabled)
+                            If e.CommandName = "Enable" Then
+                                dataItem.Enabled = True
+                                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemEnabled.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                            Else
+                                dataItem.Enabled = False
+                                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemDisabled.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                            End If
+                            Me.ParentAricieEditor.ItemChanged = True
+
                         Case Else
 
                     End Select
@@ -940,12 +951,38 @@ Namespace UI.WebControls.EditControls
                 actionContainer.Controls.Add(plAction)
 
                 Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
+                Dim dataItem As Object = Me.PagedCollection(commandIndex)
                 'SubPropertyEditor button
+
+                Dim enabledItem As IEnabled = TryCast(dataItem, IEnabled)
+                If enabledItem IsNot Nothing Then
+                    Dim cmdToggleEnable As New IconActionButton
+                    With cmdToggleEnable
+                        If Not enabledItem.Enabled Then
+                            .ActionItem.IconName = IconName.ToggleOn
+                            .CommandName = "Enable"
+                            .ResourceKey = "Enable.Command"
+                        Else
+                            .ActionItem.IconName = IconName.ToggleOff
+                            .CommandName = "Disable"
+                            .ResourceKey = "Disable.Command"
+                        End If
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .CommandArgument = commandIndex.ToString()
+                    End With
+                    AddHandler cmdToggleEnable.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    plAction.Controls.Add(cmdToggleEnable)
+
+
+
+
+                End If
+
                 If headerLink IsNot Nothing Then
 
                     Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                     If toEditor IsNot Nothing Then
-                        Dim path As String = Me.GetSubPath(commandIndex, Me.PagedCollection(commandIndex))
+                        Dim path As String = Me.GetSubPath(commandIndex, dataItem)
                         '.Replace("SubEntity.", "").Replace("SubEntity", "")
                         'If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
                         '    path = toEditor.SubEditorPath & "."c & path
@@ -959,6 +996,8 @@ Namespace UI.WebControls.EditControls
                         Dim cmdLink As New IconActionControl()
                         plAction.Controls.Add(cmdLink)
                         With cmdLink
+                            .LocalResourceFile = Me.LocalResourceFile
+                            .ResourceKey = "Navigate.Command"
                             .CssClass = "aricieAction"
                             .ActionItem.IconName = IconName.Link
                             .Url = newUrl.ToString()
@@ -991,6 +1030,8 @@ Namespace UI.WebControls.EditControls
                     plAction.Controls.Add(cmdExport)
                     With cmdExport
                         .ActionItem.IconName = IconName.Download
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .ResourceKey = "Export.Command"
                         .CommandName = "Export"
                         .CommandArgument = commandIndex.ToString()
                     End With
@@ -1001,6 +1042,8 @@ Namespace UI.WebControls.EditControls
                     Dim cmdCopy As New IconActionButton
                     With cmdCopy
                         .ActionItem.IconName = IconName.FilesO
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .ResourceKey = "Copy.Command"
                         .CommandName = "Copy"
                         .CommandArgument = commandIndex.ToString()
                     End With
@@ -1023,6 +1066,8 @@ Namespace UI.WebControls.EditControls
                         plAction.Controls.Add(cmdDown)
                         With cmdDown
                             .ActionItem.IconName = IconName.ArrowDown
+                            .LocalResourceFile = Me.LocalResourceFile
+                            .ResourceKey = "Down.Command"
                             .CommandName = "Down"
                             .CommandArgument = commandIndex.ToString()
                         End With
@@ -1036,6 +1081,8 @@ Namespace UI.WebControls.EditControls
                         plAction.Controls.Add(cmdUp)
                         With cmdUp
                             .ActionItem.IconName = IconName.ArrowUp
+                            .LocalResourceFile = Me.LocalResourceFile
+                            .ResourceKey = "Up.Command"
                             .CommandName = "Up"
                             .CommandArgument = commandIndex.ToString()
                         End With
@@ -1049,6 +1096,8 @@ Namespace UI.WebControls.EditControls
                     plAction.Controls.Add(cmdDelete)
                     With cmdDelete
                         .ActionItem.IconName = IconName.TrashO
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .ResourceKey = "Delete.Command"
                         .CommandName = "Delete"
                         .CommandArgument = commandIndex.ToString()
                     End With
@@ -1099,6 +1148,7 @@ Namespace UI.WebControls.EditControls
                         cmdAddButton.Text = "Add " & Name
                         cmdAddButton.ResourceKey = "AddNew.Command"
                         cmdAddButton.Visible = Not HideAddButton
+                        cmdAddButton.LocalResourceFile = Me.LocalResourceFile
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
                         If Me.CollectionValue.Count > 0 Then
@@ -1108,7 +1158,9 @@ Namespace UI.WebControls.EditControls
                             cmdClearButton.Text = "Clear " & Name
                             cmdClearButton.ResourceKey = "ClearItems.Command"
                             cmdClearButton.Visible = Not HideAddButton
+                            cmdClearButton.LocalResourceFile = Me.LocalResourceFile
                             AddHandler cmdClearButton.Click, AddressOf ClearClick
+                            DotNetNuke.UI.Utilities.ClientAPI.AddButtonConfirm(cmdClearButton, Localization.GetString("ClearItems.Warning", Localization.SharedResourceFile))
                         End If
 
                     End If
@@ -1122,6 +1174,7 @@ Namespace UI.WebControls.EditControls
                             cmdCopyButton.ActionItem.IconName = IconName.FilesO
                             cmdCopyButton.Text = "Copy " & Name
                             cmdCopyButton.ResourceKey = "Copy.Command"
+                            cmdCopyButton.LocalResourceFile = Me.LocalResourceFile
                             AddHandler cmdCopyButton.Click, AddressOf CopyClick
                             'RegisterControlForPostbackManagement(cmdCopyButton)
                         End If
@@ -1133,6 +1186,7 @@ Namespace UI.WebControls.EditControls
                             cmdPasteButton.ActionItem.IconName = IconName.Clipboard
                             cmdPasteButton.Text = "Paste " & Name
                             cmdPasteButton.ResourceKey = "Paste.Command"
+                            cmdPasteButton.LocalResourceFile = Me.LocalResourceFile
                             AddHandler cmdPasteButton.Click, AddressOf PasteClick
                             'RegisterControlForPostbackManagement(cmdPasteButton)
                         End If
@@ -1144,6 +1198,7 @@ Namespace UI.WebControls.EditControls
                         cmdExportButton.ActionItem.IconName = IconName.Download
                         cmdExportButton.Text = "Export " & Name
                         cmdExportButton.ResourceKey = "Export.Command"
+                        cmdExportButton.LocalResourceFile = Me.LocalResourceFile
                         AddHandler cmdExportButton.Click, AddressOf ExportClick
                         RegisterControlForPostbackManagement(cmdExportButton)
 
@@ -1151,6 +1206,7 @@ Namespace UI.WebControls.EditControls
 
                         ctImportFile = New HtmlInputFile
                         ctImportFile.ID = "ctImportFile"
+
                         pnAdd.Controls.Add(ctImportFile)
 
                         cmdImportButton = New IconActionButton
@@ -1159,9 +1215,10 @@ Namespace UI.WebControls.EditControls
                         cmdImportButton.ActionItem.IconName = IconName.Upload
                         cmdImportButton.Text = "Import " & Name
                         cmdImportButton.ResourceKey = "Import.Command"
+                        cmdImportButton.LocalResourceFile = Me.LocalResourceFile
                         AddHandler cmdImportButton.Click, AddressOf ImportClick
 
-                        'RegisterControlForPostbackManagement(cmdImportButton)
+                        RegisterControlForPostbackManagement(cmdImportButton)
                     End If
 
 

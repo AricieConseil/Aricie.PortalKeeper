@@ -28,7 +28,8 @@ Namespace Web.Proxy
             Dim toReturn As String = proxifiedRequest(StreamingProxy.STR_URL)
             If String.IsNullOrEmpty(toReturn) Then
                 Dim urlPath As String = proxifiedRequest.Url.GetComponents(UriComponents.Path, UriFormat.Unescaped).Trim("/"c)
-                urlPath = urlPath.Substring(proxifiedRequest.ApplicationPath.Length)
+
+                urlPath = urlPath.Substring(proxifiedRequest.ApplicationPath.Trim("/"c).Length)
                 Dim fileName As String = System.IO.Path.GetFileName(urlPath)
                 toReturn = urlPath.Substring(0, urlPath.LastIndexOf(fileName, StringComparison.Ordinal)).Trim("/"c)
                 toReturn = UnCloakScheme(toReturn)
@@ -60,6 +61,9 @@ Namespace Web.Proxy
             originalUrl = originalUrl.Trim(""""c).Trim("'"c)
             If originalUrl.StartsWith("data:") OrElse originalUrl.StartsWith("javascript") Then
                 Return originalUrl
+            End If
+            If originalUrl.Contains("\"c) Then
+                originalUrl = System.Text.RegularExpressions.Regex.Unescape(originalUrl)
             End If
             If originalUrl.StartsWith("//") Then
                 originalUrl = "http:" & originalUrl
