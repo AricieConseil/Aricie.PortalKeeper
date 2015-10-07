@@ -10518,13 +10518,19 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Deletes the selected item from the collection.</value>
   </data>
   <data name="Disable.Command.ToolTip" xml:space="preserve">
-    <value>Disables the selected entity.</value>
+    <value>Disables the selected item.</value>
   </data>
   <data name="Down.Command.ToolTip" xml:space="preserve">
     <value>Moves the selected item one down in the ordered collection.</value>
   </data>
+  <data name="DynamicHandlersDowngraded.Message" xml:space="preserve">
+    <value>Dynamic Handlers were downgraded to untyped Handlers. They are now safe for export to a new instance.</value>
+  </data>
+  <data name="DynamicHandlersUpgraded.Message" xml:space="preserve">
+    <value>Dynamic Handlers were upgraded to typed Handlers. Don't forget to downgrade your path-defined Adapter handlers when finished editing.</value>
+  </data>
   <data name="Enable.Command.ToolTip" xml:space="preserve">
-    <value>Enables the selected entity.</value>
+    <value>Enables the selected item.</value>
   </data>
   <data name="Export.Command.ToolTip" xml:space="preserve">
     <value>Exports the selected item(s) to a file to be downloaded for offline usage.</value>
@@ -10556,6 +10562,12 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ItemsCopied.Message" xml:space="preserve">
     <value>The collection was copied. You can paste and add it to a compatible collection somewhere else in the hierarchy. </value>
   </data>
+  <data name="ItemsImported.Message" xml:space="preserve">
+    <value>New items were read from the file and added to the collection. Don't forget to save your changes to apply your modifications.</value>
+  </data>
+  <data name="ItemsPasted.Message" xml:space="preserve">
+    <value>The copied items were succesfully added to the collection</value>
+  </data>
   <data name="ModuleConfig`2_Cancel.Text.ToolTip" xml:space="preserve">
     <value>Cancels all editing since last save and reloads the original form.</value>
   </data>
@@ -10575,7 +10587,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Saves your new configuration storage settings. and save the configuration file accordingly.</value>
   </data>
   <data name="Navigate.Command.ToolTip" xml:space="preserve">
-    <value>Navigates to the corresponding entity. You can bookmark the corresponding url, to save you next times from having to navigate the hierarchy.</value>
+    <value>Navigates to the corresponding entity with a dedicated link (click the accordion directly alternatively to browse locally with Ajax callbacks). Tthe corresponding url can be bookmarked as a shortcut saving from having to navigate the hierarchy.</value>
   </data>
   <data name="RuleEngineSettings`1_ImportAvailableProviders.Text.ToolTip" xml:space="preserve">
     <value>Analyses all available .Net type to import available condition and action providers. </value>
