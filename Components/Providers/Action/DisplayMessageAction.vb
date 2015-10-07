@@ -92,15 +92,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean
+        Protected Overloads Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal isAsync As Boolean) As Boolean
             If Me.DebuggerBreak Then
                 Common.CallDebuggerBreak()
             End If
             'Dim objLog As New LogInfo()
-            If Not aSync Then
+            If Not isAsync Then
+                Dim strMessage As String = GetMessage(actionContext)
                 Dim dnnPage As CDefault = actionContext.DnnContext.DnnPage
                 If dnnPage IsNot Nothing Then
-                    Dim strMessage As String = GetMessage(actionContext)
+
                     If Me._ModuleId > 0 Then
                         Dim objModules As List(Of PortalModuleBase) = FindControlsRecursive(Of PortalModuleBase)(dnnPage)
                         For Each objModule As PortalModuleBase In objModules
@@ -127,10 +128,33 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Return True
                         End If
                     End If
+                Else
+                    Dim otherPage As Page = actionContext.DnnContext.Page
+                    If otherPage IsNot Nothing Then
+                        Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(Me._Heading, strMessage, Me._ModuleMessageType)
+                        'Try
+                        otherPage.Controls.Add(moduleMessage)
+                        Return True
+                        'Catch
+                        'Probably "The Controls collection cannot be modified because the control contains code blocks (i.e. <% ... %>)"
+                        'write message instead
+                        'otherPage.SetRenderMethodDelegate(New RenderMethod(Sub(output As HtmlTextWriter, container As Control)
+                        '                                                       moduleMessage.RenderControl(output)
+                        '                                                   End Sub))
+                        'End Try
+                    Else
+                        Dim objresponse As HttpResponse = actionContext.DnnContext.Response
+                        If objresponse IsNot Nothing Then
+                            objresponse.Write(strMessage & vbCrLf)
+                        End If
+                        Return True
+                    End If
+                    
                 End If
             End If
             Return False
         End Function
+
 
         'Private Sub Skin_Display(ByVal sender As Object, ByVal e As EventArgs)
         '    If DnnContext.Current.GetVar("SkinDisplay" & Me.Name) Is Nothing Then

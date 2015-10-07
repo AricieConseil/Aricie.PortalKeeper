@@ -10,6 +10,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Linq
+Imports System.Web.Compilation
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
 Imports DotNetNuke.UI.Skins.Controls
@@ -280,8 +281,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Return Me.AdaptedControlType.GetDotNetType()
                     Case AdaptedControlMode.Path
                         If Not String.IsNullOrEmpty(Me.AdaptedControlPath) AndAlso DnnContext.Current.Page IsNot Nothing Then
-                            Dim tempUserControl As Control = DnnContext.Current.Page.LoadControl(Me.AdaptedControlPath)
-                            Return tempUserControl.GetType()
+                            'Dim tempUserControl As Control = DnnContext.Current.Page.LoadControl(Me.AdaptedControlPath)
+                            'Return tempUserControl.GetType()
+                            Return BuildManager.GetCompiledType(Me.AdaptedControlPath)
                         End If
                 End Select
             Catch ex As Exception

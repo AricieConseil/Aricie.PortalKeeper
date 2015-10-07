@@ -308,6 +308,8 @@ Namespace Services
 
 #Region "Portal members"
 
+       
+
         ''' <summary>
         ''' gets current portal id
         ''' </summary>
@@ -569,6 +571,7 @@ Namespace Services
             End If
             Return toReturn
         End Function
+
 
 #End Region
 
