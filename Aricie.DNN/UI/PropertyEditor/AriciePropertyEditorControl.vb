@@ -471,6 +471,7 @@ Namespace UI.WebControls
 
                     Me.ResetDatasourceType()
                     DataBind()
+                   
                 End If
 
 
@@ -669,6 +670,7 @@ Namespace UI.WebControls
         Public Sub DisplayMessage(strMessage As String, messageType As ModuleMessage.ModuleMessageType, Optional heading As String = "")
 
             Me.RootEditor._MessagesToShow(New DisplayMessageInfo(strMessage, messageType, heading)) = Me
+            ScriptManager.GetCurrent(Me.Page).SetFocus(Me.ClientID)
 
         End Sub
 
@@ -704,6 +706,7 @@ Namespace UI.WebControls
                 Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(objPair.Key.Heading, objPair.Key.Message, objPair.Key.MessageType)
                 moduleMessage.EnableViewState = False
                 targetEditor._headerControl.Controls.Add(moduleMessage)
+
             Next
         End Sub
 

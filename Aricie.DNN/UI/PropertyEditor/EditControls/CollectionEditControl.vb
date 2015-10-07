@@ -404,6 +404,8 @@ Namespace UI.WebControls.EditControls
                     'End If
                     toEditor.SubEditorFullPath = path
                     toEditor.ItemChanged = True
+                   
+                    ScriptManager.GetCurrent(Me.Page).SetFocus(toEditor.ClientID)
                 End If
 
 
