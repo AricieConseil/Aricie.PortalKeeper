@@ -19,6 +19,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
 Imports System.Globalization
 Imports System.Text.RegularExpressions
+Imports Aricie.Web.UI
 Imports Aricie.Web.UI.Controls
 
 <Assembly: WebResource("Aricie.DNN.AriciePropertyEditor.css", "text/css", PerformSubstitution:=True)> 
@@ -545,10 +546,12 @@ Namespace UI.WebControls
 
             End If
 
+
             If Me.IsRoot Then
                 AddHandler Me.Page.PreRenderComplete, AddressOf PreRenderComplete
             End If
 
+            Me.DisplayMessages()
 
             'If NukeHelper.DnnVersion.Major > 6 And Me Is ParentAricieEditor Then
             '    Me.CssClass += " dnnForm"
@@ -670,7 +673,7 @@ Namespace UI.WebControls
         Public Sub DisplayMessage(strMessage As String, messageType As ModuleMessage.ModuleMessageType, Optional heading As String = "")
 
             Me.RootEditor._MessagesToShow(New DisplayMessageInfo(strMessage, messageType, heading)) = Me
-            ScriptManager.GetCurrent(Me.Page).SetFocus(Me.ClientID)
+
 
         End Sub
 
@@ -688,31 +691,32 @@ Namespace UI.WebControls
         End Sub
 
         Private Sub DisplayMessages()
-            For Each objPair As KeyValuePair(Of DisplayMessageInfo, AriciePropertyEditorControl) In _MessagesToShow
-                Dim targetEditor As AriciePropertyEditorControl = Me
-                'Apparently Control.RemovedControl only deals with properly unregistering first level children (so objPair.Value.Page is not good enough)
-                If objPair.Value IsNot Nothing Then
-                    If Aricie.Web.UI.ControlHelper.FindParentControlRecursive(Of Page)(objPair.Value) IsNot Nothing Then
-                        targetEditor = objPair.Value
-                    Else
-                        'try to find the new replacing control
-                        For Each objEditor As AriciePropertyEditorControl In Aricie.Web.UI.ControlHelper.FindControlsRecursive(Of AriciePropertyEditorControl)(Me)
-                            If objEditor.ClientID = objPair.Value.ClientID Then
-                                targetEditor = objEditor
-                            End If
-                        Next
-                    End If
+            For Each objPair As KeyValuePair(Of DisplayMessageInfo, AriciePropertyEditorControl) In Me.RootEditor._MessagesToShow
+              
+                Dim isTarget As Boolean
+                If objPair.Value Is Nothing Then
+                    isTarget = Me.IsRoot
+                Else
+                    isTarget = objPair.Value.ClientID = Me.ClientID
                 End If
-                Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(objPair.Key.Heading, objPair.Key.Message, objPair.Key.MessageType)
-                moduleMessage.EnableViewState = False
-                targetEditor._headerControl.Controls.Add(moduleMessage)
+                If isTarget Then
+                    Dim moduleMessage As ModuleMessage = DotNetNuke.UI.Skins.Skin.GetModuleMessageControl(objPair.Key.Heading, objPair.Key.Message, objPair.Key.MessageType)
+                    moduleMessage.EnableViewState = False
+                    Me._headerControl.Controls.Add(moduleMessage)
+                    Me.ScrollTo()
+                    'Dim objPanel As Control = moduleMessage.FindControl("dnnSkinMessage")
+                    'objPanel.ScrollTo()
+                    'ScriptManager.GetCurrent(Me.Page).SetFocus(Me.ClientID)
+                    'DirectCast(Me.Page, CDefault).ScrollToControl(moduleMessage)
+
+                End If
 
             Next
         End Sub
 
 
         Private Sub PreRenderComplete(ByVal sender As Object, ByVal e As EventArgs)
-            Me.DisplayMessages()
+            'Me.DisplayMessages()
             Me.DisplayExceptions()
         End Sub
 

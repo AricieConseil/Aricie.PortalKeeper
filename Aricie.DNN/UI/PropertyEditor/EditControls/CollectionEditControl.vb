@@ -21,6 +21,7 @@ Imports Aricie.DNN.Security.Trial
 Imports System.Linq
 Imports System.Text
 Imports System.Text.RegularExpressions
+Imports Aricie.Web.UI
 
 Namespace UI.WebControls.EditControls
     Public MustInherit Class CollectionEditControl
@@ -404,8 +405,7 @@ Namespace UI.WebControls.EditControls
                     'End If
                     toEditor.SubEditorFullPath = path
                     toEditor.ItemChanged = True
-                   
-                    ScriptManager.GetCurrent(Me.Page).SetFocus(toEditor.ClientID)
+                    toEditor.ScrollTo()
                 End If
 
 
