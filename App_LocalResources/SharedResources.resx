@@ -10610,4 +10610,13 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="XmlConfigElementInfo_Update.Text.ToolTip" xml:space="preserve">
     <value>Updates the corresponding registered Xml component in the main web.config configuration file.</value>
   </data>
+  <data name="ItemDisabled.Message" xml:space="preserve">
+    <value>Selected item was disabled. Don't forget to save your changes when finished editing.</value>
+  </data>
+  <data name="ItemEnabled.Message" xml:space="preserve">
+    <value>Selected item was enabled. Don't forget to save your changes when finished editing.</value>
+  </data>
+  <data name="ManualRun.Message" xml:space="preserve">
+    <value>Forced Bots successfully run. {0} bot(s) were run</value>
+  </data>
 </root>

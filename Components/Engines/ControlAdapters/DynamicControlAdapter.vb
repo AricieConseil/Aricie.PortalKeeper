@@ -81,7 +81,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private Shared ReadOnly _BaseType As Type = GetType(DynamicControlAdapter(Of ))
 
         Public Shared Function GetGenericType(adaptedType As Type) As Type
-            Return _BaseType.MakeGenericType(adaptedType)
+            If adaptedType IsNot Nothing Then
+                Return _BaseType.MakeGenericType(adaptedType)
+            End If
+            Return Nothing
         End Function
 
 

@@ -162,7 +162,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <ActionButton(IconName.Rocket, IconOptions.Normal)>
-        Public Sub RunForcedBots(pmb As AriciePortalModuleBase)
+        Public Sub RunForcedBots(ape As Aricie.DNN.UI.WebControls.AriciePropertyEditorControl)
             Dim flowid As String = Guid.NewGuid.ToString
             If PortalKeeperConfig.Instance.SchedulerFarm.EnableLogs Then
 
@@ -177,7 +177,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 PerformanceLogger.Instance.AddDebugInfo(objStep)
             End If
 
-            Skin.AddModuleMessage(pmb, String.Format(Localization.GetString("ManualRun.Message", pmb.LocalResourceFile), nbRuns), ModuleMessage.ModuleMessageType.GreenSuccess)
+            ape.DisplayMessage(String.Format(Localization.GetString("ManualRun.Message", ape.LocalResourceFile), nbRuns), ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
 

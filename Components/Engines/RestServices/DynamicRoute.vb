@@ -1,8 +1,12 @@
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.DNN.UI.Attributes
+Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
+
+    <ActionButton(IconName.Road, IconOptions.Normal)> _
     Public Class DynamicRoute
         Inherits NamedConfig
 
@@ -36,4 +40,4 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property Constraints As New Variables()
 
     End Class
-End NameSpace
+End Namespace
