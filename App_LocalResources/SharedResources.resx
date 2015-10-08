@@ -10619,4 +10619,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ManualRun.Message" xml:space="preserve">
     <value>Forced Bots successfully run. {0} bot(s) were run</value>
   </data>
+  <data name="AutoLoginAction_CurrentAutoLoginInfo.Help" xml:space="preserve">
+    <value>You can choose to manually enter login credentials, or use a system of encrypted tickets to be provided in the request.</value>
+  </data>
+  <data name="AutoLoginAction_CurrentAutoLoginInfo.Text" xml:space="preserve">
+    <value>Automatic Login parameters</value>
+  </data>
 </root>
