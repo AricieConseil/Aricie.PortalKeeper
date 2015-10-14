@@ -168,7 +168,7 @@ Namespace Web.UI
         <System.Runtime.CompilerServices.Extension> _
         Public Sub ScrollTo(control As Control)
             Dim script As String = "jQuery(document).ready(function($) {var $body = window.opera ? (document.compatMode == 'CSS1Compat' ? $('html') : $('body')) : $('html,body'); var scrollTop = $('#" _
-                    & control.ClientID & "').offset().top - 100 - parseInt($(document.body).css('margin-top'));if (scrollTop>-20) $body.animate({ scrollTop: scrollTop }, 'fast');});"
+                    & control.ClientID & "').offset().top - 100 - parseInt($(document.body).css('margin-top'));$body.animate({ scrollTop: scrollTop }, 'fast');});"
             ScriptManager.RegisterClientScriptBlock(control.Page, control.Page.GetType(), "ScrollTo", script, True)
         End Sub
 
