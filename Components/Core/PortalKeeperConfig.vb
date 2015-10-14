@@ -11,41 +11,32 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return PortalKeeperContext(Of RequestEvent).MODULE_NAME
         End Function
 
-        Private _RestServices As New RestServicesSettings
+       <ExtendedCategory("Firewall")> _
+        Public Property FirewallConfig As New FirewallConfig()
+
+        <ExtendedCategory("Application")> _
+        Public Property ApplicationSettings As New ApplicationSettings()
 
         <ExtendedCategory("Scheduler")> _
-        Public Property SchedulerFarm() As New BotFarmInfo(Of ScheduleEvent)
+        Public Property SchedulerFarm As New BotFarmInfo(Of ScheduleEvent)
 
         <ExtendedCategory("RestServices")> _
-        Public Property RestServices() As RestServicesSettings
-            Get
-                If Me.FirewallConfig.RestServices IsNot Nothing Then
-                    _RestServices = Me.FirewallConfig.RestServices
-                    Me.FirewallConfig.RestServices = Nothing
-                End If
-                Return _RestServices
-            End Get
-            Set(value As RestServicesSettings)
-                _RestServices = value
-            End Set
-        End Property
-
-        <ExtendedCategory("Firewall")> _
-        Public Property FirewallConfig() As New FirewallConfig
-
+        Public Property RestServices As New RestServicesSettings()
+           
         <ExtendedCategory("HttpHandlers")> _
-        Public Property HttpHandlers As New HttpHandlersConfig
-
+        Public Property HttpHandlers As New HttpHandlersConfig()
 
         <ExtendedCategory("ControlAdapters")> _
-        Public Property ControlAdapters As New ControlAdaptersConfig
+        Public Property ControlAdapters As New ControlAdaptersConfig()
 
 
 
-
+        'todo: change that function to something dynamic
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
             Dim toReturn As New List(Of RuleEngineSettings(Of TEngineEvents))
             Select Case GetType(TEngineEvents).Name
+                Case GetType(ApplicationEvent).Name
+                    toReturn.Add(DirectCast(DirectCast(Me.ApplicationSettings, Object), RuleEngineSettings(Of TEngineEvents)))
                 Case GetType(RequestEvent).Name
                     toReturn.Add(DirectCast(DirectCast(Me.FirewallConfig, Object), RuleEngineSettings(Of TEngineEvents)))
                 Case GetType(ScheduleEvent).Name

@@ -224,44 +224,35 @@ Namespace Services
         Private Shared _DebugSurrogates As CreateInstanceCallBack
 
         Public Shared Sub RegisterDebugSurrogate(callBack As CreateInstanceCallBack)
-
-            _DebugSurrogates = callBack
+            RegisterDebugSurrogate(callBack, False)
         End Sub
 
+        Public Shared Sub RegisterDebugSurrogate(callBack As CreateInstanceCallBack, ByVal replaceExisting As Boolean)
+            If _DebugSurrogates Is Nothing Or replaceExisting Then
+                _DebugSurrogates = callBack
+            Else
+                Dim pastCallBack As CreateInstanceCallBack = _DebugSurrogates
+                _DebugSurrogates = New CreateInstanceCallBack(Function(objType As Type)
+                                                                  Dim toReturn As Object = callBack.Invoke(objType)
+                                                                  If toReturn Is Nothing Then
+                                                                      toReturn = pastCallBack.Invoke(objType)
+                                                                  End If
+                                                                  Return toReturn
+                                                              End Function)
 
+
+            End If
+
+        End Sub
+
+        Public Shared Property EnableAutoDebugSurrogates As Boolean
 
         Public Shared Function CreateType(ByVal typeName As String, ByVal throwOnError As Boolean) As Type
             Dim toReturn As Type = Nothing
 
 
             
-            
 
-#If DEBUG Then
-             If Not (ObjectExtensions.DynamicTypes.Count > 0 _
-                    AndAlso typeName.Contains(CustomTypesAssemblyName) _
-                    AndAlso ObjectExtensions.DynamicTypes.TryGetValue(ReflectionHelper.GetSafeTypeName(typeName), toReturn)) Then
-                    ' use reflection to get the type of the class
-                   toReturn = BuildManager.GetType(typeName, throwOnError, True)
-                End If
-
-            If toReturn IsNot Nothing Then
-                Dim debugType As Type = Nothing
-                If _DebugSurrogates IsNot Nothing Then
-                    Dim dest As Object = _DebugSurrogates.Invoke(toReturn)
-                    If dest IsNot Nothing Then
-                        debugType = dest.GetType()
-                    End If
-                    'Else
-                    '    Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
-                    '    debugType = CreateType(debugTypeName, False)
-                End If
-
-                If debugType IsNot Nothing Then
-                    Return debugType
-                End If
-            End If
-#Else
             If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
 
                 If Not (ObjectExtensions.DynamicTypes.Count > 0 _
@@ -273,18 +264,40 @@ Namespace Services
 
 
                 If toReturn IsNot Nothing Then
-                    SyncLock ReflectionHelper.Instance._TypesByTypeName
-                        ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
-                    End SyncLock
+                    Dim saveResult As Boolean = True
+                    If _DebugSurrogates IsNot Nothing Then
+                        Dim dest As Object = _DebugSurrogates.Invoke(toReturn)
+                        If dest IsNot Nothing Then
+                            toReturn = dest.GetType()
+                            saveResult = False
+
+                        End If
+                    End If
+                    If EnableAutoDebugSurrogates Then
+
+                        Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
+                        Dim debugType As Type = CreateType(debugTypeName, False)
+                        If debugType Is Nothing Then
+                            debugType = Assembly.GetCallingAssembly().GetType(debugTypeName, False)
+                        End If
+                        If debugType IsNot Nothing Then
+                            toReturn = debugType
+                            saveResult = False
+                        End If
+                    End If
+                    If saveResult Then
+                        SyncLock ReflectionHelper.Instance._TypesByTypeName
+                            ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
+                        End SyncLock
+                    End If
+                    
                 End If
-
-
 
                 'CacheHelper.SetGlobal(Of Type)(toReturn, typeName)
 
             End If
 
-#End If
+
 
 
             Return toReturn
@@ -515,11 +528,22 @@ Namespace Services
 
         Public Shared Function CreateObject(ByVal objectType As Type) As Object
 
+            If objectType Is Nothing Then
+                Throw New ArgumentNullException("objectType")
+            End If
+
             If Not CanCreateObject(objectType) Then
                 Throw New ApplicationException(String.Format("Cannot create object of Type {0}, because it has no default constructor", objectType.AssemblyQualifiedName))
             End If
 
             Dim toReturn As Object
+
+            If _DebugSurrogates IsNot Nothing Then
+                toReturn = _DebugSurrogates.Invoke(objectType)
+                If toReturn IsNot Nothing Then
+                    Return toReturn
+                End If
+            End If
 
             If ReflectionHelper.IsTrueReferenceType(objectType) Then
                 If objectType.IsArray Then
@@ -550,14 +574,7 @@ Namespace Services
 
             Dim objectType As Type = ReflectionHelper.CreateType(typeName)
 
-#If DEBUG Then
-            If _DebugSurrogates IsNot Nothing Then
-                Dim dest As Object = _DebugSurrogates.Invoke(objectType)
-                If dest IsNot Nothing Then
-                    Return dest
-                End If
-            End If
-#End If
+
 
             Return CreateObject(objectType)
 
@@ -566,6 +583,10 @@ Namespace Services
         Public Shared Function CreateObject(Of T)(ByVal typeName As String) As T
             Return DirectCast(CreateObject(typeName), T)
 
+        End Function
+
+        Public Shared Function CreateObject(Of T)(ByVal objectType As Type) As T
+            Return DirectCast(CreateObject(objectType), T)
         End Function
 
         Public Shared Function CreateObject(Of T)() As T
@@ -908,9 +929,20 @@ Namespace Services
 
         Public Shared Function CombineDelegate(targetDelegate As [Delegate], newInvocation As [Delegate]) As MulticastDelegate
 
+            Return CombineDelegate(targetDelegate, newInvocation, False)
+        End Function
+
+        Public Shared Function CombineDelegate(targetDelegate As [Delegate], newInvocation As [Delegate], invert As Boolean) As MulticastDelegate
+
             Dim objInvoc As [Delegate]() = targetDelegate.GetInvocationList()
             Dim handlerType As Type = targetDelegate.GetType()
-            Dim toReturn As MulticastDelegate = DirectCast([Delegate].Combine(objInvoc.Union({WrapDelegate(handlerType, newInvocation)}).ToArray()), MulticastDelegate)
+            Dim toReturn As MulticastDelegate
+            If invert Then
+                toReturn = DirectCast([Delegate].Combine(New List(Of [Delegate])({WrapDelegate(handlerType, newInvocation)}).Union(objInvoc).ToArray()), MulticastDelegate)
+            Else
+                toReturn = DirectCast([Delegate].Combine(objInvoc.Union({WrapDelegate(handlerType, newInvocation)}).ToArray()), MulticastDelegate)
+            End If
+
 
             Return toReturn
         End Function
@@ -2055,7 +2087,7 @@ Namespace Services
 
         Private Shared Function GetXmlSerializerBag(objType As Type, ByVal extraTypes() As Type, ByVal rootName As String) As XmlSerializerBag
             Dim targetXmlSerializerBag As XmlSerializerBag = Nothing
-            Dim key As String = objType.FullName & "||" & rootName
+            Dim key As String = objType.AssemblyQualifiedName & "||" & rootName
             If Not Instance._XmlSerializers.TryGetValue(key, targetXmlSerializerBag) Then
                 targetXmlSerializerBag = New XmlSerializerBag(objType, rootName, extraTypes)
                 SyncLock Instance._XmlSerializers

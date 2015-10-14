@@ -285,13 +285,13 @@
 }
 
 .actionText span:nth-child(2) {
-    width: 35%;
+    width: 37%;
     font-weight: bold;
     font-style: normal;
 }
 
 .actionText span {
-    padding: 0 8px;
+    padding: 0 6px;
     display: inline-block;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -320,7 +320,7 @@
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
-    width: 70%;
+    width: 64%;
     vertical-align: top;
 }
 
@@ -335,7 +335,7 @@
 .dnnForm .ui-accordion h3.ui-accordion-header .ItemActions {
     float: none;
     padding: 2px 2px 0 0;
-    width: 30%;
+    width: 36%;
     text-align: right;
     min-height: 25px;
     display: inline-block;

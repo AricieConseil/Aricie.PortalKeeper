@@ -3,6 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Configuration
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.ComponentModel
+Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Errors
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
@@ -10,7 +11,6 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.Entities.Users
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
     <ActionButton(IconName.Shield, IconOptions.Normal)> _
     <Serializable()> _
     Public Class FirewallConfig
@@ -74,17 +74,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property DosSettings() As New DenialOfServiceSettings
 
-        'todo: make obsolete
+        Friend InternalUrlCompression As UrlCompressionInfo
+
+        'todo: remove obsolete properties once migrated
         <Browsable(False)> _
-        Public Property RestServices() As RestServicesSettings
+        Public Property UrlCompression As UrlCompressionInfo
+            Get
+                Return Nothing
+            End Get
+            Set(value As UrlCompressionInfo)
+                InternalUrlCompression = value
+            End Set
+        End Property
 
-        <ExtendedCategory("Compression")> _
-        Public Property UrlCompression As New UrlCompressionInfo()
+        Friend InternalCustomErrorsConfig As VirtualCustomErrorsInfo
 
-        <ExtendedCategory("CustomErrorPage")> _
-        <SortOrder(400)> _
-        Public Property CustomErrorsConfig() As New VirtualCustomErrorsInfo
-
+        'todo: remove obsolete properties once migrated
+        <Browsable(False)> _
+        Public Property CustomErrorsConfig() As VirtualCustomErrorsInfo
+            Get
+                Return Nothing
+            End Get
+            Set(value As VirtualCustomErrorsInfo)
+                InternalCustomErrorsConfig = value
+            End Set
+        End Property
 
 
 

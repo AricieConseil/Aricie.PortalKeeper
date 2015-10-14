@@ -1,5 +1,8 @@
 Imports System.Diagnostics
 Imports System.Collections.Generic
+Imports System.Reflection
+Imports System.Web.Compilation
+Imports System.Xml
 Imports DotNetNuke.Common
 Imports DotNetNuke.UI.Skins.Controls
 Imports DotNetNuke.Services.Exceptions
@@ -14,6 +17,8 @@ Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Configuration
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.Diagnostics
+Imports Aricie.DNN.Services.Workers
+Imports Aricie.DNN.TestSurrogates
 Imports Aricie.Web
 
 
@@ -24,21 +29,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         Public Sub New()
             MyBase.New()
 
-
-
 #If DEBUG Then
+            'the following mechansim illustrates bringing a compiled coding section into edit and continue domain within this code behind file
             AddHandler DnnContext.Current.Debug, AddressOf Me.OnDebug
             RegisterDebugSurrogates()
-
 #End If
 
         End Sub
 
 
-        'Private _TempBuilder As New Aricie.DNN.Modules.PortalKeeper.UI.FleeExpressionBuilder()
+
 
         Private _KeeperConfig As PortalKeeperConfig
         Private _KeeperSettings As FirewallSettings
+
+       
+
+        
 
         Protected ReadOnly Property KeeperConfig() As PortalKeeperConfig
             Get
@@ -51,8 +58,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                             Session("KeeperConfig") = _KeeperConfig
                         End If
                     Else
-                        _KeeperConfig = PortalKeeperConfig.Instance
-                        Session.Remove("KeeperConfig")
+                        Dim objConfig As PortalKeeperConfig = PortalKeeperConfig.Instance
+                        _KeeperConfig = objConfig
+                        'Session.Remove("KeeperConfig")
+                        If Me.UserInfo.IsSuperUser Then
+                            Dim cloningJob As New SessionCloningJob(Of PortalKeeperConfig)(Me.Session, objConfig, "KeeperConfig")
+                            cloningJob.Enqueue()
+                        End If
                     End If
                 End If
 
@@ -136,9 +148,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 AddHandler Me.KC.Debug, AddressOf Me.OnDebug
                 If Not Me.IsPostBack Then
                     AssertInstalled()
-                    '#If DEBUG Then
-                    '                    Me.divDebug.Visible = True
-                    '#End If
+#If DEBUG Then
+                                        Me.divDebug.Visible = True
+#End If
                 End If
                 EnforceFreeVersion()
                 BindSettings()
@@ -256,7 +268,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         End Sub
 
         Protected Sub cmdDebug_Click(ByVal sender As Object, ByVal e As EventArgs) Handles cmdDebug.Click
-            Me.OnCmdDebug()
+            Try
+                
+                DnnContext.Current.OnDebug()
+                'To remove the context routing replace with:
+                'Me.OnCmdDebug()
+            Catch ex As Exception
+                ProcessModuleLoadException(Me, ex)
+            End Try
         End Sub
 
         Private Sub cmdCancelSettings_Click(ByVal sender As Object, ByVal e As System.EventArgs) Handles cmdCancelSettings.Click
@@ -455,44 +474,56 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub OnCmdDebug()
 
-            Try
 
 
-                Dim message As String = ""
+            Dim sw As New Stopwatch()
+            sw.Start()
+
+            DemonstrateSurrogates()
 
 
-                Dim sw As New Stopwatch()
-                sw.Start()
+            DnnContext.Instance.AddModuleMessage(String.Format("Time Elapsed: {0}", Common.FormatTimeSpan(sw.Elapsed)), ModuleMessage.ModuleMessageType.GreenSuccess)
 
-
-
-                'HttpInternals.Instance.StopDirectoryCriticalMonitoring("App_LocalResources")
-                'message = HttpUtility.HtmlEncode(message)
-
-
-
-
-                'For i As Integer = 0 To 0
-
-
-
-
-                '    DnnContext.Instance.AddModuleMessage(String.Format("Message: {0}", message), ModuleMessage.ModuleMessageType.GreenSuccess)
-                'Next
-
-
-                DnnContext.Instance.AddModuleMessage(String.Format("Time Elapsed: {0}", Common.FormatTimeSpan(sw.Elapsed)), ModuleMessage.ModuleMessageType.GreenSuccess)
-
-            Catch ex As Exception
-                ProcessModuleLoadException(Me, ex)
-            End Try
+            
         End Sub
 
+        'Public Shared Function CompileCodeDirectory(directoryName As String) As System.Reflection.Assembly
+        '    Dim buildManagerType As Type = GetType(BuildManager)
+        '    Dim assemblyName As String = "App_SubCode_" & directoryName
+        '    Dim compileMethod As MethodInfo = buildManagerType.GetMethod("CompileCodeDirectory", BindingFlags.Instance Or BindingFlags.NonPublic)
+        '    Dim theBuildManager As Object = buildManagerType.GetField("_theBuildManager", BindingFlags.Static Or BindingFlags.NonPublic).GetValue(Nothing)
+        '    Dim topAssemblies As List(Of System.Reflection.Assembly) = DirectCast(buildManagerType.GetField("_topLevelReferencedAssemblies", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(theBuildManager), List(Of System.Reflection.Assembly))
+        '    For Each objCodeAssembly As System.Reflection.Assembly In New ArrayList(topAssemblies)
+        '        If objCodeAssembly.GetName().Name.StartsWith(assemblyName) Then
+        '            topAssemblies.Remove(objCodeAssembly)
+        '        End If
+        '    Next
 
+        '    Dim codeAssemblies As ArrayList = DirectCast(buildManagerType.GetField("_codeAssemblies", BindingFlags.Instance Or BindingFlags.NonPublic).GetValue(theBuildManager), ArrayList)
+        '    For Each objCodeAssembly As System.Reflection.Assembly In New ArrayList(codeAssemblies)
+        '        If objCodeAssembly.GetName().Name.StartsWith(assemblyName) Then
+        '            codeAssemblies.Remove(objCodeAssembly)
+        '        End If
+        '    Next
+        '    assemblyName = assemblyName & DateTime.UtcNow.ToFileTimeUtc().ToString()
+        '    Dim appVirtualPath As Object = GetType(HttpRuntime).GetProperty("CodeDirectoryVirtualPath", BindingFlags.Static Or BindingFlags.NonPublic).GetValue(Nothing, Nothing)
+        '    Dim virtualPathType As Type = appVirtualPath.GetType()
+        '    Dim targetVirtualDir As Object = virtualPathType.GetMethod("SimpleCombineWithDir", BindingFlags.Instance Or BindingFlags.NonPublic).Invoke(appVirtualPath, {directoryName})
+        '    Dim typeCodeDirectoryType As Type = compileMethod.GetParameters()(1).ParameterType 'BuildManager.GetType("System.Web.Compilation.CodeDirectoryType, System.Web", False)
+        '    Dim objCodeDirectoryType As Object = [Enum].Parse(typeCodeDirectoryType, "SubCode")
+
+
+        '    Dim toReturn As System.Reflection.Assembly = DirectCast(compileMethod.Invoke(theBuildManager, {targetVirtualDir, objCodeDirectoryType, assemblyName, Nothing}), System.Reflection.Assembly)
+        '    DotNetNuke.Common.Utilities.DataCache.ClearCache()
+        '    Return toReturn
+        'End Function
 
         Private Sub OnDebug(sender As Object, e As DebugEventArgs)
             Try
+
+                DnnContext.Instance.AddModuleMessage("Event routed from DNN Context", ModuleMessage.ModuleMessageType.GreenSuccess)
                 OnCmdDebug()
+
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try
@@ -520,37 +551,100 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
         'End Function
 
         Private Sub RegisterDebugSurrogates()
-            ReflectionHelper.RegisterDebugSurrogate(AddressOf Me.SurrogateCallback)
+            ReflectionHelper.RegisterDebugSurrogate(AddressOf Me.SurrogateCallback, True)
         End Sub
         Public Function SurrogateCallback(objType As Type) As Object
             Dim toReturn As Object = Nothing
             Select Case objType.FullName
-                Case GetType(Aricie.DNN.Services.Flee.FleeExpressionBuilder).FullName
-                    toReturn = New Aricie.DNN.Modules.PortalKeeper.UI.FleeExpressionBuilder()
+                Case GetType(TestSurrogateOriginal).FullName
+                    toReturn = New TestSurrogateReplacement()
             End Select
             Return toReturn
 
         End Function
 
+        Private Sub DemonstrateSurrogates()
 
+            Dim message As String
+
+            'We first instantiate the original Type. It can be a static or a dynamic Type
+
+            Dim testSurrogate As New TestSurrogateOriginal()
+
+            message = testSurrogate.TestFunction()
+
+            DnnContext.Instance.AddModuleMessage(String.Format("Debug: {0}", message.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
+
+            'We then use the surrogate mechanism through the CreateObject method. The surrogate was registered in the user control constructor
+
+            testSurrogate = ReflectionHelper.CreateObject(Of TestSurrogateOriginal)()
+
+            message = testSurrogate.TestFunction()
+
+            DnnContext.Instance.AddModuleMessage(String.Format("Debug: {0}", message.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
+
+            'We then use the Automatic Surrogate mechanism through the CreateType method. Adding Debug to the Namespace of an original Type let you define a surrogate either in App_Code or in the calling dynamic code file
+
+            'Note this will work if the corresponding application action is enabled or by setting:
+            'ReflectionHelper.EnableAutoDebugSurrogates = True
+
+            testSurrogate = ReflectionHelper.CreateObject(Of TestSurrogateOriginal)(ReflectionHelper.CreateType(GetType(TestSurrogateOriginal).AssemblyQualifiedName, False))
+
+            message = testSurrogate.TestFunction()
+
+            DnnContext.Instance.AddModuleMessage(String.Format("Debug: {0}", message.ToString()), ModuleMessage.ModuleMessageType.GreenSuccess)
+
+        End Sub
 
 #End Region
 
 
+    End Class
+
+   
+
+End Namespace
+
+#Region "Surrogates Demonstration"
 
 
+
+Namespace Aricie.DNN.TestSurrogates
+
+    Public Class TestSurrogateOriginal
+
+        Public Overridable Function TestFunction() As String
+            Return "Hello World from original: " & Me.GetType.AssemblyQualifiedName
+        End Function
 
     End Class
 
+    Public Class TestSurrogateReplacement
+        Inherits TestSurrogateOriginal
 
-
-    Public Class FleeExpressionBuilder
-        Inherits Aricie.DNN.Services.Flee.FleeExpressionBuilder
-
-
+        Public Overrides Function TestFunction() As String
+            Return "Hello World from explicit surrogate: " & Me.GetType.AssemblyQualifiedName
+        End Function
 
     End Class
 
 End Namespace
+
+Namespace Aricie.DNN.TestSurrogates.Debug
+
+    Public Class TestSurrogateReplacement
+        Inherits Aricie.DNN.TestSurrogates.TestSurrogateReplacement
+
+        Public Overrides Function TestFunction() As String
+            Return "Hello World from automatic surrogate to explicit surrogate: " & Me.GetType.AssemblyQualifiedName
+        End Function
+
+    End Class
+
+End Namespace
+
+#End Region
+
+
 
 

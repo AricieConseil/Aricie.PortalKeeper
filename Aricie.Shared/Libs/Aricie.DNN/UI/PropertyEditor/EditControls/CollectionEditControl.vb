@@ -53,6 +53,7 @@ Namespace UI.WebControls.EditControls
         'Public WithEvents txtExportPath As TextBox
         Protected WithEvents cmdExportButton As IconActionButton
         Protected WithEvents cmdCopyButton As IconActionButton
+        Protected WithEvents cmdCutButton As IconActionButton
         Protected WithEvents cmdPasteButton As IconActionButton
         Protected WithEvents cmdImportButton As IconActionButton
 
@@ -428,29 +429,13 @@ Namespace UI.WebControls.EditControls
                             End If
                         Case "Delete"
 
-                            Dim delEvent As New PropertyEditorEventArgs(Me.Name)
-                            'todo: should try with ReflectionHelper.CloneObject()
-                            delEvent.OldValue = New ArrayList(Me.CollectionValue)
-
-                            Me.DeleteItem(commandIndex)
-
-                            'If Me._Paged AndAlso Me.CollectionValue.Count > Me._PageSize Then
-                            '    Me.ctlPager.ItemCount = Me.CollectionValue.Count
-                            '    Me.PageIndex = Math.Min(Me.PageIndex, CInt(Math.Floor((Me.CollectionValue.Count - 1) / PageSize)))
-                            'End If
-
-                            'Me.BindData()
-
-                            delEvent.Value = Me.CollectionValue
-                            delEvent.Changed = True
-
-                            Me.OnValueChanged(delEvent)
-                            Me.ParentAricieEditor.RootEditor.ClearBackPath()
+                            Me.ClearItems(commandIndex)
                             Me.ParentAricieEditor.DisplayLocalizedMessage("ItemDeleted.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                         Case "Up"
-                            RaiseEvent MoveUp(commandIndex)
+
                             Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-                            addEvent.OldValue = Me.CollectionValue
+                            addEvent.OldValue = New ArrayList(Me.CollectionValue)
+                            RaiseEvent MoveUp(commandIndex)
                             addEvent.Value = Me.CollectionValue
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
@@ -458,9 +443,10 @@ Namespace UI.WebControls.EditControls
                             Me.ParentAricieEditor.DisplayLocalizedMessage("ItemOneUp.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
 
                         Case "Down"
-                            RaiseEvent MoveDown(commandIndex)
+
                             Dim addEvent As New PropertyEditorEventArgs(Me.Name)
-                            addEvent.OldValue = Me.CollectionValue
+                            addEvent.OldValue = New ArrayList(Me.CollectionValue)
+                            RaiseEvent MoveDown(commandIndex)
                             addEvent.Value = Me.CollectionValue
                             addEvent.Changed = True
                             Me.OnValueChanged(addEvent)
@@ -468,6 +454,10 @@ Namespace UI.WebControls.EditControls
                         Case "Copy"
                             Me.Copy(Me.ExportItem(commandIndex))
                             Me.ParentAricieEditor.DisplayLocalizedMessage("ItemCopied.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+                        Case "Cut"
+                            Me.Copy(Me.ExportItem(commandIndex))
+                            Me.ClearItems(commandIndex)
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemCut.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                         Case "Export"
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
@@ -515,19 +505,10 @@ Namespace UI.WebControls.EditControls
 
         Private Sub ClearClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
-                Dim clearEvent As New PropertyEditorEventArgs(Me.Name)
-                clearEvent.OldValue = New ArrayList(Me.CollectionValue)
+               
                 Page.Validate()
                 'If Me.Page.IsValid Then
-
-                For i As Integer = Me.CollectionValue.Count - 1 To 0 Step -1
-                    Me.DeleteItem(i)
-                Next
-
-                clearEvent.Value = Me.CollectionValue
-                clearEvent.Changed = True
-                Me.OnValueChanged(clearEvent)
-                Me.ParentAricieEditor.RootEditor.ClearBackPath()
+                Me.ClearItems()
                 Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsCleared.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
                 'End If
             Catch ex As Exception
@@ -552,6 +533,39 @@ Namespace UI.WebControls.EditControls
             End Try
         End Sub
 
+        Private Sub ClearItems(Optional idx As Integer = -1)
+            Dim clearEvent As New PropertyEditorEventArgs(Me.Name)
+            'todo: should try with ReflectionHelper.CloneObject()
+            clearEvent.OldValue = New ArrayList(Me.CollectionValue)
+            If idx >= 0 Then
+                Me.DeleteItem(idx)
+            Else
+                For i As Integer = Me.CollectionValue.Count - 1 To 0 Step -1
+                    Me.DeleteItem(i)
+                Next
+            End If
+            
+
+            clearEvent.Value = Me.CollectionValue
+            clearEvent.Changed = True
+            Me.OnValueChanged(clearEvent)
+            Me.ParentAricieEditor.RootEditor.ClearBackPath()
+        End Sub
+
+        Private Sub CutClick(sender As Object, e As EventArgs)
+            Try
+                Page.Validate()
+                'If Me.Page.IsValid Then
+
+                Me.Copy(Me.CollectionValue)
+                Me.ClearItems()
+                'End If
+                Me.ParentAricieEditor.DisplayLocalizedMessage("ItemsCut.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+
+            Catch ex As Exception
+                Me.ParentAricieEditor.ProcessException(ex)
+            End Try
+        End Sub
 
         Private Sub ExportClick(ByVal sender As Object, ByVal e As EventArgs)
             Try
@@ -1025,6 +1039,28 @@ Namespace UI.WebControls.EditControls
 
                 End If
 
+                Dim cmdCopy As New IconActionButton
+                With cmdCopy
+                    .ActionItem.IconName = IconName.FilesO
+                    .LocalResourceFile = Me.LocalResourceFile
+                    .ResourceKey = "Copy.Command"
+                    .CommandName = "Copy"
+                    .CommandArgument = commandIndex.ToString()
+                End With
+                AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                plAction.Controls.Add(cmdCopy)
+
+                Dim cmdCut As New IconActionButton
+                With cmdCut
+                    .ActionItem.IconName = IconName.Scissors
+                    .LocalResourceFile = Me.LocalResourceFile
+                    .ResourceKey = "Cut.Command"
+                    .CommandName = "Cut"
+                    .CommandArgument = commandIndex.ToString()
+                End With
+                AddHandler cmdCut.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                plAction.Controls.Add(cmdCut)
+
                 If Me._EnableExport Then
 
 
@@ -1041,16 +1077,7 @@ Namespace UI.WebControls.EditControls
                     sm.RegisterPostBackControl(cmdExport)
 
 
-                    Dim cmdCopy As New IconActionButton
-                    With cmdCopy
-                        .ActionItem.IconName = IconName.FilesO
-                        .LocalResourceFile = Me.LocalResourceFile
-                        .ResourceKey = "Copy.Command"
-                        .CommandName = "Copy"
-                        .CommandArgument = commandIndex.ToString()
-                    End With
-                    AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                    plAction.Controls.Add(cmdCopy)
+                    
 
                     'sm.RegisterPostBackControl(cmdCopy)
 
@@ -1167,31 +1194,40 @@ Namespace UI.WebControls.EditControls
 
                     End If
 
+                    If Me.CollectionValue.Count > 0 Then
+                        cmdCopyButton = New IconActionButton
+                        pnAdd.Controls.Add(cmdCopyButton)
+                        cmdCopyButton.ActionItem.IconName = IconName.FilesO
+                        cmdCopyButton.Text = "Copy " & Name
+                        cmdCopyButton.ResourceKey = "Copy.Command"
+                        cmdCopyButton.LocalResourceFile = Me.LocalResourceFile
+                        AddHandler cmdCopyButton.Click, AddressOf CopyClick
+
+                        cmdCutButton = New IconActionButton
+                        pnAdd.Controls.Add(cmdCutButton)
+                        cmdCutButton.ActionItem.IconName = IconName.Scissors
+                        cmdCutButton.Text = "Cut " & Name
+                        cmdCutButton.ResourceKey = "Cut.Command"
+                        cmdCutButton.LocalResourceFile = Me.LocalResourceFile
+                        AddHandler cmdCutButton.Click, AddressOf CutClick
+                        'RegisterControlForPostbackManagement(cmdCopyButton)
+                    End If
+
+                    If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
+
+                        cmdPasteButton = New IconActionButton
+                        pnAdd.Controls.Add(cmdPasteButton)
+                        cmdPasteButton.ActionItem.IconName = IconName.Clipboard
+                        cmdPasteButton.Text = "Paste " & Name
+                        cmdPasteButton.ResourceKey = "Paste.Command"
+                        cmdPasteButton.LocalResourceFile = Me.LocalResourceFile
+                        AddHandler cmdPasteButton.Click, AddressOf PasteClick
+                        'RegisterControlForPostbackManagement(cmdPasteButton)
+                    End If
 
                     If Me._EnableExport AndAlso (Me.ParentAricieEditor Is Nothing OrElse Not Me.ParentAricieEditor.DisableExports) Then
 
-                        If Me.CollectionValue.Count > 0 Then
-                            cmdCopyButton = New IconActionButton
-                            pnAdd.Controls.Add(cmdCopyButton)
-                            cmdCopyButton.ActionItem.IconName = IconName.FilesO
-                            cmdCopyButton.Text = "Copy " & Name
-                            cmdCopyButton.ResourceKey = "Copy.Command"
-                            cmdCopyButton.LocalResourceFile = Me.LocalResourceFile
-                            AddHandler cmdCopyButton.Click, AddressOf CopyClick
-                            'RegisterControlForPostbackManagement(cmdCopyButton)
-                        End If
-
-                        If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
-
-                            cmdPasteButton = New IconActionButton
-                            pnAdd.Controls.Add(cmdPasteButton)
-                            cmdPasteButton.ActionItem.IconName = IconName.Clipboard
-                            cmdPasteButton.Text = "Paste " & Name
-                            cmdPasteButton.ResourceKey = "Paste.Command"
-                            cmdPasteButton.LocalResourceFile = Me.LocalResourceFile
-                            AddHandler cmdPasteButton.Click, AddressOf PasteClick
-                            'RegisterControlForPostbackManagement(cmdPasteButton)
-                        End If
+                       
 
 
 
@@ -1230,7 +1266,7 @@ Namespace UI.WebControls.EditControls
             End If
         End Sub
 
-
+       
 
 
         Private Property CopiedCollection As ICollection

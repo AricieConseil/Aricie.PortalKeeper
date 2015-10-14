@@ -76,7 +76,7 @@ Namespace Services.Workers
                 'todo use groups if needed cause the method throws a notsupportedexception instead otherwise
                 'AddHandler SmartPool.OnIdle, AddressOf OnIdle
             End If
-            
+
 
 
         End Sub
@@ -163,7 +163,7 @@ Namespace Services.Workers
         ''' </summary>
         ''' <remarks></remarks>
         Private Sub Work(state As T)
-           
+
             Try
                 'SyncLock _Locker
                 If Not _Started Then
@@ -174,7 +174,7 @@ Namespace Services.Workers
                 ElseIf Not Me._TaskInfo.TaksWaitTime = TimeSpan.Zero Then
                     Thread.Sleep(Me._TaskInfo.TaksWaitTime)
                 End If
-                    Me._Action.Invoke(state)
+                Me._Action.Invoke(state)
             Catch ex As Exception
                 Try
                     Aricie.Services.ExceptionHelper.LogException(ex)
@@ -184,7 +184,7 @@ Namespace Services.Workers
         End Sub
 
 
-      
+
 
         Private Sub PostExecuteWorkItemCallback(ByVal wir As IWorkItemResult)
             Me.OnActionPerformed()

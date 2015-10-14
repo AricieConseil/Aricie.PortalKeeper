@@ -21,7 +21,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
             toReturn.Add(toAdd)
 
-            toAdd = New HttpModuleInfo("Aricie.PortalKeeperAfterDNN", GetType(PortalKeeperModuleAfterDNN), "managedHandler")
+            toAdd = New HttpModuleInfo("Aricie.PortalKeeperAfterDNN", GetType(PortalKeeperModuleAfterDNN), "")
             toAdd.InsertAfterKey = "UrlRewrite"
             toReturn.Add(toAdd)
 

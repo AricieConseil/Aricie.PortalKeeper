@@ -4,6 +4,7 @@ Imports DotNetNuke.Services.Log.EventLog
 Imports System
 Imports System.Web
 Imports System.Reflection
+Imports Aricie.Web
 Imports DotNetNuke.Common.Utilities
 Imports DotNetNuke.Services.Exceptions
 
@@ -27,12 +28,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class PortalKeeperModule
         Implements IHttpModule
 
-        Private Shared LogController As New EventLogController
+        Private Const InstanceNbKey As String = "PKPApplicationInstanceNb"
+        Private Shared _InitLock As New Object
+        Private Shared _ApplicationState As HttpApplicationState
 
         Protected SecondaryModule As Boolean
 
 
+
         Public Overridable Sub Init(ByVal application As HttpApplication) Implements IHttpModule.Init
+
+
+
+            SyncLock _InitLock
+
+
+                If _ApplicationState Is Nothing Then
+                    _ApplicationState = application.Application
+                    Me.ProcessApplicationStep(ApplicationEvent.ApplicationStart, False)
+                    If PortalKeeperConfig.Instance.ApplicationSettings.Enabled AndAlso PortalKeeperConfig.Instance.ApplicationSettings.EnableCriticalChangesHandler Then
+                        HttpInternals.Instance.CombineCriticalChangeCallBack(New EventHandler(AddressOf OnCriticaldirChange))
+                    End If
+
+                End If
+                Dim instanceNb As Integer = CInt(_ApplicationState.Get(InstanceNbKey))
+                instanceNb += 1
+               
+                _ApplicationState.Set(InstanceNbKey, instanceNb)
+            End SyncLock
 
             AddHandler application.BeginRequest, AddressOf Me.OnBeginRequest
 
@@ -53,7 +76,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-        
+       
+
 
         Private Sub OnBeginRequest(ByVal sender As Object, ByVal e As EventArgs)
             'Try
@@ -282,9 +306,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-
+        Private Sub OnCriticaldirChange(sender As Object, e As EventArgs)
+            PortalKeeperContext(Of ApplicationEvent).GlobalInstance.SetVar("Eargs", e)
+            Me.ProcessApplicationStep(ApplicationEvent.CriticalChange, False)
+        End Sub
 
         Public Sub Dispose() Implements IHttpModule.Dispose
+            Dim instanceNb As Integer
+            SyncLock _InitLock
+                instanceNb = CInt(_ApplicationState.Get(InstanceNbKey))
+                instanceNb -= 1
+
+                _ApplicationState.Set(InstanceNbKey, instanceNb)
+            End SyncLock
+            If instanceNb <= 0 Then
+                Me.ProcessApplicationStep(ApplicationEvent.ApplicationEnd, False)
+            End If
         End Sub
 
 
@@ -320,6 +357,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)
                     keeperContext.LogEndEngine(objPair, objPair2)
                 End If
+            End If
+        End Sub
+
+        Protected Sub ProcessApplicationStep(ByVal newStep As ApplicationEvent, ByVal endSequence As Boolean)
+            Dim keeperContext As PortalKeeperContext(Of ApplicationEvent) = PortalKeeperContext(Of ApplicationEvent).GlobalInstance
+            If Not keeperContext.Disabled AndAlso keeperContext.GlobalConfig.ApplicationSettings.Enabled Then
+                keeperContext.GlobalConfig.ApplicationSettings.ProcessRules(keeperContext, newStep, False, True)
+                'If endSequence AndAlso keeperContext.LoggingLevel > LoggingLevel.None Then
+                '    Dim objPair As New KeyValuePair(Of String, String)("Input Uri", keeperContext.DnnContext.AbsoluteUri)
+                '    Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)
+                '    keeperContext.LogEndEngine(objPair, objPair2)
+                'End If
             End If
         End Sub
 

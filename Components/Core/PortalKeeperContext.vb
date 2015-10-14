@@ -4,7 +4,6 @@ Imports System.Globalization
 Imports System.Runtime.CompilerServices
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
-Imports Aricie.ComponentModel
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.Services
 
@@ -19,20 +18,6 @@ Imports Aricie.Services
 
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-    Public Class MessageEventArgs
-        Inherits GenericEventArgs(Of KeyValuePair(Of String, Object))
-
-        Public Sub New()
-            MyBase.New()
-        End Sub
-
-        Public Sub New(ByVal key As String, ByVal value As Object)
-            MyBase.New(New KeyValuePair(Of String, Object)(key, value))
-        End Sub
-
-    End Class
-
     <Serializable()> _
     Public Class PortalKeeperContext(Of TEngineEvents As IConvertible)
         Inherits ContextBase(Of PortalKeeperContext(Of TEngineEvents))
@@ -250,7 +235,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-
+       
 
 
 #End Region
