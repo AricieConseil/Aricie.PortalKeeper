@@ -154,8 +154,10 @@ Namespace UI.WebControls
                     Try
                         toReturn = propAccess.GetValue(tokenPath)
                     Catch ex As Exception
+#If DEBUG Then
                         Dim message As String = "DataSource subpath unavailable: """ & tokenPath & """"
                         ExceptionHelper.LogException(New ApplicationException(message, ex))
+#End If
                         toReturn = Nothing
                     End Try
                 Else

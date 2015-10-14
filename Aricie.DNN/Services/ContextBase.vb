@@ -26,7 +26,7 @@ Namespace Services
         Private _Items As New SerializableDictionary(Of String, Object)(StringComparer.OrdinalIgnoreCase)
         Private _Services As New Dictionary(Of Type, Object)
 
-        Private Shared _DumbInstance As TContext
+        Private Shared _GlobalInstance As TContext
         Private _FlowId As String
 
         ''' <summary>
@@ -63,10 +63,16 @@ Namespace Services
         ''' <remarks></remarks>
         Public Shared ReadOnly Property Instance() As TContext
             Get
-                If _DumbInstance Is Nothing Then
-                    _DumbInstance = Activator.CreateInstance(Of TContext)()
+                Return GlobalInstance.GetInstance
+            End Get
+        End Property
+
+        Public Shared ReadOnly Property GlobalInstance As TContext
+            Get
+                If _GlobalInstance Is Nothing Then
+                    _GlobalInstance = Activator.CreateInstance(Of TContext)()
                 End If
-                Return _DumbInstance.GetInstance
+                Return _GlobalInstance
             End Get
         End Property
 
@@ -169,6 +175,8 @@ Namespace Services
         End Property
 
         Public Property ContextOwner As Object Implements IContextOwnerProvider.ContextOwner
+
+       
 
 #Region "IServiceProvider"
 

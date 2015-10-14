@@ -414,6 +414,7 @@
     <Compile Include="Diagnostics\AsyncLogger.vb" />
     <Compile Include="Services\Workers\Countdown.vb" />
     <Compile Include="Services\Workers\SafeSemaphore.vb" />
+    <Compile Include="Services\Workers\SessionCloningJob.vb" />
     <Compile Include="Services\Workers\SimpleProcessStartInfo.vb" />
     <Compile Include="Services\Workers\TaskQueue.vb" />
     <Compile Include="Services\Workers\TaskQueueInfo.vb" />

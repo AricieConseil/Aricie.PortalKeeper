@@ -269,31 +269,32 @@ Namespace Services
 
             Dim toReturn As Type = Nothing
             If Not _DynamicTypes.TryGetValue(typeFullName, toReturn) Then
-                'create TypeBuilder
-                Dim typeBuilder As TypeBuilder = CreateTypeBuilder(typeName)
-
-                'get list of types for ctor definition
-                Dim propertyTypes As Type() = GetTypes(pdc)
-
-                'create priate fields for use w/in the ctor body and properties
-                Dim fields As FieldBuilder() = BuildFields(typeBuilder, pdc)
-
-                If propertyTypes.Length > 0 Then
-                    'define/emit the empty Ctor
-                    BuildCtor(typeBuilder, New List(Of FieldBuilder)().ToArray(), New List(Of Type)().ToArray())
-                End If
-
-
-                'define/emit the Ctor
-                BuildCtor(typeBuilder, fields, propertyTypes)
-
-                'define/emit the properties
-                BuildProperties(typeBuilder, fields)
-
-                'return Type definition
-                Dim newToReturn As Type = typeBuilder.CreateType()
                 SyncLock _DynamicTypes
                     If Not _DynamicTypes.TryGetValue(typeFullName, toReturn) Then
+                        'create TypeBuilder
+                        Dim typeBuilder As TypeBuilder = CreateTypeBuilder(typeName)
+
+                        'get list of types for ctor definition
+                        Dim propertyTypes As Type() = GetTypes(pdc)
+
+                        'create priate fields for use w/in the ctor body and properties
+                        Dim fields As FieldBuilder() = BuildFields(typeBuilder, pdc)
+
+                        If propertyTypes.Length > 0 Then
+                            'define/emit the empty Ctor
+                            BuildCtor(typeBuilder, New List(Of FieldBuilder)().ToArray(), New List(Of Type)().ToArray())
+                        End If
+
+
+                        'define/emit the Ctor
+                        BuildCtor(typeBuilder, fields, propertyTypes)
+
+                        'define/emit the properties
+                        BuildProperties(typeBuilder, fields)
+
+                        'return Type definition
+                        Dim newToReturn As Type = typeBuilder.CreateType()
+
                         toReturn = newToReturn
                         _DynamicTypes(typeFullName) = toReturn
                     End If
