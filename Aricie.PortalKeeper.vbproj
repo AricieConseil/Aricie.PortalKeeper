@@ -178,6 +178,7 @@
     <Compile Include="Components\Core\KeeperObjectAction.vb" />
     <Compile Include="Components\Core\KeeperObjectActionDelegateInfo.vb" />
     <Compile Include="Components\Core\LoggingLevel.vb" />
+    <Compile Include="Components\Core\MessageEventArgs.vb" />
     <Compile Include="Components\Core\RuleEngineMode.vb" />
     <Compile Include="Components\Core\SimpleRuleEngine.vb" />
     <Compile Include="Components\Engines\ControlAdapters\DynamicControlAdapter.vb" />
@@ -187,6 +188,8 @@
     <Compile Include="Components\Engines\ControlAdapters\DynamicHandlerStep.vb" />
     <Compile Include="Components\Core\ActionCommand.vb" />
     <Compile Include="Components\Core\ActionTree.vb" />
+    <Compile Include="Components\Engines\Application\ApplicationEvent.vb" />
+    <Compile Include="Components\Engines\Application\ApplicationSettings.vb" />
     <Compile Include="Components\Engines\Firewall\RequestSourceType.vb" />
     <Compile Include="Components\Engines\HttpHandlers\DynamicHttpHandler.vb" />
     <Compile Include="Components\Engines\HttpHandlers\HttpHandlerMode.vb" />

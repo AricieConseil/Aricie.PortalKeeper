@@ -1,8 +1,12 @@
+Imports System.Web.Compilation
+Imports Aricie.DNN.Services
 Imports DotNetNuke.Entities.Modules
 Imports Aricie.DNN.Settings
 Imports DotNetNuke.Services.Localization
 Imports DotNetNuke.Services.Exceptions
 Imports Aricie.DNN.UI.WebControls
+Imports Aricie.Services
+Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
@@ -62,8 +66,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                 Me.ctS.LocalResourceFile = Me.SharedResourceFile
                 Me.ctS.DataSource = Me.KeeperModuleSettings
                 Me.ctS.DataBind()
-
-
             Catch ex As Exception
                 ProcessModuleLoadException(Me, ex)
             End Try

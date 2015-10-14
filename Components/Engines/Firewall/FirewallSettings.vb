@@ -80,7 +80,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return "Firewall"
             End Get
             Set(value As String)
-                MyBase.Name = value
             End Set
         End Property
 

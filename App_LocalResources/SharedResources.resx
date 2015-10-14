@@ -190,7 +190,7 @@
     <value>The client request can be tested for specific portal aliases or ip addresses, whereas the policies disable specific accesses</value>
   </data>
   <data name="RuleEngineSettings`1_Rules.Text" xml:space="preserve">
-    <value>Those rules map custom client matching conditions to specific access policies</value>
+    <value>Those rules map custom client matching conditions to specific action sequences</value>
   </data>
   <data name="Rules_AddNew.Text" xml:space="preserve">
     <value>Add New Rule</value>
@@ -306,7 +306,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="FirewallConfig_RecoveryParam.Text" xml:space="preserve">
     <value>Recovery String</value>
   </data>
-  <data name="FirewallConfig_CustomErrorPage.Header" xml:space="preserve">
+  <data name="ApplicationSettings_CustomErrors.Header" xml:space="preserve">
     <value>Custom Errors</value>
   </data>
   <data name="PortalKeeperConfig_MainSettings.Header" xml:space="preserve">
@@ -348,7 +348,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="On.Text" xml:space="preserve">
     <value>On</value>
   </data>
-  <data name="FirewallConfig_CustomErrorsConfig.Text" xml:space="preserve">
+  <data name="ApplicationSettings_CustomErrorsConfig.Text" xml:space="preserve">
     <value>Application Errors Configuration. Don't forget to apply your changes after saving.</value>
   </data>
   <data name="RemoteOnly.Text" xml:space="preserve">
@@ -1209,7 +1209,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="ControlUrlInfo_RedirectMode.Help" xml:space="preserve">
     <value>If the target is a dnn page or a asp.net handler, you can choose to run a new handler on the fly instead of performing a 302 redirect. This also sets corresponding Custom Errors attribute in legacy mode.</value>
   </data>
-  <data name="FirewallConfig_CustomErrorsConfig.Help" xml:space="preserve">
+  <data name="ApplicationSettings_CustomErrorsConfig.Help" xml:space="preserve">
     <value>That section configures Error handling as usually defined in the web.config file. You can define here the corresponding section, but you can also activate a new virtual mode, which let's you control error handling dynamically in an extended configuration.</value>
   </data>
   <data name="VirtualCustomErrorsInfo_CustomErrorsType.Help" xml:space="preserve">
@@ -1819,7 +1819,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Technical Settings</value>
   </data>
   <data name="PortalKeeperConfig_Scheduler.Header" xml:space="preserve">
-    <value>Bots Farm</value>
+    <value>Bots</value>
   </data>
   <data name="PortalKeeperConfig_SchedulerFarm.Help" xml:space="preserve">
     <value>You should configure their period to be equal or superior to the period defined for the task in the dnn scheduler menu</value>
@@ -9188,13 +9188,13 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ExpressionFilterInfo_Categorization.Text" xml:space="preserve">
     <value>Categorization Dictionary</value>
   </data>
-  <data name="FirewallConfig_Compression.Header" xml:space="preserve">
+  <data name="ApplicationSettings_Compression.Header" xml:space="preserve">
     <value>Compression</value>
   </data>
-  <data name="FirewallConfig_UrlCompression.Help" xml:space="preserve">
+  <data name="ApplicationSettings_UrlCompression.Help" xml:space="preserve">
     <value>Http Compression is a web.config parameter that can be activated in IIS or manually edited with additional parameters available. Use the following form to update the web.config file accordingly.</value>
   </data>
-  <data name="FirewallConfig_UrlCompression.Text" xml:space="preserve">
+  <data name="ApplicationSettings_UrlCompression.Text" xml:space="preserve">
     <value>Url Compression Configuration</value>
   </data>
   <data name="UrlCompressionInfo_DoDynamicCompression.Help" xml:space="preserve">
@@ -10587,7 +10587,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Saves your new configuration storage settings. and save the configuration file accordingly.</value>
   </data>
   <data name="Navigate.Command.ToolTip" xml:space="preserve">
-    <value>Navigates to the corresponding entity with a dedicated link (click the accordion directly alternatively to browse locally with Ajax callbacks). Tthe corresponding url can be bookmarked as a shortcut saving from having to navigate the hierarchy.</value>
+    <value>Navigates to the corresponding entity with a dedicated link (click the accordion directly alternatively to browse locally with Ajax callbacks). The corresponding url can be bookmarked as a shortcut saving from having to navigate the hierarchy.</value>
   </data>
   <data name="RuleEngineSettings`1_ImportAvailableProviders.Text.ToolTip" xml:space="preserve">
     <value>Analyses all available .Net type to import available condition and action providers. </value>
@@ -10605,7 +10605,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Moves the selected item one up in the ordered collection.</value>
   </data>
   <data name="XmlConfigElementInfo_Install.Text.ToolTip" xml:space="preserve">
-    <value>Registered the corresponding Xml component in the main web.config application configuration file located at the root of your web application.</value>
+    <value>Registered the corresponding Xml component in the main web.config application configuration file located at the root of your web application. This will trigger an application restart.</value>
   </data>
   <data name="XmlConfigElementInfo_Update.Text.ToolTip" xml:space="preserve">
     <value>Updates the corresponding registered Xml component in the main web.config configuration file.</value>
@@ -10624,5 +10624,485 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="AutoLoginAction_CurrentAutoLoginInfo.Text" xml:space="preserve">
     <value>Automatic Login parameters</value>
+  </data>
+  <data name="XmlConfigElementInfo_Uninstall.Text.ToolTip" xml:space="preserve">
+    <value>Uninstalls the corresponding xml nodes from the main application configuration file located at the root of your application. This will trigger an application restart.  </value>
+  </data>
+  <data name="ApplicationEnd.Text" xml:space="preserve">
+    <value>Application End</value>
+  </data>
+  <data name="ApplicationSettings_EnableCriticalChangesHandler.Help" xml:space="preserve">
+    <value>The notification of Application level critical file and directory changes, which triggers application restarts, can be pretty hard to diagnose. Check to hook into that system event to make that application event step available in the rules of the engine.</value>
+  </data>
+  <data name="ApplicationSettings_EnableCriticalChangesHandler.Text" xml:space="preserve">
+    <value>Enable Critical Changes Handler</value>
+  </data>
+  <data name="ApplicationStart.Text" xml:space="preserve">
+    <value>Application Start</value>
+  </data>
+  <data name="CriticalChange.Text" xml:space="preserve">
+    <value>Critical Change</value>
+  </data>
+  <data name="LogTypeSelector.ADMIN_ALERT" xml:space="preserve">
+    <value>ADMIN_ALERT</value>
+  </data>
+  <data name="LogTypeSelector.APPLICATION_END" xml:space="preserve">
+    <value>APPLICATION_END</value>
+  </data>
+  <data name="LogTypeSelector.APPLICATION_SHUTTING_DOWN" xml:space="preserve">
+    <value>APPLICATION_SHUTTING_DOWN</value>
+  </data>
+  <data name="LogTypeSelector.APPLICATION_START" xml:space="preserve">
+    <value>APPLICATION_START</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_CREATED" xml:space="preserve">
+    <value>AUTHENTICATION_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_DELETED" xml:space="preserve">
+    <value>AUTHENTICATION_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_UPDATED" xml:space="preserve">
+    <value>AUTHENTICATION_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_USER_CREATED" xml:space="preserve">
+    <value>AUTHENTICATION_USER_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_USER_DELETED" xml:space="preserve">
+    <value>AUTHENTICATION_USER_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.AUTHENTICATION_USER_UPDATED" xml:space="preserve">
+    <value>AUTHENTICATION_USER_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_DEPENDENCYCHANGED" xml:space="preserve">
+    <value>CACHE_DEPENDENCYCHANGED</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_ERROR" xml:space="preserve">
+    <value>CACHE_ERROR</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_EXPIRED" xml:space="preserve">
+    <value>CACHE_EXPIRED</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_OVERFLOW" xml:space="preserve">
+    <value>CACHE_OVERFLOW</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_REFRESH" xml:space="preserve">
+    <value>CACHE_REFRESH</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_REMOVED" xml:space="preserve">
+    <value>CACHE_REMOVED</value>
+  </data>
+  <data name="LogTypeSelector.CACHE_UNDERUSED" xml:space="preserve">
+    <value>CACHE_UNDERUSED</value>
+  </data>
+  <data name="LogTypeSelector.DEBUG" xml:space="preserve">
+    <value>DEBUG</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULEPERMISSION_CREATED" xml:space="preserve">
+    <value>DESKTOPMODULEPERMISSION_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULEPERMISSION_DELETED" xml:space="preserve">
+    <value>DESKTOPMODULEPERMISSION_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULEPERMISSION_UPDATED" xml:space="preserve">
+    <value>DESKTOPMODULEPERMISSION_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULE_CREATED" xml:space="preserve">
+    <value>DESKTOPMODULE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULE_DELETED" xml:space="preserve">
+    <value>DESKTOPMODULE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.DESKTOPMODULE_UPDATED" xml:space="preserve">
+    <value>DESKTOPMODULE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.FOLDER_CREATED" xml:space="preserve">
+    <value>FOLDER_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.FOLDER_DELETED" xml:space="preserve">
+    <value>FOLDER_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.FOLDER_MOVED" xml:space="preserve">
+    <value>FOLDER_MOVED</value>
+  </data>
+  <data name="LogTypeSelector.FOLDER_UPDATED" xml:space="preserve">
+    <value>FOLDER_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.GENERAL_EXCEPTION" xml:space="preserve">
+    <value>GENERAL_EXCEPTION</value>
+  </data>
+  <data name="LogTypeSelector.HOST_ALERT" xml:space="preserve">
+    <value>HOST_ALERT</value>
+  </data>
+  <data name="LogTypeSelector.HOST_SETTING_CREATED" xml:space="preserve">
+    <value>HOST_SETTING_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.HOST_SETTING_DELETED" xml:space="preserve">
+    <value>HOST_SETTING_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.HOST_SETTING_UPDATED" xml:space="preserve">
+    <value>HOST_SETTING_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.HOST_SQL_EXECUTED" xml:space="preserve">
+    <value>HOST_SQL_EXECUTED</value>
+  </data>
+  <data name="LogTypeSelector.IP_LOGIN_BANNED" xml:space="preserve">
+    <value>IP_LOGIN_BANNED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGEPACK_CREATED" xml:space="preserve">
+    <value>LANGUAGEPACK_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGEPACK_DELETED" xml:space="preserve">
+    <value>LANGUAGEPACK_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGEPACK_UPDATED" xml:space="preserve">
+    <value>LANGUAGEPACK_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGETOPORTAL_CREATED" xml:space="preserve">
+    <value>LANGUAGETOPORTAL_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGETOPORTAL_DELETED" xml:space="preserve">
+    <value>LANGUAGETOPORTAL_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGETOPORTAL_UPDATED" xml:space="preserve">
+    <value>LANGUAGETOPORTAL_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGE_CREATED" xml:space="preserve">
+    <value>LANGUAGE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGE_DELETED" xml:space="preserve">
+    <value>LANGUAGE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.LANGUAGE_UPDATED" xml:space="preserve">
+    <value>LANGUAGE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.LIBRARY_UPDATED" xml:space="preserve">
+    <value>LIBRARY_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.LISTENTRY_CREATED" xml:space="preserve">
+    <value>LISTENTRY_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.LISTENTRY_DELETED" xml:space="preserve">
+    <value>LISTENTRY_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.LISTENTRY_UPDATED" xml:space="preserve">
+    <value>LISTENTRY_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.LOGIN_FAILURE" xml:space="preserve">
+    <value>LOGIN_FAILURE</value>
+  </data>
+  <data name="LogTypeSelector.LOGIN_SUCCESS" xml:space="preserve">
+    <value>LOGIN_SUCCESS</value>
+  </data>
+  <data name="LogTypeSelector.LOGIN_SUPERUSER" xml:space="preserve">
+    <value>LOGIN_SUPERUSER</value>
+  </data>
+  <data name="LogTypeSelector.LOGIN_USERLOCKEDOUT" xml:space="preserve">
+    <value>LOGIN_USERLOCKEDOUT</value>
+  </data>
+  <data name="LogTypeSelector.LOGIN_USERNOTAPPROVED" xml:space="preserve">
+    <value>LOGIN_USERNOTAPPROVED</value>
+  </data>
+  <data name="LogTypeSelector.LOG_NOTIFICATION_FAILURE" xml:space="preserve">
+    <value>LOG_NOTIFICATION_FAILURE</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_CREATED" xml:space="preserve">
+    <value>MODULE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_DELETED" xml:space="preserve">
+    <value>MODULE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_LOAD_EXCEPTION" xml:space="preserve">
+    <value>MODULE_LOAD_EXCEPTION</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_RESTORED" xml:space="preserve">
+    <value>MODULE_RESTORED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_SENT_TO_RECYCLE_BIN" xml:space="preserve">
+    <value>MODULE_SENT_TO_RECYCLE_BIN</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_SETTING_CREATED" xml:space="preserve">
+    <value>MODULE_SETTING_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_SETTING_DELETED" xml:space="preserve">
+    <value>MODULE_SETTING_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_SETTING_UPDATED" xml:space="preserve">
+    <value>MODULE_SETTING_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.MODULE_UPDATED" xml:space="preserve">
+    <value>MODULE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PACKAGE_CREATED" xml:space="preserve">
+    <value>PACKAGE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PACKAGE_DELETED" xml:space="preserve">
+    <value>PACKAGE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PACKAGE_UPDATED" xml:space="preserve">
+    <value>PACKAGE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PAGE_LOAD_EXCEPTION" xml:space="preserve">
+    <value>PAGE_LOAD_EXCEPTION</value>
+  </data>
+  <data name="LogTypeSelector.PAGE_NOT_FOUND_404" xml:space="preserve">
+    <value>PAGE_NOT_FOUND_404</value>
+  </data>
+  <data name="LogTypeSelector.PASSWORD_SENT_FAILURE" xml:space="preserve">
+    <value>PASSWORD_SENT_FAILURE</value>
+  </data>
+  <data name="LogTypeSelector.PASSWORD_SENT_SUCCESS" xml:space="preserve">
+    <value>PASSWORD_SENT_SUCCESS</value>
+  </data>
+  <data name="LogTypeSelector.PERMISSION_CREATED" xml:space="preserve">
+    <value>PERMISSION_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PERMISSION_DELETED" xml:space="preserve">
+    <value>PERMISSION_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PERMISSION_UPDATED" xml:space="preserve">
+    <value>PERMISSION_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALALIAS_CREATED" xml:space="preserve">
+    <value>PORTALALIAS_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALALIAS_DELETED" xml:space="preserve">
+    <value>PORTALALIAS_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALALIAS_UPDATED" xml:space="preserve">
+    <value>PORTALALIAS_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALDESKTOPMODULE_CREATED" xml:space="preserve">
+    <value>PORTALDESKTOPMODULE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALDESKTOPMODULE_DELETED" xml:space="preserve">
+    <value>PORTALDESKTOPMODULE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALDESKTOPMODULE_UPDATED" xml:space="preserve">
+    <value>PORTALDESKTOPMODULE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALINFO_CREATED" xml:space="preserve">
+    <value>PORTALINFO_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALINFO_DELETED" xml:space="preserve">
+    <value>PORTALINFO_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PORTALINFO_UPDATED" xml:space="preserve">
+    <value>PORTALINFO_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTAL_CREATED" xml:space="preserve">
+    <value>PORTAL_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTAL_DELETED" xml:space="preserve">
+    <value>PORTAL_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PORTAL_SETTING_CREATED" xml:space="preserve">
+    <value>PORTAL_SETTING_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PORTAL_SETTING_DELETED" xml:space="preserve">
+    <value>PORTAL_SETTING_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PORTAL_SETTING_UPDATED" xml:space="preserve">
+    <value>PORTAL_SETTING_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.POTENTIAL_PAYPAL_PAYMENT_FRAUD" xml:space="preserve">
+    <value>POTENTIAL_PAYPAL_PAYMENT_FRAUD</value>
+  </data>
+  <data name="LogTypeSelector.PROFILEPROPERTY_CREATED" xml:space="preserve">
+    <value>PROFILEPROPERTY_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.PROFILEPROPERTY_DELETED" xml:space="preserve">
+    <value>PROFILEPROPERTY_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.PROFILEPROPERTY_UPDATED" xml:space="preserve">
+    <value>PROFILEPROPERTY_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.ROLE_CREATED" xml:space="preserve">
+    <value>ROLE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.ROLE_DELETED" xml:space="preserve">
+    <value>ROLE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.ROLE_UPDATED" xml:space="preserve">
+    <value>ROLE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_EVENT_COMPLETED" xml:space="preserve">
+    <value>SCHEDULER_EVENT_COMPLETED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_EVENT_FAILURE" xml:space="preserve">
+    <value>SCHEDULER_EVENT_FAILURE</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_EVENT_PROGRESSING" xml:space="preserve">
+    <value>SCHEDULER_EVENT_PROGRESSING</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_EVENT_STARTED" xml:space="preserve">
+    <value>SCHEDULER_EVENT_STARTED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_EXCEPTION" xml:space="preserve">
+    <value>SCHEDULER_EXCEPTION</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_SHUTTING_DOWN" xml:space="preserve">
+    <value>SCHEDULER_SHUTTING_DOWN</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_STARTED" xml:space="preserve">
+    <value>SCHEDULER_STARTED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULER_STOPPED" xml:space="preserve">
+    <value>SCHEDULER_STOPPED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULE_CREATED" xml:space="preserve">
+    <value>SCHEDULE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULE_DELETED" xml:space="preserve">
+    <value>SCHEDULE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULE_FIRED_FROM_EVENT" xml:space="preserve">
+    <value>SCHEDULE_FIRED_FROM_EVENT</value>
+  </data>
+  <data name="LogTypeSelector.SCHEDULE_UPDATED" xml:space="preserve">
+    <value>SCHEDULE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.SCRIPT_COLLISION" xml:space="preserve">
+    <value>SCRIPT_COLLISION</value>
+  </data>
+  <data name="LogTypeSelector.SEARCH_INDEXER_EXCEPTION" xml:space="preserve">
+    <value>SEARCH_INDEXER_EXCEPTION</value>
+  </data>
+  <data name="LogTypeSelector.SKINCONTROL_CREATED" xml:space="preserve">
+    <value>SKINCONTROL_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.SKINCONTROL_DELETED" xml:space="preserve">
+    <value>SKINCONTROL_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.SKINCONTROL_UPDATED" xml:space="preserve">
+    <value>SKINCONTROL_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.SKINPACKAGE_CREATED" xml:space="preserve">
+    <value>SKINPACKAGE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.SKINPACKAGE_DELETED" xml:space="preserve">
+    <value>SKINPACKAGE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.SKINPACKAGE_UPDATED" xml:space="preserve">
+    <value>SKINPACKAGE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_CREATED" xml:space="preserve">
+    <value>TABMODULE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_DELETED" xml:space="preserve">
+    <value>TABMODULE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_SETTING_CREATED" xml:space="preserve">
+    <value>TABMODULE_SETTING_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_SETTING_DELETED" xml:space="preserve">
+    <value>TABMODULE_SETTING_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_SETTING_UPDATED" xml:space="preserve">
+    <value>TABMODULE_SETTING_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TABMODULE_UPDATED" xml:space="preserve">
+    <value>TABMODULE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TABPERMISSION_CREATED" xml:space="preserve">
+    <value>TABPERMISSION_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.TABPERMISSION_DELETED" xml:space="preserve">
+    <value>TABPERMISSION_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.TABPERMISSION_UPDATED" xml:space="preserve">
+    <value>TABPERMISSION_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TABURL_CREATED" xml:space="preserve">
+    <value>TABURL_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.TABURL_DELETED" xml:space="preserve">
+    <value>TABURL_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.TABURL_UPDATED" xml:space="preserve">
+    <value>TABURL_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TAB_CREATED" xml:space="preserve">
+    <value>TAB_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.TAB_DELETED" xml:space="preserve">
+    <value>TAB_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.TAB_ORDER_UPDATED" xml:space="preserve">
+    <value>TAB_ORDER_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.TAB_RESTORED" xml:space="preserve">
+    <value>TAB_RESTORED</value>
+  </data>
+  <data name="LogTypeSelector.TAB_SENT_TO_RECYCLE_BIN" xml:space="preserve">
+    <value>TAB_SENT_TO_RECYCLE_BIN</value>
+  </data>
+  <data name="LogTypeSelector.TAB_UPDATED" xml:space="preserve">
+    <value>TAB_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.USER_CREATED" xml:space="preserve">
+    <value>USER_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.USER_DELETED" xml:space="preserve">
+    <value>USER_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.USER_IMPERSONATED" xml:space="preserve">
+    <value>USER_IMPERSONATED</value>
+  </data>
+  <data name="LogTypeSelector.USER_REMOVED" xml:space="preserve">
+    <value>USER_REMOVED</value>
+  </data>
+  <data name="LogTypeSelector.USER_RESTORED" xml:space="preserve">
+    <value>USER_RESTORED</value>
+  </data>
+  <data name="LogTypeSelector.USER_ROLE_CREATED" xml:space="preserve">
+    <value>USER_ROLE_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.USER_ROLE_DELETED" xml:space="preserve">
+    <value>USER_ROLE_DELETED</value>
+  </data>
+  <data name="LogTypeSelector.USER_ROLE_UPDATED" xml:space="preserve">
+    <value>USER_ROLE_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.USER_UPDATED" xml:space="preserve">
+    <value>USER_UPDATED</value>
+  </data>
+  <data name="LogTypeSelector.WEBSERVER_CREATED" xml:space="preserve">
+    <value>WEBSERVER_CREATED</value>
+  </data>
+  <data name="LogTypeSelector.WEBSERVER_DISABLED" xml:space="preserve">
+    <value>WEBSERVER_DISABLED</value>
+  </data>
+  <data name="LogTypeSelector.WEBSERVER_ENABLED" xml:space="preserve">
+    <value>WEBSERVER_ENABLED</value>
+  </data>
+  <data name="LogTypeSelector.WEBSERVER_PINGFAILED" xml:space="preserve">
+    <value>WEBSERVER_PINGFAILED</value>
+  </data>
+  <data name="LogTypeSelector.WEBSERVER_UPDATED" xml:space="preserve">
+    <value>WEBSERVER_UPDATED</value>
+  </data>
+  <data name="PortalKeeperConfig_Application.Header" xml:space="preserve">
+    <value>Application</value>
+  </data>
+  <data name="PortalKeeperConfig_ApplicationSettings.Help" xml:space="preserve">
+    <value>Here you have application level settings and a rule engine that taps into the application start, application end, and optionally critical file change notification events.</value>
+  </data>
+  <data name="PortalKeeperConfig_ApplicationSettings.Text" xml:space="preserve">
+    <value>Application Settings</value>
+  </data>
+  <data name="Cut.Command" xml:space="preserve">
+    <value>Cut</value>
+  </data>
+  <data name="Cut.Command.ToolTip" xml:space="preserve">
+    <value>Click to copy and remove that item to move it to a different collection</value>
+  </data>
+  <data name="ItemCut.Message" xml:space="preserve">
+    <value>The selected item was cut. You can paste it in a new collection. Don't forget to save after you finished editing</value>
+  </data>
+  <data name="ItemsCut.Message" xml:space="preserve">
+    <value>The selected items were cut. You can paste them in a new collection. Don't forget to save after you finished editing</value>
+  </data>
+  <data name="ApplicationSettings_Rules.Header" xml:space="preserve">
+    <value>Runtime</value>
   </data>
 </root>

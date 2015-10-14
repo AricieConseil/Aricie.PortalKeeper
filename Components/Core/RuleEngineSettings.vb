@@ -150,10 +150,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Catch
                 Return 0
             End Try
+            Dim minEvent As TEngineEvents
+            Dim maxEvent As TEngineEvents
+            Dim defaultEvent As TEngineEvents
+            If GetType(TEngineEvents).IsEnum Then
+                Dim minValue As Integer = Integer.MaxValue
+                Dim maxValue As Integer = Integer.MinValue
+
+                For Each objEvent As TEngineEvents In Common.GetEnumMembers(Of TEngineEvents)()
+                    Dim enumConvertible As IConvertible = DirectCast(objEvent, IConvertible)
+                    If enumConvertible.ToString(CultureInfo.InvariantCulture) <> KeeperAction(Of TEngineEvents).DefaultEventStep Then
+                        Dim enumvalue As Integer = DirectCast(objEvent, IConvertible).ToInt32(CultureInfo.InvariantCulture)
+                        If enumvalue < minValue Then
+                            minValue = enumvalue
+                            minEvent = objEvent
+                        End If
+                        If enumvalue > maxValue Then
+                            maxValue = enumvalue
+                            maxEvent = objEvent
+                        End If
+                    Else
+                        defaultEvent = DirectCast([Enum].Parse(GetType(TEngineEvents), KeeperAction(Of TEngineEvents).DefaultEventStep), TEngineEvents)
+                    End If
+                Next
+            End If
             For Each objType As Type In assemblyTypes
                 If Not objType.IsAbstract Then
-                    If (Aricie.Common.IsAssignableToGenericType(objType, GetType(IConditionProvider(Of ))) AndAlso objType IsNot GetType(ConditionProvider(Of ))) _
-                        OrElse (Aricie.Common.IsAssignableToGenericType(objType, GetType(IActionProvider(Of ))) AndAlso objType IsNot GetType(ActionProvider(Of ))) Then
+                    If (objType.IsAssignableToGenericType(GetType(IConditionProvider(Of ))) AndAlso objType IsNot GetType(ConditionProvider(Of ))) _
+                        OrElse (objType.IsAssignableToGenericType(GetType(IActionProvider(Of ))) AndAlso objType IsNot GetType(ActionProvider(Of ))) Then
                         If objType.IsGenericType Then
                             objType = objType.MakeGenericType(GetType(TEngineEvents))
                         End If
@@ -166,7 +190,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 found = False
                             End If
                             If Not found Then
-                                Me.ConditionProviders.Add(New ConditionProviderConfig(Of TEngineEvents)(objType))
+                                Dim newConditionProvider As New ConditionProviderConfig(Of TEngineEvents)(objType)
+                                If minEvent IsNot Nothing Then
+                                    newConditionProvider.MinTEngineEvents = minEvent
+
+                                End If
+                                If maxEvent IsNot Nothing Then
+                                    newConditionProvider.MaxTEngineEvents = maxEvent
+                                End If
+                                If defaultEvent IsNot Nothing Then
+                                    newConditionProvider.DefaultTEngineEvents = defaultEvent
+                                End If
+
+                                Me.ConditionProviders.Add(newConditionProvider)
                                 toReturn += 1
                             End If
                         ElseIf objInterfaces.Contains(GetType(IActionProvider(Of TEngineEvents))) Then
@@ -176,7 +212,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 found = False
                             End If
                             If Not found Then
-                                Me.ActionProviders.Add(New ActionProviderConfig(Of TEngineEvents)(objType))
+                                Dim newActionProvider As New ActionProviderConfig(Of TEngineEvents)(objType)
+                                If minEvent IsNot Nothing Then
+                                    newActionProvider.MinTEngineEvents = minEvent
+                                    newActionProvider.MaxTEngineEvents = maxEvent
+                                End If
+                                Me.ActionProviders.Add(newActionProvider)
                                 toReturn += 1
                             End If
                         End If

@@ -128,7 +128,7 @@
   </data>
   <data name="ComponentsInstalled.Message" xml:space="preserve">
     <value>&lt;p&gt;Portal Keeper Components registered. This is the main configuration form. Here you can create and manage 5 types of agents:
-&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Bots&lt;/strong&gt; are scheduled agents,&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Rest services&lt;/strong&gt; plug into the DNN web API service framework, &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Firewall rules&lt;/strong&gt; a executed at custom steps within the ASP.Net lifecycle,&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Http Handlers&lt;/strong&gt; respond to general http requests,&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Control Adapters&lt;/strong&gt; change the behavior of any type of server control used in the application.  &lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Use that form to navigate within the hierarchy of agents, make changes and don't forget to save your configuration. User agents can be configured in the module settings. Don't forget to unregister the components before you uninstall the module.&lt;/p&gt;</value>
+&lt;ul&gt;&lt;li&gt;&lt;strong&gt;Firewall rules&lt;/strong&gt; a executed at custom steps within the ASP.Net request lifecycle,&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Application rules&lt;/strong&gt; a executed at custom steps within the ASP.Net application lifecycle,&lt;/li&gt;&lt;li&gt;&lt;strong&gt;Bots&lt;/strong&gt; are scheduled agents, executed in the DNN scheduler&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Rest services&lt;/strong&gt; plug into the DNN web API service framework, and have agents executed as Controller actions&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Http Handlers&lt;/strong&gt; respond to general http requests, with agents directly producing the Http response&lt;/li&gt;&lt;li&gt; &lt;strong&gt;Control Adapters&lt;/strong&gt; change the behavior of any type of server control used in the application, with agents hooked the controls and child controls events.  &lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Use that form to navigate within the hierarchy of agents, make changes and don't forget to save your configuration. User agents can be configured in the module settings. Don't forget to unregister the components before you uninstall the module.&lt;/p&gt;</value>
   </data>
   <data name="ConfigSaved.Message" xml:space="preserve">
     <value>PortalKeeper Configuration Saved</value>
@@ -161,7 +161,7 @@
     <value>Run Forced Bots</value>
   </data>
   <data name="cmdDebug.Text" xml:space="preserve">
-    <value>Debug Test Command (Hide in Production) </value>
+    <value>Debug Test Command (Hide in Production)</value>
   </data>
   <data name="lblUserBot.Text" xml:space="preserve">
     <value>User Bot Settings</value>
