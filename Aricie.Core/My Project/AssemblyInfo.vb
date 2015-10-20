@@ -32,7 +32,7 @@ Imports System.Resources
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("01.09.00")> 
-<Assembly: AssemblyFileVersion("01.09.00")> 
+<Assembly: AssemblyVersion("01.09.01")> 
+<Assembly: AssemblyFileVersion("01.09.01")> 
 
 <Assembly: NeutralResourcesLanguage("")> 
