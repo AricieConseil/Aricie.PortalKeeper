@@ -137,12 +137,12 @@ Namespace Web
             End Get
         End Property
 
-
+        Private Shared ReadOnly _AliasesField As FieldInfo = FileChangesMonitor.GetType().GetField("_aliases", System.Reflection.BindingFlags.Instance _
+                                                                               Or System.Reflection.BindingFlags.NonPublic _
+                                                                               Or System.Reflection.BindingFlags.IgnoreCase)
         Public Shared ReadOnly Property Aliases As Hashtable
             Get
-                Return DirectCast(FileChangesMonitor.GetType().GetField("_aliases", System.Reflection.BindingFlags.Instance _
-                                                                               Or System.Reflection.BindingFlags.NonPublic _
-                                                                               Or System.Reflection.BindingFlags.IgnoreCase).GetValue(FileChangesMonitor), Hashtable)
+                Return DirectCast(_AliasesField.GetValue(FileChangesMonitor), Hashtable)
             End Get
         End Property
 
@@ -322,15 +322,16 @@ Namespace Web
         End Function
 
         Public Shared Function GetDirMonitorDir(dirMon As Object) As String
+            Dim toReturn As String = String.Empty
             If dirMon IsNot Nothing Then
-                Dim toReturn As String = TryCast(dirMon.GetType().GetField("Directory", System.Reflection.BindingFlags.Instance _
+                toReturn = TryCast(dirMon.GetType().GetField("Directory", System.Reflection.BindingFlags.Instance _
                                                                               Or System.Reflection.BindingFlags.NonPublic _
                                                                               Or System.Reflection.BindingFlags.IgnoreCase).GetValue(dirMon), String)
                 If toReturn Is Nothing Then
                     toReturn = String.Empty
                 End If
             End If
-            Return String.Empty
+            Return toReturn
         End Function
 
         Public Overridable Sub StopSystemMonitoring()
@@ -352,7 +353,8 @@ Namespace Web
             If pattern.IsNullOrEmpty() Then
 
                 toReturn += RemoveTargets(target, DirectoryMonitor)
-
+            Else
+                pattern = pattern.ToUpperInvariant()
             End If
 
             For Each dirMon As Object In DirMonSpecialDirs
@@ -379,6 +381,19 @@ Namespace Web
                 End If
             Next
 
+            For Each aliasPair As DictionaryEntry In Aliases
+
+                Dim strAlias As String = DirectCast(aliasPair.Key, String)
+                If strAlias.ToUpperInvariant().Contains(pattern) Then
+                    If aliasPair.Value IsNot Nothing Then
+
+                        toReturn += RemoveTargetsFromFileMon(target, aliasPair.Value)
+
+
+                    End If
+                End If
+            Next
+
 
             Return toReturn
 
@@ -388,7 +403,7 @@ Namespace Web
 
         Private Function RemoveTargetsWithPattern(objTarget As Object, dirMon As Object, pattern As String) As Integer
             Dim toReturn As Integer = 0
-            If pattern.IsNullOrEmpty() OrElse GetDirMonitorDir(dirMon).Contains(pattern) Then
+            If pattern.IsNullOrEmpty() OrElse GetDirMonitorDir(dirMon).ToUpperInvariant().Contains(pattern) Then
                 toReturn += RemoveTargets(objTarget, dirMon)
             Else
                 Dim fileMons As Hashtable = DirectCast(_fileMonsField.GetValue(dirMon), Hashtable)
@@ -397,7 +412,7 @@ Namespace Web
                     If _FileNameLongField Is Nothing Then
                         _FileNameLongField = _anyFileMonField.FieldType.GetField("_fileNameLong", BindingFlags.NonPublic Or BindingFlags.Instance)
                     End If
-                    If pattern.IsNullOrEmpty() OrElse DirectCast(_FileNameLongField.GetValue(objFileMon), String).Contains(pattern) Then
+                    If pattern.IsNullOrEmpty() OrElse DirectCast(_FileNameLongField.GetValue(objFileMon), String).ToUpperInvariant().Contains(pattern) Then
                         toReturn += RemoveTargetsFromFileMon(objTarget, objFileMon)
                     End If
 
