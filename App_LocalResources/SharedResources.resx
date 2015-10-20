@@ -11105,4 +11105,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ApplicationSettings_Rules.Header" xml:space="preserve">
     <value>Runtime</value>
   </data>
+  <data name="Paste.Command.Tooltip" xml:space="preserve">
+    <value>Click to add your copied items to the current collection.</value>
+  </data>
 </root>

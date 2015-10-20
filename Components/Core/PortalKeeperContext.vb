@@ -165,9 +165,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return _CurrentEventStep
             End Get
             Set(ByVal value As TEngineEvents)
-                If _CurrentEventStep IsNot Nothing AndAlso Not _CurrentEventStep.Equals(value) Then
+                If _CurrentEventStep Is Nothing OrElse Not _CurrentEventStep.Equals(value) Then
                     SyncLock _PreviousSteps
-                        _PreviousSteps.Add(_CurrentEventStep)
+                        If _CurrentEventStep IsNot Nothing Then
+                            _PreviousSteps.Add(_CurrentEventStep)
+                        End If
                         _CurrentEventStep = value
                     End SyncLock
                 End If
@@ -309,54 +311,56 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
         End Sub
 
-
+        Private _ProcessingLock As New Object
 
         Public Sub ProcessRules(ByVal objEvent As TEngineEvents, ByVal configRules As RuleEngineSettings(Of TEngineEvents), ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
-            If Me._CurrentEngine IsNot configRules Then
-                Me._CurrentEngine = configRules
-            End If
-            Me.CurrentEventStep = objEvent
-            If configRules.Mode = RuleEngineMode.Rules Then
-                Me.LogStartEventStep()
-                Dim matchedRules = Me.MatchRules(configRules.Rules)
-                Dim lateRules As List(Of KeeperRule(Of TEngineEvents)) = Nothing
-                If LateRunningRules.Count > 0 AndAlso LateRunningRules.TryGetValue(Me.CurrentEventStep, lateRules) Then
-                    matchedRules.AddRange(lateRules)
+            SyncLock _ProcessingLock
+                If Me._CurrentEngine IsNot configRules Then
+                    Me._CurrentEngine = configRules
                 End If
-                Dim lateActions As KeeperRule(Of TEngineEvents) = Nothing
-                If LateRunningActions.Count > 0 AndAlso LateRunningActions.TryGetValue(Me.CurrentEventStep, lateActions) Then
-                    matchedRules.Add(lateActions)
-                End If
-                If matchedRules.Count > 0 Then
-                    For Each matchedRule As KeeperRule(Of TEngineEvents) In matchedRules
-                        If matchedRule.RunLifeCycleEvent.Equals(Me.CurrentEventStep) Then
-                            matchedRule.RunActions(Me)
-                        Else
-                            Dim intCurrEvent As Integer = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
-                            Dim intMatchedRuleRunEvent = matchedRule.RunLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture)
-                            If intMatchedRuleRunEvent < intCurrEvent Then
-                                Throw New ApplicationException("Cannot set rule to run before it is evaluated")
-                            End If
-                            Dim postPoneList As List(Of KeeperRule(Of TEngineEvents)) = Nothing
-                            If Not LateRunningRules.TryGetValue(matchedRule.RunLifeCycleEvent, postPoneList) Then
-                                postPoneList = New List(Of KeeperRule(Of TEngineEvents))
-                                LateRunningRules(matchedRule.RunLifeCycleEvent) = postPoneList
-                            End If
-                            postPoneList.Add(matchedRule)
-                        End If
-                    Next
-                End If
-                Me.LogEndEventStep(False, endoverhead)
-            Else
-                If configRules.InitialCondition.Instances.Count = 0 OrElse configRules.InitialCondition.Match(Me) Then
+                Me.CurrentEventStep = objEvent
+                If configRules.Mode = RuleEngineMode.Rules Then
                     Me.LogStartEventStep()
-                    configRules.Actions.Run(Me)
+                    Dim matchedRules = Me.MatchRules(configRules.Rules)
+                    Dim lateRules As List(Of KeeperRule(Of TEngineEvents)) = Nothing
+                    If LateRunningRules.Count > 0 AndAlso LateRunningRules.TryGetValue(Me.CurrentEventStep, lateRules) Then
+                        matchedRules.AddRange(lateRules)
+                    End If
+                    Dim lateActions As KeeperRule(Of TEngineEvents) = Nothing
+                    If LateRunningActions.Count > 0 AndAlso LateRunningActions.TryGetValue(Me.CurrentEventStep, lateActions) Then
+                        matchedRules.Add(lateActions)
+                    End If
+                    If matchedRules.Count > 0 Then
+                        For Each matchedRule As KeeperRule(Of TEngineEvents) In matchedRules
+                            If matchedRule.RunLifeCycleEvent.Equals(Me.CurrentEventStep) Then
+                                matchedRule.RunActions(Me)
+                            Else
+                                Dim intCurrEvent As Integer = Me.CurrentEventStep.ToInt32(CultureInfo.InvariantCulture)
+                                Dim intMatchedRuleRunEvent = matchedRule.RunLifeCycleEvent.ToInt32(CultureInfo.InvariantCulture)
+                                If intMatchedRuleRunEvent < intCurrEvent Then
+                                    Throw New ApplicationException("Cannot set rule to run before it is evaluated")
+                                End If
+                                Dim postPoneList As List(Of KeeperRule(Of TEngineEvents)) = Nothing
+                                If Not LateRunningRules.TryGetValue(matchedRule.RunLifeCycleEvent, postPoneList) Then
+                                    postPoneList = New List(Of KeeperRule(Of TEngineEvents))
+                                    LateRunningRules(matchedRule.RunLifeCycleEvent) = postPoneList
+                                End If
+                                postPoneList.Add(matchedRule)
+                            End If
+                        Next
+                    End If
                     Me.LogEndEventStep(False, endoverhead)
+                Else
+                    If configRules.InitialCondition.Instances.Count = 0 OrElse configRules.InitialCondition.Match(Me) Then
+                        Me.LogStartEventStep()
+                        configRules.Actions.Run(Me)
+                        Me.LogEndEventStep(False, endoverhead)
+                    End If
                 End If
-            End If
-            If endSequence Then
-                Me.LogEndEngine()
-            End If
+                If endSequence Then
+                    Me.LogEndEngine()
+                End If
+            End SyncLock
         End Sub
 
         Public Function IsDefaultStep(objStep As TEngineEvents) As Boolean
@@ -432,7 +436,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Private Sub LogEndEventStep(ByVal endSequence As Boolean, ByVal endoverhead As Boolean)
-            Me.LogEnd(Me._CurrentEventStep, endSequence, endoverhead, LoggingLevel.Steps, Nothing)
+            Me.LogEnd(Me.CurrentEventStep, endSequence, endoverhead, LoggingLevel.Steps, Nothing)
         End Sub
 
         Public Sub LogEndEngine(ByVal ParamArray additionalProperties() As KeyValuePair(Of String, String))
