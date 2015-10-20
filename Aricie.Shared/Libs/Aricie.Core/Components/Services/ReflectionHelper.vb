@@ -2182,7 +2182,24 @@ Namespace Services
                 End If
 
                 Try
+                    Dim attrOverrides As New XmlAttributeOverrides()
+
+#If DEBUG Then
+                    Dim tempType As Type = CreateType(objType.AssemblyQualifiedName)
+                    If tempType IsNot objType Then
+                        If objType.Name = tempType.Name Then
+                            Dim attrs As New XmlAttributes()
+                            attrs.XmlType = New XmlTypeAttribute("SomeRandomName")
+                            attrOverrides.Add(objType, attrs)
+                        End If
+                        objType = tempType
+
+                    End If
+#End If
+
                     If Not String.IsNullOrEmpty(rootName) Then
+
+
                         Dim rootAttribute As New XmlRootAttribute(rootName)
                         If extraTypesList.Count = 0 Then
                             toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, rootAttribute)
@@ -2191,11 +2208,13 @@ Namespace Services
                         End If
                     Else
                         If extraTypesList.Count = 0 Then
-                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType)
+                            toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, attrOverrides)
                         Else
                             toReturn = ReflectionHelper._XmlSerializerFactory.CreateSerializer(objType, extraTypesList.ToArray())
                         End If
                     End If
+
+
                 Catch ex As Exception
                     Dim messageBuilder As New StringBuilder()
                     While ex.InnerException IsNot Nothing
