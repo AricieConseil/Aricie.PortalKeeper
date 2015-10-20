@@ -1,8 +1,9 @@
 Imports System.ComponentModel
+Imports Aricie.Services
 
 Namespace Entities
     <Serializable()> _
-    Public Class OneOrMore(Of T As New)
+    Public Class OneOrMore(Of T)
 
         Public Sub New()
         End Sub
@@ -11,7 +12,7 @@ Namespace Entities
             One = initElement
         End Sub
 
-        Public Property One As New T
+        Public Property One As T = ReflectionHelper.CreateObject(Of T)()
 
         Public Property More As New List(Of T)
 
