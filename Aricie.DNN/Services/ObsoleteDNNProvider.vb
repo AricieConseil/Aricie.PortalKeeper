@@ -224,6 +224,12 @@ Namespace Services
             End If
         End Function
 
+        Public Overridable Sub ClearCache()
+            DataCache.ClearHostCache(True)
+            DataCache.ClearPortalCache(NukeHelper.PortalId, True)
+        End Sub
+
+
 #Region "Private members"
 
         Private _FolderManagerInstance As Object = Nothing
