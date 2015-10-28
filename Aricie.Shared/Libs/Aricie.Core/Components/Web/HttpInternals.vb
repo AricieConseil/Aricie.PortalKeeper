@@ -39,14 +39,26 @@ Namespace Web
         Private Shared ReadOnly _FileChangesMonitorField As FieldInfo = GetType(HttpRuntime).GetField("_fcm", BindingFlags.NonPublic Or BindingFlags.Instance)
         Private Shared ReadOnly _FileChangesMonitorStopMethod As MethodInfo = _FileChangesMonitorField.FieldType.GetMethod("Stop", BindingFlags.NonPublic Or BindingFlags.Instance)
        
-        Private Shared _HttpRuntime As Object
+        Private Shared _HttpRuntime As HttpRuntime
 
-        Private Shared ReadOnly Property HttpRuntime() As Object
+        Private Shared ReadOnly Property HttpRuntime() As HttpRuntime
             Get
                 If _HttpRuntime Is Nothing Then
-                    _HttpRuntime = _TheRuntimeField.GetValue(Nothing)
+                    _HttpRuntime = DirectCast(_TheRuntimeField.GetValue(Nothing), HttpRuntime)
                 End If
                 Return _HttpRuntime
+            End Get
+        End Property
+
+        Private Shared _CodeDirectoryVirtualPath As String = Nothing
+        Private Shared ReadOnly Property CodeDirectoryVirtualPath As String
+            Get
+
+                If _CodeDirectoryVirtualPath Is Nothing Then
+                    Dim objProp As PropertyInfo = HttpRuntime.GetType().GetProperty("CodeDirectoryVirtualPath", BindingFlags.NonPublic Or BindingFlags.Static)
+                    _CodeDirectoryVirtualPath = objProp.GetValue(HttpRuntime, Nothing).ToString()
+                End If
+                Return _CodeDirectoryVirtualPath
             End Get
         End Property
 
@@ -245,7 +257,7 @@ Namespace Web
         Public Function GetCodeDirectories() As String()
             Dim toReturn As New List(Of String)
             For Each strPath As String In DirectCast(_GetCodeDirectoriesMethod.Invoke(TheBuildManager, Nothing), String())
-                strPath = strPath.Trim("/"c).Replace("App_Code", "").TrimStart("/"c)
+                strPath = strPath.Replace(CodeDirectoryVirtualPath, "").Trim("/"c)
                 If strPath.Length > 0 Then
                     toReturn.Add(strPath)
                 End If

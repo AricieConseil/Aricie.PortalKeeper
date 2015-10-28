@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RuleEngineSettings`1_Rules.Header" xml:space="preserve">
     <value>Runtime</value>
@@ -11107,5 +11107,11 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="Paste.Command.Tooltip" xml:space="preserve">
     <value>Click to add your copied items to the current collection.</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomTypeName.Help" xml:space="preserve">
+    <value>Enter a name to be used while compiling your custom type</value>
+  </data>
+  <data name="CreateHttpResponseInfo_CustomTypeName.Text" xml:space="preserve">
+    <value>Custom Type name</value>
   </data>
 </root>

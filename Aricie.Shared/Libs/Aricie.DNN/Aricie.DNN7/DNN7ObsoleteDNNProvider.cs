@@ -146,6 +146,11 @@ namespace Aricie.DNN
             return new AricieVersionEditControl();
         }
 
+        public override void ClearCache()
+        {
+            DotNetNuke.Common.Utilities.DataCache.ClearCache();
+        }
+
     }
 }
 

@@ -402,6 +402,11 @@ Namespace Services
             _ObjectSet.Add(obj)
         End Sub
 
+        Public Sub SetPropertySource(ByVal caption As String, propAccess As IPropertyAccess)
+            Dim strCaption As String = caption.ToLowerInvariant
+            Me.PropertySource(strCaption) = propAccess
+        End Sub
+
 
         ''' <summary>
         ''' Adds an object to the collection of source data for the ATR
