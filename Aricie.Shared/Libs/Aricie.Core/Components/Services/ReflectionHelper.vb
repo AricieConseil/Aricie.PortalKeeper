@@ -274,15 +274,18 @@ Namespace Services
                         End If
                     End If
                     If EnableAutoDebugSurrogates Then
-
-                        Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
-                        Dim debugType As Type = CreateType(debugTypeName, False)
-                        If debugType Is Nothing Then
-                            debugType = Assembly.GetCallingAssembly().GetType(debugTypeName, False)
-                        End If
-                        If debugType IsNot Nothing Then
-                            toReturn = debugType
+                        If IsAutoSurrogateType(toReturn) Then
                             saveResult = False
+                        Else
+                            Dim debugTypeName As String = toReturn.Namespace & ".Debug." & toReturn.Name
+                            Dim debugType As Type = CreateType(debugTypeName, False)
+                            If debugType Is Nothing Then
+                                debugType = Assembly.GetCallingAssembly().GetType(debugTypeName, False)
+                            End If
+                            If debugType IsNot Nothing Then
+                                toReturn = debugType
+                                saveResult = False
+                            End If
                         End If
                     End If
                     If saveResult Then
@@ -1843,6 +1846,13 @@ Namespace Services
         Public Shared Function GetSerializer(ByVal objType As Type, ByVal extraTypes() As Type, ByVal useCache As Boolean, ByVal rootName As String) As XmlSerializer
 
             Dim toReturn As XmlSerializer = Nothing
+            If EnableAutoDebugSurrogates Then
+                Dim tempType As Type = CreateType(objType.AssemblyQualifiedName)
+                If tempType IsNot objType Then
+                    objType = tempType
+                End If
+            End If
+            
 
             If useCache Then
 
@@ -2184,18 +2194,14 @@ Namespace Services
                 Try
                     Dim attrOverrides As New XmlAttributeOverrides()
 
-#If DEBUG Then
-                    Dim tempType As Type = CreateType(objType.AssemblyQualifiedName)
-                    If tempType IsNot objType Then
-                        If objType.Name = tempType.Name Then
+                    If EnableAutoDebugSurrogates Then
+                        If IsAutoSurrogateType(objType) Then
                             Dim attrs As New XmlAttributes()
                             attrs.XmlType = New XmlTypeAttribute("SomeRandomName")
-                            attrOverrides.Add(objType, attrs)
+                            attrOverrides.Add(objType.BaseType, attrs)
                         End If
-                        objType = tempType
-
+                       
                     End If
-#End If
 
                     If Not String.IsNullOrEmpty(rootName) Then
 
@@ -2237,7 +2243,13 @@ Namespace Services
 
         End Function
 
+        Private Shared Function IsAutoSurrogateType(objtype As Type) As Boolean
+            Return objtype.BaseType IsNot Nothing AndAlso objtype.BaseType.FullName = objtype.Namespace.Replace(".Debug", "") & "."c & objtype.Name
+        End Function
+
 #End Region
+
+       
 
     End Class
 End Namespace

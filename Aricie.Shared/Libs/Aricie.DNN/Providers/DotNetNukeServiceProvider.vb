@@ -132,7 +132,7 @@ Namespace Providers
 
         Public Overrides Sub ClearCache()
             DataCache.RemoveCache(Constants.Cache.Dependency)
-            DataCache.ClearHostCache(True)
+            ObsoleteDNNProvider.Instance.ClearCache()
         End Sub
     End Class
 End Namespace
