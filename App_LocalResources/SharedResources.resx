@@ -1063,7 +1063,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Request Source Type</value>
   </data>
   <data name="StringReplace.Text" xml:space="preserve">
-    <value>StringReplace</value>
+    <value>String Replace</value>
   </data>
   <data name="StringTransformInfo_FilterType.Help" xml:space="preserve">
     <value>&lt;p&gt;Choose here the type of transformation you wish to define. There are three types available:&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;strong&gt;Regex&lt;/strong&gt; transforms let you enter a source regular expression to match and replacement expression.&lt;/li&gt;&lt;li&gt;&lt;strong&gt;String&lt;/strong&gt; transforms let you enter a source string and a replacement string or nothing to remove the string &lt;/li&gt;&lt;li&gt;&lt;strong&gt;Chars&lt;/strong&gt; transforms let you enter a source list of chars as a concatenated string and either &lt;ul&gt;&lt;li&gt;a concatenated string of the same size for a char by char replacement mapping&lt;/li&gt;&lt;li&gt;an empty string to remove all of the source chars&lt;/li&gt;&lt;li&gt;a single char to replace each of the source chars with the single target char&lt;/li&gt;&lt;/ul&gt;&lt;/li&gt;&lt;/ul&gt;</value>
@@ -3536,9 +3536,6 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   </data>
   <data name="WebRequestInfo`1_Url.Header" xml:space="preserve">
     <value>Url</value>
-  </data>
-  <data name="Debug Command successful" xml:space="preserve">
-    <value />
   </data>
   <data name="AbsoluteMapPath.Text" xml:space="preserve">
     <value>Full Map Path</value>
