@@ -277,9 +277,7 @@
     <Compile Include="Components\Engines\Scheduler\BotFarmInfo.vb" />
     <Compile Include="Components\Engines\Firewall\ClientSourceCapLog.vb" />
     <Compile Include="Components\Engines\Firewall\DenialOfServiceSettings.vb" />
-    <Compile Include="Components\Services\Web\WebRequestInfo.vb">
-      <SubType>Component</SubType>
-    </Compile>
+    <Compile Include="Components\Services\Web\WebRequestInfo.vb" />
     <Compile Include="Components\Engines\Scheduler\BotInfo.vb" />
     <Compile Include="Components\Engines\Scheduler\BotInfoEvent.vb" />
     <Compile Include="Components\Core\CacheableAction.vb" />
