@@ -878,6 +878,7 @@ Namespace Settings
 
                 If strXmlToSave.Length < nbMaxChars Then
                     UpdateSettings(scope, scopeId, key, strXmlToSave)
+                    DeleteSettings(scope, scopeId, key & "-2")
                 Else
                     UpdateSettings(scope, scopeId, key, strXmlToSave.Substring(0, nbMaxChars))
                     Dim nbRows As Integer = Convert.ToInt32(Math.Ceiling(strXmlToSave.Length / nbMaxChars))
