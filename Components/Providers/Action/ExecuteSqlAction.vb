@@ -7,27 +7,26 @@ Imports DotNetNuke.Data
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.HddO, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Execute Sql Action")> _
-    <Description("Execute a call to a stored procedure, a Sql script or sql query and returns the result")> _
+    <ActionButton(IconName.HddO, IconOptions.Normal)>
+    <DisplayName("Execute Sql Action")>
+    <Description("Execute a call to a stored procedure, a Sql script or sql query and returns the result")>
     Public Class ExecuteSqlAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
 
 
-        <ExtendedCategory("SqlSettings")> _
+        <ExtendedCategory("SqlSettings")>
         Public Property SqlActionMode As SqlActionMode = SqlActionMode.CallStoredProcedure
 
-        <ExtendedCategory("SqlSettings")> _
+        <ExtendedCategory("SqlSettings")>
         Public Property UseTransaction As Boolean
 
-        <ConditionalVisible("SqlActionMode", False, True, SqlActionMode.SqlStatement)> _
-        <ExtendedCategory("SqlSettings")> _
+        <ConditionalVisible("SqlActionMode", False, True, SqlActionMode.SqlStatement)>
+        <ExtendedCategory("SqlSettings")>
         Public Property SqlStatement() As New SqlStatementInfo()
 
-        <ConditionalVisible("SqlActionMode", False, True, SqlActionMode.CallStoredProcedure)> _
-        <ExtendedCategory("SqlSettings")> _
+        <ConditionalVisible("SqlActionMode", False, True, SqlActionMode.CallStoredProcedure)>
+        <ExtendedCategory("SqlSettings")>
         Public Property CallStoredProcedure As New CallStoredProcedureInfo()
 
 

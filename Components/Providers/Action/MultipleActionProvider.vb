@@ -11,28 +11,27 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         ActionTreeExpression
     End Enum
 
-    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Multiple Action Provider")> _
-        <Description("Runs sub sequences of Actions")> _
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)>
+    <DisplayName("Multiple Action Provider")>
+    <Description("Runs sub sequences of Actions")>
     Public Class MultipleActionProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property MultipleActionMode As MultipleActionMode = MultipleActionMode.Sequence
 
 
-        <ExtendedCategory("Specifics")> _
-        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.Sequence)> _
+        <ExtendedCategory("Specifics")>
+        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.Sequence)>
         Public Property KeeperAction() As New KeeperAction(Of TEngineEvents)
 
-        <ExtendedCategory("Specifics")> _
-        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.ActionTree)> _
+        <ExtendedCategory("Specifics")>
+        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.ActionTree)>
         Public Property ActionTree As New ActionTree(Of TEngineEvents)
 
 
-        <ExtendedCategory("Specifics")> _
-        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.ActionTreeExpression)> _
+        <ExtendedCategory("Specifics")>
+        <ConditionalVisible("MultipleActionMode", False, True, MultipleActionMode.ActionTreeExpression)>
         Public Property ActionTreeExpression As New SimpleExpression(Of ActionTree(Of TEngineEvents))
 
 

@@ -33,7 +33,7 @@ Namespace Entities
     ''' <summary>
     ''' Entity class for a Link
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ControlUrlInfo
 
         Private _Url As String = ""

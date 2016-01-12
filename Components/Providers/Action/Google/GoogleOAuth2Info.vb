@@ -4,7 +4,7 @@ Imports Google.GData.Client
 Imports DotNetNuke.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class GoogleOAuth2Info
         Inherits APICredentials
 

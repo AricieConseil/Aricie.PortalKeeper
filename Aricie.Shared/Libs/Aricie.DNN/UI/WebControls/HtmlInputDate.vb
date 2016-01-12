@@ -1,8 +1,12 @@
 ﻿Imports System.Web.UI
+Imports System.Web
+Imports System.Globalization
+Imports System.Threading
 
 
 '===============================================================================
 'HISTORY:
+' 23/11/2015 - Gestion de la date selon la localisation
 '-------------------------------------------------------------------------------
 ' 13/04/2011 - [JBB] - Création
 ' 19/04/2011 - [JBB] - Gestion du format de la date
@@ -30,7 +34,6 @@ Namespace UI.WebControls
         Private _min As Integer?
         Private _max As Integer?
         Private _slaveDateCtId As String
-        Private _format As String = "dd/mm/yyyy"
         Private _selectors As Boolean
         Private _yearRange As String = "[-5,5]"
 
@@ -131,7 +134,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-
+        Private _format As String = Replace(Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower, "M", "m")
 
         Public Property Format() As String
             Get
@@ -161,9 +164,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-
-
-        Private _language As String = "fr"
+        Private _language As String = Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName
         ''' <summary>
         ''' define the language of the calendar (fr by default, en is available)
         ''' </summary>
@@ -257,6 +258,6 @@ Namespace UI.WebControls
             End If
         End Sub
 
-      
+
     End Class
 End Namespace

@@ -14,7 +14,7 @@ Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
+    
     Public Class DynamicHandlerSettings(Of TAdaptedType)
         Inherits DynamicHandlerSettings
         Implements ISelector
@@ -203,7 +203,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     <ActionButton(IconName.CodeFork, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class DynamicHandlerSettings
         Inherits SimpleRuleEngine
 

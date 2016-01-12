@@ -8,7 +8,7 @@ Imports System.Xml.Serialization
 Namespace Aricie.DNN.Modules.PortalKeeper
 
    
-    <Serializable()> _
+    
     Public Class AutoLoginInfo
 
         Public Sub New()

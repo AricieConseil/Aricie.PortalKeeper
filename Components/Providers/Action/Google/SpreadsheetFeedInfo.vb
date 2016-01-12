@@ -6,7 +6,7 @@ Imports Google.GData.Client
 Imports Google.GData.Spreadsheets
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class SpreadsheetFeedInfo(Of TEngineEvents As IConvertible)
 
         <ExtendedCategory("Worksheet")> _

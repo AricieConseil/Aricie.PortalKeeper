@@ -14,7 +14,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     <ActionButton(IconName.Tasks, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class KeeperAction(Of TEngineEvents As IConvertible)
         Inherits ProviderHost(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
         Implements IExpressionVarsProvider

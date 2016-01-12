@@ -9,7 +9,7 @@ Imports Aricie.Services
 Imports System.Globalization
 
 Namespace Services.Files
-    <Serializable()> _
+    
     Public Class SmartFolder(Of T As New)
         Implements ISelector(Of FileInfo)
 

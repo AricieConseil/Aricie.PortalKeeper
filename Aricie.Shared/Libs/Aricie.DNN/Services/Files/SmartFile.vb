@@ -23,7 +23,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Files
 
-    <Flags()> _
+    <Flags()>
     Public Enum SmartFileState
         Clear = 0
         Signed = 1
@@ -39,7 +39,7 @@ Namespace Services.Files
         Base64String
     End Enum
 
-    <Serializable()> _
+    <Serializable()>
     Public Class SmartFile
         'Inherits SmartFileInfo
 
@@ -69,31 +69,31 @@ Namespace Services.Files
         End Property
 
 
-        <ExtendedCategory("Key")> _
-        <IsReadOnly(True)> _
+        <ExtendedCategory("Key")>
+        <IsReadOnly(True)>
         Public Property Key As EntityKey
 
-        <ExtendedCategory("Content")> _
-        <IsReadOnly(True)> _
+        <ExtendedCategory("Content")>
+        <IsReadOnly(True)>
         Public Property State As SmartFileState = SmartFileState.Clear
 
 
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property Signed As Boolean
             Get
                 Return (State And SmartFileState.Signed) = SmartFileState.Signed
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property Compressed As Boolean
             Get
                 Return (State And SmartFileState.Compressed) = SmartFileState.Compressed
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property Encrypted As Boolean
             Get
                 Return (State And SmartFileState.Encrypted) = SmartFileState.Encrypted
@@ -103,7 +103,7 @@ Namespace Services.Files
 
 
 
-        <ExtendedCategory("Content")> _
+        <ExtendedCategory("Content")>
         Public ReadOnly Property HasEncrypter As Boolean
             Get
                 Return _encrypter IsNot Nothing
@@ -115,7 +115,7 @@ Namespace Services.Files
         End Sub
 
 
-        <Browsable(False)> _
+        <Browsable(False)>
         <XmlIgnore()>
         Public ReadOnly Property SaltBytes As Byte()
             Get
@@ -123,9 +123,9 @@ Namespace Services.Files
             End Get
         End Property
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Encrypted", False, True)> _
-        <IsReadOnly(True)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Encrypted", False, True)>
+        <IsReadOnly(True)>
         Public Property Salt As String
             Get
                 If Me.Encrypted Then
@@ -139,23 +139,23 @@ Namespace Services.Files
         End Property
 
 
-        <LineCount(20)> _
-      <Width(500)> _
-      <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-       <ExtendedCategory("Content")> _
-     <ConditionalVisible("EditPayLoadFormat", True, True, PayLoadFormat.None)> _
-       <XmlIgnore()> _
+        <LineCount(20)>
+        <Width(500)>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("EditPayLoadFormat", True, True, PayLoadFormat.None)>
+        <XmlIgnore()>
         Public Property EditPayLoad As String
             Get
-                Return EditPayLoad(EditPayLoadFormat)
+                Return EditPayload(EditPayLoadFormat)
             End Get
             Set(value As String)
-                EditPayLoad(EditPayLoadFormat) = value
+                EditPayload(EditPayLoadFormat) = value
             End Set
         End Property
 
-        <ExtendedCategory("Content")> _
-               <XmlIgnore()> _
+        <ExtendedCategory("Content")>
+        <XmlIgnore()>
         Public Property EditPayLoadFormat As PayLoadFormat = PayLoadFormat.None
         '<ExtendedCategory("Content")> _
         'Public Property ShowPayLoad As Boolean
@@ -197,7 +197,7 @@ Namespace Services.Files
             End Set
         End Property
 
-        <XmlIgnore()> _
+        <XmlIgnore()>
         <Browsable(False)>
         Public Property PayLoad As Byte()
             Get
@@ -238,8 +238,8 @@ Namespace Services.Files
         End Property
 
 
-        <Browsable(False)> _
-       <XmlIgnore()> _
+        <Browsable(False)>
+        <XmlIgnore()>
         Public Property PayLoadAsXmlDocument As XmlDocument
             Get
                 Using inputStream As New MemoryStream(Me._PayLoad)
@@ -257,41 +257,41 @@ Namespace Services.Files
         End Property
 
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property Size As Integer
             Get
                 Return Me._PayLoad.Length
             End Get
         End Property
 
-        <ExtendedCategory("Content")> _
+        <ExtendedCategory("Content")>
         Public ReadOnly Property FormattedSize As String
             Get
                 Return BytesToString(Size)
             End Get
         End Property
 
-        <ExtendedCategory("Content")> _
+        <ExtendedCategory("Content")>
         Public ReadOnly Property MD5Checksum As String
             Get
                 Return Me._PayLoad.Hash(HashProvider.MD5)
             End Get
         End Property
 
-        <ExtendedCategory("Content")> _
+        <ExtendedCategory("Content")>
         Public ReadOnly Property Sha256Checksum As String
             Get
                 Return Me._PayLoad.Hash(HashProvider.SHA256)
             End Get
         End Property
 
-        <ExtendedCategory("Content")> _
-               <XmlIgnore()> _
+        <ExtendedCategory("Content")>
+        <XmlIgnore()>
         Public Property UseCustomEncryption As Boolean
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("UseCustomEncryption", False, True)> _
-               <XmlIgnore()> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("UseCustomEncryption", False, True)>
+        <XmlIgnore()>
         Public Property CustomEncryption As New EncryptionInfo()
 
 
@@ -299,11 +299,11 @@ Namespace Services.Files
 
 
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Signed", True, True)> _
-      <ConditionalVisible("Encrypted", True, True)> _
-      <ConditionalVisible("Compressed", True, True)> _
-    <ActionButton(IconName.Key, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Signed", True, True)>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ConditionalVisible("Compressed", True, True)>
+        <ActionButton(IconName.Key, IconOptions.Normal)>
         Public Overloads Sub Sign(ape As AriciePropertyEditorControl)
             Me.Sign()
             ape.ItemChanged = True
@@ -313,11 +313,11 @@ Namespace Services.Files
 
 
         '<ConditionalVisible("HasEncrypter", False, True)> _
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Signed", False, True)> _
-         <ConditionalVisible("Encrypted", True, True)> _
-      <ConditionalVisible("Compressed", True, True)> _
-     <ActionButton(IconName.CheckSquareO, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Signed", False, True)>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ConditionalVisible("Compressed", True, True)>
+        <ActionButton(IconName.CheckSquareO, IconOptions.Normal)>
         Public Overloads Sub Verify(ape As AriciePropertyEditorControl)
             Dim message As String
             Dim messageType As ModuleMessage.ModuleMessageType
@@ -331,11 +331,11 @@ Namespace Services.Files
             ape.DisplayMessage(message, messageType)
         End Sub
 
-        <ExtendedCategory("Content")> _
-      <ConditionalVisible("Signed", False, True)> _
-       <ConditionalVisible("Encrypted", True, True)> _
-      <ConditionalVisible("Compressed", True, True)> _
-   <ActionButton(IconName.Eraser, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Signed", False, True)>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ConditionalVisible("Compressed", True, True)>
+        <ActionButton(IconName.Eraser, IconOptions.Normal)>
         Public Overloads Sub RemoveSignature(ape As AriciePropertyEditorControl)
             Me.RemoveSignature()
             ape.ItemChanged = True
@@ -344,10 +344,10 @@ Namespace Services.Files
             ape.DisplayMessage(message, messageType)
         End Sub
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Compressed", True, True)> _
-         <ConditionalVisible("Encrypted", True, True)> _
-      <ActionButton(IconName.Compress, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Compressed", True, True)>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ActionButton(IconName.Compress, IconOptions.Normal)>
         Public Sub Compress(ape As AriciePropertyEditorControl)
             Me.Compress()
             If Me.EditPayLoadFormat = PayLoadFormat.UTF8String Then
@@ -358,10 +358,10 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-        <ExtendedCategory("Content")> _
-        <ConditionalVisible("Compressed", False, True)> _
-         <ConditionalVisible("Encrypted", True, True)> _
-       <ActionButton(IconName.Expand, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Compressed", False, True)>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ActionButton(IconName.Expand, IconOptions.Normal)>
         Public Sub Decompress(ape As AriciePropertyEditorControl)
             Me.Decompress()
             ape.ItemChanged = True
@@ -369,9 +369,9 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-        <ExtendedCategory("Content")> _
-       <ConditionalVisible("Encrypted", False, True)> _
-          <ActionButton(IconName.Unlock, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Encrypted", False, True)>
+        <ActionButton(IconName.Unlock, IconOptions.Normal)>
         Public Sub Decrypt(ape As AriciePropertyEditorControl)
             Me.Decrypt()
             ape.ItemChanged = True
@@ -379,9 +379,9 @@ Namespace Services.Files
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-        <ExtendedCategory("Content")> _
-       <ConditionalVisible("Encrypted", True, True)> _
-       <ActionButton(IconName.Lock, IconOptions.Normal)> _
+        <ExtendedCategory("Content")>
+        <ConditionalVisible("Encrypted", True, True)>
+        <ActionButton(IconName.Lock, IconOptions.Normal)>
         Public Sub Encrypt(ape As AriciePropertyEditorControl)
             Me.Encrypt()
             If Me.EditPayLoadFormat = PayLoadFormat.UTF8String Then
@@ -609,6 +609,75 @@ Namespace Services.Files
             Return toReturn
         End Function
 
+        Private Const SmartFilesDicoKey As String = "SmartFilesDico"
+        Private Const SmartFilesToSaveKey As String = "SmartFilesToSave"
+
+        Public Shared Function GetSmartFileInfo(ByVal globalVars As IContextLookup) As SmartFileInfo
+            Return TryCast(globalVars.Items("SmartFileInfo"), SmartFileInfo)
+        End Function
+
+        Public Shared Sub SetSmartFileInfo(ByVal globalVars As IContextLookup, value As SmartFileInfo) 
+            globalVars.Items("SmartFileInfo") = value
+        End Sub
+
+        Public Shared Function LoadSmartFile(key As EntityKey, ByVal globalVars As IContextLookup, setToSave As Boolean, Optional settings As SmartFileInfo =  Nothing) As SmartFile
+            If settings Is Nothing
+                settings = GetSmartFileInfo(globalVars)
+            End If
+            Dim toReturn As SmartFile = LoadSmartFile(key,settings)
+            Dim dicoSmartFiles As Dictionary(Of EntityKey, SmartFile)
+            Dim dicoObj As Object= Nothing
+            If Not globalVars.Items.TryGetValue(SmartFilesDicoKey, dicoObj) Then
+                dicoObj = New Dictionary(Of EntityKey, SmartFile)()
+                globalVars.Items(SmartFilesDicoKey) = dicoObj
+            End If
+            dicoSmartFiles = DirectCast(dicoObj, Dictionary(Of EntityKey, SmartFile))
+            dicoSmartFiles(key) = toReturn
+            If setToSave Then
+                Dim smartFilesToSave As HashSet(Of EntityKey)
+                Dim objSmartFilesToSave As Object = Nothing
+                If Not globalVars.Items.TryGetValue(SmartFilesToSaveKey, objSmartFilesToSave) Then
+                    objSmartFilesToSave = New HashSet(Of EntityKey)
+                    globalVars.Items(SmartFilesToSaveKey) = objSmartFilesToSave
+                End If
+                smartFilesToSave = DirectCast(objSmartFilesToSave, HashSet(Of EntityKey))
+                smartFilesToSave.Add(key)
+            End If
+            Return toReturn
+        End Function
+
+        Public Shared Sub SaveSmartFiles(ByVal globalVars As IContextLookup)
+            Dim smartFilesToSave As HashSet(Of EntityKey)
+            Dim objSmartFilesToSave As Object= Nothing
+            If globalVars.Items.TryGetValue(SmartFilesToSaveKey, objSmartFilesToSave) Then
+                smartFilesToSave = DirectCast(objSmartFilesToSave, HashSet(Of EntityKey))
+                Dim dicoSmartFiles As Dictionary(Of EntityKey, SmartFile)
+                Dim dicoObj As Object= Nothing
+                If globalVars.Items.TryGetValue(SmartFilesDicoKey, dicoObj) Then
+                    dicoObj = New Dictionary(Of EntityKey, SmartFile)()
+                    dicoSmartFiles = DirectCast(dicoObj, Dictionary(Of EntityKey, SmartFile))
+                    For Each objKey As EntityKey In smartFilesToSave
+                        Dim objSmartFile As SmartFile= Nothing
+                        If dicoSmartFiles.TryGetValue(objKey, objSmartFile) Then
+                            SmartFile.SaveSmartFile(objSmartFile, GetSmartFileInfo(globalVars))
+                        End If
+                    Next
+                End If
+            End If
+        End sub
+
+        Public Shared Function LoadSmartFile(key As EntityKey, settings As SmartFileInfo) As SmartFile
+            Dim objFileInfo As DotNetNuke.Services.FileSystem.FileInfo = GetFileInfo(key, settings)
+            Dim toReturn As SmartFile = LoadSmartFile(objFileInfo)
+            If toReturn IsNot Nothing Then
+                If Not settings.CheckSmartFile(toReturn) Then
+                    Throw New ApplicationException(String.Format("smart file for key {0} at path {1} didn't match security settings", key.ToString(), objFileInfo.PhysicalPath))
+                End If
+                toReturn.SetEncrypter(settings.Encryption)
+            End If
+            Return toReturn
+        End Function
+
         Public Shared Function LoadSmartFile(Of T As New)(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile(Of T)
             If objFileInfo IsNot Nothing Then
                 Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
@@ -619,6 +688,15 @@ Namespace Services.Files
             Return Nothing
         End Function
 
+        Public Shared Function LoadSmartFile(objFileInfo As DotNetNuke.Services.FileSystem.FileInfo) As SmartFile
+            If objFileInfo IsNot Nothing Then
+                Dim content As Byte() = ObsoleteDNNProvider.Instance.GetFileContent(objFileInfo)
+                Dim toReturn As SmartFile = ReflectionHelper.Deserialize(Of SmartFile)(content)
+                toReturn._DNNFile = objFileInfo
+                Return toReturn
+            End If
+            Return Nothing
+        End Function
 
         Public Shared Function SaveSmartFile(value As SmartFile, settings As SmartFileInfo) As Boolean
             If value IsNot Nothing Then
@@ -667,12 +745,12 @@ Namespace Services.Files
                     parentPath = parentPath.Substring(0, parentPath.LastIndexOf("/"c))
                     CreateSecureFoldersRecursive(portalId, parentPath, -1, settings)
                 End If
-                Dim folder As New FolderInfo() With { _
-                    .PortalID = portalId, _
-                    .FolderPath = path, _
-                    .StorageLocation = 2, _
-                    .IsProtected = False, _
-                    .IsCached = False _
+                Dim folder As New FolderInfo() With {
+                    .PortalID = portalId,
+                    .FolderPath = path,
+                    .StorageLocation = 2,
+                    .IsProtected = False,
+                    .IsCached = False
                 }
                 ObsoleteDNNProvider.Instance.AddFolder(folder)
                 folder = ObsoleteDNNProvider.Instance.GetFolderFromPath(folder.PortalID, folder.FolderPath)
@@ -735,7 +813,7 @@ Namespace Services.Files
     End Class
 
 
-    <Serializable()> _
+    <Serializable()>
     Public Class SmartFile(Of T)
         Inherits SmartFile
 
@@ -751,13 +829,13 @@ Namespace Services.Files
             Me.Wrap(settings)
         End Sub
 
-        <XmlIgnore()> _
-        <ExtendedCategory("Value")> _
+        <XmlIgnore()>
+        <ExtendedCategory("Value")>
         Public Property ShowValue As Boolean
 
-        <ExtendedCategory("Value")> _
-        <XmlIgnore()> _
-        <ConditionalVisible("ShowValue", False, True)> _
+        <ExtendedCategory("Value")>
+        <XmlIgnore()>
+        <ConditionalVisible("ShowValue", False, True)>
         Public Property TypedValue As T
             Get
                 If _TypedValue Is Nothing Then
@@ -775,8 +853,8 @@ Namespace Services.Files
             End Set
         End Property
 
-        <ExtendedCategory("Value")> _
-        <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        <ExtendedCategory("Value")>
+        <ActionButton(IconName.Refresh, IconOptions.Normal)>
         Public Sub UpdatePayload(ape As AriciePropertyEditorControl)
             Me.UpdatePayload()
             ape.ItemChanged = True

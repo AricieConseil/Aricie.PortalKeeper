@@ -1,6 +1,48 @@
-﻿Namespace ComponentModel
+﻿Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services
+Imports Aricie.DNN.Services.Flee
+
+Namespace ComponentModel
+
+
+    Public Class EntityKeyInfo
+
+        Public Property PortalId As New EnabledFeature(Of SimpleOrExpression(Of Integer))
+
+        Public Property Application As New EnabledFeature(Of SimpleOrExpression(Of String))
+
+        Public Property Entity As New EnabledFeature(Of SimpleOrExpression(Of String))
+
+        Public Property UserName As New EnabledFeature(Of SimpleOrExpression(Of String))
+
+        Public Property Field As New EnabledFeature(Of SimpleOrExpression(Of String))
+
+        Public Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As EntityKey
+            Dim toReturn As New EntityKey()
+            If PortalId.Enabled
+                toReturn.PortalId = PortalId.Entity.GetValue(owner, globalVars)
+            End If
+            If Application.Enabled
+                toReturn.Application = Application.Entity.GetValue(owner, globalVars)
+            End If
+            If UserName.Enabled
+                toReturn.UserName = UserName.Entity.GetValue(owner, globalVars)
+            End If
+            If Entity.Enabled
+                toReturn.Entity = Entity.Entity.GetValue(owner, globalVars)
+            End If
+            If Field.Enabled
+                toReturn.Field = Field.Entity.GetValue(owner, globalVars)
+            End If
+                
+            Return toReturn
+        End Function
+
+    End Class
+
     <Serializable()>
-    Public Structure EntityKey
+    Public Class EntityKey
+
 
 
 
@@ -43,6 +85,17 @@
             Return String.Format("{0} - {1} - {2} - {3} - {4}", PortalId, Application, Entity, UserName, Field)
         End Function
 
+        Public Overrides Function Equals(obj As Object) As Boolean
+            If TypeOf obj Is EntityKey
+                Dim target As EntityKey = DirectCast(obj, EntityKey)
+                Return Me.ToString() = target.ToString()
+            End If
+            Return False
+        End Function
 
-    End Structure
+        Public Overrides Function GetHashCode() As Integer
+            Return ToString().GetHashCode()
+        End Function
+
+    End Class
 End Namespace

@@ -7,10 +7,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Android, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("Sub Bot Action Provider")> _
-       <Description("This provider allows to run a sub-bot as a dedicated action. Because of the sequential nature of the engine, the subbot triggers each previous step up to the current step, the rules and action should be configured accordingly")> _
+    <ActionButton(IconName.Android, IconOptions.Normal)>
+    <DisplayName("Sub Bot Action Provider")>
+    <Description("This provider allows to run a sub-bot as a dedicated action. Because of the sequential nature of the engine, the subbot triggers each previous step up to the current step, the rules and action should be configured accordingly")>
     Public Class SubBotActionProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
@@ -21,8 +20,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _SubBot As New BotInfo(Of TEngineEvents)
 
-        <ExtendedCategory("")> _
-        <MainCategory()> _
+        <ExtendedCategory("")>
+        <MainCategory()>
         Public Property CatchUpPreviousSteps() As Boolean
             Get
                 Return _CatchUpPreviousSteps
@@ -33,8 +32,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("")> _
-        <MainCategory()> _
+        <ExtendedCategory("")>
+        <MainCategory()>
         Public Property ForceRun() As Boolean
             Get
                 Return _ForceRun
@@ -45,10 +44,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("")> _
-        <MainCategory()> _
-          <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("")>
+        <MainCategory()>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property SubBot() As BotInfo(Of TEngineEvents)
             Get
                 Return _SubBot

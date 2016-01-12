@@ -6,7 +6,7 @@ Namespace Configuration
     ''' <summary>
     ''' Providers Add merge node
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ProviderAddInfo
         Inherits AddInfo
 

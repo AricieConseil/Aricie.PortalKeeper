@@ -35,7 +35,7 @@ Namespace PerCederberg.Grammatica.Runtime
 ' * @version 1.5 
 ' * @since 1.1 
 ' 
-	<Serializable()> _
+	
 	Friend Class ParserLogException
 		Inherits Exception
 

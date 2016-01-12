@@ -2,7 +2,7 @@ Imports Aricie.ComponentModel
 Imports Aricie.DNN.Entities
 
 Namespace Services.Caching
-    <Serializable()> _
+    
     Public Class CdnStrategy
 
         Public Property PortalAlias As New DnnPortalAlias()

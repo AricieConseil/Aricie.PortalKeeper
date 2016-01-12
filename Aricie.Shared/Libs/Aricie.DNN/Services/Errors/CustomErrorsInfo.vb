@@ -14,7 +14,7 @@ Namespace Services.Errors
     ''' Configuration for custom errors management
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class CustomErrorsInfo
         Inherits XmlConfigElementInfo
 

@@ -11,10 +11,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <ActionButton(IconName.Random, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Multiple Connections Condition")> _
-    <Description("Matches if the same DNN user connects from different locations")> _
+    <ActionButton(IconName.Random, IconOptions.Normal)>
+    <DisplayName("Multiple Connections Condition")>
+    <Description("Matches if the same DNN user connects from different locations")>
     Public Class MultipleConnectionsCondition
         Inherits ConditionProvider(Of RequestEvent)
 
@@ -26,9 +25,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private objBackTrackLock As New Object
 
 
-        <ExtendedCategory("Condition")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property DiscriminationSource() As RequestSource
             Get
                 Return _DiscriminationSource
@@ -38,18 +37,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Condition")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property LockDuration() As STimeSpan = New STimeSpan(TimeSpan.FromMinutes(60))
 
 
-        <ExtendedCategory("Condition")> _
+        <ExtendedCategory("Condition")>
         Public Property NewConnectionsDontMatch() As Boolean = False
 
         Private Shared Property UserLocks() As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))
             Get
-                Dim toReturn As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) = _
+                Dim toReturn As SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)) =
                     DirectCast(GetCache("PKP_MCC_UserLocks"), SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime)))
                 If toReturn Is Nothing Then
                     toReturn = New SerializableDictionary(Of Integer, KeyValuePair(Of String, DateTime))
@@ -69,7 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private Shared Property BacktrackLocks() As SerializableDictionary(Of Integer, List(Of String))
             Get
-                Dim toReturn As SerializableDictionary(Of Integer, List(Of String)) = _
+                Dim toReturn As SerializableDictionary(Of Integer, List(Of String)) =
                     DirectCast(GetCache("PKP_MCC_BacktrackLocks"), SerializableDictionary(Of Integer, List(Of String)))
                 If toReturn Is Nothing Then
                     toReturn = New SerializableDictionary(Of Integer, List(Of String))
@@ -93,7 +92,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Dim objUserLock As KeyValuePair(Of String, DateTime) = Nothing
                 If UserLocks.TryGetValue(objUser.UserID, objUserLock) Then
                     If objUserLock.Value > Now Then
-                        If strCurrentKey <> objUserLock.Key Then
+                        If Not strCurrentKey.IsNullOrEmpty() AndAlso strCurrentKey <> objUserLock.Key Then
                             context.SetVar("ClientUser", objUser)
                             context.SetVar("LastClientSource", strCurrentKey)
                             context.SetVar("FirstClientSource", objUserLock.Key)

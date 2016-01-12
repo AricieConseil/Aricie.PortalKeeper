@@ -7,7 +7,7 @@ Namespace Collections
     ''' <summary>
     ''' Dictionary with double key/value/key index
     ''' </summary>
-    <Serializable()> _
+    
     Public Class DualDictionary(Of TKey, TValue)
         Inherits HybridDictionary(Of TKey, TValue)
         Implements IDualDictionary(Of TKey, TValue)

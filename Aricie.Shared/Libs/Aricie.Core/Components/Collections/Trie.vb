@@ -8,7 +8,7 @@ Namespace Collections
     ''' <remarks>There are 3 generic arguments of the type of lookup symbols, lookup keys as symbol lists, and content values</remarks>
     ''' End Class
 
-    <Serializable()> _
+    
     Public Class Trie(Of TKey, TList As IEnumerable(Of TKey), TValue)
         Inherits HybridDictionary(Of TKey, Trie(Of TKey, TList, TValue))
         Implements ITrie(Of TList, TValue)
@@ -217,7 +217,7 @@ Namespace Collections
 
     End Class
 
-    '<Serializable()> _
+    '
     'Public Class TrieNode(Of TKey, TList As IEnumerable(Of TKey), TValue)
     '    'Inherits HybridDictionary(Of TKey, Trie(Of TKey, TList, TValue))
 

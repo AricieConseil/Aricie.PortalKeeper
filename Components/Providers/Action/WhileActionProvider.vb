@@ -12,10 +12,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         WhileDo
         DoUntil
     End Enum
-    <ActionButton(IconName.Repeat, IconOptions.Normal)> _
-   <Serializable()> _
-   <DisplayName("While Action Provider")> _
-       <Description("This provider allows to loop running a sub bot while a boolean condition evaluates to true.")> _
+
+    <ActionButton(IconName.Repeat, IconOptions.Normal)>
+    <DisplayName("While Action Provider")>
+    <Description("This provider allows to loop running a sub bot while a boolean condition evaluates to true.")>
     Public Class WhileActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)
 
@@ -24,10 +24,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _WhileType As WhileType
         Private _MaxIterationNb As Integer = 0
 
-        <ExtendedCategory("WhileAction")> _
-       <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-               <LabelMode(LabelMode.Top)> _
-               <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
+        <ExtendedCategory("WhileAction")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
+        <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)>
         Public Property WhileCondition() As KeeperCondition(Of TEngineEvents)
             Get
                 Return _WhileCondition
@@ -38,7 +38,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("WhileAction")> _
+        <ExtendedCategory("WhileAction")>
         Public Property WhileType() As WhileType
             Get
                 Return _WhileType
@@ -49,7 +49,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("WhileAction")> _
+        <ExtendedCategory("WhileAction")>
         Public Property MaxIterationNb() As Integer
             Get
                 Return _MaxIterationNb

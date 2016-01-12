@@ -1,6 +1,6 @@
 ﻿Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
+    
     Public Structure ClientSourceCapLog
 
 

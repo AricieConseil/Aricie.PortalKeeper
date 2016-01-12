@@ -3,7 +3,7 @@
 Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class ActionProviderConfig(Of TEngineEvents As IConvertible)
         Inherits KeeperProviderConfig(Of TEngineEvents, IActionProvider(Of TEngineEvents))
 

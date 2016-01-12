@@ -30,7 +30,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Enum
 
 
-    <Serializable()> _
+    
     Public Class WebRequestInfo(Of TEngineEvents As IConvertible)
 
 

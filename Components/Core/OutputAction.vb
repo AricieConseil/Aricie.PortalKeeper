@@ -7,7 +7,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class OutputAction(Of TEngineEvents As IConvertible)
         Inherits CacheableAction(Of TEngineEvents)
         Implements IExpressionVarsProvider

@@ -15,7 +15,7 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class ScriptBase
 
 

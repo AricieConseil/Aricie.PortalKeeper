@@ -324,7 +324,7 @@ Namespace IO
 
 
 
-    <Serializable()> _
+    
     Public Class ResponseFilteringEventArgs
         Inherits EventArgs
 

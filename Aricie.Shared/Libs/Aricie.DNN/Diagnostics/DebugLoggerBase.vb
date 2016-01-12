@@ -131,16 +131,13 @@ Namespace Diagnostics
 
             Dim toReturn As New List(Of T)
 
-            Dim nbRecords As Integer
-            Dim objEventLogs As LogInfoArray = Nothing
+            'Dim nbRecords As Integer
+            Dim objEventLogs As List(Of LogInfo) = Nothing
             Try
-                If portalId <> -1 Then
-                    objEventLogs = NukeHelper.LogController.GetLog(portalId, glbDnnLogTypeKey, 10, 0, nbRecords)
-                    objEventLogs = NukeHelper.LogController.GetLog(portalId, glbDnnLogTypeKey, nbRecords, 1, nbRecords)
-                Else
-                    objEventLogs = NukeHelper.LogController.GetLog(glbDnnLogTypeKey, 10, 1, nbRecords)
-                    objEventLogs = NukeHelper.LogController.GetLog(glbDnnLogTypeKey, nbRecords, 0, nbRecords)
-                End If
+                objEventLogs = ObsoleteDNNProvider.Instance.GetLogs(portalId, glbDnnLogTypeKey, 1000000, 0)
+                'objEventLogs = DirectCast(ObsoleteDNNProvider.Instance.GetType().GetMethod("GetLogs").Invoke(ObsoleteDNNProvider.Instance, New Object() {portalId, glbDnnLogTypeKey, 1000000, 1}), List(Of LogInfo))
+                'objEventLogs = ObsoleteDNNProvider.Instance.GetLogs(portalId, glbDnnLogTypeKey, nbRecords, 1, nbRecords)
+
                 Dim isDebugType As Boolean
                 Dim serializeProp As LogDetailInfo
 

@@ -8,12 +8,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <Serializable()> _
+    
     Public MustInherit Class AsyncEnabledActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)
 
         Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100), TimeSpan.FromMilliseconds(100))
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
 
         <AutoPostBack()> _

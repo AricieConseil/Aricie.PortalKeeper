@@ -16,8 +16,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Enum
 
 
-    <ActionButton(IconName.Compass, IconOptions.Normal)> _
-   <Serializable()> _
+    <ActionButton(IconName.Compass, IconOptions.Normal)>
     Public Class WebProxyPool
         Implements IDisposable
 
@@ -42,8 +41,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <Browsable(False)> _
-        <XmlIgnore()> _
+        <Browsable(False)>
+        <XmlIgnore()>
         Public ReadOnly Property CheckQueue() As TaskQueue(Of WebProxyInfo)
             Get
                 If _CheckQueue Is Nothing Then
@@ -53,12 +52,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <ExtendedCategory("Proxies")> _
+        <ExtendedCategory("Proxies")>
         Public Property PickMethod As PickMethod = PickMethod.Random
 
 
-        <ExtendedCategory("Proxies")> _
-        <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Proxies")>
+        <LabelMode(LabelMode.Top)>
         Public Property Proxies() As SimpleList(Of WebProxyInfo)
             Get
                 Return _Proxies
@@ -70,7 +69,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Size")> _
+        <ExtendedCategory("Size")>
         Public Property MinNbProxies() As Integer
             Get
                 Return _MinNbProxies
@@ -81,7 +80,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Size")> _
+        <ExtendedCategory("Size")>
         Public Property MaxNbProxies() As Integer
             Get
                 Return _MaxNbProxies
@@ -94,7 +93,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Verification")> _
+        <ExtendedCategory("Verification")>
         Public Property TestProxies() As Boolean
             Get
                 Return _TestProxies
@@ -106,11 +105,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <Required(True)> _
-         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-         <Width(500)> _
-         <ConditionalVisible("TestProxies", False, True)> _
-      <ExtendedCategory("Verification")> _
+        <Required(True)>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <Width(500)>
+        <ConditionalVisible("TestProxies", False, True)>
+        <ExtendedCategory("Verification")>
         Public Property TestUri() As String
             Get
                 Return _TestUri
@@ -122,10 +121,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-         <Width(500)> _
-         <ConditionalVisible("TestProxies", False, True)> _
-      <ExtendedCategory("Verification")> _
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <Width(500)>
+        <ConditionalVisible("TestProxies", False, True)>
+        <ExtendedCategory("Verification")>
         Public Property TestXPath() As String
             Get
                 Return _TestXPath
@@ -135,8 +134,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("TestProxies", False, True)> _
-        <ExtendedCategory("Verification")> _
+        <ConditionalVisible("TestProxies", False, True)>
+        <ExtendedCategory("Verification")>
         Public Property CheckPeriod() As STimeSpan
             Get
                 Return _CheckPeriod
@@ -146,8 +145,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("TestProxies", False, True)> _
-        <ExtendedCategory("Verification")> _
+        <ConditionalVisible("TestProxies", False, True)>
+        <ExtendedCategory("Verification")>
         Public Property TimeOut() As STimeSpan
             Get
                 Return _TimeOut
@@ -157,8 +156,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("TestProxies", False, True)> _
-        <ExtendedCategory("Verification")> _
+        <ConditionalVisible("TestProxies", False, True)>
+        <ExtendedCategory("Verification")>
         Public Property CheckTaskQueueInfo() As TaskQueueInfo
             Get
                 Return _CheckTaskQueueInfo
@@ -205,8 +204,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <Browsable(False)> _
-        <XmlIgnore()> _
+        <Browsable(False)>
+        <XmlIgnore()>
         Public ReadOnly Property AvailableProxies() As List(Of WebProxyInfo)
             Get
                 Dim toReturn As List(Of WebProxyInfo)

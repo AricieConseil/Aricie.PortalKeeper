@@ -11,7 +11,7 @@ Namespace Services.Files
 
    
 
-    <Serializable()> _
+    
     Public Class SmartFileInfo
         Implements IKeyPathFormatter
 

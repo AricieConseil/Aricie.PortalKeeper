@@ -6,20 +6,19 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
-    <DisplayName("Requests caps Condition")> _
-    <Description("Matches according to a set of maximum numbers of requests per unit of time")> _
-    <Serializable()> _
+    <ActionButton(IconName.Tachometer, IconOptions.Normal)>
+    <DisplayName("Requests caps Condition")>
+    <Description("Matches according to a set of maximum numbers of requests per unit of time")>
     Public Class RequestsCapsCondition
         Inherits DosEnabledConditionProvider(Of RequestEvent)
 
 
         Private _RequestsCaps As New List(Of RequestsCapInfo)
 
-        <ExtendedCategory("Condition")> _
-        <Editor(GetType(ListEditControl), GetType(EditControl))> _
-           <InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)> _
-           <CollectionEditor(False, False, True, True, 10)> _
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(ListEditControl), GetType(EditControl))>
+        <InnerEditor(GetType(PropertyEditorEditControl)), LabelMode(LabelMode.Top)>
+        <CollectionEditor(False, False, True, True, 10)>
         Public Property RequestsCaps() As List(Of RequestsCapInfo)
             Get
                 Return _RequestsCaps

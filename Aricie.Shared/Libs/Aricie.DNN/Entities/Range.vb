@@ -9,7 +9,7 @@ Namespace Entities
         SetMaximum = 2
     End Enum
 
-    <Serializable()> _
+    
     Public Class Range(Of T)
 
         Private Shared ReadOnly DefaultComparer As Comparer(Of T) = Generic.Comparer(Of T).Default

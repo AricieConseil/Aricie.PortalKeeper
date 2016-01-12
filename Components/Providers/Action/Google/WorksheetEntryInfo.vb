@@ -9,7 +9,7 @@ Imports System.Xml.Serialization
 Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class WorksheetEntryInfo(Of TEngineEvents As IConvertible)
         Implements ISelector
 

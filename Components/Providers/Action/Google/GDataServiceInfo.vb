@@ -7,7 +7,7 @@ Imports Google.GData.Spreadsheets
 Imports System.Xml.Serialization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class GDataServiceInfo(Of T As Service, TEngineEvents As IConvertible)
 
         Public Sub New()

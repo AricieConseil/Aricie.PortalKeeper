@@ -9,9 +9,8 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Road, IconOptions.Normal)> _
-    <Serializable()> _
-    <DefaultProperty("Address")> _
+    <ActionButton(IconName.Road, IconOptions.Normal)>
+    <DefaultProperty("Address")>
     Public Class WebProxyInfo
 
 
@@ -47,9 +46,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <Required(True)> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl)), _
-            LineCount(2), Width(500)> _
+        <Required(True)>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl)),
+            LineCount(2), Width(500)>
         Public Property Address() As String
             Get
                 Return _Address
@@ -75,7 +74,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ConditionalVisible("UseCredentials", False, True)> _
+        <ConditionalVisible("UseCredentials", False, True)>
         Public Property Credentials() As LoginInfo
             Get
                 Return _Credentials
@@ -97,7 +96,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <IsReadOnly(True)> _
+        <IsReadOnly(True)>
         Public Property LastTestDate() As DateTime
             Get
                 Return _LastTestDate
@@ -107,7 +106,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <IsReadOnly(True)> _
+        <IsReadOnly(True)>
         Public Property Lag() As STimeSpan
             Get
                 Return New STimeSpan(_Lag)
@@ -119,8 +118,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <Browsable(False)> _
-        <XmlIgnore()> _
+        <Browsable(False)>
+        <XmlIgnore()>
         Public ReadOnly Property Proxy() As WebProxy
             Get
                 If _Proxy Is Nothing AndAlso Not String.IsNullOrEmpty(Me._Address) Then
@@ -130,7 +129,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <IsReadOnly(True)> _
+        <IsReadOnly(True)>
         Public Property AvailableNb() As Integer
             Get
                 Return _AvailableNb
@@ -140,7 +139,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <IsReadOnly(True)> _
+        <IsReadOnly(True)>
         Public Property CheckEnqueued As Boolean
             Get
                 Return _CheckEnqueued

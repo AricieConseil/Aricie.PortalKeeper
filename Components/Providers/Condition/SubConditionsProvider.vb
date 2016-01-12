@@ -6,19 +6,18 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Sub Conditions Provider")> _
-    <Description("Allows to build a condition tree with sub conditions")> _
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)>
+    <DisplayName("Sub Conditions Provider")>
+    <Description("Allows to build a condition tree with sub conditions")>
     Public Class SubConditionsProvider(Of TEngineEvents As IConvertible)
         Inherits DosEnabledConditionProvider(Of TEngineEvents)
 
 
         Private _KeeperCondition As New KeeperCondition(Of TEngineEvents)
 
-        <ExtendedCategory("Condition")> _
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property KeeperCondition() As KeeperCondition(Of TEngineEvents)
             Get
                 Return _KeeperCondition

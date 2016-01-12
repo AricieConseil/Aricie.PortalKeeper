@@ -3,7 +3,7 @@ Namespace UI.WebControls.EditControls
     ''' Collection wrapper that embed the paginated navigation of a Source Collection
     ''' </summary>
     ''' <remarks>The page size and current index are given and computed according to the collection life cycle.</remarks>
-    <Serializable()> _
+    
     Public Class PagedCollection
         Implements ICollection
 

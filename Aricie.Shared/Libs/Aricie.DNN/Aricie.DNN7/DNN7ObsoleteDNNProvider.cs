@@ -151,6 +151,14 @@ namespace Aricie.DNN
             DotNetNuke.Common.Utilities.DataCache.ClearCache();
         }
 
+        public override List<DotNetNuke.Services.Log.EventLog.LogInfo> GetLogs(int portalID, string logType, int pageSize, int pageIndex)
+        {
+            int refRecords = 0;
+            var toReturn= NukeHelper.LogController.GetLogs(portalID, logType, pageSize, pageIndex, ref refRecords);
+            //totalRecords = refRecords;
+            return toReturn;
+        }
+
     }
 }
 

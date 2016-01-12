@@ -4,7 +4,7 @@ Imports System.Globalization
 Imports DotNetNuke.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class ConditionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))
 

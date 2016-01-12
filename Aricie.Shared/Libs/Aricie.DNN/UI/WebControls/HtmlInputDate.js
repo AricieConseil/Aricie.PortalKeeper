@@ -80,7 +80,12 @@ Aricie.DNN.HtmlInputDate.prototype = {
             days: 'dimanche,lundi,mardi,mercredi,jeudi,vendredi,samedi',
             shortDays: 'dim,lun,mar,mer,jeu,ven,sam'
         });
-
+        jQuery.tools.dateinput.localize('en', {
+            months: 'January,February,March,April,May,June,July,August,September,October,November,December',
+            shortMonths: 'jan,feb,mar,apr,may,jun,jul,aug,sep,oct,nov,dec',
+            days: 'sunday,monday,tuesday,wednesday,thursday,friday,saturday',
+            shortDays: 'sun,mon,tue,wed,thu,fri,sat'
+        });
 
         var myDateInput = this;
         //jQuery.tools.dateinput.conf.lang = myDateInput.get_language();

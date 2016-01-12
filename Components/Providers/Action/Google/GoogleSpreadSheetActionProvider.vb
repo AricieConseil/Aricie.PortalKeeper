@@ -24,113 +24,112 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Enum
 
 
-    <ActionButton(IconName.Google, IconOptions.Normal)> _
-    <DisplayName("Google Spreadsheets")> _
-    <Description("This provider allows to read and write google spreadsheets")> _
-    <Serializable()> _
+    <ActionButton(IconName.Google, IconOptions.Normal)>
+    <DisplayName("Google Spreadsheets")>
+    <Description("This provider allows to read and write google spreadsheets")>
     Public Class GoogleSpreadSheetActionProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
         'Implements ISelector
 
         Public Property SpreadSheetMode As GoogleSpreadSheetMode
 
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)>
+        <ExtendedCategory("Commands")>
         Public Property Commands As New SerializableList(Of SpreadSheetCommand(Of TEngineEvents))
 
         '<ConditionalVisible("UseExistingFeed", False, True)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)>
+        <ExtendedCategory("Commands")>
         Public Property CaptureWorksheetEntry As Boolean
 
 
         '<ConditionalVisible("UseExistingFeed", False, True)> _
-        <ExtendedCategory("Commands")> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)> _
-        <ConditionalVisible("CaptureWorksheetEntry", False, True)> _
+        <ExtendedCategory("Commands")>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.CellCommands)>
+        <ConditionalVisible("CaptureWorksheetEntry", False, True)>
         Public Property WorksheetEntryName As String = "WorksheetEntry"
 
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property ListMode As GoogleSpreadsheetListmode = GoogleSpreadsheetListmode.ReadList
 
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-     <ExtendedCategory("Commands")> _
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property Query As New EnabledFeature(Of ListQueryInfo)
 
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry, GoogleSpreadsheetListmode.DeleteEntry)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry, GoogleSpreadsheetListmode.DeleteEntry)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property ListEntryExpression As New FleeExpressionInfo(Of ListEntry)
 
-        
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.InsertEntry, GoogleSpreadsheetListmode.UpdateEntry)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.InsertEntry, GoogleSpreadsheetListmode.UpdateEntry)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property InputDictionaryExpression As New FleeExpressionInfo(Of Dictionary(Of String, String))
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property UpdateIfChanged As Boolean
 
-        <ConditionalVisible("UpdateIfChanged", False, True)> _
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+        <ConditionalVisible("UpdateIfChanged", False, True)>
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.UpdateEntry)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property ExcludedColumns As New List(Of String)
 
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-       <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property CaptureEntries As Boolean
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("CaptureEntries", False, True)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("CaptureEntries", False, True)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property EntriesVarName As String = "ListEntries"
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property IncludeIndex As Boolean
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("IncludeIndex", False, True)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-      <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("IncludeIndex", False, True)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property IndexKey As String = "Index"
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property ReturnDictionary As Boolean
 
-        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)> _
-        <ConditionalVisible("ReturnDictionary", False, True)> _
-        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)> _
-        <ExtendedCategory("Commands")> _
+        <ConditionalVisible("ListMode", False, True, GoogleSpreadsheetListmode.ReadList)>
+        <ConditionalVisible("ReturnDictionary", False, True)>
+        <ConditionalVisible("SpreadSheetMode", False, True, GoogleSpreadSheetMode.ListCommands)>
+        <ExtendedCategory("Commands")>
         Public Property PrimaryKey As New SimpleOrExpression(Of List(Of String))
 
 
-        <ExtendedCategory("Commands")> _
+        <ExtendedCategory("Commands")>
         Public Property Pace As New STimeSpan(TimeSpan.FromMilliseconds(200))
 
-        <ExtendedCategory("Feed")> _
+        <ExtendedCategory("Feed")>
         Public Property UseExistingFeed As Boolean
 
-        <ExtendedCategory("Feed")> _
-        <ConditionalVisible("UseExistingFeed", False, True)> _
+        <ExtendedCategory("Feed")>
+        <ConditionalVisible("UseExistingFeed", False, True)>
         Public Property WorksheetEntryExpression As New SimpleExpression(Of WorksheetEntry)()
 
 
 
 
-        <ExtendedCategory("Feed")> _
-        <ConditionalVisible("UseExistingFeed", False, True)> _
+        <ExtendedCategory("Feed")>
+        <ConditionalVisible("UseExistingFeed", False, True)>
         Public Property FeedExpression As New SimpleExpression(Of AbstractFeed)()
 
         '<AutoPostBack()> _
@@ -138,20 +137,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         ' <ConditionalVisible("UseExistingFeed", False, True)> _
         'Public Property CreateIf As New KeeperCondition(Of TEngineEvents)
 
-        <AutoPostBack()> _
-       <ExtendedCategory("Feed")> _
-        <ConditionalVisible("UseExistingFeed", False, True)> _
+        <AutoPostBack()>
+        <ExtendedCategory("Feed")>
+        <ConditionalVisible("UseExistingFeed", False, True)>
         Public Property CreateIfNull As Boolean
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property ShowFeedInfo As Boolean
             Get
                 Return (Not UseExistingFeed) OrElse CreateIfNull 'CreateIf.Instances.Count > 0
             End Get
         End Property
 
-        <ExtendedCategory("Feed")> _
-        <ConditionalVisible("ShowFeedInfo", False, True)> _
+        <ExtendedCategory("Feed")>
+        <ConditionalVisible("ShowFeedInfo", False, True)>
         Public Property FeedInfo As New SpreadsheetFeedInfo(Of TEngineEvents)
 
 
@@ -258,7 +257,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             Else
                                 objListEntry = New ListEntry()
                             End If
-                           
+
                             If Me.ListMode = GoogleSpreadsheetListmode.InsertEntry Or Me.ListMode = GoogleSpreadsheetListmode.UpdateEntry Then
                                 input = Me.InputDictionaryExpression.Evaluate(actionContext, actionContext)
                                 Dim changed As Boolean

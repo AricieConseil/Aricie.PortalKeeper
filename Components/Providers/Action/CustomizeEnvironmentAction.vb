@@ -5,10 +5,9 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Portals
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Desktop, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Customize Environment Action")> _
-        <Description("Tweaks various parameters from the dnn environment")> _
+    <ActionButton(IconName.Desktop, IconOptions.Normal)>
+    <DisplayName("Customize Environment Action")>
+    <Description("Tweaks various parameters from the dnn environment")>
     Public Class CustomizeEnvironmentAction
         Inherits ActionProvider(Of RequestEvent)
 
@@ -27,7 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _EnforceViewMode As Boolean
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property SubPortalRegistrationType() As PortalRegistrationType
             Get
                 Return _SubPortalRegistrationType
@@ -37,7 +36,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property EnforceViewMode() As Boolean
             Get
                 Return _EnforceViewMode

@@ -1,3 +1,4 @@
+Imports System.Collections.Specialized
 Imports System.Reflection
 Imports Aricie.Services
 Imports System.Web
@@ -13,7 +14,7 @@ Imports Aricie.Security.Cryptography
 Imports System.Runtime.CompilerServices
 Imports System.Text.RegularExpressions
 Imports Microsoft.VisualBasic.Devices
-
+Imports System.Globalization
 
 ''' <summary>
 ''' Collection of general purpose helper functions
@@ -115,7 +116,20 @@ Public Module Common
     End Function
 
 
+    <Extension> _
+    Public Function ToStream(str As String) As Stream
+        Dim stream As New MemoryStream()
+        Dim writer As New StreamWriter(stream)
+        writer.Write(str)
+        writer.Flush()
+        stream.Position = 0
+        Return stream
+    End Function
 
+    <Extension> _
+    Public Function FromUtf8(stream As MemoryStream) As String
+        Return stream.ToArray().FromUTF8()
+    End Function
 
     <Extension> _
     Public Function GetBase64FromUtf8(strUtf8 As String) As String
@@ -354,7 +368,7 @@ Public Module Common
             End Using
         End Using
     End Function
-    
+
 
 
     <Extension> _
@@ -545,35 +559,35 @@ Public Module Common
         If duration <> TimeSpan.MaxValue Then
             Dim stopNb = 0
             If Not smartFormat OrElse duration.Days > 0 Then
-                toReturn &= duration.Days.ToString & " d "
+                toReturn &= duration.Days.ToString(CultureInfo.InvariantCulture) & " d "
                 stopNb += 1
             End If
             If Not smartFormat OrElse duration.Hours > 0 Then
-                toReturn &= duration.Hours.ToString & " h "
+                toReturn &= duration.Hours.ToString(CultureInfo.InvariantCulture) & " h "
                 stopNb += 1
             ElseIf stopNb > 0 Then
                 stopNb += 1
             End If
             If Not smartFormat OrElse duration.Minutes > 0 Then
-                toReturn &= duration.Minutes.ToString & " mn "
+                toReturn &= duration.Minutes.ToString(CultureInfo.InvariantCulture) & " mn "
                 stopNb += 1
             ElseIf stopNb > 0 Then
                 stopNb += 1
             End If
             If Not smartFormat OrElse duration.Seconds > 0 Then
-                toReturn &= duration.Seconds.ToString & " s "
+                toReturn &= duration.Seconds.ToString(CultureInfo.InvariantCulture) & " s "
                 stopNb += 1
             ElseIf stopNb > 0 Then
                 stopNb += 1
             End If
             If Not smartFormat OrElse (stopNb < 2 AndAlso duration.Milliseconds > 0) Then
-                toReturn &= duration.Milliseconds.ToString & " ms "
+                toReturn &= duration.Milliseconds.ToString(CultureInfo.InvariantCulture) & " ms "
                 stopNb += 1
             ElseIf stopNb > 0 Then
                 stopNb += 1
             End If
             If Not smartFormat OrElse stopNb < 2 Then
-                toReturn &= duration.GetMicroSeconds().ToString & " µs "
+                toReturn &= duration.GetMicroSeconds().ToString(CultureInfo.InvariantCulture) & " µs "
             End If
         Else
             toReturn = "Not Available"
@@ -916,13 +930,21 @@ Public Module Common
     <Extension> _
     Public Function GetExternalIPAddress(request As HttpRequest) As String
 
+        Dim objServerVariables As NameValueCollection = request.ServerVariables
+
+        Return GetExternalIPAddress(objServerVariables)
+    End Function
+
+
+    Public Function GetExternalIPAddress(ByVal objServerVariables As NameValueCollection) As String
+        Dim fallBack As String = objServerVariables.Get("REMOTE_ADDR")
         Dim toReturn As String
-        toReturn = request.ServerVariables("HTTP_CLIENT_IP")
+        toReturn = objServerVariables.Get("HTTP_CLIENT_IP")
         Dim addressList As String()
         If IsExternalIPAddress(toReturn) Then
             Return toReturn
         End If
-        Dim strAddressList As String = request.ServerVariables("HTTP_X_FORWARDED_FOR")
+        Dim strAddressList As String = objServerVariables.Get("HTTP_X_FORWARDED_FOR")
         If Not String.IsNullOrEmpty(strAddressList) Then
             addressList = strAddressList.Split(","c)
             For Each address As String In addressList
@@ -932,7 +954,7 @@ Public Module Common
                 End If
             Next
         End If
-        strAddressList = request.ServerVariables("X_FORWARDED_FOR")
+        strAddressList = objServerVariables.Get("X_FORWARDED_FOR")
         If Not String.IsNullOrEmpty(strAddressList) Then
             addressList = strAddressList.Split(","c)
             For Each address As String In addressList
@@ -942,23 +964,23 @@ Public Module Common
                 End If
             Next
         End If
-        toReturn = request.ServerVariables("HTTP_X_FORWARDED")
+        toReturn = objServerVariables.Get("HTTP_X_FORWARDED")
         If IsExternalIPAddress(toReturn) Then
             Return toReturn
         End If
-        toReturn = request.ServerVariables("HTTP_X_CLUSTER_CLIENT_IP")
+        toReturn = objServerVariables.Get("HTTP_X_CLUSTER_CLIENT_IP")
         If IsExternalIPAddress(toReturn) Then
             Return toReturn
         End If
-        toReturn = request.ServerVariables("HTTP_FORWARDED_FOR")
+        toReturn = objServerVariables.Get("HTTP_FORWARDED_FOR")
         If IsExternalIPAddress(toReturn) Then
             Return toReturn
         End If
-        toReturn = request.ServerVariables("HTTP_FORWARDED")
+        toReturn = objServerVariables.Get("HTTP_FORWARDED")
         If IsExternalIPAddress(toReturn) Then
             Return toReturn
         End If
-        Return request.UserHostAddress
+        Return fallBack
     End Function
 
     Public Sub CallDebuggerBreak()
@@ -988,12 +1010,9 @@ Public Module Common
             Dim ipAdd As IPAddress = Nothing
             If IPAddress.TryParse(address, ipAdd) Then
                 If ipAdd.AddressFamily = AddressFamily.InterNetwork Then
-                    For Each privateIPRange As List(Of IPAddress) In PrivateIps
-                        If CompareIPs.IsGreaterOrEqual(ipAdd, privateIPRange(0)) AndAlso CompareIPs.IsLessOrEqual(ipAdd, privateIPRange(0)) Then
-                            Return False
-                        End If
-                    Next
-                    Return True
+                    Return PrivateIps.All(Function(privateIpRange) _
+                                              Not CompareIPs.IsGreaterOrEqual(ipAdd, privateIpRange(0)) _
+                                              OrElse Not CompareIPs.IsLessOrEqual(ipAdd, privateIpRange(0)))
                 End If
             End If
         End If
@@ -1015,12 +1034,12 @@ Public Module Common
                 SyncLock _PrivateIps
                     If _PrivateIps.Count = 0 Then
                         Dim tempList As New List(Of List(Of IPAddress))
-                        For i = 0 To _PrivateIPStringArray.GetUpperBound(0)
+                        For i = 0 To PrivateIpStringArray.GetUpperBound(0)
                             Dim ipPair As New List(Of IPAddress)
-                            Dim lowerBoundIP As String = _PrivateIPStringArray(i, 0)
-                            Dim upperBoundIP As String = _PrivateIPStringArray(i, 1)
-                            ipPair.Add(IPAddress.Parse(lowerBoundIP))
-                            ipPair.Add(IPAddress.Parse(upperBoundIP))
+                            Dim lowerBoundIp As String = PrivateIpStringArray(i, 0)
+                            Dim upperBoundIp As String = PrivateIpStringArray(i, 1)
+                            ipPair.Add(IPAddress.Parse(lowerBoundIp))
+                            ipPair.Add(IPAddress.Parse(upperBoundIp))
                             tempList.Add(ipPair)
                         Next
                         _PrivateIps = tempList
@@ -1035,7 +1054,14 @@ Public Module Common
 
 
 
-    Private ReadOnly _PrivateIPStringArray As String(,) = {{"0.0.0.0", "2.255.255.255"}, {"10.0.0.0", "10.255.255.255"}, {"127.0.0.0", "127.255.255.255"}, {"169.254.0.0", "169.254.255.255"}, {"172.16.0.0", "172.31.255.255"}, {"192.0.2.0", "192.0.2.255"}, {"192.168.0.0", "192.168.255.25"}, {"255.255.255.0", "255.255.255.255"}}
+    Private ReadOnly PrivateIpStringArray As String(,) = {{"0.0.0.0", "2.255.255.255"}, _
+                                                          {"10.0.0.0", "10.255.255.255"}, _
+                                                          {"127.0.0.0", "127.255.255.255"}, _
+                                                          {"169.254.0.0", "169.254.255.255"}, _
+                                                          {"172.16.0.0", "172.31.255.255"}, _
+                                                          {"192.0.2.0", "192.0.2.255"}, _
+                                                          {"192.168.0.0", "192.168.255.25"}, _
+                                                          {"255.255.255.0", "255.255.255.255"}}
 
     ''' <summary>
     ''' converti un long en int en récupérant les 4 octets de droite du long

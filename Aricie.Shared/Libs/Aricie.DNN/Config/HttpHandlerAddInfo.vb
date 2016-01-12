@@ -5,7 +5,7 @@ Namespace Configuration
     ''' <summary>
     ''' HttpHandler Add merge node
     ''' </summary>
-    <Serializable()> _
+    
     Public Class HttpHandlerAddInfo
         Inherits WebServerAddInfo
 

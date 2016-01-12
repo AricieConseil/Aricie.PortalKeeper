@@ -6,18 +6,6 @@ Imports System.Globalization
 Imports DotNetNuke.Security
 
 Namespace UI.WebControls.EditControls
-
-
-
-    Public Class WriteAndReadCustomTextEditControl
-        Inherits CustomTextEditControl
-
-        Protected Overrides Sub RenderViewMode(writer As HtmlTextWriter)
-            RenderMode(writer, True)
-        End Sub
-
-
-    End Class
     Public Class CustomTextEditControl
         Inherits TextEditControl
 

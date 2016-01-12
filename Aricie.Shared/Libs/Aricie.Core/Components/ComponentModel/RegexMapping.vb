@@ -1,5 +1,7 @@
+Imports System.ComponentModel
+
 Namespace ComponentModel
-    <Serializable()> _
+    <DefaultProperty("FriendlyName")> _
     Public Class RegexMapping
 
         Private _pattern As String = ""
@@ -15,8 +17,13 @@ Namespace ComponentModel
             Me._sample = sample
         End Sub
 
+        <Browsable(False)> _
+        Public ReadOnly Property FriendlyName As String
+            Get
+                Return String.Format("{0} (ex: ""{1}"")", Pattern, Sample)
+            End Get
+        End Property
 
-        
         Public Property Pattern() As String
             Get
                 Return _pattern

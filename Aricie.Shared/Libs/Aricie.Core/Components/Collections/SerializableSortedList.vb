@@ -6,7 +6,7 @@ Namespace Collections
     ''' <summary>
     ''' Generic Sorted List with a self contained sub types generic serialization mechanism
     ''' </summary>
-    <Serializable()> _
+    
     <XmlRoot("sortedList")> _
     Public Class SerializableSortedList(Of TKey, TValue)
         Inherits SortedList(Of TKey, TValue)

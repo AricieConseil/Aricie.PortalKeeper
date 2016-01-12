@@ -8,7 +8,7 @@ Imports System.Xml.Serialization
 Imports System.Net
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class RequestSource
 
         Public Sub New()
@@ -92,7 +92,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                         toReturn = curSession.SessionID
                     Else
-                        toReturn = context.DnnContext.Request.UserHostAddress
+                        toReturn = ""
                     End If
                 Case RequestSourceType.UrlPath
                     toReturn = context.DnnContext.Request.Url.AbsolutePath

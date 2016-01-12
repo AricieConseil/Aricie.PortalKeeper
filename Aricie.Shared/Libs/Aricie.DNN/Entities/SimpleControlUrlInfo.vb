@@ -10,7 +10,6 @@ Namespace Entities
     ''' </summary>
     ''' <remarks></remarks>
     <ActionButton(IconName.Link, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class SimpleControlUrlInfo
         Inherits ControlUrlInfo
 

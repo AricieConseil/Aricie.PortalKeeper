@@ -7,30 +7,28 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("DotNetNuke Page Condition")> _
-       <Description("Matches according to the target DNN Page as defined in the url")> _
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)>
+    <DisplayName("DotNetNuke Page Condition")>
+    <Description("Matches according to the target DNN Page as defined in the url")>
     Public Class DnnPageCondition
         Inherits DnnPageCondition(Of RequestEvent)
 
     End Class
 
 
-    <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("DotNetNuke Page Condition")> _
-        <Description("Matches according to the target DNN Page as defined in the url")> _
+    <ActionButton(IconName.Sitemap, IconOptions.Normal)>
+    <DisplayName("DotNetNuke Page Condition")>
+    <Description("Matches according to the target DNN Page as defined in the url")>
     Public Class DnnPageCondition(Of TEngineEvents As IConvertible)
         Inherits SelectionSetCondition(Of TEngineEvents)
 
-        <ExtendedCategory("Condition")> _
+        <ExtendedCategory("Condition")>
         Public Property MatchAnyDNNPageRequest As Boolean
 
-        <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))> _
-        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)> _
-    <ConditionalVisible("MatchAnyDNNPageRequest", True, True)> _
-    <ExtendedCategory("Condition")> _
+        <InnerEditor(GetType(SelectorEditControl), GetType(ItemsAttributes))>
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=True, Paged:=True)>
+        <ConditionalVisible("MatchAnyDNNPageRequest", True, True)>
+        <ExtendedCategory("Condition")>
         Public Overrides Property Items As List(Of Integer)
             Get
                 Return MyBase.Items

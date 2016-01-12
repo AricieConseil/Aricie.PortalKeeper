@@ -7,20 +7,18 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Key, IconOptions.Normal)> _
-  <Serializable()> _
-      <DisplayName("Membership Condition")> _
-      <Description("Matches according to the user membership")> _
+    <ActionButton(IconName.Key, IconOptions.Normal)>
+    <DisplayName("Membership Condition")>
+    <Description("Matches according to the user membership")>
     Public Class MembershipCondition
         Inherits MembershipCondition(Of RequestEvent)
 
     End Class
 
 
-    <ActionButton(IconName.Key, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("Membership Condition")> _
-       <Description("Matches according to the user membership")> _
+    <ActionButton(IconName.Key, IconOptions.Normal)>
+    <DisplayName("Membership Condition")>
+    <Description("Matches according to the user membership")>
     Public Class MembershipCondition(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)
 
@@ -30,14 +28,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _MatchUserIds As String = ""
 
-        <ExtendedCategory("Condition")> _
+        <ExtendedCategory("Condition")>
         Public Property MatchUnauthenticated As Boolean
 
-        <ExtendedCategory("Condition")> _
+        <ExtendedCategory("Condition")>
         Public Property MatchAllAuthenticated As Boolean
 
-        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Condition")> _
+        <ConditionalVisible("MatchAllAuthenticated", True, True)>
+        <ExtendedCategory("Condition")>
         Public Property MatchSuperUsers() As Boolean
             Get
                 Return _MatchSuperUsers
@@ -47,11 +45,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Condition")> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(2)> _
-            <Width(200)> _
+        <ConditionalVisible("MatchAllAuthenticated", True, True)>
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <LineCount(2)>
+        <Width(200)>
         Public Property MatchRoles() As String
             Get
                 Return _MatchRoles
@@ -61,11 +59,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("MatchAllAuthenticated", True, True)> _
-        <ExtendedCategory("Condition")> _
-            <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(2)> _
-            <Width(200)> _
+        <ConditionalVisible("MatchAllAuthenticated", True, True)>
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <LineCount(2)>
+        <Width(200)>
         Public Property MatchUserIds() As String
             Get
                 Return _MatchUserIds
@@ -83,7 +81,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 CallDebuggerBreak()
             End If
             If context.DnnContext.IsAuthenticated Then
-                
+
                 Dim objUser As UserInfo = context.DnnContext.User
 
                 context.Items("ClientUser") = objUser
@@ -109,7 +107,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Else
                 Return Me.MatchUnauthenticated
             End If
-            
+
             Return False
         End Function
 

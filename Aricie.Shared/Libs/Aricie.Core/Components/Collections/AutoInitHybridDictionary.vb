@@ -2,7 +2,6 @@ Namespace Collections
     ''' <summary>
     ''' Base class for a Hybrid Dictionary with an automated init hook
     ''' </summary>
-    <Serializable()> _
     Public MustInherit Class AutoInitHybridDictionary(Of Tkey, TValue)
         Inherits HybridDictionary(Of Tkey, TValue)
         Implements IAutoInitDictionary(Of Tkey, TValue)

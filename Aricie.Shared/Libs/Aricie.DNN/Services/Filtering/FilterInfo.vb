@@ -4,7 +4,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Services.Filtering
 
-    <Serializable()> _
+    
     Public Class FilterInfo
 
         Private _expression As New ExpressionFilterInfo

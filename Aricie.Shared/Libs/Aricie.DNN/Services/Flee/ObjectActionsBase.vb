@@ -8,7 +8,7 @@ Namespace Services.Flee
     ''' List of flee actions holder class
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ObjectActionsBase
         Inherits ProviderHost(Of DotNetType(Of ObjectAction), ObjectAction, IGenericizer(Of ObjectAction))
 

@@ -24,7 +24,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Android, IconOptions.Normal)> _
     <DefaultProperty("Summary")> _
-    <Serializable()> _
     Public Class BotInfo(Of TEngineEvent As IConvertible)
         Inherits RuleEngineSettings(Of TEngineEvent)
 
@@ -52,7 +51,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _UseTaskQueue As Boolean
         Private _TaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(2000), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100))
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of BotRunContext(Of TEngineEvent))
 
 
@@ -336,7 +335,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 #Region "Private methods"
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private _ServerList As List(Of String)
 
         Private Function MatchServer() As Boolean

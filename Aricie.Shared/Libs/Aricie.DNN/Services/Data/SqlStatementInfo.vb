@@ -1,7 +1,7 @@
 ﻿Imports Aricie.DNN.Services.Filtering
 
 Namespace Services.Data
-    <Serializable()> _
+    
     Public Class SqlStatementInfo
         Inherits TokenizedTextInfo
 

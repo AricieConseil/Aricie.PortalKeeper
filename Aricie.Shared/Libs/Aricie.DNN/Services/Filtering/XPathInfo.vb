@@ -14,7 +14,7 @@ Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Filtering
 
-    <Serializable()> _
+    
     Public Class HtmlXPathInfo
         Inherits XPathInfo
 
@@ -54,7 +54,6 @@ Namespace Services.Filtering
     ''' <remarks></remarks>
     <ActionButton(IconName.Code, IconOptions.Normal)> _
     <DefaultProperty("Expression")> _
-    <Serializable()> _
     Public Class XPathInfo
 
         Public Sub New()

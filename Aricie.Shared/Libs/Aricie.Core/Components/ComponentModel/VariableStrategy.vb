@@ -1,7 +1,7 @@
 Imports System.Text.RegularExpressions
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public Class VariableStrategy(Of T)
 
         Public Sub New(ByVal strRegex As RegexMapping, ByVal strategy As T)
@@ -47,10 +47,26 @@ Namespace ComponentModel
             End Get
         End Property
 
+        Private _Prefix As String
 
         Public ReadOnly Property Prefix() As String
             Get
-                Return Me.Mapping.Sample.Substring(0, Me.Match.Groups(1).Index)
+                If _Prefix.IsNullOrEmpty() Then
+                    Dim groupIdx As Integer = Me.Match.Groups(1).Index
+                    If groupIdx > 0 Then
+                        _Prefix = Me.Mapping.Sample.Substring(0, groupIdx)
+                    Else
+                        Dim cutIndx As Integer = 0
+                        While StringComparer.InvariantCultureIgnoreCase.Compare(Me.Mapping.Pattern(cutIndx), Me._Mapping.Sample(cutIndx)) = 0
+                            cutIndx += 1
+                            If cutIndx >= Me.Mapping.Pattern.Length Then
+                                Throw New ApplicationException("Regex Pattern has to have a variable part differing from the sample provided")
+                            End If
+                        End While
+                        _Prefix = Me.Mapping.Sample.Substring(0, cutIndx)
+                    End If
+                End If
+                Return _Prefix
             End Get
         End Property
 

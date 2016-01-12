@@ -6,32 +6,30 @@ Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.ExternalLink, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Redirect Action")> _
-        <Description("Redirect the current client to a specified url")> _
+    <ActionButton(IconName.ExternalLink, IconOptions.Normal)>
+    <DisplayName("Redirect Action")>
+    <Description("Redirect the current client to a specified url")>
     Public Class RedirectAction
         Inherits RedirectAction(Of RequestEvent)
 
     End Class
 
 
-    <ActionButton(IconName.ExternalLink, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Redirect Action")> _
-        <Description("Redirect the current client to a specified url")> _
+    <ActionButton(IconName.ExternalLink, IconOptions.Normal)>
+    <DisplayName("Redirect Action")>
+    <Description("Redirect the current client to a specified url")>
     Public Class RedirectAction(Of TEngineEvents As IConvertible)
         Inherits ActionProvider(Of TEngineEvents)
 
-        <ExtendedCategory("Specifics")> _
-         Public Property CurrentRequestUrl As Boolean
+        <ExtendedCategory("Specifics")>
+        Public Property CurrentRequestUrl As Boolean
 
-        <ConditionalVisible("CurrentRequestUrl", True, True)> _
-        <ExtendedCategory("Specifics")> _
+        <ConditionalVisible("CurrentRequestUrl", True, True)>
+        <ExtendedCategory("Specifics")>
         Public Property TargetUrl() As New SimpleOrExpression(Of ControlUrlInfo, String)
 
         '<ExtendedCategory("Specifics")> _
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Property Target() As ControlUrlInfo
             Get
                 Return Nothing
@@ -42,18 +40,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property AdditionalQuery As New StringVariables
 
-        <ExtendedCategory("Specifics")> _
-        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
+        <ExtendedCategory("Specifics")>
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)>
         Public Property RemovedQuery As New List(Of String)
-           
 
 
-        <ExtendedCategory("Specifics")> _
+
+        <ExtendedCategory("Specifics")>
         Public Property EndResponse() As Boolean
-            
+
 
 
         Public Overrides Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean

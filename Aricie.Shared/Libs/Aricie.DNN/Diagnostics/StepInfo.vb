@@ -14,7 +14,7 @@ Namespace Diagnostics
     ''' Base class for a performance logger measurements.
     ''' </summary>
     ''' <remarks>Allows to log precisely timed sequences of custom events together with additional data.</remarks>
-    <Serializable()> _
+    
     Public Class StepInfo
         Inherits DebugInfo
 

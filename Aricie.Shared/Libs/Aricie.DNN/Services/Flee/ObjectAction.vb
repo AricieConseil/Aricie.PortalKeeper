@@ -11,7 +11,6 @@ Namespace Services.Flee
     ''' </summary>
     ''' <remarks></remarks>
     <ActionButton(IconName.Wrench, IconOptions.Normal)> _
-    <Serializable()> _
     Public MustInherit Class ObjectAction
         Implements IEnabled
 
@@ -57,7 +56,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public MustInherit Class ObjectAction(Of TObjectType)
         Inherits ObjectAction
 

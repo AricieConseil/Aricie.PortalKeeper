@@ -1,5 +1,5 @@
 ﻿Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class ConditionProvider(Of TEngineEvents As IConvertible)
         Inherits ConditionProviderSettings(Of TEngineEvents)
         Implements IConditionProvider(Of TEngineEvents)

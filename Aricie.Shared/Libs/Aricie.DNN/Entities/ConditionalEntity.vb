@@ -3,13 +3,14 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.ComponentModel
+Imports Aricie.DNN.Services.Flee
 
 Namespace Entities
 
     ''' <summary>
     ''' Composite Entity with a code expression to be evaluated for a conditional behaviour
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ConditionalEntity(Of T As {New})
         Inherits NamedConfig
 
@@ -44,19 +45,21 @@ Namespace Entities
 
 #Region "Public Properties"
 
-        <Required(True)> _
-           <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-           <LineCount(3)> _
-           <Width(500)> _
-           <LabelMode(LabelMode.Top)> _
+        'todo: remove that obsolete property
+        <Browsable(False)> _
         Public Property Condition() As String
             Get
-                Return Me._Condition
+                Return Nothing
             End Get
             Set(ByVal value As String)
-                Me._Condition = value
+                If Not value.IsNullOrEmpty() Then
+                    Me.ConditionExpression.Expression = value
+                End If
             End Set
         End Property
+
+        Public Property ConditionExpression As New FleeExpressionInfo(Of Boolean)
+
 
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
             <LabelMode(LabelMode.Top)> _

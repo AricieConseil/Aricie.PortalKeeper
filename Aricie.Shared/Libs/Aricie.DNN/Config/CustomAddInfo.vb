@@ -2,7 +2,7 @@ Imports System.Xml.Serialization
 
 Namespace Configuration
     '<XmlRoot("add")> _
-    <Serializable()> _
+    
     Public Class CustomAddInfo
         Inherits AddInfo
 

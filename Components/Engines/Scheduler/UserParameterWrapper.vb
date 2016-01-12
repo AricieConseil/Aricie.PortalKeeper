@@ -8,7 +8,6 @@ Imports Aricie.Services
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Cog, IconOptions.Normal)> _
     <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
     Public Class UserParameterWrapper
 
         Public Sub New()

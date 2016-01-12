@@ -7,7 +7,7 @@ Namespace Services.Workers
     ''' Information class for task queue
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class TaskQueueInfo
 
         Public Sub New()

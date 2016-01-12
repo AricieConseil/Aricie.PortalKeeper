@@ -7,7 +7,6 @@ Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Globe, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class RestService
         Inherits NamedConfig
         Implements IExpressionVarsProvider

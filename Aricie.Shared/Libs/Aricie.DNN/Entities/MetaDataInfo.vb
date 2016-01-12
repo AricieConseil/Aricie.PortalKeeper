@@ -8,7 +8,6 @@ Namespace Entities
     ''' General Entity class to hold common metadata
     ''' </summary>
     <ActionButton(IconName.Tags, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class MetaDataInfo
 
 #Region "Private members"

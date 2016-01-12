@@ -11,6 +11,7 @@ Imports System.Text
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Services
+Imports Fasterflect
 
 Namespace ComponentModel
     Public Enum TypeSelector
@@ -21,7 +22,6 @@ Namespace ComponentModel
 
     <ActionButton(IconName.PuzzlePiece, IconOptions.Normal)> _
     <DefaultProperty("Name")> _
-    <Serializable()> _
     Public Class DotNetType
         Implements ISelector
         Implements ISelector(Of DotNetType)
@@ -61,7 +61,7 @@ Namespace ComponentModel
                     Else
                         tmpDNT = objDotNetType
                     End If
-                    
+
                 Else
                     tmpDNT = New DotNetType()
                 End If
@@ -99,10 +99,10 @@ Namespace ComponentModel
         End Property
 
 
-       
 
 
-        Public Property PickerMode As TypePickerMode
+
+        Public Overridable Property PickerMode As TypePickerMode
 
 
 
@@ -115,7 +115,7 @@ Namespace ComponentModel
 
 
         <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
-       <ActionButton(IconName.Refresh, IconOptions.Normal, "CustomTypeReset.Alert")> _
+        <ActionButton(IconName.Refresh, IconOptions.Normal, "CustomTypeReset.Alert")> _
         Public Sub ResetCustomType(ByVal pe As AriciePropertyEditorControl)
             Try
                 _Type = Nothing
@@ -191,7 +191,7 @@ Namespace ComponentModel
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-       <XmlIgnore> _
+        <XmlIgnore> _
         Public Property MakeArray As Boolean
 
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
@@ -207,7 +207,7 @@ Namespace ComponentModel
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-       <ConditionalVisible("MakeArray")> _
+        <ConditionalVisible("MakeArray")> _
         <XmlIgnore()> _
         Public Property ArrayType As DotNetType
             Get
@@ -237,7 +237,7 @@ Namespace ComponentModel
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
         <ConditionalVisible("IsGenericParameter", True, True)> _
-         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
+        <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         <SelectorAttribute("", "", False, True, "<Select Namespace>", "", False, True)> _
         <AutoPostBack()> _
@@ -284,8 +284,8 @@ Namespace ComponentModel
         <ConditionalVisible("IsSelectedGeneric", False, True)> _
         <ConditionalVisible("AssemblyNameSelect", True, True, "")> _
         <XmlIgnore()> _
-      <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
-      <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=False, _
+        <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List, EnableExport:=False, _
           ItemsReadOnly:=False, MaxItemNb:=-1, NoAdd:=True, NoDeletion:=True, Ordered:=False, Paged:=False, ShowAddItem:=False)> _
         Public Property GenericTypes As New List(Of DotNetType)
 
@@ -437,7 +437,7 @@ Namespace ComponentModel
 
 
 
-        Public Function GetSelectorG(ByVal propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
+        Public Overridable Function GetSelectorG(ByVal propertyName As String) As IList(Of DotNetType) Implements ISelector(Of DotNetType).GetSelectorG
             Dim toReturn As New List(Of DotNetType)
             Select Case propertyName
                 Case "CommonType"
@@ -453,12 +453,12 @@ Namespace ComponentModel
                         If objAssembly IsNot Nothing Then
                             Try
                                 toReturn.AddRange(From objType In objAssembly.GetTypes() _
-                                                        Where objType.Namespace = Me.NamespaceSelect _
-                                                        AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) _
-                                                    From objTypeOrChild In New Type() {objType} _
-                                                        .Union(objType.GetNestedTypes() _
-                                                            .Where(Function(objNestedType) Not objNestedType.AssemblyQualifiedName.IsNullOrEmpty()))
-                                                Select New DotNetType(objTypeOrChild))
+                                                  Where objType.Namespace = Me.NamespaceSelect _
+                                                  AndAlso Not String.IsNullOrEmpty(objType.AssemblyQualifiedName) _
+                                                  From objTypeOrChild In New Type() {objType} _
+                                                      .Union(objType.GetNestedTypes() _
+                                                          .Where(Function(objNestedType) Not objNestedType.AssemblyQualifiedName.IsNullOrEmpty()))
+                                                  Select New DotNetType(objTypeOrChild))
                             Catch ex As ReflectionTypeLoadException
                                 Dim sb As New StringBuilder()
                                 For Each exSub As Exception In ex.LoaderExceptions
@@ -501,7 +501,7 @@ Namespace ComponentModel
         '    Return Me.TypeName.GetHashCode()
         'End Function
 
-        Public Function GetSelectorG1(ByVal propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
+        Public Overridable Function GetSelectorG1(ByVal propertyName As String) As IList(Of AssemblyName) Implements ISelector(Of AssemblyName).GetSelectorG
             Dim toReturn As New List(Of AssemblyName)
             For Each objAssembly As Assembly In AppDomain.CurrentDomain.GetAssemblies()
                 Dim toAdd As AssemblyName = objAssembly.GetName()
@@ -514,7 +514,7 @@ Namespace ComponentModel
             Return toReturn
         End Function
 
-        Public Function GetSelectorG2(ByVal propertyName As String) As IList(Of String) Implements ISelector(Of String).GetSelectorG
+        Public Overridable Function GetSelectorG2(ByVal propertyName As String) As IList(Of String) Implements ISelector(Of String).GetSelectorG
             Dim toReturnSet As New HashSet(Of String)
             If Not String.IsNullOrEmpty(AssemblyNameSelect) Then
                 Dim objAssembly As Assembly = Assembly.Load(New AssemblyName(AssemblyNameSelect))
@@ -602,7 +602,9 @@ Namespace ComponentModel
 
     End Class
 
-    <Serializable()> _
+   
+
+
     Public Class DotNetType(Of TVariable)
         Inherits DotNetType
         Implements IGenericizer(Of TVariable)
@@ -713,6 +715,66 @@ Namespace ComponentModel
         '    'End Property
         'End Class
 
+
+    End Class
+
+    Public Class SubDotNetType
+        Inherits DotNetType
+
+        Public sub  New()
+
+        End sub
+
+        Public sub New(objBaseType As type)
+            Me.BaseType = New DotNetType( objBaseType)
+        End sub
+
+        <Browsable(False)> _
+        Public Property BaseType() As New DotNetType()
+            
+          Public Overrides Function GetSelectorG(propertyName As String) As IList(Of DotNetType)
+            Return MyBase.GetSelectorG(propertyName).Where(Function(objDotNetType) objDotNetType.GetDotNetType() IsNot Nothing _
+                                                               AndAlso BaseType.GetDotNetType().IsAssignableFrom(objDotNetType.GetDotNetType())).ToList()
+        End Function
+
+        Public Overrides Function GetSelectorG1(propertyName As String) As IList(Of AssemblyName)
+            Return MyBase.GetSelectorG1(propertyName).Where(Function(objAssembly)
+                                                                Try
+                                                                    Return Assembly.Load(objAssembly).GetTypes() _
+                                                                .Any(Function(objType) BaseType.GetDotNetType().IsAssignableFrom(objType))
+                                                                Catch 
+                                                                    Return false
+                                                                End Try
+                                                            End Function
+                                                            ).ToList()
+        End Function
+
+        Public Overrides Function GetSelectorG2(propertyName As String) As IList(Of String)
+            Dim toReturn As IList(Of String) = MyBase.GetSelectorG2(propertyName)
+            Dim objAssemblyTypes As Type() = Assembly.Load(New AssemblyName(AssemblyNameSelect)).GetTypes()
+            Return toReturn.Where(Function(strNamespace) objAssemblyTypes _
+                                      .Where(Function(objType) objType.Namespace = strNamespace _
+                                     AndAlso objType.InheritsOrImplements(BaseType.GetDotNetType())).Any()).ToList()
+        End Function
+
+        <Browsable(False)> _
+        Public Overrides Property PickerMode As TypePickerMode
+            Get
+                Return TypePickerMode.SelectType
+            End Get
+            Set(value As TypePickerMode)
+            End Set
+        End Property
+
+
+    End Class
+
+     Public Class SubDotNetType(Of TBaseType)
+        Inherits SubDotNetType
+
+      Public Sub New()
+            MyBase.New(GetType(TBaseType))
+      End Sub
 
     End Class
 

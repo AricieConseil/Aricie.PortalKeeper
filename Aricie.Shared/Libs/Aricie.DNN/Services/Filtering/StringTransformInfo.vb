@@ -25,7 +25,7 @@ Namespace Services.Filtering
     ''' Class for string transformation
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     <DefaultProperty("FriendlyName")> _
     Public Class StringTransformInfo
 

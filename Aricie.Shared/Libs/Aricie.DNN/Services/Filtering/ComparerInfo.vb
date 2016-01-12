@@ -4,7 +4,7 @@ Imports System.Globalization
 Imports System.Threading
 
 Namespace Services.Filtering
-    <Serializable()> _
+    
     Public Class ComparerInfo
 
         Private _Comparer As StringComparer

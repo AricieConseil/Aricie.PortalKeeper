@@ -6,7 +6,7 @@ Namespace Settings
     ''' Base settings class
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class PersonalSettings
         Inherits SerializableDictionary(Of String, Object)
 

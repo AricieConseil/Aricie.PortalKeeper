@@ -4,7 +4,7 @@ Namespace Security
     ''' Class allowing quick access to the permission info for DotNetNuke entities
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class PermissionEnumInfo
         Implements IEquatable(Of PermissionEnumInfo)
 

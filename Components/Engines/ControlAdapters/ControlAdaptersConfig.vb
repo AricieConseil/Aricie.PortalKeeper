@@ -7,7 +7,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class ControlAdaptersConfig
         Implements IEnabled
 

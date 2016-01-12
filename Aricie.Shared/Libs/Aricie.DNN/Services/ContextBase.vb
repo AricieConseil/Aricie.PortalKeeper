@@ -174,7 +174,15 @@ Namespace Services
             End Get
         End Property
 
+        
         Public Property ContextOwner As Object Implements IContextOwnerProvider.ContextOwner
+            Get
+                Return Me
+            End Get
+            Set(value As Object)
+                'can't change the context owner here
+            End Set
+        End Property
 
        
 

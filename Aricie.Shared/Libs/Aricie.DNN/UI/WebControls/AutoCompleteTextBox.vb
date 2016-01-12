@@ -110,7 +110,7 @@ Namespace UI.WebControls
             myScriptD.AddProperty("ClientId", Me.ClientID)
             myScriptD.AddProperty("TbClientId", Me.FindControl("Tb").ClientID)
             myScriptD.AddProperty("HfClientId", Me.FindControl("Hf").ClientID)
-            myScriptD.AddProperty("UrlWS", String.Format("http://{0}/{1}", System.Web.HttpContext.Current.Request.Url.Host, ResolveClientUrl(Me.UrlWS)))
+            myScriptD.AddProperty("UrlWS", String.Format("//{0}/{1}", System.Web.HttpContext.Current.Request.Url.Host, ResolveClientUrl(Me.UrlWS)))
             myScriptD.AddProperty("AdditionalFunctionForWSResponse", Me.AdditionalFunctionForWSResponse)
             myScriptD.AddProperty("AdditionalSelectFunction", Me.AdditionalSelectFunction)
             myScriptD.AddProperty("AdditionalOnClickFunction", Me.AdditionalOnClickFunction)

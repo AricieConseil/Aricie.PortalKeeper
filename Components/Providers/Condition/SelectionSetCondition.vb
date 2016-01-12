@@ -13,7 +13,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <Serializable()> _
+    
     Public MustInherit Class SelectionSetCondition(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)
         Implements ISelectorAttributeProvider

@@ -112,10 +112,10 @@
     <value>2.0</value>
   </resheader>
   <resheader name="reader">
-    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <resheader name="writer">
-    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="RuleEngineSettings`1_Rules.Header" xml:space="preserve">
     <value>Runtime</value>
@@ -6240,13 +6240,13 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>When several signatures exist for the method you selected, enter the base-1 index for the target method</value>
   </data>
   <data name="GeneralObjectAction_MethodIndex.Text" xml:space="preserve">
-    <value>Method Index</value>
+    <value>Member Index</value>
   </data>
   <data name="GeneralObjectAction_MethodName.Help" xml:space="preserve">
     <value>Select the name of the method you want to call on the target object</value>
   </data>
   <data name="GeneralObjectAction_MethodName.Text" xml:space="preserve">
-    <value>Method Name</value>
+    <value>Member Name</value>
   </data>
   <data name="NamespaceSelect.NullSelect" xml:space="preserve">
     <value>&lt;Select a Namespace&gt;</value>
@@ -6453,7 +6453,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Define here the parameters to be passed to the constructor. Static evaluation is forced. </value>
   </data>
   <data name="GeneralVariableInfo_Parameters.Text" xml:space="preserve">
-    <value>Constructor Parameters</value>
+    <value>Invocation Parameters</value>
   </data>
   <data name="GeneralVariableInfo_SimpleExpression.Help" xml:space="preserve">
     <value>The simple display lets you edit the expression text only</value>
@@ -9936,7 +9936,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Check to select an array type for the currently selected type</value>
   </data>
   <data name="DotNetType_MakeArray.Text" xml:space="preserve">
-    <value>Make Array Type</value>
+    <value>Array Type</value>
   </data>
   <data name="DynamicAction_DynamicAttributes.Help" xml:space="preserve">
     <value>You can add dynamic attributes at the action level, as you would do on a ApiController class method. Simply choose the attribute type to add, and fill in the corresponding properties accordingly.</value>
@@ -11110,5 +11110,293 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="CreateHttpResponseInfo_CustomTypeName.Text" xml:space="preserve">
     <value>Custom Type name</value>
+  </data>
+  <data name="AStar.Text" xml:space="preserve">
+    <value>A Star</value>
+  </data>
+  <data name="BreadthFirst.Text" xml:space="preserve">
+    <value>Breadth First</value>
+  </data>
+  <data name="CustomAlgorithm.Text" xml:space="preserve">
+    <value>Custom Search Algorithm</value>
+  </data>
+  <data name="DepthFirst.Text" xml:space="preserve">
+    <value>Depth First</value>
+  </data>
+  <data name="DepthLimited.Text" xml:space="preserve">
+    <value>Depth Limited</value>
+  </data>
+  <data name="EightPuzzle.Text" xml:space="preserve">
+    <value>Eight Puzzle</value>
+  </data>
+  <data name="EntityKeyInfo_Application.Help" xml:space="preserve">
+    <value>If your smart files belong to a common application scope, you can set your application name here</value>
+  </data>
+  <data name="EntityKeyInfo_Application.Text" xml:space="preserve">
+    <value>Set Application Name</value>
+  </data>
+  <data name="EntityKeyInfo_Entity.Help" xml:space="preserve">
+    <value>Sets the name of the entity that the smart file represent</value>
+  </data>
+  <data name="EntityKeyInfo_Entity.Text" xml:space="preserve">
+    <value>Set Entity Name</value>
+  </data>
+  <data name="EntityKeyInfo_Field.Help" xml:space="preserve">
+    <value>Sets the name of the entity field that the smart file represent</value>
+  </data>
+  <data name="EntityKeyInfo_Field.Text" xml:space="preserve">
+    <value>Set Entity Field Name</value>
+  </data>
+  <data name="EntityKeyInfo_PortalId.Help" xml:space="preserve">
+    <value>This defines the target portal root folder</value>
+  </data>
+  <data name="EntityKeyInfo_PortalId.Text" xml:space="preserve">
+    <value>Set Portal Id</value>
+  </data>
+  <data name="EntityKeyInfo_UserName.Help" xml:space="preserve">
+    <value>Sets the username of the user that smart file belongs to</value>
+  </data>
+  <data name="EntityKeyInfo_UserName.Text" xml:space="preserve">
+    <value>Set User Name</value>
+  </data>
+  <data name="GeneralVariableInfo_SetForSave.Help" xml:space="preserve">
+    <value>If checked, the corresponding smart file will be saved at the end of the action sequence where it is used.</value>
+  </data>
+  <data name="GeneralVariableInfo_SetForSave.Text" xml:space="preserve">
+    <value>Set to Save</value>
+  </data>
+  <data name="GeneralVariableInfo_SmartFileKey.Help" xml:space="preserve">
+    <value>Smart Files are stored with a path derived from a compound key that you can define here, either with static or dynamic values.</value>
+  </data>
+  <data name="GeneralVariableInfo_SmartFileKey.Text" xml:space="preserve">
+    <value>File Key</value>
+  </data>
+  <data name="GeneralVariableInfo_StaticMemberType.Text" xml:space="preserve">
+    <value>Static Member type</value>
+  </data>
+  <data name="GeneralVariableInfo_UseCustomFileSettings.Text" xml:space="preserve">
+    <value>Smart File settings defining how to derive file path from entity key and whether to compress/encrypt are generally supplied globally, but you can override those settings here.</value>
+  </data>
+  <data name="GeneralVariableInfo`1_SubType.Help" xml:space="preserve">
+    <value>You can choose to build your variable from a subtype to the target type.</value>
+  </data>
+  <data name="GeneralVariableInfo`1_SubType.Text" xml:space="preserve">
+    <value>Sub Type</value>
+  </data>
+  <data name="GraphSearch.Text" xml:space="preserve">
+    <value>Graph Search</value>
+  </data>
+  <data name="GreedyBestFirst.Text" xml:space="preserve">
+    <value>Greedy Best First</value>
+  </data>
+  <data name="HillClimbing.Text" xml:space="preserve">
+    <value>Hill Climbing</value>
+  </data>
+  <data name="IterativeDeepening.Text" xml:space="preserve">
+    <value>Iterative Deepening</value>
+  </data>
+  <data name="KnownInformed.Text" xml:space="preserve">
+    <value>Known Informed Search</value>
+  </data>
+  <data name="KnownUninformed.Text" xml:space="preserve">
+    <value>Known Uninformed Search</value>
+  </data>
+  <data name="Manhattan.Text" xml:space="preserve">
+    <value>Manhattan</value>
+  </data>
+  <data name="MisplacedTile.Text" xml:space="preserve">
+    <value>Misplaced tiles</value>
+  </data>
+  <data name="NQueen.Text" xml:space="preserve">
+    <value>N Queen</value>
+  </data>
+  <data name="ProblemInfo_GoalTest.Help" xml:space="preserve">
+    <value>The goal test of a problem, which implements the corresponding interface, returns a a boolean to acknowledge if the state is a solution to the problem.</value>
+  </data>
+  <data name="ProblemInfo_GoalTest.Text" xml:space="preserve">
+    <value>Goal Test</value>
+  </data>
+  <data name="ProblemInfo_HeuristicFunction.Help" xml:space="preserve">
+    <value>Optionally a problem can define a Heuristic Function, which quantifies the search value of states.</value>
+  </data>
+  <data name="ProblemInfo_HeuristicFunction.Text" xml:space="preserve">
+    <value>Heuristic Function</value>
+  </data>
+  <data name="ProblemInfo_StepCostFunction.Help" xml:space="preserve">
+    <value>Optionally a problem can define a Step Cost Function, which gives the cost of a transition given a source state, an action and a resulting state.</value>
+  </data>
+  <data name="ProblemInfo_StepCostFunction.Text" xml:space="preserve">
+    <value>Step Cost Function</value>
+  </data>
+  <data name="ProblemInfo_ActionsFunction.Help" xml:space="preserve">
+    <value>The action function of a problem, which implements the corresponding interface, returns a list of possible actions  from a given state</value>
+  </data>
+  <data name="ProblemInfo_ActionsFunction.Text" xml:space="preserve">
+    <value>Actions Function</value>
+  </data>
+  <data name="QueensToBePlaced.Text" xml:space="preserve">
+    <value>Queens to be Placed</value>
+  </data>
+  <data name="RuleEngineSettings`1_SmartFileSettings.Help" xml:space="preserve">
+    <value>Smart Files are serialized entities saved automatically within the DNN file system, and can be used withing the agent's actions. Define here the default settings for those Smart Files</value>
+  </data>
+  <data name="RuleEngineSettings`1_SmartFileSettings.Text" xml:space="preserve">
+    <value>Smart File Settings</value>
+  </data>
+  <data name="SearchAgentInfo_InitialState.Help" xml:space="preserve">
+    <value>This is the initial state to run the problem solver, in the form of custom object with memberwise equality and hashcode permitting comparison. </value>
+  </data>
+  <data name="SearchAgentInfo_InitialState.Text" xml:space="preserve">
+    <value>Initial State</value>
+  </data>
+  <data name="SearchAgentInfo_Problem.Help" xml:space="preserve">
+    <value>Given an environment with states to be searched, a problem defines legal actions with a successor function, success conditions with a goal test function, and optionally a step cost and a heuristic function to weight and guide space exploration.</value>
+  </data>
+  <data name="SearchAgentInfo_Problem.Text" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="SearchAgentInfo_Search.Help" xml:space="preserve">
+    <value>A Search agent will apply a search strategy over a problem, given an initial state. There are several known informed and uninformed strategies available, or a custom algorithm can be applied.</value>
+  </data>
+  <data name="SearchAgentInfo_Search.Text" xml:space="preserve">
+    <value>Search Strategy</value>
+  </data>
+  <data name="SearchDemoInfo_EightPuzzleHeuristics.Text" xml:space="preserve">
+    <value>Heuristic</value>
+  </data>
+  <data name="SearchDemoInfo_EightPuzzleInitialState.Text" xml:space="preserve">
+    <value>Puzzle Initial State</value>
+  </data>
+  <data name="SearchDemoInfo_InitEigthPuzzleInitialState.Text" xml:space="preserve">
+    <value>Init Puzzle</value>
+  </data>
+  <data name="SearchDemoInfo_NQueenBoardSize.Help" xml:space="preserve">
+    <value>Choose the size N of the chess board where N Queen must be positionned</value>
+  </data>
+  <data name="SearchDemoInfo_NQueenBoardSize.Text" xml:space="preserve">
+    <value>Board Size</value>
+  </data>
+  <data name="SearchDemoInfo_NQueensHeuristics.Text" xml:space="preserve">
+    <value>Heuristic</value>
+  </data>
+  <data name="SearchDemoInfo_Selection.Help" xml:space="preserve">
+    <value>Choose between available default problems</value>
+  </data>
+  <data name="SearchDemoInfo_Selection.Text" xml:space="preserve">
+    <value>Problem Selection</value>
+  </data>
+  <data name="SearchDemoInfo_ShuffleEigthPuzzleInitialState.Text" xml:space="preserve">
+    <value>Shuffle Puzzle</value>
+  </data>
+  <data name="SearchDemoInfo_EightPuzzleShuffleMoves.Help" xml:space="preserve">
+    <value>Enter the number of moves to perform when shuffling</value>
+  </data>
+  <data name="SearchDemoInfo_EightPuzzleShuffleMoves.Text" xml:space="preserve">
+    <value>Moves number</value>
+  </data>
+  <data name="SearchInfo_AlgorithmType.Help" xml:space="preserve">
+    <value>You can choose to select a known search algorithm, informed or uninformed or to define a custom algorithm implementing the corresponding Search interface</value>
+  </data>
+  <data name="SearchInfo_AlgorithmType.Text" xml:space="preserve">
+    <value>Algorithm Type</value>
+  </data>
+  <data name="SearchInfo_CustomSearchAlgorithm.Help" xml:space="preserve">
+    <value>Use the following controls to build a object that implement the Search interface</value>
+  </data>
+  <data name="SearchInfo_CustomSearchAlgorithm.Text" xml:space="preserve">
+    <value>Custom Search Algorithm</value>
+  </data>
+  <data name="SearchInfo_DepthLimit.Help" xml:space="preserve">
+    <value>This is the maximum steps ahead to lookup for the depth limited algorithm</value>
+  </data>
+  <data name="SearchInfo_DepthLimit.Text" xml:space="preserve">
+    <value>Depth Limit</value>
+  </data>
+  <data name="SearchInfo_KnownInformedAlgorithm.Help" xml:space="preserve">
+    <value>Several implementations of known informed search algorithm are available for direct selection. They require the problem to offer an Heuristic in order to work properly.</value>
+  </data>
+  <data name="SearchInfo_KnownInformedAlgorithm.Text" xml:space="preserve">
+    <value>Known Informed Algorithm</value>
+  </data>
+  <data name="SearchInfo_KnownUninformedAlgorithm.Help" xml:space="preserve">
+    <value>Several implementations of known uninformed search algorithm are available for direct selection. They don't require a heuristic and only need a goal test function.</value>
+  </data>
+  <data name="SearchInfo_KnownUninformedAlgorithm.Text" xml:space="preserve">
+    <value>Known Uninformed Algorithm</value>
+  </data>
+  <data name="SearchInfo_QueueSearchType.Help" xml:space="preserve">
+    <value>You can choose between Graph search (default, no cycles allowed) and Tree search (cycles are not checked for)</value>
+  </data>
+  <data name="SearchInfo_QueueSearchType.Text" xml:space="preserve">
+    <value>Queue Search type</value>
+  </data>
+  <data name="SimulatedAnnealing.Text" xml:space="preserve">
+    <value>Simulated Annealing</value>
+  </data>
+  <data name="SmartFile.Text" xml:space="preserve">
+    <value>Smart File</value>
+  </data>
+  <data name="StaticMember.Text" xml:space="preserve">
+    <value>Static Member</value>
+  </data>
+  <data name="TreeSearch.Text" xml:space="preserve">
+    <value>Tree Search</value>
+  </data>
+  <data name="AlphaBeta.Text" xml:space="preserve">
+    <value>AlphaBeta</value>
+  </data>
+  <data name="Bidirectional.Text" xml:space="preserve">
+    <value>Bidirectional</value>
+  </data>
+  <data name="CompleteState.Text" xml:space="preserve">
+    <value>Complete State</value>
+  </data>
+  <data name="ConnectFour.Text" xml:space="preserve">
+    <value>Connect Four</value>
+  </data>
+  <data name="GamesDemoInfo_Selection.Text" xml:space="preserve">
+    <value>Selected Game</value>
+  </data>
+  <data name="GameStrategyInfo_StrategyType.Text" xml:space="preserve">
+    <value>Strategy Type</value>
+  </data>
+  <data name="Incremental.Text" xml:space="preserve">
+    <value>Incremental</value>
+  </data>
+  <data name="MiniMax.Text" xml:space="preserve">
+    <value>MiniMax</value>
+  </data>
+  <data name="ProblemInfo_ResultFunction.Help" xml:space="preserve">
+    <value>A result function returns the resulting state given a start state and an action</value>
+  </data>
+  <data name="ProblemInfo_ResultFunction.Text" xml:space="preserve">
+    <value>Result Function</value>
+  </data>
+  <data name="SearchAgentInfo_HeuristicFunction.Help" xml:space="preserve">
+    <value>You can optionally provide a state scoring heuristic function to be used by informed search algorithms</value>
+  </data>
+  <data name="SearchAgentInfo_HeuristicFunction.Text" xml:space="preserve">
+    <value>Heuristic Function</value>
+  </data>
+  <data name="SearchAgentInfo_InitialState.Header" xml:space="preserve">
+    <value>Initial State</value>
+  </data>
+  <data name="SearchAgentInfo_Problem.Header" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="SearchAgentInfo_Search.Header" xml:space="preserve">
+    <value>Search Strategy</value>
+  </data>
+  <data name="SearchDemoInfo_NQueensActions.Help" xml:space="preserve">
+    <value>There are 2 action functions, the complete state assumes exactly one queen in each column and provides all possible queen movements in vertical direction as actions, where as the iterative assumes that queens are placed column by column, starting with an empty board, and provides queen placing actions for all non-attacked positions of the first free column</value>
+  </data>
+  <data name="SearchDemoInfo_NQueensActions.Text" xml:space="preserve">
+    <value>NQueen Action Function</value>
+  </data>
+  <data name="TicTacToe.Text" xml:space="preserve">
+    <value>Tic Tac Toe</value>
+  </data>
+  <data name="UniformCost.Text" xml:space="preserve">
+    <value>Uniform Cost</value>
   </data>
 </root>

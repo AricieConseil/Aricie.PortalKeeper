@@ -1,7 +1,7 @@
 Imports DotNetNuke.UI.WebControls
 
 Namespace UI
-    <Serializable()> _
+    
     Public Class Field
         ' Methods
         Public Sub New()
