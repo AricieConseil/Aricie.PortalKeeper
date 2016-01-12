@@ -1,5 +1,5 @@
 ﻿Namespace ComponentModel
-    <Serializable()> _
+    
     Public Class RelatedEntityDescriptor
 
         Private _TargetEntityName As String = ""

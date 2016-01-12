@@ -8,10 +8,9 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Magic, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Define Variables Action Provider")> _
-        <Description("This provider allows to declare and instanciate a set of variables, which will be stored in the context ""Item"" dictionary")> _
+    <ActionButton(IconName.Magic, IconOptions.Normal)>
+    <DisplayName("Define Variables Action Provider")>
+    <Description("This provider allows to declare and instanciate a set of variables, which will be stored in the context ""Item"" dictionary")>
     Public Class DefineVarsActionProvider(Of TEngineEvents As IConvertible)
         Inherits CacheableAction(Of TEngineEvents)
 
@@ -21,7 +20,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _GetFromHistory As Boolean
 
 
-        <ExtendedCategory("Variables")> _
+        <ExtendedCategory("Variables")>
         Public Property GetFromHistory As Boolean
             Get
                 Return _GetFromHistory
@@ -31,10 +30,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ExtendedCategory("Variables")> _
-            <MainCategory()> _
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
+        <ExtendedCategory("Variables")>
+        <MainCategory()>
         Public Property Variables() As Variables
             Get
                 Return _Variables

@@ -27,10 +27,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         SendStatus
     End Enum
 
-    <ActionButton(IconName.MinusCircle, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("Request Denial Action")> _
-       <Description("Blocks the request. A status code can be sent or the client connection can be simply closed")> _
+    <ActionButton(IconName.MinusCircle, IconOptions.Normal)>
+    <DisplayName("Request Denial Action")>
+    <Description("Blocks the request. A status code can be sent or the client connection can be simply closed")>
     Public Class RequestDenialAction
         Inherits ActionProvider(Of RequestEvent)
 
@@ -42,7 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _ExceptionMessage As String = ""
         Private _RewriteContent As String = String.Empty
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property RequestDenialActionType() As RequestDenialType
             Get
                 Return _RequestDenialActionType
@@ -53,8 +52,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ConditionalVisible("RequestDenialActionType", False, True, RequestDenialType.Abort)> _
-        <ExtendedCategory("Specifics")> _
+        <ConditionalVisible("RequestDenialActionType", False, True, RequestDenialType.Abort)>
+        <ExtendedCategory("Specifics")>
         Public Property RequestAbortType() As RequestAbortType
             Get
                 Return _RequestAbortType
@@ -64,8 +63,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)> _
-        <ExtendedCategory("Specifics")> _
+        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)>
+        <ExtendedCategory("Specifics")>
         Public Property RequestDenialActionMode() As RequestDenialMode
             Get
                 Return _RequestDenialActionMode
@@ -75,12 +74,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)> _
-        <ConditionalVisible("RequestDenialActionMode", False, True, RequestDenialMode.ThrowHttpException)> _
-        <ExtendedCategory("Specifics")> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(5)> _
-            <Width(200)> _
+        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)>
+        <ConditionalVisible("RequestDenialActionMode", False, True, RequestDenialMode.ThrowHttpException)>
+        <ExtendedCategory("Specifics")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <LineCount(5)>
+        <Width(200)>
         Public Property ExceptionMessage() As String
             Get
                 Return _ExceptionMessage
@@ -90,12 +89,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)> _
-        <ConditionalVisible("RequestDenialActionMode", False, True, RequestDenialMode.SendStatus)> _
-        <ExtendedCategory("Specifics")> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <LineCount(20)> _
-            <Width(300)> _
+        <ConditionalVisible("RequestDenialActionType", True, True, RequestDenialType.Abort)>
+        <ConditionalVisible("RequestDenialActionMode", False, True, RequestDenialMode.SendStatus)>
+        <ExtendedCategory("Specifics")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <LineCount(20)>
+        <Width(300)>
         Public Property RewriteContent() As String
             Get
                 Return _RewriteContent

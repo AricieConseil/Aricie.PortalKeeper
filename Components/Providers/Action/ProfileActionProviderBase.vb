@@ -7,25 +7,24 @@ Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.User, IconOptions.Normal)> _
-    <Serializable()> _
+    <ActionButton(IconName.User, IconOptions.Normal)>
     Public MustInherit Class ProfileActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
         Public Property UserMode As ProfileUserMode
 
-        <ConditionalVisible("UserMode", True, True, ProfileUserMode.CurrentUser, ProfileUserMode.ByUserinfo)> _
-        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
-      <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("UserMode", True, True, ProfileUserMode.CurrentUser, ProfileUserMode.ByUserinfo)>
+        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
         Public Property PortalId As Integer
 
-        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUserId)> _
+        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUserId)>
         Public Property UserIdExpression As New SimpleOrExpression(Of Integer)
 
-        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUsername)> _
+        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUsername)>
         Public Property UsernameExpression As New SimpleOrExpression(Of String)
 
-        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUserinfo)> _
+        <ConditionalVisible("UserMode", False, True, ProfileUserMode.ByUserinfo)>
         Public Property UserInfoExpression As New SimpleExpression(Of UserInfo)
 
         Public Function GetUser(objContext As PortalKeeperContext(Of TEngineEvents)) As UserInfo
@@ -45,15 +44,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property ProfileType As ProfileType
 
-        <ConditionalVisible("ProfileType", False, True, ProfileType.Identity)> _
+        <ConditionalVisible("ProfileType", False, True, ProfileType.Identity)>
         Public Property AsString As Boolean
 
 
-        <Required(True)> _
-        <ConditionalVisible("ProfileType", False, True, ProfileType.Personalization)> _
+        <Required(True)>
+        <ConditionalVisible("ProfileType", False, True, ProfileType.Personalization)>
         Public Property NamingContainer As String = ""
 
-        <Required(True)> _
+        <Required(True)>
         Public Property PropertyName As String = ""
 
 

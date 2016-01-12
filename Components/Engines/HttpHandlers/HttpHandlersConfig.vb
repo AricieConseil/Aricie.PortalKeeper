@@ -6,7 +6,7 @@ Imports System.Xml.Serialization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
+    
     Public Class HttpSubHandlersConfig
         Inherits HttpHandlersConfig
 
@@ -31,7 +31,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     End Class
 
-    <Serializable()> _
+    
     Public Class HttpHandlersConfig
         Implements IEnabled
         Implements ITypedContainer

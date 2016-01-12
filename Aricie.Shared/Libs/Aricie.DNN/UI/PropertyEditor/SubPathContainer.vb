@@ -260,7 +260,7 @@ Namespace UI.WebControls
                     Select objIContext.GetContext(objType)).FirstOrDefault()
         End Function
 
-        Public Function HasContect(objType As Type) As Boolean Implements IContextSource.HasContext
+        Public Function HasContext(objType As Type) As Boolean Implements IContextSource.HasContext
             Return Me.GetParentEntities().Values.OfType(Of IContextSource)() _
                 .Any(Function(contextProvider) _
                          contextProvider.HasContext(objType))

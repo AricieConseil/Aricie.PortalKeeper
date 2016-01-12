@@ -8,7 +8,6 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Ban, IconOptions.Normal)> _
-   <Serializable()> _
     Public Class DenialOfServiceSettings
 
         Private _Enable As Boolean = True

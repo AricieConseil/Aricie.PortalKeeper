@@ -6,7 +6,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     
 
-    <Serializable()> _
+    
     Public MustInherit Class SerializationBaseActionProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 

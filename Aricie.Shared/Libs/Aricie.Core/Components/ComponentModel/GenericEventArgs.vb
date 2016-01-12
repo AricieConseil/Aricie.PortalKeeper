@@ -3,7 +3,7 @@
 
 Namespace ComponentModel
 
-    <Serializable()> _
+    
     Public Class GenericEventArgs(Of T)
         Inherits EventArgs
 
@@ -59,7 +59,7 @@ Namespace ComponentModel
     ''' <summary>
     ''' Général purpose Eventargs with
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ChangedEventArgs
         Inherits EventArgs
 
@@ -97,7 +97,7 @@ Namespace ComponentModel
         End Property
     End Class
 
-    <Serializable()> _
+    
     Public Class ChangedEventArgs(Of T)
         Inherits GenericEventArgs(Of T)
 

@@ -19,9 +19,8 @@ Imports DotNetNuke.Services.Exceptions
 Imports Aricie.DNN.Entities
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Users, IconOptions.Normal)> _
-    <Serializable()> _
-        <XmlInclude(GetType(UserVariableInfo))> _
+    <ActionButton(IconName.Users, IconOptions.Normal)>
+    <XmlInclude(GetType(UserVariableInfo))>
     Public Class UserBotSettings(Of TEngineEvent As IConvertible)
         Inherits NamedConfig
         Implements ISelector(Of BotInfo(Of TEngineEvent))
@@ -56,10 +55,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public properties"
 
-        <ExtendedCategory("MasterBot")> _
-            <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-            <ProvidersSelector()> _
-            <AutoPostBack()> _
+        <ExtendedCategory("MasterBot")>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
+        <ProvidersSelector()>
+        <AutoPostBack()>
         Public Property BotName() As String
             Get
                 Return _BotName
@@ -70,7 +69,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("MasterBot")> _
+        <ExtendedCategory("MasterBot")>
         Public Property DisableTemplateBot() As Boolean
             Get
                 Return _DisableTemplateBot
@@ -80,7 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property Bot() As BotInfo(Of TEngineEvent)
             Get
                 If _Bot Is Nothing Then
@@ -119,9 +118,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'End Property
 
 
-        <ExtendedCategory("Parameters")> _
-         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <Width(300)> _
+        <ExtendedCategory("Parameters")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <Width(300)>
         Public Property FormerName() As String
             Get
                 Return _FormerName
@@ -131,7 +130,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Parameters")> _
+        <ExtendedCategory("Parameters")>
         Public Property ResourceFile() As String
             Get
                 Return _ResourceFile
@@ -142,9 +141,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Parameters")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Parameters")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property UserParameters() As SimpleList(Of UserVariableInfo)
             Get
                 Return _UserParameters
@@ -154,9 +153,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-           <LabelMode(LabelMode.Top)> _
-           <ExtendedCategory("Parameters")> _
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
+        <ExtendedCategory("Parameters")>
         Public Property VariableOverwrites() As Variables
             Get
                 Return _VariableOverwrites
@@ -166,9 +165,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Probes")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Probes")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property Probes() As SimpleList(Of ProbeSettings(Of TEngineEvent))
             Get
                 Return _Probes
@@ -180,7 +179,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("ActionCommands")> _
+        <ExtendedCategory("ActionCommands")>
         Public Property ActionCommands() As New SerializableList(Of ActionCommand)
 
         Private _CurrentUserBots As New Dictionary(Of Integer, UserBotInfo)
@@ -191,14 +190,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Public Property UserName As String = ""
 
 
-        <ExtendedCategory("Storage")> _
+        <ExtendedCategory("Storage")>
         Public Property Storage As UserBotStorage = UserBotStorage.SmartFiles
 
-        <ConditionalVisible("Storage", False, True, UserBotStorage.SmartFiles)> _
-        <ExtendedCategory("Storage")> _
+        <ConditionalVisible("Storage", False, True, UserBotStorage.SmartFiles)>
+        <ExtendedCategory("Storage")>
         Public Property StorageSettings As New SmartFileInfo
 
-        <ExtendedCategory("Storage")> _
+        <ExtendedCategory("Storage")>
         Public Property CachePlannedSchedule As New EnabledFeature(Of STimeSpan)(New STimeSpan(TimeSpan.FromMinutes(3)))
 
 
@@ -217,8 +216,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '    End Get
         'End Property
 
-        <XmlIgnore()> _
-        <ExtendedCategory("Management")> _
+        <XmlIgnore()>
+        <ExtendedCategory("Management")>
         Public Property UserBots As SmartFolder(Of UserBotInfo)
             Get
                 If _UserBots Is Nothing Then
@@ -235,13 +234,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <NonSerialized()> _
+        '<NonSerialized()>
         Private lockDefaultVars As New Object
-        <NonSerialized()> _
+        '<NonSerialized()>
         Private _DefaultVars As Dictionary(Of String, Object)
 
-        <XmlIgnore()> _
-        <Browsable(False)> _
+        <XmlIgnore()>
+        <Browsable(False)>
         Private ReadOnly Property DefaultVars As Dictionary(Of String, Object)
             Get
                 If Me._DefaultVars Is Nothing Then
@@ -264,7 +263,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <NonSerialized()> _
+        '<NonSerialized()>
         Private Shared WithEvents _AsynchronousProbingTaskQueue As TaskQueue(Of UserBotProbeAccess)
 
         Private Shared queueLock As New Object
@@ -597,9 +596,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return key
         End Function
 
-        <ConditionalVisible("HasEncrypter", False, True, UserBotStorage.Personalisation)> _
-       <ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)> _
-      <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+        <ConditionalVisible("HasEncrypter", False, True, UserBotStorage.Personalisation)>
+        <ConditionalVisible("Storage", False, True, UserBotStorage.Personalisation)>
+        <ActionButton(IconName.Refresh, IconOptions.Normal)>
         Public Sub SwitchToSmartFiles()
             If Me.Storage = UserBotStorage.Personalisation Then
                 Dim shuffledUsers As IList(Of UserInfo) = New List(Of UserInfo)(GetPortalUsers(DnnContext.Current.Portal.PortalId))
@@ -732,7 +731,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Inner Classes"
 
-        <Serializable()> _
+
         Public Class UserBotFormat
 
 

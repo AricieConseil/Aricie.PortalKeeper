@@ -4,10 +4,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.FileTextO, IconOptions.Normal)> _
-   <DisplayName("File Read Action")> _
-       <Description("This provider allows to read a file to a given String variable, given its path by dynamic expressions")> _
-       <Serializable()> _
+    <ActionButton(IconName.FileTextO, IconOptions.Normal)>
+    <DisplayName("File Read Action")>
+    <Description("This provider allows to read a file to a given String variable, given its path by dynamic expressions")>
     Public Class FileReadActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileReadWriteActionProvider(Of TEngineEvents)
 

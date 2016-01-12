@@ -8,7 +8,7 @@ Imports Aricie.DNN.Services.Workers
 Imports System.Threading
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class CacheableAction(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 

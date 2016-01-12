@@ -5,7 +5,7 @@ Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <Serializable()> _
+    
     <DefaultProperty("Time")> _
     Public Class BotInfoEvent
 

@@ -10,10 +10,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-  
 
-    <ActionButton(IconName.Table, IconOptions.Normal)> _
-    <Serializable()> _
+
+    <ActionButton(IconName.Table, IconOptions.Normal)>
     Public Class SpreadSheetCommand(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
 
@@ -23,16 +22,16 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property Column As New SimpleOrExpression(Of Integer)(1)
 
-        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.UpdateCell, SpreadSheetOperation.InsertCell)> _
+        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.UpdateCell, SpreadSheetOperation.InsertCell)>
         Public Property Value As New SimpleOrExpression(Of CData)
 
-        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.UpdateCell, SpreadSheetOperation.InsertCell)> _
+        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.UpdateCell, SpreadSheetOperation.InsertCell)>
         Public Property CheckForChanges As Boolean
 
-        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.ReadCell)> _
+        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.ReadCell)>
         Public Property ReadInput As Boolean
 
-        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.ReadCell)> _
+        <ConditionalVisible("Operation", False, True, SpreadSheetOperation.ReadCell)>
         Public Property Key As New SimpleOrExpression(Of String)("<cell Name>")
 
         Public Property Condition As New KeeperCondition(Of TEngineEvents)
@@ -46,7 +45,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                         Dim objKey As String = Key.GetValue(actionContext, actionContext)
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start",
                                                         WorkingPhase.EndOverhead, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
@@ -59,7 +58,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             objValue = entry.Cell.Value
                         End If
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command",
                                                         WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
@@ -76,7 +75,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         cell.Column = intColumn
                         entry.Cell = cell
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start",
                                                         WorkingPhase.EndOverhead, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
@@ -106,13 +105,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
 
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command",
                                                         WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                     Case SpreadSheetOperation.UpdateCell
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start",
                                                         WorkingPhase.EndOverhead, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
@@ -131,20 +130,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                             objService.Update(entry)
                         End If
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command",
                                                         WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                     Case SpreadSheetOperation.DeleteCell
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "Spreadsheet Command Start",
                                                         WorkingPhase.EndOverhead, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If
                         Dim entry As CellEntry = objCellFeed(intRow, intColumn)
                         objService.Delete(entry)
                         If actionContext.LoggingLevel = LoggingLevel.Detailed Then
-                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command", _
+                            Dim objStep As New StepInfo(Debug.PKPDebugType, "End Spreadsheet Command",
                                                         WorkingPhase.InProgress, False, False, -1, actionContext.FlowId)
                             PerformanceLogger.Instance.AddDebugInfo(objStep)
                         End If

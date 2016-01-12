@@ -7,7 +7,7 @@ Namespace Configuration
     ''' Base class for ASP.Net webserver elements
     ''' </summary>
     ''' <remarks>Can deal with II6/II7 configuration models</remarks>
-    <Serializable()> _
+    
     Public MustInherit Class WebServerElementInfo
         Inherits TypedXmlConfigElementInfo
 

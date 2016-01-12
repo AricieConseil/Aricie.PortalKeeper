@@ -3,7 +3,7 @@
     ''' <summary>
     ''' Advanced URI class that support TLD parsing
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ParsedUri
         Inherits Uri
 

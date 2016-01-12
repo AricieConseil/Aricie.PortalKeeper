@@ -15,7 +15,7 @@ Namespace Configuration
     ''' <summary>
     ''' Configuration element for an ASP.Net HttpHandler class
     ''' </summary>
-    <Serializable()> _
+    
     <DefaultProperty("FriendlyName")> _
     Public Class HttpHandlerInfo
         Inherits WebServerElementInfo

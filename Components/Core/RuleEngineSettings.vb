@@ -14,9 +14,10 @@ Imports System.Reflection
 Imports System.Linq
 Imports Aricie.Services
 Imports System.Globalization
+Imports Aricie.DNN.Services.Files
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class RuleEngineSettings(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
         Implements IExpressionVarsProvider
@@ -46,7 +47,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overridable Property Mode As RuleEngineMode
 
         <ExtendedCategory("Variables")> _
-            <SortOrder(2)> _
+        <SortOrder(2)> _
         Public Property Variables As New Variables()
 
 
@@ -73,6 +74,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1)> _
         Public Overridable Property Rules() As New List(Of KeeperRule(Of TEngineEvents))
 
+
+        <SortOrder(1000)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property SmartFileSettings As New SmartFileInfo()
+
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property LoggingLevel As LoggingLevel = LoggingLevel.None
@@ -89,12 +95,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         <SortOrder(1000)> _
-       <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("LoggingLevel", True, True, LoggingLevel.None)> _
         Public Property LogEndDumpSettings As New DumpSettings()
 
         <SortOrder(1000)> _
-      <ExtendedCategory("TechnicalSettings")> _
+        <ExtendedCategory("TechnicalSettings")> _
         Public Property ExceptionDumpSettings As New DumpSettings()
 
         '<ExtendedCategory("TechnicalSettings")> _
@@ -287,7 +293,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Public Function HasContect(ByVal objType As Type) As Boolean Implements IContextSource.HasContext
+        Public Function HasContext(ByVal objType As Type) As Boolean Implements IContextSource.HasContext
             Return objType Is GetType(PortalKeeperContext(Of TEngineEvents))
         End Function
 

@@ -13,7 +13,6 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Services.Flee
 
     <DefaultProperty("InsertString")> _
-    <Serializable()> _
     Public MustInherit Class FleeExpressionBuilderBase
 
         <Browsable(False)> _
@@ -27,7 +26,7 @@ Namespace Services.Flee
     End Class
 
 
-    '<Serializable()> _
+    '
     'Public Class OperatorExpression
     '    Inherits ExpressionBuilderBase
     '    Implements ISelector

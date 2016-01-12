@@ -4,7 +4,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public MustInherit Class AutoProvider(Of TConfig As {IProviderConfig, NamedConfig}, TSettings As {AutoProviderSettings(Of TConfig, TSettings)}, TProvider As {IProvider(Of TConfig)})
         Inherits AutoProviderSettings(Of TConfig, TSettings)
         Implements IAutoProvider(Of TConfig, TProvider)

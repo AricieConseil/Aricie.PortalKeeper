@@ -10,7 +10,7 @@ Namespace Services.Filtering
     ''' Holder class for conditional token source info
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ConditionalTokenSourceInfo
         <Editor(GetType(DictionaryEditControl), GetType(EditControl))> _
             <KeyEditor(GetType(CustomTextEditControl), GetType(TokenSourceInfo.TokenValueAttributes))> _

@@ -8,7 +8,6 @@ Namespace Configuration
     ''' </summary>
     <XmlInclude(GetType(HttpModuleAddInfo))> _
     <XmlInclude(GetType(HttpHandlerAddInfo))> _
-    <Serializable()> _
     Public Class WebServerAddInfo
         Inherits AddInfo
 

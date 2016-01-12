@@ -9,7 +9,7 @@ Imports Aricie.DNN.Services.Files
 Namespace Aricie.DNN.Modules.PortalKeeper
     '<XmlRoot("UserParam")> _
     '<XmlInclude(GetType(GeneralPropertyDefinition))> _
-    <Serializable()> _
+    
     Public Class UserVariableInfo
         Inherits NamedConfig
 

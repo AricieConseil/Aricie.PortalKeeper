@@ -26,7 +26,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Calendar, IconOptions.Normal)> _
     <XmlInclude(GetType(UserVariableInfo))> _
-    <Serializable()> _
     Public Class BotFarmInfo(Of TEngineEvent As IConvertible)
         Implements IEnabled
 
@@ -302,7 +301,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'End Sub
 
 
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private _ServerList As List(Of String)
 
         Private Function MatchServer() As Boolean

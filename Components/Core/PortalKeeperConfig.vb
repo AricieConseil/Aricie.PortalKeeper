@@ -3,7 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class PortalKeeperConfig
         Inherits AutoModuleConfig(Of PortalKeeperConfig)
 

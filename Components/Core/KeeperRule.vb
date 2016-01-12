@@ -15,7 +15,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Gavel, IconOptions.Normal)> _
     <DefaultProperty("Summary")> _
-    <Serializable()> _
     Public Class KeeperRule(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
         Implements IExpressionVarsProvider

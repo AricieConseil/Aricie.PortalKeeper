@@ -16,7 +16,7 @@ Namespace Services
     ''' Reflection access for complex types in the ATR context
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class DeepObjectPropertyAccess
         Implements IPropertyAccess
 

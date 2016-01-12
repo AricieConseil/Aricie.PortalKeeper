@@ -12,10 +12,9 @@ Namespace Services.Filtering
     ''' Class holder for token data source information
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class TokenSourceInfo
 
-        <NonSerialized()> _
         Private _ReflectedProviders As Dictionary(Of String, Object)
 
         ''' <summary>

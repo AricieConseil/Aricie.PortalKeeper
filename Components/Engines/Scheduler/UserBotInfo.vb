@@ -20,7 +20,6 @@ Imports Aricie.Services
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.User, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class UserBotInfo
         Inherits NamedConfig
 

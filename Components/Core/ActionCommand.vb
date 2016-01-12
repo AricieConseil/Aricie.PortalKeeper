@@ -4,7 +4,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class ActionCommand
         Inherits RuleEngineSettings(Of ScheduleEvent)
 

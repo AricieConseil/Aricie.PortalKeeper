@@ -4,8 +4,6 @@ Imports System.IO
 Imports System.Threading
 
 Namespace IO
-
-
     ''' <summary>
     ''' PipeStream is a thread-safe read/write data stream for use between two threads in a 
     ''' single-producer/single-consumer type problem.

@@ -10,10 +10,9 @@ Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Repeat, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Loop")> _
-        <Description("This provider allows to loop running a sub bot over a custom collection. On each run, the current item of the collection is affected to a custom variable.")> _
+    <ActionButton(IconName.Repeat, IconOptions.Normal)>
+    <DisplayName("Loop")>
+    <Description("This provider allows to loop running a sub bot over a custom collection. On each run, the current item of the collection is affected to a custom variable.")>
     Public Class LoopActionProvider(Of TEngineEvents As IConvertible)
         Inherits MultipleActionProvider(Of TEngineEvents)
 
@@ -23,15 +22,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         'Private _WaitTime As New STimeSpan(TimeSpan.FromSeconds(1))
 
 
-        <ExtendedCategory("LoopAction")> _
-           <Required(True)> _
+        <ExtendedCategory("LoopAction")>
+        <Required(True)>
         Public Property CurrentItemParam() As String = "CurrentLoopItem"
 
         <ExtendedCategory("LoopAction")>
         Public Property UseCounter As Boolean
 
         'todo: remove that obsolete property
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Property MaxNbIterations As Integer
             Get
                 Return MaxIterations.Simple
@@ -44,95 +43,95 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("LoopAction")>
         Public Property MaxIterations As New SimpleOrExpression(Of Integer)(0)
 
-        <ExtendedCategory("LoopAction")> _
-        <LabelMode(LabelMode.Top)> _
-        <ConditionalVisible("UseCounter", False, True)> _
+        <ExtendedCategory("LoopAction")>
+        <LabelMode(LabelMode.Top)>
+        <ConditionalVisible("UseCounter", False, True)>
         Public Property CounterStart() As New SimpleExpression(Of Integer)("0")
-          
 
-        <ExtendedCategory("LoopAction")> _
-        <LabelMode(LabelMode.Top)> _
-        <ConditionalVisible("UseCounter", False, True)> _
+
+        <ExtendedCategory("LoopAction")>
+        <LabelMode(LabelMode.Top)>
+        <ConditionalVisible("UseCounter", False, True)>
         Public Property CounterUpdate() As New SimpleExpression(Of Integer)("CurrentLoopItem + 1")
 
-        <ExtendedCategory("LoopAction")> _
-        <LabelMode(LabelMode.Top)> _
-        <ConditionalVisible("UseCounter", False, True)> _
+        <ExtendedCategory("LoopAction")>
+        <LabelMode(LabelMode.Top)>
+        <ConditionalVisible("UseCounter", False, True)>
         Public Property CounterEval() As New SimpleExpression(Of Boolean)("CurrentLoopItem < 10")
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", False, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", False, True)>
         Public Property CounterEvalAfter() As Boolean
 
-        <ExtendedCategory("LoopAction")> _
-            <ConditionalVisible("UseCounter", True, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
         Public Property UseCloneList As Boolean
 
-        <ExtendedCategory("LoopAction")> _
-         <ConditionalVisible("UseCloneList", False, True)> _
-            <ConditionalVisible("UseCounter", True, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCloneList", False, True)>
+        <ConditionalVisible("UseCounter", True, True)>
         Public Property Reverse As Boolean
 
-        <ConditionalVisible("UseCounter", True, True)> _
-      <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)>
+        <ExtendedCategory("LoopAction")>
         Public Property CaptureCounter As Boolean
 
-        <Required(True)> _
-        <ConditionalVisible("UseCounter", True, True)> _
-        <ConditionalVisible("CaptureCounter", False, True)> _
-        <ExtendedCategory("LoopAction")> _
+        <Required(True)>
+        <ConditionalVisible("UseCounter", True, True)>
+        <ConditionalVisible("CaptureCounter", False, True)>
+        <ExtendedCategory("LoopAction")>
         Public Property CounterVarName As String = "CurrentLoopIndex"
 
-        <ConditionalVisible("UseCounter", True, True)> _
-        <ConditionalVisible("CaptureCounter", False, True)> _
-        <ExtendedCategory("LoopAction")> _
+        <ConditionalVisible("UseCounter", True, True)>
+        <ConditionalVisible("CaptureCounter", False, True)>
+        <ExtendedCategory("LoopAction")>
         Public Property CounterStartsAt1 As Boolean
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", True, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
         Public Property EnumerableExpression() As New FleeExpressionInfo(Of IEnumerable)
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", True, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
         Public Property SignalLast As Boolean
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", True, True)> _
-        <ConditionalVisible("SignalLast", False, True)> _
-        <Required(True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
+        <ConditionalVisible("SignalLast", False, True)>
+        <Required(True)>
         Public Property LastFlagName As String = "IsLast"
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", True, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
         Public Property ConditionalPass As Boolean
 
-        <ExtendedCategory("LoopAction")> _
-        <ConditionalVisible("UseCounter", True, True)> _
-        <ConditionalVisible("ConditionalPass", False, True)> _
+        <ExtendedCategory("LoopAction")>
+        <ConditionalVisible("UseCounter", True, True)>
+        <ConditionalVisible("ConditionalPass", False, True)>
         Public Property PassCondition As New KeeperCondition(Of TEngineEvents)
 
 
-        <ConditionalVisible("DisablePerformanceLogger", True, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1001)> _
+        <ConditionalVisible("DisablePerformanceLogger", True, True)>
+        <ExtendedCategory("TechnicalSettings")>
+        <SortOrder(1001)>
         Public Overridable Property AgregateLogSteps() As Boolean
 
 
-        <ConditionalVisible("DisablePerformanceLogger", True, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1001)> _
+        <ConditionalVisible("DisablePerformanceLogger", True, True)>
+        <ExtendedCategory("TechnicalSettings")>
+        <SortOrder(1001)>
         Public Property LogParticularSteps() As Boolean
 
-        <ConditionalVisible("LogParticularSteps", False, True)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1001)> _
+        <ConditionalVisible("LogParticularSteps", False, True)>
+        <ExtendedCategory("TechnicalSettings")>
+        <SortOrder(1001)>
         Public Property StepsToLogAsString As String = "0;"
 
 
         Private _StepsToLog As List(Of Integer)
 
-        <XmlIgnore()> _
-        <Browsable(False)> _
+        <XmlIgnore()>
+        <Browsable(False)>
         Public ReadOnly Property StepsToLog As List(Of Integer)
             Get
                 If _StepsToLog Is Nothing Then

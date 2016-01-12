@@ -5,7 +5,6 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Magic, IconOptions.Normal)> _
-    <Serializable()> _
     <DisplayName("Define Variable")> _
     <Description("This provider allows to declare and instanciate a single variable, which will be stored in the context ""Item"" dictionary")> _
     Public Class DefineVariableActionProvider(Of TEngineEvents As IConvertible)

@@ -15,7 +15,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Enum
 
     <ActionButton(IconName.Sitemap, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class ActionTree(Of TEngineEvents As IConvertible)
         Inherits NamedConfig
 

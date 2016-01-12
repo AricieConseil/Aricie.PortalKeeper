@@ -19,13 +19,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.ExclamationTriangle, IconOptions.Normal)> _
     <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
     Public Class RequestsCapInfo
         Implements IEnabled
 
 
 
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private ReadOnly _LockDico As New ReaderWriterLock()
         Private ReadOnly _Record As New Dictionary(Of String, ClientSourceCapLog)
 

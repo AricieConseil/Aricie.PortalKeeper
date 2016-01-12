@@ -4,19 +4,18 @@ Imports Aricie.DNN.UI.WebControls
 Imports System.Reflection
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Wrench, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Object Action")> _
-    <Description("This provider allows to do actions on object by setting properties, calling methods or hooking event handlers")> _
+    <ActionButton(IconName.Wrench, IconOptions.Normal)>
+    <DisplayName("Object Action")>
+    <Description("This provider allows to do actions on object by setting properties, calling methods or hooking event handlers")>
     Public Class GeneralObjectActionProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
 
 
-        <ExtendedCategory("Action")> _
+        <ExtendedCategory("Action")>
         Public Property ObjectAction As New KeeperObjectAction(Of TEngineEvents)
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Overrides ReadOnly Property ShowOutput As Boolean
             Get
                 Return ObjectAction.ActionMode = Services.Flee.ObjectActionMode.CallMethod AndAlso ObjectAction.SelectedMember IsNot Nothing AndAlso DirectCast(ObjectAction.SelectedMember, MethodInfo).ReturnType IsNot Nothing

@@ -40,7 +40,7 @@ Public Enum CompileExceptionReason
 End Enum
 
 ''' <include file='Resources/DocComments.xml' path='DocComments/ExpressionCompileException/Class/*' />	
-<Serializable()> _
+
 Public NotInheritable Class ExpressionCompileException
 	Inherits Exception
 

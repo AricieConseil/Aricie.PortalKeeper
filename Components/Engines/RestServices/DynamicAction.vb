@@ -9,7 +9,6 @@ Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.CodeFork, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class DynamicAction
         Inherits RuleEngineSettings(Of SimpleEngineEvent)
 

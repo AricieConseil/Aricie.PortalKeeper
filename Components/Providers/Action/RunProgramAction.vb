@@ -4,10 +4,9 @@ Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Desktop, IconOptions.Normal)> _
-   <Serializable()> _
-   <DisplayName("Run Program Action")> _
-   <Description("Run an executable program given its path and parameters")> _
+    <ActionButton(IconName.Desktop, IconOptions.Normal)>
+    <DisplayName("Run Program Action")>
+    <Description("Run an executable program given its path and parameters")>
     Public Class RunProgramAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
@@ -16,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property UseTimeOut As Boolean
 
-        <ConditionalVisible("UseTimeOut", False, True)> _
+        <ConditionalVisible("UseTimeOut", False, True)>
         Public Property TimeOut As New STimeSpan(TimeSpan.FromMinutes(1))
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object

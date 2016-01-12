@@ -6,7 +6,7 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public Class ProviderConfig(Of T As IProvider)
         Inherits ProviderConfig
         Implements IProviderConfig(Of T)
@@ -32,7 +32,7 @@ Namespace ComponentModel
     End Class
 
 
-    <Serializable()> _
+    
     Public Class ProviderConfig
         Inherits NamedConfig
         Implements IProviderConfig

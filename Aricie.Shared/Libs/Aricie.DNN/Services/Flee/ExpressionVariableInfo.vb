@@ -10,7 +10,6 @@ Namespace Services.Flee
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
     <DisplayName("Dynamic expression")> _
-    <Serializable()> _
     Public Class ExpressionVariableInfo(Of TResult)
         Inherits InstanceVariableInfo(Of TResult)
         Implements IExpressionVarsProvider

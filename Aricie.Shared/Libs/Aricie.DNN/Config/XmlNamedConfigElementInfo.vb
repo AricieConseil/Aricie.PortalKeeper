@@ -4,7 +4,7 @@ Namespace Configuration
     ''' <summary>
     ''' Base class for Xml nodes with a name attribute.
     ''' </summary>
-    <Serializable()> _
+    
     Public MustInherit Class XmlNamedConfigElementInfo
         Inherits XmlConfigElementInfo
 

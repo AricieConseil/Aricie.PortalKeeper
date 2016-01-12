@@ -26,7 +26,6 @@ Namespace Services.Flee
     ''' <remarks></remarks>
     <DisplayName("Add Event Handler")> _
      <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
     Public Class AddEventHandler(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
         Implements ISelector(Of EventInfo)

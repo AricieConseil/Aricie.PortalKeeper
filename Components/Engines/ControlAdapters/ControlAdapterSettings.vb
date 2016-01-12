@@ -35,7 +35,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Delegate Sub ControlEventHandler()
 
     <ActionButton(IconName.Clipboard, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class ControlAdapterSettings
         Inherits NamedConfig
         Implements IProviderContainer

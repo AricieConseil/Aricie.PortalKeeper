@@ -9,10 +9,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.EnvelopeO, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("Send Email Action")> _
-       <Description("Sends an email to a list of destination addresses. Token replace is available for all text fields and target address list.")> _
+    <ActionButton(IconName.EnvelopeO, IconOptions.Normal)>
+    <DisplayName("Send Email Action")>
+    <Description("Sends an email to a list of destination addresses. Token replace is available for all text fields and target address list.")>
     Public Class SendEmailAction(Of TEngineEvent As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvent)
 
@@ -62,7 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 'fromAddress = DotNetNuke.Entities.Users.UserController.GetUser(NukeHelper.PortalSettings.PortalId, NukeHelper.PortalSettings.AdministratorId, True).Email
             End If
-            Mail.SendMail(fromAddress, targetAddresses, "", "", Me.EmailPriority, mailObject, Me.BodyFormat, GetEncoding(Me.Encoding), message, _
+            Mail.SendMail(fromAddress, targetAddresses, "", "", Me.EmailPriority, mailObject, Me.BodyFormat, GetEncoding(Me.Encoding), message,
                                                    "", "", "", "", "")
             Return True
         End Function

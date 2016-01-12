@@ -12,7 +12,6 @@ Namespace Services.Flee
     ''' </summary>
     ''' <remarks></remarks>
     <ActionButton(IconName.Cog, IconOptions.Normal)> _
-    <Serializable()> _
     Public MustInherit Class VariableInfo
         Inherits NamedIdentifierEntity
         Implements IProviderSettings
@@ -99,7 +98,6 @@ Namespace Services.Flee
     ''' </summary>
     ''' <remarks></remarks>
     <DisplayName("Instance")> _
-    <Serializable()> _
     Public Class VariableInfo(Of TResult)
         Inherits VariableInfo
 

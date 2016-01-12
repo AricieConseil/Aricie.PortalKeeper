@@ -15,7 +15,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
     <ActionButton(IconName.CloudDownload, IconOptions.Normal)> _
-   <Serializable()> _
     Public Class RestServicesSettings
         Implements IEnabled
 

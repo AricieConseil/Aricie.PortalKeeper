@@ -23,11 +23,9 @@ Namespace ComponentModel
     ''' Base Module configuration class
     ''' </summary>
     ''' <remarks>Basic capabilitites to generate a custom filename</remarks>
-    <Serializable()> _
     Public Class ModuleConfig
 
 
-        <NonSerialized()> _
         Private Shared _FilePaths As New Dictionary(Of String, String)
 
         Private Shared Function GetFileName(ByVal moduleName As String) As String
@@ -76,7 +74,7 @@ Namespace ComponentModel
     ''' Generic self referencing module configuration class
     ''' </summary>
     ''' <remarks>Has self file load/save capabilities</remarks>
-    <Serializable()> _
+    
     Public Class ModuleConfig(Of TConfigClass As {New, ModuleConfig(Of TConfigClass)})
         Inherits ModuleConfig
 
@@ -110,7 +108,6 @@ Namespace ComponentModel
     ''' Generic self referencing with identification module configuration class
     ''' </summary>
     ''' <remarks>Has all module configuration capabilities.</remarks>
-    <Serializable()> _
     Public Class ModuleConfig(Of TConfigClass As {New, ModuleConfig(Of TConfigClass)}, TModuleIdentity As {IModuleIdentity, New})
         Inherits ModuleConfig(Of TConfigClass)
         Implements ISelector

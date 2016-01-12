@@ -13,10 +13,66 @@ Imports System.Text
 Imports Aricie.Collections
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
+Imports System.Linq
+Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services.Files
 
 Namespace Services.Flee
 
-    <Serializable()> _
+     Public Class AnonymousGeneralVariableInfo
+        Inherits GeneralVariableInfo
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property Name As String
+            Get
+                Return MyBase.Name
+            End Get
+            Set(value As String)
+                MyBase.Name = value
+            End Set
+        End Property
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property Decription As CData
+            Get
+                Return MyBase.Decription
+            End Get
+            Set(value As CData)
+                MyBase.Decription = value
+            End Set
+        End Property
+
+    End Class
+
+    Public Class AnonymousGeneralVariableInfo(Of T)
+        Inherits GeneralVariableInfo(Of T)
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property Name As String
+            Get
+                Return MyBase.Name
+            End Get
+            Set(value As String)
+                MyBase.Name = value
+            End Set
+        End Property
+
+        <XmlIgnore()> _
+        <Browsable(False)> _
+        Public Overrides Property Decription As CData
+            Get
+                Return MyBase.Decription
+            End Get
+            Set(value As CData)
+                MyBase.Decription = value
+            End Set
+        End Property
+
+    End Class
+
     Public Class GeneralVariableInfo(Of T)
         Inherits GeneralVariableInfo
 
@@ -30,9 +86,24 @@ Namespace Services.Flee
 
         Private _ConstDotNetType As New DotNetType(GetType(T))
 
-        <Browsable(False)> _
+        <SortOrder(0)> _
+        Public Overrides ReadOnly Property VariableType As String
+            Get
+                Return MyBase.VariableType
+            End Get
+        End Property
+
+
+        <SortOrder(0)> _
+        Public Property SubType() As New EnabledFeature(Of SubDotNetType(Of T))
+
+
+        <Browsable(False)>
         Public Overrides Property DotNetType As DotNetType
             Get
+                If SubType.Enabled
+                    Return SubType.Entity
+                End If
                 Return _ConstDotNetType
             End Get
             Set(value As DotNetType)
@@ -40,12 +111,16 @@ Namespace Services.Flee
             End Set
         End Property
 
+        Public  Function EvaluateTyped(ByVal owner As Object, ByVal globalVars As IContextLookup) As T
+            Return DirectCast(Me.Evaluate(owner, globalVars), T)
+        End Function
+
+
     End Class
 
-    <Serializable()> _
     Public Class GeneralVariableInfo
         Inherits VariableInfo
-        Implements ISelector(Of MethodInfo)
+        Implements ISelector(Of MemberInfo)
         Implements IExpressionVarsProvider
 
 
@@ -54,13 +129,13 @@ Namespace Services.Flee
             Dim typeName As String = ReflectionHelper.GetSimpleTypeName(Me.DotNetType.GetDotNetType())
             Dim nextSegment As String = ""
             Select Case Me.VariableMode
-                Case Flee.VariableMode.Constructor
+                Case VariableMode.Constructor
                     nextSegment = "cTor " & Me.MethodName
-                Case Flee.VariableMode.Delegate
+                Case VariableMode.Delegate
                     nextSegment = "Delegate: " & Me.TargetInstance.Expression
-                Case Flee.VariableMode.Expression
+                Case VariableMode.Expression
                     nextSegment = "Expression: " & Me.SimpleExpression.Expression
-                Case Flee.VariableMode.Instance
+                Case VariableMode.Instance
                     nextSegment = "Instance: " & ReflectionHelper.GetFriendlyName(Me.Instance)
             End Select
             toReturn = String.Format("{0}{1}{2}{1}{3}", toReturn, UIConstants.TITLE_SEPERATOR, typeName, nextSegment)
@@ -85,56 +160,50 @@ Namespace Services.Flee
 
         Public Overridable Property DotNetType As New DotNetType()
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property HasType As Boolean
             Get
                 Return DotNetType.GetDotNetType() IsNot Nothing
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
+        Public ReadOnly Property HasTargetType As Boolean
+            Get
+                If DotNetType.GetDotNetType() IsNot Nothing Then
+                    Return (Not VariableMode = VariableMode.StaticMember) OrElse StaticMemberType.GetDotNetType() IsNot Nothing
+                End If
+                Return False
+            End Get
+        End Property
+
+        <Browsable(False)>
         Public Overrides ReadOnly Property VariableType As String
             Get
                 Return DotNetType.TypeName
             End Get
         End Property
 
-        <ConditionalVisible("HasType", False, True)> _
+        <ConditionalVisible("HasType", False, True)>
         Public Property VariableMode As VariableMode = VariableMode.Expression
 
-        <ExtendedCategory("", "Evaluation")> _
-        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
-        <ConditionalVisible("HasType", False, True)> _
-        Public Property InstanceMode As InstanceMode = InstanceMode.Off
 
-        <ExtendedCategory("", "Evaluation")> _
-        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
-        <ConditionalVisible("HasType", False, True)> _
-        Public Overrides Property EvaluationMode() As VarEvaluationMode
-            Get
-                Return MyBase.EvaluationMode
-            End Get
-            Set(ByVal value As VarEvaluationMode)
-                MyBase.EvaluationMode = value
-            End Set
-        End Property
+        <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
+        Public Property SmartFileKey() As New EntityKeyInfo()
 
-        <ExtendedCategory("", "Evaluation")> _
-        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)> _
-        <ConditionalVisible("HasType", False, True)> _
-        Public Overrides Property Scope() As VariableScope
-            Get
-                Return MyBase.Scope
-            End Get
-            Set(ByVal value As VariableScope)
-                MyBase.Scope = value
-            End Set
-        End Property
+        <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
+        Public Property SetForSave() As Boolean = True
+
+        <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
+        Public Property UseCustomFileSettings() As New EnabledFeature(Of SmartFileInfo)
+
+        'Static Member
+
+        <ConditionalVisible("HasType")>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.StaticMember)>
+        Public Overridable Property StaticMemberType As New DotNetType()
 
 
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Instance, VariableMode.Expression)> _
-        Public Property UseClone() As Boolean
 
         ''' <summary>
         ''' Get or sets the instance of the object
@@ -142,9 +211,9 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)> _
-        <XmlIgnore()> _
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)>
+        <XmlIgnore()>
         Public Property Instance As Object
             Get
                 If Me.DotNetType.GetDotNetType() IsNot Nothing AndAlso (Me._Instance Is Nothing _
@@ -164,7 +233,43 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <Browsable(False)> _
+        'Instance
+
+        <ExtendedCategory("", "Evaluation")>
+        <ConditionalVisible("HasTargetType", False, True)>
+        <ConditionalVisible("VariableMode", True, True, VariableMode.Constructor, VariableMode.Delegate)>
+        Public Property UseClone() As Boolean
+
+        <ExtendedCategory("", "Evaluation")>
+        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
+        <ConditionalVisible("HasType", False, True)>
+        Public Property InstanceMode As InstanceMode = InstanceMode.Off
+
+        <ExtendedCategory("", "Evaluation")>
+        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
+        <ConditionalVisible("HasType", False, True)>
+        Public Overrides Property EvaluationMode() As VarEvaluationMode
+            Get
+                Return MyBase.EvaluationMode
+            End Get
+            Set(ByVal value As VarEvaluationMode)
+                MyBase.EvaluationMode = value
+            End Set
+        End Property
+
+        <ExtendedCategory("", "Evaluation")>
+        <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
+        <ConditionalVisible("HasType", False, True)>
+        Public Overrides Property Scope() As VariableScope
+            Get
+                Return MyBase.Scope
+            End Get
+            Set(ByVal value As VariableScope)
+                MyBase.Scope = value
+            End Set
+        End Property
+
+        <Browsable(False)>
         Public Property SerializableInstance() As Serializable(Of Object)
             Get
                 If Me.VariableMode = Flee.VariableMode.Instance OrElse Me.InstanceMode <> Flee.InstanceMode.Off Then
@@ -177,7 +282,7 @@ Namespace Services.Flee
             End Set
         End Property
 
-
+        'Expression
 
 
         ''' <summary>
@@ -186,8 +291,8 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)> _
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
         Public Property AdvancedExpression() As Boolean
 
         ''' <summary>
@@ -196,9 +301,9 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)> _
-        <ConditionalVisible("AdvancedExpression", False, True)> _
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
+        <ConditionalVisible("AdvancedExpression", False, True)>
         Public Property FleeExpression() As FleeExpressionInfo(Of Object)
             Get
                 Return _FleeExpression
@@ -215,10 +320,10 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <XmlIgnore()> _
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)> _
-        <ConditionalVisible("AdvancedExpression", True, True)> _
+        <XmlIgnore()>
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
+        <ConditionalVisible("AdvancedExpression", True, True)>
         Public Property SimpleExpression() As SimpleExpression(Of Object)
             Get
                 If _SimpleExpression Is Nothing Then
@@ -239,49 +344,92 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)> _
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
         Public Property AsCompiledExpression() As Boolean
 
 
-        <AutoPostBack()> _
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <Selector("Name", "Name", False, True, "<Select a Method Name>", "", False, True)> _
+
+
+
+        'Delegate
+        'todo: should be member
+        <AutoPostBack()>
+        <ConditionalVisible("HasTargetType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate, VariableMode.StaticMember)>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
+        <Selector("Name", "Name", False, True, "<Select a Member Name>", "", False, True)>
         Public Property MethodName As String = ""
 
+        <Browsable(False)> _
+        Public ReadOnly Property HasSeveralCandidates() As Boolean
+            Get
+                'Dim candidates As IList = GetSelector("MethodIndex")
+                Return GetSelector("MethodIndex").Count > 0
+            End Get
+        End Property
 
-
-
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <ProvidersSelector("Key", "Value")> _
-        <ConditionalVisible("HasType", False, True)> _
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.Delegate)> _
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
+        <ProvidersSelector("Key", "Value")>
+        <ConditionalVisible("HasTargetType")>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.Delegate, VariableMode.StaticMember)>
+        <ConditionalVisible("HasSeveralCandidates")>
         Public Property MethodIndex As Integer = 1
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property RequiresInstance As Boolean
             Get
-                Dim targetMethod As MethodInfo = Me.GetMethodInfo()
-                If targetMethod IsNot Nothing Then
-                    Return targetMethod.IsStatic
+                'Dim targetMethod As MethodInfo = Me.GetMethodInfo()
+                'If targetMethod IsNot Nothing Then
+                '    Return targetMethod.IsStatic
+                'End If
+                If Me.SelectedMember IsNot Nothing Then
+                    Return Not ReflectionHelper.IsStatic(Me.SelectedMember)
                 End If
+
                 Return False
             End Get
         End Property
 
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)> _
+        <ConditionalVisible("HasTargetType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)>
         <ConditionalVisible("RequiresInstance", False, True)>
         Public Property TargetInstance As New SimpleExpression(Of Object)
 
-        <ConditionalVisible("HasType", False, True)> _
-<ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
+        <Browsable(False)>
+        Public ReadOnly Property HasParameters() As Boolean
+            Get
+                Select Case Me.VariableMode
+                    Case VariableMode.Constructor, VariableMode.StaticMember
+                        If SelectedMember IsNot Nothing Then
+                            Dim objParameters As ParameterInfo()
+                            If TypeOf SelectedMember Is MethodBase Then
+                                objParameters = DirectCast(SelectedMember, MethodBase).GetParameters()
+                            ElseIf TypeOf SelectedMember Is PropertyInfo Then
+                                objParameters = DirectCast(SelectedMember, PropertyInfo).GetIndexParameters()
+                            Else
+                                Throw New ApplicationException("Only ctors, Methods and Property parameters supported")
+                            End If
+                            Return objParameters.Length > 0
+                        End If
+                        Return False
+                    Case Else
+                        Return False
+                End Select
+            End Get
+        End Property
+
+
+        <ConditionalVisible("HasTargetType", False, True)>
+        <ConditionalVisible("HasParameters")>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.StaticMember)>
         Public Property Parameters() As New Variables
 
-        <ConditionalVisible("HasType", False, True)> _
-       <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)> _
-      <ActionButton(IconName.Refresh, IconOptions.Normal)> _
+
+
+        <ConditionalVisible("HasType", False, True)>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)>
+        <ActionButton(IconName.Refresh, IconOptions.Normal)>
         Public Sub ResetInstance(ape As AriciePropertyEditorControl)
             Me._Instance = Nothing
             ape.ItemChanged = True
@@ -289,14 +437,21 @@ Namespace Services.Flee
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
 
-
-        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor)> _
-       <ActionButton(IconName.Key, IconOptions.Normal)> _
+        <ConditionalVisible("HasTargetType", False, True)>
+        <ConditionalVisible("HasParameters")>
+        <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.StaticMember)>
+        <ActionButton(IconName.Key, IconOptions.Normal)>
         Public Sub SetParameters(ape As AriciePropertyEditorControl)
-            If Me.VariableMode = VariableMode.Constructor Then
+            If Me.VariableMode = VariableMode.Constructor OrElse VariableMode = VariableMode.StaticMember Then
                 Dim objParameters As ParameterInfo()
+                If TypeOf SelectedMember Is MethodBase Then
+                    objParameters = DirectCast(SelectedMember, MethodBase).GetParameters()
+                ElseIf TypeOf SelectedMember Is PropertyInfo Then
+                    objParameters = DirectCast(SelectedMember, PropertyInfo).GetIndexParameters()
+                Else
+                    Throw New ApplicationException("Only ctors, Methods and Property parameters supported")
+                End If
 
-                objParameters = SelectedMember.GetParameters()
                 Me.Parameters = Variables.GetFromParameters(objParameters)
                 ape.ItemChanged = True
                 Dim message As String = Localization.GetString("ParametersCreated.Message", ape.LocalResourceFile)
@@ -314,7 +469,9 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         Public Overrides Function Evaluate(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
             Dim toReturn As Object
-
+            'If Me.UseSmartFile Then
+            '  toReturn=  Aricie.DNN.Services.Files.SmartFile.LoadSmartFile(Me.SmartFileKey.Evaluate(owner, globalVars), TryCast(globalVars.Items("SmartFileInfo"), SmartFileInfo))
+            'End If
             If Me._Instance IsNot Nothing Then
                 If Me.VariableMode = Flee.VariableMode.Instance OrElse Me._InstanceMode <> Flee.InstanceMode.Off Then
                     toReturn = Me._Instance
@@ -324,7 +481,7 @@ Namespace Services.Flee
                     If Scope = VariableScope.Global AndAlso globalVars IsNot Nothing Then
                         globalVars.Items(Me.Name) = toReturn
                     End If
-                    
+
                     Return toReturn
                 Else
                     Me._Instance = Nothing
@@ -388,7 +545,7 @@ Namespace Services.Flee
                     End If
                 Case Flee.VariableMode.Delegate
                     Dim potentialsMembers As List(Of MemberInfo) = Nothing
-                    Dim targetMethod As MethodInfo = Me.GetMethodInfo()
+                    Dim targetMethod As MethodInfo = DirectCast(Me.SelectedMember, MethodInfo)
                     If targetMethod IsNot Nothing Then
                         If RequiresInstance Then
                             Dim target As Object = Me.TargetInstance.Evaluate(owner, globalVars, Me.DotNetType.GetDotNetType())
@@ -399,29 +556,51 @@ Namespace Services.Flee
                     Else
                         Throw New Exception(String.Format("Can't create Delegate for method {0} in type {1}", targetMethod.Name, Me.DotNetType.GetDotNetType().FullName))
                     End If
+                Case Flee.VariableMode.StaticMember
+                    Dim targetMember As MemberInfo = Me.SelectedMember
+                    If targetMember IsNot Nothing Then
+                        If TypeOf targetMember Is FieldInfo Then
+                            toReturn = DirectCast(targetMember, FieldInfo).GetValue(Nothing)
+                        Else
+                            Dim args As Object()
+                            args = (From objParam In Me.Parameters.EvaluateVariables(owner, globalVars) Select objParam.Value).ToArray()
+                            If TypeOf targetMember Is PropertyInfo Then
+                                toReturn = DirectCast(targetMember, PropertyInfo).GetValue(Nothing, args)
+                            ElseIf TypeOf targetMember Is MethodBase Then
+                                toReturn = DirectCast(targetMember, MethodBase).Invoke(Nothing, args)
+                            End If
+                        End If
+                    End If
+                Case VariableMode.SmartFile
+                    Dim smartKey As EntityKey = Me.SmartFileKey.Evaluate(owner, globalVars)
+                    If UseCustomFileSettings.Enabled Then
+                        toReturn = Aricie.DNN.Services.Files.SmartFile.LoadSmartFile(smartKey, globalVars, Me.SetForSave, UseCustomFileSettings.Entity)
+                    Else
+                        toReturn =  Aricie.DNN.Services.Files.SmartFile.LoadSmartFile(smartKey, globalVars, Me.SetForSave)
+                    End If
             End Select
             Return toReturn
         End Function
 
 
-        Public Function GetMethodInfo() As MethodInfo
-            Dim toReturn As MethodInfo = Nothing
-            If Me.DotNetType.GetDotNetType() IsNot Nothing Then
-                Dim potentialsMembers As List(Of MemberInfo) = Nothing
-                If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType).TryGetValue(Me._MethodName, potentialsMembers) Then
-                    Dim index As Integer = 0
-                    For Each potentialMember As MemberInfo In potentialsMembers
-                        If TypeOf potentialMember Is MethodInfo Then
-                            index += 1
-                            If index = MethodIndex Then
-                                toReturn = DirectCast(potentialMember, MethodInfo)
-                            End If
-                        End If
-                    Next
-                End If
-            End If
-            Return toReturn
-        End Function
+        'Public Function GetMethodInfo() As MethodInfo
+        '    Dim toReturn As MethodInfo = Nothing
+        '    If Me.DotNetType.GetDotNetType() IsNot Nothing Then
+        '        Dim potentialsMembers As List(Of MemberInfo) = Nothing
+        '        If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType).TryGetValue(Me._MethodName, potentialsMembers) Then
+        '            Dim index As Integer = 0
+        '            For Each potentialMember As MemberInfo In potentialsMembers
+        '                If TypeOf potentialMember Is MethodInfo Then
+        '                    index += 1
+        '                    If index = MethodIndex Then
+        '                        toReturn = DirectCast(potentialMember, MethodInfo)
+        '                    End If
+        '                End If
+        '            Next
+        '        End If
+        '    End If
+        '    Return toReturn
+        'End Function
 
 
         Public Function GetSelector(propertyName As String) As IList Implements ISelector.GetSelector
@@ -433,9 +612,6 @@ Namespace Services.Flee
                         toReturn.Add(ReflectionHelper.GetMemberSignature(objMember), index)
                         index += 1
                     Next
-                    If toReturn.Count = 0 Then
-                        toReturn.Add("", 1)
-                    End If
                     Return toReturn.ToList()
                 Case "MethodName"
                     Return DirectCast(GetSelectorG(propertyName), IList)
@@ -444,29 +620,38 @@ Namespace Services.Flee
         End Function
 
 
-        <XmlIgnore()> _
-       <Browsable(False)> _
-        Public ReadOnly Property SelectedMembers As List(Of MethodBase)
+        <XmlIgnore()>
+        <Browsable(False)>
+        Public ReadOnly Property SelectedMembers As List(Of MemberInfo)
             Get
 
-                Dim toReturn As New List(Of MethodBase)
+                Dim toReturn As New List(Of MemberInfo)
                 If Me.DotNetType.GetDotNetType() IsNot Nothing Then
                     Dim members As List(Of MemberInfo) = Nothing
-                    If Me.VariableMode = Flee.VariableMode.Constructor Then
-                        toReturn.AddRange(Me.DotNetType.GetDotNetType.GetConstructors())
-                    ElseIf ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType(), True, False).TryGetValue(Me.MethodName, members) Then
-                        toReturn.AddRange(members.OfType(Of MethodBase)())
-                    End If
+                    Select Case Me.VariableMode
+                        Case VariableMode.Constructor
+                            toReturn.AddRange(Me.DotNetType.GetDotNetType.GetConstructors())
+                        Case VariableMode.StaticMember
+                            If ReflectionHelper.GetFullMembersDictionary(Me.StaticMemberType.GetDotNetType(), True, False).TryGetValue(Me.MethodName, members) Then
+                                toReturn.AddRange(members)
+                            End If
+                        Case Else
+                            If ReflectionHelper.GetFullMembersDictionary(Me.DotNetType.GetDotNetType(), True, False).TryGetValue(Me.MethodName, members) Then
+                                toReturn.AddRange(members)
+                            End If
+
+                    End Select
+
                 End If
                 Return toReturn
             End Get
         End Property
 
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public ReadOnly Property SelectedMember As MethodBase
+        <XmlIgnore()>
+        <Browsable(False)>
+        Public ReadOnly Property SelectedMember As MemberInfo
             Get
-                Dim tmpMembers As List(Of MethodBase) = SelectedMembers
+                Dim tmpMembers As List(Of MemberInfo) = SelectedMembers
                 If tmpMembers.Count >= MethodIndex Then
                     Return SelectedMembers(MethodIndex - 1)
                 End If
@@ -474,8 +659,18 @@ Namespace Services.Flee
             End Get
         End Property
 
-        Public Function GetSelectorG(propertyName As String) As IList(Of MethodInfo) Implements ISelector(Of MethodInfo).GetSelectorG
-            Return ReflectionHelper.GetMembersDictionary(Me.DotNetType.GetDotNetType()).Values.OfType(Of MethodInfo)().ToList()
+        Public Function GetSelectorG(propertyName As String) As IList(Of MemberInfo) Implements ISelector(Of MemberInfo).GetSelectorG
+            Select Case Me.VariableMode
+                Case VariableMode.StaticMember
+                    Return ReflectionHelper.GetMembersDictionary( _
+                        StaticMemberType.GetDotNetType()).Values _
+                        .Where(Function(objMember) ReflectionHelper.IsStatic(objMember) _
+                             AndAlso DotNetType.GetDotNetType().IsAssignableFrom(ReflectionHelper.GetMemberReturnType(objMember))) _
+                        .ToList()
+                Case VariableMode.Delegate
+                    Return ReflectionHelper.GetMembersDictionary(Me.DotNetType.GetDotNetType()).Values.Where(Function(objMember) TypeOf objMember Is MethodInfo).ToList()
+            End Select
+            Return New List(Of MemberInfo)
         End Function
 
         Public Sub AddVariables(currentProvider As IExpressionVarsProvider, ByRef existingVars As IDictionary(Of String, Type)) Implements IExpressionVarsProvider.AddVariables

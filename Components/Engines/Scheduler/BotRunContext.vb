@@ -14,7 +14,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Structure
 
 
-    <Serializable()> _
+    
     Public Class BotRunContext(Of TEngineEvent As IConvertible)
 
         

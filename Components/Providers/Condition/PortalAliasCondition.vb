@@ -4,10 +4,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Globe, IconOptions.Normal)> _
-   <Serializable()> _
-   <DisplayName("Portal Alias Condition")> _
-   <Description("Matches according to the portal alias used in the url")> _
+    <ActionButton(IconName.Globe, IconOptions.Normal)>
+    <DisplayName("Portal Alias Condition")>
+    <Description("Matches according to the portal alias used in the url")>
     Public Class PortalAliasCondition
         Inherits PortalAliasCondition(Of RequestEvent)
 
@@ -15,10 +14,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <ActionButton(IconName.Globe, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Portal Alias Condition")> _
-    <Description("Matches according to the portal alias used in the url")> _
+    <ActionButton(IconName.Globe, IconOptions.Normal)>
+    <DisplayName("Portal Alias Condition")>
+    <Description("Matches according to the portal alias used in the url")>
     Public Class PortalAliasCondition(Of TEngineEvents As IConvertible)
         Inherits SelectionSetCondition(Of TEngineEvents)
 
@@ -33,7 +31,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     End Class
 
 
-    '<Serializable()> _
+    '
     '<System.ComponentModel.DisplayName("Portal Alias Condition")> _
     '<Description("Matches according to the portal alias used in the url")> _
     'Public Class PortalAliasCondition

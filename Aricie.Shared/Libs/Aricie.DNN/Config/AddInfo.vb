@@ -11,7 +11,6 @@ Namespace Configuration
         <XmlInclude(GetType(WebServerAddInfo))> _
         <XmlInclude(GetType(CustomAddInfo))> _
     <XmlRoot("add")> _
-    <Serializable()> _
     Public Class AddInfo
         Inherits AddInfoBase
 
@@ -24,7 +23,6 @@ Namespace Configuration
     <XmlInclude(GetType(CustomErrorAddInfo))> _
     <XmlInclude(GetType(CustomErrorsAddInfo))> _
     <XmlInclude(GetType(AddInfo))> _
-    <Serializable()> _
     Public Class AddInfoBase
         Implements IXmlSerializable
 

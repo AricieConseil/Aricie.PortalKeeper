@@ -10,7 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <Serializable()> _
+    
     Public Class ActionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ActionProviderConfig(Of TEngineEvents), ActionProviderSettings(Of TEngineEvents), IActionProvider(Of TEngineEvents))
 

@@ -11,7 +11,7 @@ Namespace ComponentModel
     End Interface
 
 
-    <Serializable()> _
+    
     Public Class NamedConfig
         Inherits NamedEntity
         Implements IEnabled

@@ -7,10 +7,9 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Wrench, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Object Actions Provider")> _
-        <Description("This provider allows to call object methods or set object properties")> _
+    <ActionButton(IconName.Wrench, IconOptions.Normal)>
+    <DisplayName("Object Actions Provider")>
+    <Description("This provider allows to call object methods or set object properties")>
     Public Class ObjectActionsProvider(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
@@ -19,10 +18,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _ObjectActions As New ObjectActions
 
 
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
-            <ExtendedCategory("Specifics")> _
-            <MainCategory()> _
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
+        <ExtendedCategory("Specifics")>
+        <MainCategory()>
         Public Property ObjectActions() As ObjectActions
             Get
                 Return _ObjectActions

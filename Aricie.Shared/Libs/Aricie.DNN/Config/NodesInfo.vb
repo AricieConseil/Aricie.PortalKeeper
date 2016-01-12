@@ -11,7 +11,6 @@ Namespace Configuration
     <XmlInclude(GetType(ComplexNodeInfo))> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
     <XmlRoot("nodes")> _
-    <Serializable()> _
     Public Class NodesInfo
         'Inherits List(Of NodeInfo)
 

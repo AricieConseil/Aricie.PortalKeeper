@@ -11,7 +11,6 @@ Namespace Entities
     ''' </summary>
     ''' <remarks>The last authentication date helps managing locks.</remarks>
     <ActionButton(IconName.User, IconOptions.Normal)> _
-    <Serializable()> _
     <DefaultProperty("Key")> _
     Public Class APICredentials
 

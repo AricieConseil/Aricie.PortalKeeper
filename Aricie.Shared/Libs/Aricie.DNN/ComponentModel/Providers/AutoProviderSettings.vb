@@ -5,7 +5,7 @@ Imports System.Xml.Serialization
 Namespace ComponentModel
 
 
-    <Serializable()> _
+    
    Public Class AutoProviderSettings
         Inherits ProviderSettings
         Implements IProvider
@@ -19,7 +19,7 @@ Namespace ComponentModel
     End Class
 
 
-    <Serializable()> _
+    
     Public Class AutoProviderSettings(Of TConfig As IProviderConfig, TSettings As {IProviderSettings, AutoProviderSettings(Of TConfig, TSettings)})
         Inherits AutoProviderSettings
         Implements IProvider(Of TConfig, TSettings)

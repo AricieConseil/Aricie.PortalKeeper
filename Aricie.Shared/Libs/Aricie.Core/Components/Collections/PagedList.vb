@@ -2,7 +2,7 @@
     ''' <summary>
     ''' List wrapper that embed the paginated navigation of a Source list
     ''' </summary>
-    <Serializable()> _
+    
     Public Class PagedList
         Inherits PagedCollection
         Implements IList

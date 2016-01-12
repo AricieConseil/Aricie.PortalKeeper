@@ -1,7 +1,7 @@
 Imports System.Threading
 
 Namespace Services.Workers
-    <Serializable()> _
+    
     Public Class Countdown
         Private _locker As New Object()
         Private _value As Integer

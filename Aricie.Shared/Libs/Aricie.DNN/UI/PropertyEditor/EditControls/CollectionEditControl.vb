@@ -1039,29 +1039,31 @@ Namespace UI.WebControls.EditControls
 
                 End If
 
-                Dim cmdCopy As New IconActionButton
-                With cmdCopy
-                    .ActionItem.IconName = IconName.FilesO
-                    .LocalResourceFile = Me.LocalResourceFile
-                    .ResourceKey = "Copy.Command"
-                    .CommandName = "Copy"
-                    .CommandArgument = commandIndex.ToString()
-                End With
-                AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                plAction.Controls.Add(cmdCopy)
-
-                Dim cmdCut As New IconActionButton
-                With cmdCut
-                    .ActionItem.IconName = IconName.Scissors
-                    .LocalResourceFile = Me.LocalResourceFile
-                    .ResourceKey = "Cut.Command"
-                    .CommandName = "Cut"
-                    .CommandArgument = commandIndex.ToString()
-                End With
-                AddHandler cmdCut.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                plAction.Controls.Add(cmdCut)
-
                 If Me._EnableExport Then
+                    Dim cmdCopy As New IconActionButton
+                    With cmdCopy
+                        .ActionItem.IconName = IconName.FilesO
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .ResourceKey = "Copy.Command"
+                        .CommandName = "Copy"
+                        .CommandArgument = commandIndex.ToString()
+                    End With
+                    AddHandler cmdCopy.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    plAction.Controls.Add(cmdCopy)
+
+                    If Not Me._NoDeletion Then
+                        Dim cmdCut As New IconActionButton
+                        With cmdCut
+                            .ActionItem.IconName = IconName.Scissors
+                            .LocalResourceFile = Me.LocalResourceFile
+                            .ResourceKey = "Cut.Command"
+                            .CommandName = "Cut"
+                            .CommandArgument = commandIndex.ToString()
+                        End With
+                        AddHandler cmdCut.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                        plAction.Controls.Add(cmdCut)
+                    End If
+
 
 
                     Dim cmdExport As New IconActionButton

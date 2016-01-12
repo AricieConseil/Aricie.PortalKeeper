@@ -4,7 +4,7 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
         <DisplayName("Expression Action Provider")> _
         <Description("This provider runs by evaluating a boolean expression and returning the result, or a IActionPrvoider expression, running and returning the result of the corresponding provider.")> _
     Public Class ExpressionActionProvider(Of TEngineEvents As IConvertible)

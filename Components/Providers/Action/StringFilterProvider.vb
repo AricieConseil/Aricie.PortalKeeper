@@ -16,10 +16,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Xpath
     End Enum
 
-    <ActionButton(IconName.Font, IconOptions.Normal)> _
-   <Serializable()> _
-   <DisplayName("String Filter Provider")> _
-       <Description("This provider allows to you to manipulate a string, by either running a series of transformations or performing xpath selects")> _
+    <ActionButton(IconName.Font, IconOptions.Normal)>
+    <DisplayName("String Filter Provider")>
+    <Description("This provider allows to you to manipulate a string, by either running a series of transformations or performing xpath selects")>
     Public Class StringFilterProvider(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
@@ -30,9 +29,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _Filter As New ExpressionFilterInfo
 
-        <ExtendedCategory("Filter")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Filter")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property InputExpression() As FleeExpressionInfo(Of String)
             Get
                 Return _InputExpression
@@ -43,7 +42,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Filter")> _
+        <ExtendedCategory("Filter")>
         Public Property FilterMode() As StringFilterMode
             Get
                 Return _FilterMode
@@ -54,12 +53,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Filter")> _
-       <ConditionalVisible("FilterMode", False, True, StringFilterMode.TransformsList)> _
+        <ExtendedCategory("Filter")>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TransformsList)>
         Public Property FilterSource() As New SimpleOrExpression(Of ExpressionFilterInfo)
 
         'todo: remove obsolete property
-       <Browsable(False)> _
+        <Browsable(False)>
         Public Property Filter() As ExpressionFilterInfo
             Get
                 Return FilterSource.Simple
@@ -69,12 +68,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Filter")> _
-       <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
+        <ExtendedCategory("Filter")>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)>
         Public Property XPathSource As New SimpleOrExpression(Of XPathInfo)
 
         'todo: remove obsolete property
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Property XPath() As XPathInfo
             Get
                 Return XPathSource.Simple
@@ -85,18 +84,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Filter")> _
-        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)> _
+        <ExtendedCategory("Filter")>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)>
         Public Property XPathNavigableVarName As String = ""
 
 
-        <ExtendedCategory("Filter")> _
-       <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)> _
+        <ExtendedCategory("Filter")>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)>
         Public Property UseAdditionalTokens As Boolean
 
-        <ExtendedCategory("Filter")> _
-        <ConditionalVisible("UseAdditionalTokens", False, True)> _
-        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)> _
+        <ExtendedCategory("Filter")>
+        <ConditionalVisible("UseAdditionalTokens", False, True)>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.TokenReplace)>
         Public Property AdditionalTokens As New TokenSourceInfo()
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object

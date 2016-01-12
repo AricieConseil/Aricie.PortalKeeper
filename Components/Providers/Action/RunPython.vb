@@ -4,14 +4,13 @@ Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.Desktop, IconOptions.Normal)> _
-    <Serializable()> _
-    <DisplayName("Run Python")> _
-    <Description("Runs an Iron Python script")> _
+    <ActionButton(IconName.Desktop, IconOptions.Normal)>
+    <DisplayName("Run Python")>
+    <Description("Runs an Iron Python script")>
     Public Class RunPython(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
-        <ExtendedCategory("Python")> _
+        <ExtendedCategory("Python")>
         Public Property Python As New SimpleOrExpression(Of IronPython)
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object

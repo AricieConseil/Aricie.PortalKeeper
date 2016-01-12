@@ -19,6 +19,7 @@ Imports Aricie.Business.Filters
 Imports Aricie.Collections
 Imports System.Reflection.Emit
 Imports System.Collections.Generic
+Imports Fasterflect
 
 Namespace Services
 
@@ -251,7 +252,7 @@ Namespace Services
             Dim toReturn As Type = Nothing
 
 
-            
+
 
             If Not ReflectionHelper.Instance._TypesByTypeName.TryGetValue(typeName, toReturn) Then
 
@@ -293,7 +294,7 @@ Namespace Services
                             ReflectionHelper.Instance._TypesByTypeName(typeName) = toReturn
                         End SyncLock
                     End If
-                    
+
                 End If
 
                 'CacheHelper.SetGlobal(Of Type)(toReturn, typeName)
@@ -370,7 +371,7 @@ Namespace Services
                                 End If
                             End Try
                         End If
-                       
+
                     End Try
                 End If
 
@@ -1154,6 +1155,8 @@ Namespace Services
                     If objMethod.ReturnType IsNot Nothing AndAlso (Not publicOnly OrElse objMethod.IsPublic) Then
                         Return objMethod.ReturnType
                     End If
+                Case MemberTypes.Constructor
+                    Return DirectCast(objMember, ConstructorInfo).DeclaringType
                 Case Else
                     Return Nothing
             End Select
@@ -1162,19 +1165,25 @@ Namespace Services
 
         Public Shared Function GetMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, MemberInfo)
 
-
             ' Use the cache because the reflection used later is expensive
-            Dim objMembers As Dictionary(Of String, MemberInfo) = GetGlobal(Of Dictionary(Of String, MemberInfo))(objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+            Dim objMembers As Dictionary(Of String, MemberInfo)
 
-            If objMembers Is Nothing Then
-                objMembers = New Dictionary(Of String, MemberInfo)(StringComparer.OrdinalIgnoreCase)
-                Dim currentType As Type = objType
-                Do
-                    FillMembersDictionary(currentType, objMembers, includePrivateFields)
-                    currentType = currentType.BaseType
-                Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
-                SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+            If objType IsNot Nothing Then
+                objMembers = GetGlobal(Of Dictionary(Of String, MemberInfo))(objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                If objMembers Is Nothing Then
+                    objMembers = New Dictionary(Of String, MemberInfo)(StringComparer.OrdinalIgnoreCase)
+                    Dim currentType As Type = objType
+                    Do
+                        FillMembersDictionary(currentType, objMembers, includePrivateFields)
+                        currentType = currentType.BaseType
+                    Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
+                    SetCacheDependant(Of Dictionary(Of String, MemberInfo))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.FullName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                End If
+            Else
+                objMembers = new Dictionary(Of String,MemberInfo)()
             End If
+
+
 
             Return objMembers
 
@@ -1201,20 +1210,23 @@ Namespace Services
         End Function
 
         Public Shared Function GetFullMembersDictionary(ByVal objType As Type, includeHierarchy As Boolean, includePrivateFields As Boolean) As Dictionary(Of String, List(Of MemberInfo))
+            Dim objMembers As Dictionary(Of String, List(Of MemberInfo))
+            If objType IsNot Nothing
+                ' Use the cache because the reflection used later is expensive
+                objMembers = GetGlobal(Of Dictionary(Of String, List(Of MemberInfo)))(objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
 
+                If objMembers Is Nothing Then
+                    objMembers = New Dictionary(Of String, List(Of MemberInfo))(StringComparer.OrdinalIgnoreCase)
+                    Dim currentType As Type = objType
+                    Do
+                        FillFullMembersDictionary(currentType, objMembers, includePrivateFields)
+                        currentType = currentType.BaseType
+                    Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
 
-            ' Use the cache because the reflection used later is expensive
-            Dim objMembers As Dictionary(Of String, List(Of MemberInfo)) = GetGlobal(Of Dictionary(Of String, List(Of MemberInfo)))(objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
-
-            If objMembers Is Nothing Then
-                objMembers = New Dictionary(Of String, List(Of MemberInfo))(StringComparer.OrdinalIgnoreCase)
-                Dim currentType As Type = objType
-                Do
-                    FillFullMembersDictionary(currentType, objMembers, includePrivateFields)
-                    currentType = currentType.BaseType
-                Loop Until (Not includeHierarchy) OrElse currentType Is Nothing
-
-                SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                    SetCacheDependant(Of Dictionary(Of String, List(Of MemberInfo)))(objMembers, glbDependency, Constants.Cache.NoExpiration, objType.AssemblyQualifiedName, includeHierarchy.ToString(CultureInfo.InvariantCulture), includePrivateFields.ToString(CultureInfo.InvariantCulture))
+                End If
+            Else
+                objMembers = New Dictionary(Of String, List(Of MemberInfo))
             End If
 
             Return objMembers
@@ -1410,6 +1422,16 @@ Namespace Services
         End Function
 
 
+        Public Shared Function IsStatic(objMember As MemberInfo) As Boolean
+            if TypeOf objMember Is FieldInfo OrElse TypeOf objMember Is PropertyInfo OrElse TypeOf objMember Is MethodInfo
+                Return objMember.IsStatic()
+            End If
+            Return False
+        End Function
+
+         
+
+
         ''' <summary>
         ''' Return the member declaration as a string.
         ''' </summary>
@@ -1438,8 +1460,8 @@ Namespace Services
                                                                                     AndAlso Not objMemberPair.Key.StartsWith("set_")
                                                                         End Function))
             Return (From objMemberListPair In objMembers _
-                        From objMemberInfo In objMemberListPair.Value _
-                            Select New KeyValuePair(Of String, MemberInfo)(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo)) _
+                    From objMemberInfo In objMemberListPair.Value _
+                    Select New KeyValuePair(Of String, MemberInfo)(ReflectionHelper.GetMemberSignature(objMemberInfo, True), objMemberInfo)) _
             .Distinct(New SimpleComparer(Of KeyValuePair(Of String, MemberInfo))(Function(objMemberPair1, objMemberPair2) _
                                                                                      String.Compare(objMemberPair1.Key, objMemberPair2.Key, System.StringComparison.Ordinal), _
                                                                                      Function(objMemberPair) objMemberPair.Key.GetHashCode())) _
@@ -1852,7 +1874,7 @@ Namespace Services
                     objType = tempType
                 End If
             End If
-            
+
 
             If useCache Then
 
@@ -2063,7 +2085,7 @@ Namespace Services
             Dim readerSettings As New XmlReaderSettings()
             readerSettings.ProhibitDtd = False
             readerSettings.IgnoreProcessingInstructions = True
-            Using xmlReader As XmlReader = xmlReader.Create(reader, readerSettings)
+            Using xmlReader As XmlReader = XmlReader.Create(reader, readerSettings)
                 'Try
                 Return Deserialize(mainType, xmlReader)
                 'Finally
@@ -2200,7 +2222,7 @@ Namespace Services
                             attrs.XmlType = New XmlTypeAttribute("SomeRandomName")
                             attrOverrides.Add(objType.BaseType, attrs)
                         End If
-                       
+
                     End If
 
                     If Not String.IsNullOrEmpty(rootName) Then
@@ -2249,7 +2271,7 @@ Namespace Services
 
 #End Region
 
-       
+
 
     End Class
 End Namespace

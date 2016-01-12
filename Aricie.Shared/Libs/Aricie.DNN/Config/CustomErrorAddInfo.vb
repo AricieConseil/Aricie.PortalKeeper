@@ -9,7 +9,6 @@ Namespace Configuration
     ''' Custom Error Add merge node
     ''' </summary>
     <XmlRoot("error")> _
-    <Serializable()> _
     Public Class CustomErrorAddInfo
         Inherits AddInfoBase
 

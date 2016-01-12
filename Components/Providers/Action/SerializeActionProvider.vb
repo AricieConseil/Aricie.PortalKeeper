@@ -10,10 +10,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Pencil, IconOptions.Normal)> _
-   <Serializable()> _
-       <DisplayName("Serialize Action Provider")> _
-       <Description("This provider allows to serialize a given entity, result of dynamic expression, into a string")> _
+    <ActionButton(IconName.Pencil, IconOptions.Normal)>
+    <DisplayName("Serialize Action Provider")>
+    <Description("This provider allows to serialize a given entity, result of dynamic expression, into a string")>
     Public Class SerializeActionProvider(Of TEngineEvents As IConvertible)
         Inherits SerializeActionProviderBase(Of TEngineEvents)
 
@@ -22,9 +21,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _inputExpression As New FleeExpressionInfo(Of Object)
 
-        <ExtendedCategory("Serialization")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Serialization")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property InputExpression() As FleeExpressionInfo(Of Object)
             Get
                 Return _inputExpression

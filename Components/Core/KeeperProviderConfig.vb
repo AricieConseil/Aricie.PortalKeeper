@@ -4,7 +4,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.Globalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class KeeperProviderConfig(Of TEngineEvents As IConvertible, T As IProvider)
         Inherits ProviderConfig(Of T)
 

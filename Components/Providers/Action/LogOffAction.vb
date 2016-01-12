@@ -5,10 +5,9 @@ Imports DotNetNuke.Security
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.SignOut, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Log Off Action")> _
-        <Description("Signs the user out of his current session")> _
+    <ActionButton(IconName.SignOut, IconOptions.Normal)>
+    <DisplayName("Log Off Action")>
+    <Description("Signs the user out of his current session")>
     Public Class LogOffAction
         Inherits ActionProvider(Of RequestEvent)
 

@@ -11,7 +11,6 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Entities
 
     <ActionButton(IconName.User, IconOptions.Normal)> _
-    <Serializable()> _
     <DefaultProperty("UserName")> _
     Public Class LoginInfo
 

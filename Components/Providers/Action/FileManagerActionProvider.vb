@@ -6,28 +6,27 @@ Imports System.IO
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.HddO, IconOptions.Normal)> _
-   <DisplayName("File Manager Action")> _
-   <Description("This provider allows to browse or delete files and folders, given a parent path by dynamic expressions")> _
-   <Serializable()> _
+    <ActionButton(IconName.HddO, IconOptions.Normal)>
+    <DisplayName("File Manager Action")>
+    <Description("This provider allows to browse or delete files and folders, given a parent path by dynamic expressions")>
     Public Class FileManagerActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileAccessActionProvider(Of TEngineEvents)
 
 
-        <ExtendedCategory("File")> _
+        <ExtendedCategory("File")>
         Public Property Mode As FileManagerMode
 
-        <ExtendedCategory("File")> _
-        <ConditionalVisible("Mode", False, True, FileManagerMode.GetFiles, FileManagerMode.GetDirectories)> _
+        <ExtendedCategory("File")>
+        <ConditionalVisible("Mode", False, True, FileManagerMode.GetFiles, FileManagerMode.GetDirectories)>
         Public Property Pattern() As String = ""
 
-        <SortOrder(1003)> _
-        <ExtendedCategory("File")> _
-        <ConditionalVisible("Mode", False, True, FileManagerMode.Copy, FileManagerMode.Move)> _
+        <SortOrder(1003)>
+        <ExtendedCategory("File")>
+        <ConditionalVisible("Mode", False, True, FileManagerMode.Copy, FileManagerMode.Move)>
         Public Property TargetPathExpression() As New FleeExpressionInfo(Of String)("")
 
-        <ExtendedCategory("File")> _
-        <ConditionalVisible("Mode", False, True, FileManagerMode.Copy)> _
+        <ExtendedCategory("File")>
+        <ConditionalVisible("Mode", False, True, FileManagerMode.Copy)>
         Public Property Overwrite As Boolean = True
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object

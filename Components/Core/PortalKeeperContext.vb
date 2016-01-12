@@ -6,6 +6,7 @@ Imports Aricie.DNN.Diagnostics
 Imports Aricie.Collections
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.Services
+Imports Aricie.DNN.Services.Files
 
 
 '===============================================================================
@@ -18,7 +19,7 @@ Imports Aricie.Services
 
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class PortalKeeperContext(Of TEngineEvents As IConvertible)
         Inherits ContextBase(Of PortalKeeperContext(Of TEngineEvents))
 
@@ -198,6 +199,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property CurrentEngine() As RuleEngineSettings(Of TEngineEvents)
 
+        Public Property SmartFileSettings() As SmartFileInfo
+
+
         Public ReadOnly Property ActionContext As PortalKeeperContext(Of TEngineEvents)
             Get
                 Return Me
@@ -237,7 +241,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-       
+
 
 
 #End Region
@@ -250,11 +254,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Friend Sub SetEngine(newEngine As RuleEngineSettings(Of TEngineEvents))
             Me._CurrentEngine = newEngine
+            SmartFile.SetSmartFileInfo(Me, newEngine.SmartFileSettings)
         End Sub
 
 
         Public Sub Init(ByVal configRules As RuleEngineSettings(Of TEngineEvents))
-            Me._CurrentEngine = configRules
+            Me.SetEngine(configRules)
             Me.InitParams(configRules.Variables)
         End Sub
 
@@ -359,6 +364,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 End If
                 If endSequence Then
                     Me.LogEndEngine()
+                    SmartFile.SaveSmartFiles(me)
                 End If
             End SyncLock
         End Sub

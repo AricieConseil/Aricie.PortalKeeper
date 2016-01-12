@@ -4,7 +4,6 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace ComponentModel
-    <Serializable()> _
     Public Class LocationSettings
         Implements IEquatable(Of LocationSettings)
 

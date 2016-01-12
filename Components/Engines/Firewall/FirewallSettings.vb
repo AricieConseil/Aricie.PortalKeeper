@@ -14,7 +14,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <Serializable()> _
+    
     Public Class FirewallSettings
         Inherits RuleEngineSettings(Of RequestEvent)
 

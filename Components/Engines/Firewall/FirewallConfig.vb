@@ -12,7 +12,6 @@ Imports DotNetNuke.Entities.Users
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.Shield, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class FirewallConfig
         Inherits FirewallSettings
         Implements IMergeable(Of FirewallSettings, FirewallConfig)

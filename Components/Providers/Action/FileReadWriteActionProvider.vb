@@ -3,7 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports System.IO
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class FileReadWriteActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileAccessActionProvider(Of TEngineEvents)
 

@@ -7,7 +7,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class InstanceVariableInfo(Of TResult)
         Inherits VariableInfo(Of TResult)
 

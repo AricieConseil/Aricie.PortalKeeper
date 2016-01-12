@@ -4,7 +4,7 @@ Imports Aricie.Text
 Imports System.ComponentModel
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class FileWriteActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits FileReadWriteActionProvider(Of TEngineEvents)
 

@@ -12,10 +12,9 @@ Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Comment, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Display Message Action")> _
-        <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _
+    <ActionButton(IconName.Comment, IconOptions.Normal)>
+    <DisplayName("Display Message Action")>
+    <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")>
     Public Class DisplayMessageAction
         Inherits DisplayMessageAction(Of RequestEvent)
 
@@ -23,10 +22,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <ActionButton(IconName.Comment, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Display Message Action")> _
-        <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")> _
+    <ActionButton(IconName.Comment, IconOptions.Normal)>
+    <DisplayName("Display Message Action")>
+    <Description("Displays a DNN message with token replace on the current page. A target module can be optionnally chosen.")>
     Public Class DisplayMessageAction(Of TEngineEvents As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvents)
 
@@ -44,7 +42,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _IsModuleMessage As Boolean
         Private _ModuleId As Integer
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property ModuleMessageType() As ModuleMessage.ModuleMessageType
             Get
                 Return _ModuleMessageType
@@ -54,9 +52,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Specifics")> _
-        <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
-            <Width(400)> _
+        <ExtendedCategory("Specifics")>
+        <Editor(GetType(CustomTextEditControl), GetType(EditControl))>
+        <Width(400)>
         Public Property Heading() As String
             Get
                 Return _Heading
@@ -68,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property IsModuleMessage() As Boolean
             Get
                 Return _IsModuleMessage
@@ -79,8 +77,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Specifics")> _
-        <ConditionalVisible("IsModuleMessage", False, True)> _
+        <ExtendedCategory("Specifics")>
+        <ConditionalVisible("IsModuleMessage", False, True)>
         Public Property ModuleId() As Integer
             Get
                 Return _ModuleId
@@ -149,7 +147,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         End If
                         Return True
                     End If
-                    
+
                 End If
             End If
             Return False

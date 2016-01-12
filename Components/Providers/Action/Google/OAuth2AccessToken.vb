@@ -6,7 +6,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class OAuth2AccessToken
 
         Public ReadOnly Property Status As OAuth2TokenStatus

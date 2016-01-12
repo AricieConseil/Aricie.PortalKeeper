@@ -3,7 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class HttpSubHandlerSettings
         Inherits HttpHandlerSettings
 

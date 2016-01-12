@@ -12,10 +12,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <ActionButton(IconName.Globe, IconOptions.Normal)> _
-    <Serializable()> _
-       <DisplayName("Web Action")> _
-       <Description("Performs a web call to a web address")> _
+    <ActionButton(IconName.Globe, IconOptions.Normal)>
+    <DisplayName("Web Action")>
+    <Description("Performs a web call to a web address")>
     Public Class WebAction(Of TEngineEvents As IConvertible)
         Inherits OutputAction(Of TEngineEvents)
 
@@ -30,7 +29,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _PostDataVar As String = "postData"
 
 
-        <ExtendedCategory("WebRequest")> _
+        <ExtendedCategory("WebRequest")>
         Public Property WebRequest() As WebRequestInfo(Of TEngineEvents)
             Get
                 Return _WebRequest
@@ -41,7 +40,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Parameters")> _
+        <ExtendedCategory("Parameters")>
         Public Property InputParameters() As Variables(Of String)
             Get
                 Return _InputParameters
@@ -51,7 +50,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Parameters")> _
+        <ExtendedCategory("Parameters")>
         Public Property HeaderParameters() As Variables(Of String)
             Get
                 Return _HeaderParameters
@@ -62,7 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Parameters")> _
+        <ExtendedCategory("Parameters")>
         Public Property IncludePostData() As Boolean
             Get
                 Return _IncludePostData
@@ -72,8 +71,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Parameters")> _
-        <ConditionalVisible("IncludePostData", False, True)> _
+        <ExtendedCategory("Parameters")>
+        <ConditionalVisible("IncludePostData", False, True)>
         Public Property PostDataVar() As String
             Get
                 Return _PostDataVar

@@ -10,20 +10,20 @@ Imports Aricie.Services
 Imports DotNetNuke.Services.Exceptions
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class DosEnabledConditionProvider(Of TEngineEvents As IConvertible)
         Inherits ConditionProvider(Of TEngineEvents)
         Implements IDoSEnabledConditionProvider(Of TEngineEvents)
 
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private Shared _LockProviders As New ReaderWriterLock()
         Friend Shared DosProviders As New List(Of DosEnabledConditionProvider(Of TEngineEvents))
         Private _BroadcastTaskQueueInfo As New TaskQueueInfo(1, True, TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(1000), TimeSpan.FromMilliseconds(100))
 
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private WithEvents _BroadcastTaskQueue As WaitQueue
 
-        <NonSerialized()> _
+        '<NonSerialized()> _
         Private _LockDico As New ReaderWriterLock()
 
         Public Shared Sub BeginReadProviders()

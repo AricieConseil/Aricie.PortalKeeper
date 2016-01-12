@@ -15,7 +15,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-    <Serializable()> _
+    
      <DisplayName("Empty Action Provider")> _
         <Description("This provider performs no particular action but can be used for adding a sleep time for instance")> _
     Public Class ActionProvider(Of TEngineEvents As IConvertible)

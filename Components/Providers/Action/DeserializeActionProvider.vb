@@ -15,10 +15,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Eye, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Deserialize Action Provider")> _
-        <Description("This provider allows to deserialize a given string, result of dynamic expression, into a typed object")> _
+    <ActionButton(IconName.Eye, IconOptions.Normal)>
+    <DisplayName("Deserialize Action Provider")>
+    <Description("This provider allows to deserialize a given string, result of dynamic expression, into a typed object")>
     Public Class DeserializeActionProvider(Of TEngineEvents As IConvertible)
         Inherits SerializationBaseActionProvider(Of TEngineEvents)
 
@@ -30,9 +29,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _AdditionalTypes As New List(Of DotNetType)
 
-        <ExtendedCategory("Serialization")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Serialization")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property InputExpression() As FleeExpressionInfo(Of String)
             Get
                 Return _InputExpression
@@ -42,9 +41,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Serialization")> _
-            <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
-            <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Serialization")>
+        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
+        <LabelMode(LabelMode.Top)>
         Public Property OutputType() As DotNetType
             Get
                 Return _OutputType
@@ -58,10 +57,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Serialization")> _
-           <Editor(GetType(ListEditControl), GetType(EditControl))> _
-           <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)> _
-           <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("Serialization")>
+        <Editor(GetType(ListEditControl), GetType(EditControl))>
+        <CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.List)>
+        <LabelMode(LabelMode.Top)>
         Public Property AdditionalTypes() As List(Of DotNetType)
             Get
                 Return _AdditionalTypes
@@ -71,7 +70,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Serialization")> _
+        <ExtendedCategory("Serialization")>
         Public Property DefaultToNewEntity As Boolean
 
         Public Overrides Function BuildResult(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal async As Boolean) As Object

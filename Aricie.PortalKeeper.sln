@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.30723.0
+# Visual Studio 14
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Aricie.PortalKeeper", "Aricie.PortalKeeper.vbproj", "{E16CB689-AF6F-4919-BC7B-1D345A2D48CE}"
 EndProject
@@ -23,42 +23,9 @@ Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Flee", "Aricie.Shared\Libs\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aricie.PortalKeeper.DNN7", "Aricie.PortalKeeper.DNN7\Aricie.PortalKeeper.DNN7.csproj", "{968DB474-7278-4940-96E5-09394D30BA5E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aricie.PortalKeeper.AI", "Libraries\AI\Aricie.PortalKeeper.AI.csproj", "{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}"
+EndProject
 Global
-	GlobalSection(TeamFoundationVersionControl) = preSolution
-		SccNumberOfProjects = 11
-		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs36
-		SccLocalPath0 = .
-		SccProjectUniqueName1 = Aricie.Shared\\Libs\\Aricie.Core\\Aricie.Core.vbproj
-		SccProjectName1 = Aricie.Shared/Libs/Aricie.Core
-		SccLocalPath1 = Aricie.Shared\\Libs\\Aricie.Core
-		SccProjectUniqueName2 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN.vbproj
-		SccProjectName2 = Aricie.Shared/Libs/Aricie.DNN
-		SccLocalPath2 = Aricie.Shared\\Libs\\Aricie.DNN
-		SccProjectUniqueName3 = Aricie.PortalKeeper.vbproj
-		SccLocalPath3 = .
-		SccProjectUniqueName4 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN7\\Aricie.DNN7.csproj
-		SccProjectName4 = Aricie.Shared/Libs/Aricie.DNN/Aricie.DNN7
-		SccLocalPath4 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN7
-		SccProjectUniqueName5 = Libraries\\Bitcoin\\Core\\Aricie.PortalKeeper.Bitcoin.csproj
-		SccProjectName5 = Libraries/Bitcoin/Core
-		SccLocalPath5 = Libraries\\Bitcoin\\Core
-		SccProjectUniqueName6 = Libraries\\Bitcoin\\Strategies\\Aricie.PortalKeeper.Bitcoin.Strategies.csproj
-		SccProjectName6 = Libraries/Bitcoin/Strategies
-		SccLocalPath6 = Libraries\\Bitcoin\\Strategies
-		SccProjectUniqueName7 = Libraries\\Reddit\\Aricie.PortalKeeper.Reddit.csproj
-		SccProjectName7 = Libraries/Reddit
-		SccLocalPath7 = Libraries\\Reddit
-		SccProjectUniqueName8 = Libraries\\Reddit\\external\\RedditSharpNet35\\RedditSharpNet35.csproj
-		SccProjectName8 = Libraries/Reddit/external/RedditSharpNet35
-		SccLocalPath8 = Libraries\\Reddit\\external\\RedditSharpNet35
-		SccProjectUniqueName9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee\\Flee.vbproj
-		SccProjectName9 = Aricie.Shared/Libs/Aricie.DNN/external/Flee
-		SccLocalPath9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee
-		SccProjectUniqueName10 = Aricie.PortalKeeper.DNN7\\Aricie.PortalKeeper.DNN7.csproj
-		SccProjectName10 = Aricie.PortalKeeper.DNN7
-		SccLocalPath10 = Aricie.PortalKeeper.DNN7
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug Trial|Any CPU = Debug Trial|Any CPU
 		Debug|Any CPU = Debug|Any CPU
@@ -146,8 +113,54 @@ Global
 		{968DB474-7278-4940-96E5-09394D30BA5E}.Release Trial|Any CPU.Build.0 = Release|Any CPU
 		{968DB474-7278-4940-96E5-09394D30BA5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{968DB474-7278-4940-96E5-09394D30BA5E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Debug Trial|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Debug Trial|Any CPU.Build.0 = Debug|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Release Trial|Any CPU.ActiveCfg = Release|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Release Trial|Any CPU.Build.0 = Release|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A4FA5C16-A4CA-4D1D-8E84-B30625D210B7}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 12
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs36
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = Aricie.Shared\\Libs\\Aricie.Core\\Aricie.Core.vbproj
+		SccProjectName1 = Aricie.Shared/Libs/Aricie.Core
+		SccLocalPath1 = Aricie.Shared\\Libs\\Aricie.Core
+		SccProjectUniqueName2 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN.vbproj
+		SccProjectName2 = Aricie.Shared/Libs/Aricie.DNN
+		SccLocalPath2 = Aricie.Shared\\Libs\\Aricie.DNN
+		SccProjectUniqueName3 = Aricie.PortalKeeper.vbproj
+		SccLocalPath3 = .
+		SccProjectUniqueName4 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN7\\Aricie.DNN7.csproj
+		SccProjectName4 = Aricie.Shared/Libs/Aricie.DNN/Aricie.DNN7
+		SccLocalPath4 = Aricie.Shared\\Libs\\Aricie.DNN\\Aricie.DNN7
+		SccProjectUniqueName5 = Libraries\\Bitcoin\\Core\\Aricie.PortalKeeper.Bitcoin.csproj
+		SccProjectName5 = Libraries/Bitcoin/Core
+		SccLocalPath5 = Libraries\\Bitcoin\\Core
+		SccProjectUniqueName6 = Libraries\\Bitcoin\\Strategies\\Aricie.PortalKeeper.Bitcoin.Strategies.csproj
+		SccProjectName6 = Libraries/Bitcoin/Strategies
+		SccLocalPath6 = Libraries\\Bitcoin\\Strategies
+		SccProjectUniqueName7 = Libraries\\Reddit\\Aricie.PortalKeeper.Reddit.csproj
+		SccProjectName7 = Libraries/Reddit
+		SccLocalPath7 = Libraries\\Reddit
+		SccProjectUniqueName8 = Libraries\\Reddit\\external\\RedditSharpNet35\\RedditSharpNet35.csproj
+		SccProjectName8 = Libraries/Reddit/external/RedditSharpNet35
+		SccLocalPath8 = Libraries\\Reddit\\external\\RedditSharpNet35
+		SccProjectUniqueName9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee\\Flee.vbproj
+		SccProjectName9 = Aricie.Shared/Libs/Aricie.DNN/external/Flee
+		SccLocalPath9 = Aricie.Shared\\Libs\\Aricie.DNN\\external\\Flee
+		SccProjectUniqueName10 = Aricie.PortalKeeper.DNN7\\Aricie.PortalKeeper.DNN7.csproj
+		SccProjectName10 = Aricie.PortalKeeper.DNN7
+		SccLocalPath10 = Aricie.PortalKeeper.DNN7
+		SccProjectUniqueName11 = Libraries\\AI\\Aricie.PortalKeeper.AI.csproj
+		SccProjectName11 = Libraries/AI
+		SccLocalPath11 = Libraries\\AI
 	EndGlobalSection
 EndGlobal

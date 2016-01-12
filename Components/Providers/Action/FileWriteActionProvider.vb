@@ -5,10 +5,9 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.FloppyO, IconOptions.Normal)> _
-    <DisplayName("File Write Action")> _
-        <Description("This provider allows to write a content to a file, given its path and the content to write by dynamic expressions")> _
-        <Serializable()> _
+    <ActionButton(IconName.FloppyO, IconOptions.Normal)>
+    <DisplayName("File Write Action")>
+    <Description("This provider allows to write a content to a file, given its path and the content to write by dynamic expressions")>
     Public Class FileWriteActionProvider(Of TEngineEvents As IConvertible)
         Inherits FileWriteActionProviderBase(Of TEngineEvents)
 
@@ -25,8 +24,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ConditionalVisible("AccessMode", False, True, FileAccessMode.StringReadWrite)> _
-        <ExtendedCategory("File")> _
+        <ConditionalVisible("AccessMode", False, True, FileAccessMode.StringReadWrite)>
+        <ExtendedCategory("File")>
         Public Property InputExpression() As FleeExpressionInfo(Of String)
             Get
                 Return _InputExpression

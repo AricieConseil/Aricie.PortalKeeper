@@ -9,7 +9,7 @@ Namespace Entities
     ''' <summary>
     ''' Configuration Entity class for a Web Ping engine
     ''' </summary>
-    <Serializable()> _
+    
     Public Class PingUrlInfo
         Inherits NamedConfig
 

@@ -5,7 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Services.Filtering
-    <Serializable()> _
+    
     Public Class FilterModuleInfo
 
         Private _friendlyName As String = String.Empty

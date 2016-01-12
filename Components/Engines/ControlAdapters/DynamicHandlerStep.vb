@@ -1,5 +1,5 @@
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Structure DynamicHandlerStep
         Implements IConvertible
 

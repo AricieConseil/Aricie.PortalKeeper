@@ -13,7 +13,6 @@ Imports System.Linq
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.CloudDownload, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class HttpHandlerSettings
         Inherits HttpHandlerInfo
 

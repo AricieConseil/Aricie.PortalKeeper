@@ -11,7 +11,7 @@ Imports System.Reflection
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class FileHelpersSettings
 
         Private mRecordType As Type

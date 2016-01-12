@@ -3,7 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 
 Namespace Services.Filtering
-    <Serializable()> _
+    
     Public Class TokenizedTextInfo
 
         <Obsolete("Use Template property")> _

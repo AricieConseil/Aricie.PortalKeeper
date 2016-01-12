@@ -12,7 +12,6 @@ Imports DotNetNuke.Services.Localization
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <XmlRoot("profiledefinition", IsNullable:=False)> _
-        <Serializable()> _
     Public Class GeneralPropertyDefinition
 
 #Region "Constructors"

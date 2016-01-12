@@ -5,7 +5,7 @@ Namespace ComponentModel
     ''' <summary>
     ''' Wrapper class to serialize and rebuild a delegate. Supports invocation list combination
     ''' </summary>
-    <Serializable()> _
+    
     Public Class DelegateInfo(Of T)
 
 

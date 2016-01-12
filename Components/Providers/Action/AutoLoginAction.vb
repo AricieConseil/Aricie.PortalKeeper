@@ -8,10 +8,9 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <ActionButton(IconName.SignIn, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Auto Login")> _
-        <Description("Logs the current user with predefined credentials")> _
+    <ActionButton(IconName.SignIn, IconOptions.Normal)>
+    <DisplayName("Auto Login")>
+    <Description("Logs the current user with predefined credentials")>
     Public Class AutoLoginAction
         Inherits ActionProvider(Of RequestEvent)
 
@@ -19,7 +18,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _AutoLoginUserName As String
 
-        <ExtendedCategory("Specifics")> _
+        <ExtendedCategory("Specifics")>
         Public Property CurrentAutoLoginInfo() As AutoLoginInfo
             Get
                 Return _CurrentAutoLoginInfo
@@ -51,8 +50,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim status As UserLoginStatus = UserLoginStatus.LOGIN_FAILURE
             If Me.CurrentAutoLoginInfo.AutoLoginMode = AutoLoginInfo.AutoLoginModeType.Manual Then
-                Dim objUser As UserInfo = UserController.UserLogin(actionContext.DnnContext.Portal.PortalId, Me.CurrentAutoLoginInfo.AutoLoginUserName, _
-                                           Me.CurrentAutoLoginInfo.AutoLoginPassword, "", actionContext.DnnContext.Portal.PortalName, _
+                Dim objUser As UserInfo = UserController.UserLogin(actionContext.DnnContext.Portal.PortalId, Me.CurrentAutoLoginInfo.AutoLoginUserName,
+                                           Me.CurrentAutoLoginInfo.AutoLoginPassword, "", actionContext.DnnContext.Portal.PortalName,
                                            actionContext.DnnContext.Request.UserHostAddress, status, False)
                 If objUser IsNot Nothing AndAlso status = UserLoginStatus.LOGIN_SUCCESS Then
                     HttpContext.Current.Items("UserInfo") = objUser

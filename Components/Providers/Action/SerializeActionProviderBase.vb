@@ -5,7 +5,7 @@ Imports Newtonsoft.Json
 Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public MustInherit Class SerializeActionProviderBase(Of TEngineEvents As IConvertible)
         Inherits SerializationBaseActionProvider(Of TEngineEvents)
 

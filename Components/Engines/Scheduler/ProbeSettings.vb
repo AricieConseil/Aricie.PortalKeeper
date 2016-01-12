@@ -8,7 +8,6 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
 
     <ActionButton(IconName.Tachometer, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class ProbeSettings(Of TEngineEvent As IConvertible)
         Inherits NamedConfig
 

@@ -10,7 +10,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports System.Linq
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class SpreadSheetEntryInfo(Of TEngineEvents As IConvertible)
         Implements ISelector
 

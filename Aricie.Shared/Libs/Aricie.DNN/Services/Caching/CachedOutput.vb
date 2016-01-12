@@ -1,6 +1,6 @@
 ﻿
 Namespace Services.Caching
-    <Serializable()> _
+    
     Public Class CachedOutput
 
         Private _TimeStamp As DateTime

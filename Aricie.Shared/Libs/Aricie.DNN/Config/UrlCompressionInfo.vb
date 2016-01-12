@@ -8,7 +8,7 @@ Namespace Configuration
     ''' <summary>
     ''' Component to switch application trust level
     ''' </summary>
-    <Serializable()> _
+    
     Public Class UrlCompressionInfo
         Inherits XmlConfigElementInfo
 
@@ -68,7 +68,6 @@ Namespace Configuration
     ''' Custom Error Add merge node
     ''' </summary>
     <XmlRoot("urlCompression")> _
-    <Serializable()> _
     Public Class UrlCompressionAddInfo
         Inherits AddInfoBase
 

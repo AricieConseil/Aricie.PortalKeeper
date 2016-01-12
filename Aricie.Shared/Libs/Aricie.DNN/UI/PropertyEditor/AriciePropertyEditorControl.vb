@@ -621,6 +621,29 @@ Namespace UI.WebControls
 
 #Region "Public Methods"
 
+        Public Function GetParentEntity(Of T)() As T
+            Return DirectCast(GetParentEntity(GetType(T)), T)
+        End Function
+
+        Public Function GetParentEntity(targetType As Type) As Object
+            If Me.DataSource IsNot Nothing Then
+                If targetType.IsInstanceOfType(Me.DataSource) Then
+                    Return Me.DataSource                   
+                End If
+                If Me.ParentAricieEditor IsNot Nothing Then
+                    Return Me.ParentAricieEditor.GetParentEntity(targetType)
+                End If
+                If TypeOf Me.DataSource Is SubPathContainer Then
+                    For Each objEntity As Object In DirectCast(Me.DataSource, SubPathContainer).GetParentEntities().Values.Reverse()
+                        If targetType.IsInstanceOfType(objEntity) Then
+                            Return objEntity
+                        End If
+                    Next
+                End If
+            End If
+            Return Nothing
+        End Function
+
         Public Overloads Function GetRowVisibility(ByVal member As MemberInfo) As Boolean
             Dim info As PropertyInfo = TryCast(member, PropertyInfo)
             If (info IsNot Nothing) Then
@@ -692,7 +715,7 @@ Namespace UI.WebControls
 
         Private Sub DisplayMessages()
             For Each objPair As KeyValuePair(Of DisplayMessageInfo, AriciePropertyEditorControl) In Me.RootEditor._MessagesToShow
-              
+
                 Dim isTarget As Boolean
                 If objPair.Value Is Nothing Then
                     isTarget = Me.IsRoot

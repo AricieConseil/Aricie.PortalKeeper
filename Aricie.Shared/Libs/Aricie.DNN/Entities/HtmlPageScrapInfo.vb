@@ -23,7 +23,6 @@ Namespace Entities
 
 
     <ActionButton(IconName.Search, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class HtmlPageScrapInfo
         Inherits NamedConfig
 
@@ -96,7 +95,7 @@ Namespace Entities
 
     End Class
 
-    <Serializable()> _
+    
     Public Class HtmlRequestInfo
 
         Public Overridable Property Url As New CData("http://www.google.com")
@@ -109,7 +108,7 @@ Namespace Entities
 
     End Class
 
-    <Serializable()> _
+    
  <DefaultProperty("FriendlyName")> _
     Public Class HtmlScrapRequestInfo
         Inherits HtmlRequestInfo
@@ -124,7 +123,7 @@ Namespace Entities
     End Enum
 
 
-    <Serializable()> _
+    
    <DefaultProperty("FriendlyName")> _
     Public Class HtmlScrapDetailRequestInfo
         Inherits HtmlScrapRequestInfo

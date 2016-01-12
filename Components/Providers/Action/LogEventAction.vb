@@ -7,10 +7,9 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.Ticket, IconOptions.Normal)> _
-    <Serializable()> _
-        <DisplayName("Log Event Action")> _
-        <Description("Inserts a new log in the DotNetNuke event log. Automatic email alert can be configured accordingly")> _
+    <ActionButton(IconName.Ticket, IconOptions.Normal)>
+    <DisplayName("Log Event Action")>
+    <Description("Inserts a new log in the DotNetNuke event log. Automatic email alert can be configured accordingly")>
     Public Class LogEventAction(Of TEngineEvents As IConvertible)
         Inherits MessageBasedAction(Of TEngineEvents)
 
@@ -28,9 +27,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Specifics")> _
-         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-           <Selector(GetType(LogTypeSelector), "LogTypeFriendlyName", "LogTypeKey", False, False, "", "", True, False)> _
+        <ExtendedCategory("Specifics")>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
+        <Selector(GetType(LogTypeSelector), "LogTypeFriendlyName", "LogTypeKey", False, False, "", "", True, False)>
         Public Property LogTypeKey() As String
             Get
                 Return _LogTypeKey

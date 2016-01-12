@@ -6,7 +6,7 @@ Namespace Configuration
     ''' <summary>
     ''' Base class for custom types of configurable entities
     ''' </summary>
-    <Serializable()> _
+    
     Public MustInherit Class TypedEntityElementInfo
         Implements IConfigElementInfo
 

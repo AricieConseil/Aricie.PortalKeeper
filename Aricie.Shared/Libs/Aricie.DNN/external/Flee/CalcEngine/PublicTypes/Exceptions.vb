@@ -20,7 +20,7 @@
 Namespace CalcEngine
 
 	''' <include file='Resources/DocComments.xml' path='DocComments/CircularReferenceException/Class/*' />	
-	<Serializable()> _
+	
 	Public Class CircularReferenceException
 		Inherits System.Exception
 
@@ -50,7 +50,7 @@ Namespace CalcEngine
 	End Class
 
 	''' <include file='Resources/DocComments.xml' path='DocComments/Member[@name="BatchLoadCompileException"]/*' />	
-	<Serializable()> _
+	
 	Public Class BatchLoadCompileException
 		Inherits Exception
 

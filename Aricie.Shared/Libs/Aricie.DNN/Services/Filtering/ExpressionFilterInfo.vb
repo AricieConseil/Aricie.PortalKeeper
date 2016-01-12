@@ -20,7 +20,7 @@ Namespace Services.Filtering
     ''' Class representing filtering and transformation applied to a string
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ExpressionFilterInfo
 
         Private _DefaultCharReplacement As String = Nothing
@@ -315,13 +315,13 @@ Namespace Services.Filtering
         <ExtendedCategory("Simulation")> _
         <ActionButton(IconName.Refresh, IconOptions.Normal)> _
         Public Sub RunSimulation(ByVal pe As AriciePropertyEditorControl)
-            If Not String.IsNullOrEmpty(Me.SimulationData.Value) Then
-                Dim toReturn As String = Me.Process(Me.SimulationData.Value, Nothing)
-                If toReturn IsNot Nothing Then
-                    Me._SimulationResult = toReturn
-                End If
-                pe.ItemChanged = True
+            'If Not String.IsNullOrEmpty(Me.SimulationData.Value) Then
+            Dim toReturn As String = Me.Process(Me.SimulationData.Value, Nothing)
+            If toReturn IsNot Nothing Then
+                Me._SimulationResult = toReturn
             End If
+            pe.ItemChanged = True
+            'End If
         End Sub
 
 

@@ -9,7 +9,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Command
     End Enum
 
-    <Serializable()> _
+    
     Public Class IronPython
         Inherits ScriptBase
 

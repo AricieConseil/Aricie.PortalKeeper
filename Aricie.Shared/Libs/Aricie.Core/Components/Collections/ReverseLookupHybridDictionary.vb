@@ -2,7 +2,7 @@ Namespace Collections
     ''' <summary>
     ''' Complete Dual Dictionary with init mechanism
     ''' </summary>
-    <Serializable()> _
+    
     Public Class ReverseLookupHybridDictionary(Of TKey, TValue)
         Inherits AutoInitHybridDictionary(Of TValue, IList(Of TKey))
         Implements IReverseLookupDictionary(Of TKey, TValue)

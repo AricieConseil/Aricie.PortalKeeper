@@ -10,7 +10,7 @@ Namespace Services.Filtering
         InputContainsKey
     End Enum
 
-    <Serializable()> _
+    
     Public Class CategorizationInfo
 
         Public Property DefaultToUnchanged As Boolean

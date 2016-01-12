@@ -3,7 +3,7 @@ Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Filtering
-    <Serializable()> _
+    
     Public Class FilterKeyInfo
 
         Private _key As String = String.Empty

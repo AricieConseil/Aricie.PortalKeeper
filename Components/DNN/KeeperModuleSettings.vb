@@ -5,7 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-    <Serializable()> _
+    
     Public Class KeeperModuleSettings
         Implements ISelector(Of UserBotSettings(Of ScheduleEvent))
 

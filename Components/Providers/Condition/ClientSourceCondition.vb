@@ -6,21 +6,19 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
-    <ActionButton(IconName.MapMarker, IconOptions.Normal)> _
- <Serializable()> _
- <DisplayName("Client Source Condition")> _
- <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")> _
+    <ActionButton(IconName.MapMarker, IconOptions.Normal)>
+    <DisplayName("Client Source Condition")>
+    <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")>
     Public Class ClientSourceCondition
         Inherits ClientSourceCondition(Of RequestEvent)
 
     End Class
 
-   
 
-    <ActionButton(IconName.MapMarker, IconOptions.Normal)> _
-   <Serializable()> _
-   <DisplayName("Client Source Condition")> _
-   <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")> _
+
+    <ActionButton(IconName.MapMarker, IconOptions.Normal)>
+    <DisplayName("Client Source Condition")>
+    <Description("Matches according to client identifying source parameters (Session, IP Address, country etc.)")>
     Public Class ClientSourceCondition(Of TEngineEvents As IConvertible)
         Inherits DosEnabledConditionProvider(Of TEngineEvents)
 
@@ -32,7 +30,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        <ExtendedCategory("Condition")> _
+        <ExtendedCategory("Condition")>
         Public Property RequestSource() As RequestSource
             Get
                 Return _RequestSource
@@ -43,9 +41,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
 
-        <ExtendedCategory("Condition")> _
-            <InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))> _
-            <CollectionEditor(False, False, True, True, 10)> _
+        <ExtendedCategory("Condition")>
+        <InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))>
+        <CollectionEditor(False, False, True, True, 10)>
         Public Property ValueList() As List(Of String)
             Get
                 Return _ValueList
@@ -55,10 +53,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <ExtendedCategory("Condition")> _
-        <Editor(GetType(ListEditControl), GetType(EditControl)), _
-            InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))> _
-            <CollectionEditor(False, False, True, True, 10)> _
+        <ExtendedCategory("Condition")>
+        <Editor(GetType(ListEditControl), GetType(EditControl)),
+            InnerEditor(GetType(CustomTextEditControl), GetType(ClientSourceAttributes))>
+        <CollectionEditor(False, False, True, True, 10)>
         Public Property RegexList() As List(Of String)
             Get
                 Return _RegexList
@@ -68,7 +66,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Private ReadOnly Property Regexes() As IEnumerable(Of Regex)
             Get
                 If _Regexes Is Nothing Then
