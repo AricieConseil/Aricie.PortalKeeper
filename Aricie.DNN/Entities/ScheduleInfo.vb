@@ -10,7 +10,6 @@ Imports System.Xml.Serialization
 Namespace Entities
     <DefaultProperty("FormattedValueShort")> _
     <ActionButton(IconName.Calendar, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class ScheduleInfo
 
         Public Property ScheduleType As ScheduleType

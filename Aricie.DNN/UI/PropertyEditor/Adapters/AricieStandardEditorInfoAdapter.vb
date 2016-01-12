@@ -100,30 +100,33 @@ Namespace UI.WebControls
         End Function
 
         Public Function UpdateValue(ByVal e As PropertyEditorEventArgs) As Boolean Implements IEditorInfoAdapter.UpdateValue
-            If e.Value IsNot Nothing Then
-                Dim eType As Type = e.Value.GetType
-                If e.Changed OrElse ReflectionHelper.AreEqual(e.Value, e.OldValue) Then
-                    'If (Not (e.Value Is e.OldValue)) OrElse e.Changed Then
-                    Try
+            If _CurrentProperty.CanWrite Then
+                If e.Value IsNot Nothing Then
+                    Dim eType As Type = e.Value.GetType
+                    If e.Changed OrElse ReflectionHelper.AreEqual(e.Value, e.OldValue) Then
+                        'If (Not (e.Value Is e.OldValue)) OrElse e.Changed Then
+                        Try
 
-                        Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType
-                        If Not (eType Is propType) Then
-                            Dim objConverter As TypeConverter = TypeDescriptor.GetConverter(propType)
-                            If objConverter.CanConvertFrom(eType) Then
-                                e.Value = objConverter.ConvertFrom(e.Value)
+                            Dim propType As Type = _CurrentProperty.PropertyType 'ReflectionHelper.GetPropertiesDictionary(Me.DataSource.GetType)(e.Name).PropertyType
+                            If Not (eType Is propType) Then
+                                Dim objConverter As TypeConverter = TypeDescriptor.GetConverter(propType)
+                                If objConverter.CanConvertFrom(eType) Then
+                                    e.Value = objConverter.ConvertFrom(e.Value)
+                                End If
                             End If
-                        End If
 
 
 
-                        _CurrentProperty.SetValue(DataSource, e.Value, Nothing)
-                        Return True
-                    Catch ex As Exception
-                        Throw New ApplicationException(String.Format("Could not assignate value {0} to property {1} in datasource {2}", e.Value.ToString(), _
-                                                                    _CurrentProperty.DeclaringType.Name & "."c & _CurrentProperty.Name, ReflectionHelper.GetFriendlyName(DataSource)), ex)
-                    End Try
+                            _CurrentProperty.SetValue(DataSource, e.Value, Nothing)
+                            Return True
+                        Catch ex As Exception
+                            Throw New ApplicationException(String.Format("Could not assignate value {0} to property {1} in datasource {2}", e.Value.ToString(), _
+                                                                        _CurrentProperty.DeclaringType.Name & "."c & _CurrentProperty.Name, ReflectionHelper.GetFriendlyName(DataSource)), ex)
+                        End Try
+                    End If
                 End If
             End If
+            
             Return False
         End Function
 

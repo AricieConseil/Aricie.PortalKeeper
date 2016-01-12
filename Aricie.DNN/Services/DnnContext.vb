@@ -211,13 +211,24 @@ Namespace Services
                 If _Culture Is Nothing Then
                     If Me._HttpContext IsNot Nothing Then
                         Dim strLocale As String = Me._HttpContext.Request.Item("language")
-                        If Not String.IsNullOrEmpty(strLocale) Then
-                            _Culture = New CultureInfo(strLocale)
-                        Else
+                        If String.IsNullOrEmpty(strLocale) Then
                             Dim cookie As HttpCookie = Me._HttpContext.Response.Cookies.Get("language")
                             If (cookie IsNot Nothing AndAlso Not String.IsNullOrEmpty(cookie.Value)) Then
-                                _Culture = New CultureInfo(cookie.Value)
+                                strLocale = cookie.Value
                             End If
+                        End If
+                        If Not String.IsNullOrEmpty(strLocale) Then
+                            Try
+                                _Culture = New CultureInfo(strLocale)
+                            Catch ex As Exception
+                                Dim message As String = String.Format("A corrupted lanaguage parameter was provided in query string or cookie value: {0} is not a valid culture code", strLocale)
+                                Dim newEx As New ApplicationException(message)
+                                Try
+                                    Throw newEx
+                                Catch wrappedEx As Exception
+                                    ExceptionHelper.LogException(wrappedEx)
+                                End Try
+                            End Try
                         End If
                     End If
                     If _Culture Is Nothing Then
@@ -465,6 +476,24 @@ Namespace Services
             End Set
         End Property
 
+
+        Private Shared _BaseIPAddress As IPAddress
+
+        Public Shared ReadOnly Property BaseIPAddress As IPAddress
+            Get
+                If _BaseIPAddress Is Nothing Then
+                    Dim netif As NetworkInterface = NetworkInterface.GetAllNetworkInterfaces().First()
+                    If netif IsNot Nothing Then
+                        Dim properties As IPInterfaceProperties = netif.GetIPProperties()
+                        Dim dns As IPAddress = properties.DnsAddresses.First()
+                        _BaseIPAddress = dns
+                    End If
+                End If
+                Return _BaseIPAddress
+            End Get
+        End Property
+
+
         ''' <summary>
         ''' Returns the requesting IPAdress
         ''' </summary>
@@ -477,21 +506,24 @@ Namespace Services
                     Try
                         'todo: beware of the racing condition here (the request could be disposed during the parsing)
                         If Me.HttpContext IsNot Nothing _
-                                AndAlso Me.Request IsNot Nothing _
-                                AndAlso Not (Me.HttpContext.CurrentNotification >= RequestNotification.EndRequest _
-                                AndAlso Me.HttpContext.IsPostNotification) Then
-                            IPAddress.TryParse(Common.GetExternalIPAddress(Me.Request), _IPAddress)
+                                AndAlso Me.HttpContext.ApplicationInstance IsNot Nothing _
+                                AndAlso Me.HttpContext.Request IsNot Nothing Then
+
+
+                            'AndAlso Not (Me.HttpContext.CurrentNotification >= RequestNotification.EndRequest _
+                            'AndAlso Me.HttpContext.IsPostNotification) Then
+                            IPAddress.TryParse(Me.HttpContext.Request.GetExternalIPAddress(), _IPAddress)
                         End If
+
+#If DEBUG Then
                     Catch ex As Exception
                         ExceptionHelper.LogException(ex)
+#Else
+                    Catch
+#End If
                     Finally
                         If _IPAddress Is Nothing Then
-                            Dim netif As NetworkInterface = NetworkInterface.GetAllNetworkInterfaces().First()
-                            If netif IsNot Nothing Then
-                                Dim properties As IPInterfaceProperties = netif.GetIPProperties()
-                                Dim dns As IPAddress = properties.DnsAddresses.First()
-                                _IPAddress = dns
-                            End If
+                            _IPAddress = BaseIPAddress
                         End If
                     End Try
                 End If

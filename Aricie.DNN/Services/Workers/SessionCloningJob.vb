@@ -16,7 +16,12 @@ Namespace Services.Workers
         Private CloneObject As T
 
         Public Sub CloneInSession()
-            Session(Key) = ReflectionHelper.CloneObject(Of T)(CloneObject)
+            Dim clone As Object = ReflectionHelper.CloneObject(Of T)(CloneObject)
+            SyncLock Session
+                Session.Remove(Key)
+                Session.Item(Key) = clone
+            End SyncLock
+
             If Not _SerializationWarmedUp Then
                 _SerializationWarmedUp = True
                 Dim dumbXml As XmlDocument = ReflectionHelper.Serialize(CloneObject)

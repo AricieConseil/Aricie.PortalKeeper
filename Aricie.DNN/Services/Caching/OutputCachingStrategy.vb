@@ -11,7 +11,7 @@ Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Caching
-    <Serializable()> _
+    
     Public Class OutputCachingStrategy
         Implements IEnabled
 

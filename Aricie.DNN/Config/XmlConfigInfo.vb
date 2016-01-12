@@ -9,7 +9,6 @@ Namespace Configuration
     ' <XmlInclude(GetType(CustomErrorAddInfo))> _
     '<XmlInclude(GetType(CustomErrorsAddInfo))> _
     <XmlRoot("configuration")> _
-    <Serializable()> _
     Public Class XmlConfigInfo
         'Inherits List(Of NodesInfo)
 

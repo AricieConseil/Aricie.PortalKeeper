@@ -15,7 +15,6 @@ Namespace Services.Flee
     ''' <remarks></remarks>
     <DisplayName("Call Method")> _
      <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
     Public Class CallObjectMethod(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)
         Implements ISelector(Of MethodInfo)

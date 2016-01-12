@@ -5,7 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public MustInherit Class ProviderHost(Of TConfig As IProviderConfig(Of TProvider), TSettings, TProvider As IProvider)
         Implements IProviderContainer
         Implements ISelector(Of TConfig)

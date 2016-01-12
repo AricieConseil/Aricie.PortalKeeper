@@ -3,6 +3,8 @@ Namespace Services.Flee
         Instance
         Constructor
         Expression
+        StaticMember
+        SmartFile
         [Delegate]
     End Enum
 End NameSpace

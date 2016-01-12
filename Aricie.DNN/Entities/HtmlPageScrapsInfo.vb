@@ -4,7 +4,6 @@ Imports Aricie.DNN.UI.WebControls
 
 Namespace Entities
     <ActionButton(IconName.Search, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class HtmlPageScrapsInfo(Of TScrap As HtmlPageScrapInfo)
 
         <ExtendedCategory("PageScraps")> _

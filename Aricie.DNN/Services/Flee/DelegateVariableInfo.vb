@@ -8,7 +8,6 @@ Imports Aricie.Services
 
 Namespace Services.Flee
     <DisplayName("Delegate")> _
-    <Serializable()> _
     Public Class DelegateVariableInfo(Of TParentType)
         Inherits VariableInfo(Of [Delegate])
         Implements ISelector(Of MethodInfo)

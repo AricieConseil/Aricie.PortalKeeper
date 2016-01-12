@@ -5,7 +5,7 @@ Namespace Entities
     ''' <summary>
     ''' Simple entity class for a secure Rest service
     ''' </summary>
-    <Serializable()> _
+    
     Public Class FileUploadInfo
 
         Public Sub New()

@@ -5,7 +5,7 @@ Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     <DefaultProperty("FriendlyName")> _
     Public Class NamedEntity
 

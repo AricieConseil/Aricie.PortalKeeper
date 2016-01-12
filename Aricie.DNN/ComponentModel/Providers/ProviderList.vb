@@ -2,7 +2,7 @@
 Imports System.ComponentModel
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public Class ProviderList(Of T As {NamedConfig})
         Inherits SerializableList(Of T)
 

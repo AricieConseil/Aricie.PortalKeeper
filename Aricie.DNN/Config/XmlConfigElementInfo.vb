@@ -12,7 +12,7 @@ Namespace Configuration
     ''' This is the base element for an Xml based installable component
     ''' </summary>
     ''' <remarks>Uses xml merge files</remarks>
-    <Serializable()> _
+    
     Public MustInherit Class XmlConfigElementInfo
         Implements IConfigElementInfo
 

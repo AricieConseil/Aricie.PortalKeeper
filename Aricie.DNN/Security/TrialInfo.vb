@@ -7,7 +7,7 @@ Namespace Security.Trial
     ''' Class giving information about the trial status
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class TrialInfo
         Private Shared _Separator As Char = "$"c
         Private _ExpirationDate As Date = Date.MinValue

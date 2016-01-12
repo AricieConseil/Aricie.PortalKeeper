@@ -2,7 +2,7 @@ Imports System.Collections.Specialized
 Imports Aricie.Collections
 
 Namespace Services.Flee
-    <Serializable()> _
+    
     Public Class StringVariables
         Inherits Variables(Of String)
 

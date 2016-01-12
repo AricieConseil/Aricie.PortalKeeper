@@ -7,7 +7,7 @@ Namespace Collections
     ''' <summary>
     ''' Generic Serializable Dictionary with a self contained sub types generic serialization mechanism
     ''' </summary>
-    <Serializable()> _
+    
         <XmlRoot("dictionary")> _
     Public Class SerializableDictionary(Of TKey, TValue)
         Inherits Dictionary(Of TKey, TValue)
@@ -97,7 +97,7 @@ Namespace Collections
     ''' <summary>
     ''' Generic Sorted Dictionary with a self contained sub types generic serialization mechanism
     ''' </summary>
-    <Serializable()> _
+    
       <XmlRoot("sortedDictionary")> _
     Public Class SerializableSortedDictionary(Of TKey, TValue)
         Inherits SortedDictionary(Of TKey, TValue)

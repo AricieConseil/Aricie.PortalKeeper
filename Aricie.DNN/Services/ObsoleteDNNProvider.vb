@@ -4,6 +4,7 @@ Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Common.Utilities
 Imports System.IO
 Imports DotNetNuke.Entities.Portals
+Imports DotNetNuke.Services.Log.EventLog
 Imports DotNetNuke.UI.WebControls
 
 Namespace Services
@@ -228,6 +229,26 @@ Namespace Services
             DataCache.ClearHostCache(True)
             DataCache.ClearPortalCache(NukeHelper.PortalId, True)
         End Sub
+
+        Public Overridable Function GetLogs(portalID As Integer, logType As String, pageSize As Integer, pageIndex As Integer) As List(Of LogInfo)
+            Dim totalRecords As Integer
+            If NukeHelper.DnnVersion.Major > 6 Then
+                'todo figure out why the dnn7 override isn't called
+                Return DirectCast(NukeHelper.LogController.GetType().GetMethod("GetLogs").Invoke(NukeHelper.LogController, New Object() {portalID, logType, pageSize, pageIndex, totalRecords}), List(Of LogInfo))
+            Else
+                Dim objEventLogs As LogInfoArray = Nothing
+
+                If portalID <> -1 Then
+                    objEventLogs = NukeHelper.LogController.GetLog(portalID, logType, pageSize, pageIndex, totalRecords)
+                Else
+                    objEventLogs = NukeHelper.LogController.GetLog(logType, pageSize, pageIndex, totalRecords)
+                End If
+                Return objEventLogs.Cast(Of LogInfo)().ToList()
+            End If
+
+        End Function
+
+
 
 
 #Region "Private members"

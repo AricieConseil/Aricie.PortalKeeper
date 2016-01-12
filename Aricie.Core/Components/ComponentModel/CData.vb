@@ -17,7 +17,7 @@ Namespace ComponentModel
     ''' A class to represent a bloc of CData while being serialize.
     ''' </summary>
     ''' <remarks>Implements IConvertible for safe conversion to value types</remarks>
-    <Serializable()> _
+    
     <DefaultMember("Value")> _
     <TypeConverter(GetType(CData.CDataConverter))> _
     Public Class CData
@@ -174,7 +174,7 @@ Namespace ComponentModel
 
             Public Overrides Function ConvertFrom(ByVal context As ITypeDescriptorContext, ByVal culture As CultureInfo, ByVal value As Object) As Object
                 If TypeOf value Is String Then
-                    Return New CData(CStr(value).Trim)
+                    Return New CData(CStr(value))
                 End If
                 Return MyBase.ConvertFrom(context, culture, value)
             End Function

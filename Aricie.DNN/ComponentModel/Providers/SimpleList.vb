@@ -6,7 +6,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 
 Namespace ComponentModel
-    <Serializable()> _
+    
     Public Class SimpleList(Of TItem)
 
 

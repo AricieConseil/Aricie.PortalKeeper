@@ -9,7 +9,7 @@ Namespace Services.Filtering
     ''' Conditional token holder class
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ConditionalTokenInfo
         Public Property Key() As String = String.Empty
 

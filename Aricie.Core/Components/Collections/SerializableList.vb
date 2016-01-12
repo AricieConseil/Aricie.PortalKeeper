@@ -7,7 +7,7 @@ Namespace Collections
     ''' <summary>
     ''' Generic List with a self contained sub types generic serialization mechanism
     ''' </summary>
-    <Serializable()> _
+    
     Public Class SerializableList(Of T)
         Inherits List(Of T)
         Implements IXmlSerializable

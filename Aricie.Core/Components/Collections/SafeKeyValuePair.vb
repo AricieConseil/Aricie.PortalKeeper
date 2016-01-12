@@ -19,7 +19,7 @@ Namespace Collections
     ''' <summary>
     ''' Fixed KeyValuePair Structure with consistent operator overloads
     ''' </summary>
-    <Serializable()> _
+    
     Public Structure SafeKeyValuePair(Of TKey, TValue)
         Implements IKeyedItem(Of TKey)
 

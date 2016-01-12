@@ -1,7 +1,7 @@
 ﻿Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Data
-    <Serializable()> _
+    
     Public Class CallStoredProcedureInfo
 
         Public Property StoredProcedureType As StoredProcedureType = StoredProcedureType.NonQuery

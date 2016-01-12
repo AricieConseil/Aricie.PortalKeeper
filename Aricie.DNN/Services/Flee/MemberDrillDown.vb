@@ -8,7 +8,7 @@ Imports System.Web.UI.WebControls
 Imports Aricie.Services
 
 Namespace Services.Flee
-    <Serializable()> _
+    
     Public Class MemberDrillDown
         Inherits FleeExpressionBuilderBase
         Implements ISelector

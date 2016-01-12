@@ -7,7 +7,7 @@ Namespace Collections
     ''' Generic Dictionary with a dual list/hash table implementation
     ''' </summary>
     ''' <remarks>A configured thresold determines when to switch implementations</remarks>
-    <Serializable()> _
+    
     Public Class HybridDictionary(Of TKey, TValue)
         Implements System.Collections.Generic.IDictionary(Of TKey, TValue)
 

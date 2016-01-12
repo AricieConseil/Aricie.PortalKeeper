@@ -19,7 +19,6 @@ Namespace Services.Flee
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
     <ActionButton(IconName.Code, IconOptions.Normal)> _
-    <Serializable()> _
     Public Class FleeExpressionInfo(Of TResult)
         Inherits SimpleExpression(Of TResult)
         Implements IExpressionVarsProvider

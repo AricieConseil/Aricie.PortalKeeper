@@ -12,7 +12,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ObjectActions(Of TObjectType)
         Inherits ObjectActionsBase
 
@@ -34,7 +34,7 @@ Namespace Services.Flee
     ''' List of flee actions holder class
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class ObjectActions
         Inherits ObjectActionsBase
 

@@ -18,7 +18,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TResult"></typeparam>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class Variables(Of TResult)
         Inherits VariablesBase
 
@@ -70,7 +70,7 @@ Namespace Services.Flee
     ''' Variables in flee
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class Variables
         Inherits VariablesBase
 

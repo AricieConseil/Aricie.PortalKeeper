@@ -25,7 +25,7 @@ Namespace Services.Errors
     ''' Virtual custom error configuration
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class VirtualCustomErrorsInfo
         Inherits CustomErrorsInfo
 

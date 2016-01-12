@@ -297,7 +297,8 @@ Public Class AricieFieldEditorControl
                 Case Else
 
                     If objType.IsEnum Then
-                        If ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttr) TypeOf objAttr Is FlagsAttribute).Any() Then
+                        If ReflectionHelper.GetCustomAttributes(objType).Where(Function(objAttr) TypeOf objAttr Is FlagsAttribute).Any() _
+                            AndAlso Not editorInfo.Attributes.Any(Function(objAttr) TypeOf objAttr Is NoFlagAttribute) Then
                             objEditControl = New AricieCheckBoxListEditControl()
                         Else
                             'objEditControl = New EnumEditControl(objType.AssemblyQualifiedName)

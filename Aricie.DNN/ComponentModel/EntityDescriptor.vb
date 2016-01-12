@@ -2,7 +2,6 @@
 Imports Aricie.Services
 
 Namespace ComponentModel
-    <Serializable()> _
     Public Class EntityDescriptor
 
         Private _EntityTypeName As String = ""
@@ -126,7 +125,6 @@ Namespace ComponentModel
 
     End Class
 
-    <Serializable()> _
     Public Class EntityDescriptor(Of T)
         Inherits EntityDescriptor
 

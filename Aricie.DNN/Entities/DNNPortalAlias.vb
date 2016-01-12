@@ -6,7 +6,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.Services
 
 Namespace Entities
-    <Serializable()> _
+    
     Public Class DnnPortalAlias
 
         <AutoPostBack()> _

@@ -5,7 +5,7 @@ Namespace Configuration
     ''' <summary>
     ''' Component to switch application trust level
     ''' </summary>
-    <Serializable()> _
+    
     Public Class TrustInfo
         Inherits XmlConfigElementInfo
 

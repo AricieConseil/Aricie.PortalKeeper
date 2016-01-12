@@ -6,7 +6,7 @@ Namespace Configuration
     ''' <summary>
     ''' HttpModule Add merge node
     ''' </summary>
-    <Serializable()> _
+    
     Public Class HttpModuleAddInfo
         Inherits WebServerAddInfo
 

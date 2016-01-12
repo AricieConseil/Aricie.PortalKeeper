@@ -13,7 +13,6 @@ Namespace Services.Flee
     ''' <remarks></remarks>
     <ActionButton(IconName.Wrench, IconOptions.Normal)> _
    <DefaultProperty("FriendlyName")> _
-   <Serializable()> _
     Public Class FleeImportInfo
 
         Public Sub New()

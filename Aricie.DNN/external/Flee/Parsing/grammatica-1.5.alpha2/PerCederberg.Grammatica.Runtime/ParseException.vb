@@ -33,7 +33,7 @@ Namespace PerCederberg.Grammatica.Runtime
 ' * @author Per Cederberg, <per at percederberg dot net> 
 ' * @version 1.5 
 ' 
-	<Serializable()> _
+	
 	Friend Class ParseException
 		Inherits Exception
 

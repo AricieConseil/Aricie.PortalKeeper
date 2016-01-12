@@ -1,4 +1,5 @@
 
+Imports System.Xml.Serialization
 Imports Aricie.DNN.ComponentModel
 
 Namespace UI.Attributes
@@ -7,6 +8,7 @@ Namespace UI.Attributes
     <AttributeUsage(AttributeTargets.Property Or AttributeTargets.Method, AllowMultiple:=True)> _
     Public Class ConditionalVisibleAttribute
         Inherits Attribute
+
 
         Public Property Value As ConditionalVisibleInfo
 

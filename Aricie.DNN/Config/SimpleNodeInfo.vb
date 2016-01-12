@@ -3,7 +3,7 @@ Imports System.Xml.Serialization
 Namespace Configuration
     '<XmlRoot("node", Namespace:="SimpleNodeInfo")> _
     '<XmlRoot("node")> _
-    <Serializable()> _
+    
     Public Class SimpleNodeInfo
         Inherits NodeInfo
 

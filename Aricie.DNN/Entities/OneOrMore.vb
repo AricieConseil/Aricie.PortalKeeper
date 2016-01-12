@@ -2,7 +2,7 @@ Imports System.ComponentModel
 Imports Aricie.Services
 
 Namespace Entities
-    <Serializable()> _
+    
     Public Class OneOrMore(Of T)
 
         Public Sub New()

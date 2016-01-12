@@ -4,7 +4,7 @@ Namespace Collections
     ''' Collection class for a Radix tree
     ''' </summary>
     ''' <remarks>It is inherited from a Trie and handles branch condensation automatically.</remarks>
-    <Serializable()> _
+    
     Public Class RadixTree(Of TKey, TList As IEnumerable(Of TKey), TValue)
         Inherits Trie(Of TKey, TList, TValue)
 

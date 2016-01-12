@@ -19,7 +19,6 @@ Namespace Services.Flee
     ''' </summary>
     ''' <remarks></remarks>
     <DefaultProperty("FriendlyName")> _
-    <Serializable()> _
     Public Class GeneralObjectAction
         Inherits ObjectAction
         Implements ISelector(Of EventInfo)

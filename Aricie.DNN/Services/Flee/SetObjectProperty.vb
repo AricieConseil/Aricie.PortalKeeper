@@ -13,7 +13,7 @@ Namespace Services.Flee
     ''' </summary>
     ''' <typeparam name="TObjectType"></typeparam>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     <DefaultProperty("FriendlyName")> _
     Public Class SetObjectProperty(Of TObjectType)
         Inherits ObjectAction(Of TObjectType)

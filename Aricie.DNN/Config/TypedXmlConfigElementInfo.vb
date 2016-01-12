@@ -8,7 +8,7 @@ Namespace Configuration
     ''' <summary>
     ''' Base class for configuration elements with a type attribute
     ''' </summary>
-    <Serializable()> _
+    
     Public MustInherit Class TypedXmlConfigElementInfo
         Inherits XmlNamedConfigElementInfo
 

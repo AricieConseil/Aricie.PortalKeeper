@@ -17,7 +17,6 @@ Namespace Services.Flee
     ''' <remarks></remarks>
     <ActionButton(IconName.Code, IconOptions.Normal)> _
     <DefaultProperty("Expression")> _
-    <Serializable()> _
     Public Class SimpleExpression(Of TResult)
 
 
@@ -297,20 +296,12 @@ Namespace Services.Flee
                 End If
                 If (Not InternalNoCloning) AndAlso owner IsNot Nothing AndAlso toReturn.Owner IsNot owner Then
                     toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
-                    If Not _OwnerProviderSuplied Then
-                        If Not InternalOverrideOwner Then
-                            toReturn.Owner = owner
-                        Else
-                            Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
-                            toReturn.Owner = newOwner
-                        End If
-                    Else
-                        toReturn.Owner = DirectCast(owner, IContextOwnerProvider).ContextOwner
-                    End If
-                    If InternalKeepCloneExpression Then
+                    Dim newOwner As Object = GetExpressionContextOwner(owner, globalVars)
+                    toReturn.Owner = newOwner
+                End If
+                 If InternalKeepCloneExpression Then
                         globalVars.Items("CloneExpression:" & Expression) = toReturn
                     End If
-                End If
                 If Me.InternalVariables.Instances.Count > 0 Then
                     Dim vars As Dictionary(Of String, Object) = Nothing
                     For Each objVar As VariableInfo In Me.InternalVariables.Instances
@@ -327,7 +318,20 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
-        Private _OwnerProviderSuplied As Boolean
+        Private Function GetExpressionContextOwner(ByVal owner As Object, ByVal globalVars As IContextLookup) As Object
+            If owner IsNot Nothing Then
+                If InternalOverrideOwner Then
+                    Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
+                    return newOwner
+                ElseIf TypeOf owner Is IContextOwnerProvider Then
+                    Dim ownerProvider As IContextOwnerProvider = DirectCast(owner, IContextOwnerProvider)
+                    return ownerProvider.ContextOwner
+                Else
+                    Return owner
+                End If
+            End If
+            Return Nothing
+        End Function
 
         ''' <summary>
         ''' Returns the expression context
@@ -340,30 +344,12 @@ Namespace Services.Flee
         Private Function GetExpressionContext(ByVal owner As Object, ByVal globalVars As IContextLookup) As ExpressionContext
 
             Dim toReturn As ExpressionContext
-            If owner IsNot Nothing Then
-                If TypeOf owner Is IContextOwnerProvider Then
-                    Dim ownerProvider As IContextOwnerProvider = DirectCast(owner, IContextOwnerProvider)
-                    If ownerProvider.ContextOwner IsNot Nothing Then
-                        toReturn = New ExpressionContext(ownerProvider.ContextOwner)
-                        _OwnerProviderSuplied = True
-                    Else
-                        If InternalOverrideOwner Then
-                            Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
-                            toReturn = New ExpressionContext(newOwner)
-                        Else
-                            toReturn = New ExpressionContext(owner)
-                        End If
-
-                    End If
-                Else
-                    If InternalOverrideOwner Then
-                        Dim newOwner As Object = Me.InternalNewOwner.Evaluate(owner, globalVars)
-                        toReturn = New ExpressionContext(newOwner)
-                    End If
-                    toReturn = New ExpressionContext(owner)
-                End If
-            Else
+           
+            Dim newOwner As Object = GetExpressionContextOwner(owner, globalVars)
+            If newOwner Is Nothing
                 toReturn = New ExpressionContext()
+            Else
+                toReturn = New ExpressionContext(newOwner)
             End If
 
 
@@ -427,7 +413,6 @@ Namespace Services.Flee
             Public Sub New(ByVal context As IContextLookup)
                 Me._Context = context
             End Sub
-
 
             Private _Context As IContextLookup
 

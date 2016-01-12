@@ -8,7 +8,6 @@ Namespace Configuration
     <XmlInclude(GetType(SimpleNodeInfo))> _
     <XmlInclude(GetType(ComplexNodeInfo))> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
-    <Serializable()> _
     Public Class NodeInfo
 
         '<node path="/configuration/system.web/httpModules" action="update" key="name" collision="overwrite">

@@ -5,7 +5,6 @@ Namespace Configuration
     '<XmlRoot("node", Namespace:="ComplexNodeInfo")> _
     '<XmlRoot("node")> _
     <XmlInclude(GetType(StandardComplexNodeInfo))> _
-    <Serializable()> _
     Public Class ComplexNodeInfo
         Inherits NodeInfo
 

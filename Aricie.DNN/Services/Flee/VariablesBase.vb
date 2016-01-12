@@ -9,7 +9,7 @@ Namespace Services.Flee
     ''' Base class for variables 
     ''' </summary>
     ''' <remarks></remarks>
-    <Serializable()> _
+    
     Public Class VariablesBase
         Inherits ProviderHost(Of DotNetType(Of VariableInfo), VariableInfo, IGenericizer(Of VariableInfo))
         Implements IExpressionVarsProvider

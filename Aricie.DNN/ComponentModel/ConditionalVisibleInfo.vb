@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services
 
@@ -8,6 +9,7 @@ Namespace ComponentModel
         ' Fields
         Private _MasterPropertyName As String
         Private _MatchingValues() As Object
+        <XmlIgnore()> _
         Private _MatchValue As Predicate(Of Object)
         Private _EnforceAutoPostBack As Boolean
         Private _MasterNegate As Boolean
@@ -18,7 +20,9 @@ Namespace ComponentModel
         Private _SecondaryNegate As Boolean
 
 
+        Public Sub New()
 
+        End Sub
 
 
         Public Sub New(ByVal masterPropertyName As String, ByVal negate As Boolean, ByVal enforcePostBack As Boolean)
@@ -60,6 +64,7 @@ Namespace ComponentModel
             End Get
         End Property
 
+        <XmlIgnore()> _
         Public ReadOnly Property MatchValue() As Predicate(Of Object)
             Get
                 Return _MatchValue

@@ -6,7 +6,7 @@ Imports Aricie.ComponentModel
 ''' <summary>
 ''' Serializable and Display friendly class for a Timespan value
 ''' </summary>
-<Serializable()> _
+
 <XmlRoot("t")> _
 Public Class STimeSpan
     Implements ICloneable

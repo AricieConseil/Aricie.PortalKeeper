@@ -1,7 +1,7 @@
 ﻿Imports DotNetNuke.UI.WebControls
 
 Namespace Services.Filtering
-    <Serializable()> _
+    
     Public Class FilterControlInfo
 
         Private _controlId As String = String.Empty
