@@ -162,6 +162,7 @@
     <Compile Include="Components\ComponentModel\SkipModelValidationAttribute.vb" />
     <Compile Include="Components\ComponentModel\UIConstants.vb" />
     <Compile Include="Components\ComponentModel\VariableStrategy.vb" />
+    <Compile Include="Components\ComponentModel\XmlAwareContractResolver.vb" />
     <Compile Include="Components\CompressionMethod.vb" />
     <Compile Include="Components\Constants.vb" />
     <Compile Include="Components\ComponentModel\GenericEventArgs.vb" />

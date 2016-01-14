@@ -18,8 +18,9 @@ Namespace Collections
     ''' Generic List with a self contained sub types generic serialization mechanism
     ''' </summary>
 
+    
+    '<JsonConverter(GetType(SerializableListJsonSerializer))> _
     <SkipModelValidation()> _
-    <JsonConverter(GetType(SerializableListJsonSerializer))> _
     Public Class SerializableList(Of T)
         Inherits List(Of T)
         Implements IXmlSerializable
@@ -152,9 +153,10 @@ Namespace Collections
             Dim objList As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
 
             Dim settings As New JsonSerializerSettings() With { .TypeNameHandling = TypeNameHandling.All }
+            settings.SetDefaultSettings()
             
-            Dim strJson As String = JsonConvert.SerializeObject(value, settings)
-            'writer.WriteRaw(strJson)
+            Dim strJson As String = JsonConvert.SerializeObject(objList, settings)
+            writer.WriteRaw(strJson)
 
         End Sub
 

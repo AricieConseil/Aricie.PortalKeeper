@@ -9,7 +9,6 @@ Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Namespace ComponentModel
-
     Public Class SerializableJsonSerializer
         Inherits JsonConverter
         Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
