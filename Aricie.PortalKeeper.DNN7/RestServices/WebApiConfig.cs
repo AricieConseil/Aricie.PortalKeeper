@@ -38,13 +38,16 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                 var originalActionSelector = config.Services.GetActionSelector();
                 config.Services.Replace(typeof(IHttpActionSelector), new DynamicActionSelector(config, originalActionSelector));
                 var originalModelValidator = config.Services.GetBodyModelValidator();
-                config.Services.Replace(typeof(System.Web.Http.Validation.IBodyModelValidator), new BodyModelValidator(originalModelValidator)); //Clear(typeof(IBodyModelValidator));
+
+                config.Services.Replace(typeof(IBodyModelValidator), new BodyModelValidator(originalModelValidator)); //Clear(typeof(IBodyModelValidator));
                 
                 config.Formatters.Add(new BrowserJsonFormatter());
-                config.Formatters.JsonFormatter.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
-                config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
-                config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new XmlAwareContractResolver(config.Formatters.JsonFormatter);
-               
+                //config.Formatters.JsonFormatter.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+                //config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                //config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new XmlAwareContractResolver(config.Formatters.JsonFormatter);
+                config.Formatters.JsonFormatter.SerializerSettings.SetDefaultSettings();
+
+
                 foreach (RestService objService in PortalKeeperConfig.Instance.RestServices.RestServices)
                 {
                     if (objService.Enabled)
@@ -139,7 +142,15 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
 
         public BodyModelValidator (IBodyModelValidator originalValidator)
         {
-            _defaultValidator = originalValidator;
+            if ( originalValidator != null)
+            {
+                _defaultValidator = originalValidator;
+            }
+            else
+            {
+                _defaultValidator = new DefaultBodyModelValidator();
+            }
+            
         }
 
         public bool Validate(object model, Type type, System.Web.Http.Metadata.ModelMetadataProvider metadataProvider, System.Web.Http.Controllers.HttpActionContext actionContext, string keyPrefix)
