@@ -65,7 +65,7 @@ Namespace Services.Flee
 
         'todo: move to individual compiled expressions when needed (possible ambiguity now)
         Private Shared ReadOnly _CompiledExpressions As New Dictionary(Of String, IGenericExpression(Of TResult))
-        'Private ReadOnly _CompiledExpressions As IGenericExpression(Of TResult)
+        'Private  _CompiledExpression As IGenericExpression(Of TResult)
 
         Public Sub New()
         End Sub
@@ -200,8 +200,8 @@ Namespace Services.Flee
 
                 Dim clone As IGenericExpression(Of TResult) = Me.GetCompiledExpression(owner, globalVars, objType)
                 If clone IsNot Nothing Then
-                    Using onDemand As New OnDemandVariableLookup(globalVars)
-                        AddHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
+                    Using onDemand As New OnDemandVariableLookup(globalVars, Me._Expression)
+                        'AddHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
                         AddHandler clone.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
                         Try
                             If Me.InternalBreakAtEvaluateTime Then
@@ -213,18 +213,26 @@ Namespace Services.Flee
                                 Common.CallDebuggerBreak()
                             End If
 
+                            
                             Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to run with the inner exception", Me.Expression), ex)
-
+                            dim exToThrow as Exception = objFLeeException
                             If Me.InternalLogEvaluateExceptions Then
-                                ExceptionHelper.LogException(objFLeeException)
+                                Try
+                                    throw exToThrow
+                                Catch outerEx As Exception
+                                    ExceptionHelper.LogException(outerEx)
+                                    exToThrow = outerEx
+                                End Try
+
                             End If
                             If Me.InternalThrowEvaluateExceptions Then
-                                Throw objFLeeException
+                                Throw exToThrow
                             End If
 
                         Finally
-                            RemoveHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
+                            'RemoveHandler clone.Context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
                             RemoveHandler clone.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                            onDemand.Dispose()
                         End Try
                     End Using
                 End If
@@ -248,21 +256,28 @@ Namespace Services.Flee
                 objType = GetType(TResult)
             End If
             Dim key As String = Me._Expression & objType.AssemblyQualifiedName
+            'Dim onDemand As New OnDemandVariableLookup(globalVars, _Expression)
+            dim firstPass As Boolean
             If Not _CompiledExpressions.TryGetValue(key, toReturn) Then
+                'If _CompiledExpression Is Nothing Then
+                firstPass = True
                 SyncLock Me
                     'SyncLock expWriterLock
-                    If Not _CompiledExpressions.TryGetValue(key, toReturn) Then
-
+                    'If _CompiledExpression Is Nothing Then
+                     If Not _CompiledExpressions.TryGetValue(key, toReturn) Then
                         If Me.InternalBreakAtCompileTime Then
                             Common.CallDebuggerBreak()
                         End If
 
                         Dim context As ExpressionContext = Me.GetExpressionContext(owner, globalVars)
-                        Dim onDemand As New OnDemandVariableLookup(globalVars)
+                        Dim onDemand As New OnDemandVariableLookup(globalVars, _Expression)
                         AddHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
-                        AddHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                        'AddHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
                         Try
                             toReturn = context.CompileGeneric(Of TResult)(Me._Expression)
+                            'SyncLock Me
+                            '    _CompiledExpression = toReturn
+                            'End SyncLock
                             SyncLock _CompiledExpressions
                                 _CompiledExpressions(key) = toReturn
                             End SyncLock
@@ -280,28 +295,35 @@ Namespace Services.Flee
                             toReturn = Nothing
                         Finally
                             RemoveHandler context.Variables.ResolveVariableType, AddressOf onDemand.ResolveVariableType
-                            RemoveHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                            onDemand.Dispose()
+                            'RemoveHandler context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
                         End Try
                     End If
                     'End SyncLock
                 End SyncLock
             End If
             If toReturn IsNot Nothing Then
-                If InternalKeepCloneExpression Then
-                    Dim cloneExp As Object = Nothing
-                    globalVars.Items.TryGetValue("CloneExpression:" & Expression, cloneExp)
-                    If cloneExp IsNot Nothing Then
-                        toReturn = DirectCast(cloneExp, IGenericExpression(Of TResult))
-                    End If
-                End If
+
                 If (Not InternalNoCloning) AndAlso owner IsNot Nothing AndAlso toReturn.Owner IsNot owner Then
-                    toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
-                    Dim newOwner As Object = GetExpressionContextOwner(owner, globalVars)
-                    toReturn.Owner = newOwner
-                End If
-                 If InternalKeepCloneExpression Then
+                    Dim cloneExp As Object = Nothing
+                    If InternalKeepCloneExpression AndAlso globalVars.Items.TryGetValue("CloneExpression:" & Expression, cloneExp) Then
+                        toReturn = DirectCast(cloneExp, IGenericExpression(Of TResult))
+                    Else
+                        toReturn = DirectCast(toReturn.Clone, IGenericExpression(Of TResult))
+                        Dim newOwner As Object = GetExpressionContextOwner(owner, globalVars)
+                        toReturn.Owner = newOwner
+                        'AddHandler toReturn.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                    End If
+                    If InternalKeepCloneExpression Then
                         globalVars.Items("CloneExpression:" & Expression) = toReturn
                     End If
+                Else
+                    'If firstPass Then
+                    '     AddHandler toReturn.Context.Variables.ResolveVariableValue, AddressOf onDemand.ResolveVariableValue
+                    'End If
+                End If
+
+                'todo: watch out that if internal variables exist for the original compiled expression and none replaces here, the previous defs are available
                 If Me.InternalVariables.Instances.Count > 0 Then
                     Dim vars As Dictionary(Of String, Object) = Nothing
                     For Each objVar As VariableInfo In Me.InternalVariables.Instances
@@ -409,8 +431,10 @@ Namespace Services.Flee
         Public Class OnDemandVariableLookup
             Implements IDisposable
 
+            Private _Expression As String
 
-            Public Sub New(ByVal context As IContextLookup)
+            Public Sub New(ByVal context As IContextLookup, strExpression As String)
+                me._Expression = strExpression
                 Me._Context = context
             End Sub
 

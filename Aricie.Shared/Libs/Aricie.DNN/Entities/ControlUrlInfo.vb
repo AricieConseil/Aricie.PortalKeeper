@@ -71,7 +71,7 @@ Namespace Entities
         <Browsable(False)> _
         Public Overridable Property FilterMode As UrlControlMode = UrlControlMode.Normal
 
-
+        <DefaultValue("")> _
         <Editor(GetType(AricieUrlEditControl), GetType(EditControl))> _
         Public Overridable Property Url() As String
             Get
@@ -85,6 +85,7 @@ Namespace Entities
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <Browsable(False)> _
         Public ReadOnly Property ShowTrack As Boolean
             Get
@@ -94,7 +95,7 @@ Namespace Entities
 
 
 
-
+        <DefaultValue(False)> _
         <ConditionalVisible("ShowTrack", False, True)> _
         Public Overridable Property Track() As Boolean
             Get
@@ -108,9 +109,11 @@ Namespace Entities
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("UrlType", False, True, TabType.Tab)> _
         Public Property DefinePortalAlias As Boolean
 
+        <DefaultValue("")> _
         <AutoPostBack()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)> _
@@ -128,6 +131,7 @@ Namespace Entities
             End Set
         End Property
 
+        <DefaultValue("")> _
         <IsReadOnly(True)> _
         Public Overridable ReadOnly Property UrlPath() As String
             Get
@@ -145,6 +149,7 @@ Namespace Entities
             'End Set
         End Property
 
+        <DefaultValue(DirectCast(Nothing, FileInfo))> _
         <Browsable(False)> _
         Public ReadOnly Property FileInfo As DotNetNuke.Services.FileSystem.FileInfo
             Get
@@ -157,7 +162,7 @@ Namespace Entities
         End Property
 
 
-
+        <DefaultValue(CustomErrorsRedirectMode.ResponseRedirect)> _
         Public Overridable Property RedirectMode() As CustomErrorsRedirectMode
             Get
                 Return _RedirectMode

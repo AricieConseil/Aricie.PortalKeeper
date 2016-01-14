@@ -1,3 +1,4 @@
+Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Flee
 Imports System.Globalization
@@ -9,6 +10,7 @@ Namespace Services.Filtering
 
         Private _Comparer As StringComparer
 
+        
         Public Property Comparison As StringComparison = StringComparison.OrdinalIgnoreCase
 
         <ConditionalVisible("Comparison", False, True, StringComparison.CurrentCulture, StringComparison.CurrentCultureIgnoreCase)> _

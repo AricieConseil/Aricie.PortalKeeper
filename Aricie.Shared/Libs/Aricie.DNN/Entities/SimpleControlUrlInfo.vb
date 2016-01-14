@@ -2,6 +2,7 @@
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports System.ComponentModel
+Imports System.Xml.Serialization
 
 Namespace Entities
 
@@ -29,6 +30,7 @@ Namespace Entities
 
         Private _RedirectMode As CustomErrorsRedirectMode = CustomErrorsRedirectMode.ResponseRedirect
 
+        <DefaultValue(CustomErrorsRedirectMode.ResponseRedirect)> _
         <Browsable(False)> _
         Public Overrides Property RedirectMode() As CustomErrorsRedirectMode
             Get
@@ -39,6 +41,7 @@ Namespace Entities
             End Set
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides ReadOnly Property UrlType As DotNetNuke.Entities.Tabs.TabType
             Get
@@ -46,6 +49,7 @@ Namespace Entities
             End Get
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides ReadOnly Property UrlPath As String
             Get

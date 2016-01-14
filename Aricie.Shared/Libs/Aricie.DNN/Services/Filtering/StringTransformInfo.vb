@@ -5,6 +5,7 @@ Imports System.Text
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Text.RegularExpressions
+Imports System.Xml.Serialization
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
@@ -40,6 +41,7 @@ Namespace Services.Filtering
             Me.Replace.Simple = replacevalue
         End Sub
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property FriendlyName As String
             Get
@@ -81,9 +83,11 @@ Namespace Services.Filtering
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("FilterType", False, True, StringFilterType.RegexReplace)> _
         Public Property UseCallBack As Boolean
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property ShowReplace As Boolean
             Get
@@ -91,6 +95,7 @@ Namespace Services.Filtering
             End Get
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("ShowReplace")> _
         Public Property EmptyReplace As Boolean
 
@@ -128,6 +133,7 @@ Namespace Services.Filtering
         Public Property CallBack As New SimpleExpression(Of MatchEvaluator)("")
 
 
+        <DefaultValue(System.Text.RegularExpressions.RegexOptions.Compiled Or System.Text.RegularExpressions.RegexOptions.CultureInvariant)> _
         <ConditionalVisible("FilterType", False, True, StringFilterType.RegexReplace)> _
         Public Property RegexOptions As RegexOptions = System.Text.RegularExpressions.RegexOptions.Compiled Or System.Text.RegularExpressions.RegexOptions.CultureInvariant
 

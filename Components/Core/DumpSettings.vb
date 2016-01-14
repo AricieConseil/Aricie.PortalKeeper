@@ -8,11 +8,14 @@ Imports Aricie.DNN.UI.WebControls
 Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class DumpSettings
 
+        <DefaultValue(False)> _
         Public Property EnableDump As Boolean
 
+        <DefaultValue(True)> _
         <ConditionalVisible("EnableDump", False, True)> _
         Public Property DumpAllVars() As Boolean = True
 
+        <DefaultValue(True)> _
         <ConditionalVisible("EnableDump", False, True)> _
         Public Property SkipNull As Boolean = True
 

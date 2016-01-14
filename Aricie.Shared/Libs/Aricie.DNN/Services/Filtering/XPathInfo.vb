@@ -11,6 +11,8 @@ Imports Aricie.DNN.UI.WebControls
 Imports HtmlAgilityPack
 Imports System.Xml.Serialization
 Imports Aricie.DNN.Services.Flee
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Services.Filtering
 
@@ -94,23 +96,27 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         Public Overridable Property IsHtmlContent() As Boolean = True
 
-
+         <DefaultValue(False)> _
         <ExtendedCategory("XPathSettings")> _
         Public Property UseNamespaceManager As Boolean
 
+         <DefaultValue("")> _
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("UseNamespaceManager")> _
         Public Property DefaultNamespacePrefix As String = ""
 
+         <DefaultValue(False)> _
         <ExtendedCategory("XPathSettings")> _
         Public Property EvaluateExpression As Boolean
 
-
+         <DefaultValue(XPathOutputMode.Selection)> _
+         <JsonConverter(gettype(StringEnumConverter))> _
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
         Public Property OutputMode As XPathOutputMode = XPathOutputMode.Selection
 
 
+         <DefaultValue(XPathSelectMode.SelectionString)> _
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
         <ConditionalVisible("OutputMode", False, True, XPathOutputMode.Selection)> _
@@ -125,6 +131,7 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
+         <DefaultValue(True)> _
         Public Property SingleSelect() As Boolean = True
 
 
@@ -137,6 +144,7 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ConditionalVisible("EvaluateExpression", True, True)> _
         <ExtendedCategory("XPathSettings")> _
+        <DefaultValue(False)> _
         Public Property SelectTree() As Boolean
 
         ''' <summary>
@@ -153,11 +161,13 @@ Namespace Services.Filtering
 
         <ExtendedCategory("Filter")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
+        <DefaultValue(False)> _
         Public Property ApplyFilter As Boolean
 
         <ConditionalVisible("ApplyFilter", False, True)> _
         <ExtendedCategory("Filter")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _
+        <DefaultValue(False)> _
         Public Property UpdateNodes As Boolean
 
         Private _Filter As ExpressionFilterInfo
@@ -195,6 +205,7 @@ Namespace Services.Filtering
         Private _SimulationResult As Object
 
         <ExtendedCategory("Simulation")> _
+        <DefaultValue(False)> _
         Public Property ResultAsXml As Boolean
 
         ''' <summary>
@@ -211,7 +222,7 @@ Namespace Services.Filtering
             End Get
         End Property
 
-
+        <XmlIgnore()> _
         <ExtendedCategory("Simulation")> _
           <ConditionalVisible("ResultAsXml", False, True)> _
         Public ReadOnly Property SimulationResult() As String

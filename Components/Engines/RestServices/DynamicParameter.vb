@@ -5,6 +5,8 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports Aricie.ComponentModel
 Imports System.Xml.Serialization
+Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services.Flee
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -34,6 +36,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property IsOptional As Boolean
 
+        <ConditionalVisible("IsOptional")>
+        Public property DefaultValue As new EnabledFeature(Of AnonymousGeneralVariableInfo)
+        
         Public Overrides Function GetFriendlyDetails() As String
             Return String.Format("{1} {0} {2}", UIConstants.TITLE_SEPERATOR, MyBase.GetFriendlyDetails(), Me.ParameterType)
         End Function

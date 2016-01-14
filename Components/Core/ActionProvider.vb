@@ -27,6 +27,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Condition As New KeeperCondition(Of TEngineEvents)
         Private _AlternateAction As New KeeperAction(Of TEngineEvents)
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(950)> _
         Public Property AddSleepTime() As Boolean
@@ -36,11 +37,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(950)> _
         Public Property SleepTime() As New STimeSpan()
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("AddSleepTime", False, True)> _
         <SortOrder(950)> _
         Public Property RandomizeSleepTime As Boolean
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("AddSleepTime", False, True)> _
         <ConditionalVisible("RandomizeSleepTime", False, True)> _
@@ -52,28 +55,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property WaitSynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)("Synchro"))
 
-
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         <SortOrder(952)> _
         Public Property UseSemaphore As Boolean
 
+        <DefaultValue("Aricie-ActionSemaphore")> _
         <Required(True)> _
         <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SemaphoreName As String = "Aricie-ActionSemaphore"
 
+        <DefaultValue(1)> _
         <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property NbConcurrentThreads As Integer = 1
+
 
         <SortOrder(952)> _
         <ConditionalVisible("UseSemaphore", False, True)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
 
-
+        <DefaultValue(False)> _
         <AutoPostBack()> _
         <ExtendedCategory("ConditonalSettings")> _
         <SortOrder(500)> _
@@ -114,26 +120,30 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         <SortOrder(1000)> _
         Public Property CaptureRunDuration() As Boolean
 
+        <DefaultValue("")> _
         <Required(True)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("CaptureRunDuration", False, True)> _
         <SortOrder(1000)> _
         Public Property RunDurationVarName() As String = String.Empty
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Debug")> _
         <SortOrder(2000)> _
         Public Property DisablePerformanceLogger() As Boolean
 
 
-
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Debug")> _
         <SortOrder(2000)> _
         Public Property DebuggerBreak As Boolean
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Debug")> _
         <ConditionalVisible("DebuggerBreak", False, True)> _
         <SortOrder(2000)> _

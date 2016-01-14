@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.Services.Workers
+﻿Imports System.ComponentModel
+Imports Aricie.DNN.Services.Workers
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.Services.Flee
@@ -16,6 +17,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '<NonSerialized()> _
         Private WithEvents _AsynchronousRunTaskQueue As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
 
+        <DefaultValue(False)> _
         <AutoPostBack()> _
         <SortOrder(951)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _

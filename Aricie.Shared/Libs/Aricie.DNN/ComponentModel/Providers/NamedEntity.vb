@@ -3,6 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
+Imports Newtonsoft.Json
 
 Namespace ComponentModel
     
@@ -19,12 +20,14 @@ Namespace ComponentModel
             Me._Decription = strDescription
         End Sub
 
+        <JsonProperty(Order := -2)> _
         <SortOrder(0)> _
         <XmlAttribute("name")> _
         <Required(True)> _
         <Width(300)> _
         Public Overridable Property Name() As String = ""
 
+        <DefaultValue("")> _
         <XmlElement("Name")> _
         <Browsable(False)> _
         Public Property OldName As String
@@ -36,7 +39,7 @@ Namespace ComponentModel
             End Set
         End Property
 
-
+        <DefaultValue("")> _
         <Browsable(False)> _
        <XmlIgnore()> _
         Public ReadOnly Property FriendlyName As String
@@ -50,7 +53,7 @@ Namespace ComponentModel
             End Get
         End Property
 
-
+        <JsonProperty(Order := -2)> _
         <SortOrder(1)> _
          Public Overridable Property Decription() As CData = ""
 

@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.UI.Attributes
+﻿Imports System.ComponentModel
+Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
@@ -12,28 +13,31 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public MustInherit Class CacheableAction(Of TEngineEvents As IConvertible)
         Inherits AsyncEnabledActionProvider(Of TEngineEvents)
 
-
+        <DefaultValue(False)> _
         <SortOrder(410)> _
         <ExtendedCategory("Specifics")>
         Public Property EnableCache As Boolean
 
+        <DefaultValue(False)> _
         <SortOrder(950)> _
        <ConditionalVisible("UseSemaphore", False, True)> _
        <ExtendedCategory("TechnicalSettings")> _
         Public Property SemaphoreAppliesToCache As Boolean
 
+        <DefaultValue("{0}")> _
         <SortOrder(411)> _
         <ExtendedCategory("Specifics")> _
         <ConditionalVisible("EnableCache", False, True, True)> _
         <TrialLimited(TrialPropertyMode.Disable)>
         Public Property CacheKeyFormat() As String  = "{0}"
 
+        <DefaultValue(False)> _
         <SortOrder(412)> _
         <ExtendedCategory("Specifics")> _
          <ConditionalVisible("EnableCache", False, True)> _
         Public Property ProcessTokens As Boolean
 
-
+        <DefaultValue(False)> _
         <SortOrder(413)> _
         <ConditionalVisible("EnableCache", False, True)> _
         <ExtendedCategory("Specifics")>

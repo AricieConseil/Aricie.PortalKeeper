@@ -41,6 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         '<ExtendedCategory("Action")> _
+        <DefaultValue(False)> _
         <ConditionalVisible("HasType", False, True)> _
       <ConditionalVisible("ActionMode", False, True, ObjectActionMode.AddEventHandler)> _
       <ConditionalVisible("EventHandlerType", False, True, EventHandlerType.KeeperAction)> _

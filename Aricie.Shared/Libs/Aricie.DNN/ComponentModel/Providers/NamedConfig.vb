@@ -26,7 +26,6 @@ Namespace ComponentModel
             MyBase.New(name, description)
         End Sub
 
-
         Public Overridable Property Enabled() As Boolean = True Implements IEnabled.Enabled
 
 

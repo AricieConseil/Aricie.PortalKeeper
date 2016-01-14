@@ -52,6 +52,7 @@ Namespace ComponentModel
 
         Private _TypeName As String = ""
 
+        <DefaultValue("")> _
         <ExtendedCategory("")> _
         <Required(True)> _
         <Width(500)> _
