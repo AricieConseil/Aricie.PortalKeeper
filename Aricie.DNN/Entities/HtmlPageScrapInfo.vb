@@ -29,22 +29,29 @@ Namespace Entities
         <ExtendedCategory("Url")> _
         Public Property Requests As New OneOrMore(Of HtmlRequestInfo)
 
+
+        <DefaultValue(False)> _
         <ExtendedCategory("Pager")> _
         Public Property UsePager As Boolean
 
+
+        <DefaultValue(0)> _
         <ConditionalVisible("UsePager", False, True)> _
         <ExtendedCategory("Pager")> _
         Public Property MaxNbPage As Integer = 0
 
+        <DefaultValue(PagerQueryType.PageNb)> _
         <ExtendedCategory("Pager")> _
         <ConditionalVisible("UsePager", False, True)> _
         Public Property QueryType As PagerQueryType = PagerQueryType.PageNb
 
+        <DefaultValue(20)> _
         <ConditionalVisible("QueryType", False, True, PagerQueryType.ResultIndex)> _
       <ConditionalVisible("UsePager", False, True)> _
       <ExtendedCategory("Pager")> _
         Public Property PageSize As Integer = 20
 
+        <DefaultValue("page")> _
         <ConditionalVisible("UsePager", False, True)> _
         <ExtendedCategory("Pager")> _
         Public Property QueryParameter As String = "page"
@@ -60,16 +67,19 @@ Namespace Entities
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("UsePager", False, True)> _
         <ExtendedCategory("Pager")> _
         Public Property IncludeFirstPage As Boolean
 
+        <DefaultValue(False)> _
         <ConditionalVisible("UsePager", False, True)> _
         <ExtendedCategory("Pager")> _
         Public Property ZeroBasedIndex As Boolean
 
         <ExtendedCategory("Scraping")> _
         Public Property XPath As New XPathInfo("//title", True, True)
+
 
         <ExtendedCategory("Detail")> _
         Public Property ScrapDetail As Boolean

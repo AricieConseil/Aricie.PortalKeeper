@@ -1,6 +1,7 @@
 ﻿Imports Aricie.DNN.ComponentModel
 Imports System.ComponentModel
 Imports System.Xml.Serialization
+Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
@@ -11,6 +12,7 @@ Namespace Services.Flee
     ''' Variable information
     ''' </summary>
     ''' <remarks></remarks>
+     <SkipModelValidation()> _
     <ActionButton(IconName.Cog, IconOptions.Normal)> _
     Public MustInherit Class VariableInfo
         Inherits NamedIdentifierEntity
@@ -24,6 +26,7 @@ Namespace Services.Flee
         ''' <value></value>
         ''' <returns></returns>
         ''' <remarks></remarks>
+        <XmlIgnore()> _
         Public Overridable ReadOnly Property VariableType() As String
             Get
                 Return ReflectionHelper.GetSafeTypeName(GetType(Object))
@@ -37,6 +40,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
+        <DefaultValue(VarEvaluationMode.Dynamic)> _ 
         Public Overridable Property EvaluationMode() As VarEvaluationMode = VarEvaluationMode.Dynamic
 
         ''' <summary>
@@ -46,6 +50,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
+        <DefaultValue(VariableScope.Local)> _ 
         Public Overridable Property Scope() As VariableScope = VariableScope.Local
 
         ''' <summary>

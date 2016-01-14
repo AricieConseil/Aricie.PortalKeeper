@@ -15,6 +15,7 @@ Namespace Services.Filtering
 
         Public Property DefaultToUnchanged As Boolean
 
+        <DefaultValue("N.A.")> _
         <ConditionalVisible("DefaultToUnchanged", True)> _
         Public Property DefaultValue As String = "N.A."
 
@@ -25,6 +26,7 @@ Namespace Services.Filtering
         <ExtendedCategory("", "Comparison")> _
         Public Property Comparer As New ComparerInfo()
 
+        <DefaultValue(StringComparison.OrdinalIgnoreCase)> _
         <ConditionalVisible("Mode", False, True, CategorizationMode.InputContainsKey)> _
         <ExtendedCategory("", "Comparison")> _
         Public Property Comparizon As StringComparison = StringComparison.OrdinalIgnoreCase

@@ -1,12 +1,48 @@
-﻿Imports System.Xml.Serialization
+﻿Imports System.ComponentModel
+Imports System.Linq
+Imports System.Xml.Serialization
 Imports System.Xml
 Imports System.Xml.Schema
 Imports Aricie.Services
+Imports Fasterflect
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Namespace ComponentModel
-    
+
+    Public Class SerializableJsonSerializer
+        Inherits JsonConverter
+        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+            
+            writer.WriteStartObject()
+            writer.WritePropertyName("Type")
+            Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
+            serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName( serializableValue.GetType()))
+            writer.WritePropertyName("Value")
+            serializer.Serialize(writer, serializableValue)
+            writer.WriteEndObject()
+        End Sub
+
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
+            Dim toReturn As Object = existingValue
+            Dim jsonObject As JObject = JObject.Load(reader)
+            Dim targetTypeProperty as JProperty = jsonObject.Property("Type")
+            dim targetType As Type = ReflectionHelper.CreateType(targetTypeProperty.Value.ToString())
+            Dim valueProperty as JProperty = jsonObject.Property("Value")
+            Dim objValue As Object = JsonConvert.DeserializeObject(valueProperty.Value.ToString(),targetType)
+            ReflectionHelper.GetPropertiesDictionary( toReturn.GetType())("Value").SetValue(toReturn, objValue, Nothing)
+            Return toreturn
+        End Function
+
+        Public Overrides Function CanConvert(objectType As Type) As Boolean
+            Return GetType(Serializable(Of )).IsAssignableFrom(objectType)
+        End Function
+    End Class
+
+    <JsonConverter(GetType(SerializableJsonSerializer))>
     Public Class Serializable(Of T)
         Implements IXmlSerializable
+
 
 
         Public Sub New()
@@ -17,8 +53,9 @@ Namespace ComponentModel
             Me.Value = objValue
         End Sub
 
+        
 
-        <XmlIgnore()> _
+        <XmlIgnore()>
         Public Property Value As T
 
 

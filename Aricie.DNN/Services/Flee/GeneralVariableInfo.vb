@@ -16,6 +16,8 @@ Imports DotNetNuke.Services.Localization
 Imports System.Linq
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Files
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Services.Flee
 
@@ -86,6 +88,7 @@ Namespace Services.Flee
 
         Private _ConstDotNetType As New DotNetType(GetType(T))
 
+        <XmlIgnore()> _
         <SortOrder(0)> _
         Public Overrides ReadOnly Property VariableType As String
             Get
@@ -97,11 +100,12 @@ Namespace Services.Flee
         <SortOrder(0)> _
         Public Property SubType() As New EnabledFeature(Of SubDotNetType(Of T))
 
-
+        
+        <XmlIgnore()> _
         <Browsable(False)>
         Public Overrides Property DotNetType As DotNetType
             Get
-                If SubType.Enabled
+                If SubType.Enabled andalso SubType.Entity.GetDotNetType() IsNot Nothing
                     Return SubType.Entity
                 End If
                 Return _ConstDotNetType
@@ -146,7 +150,10 @@ Namespace Services.Flee
         Private _Instance As Object
         Private _SimpleExpression As SimpleExpression(Of Object)
         Private _FleeExpression As New FleeExpressionInfo(Of Object)()
-
+        Private _smartFileKey As EntityKeyInfo
+        Private _useCustomFileSettings As EnabledFeature(Of SmartFileInfo)
+        Private _staticMemberType As DotNetType
+        Private _targetInstance As SimpleExpression(Of Object)
 
 
         Public Sub New()
@@ -160,6 +167,7 @@ Namespace Services.Flee
 
         Public Overridable Property DotNetType As New DotNetType()
 
+         <XmlIgnore()> _
         <Browsable(False)>
         Public ReadOnly Property HasType As Boolean
             Get
@@ -167,6 +175,7 @@ Namespace Services.Flee
             End Get
         End Property
 
+         <XmlIgnore()> _
         <Browsable(False)>
         Public ReadOnly Property HasTargetType As Boolean
             Get
@@ -177,33 +186,74 @@ Namespace Services.Flee
             End Get
         End Property
 
+         <XmlIgnore()> _
         <Browsable(False)>
         Public Overrides ReadOnly Property VariableType As String
             Get
-                Return DotNetType.TypeName
+                Return ReflectionHelper.GetSafeTypeName( DotNetType.TypeName)
             End Get
         End Property
 
+        <JsonProperty()> _
+        <JsonConverter(gettype(StringEnumConverter))> _
         <ConditionalVisible("HasType", False, True)>
         Public Property VariableMode As VariableMode = VariableMode.Expression
 
-
         <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
-        Public Property SmartFileKey() As New EntityKeyInfo()
+        Public Property SmartFileKey() As  EntityKeyInfo
+            Get
+                If VariableMode <> VariableMode.SmartFile Then
+                    Return Nothing
+                End If
+                If _smartFileKey Is Nothing Then
+                    _smartFileKey = New EntityKeyInfo()
+                End If
+                Return _smartFileKey
+            End Get
+            Set
+                _smartFileKey = value
+            End Set
+        End Property
 
+        <DefaultValue(True)> _
         <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
         Public Property SetForSave() As Boolean = True
 
+
         <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
-        Public Property UseCustomFileSettings() As New EnabledFeature(Of SmartFileInfo)
+        Public Property UseCustomFileSettings() As  EnabledFeature(Of SmartFileInfo)
+            Get
+                 If VariableMode <> VariableMode.SmartFile Then
+                    Return Nothing
+                End If
+                If _useCustomFileSettings Is Nothing Then
+                    _useCustomFileSettings = New EnabledFeature(Of SmartFileInfo)()
+                End If
+                Return _useCustomFileSettings
+            End Get
+            Set
+                _useCustomFileSettings = value
+            End Set
+        End Property
 
         'Static Member
 
         <ConditionalVisible("HasType")>
         <ConditionalVisible("VariableMode", False, True, VariableMode.StaticMember)>
-        Public Overridable Property StaticMemberType As New DotNetType()
-
-
+        Public Overridable Property StaticMemberType As  DotNetType
+            Get
+                  If VariableMode <> VariableMode.StaticMember Then
+                    Return Nothing
+                End If
+                If _staticMemberType Is Nothing Then
+                    _staticMemberType = New DotNetType()
+                End If
+                Return _staticMemberType
+            End Get
+            Set
+                _staticMemberType = value
+            End Set
+        End Property
 
         ''' <summary>
         ''' Get or sets the instance of the object
@@ -245,10 +295,11 @@ Namespace Services.Flee
         <ConditionalVisible("HasType", False, True)>
         Public Property InstanceMode As InstanceMode = InstanceMode.Off
 
+        
         <ExtendedCategory("", "Evaluation")>
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
         <ConditionalVisible("HasType", False, True)>
-        Public Overrides Property EvaluationMode() As VarEvaluationMode
+        Public Overrides Property EvaluationMode() As VarEvaluationMode 
             Get
                 Return MyBase.EvaluationMode
             End Get
@@ -293,6 +344,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
+        <DefaultValue(False)> _
         Public Property AdvancedExpression() As Boolean
 
         ''' <summary>
@@ -306,6 +358,9 @@ Namespace Services.Flee
         <ConditionalVisible("AdvancedExpression", False, True)>
         Public Property FleeExpression() As FleeExpressionInfo(Of Object)
             Get
+                If VariableMode <> VariableMode.Expression Then
+                    Return Nothing
+                End If
                 Return _FleeExpression
             End Get
             Set(value As FleeExpressionInfo(Of Object))
@@ -326,6 +381,9 @@ Namespace Services.Flee
         <ConditionalVisible("AdvancedExpression", True, True)>
         Public Property SimpleExpression() As SimpleExpression(Of Object)
             Get
+                 If VariableMode <> VariableMode.Expression Then
+                    Return Nothing
+                End If
                 If _SimpleExpression Is Nothing Then
                     _SimpleExpression = New SimpleExpression(Of Object)(Me.FleeExpression)
                 End If
@@ -346,6 +404,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Expression)>
+        <DefaultValue(False)> _
         Public Property AsCompiledExpression() As Boolean
 
 
@@ -354,6 +413,7 @@ Namespace Services.Flee
 
         'Delegate
         'todo: should be member
+        <DefaultValue("")> _
         <AutoPostBack()>
         <ConditionalVisible("HasTargetType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate, VariableMode.StaticMember)>
@@ -361,6 +421,7 @@ Namespace Services.Flee
         <Selector("Name", "Name", False, True, "<Select a Member Name>", "", False, True)>
         Public Property MethodName As String = ""
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property HasSeveralCandidates() As Boolean
             Get
@@ -369,6 +430,7 @@ Namespace Services.Flee
             End Get
         End Property
 
+        <DefaultValue(1)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))>
         <ProvidersSelector("Key", "Value")>
         <ConditionalVisible("HasTargetType")>
@@ -376,6 +438,7 @@ Namespace Services.Flee
         <ConditionalVisible("HasSeveralCandidates")>
         Public Property MethodIndex As Integer = 1
 
+        <XmlIgnore()> _
         <Browsable(False)>
         Public ReadOnly Property RequiresInstance As Boolean
             Get
@@ -394,8 +457,22 @@ Namespace Services.Flee
         <ConditionalVisible("HasTargetType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Delegate)>
         <ConditionalVisible("RequiresInstance", False, True)>
-        Public Property TargetInstance As New SimpleExpression(Of Object)
+        Public Property TargetInstance As SimpleExpression(Of Object)
+            Get
+                If VariableMode <> VariableMode.Delegate Then
+                    Return Nothing
+                End If
+                if _targetInstance Is nothing
+                    _targetInstance = new SimpleExpression(Of Object)
+                End If
+                Return _targetInstance
+            End Get
+            Set
+                _targetInstance = value
+            End Set
+        End Property
 
+        <XmlIgnore()> _
         <Browsable(False)>
         Public ReadOnly Property HasParameters() As Boolean
             Get
@@ -518,7 +595,7 @@ Namespace Services.Flee
                         toReturn = System.Activator.CreateInstance(Me.DotNetType.GetDotNetType(), args)
                     Catch ex As Exception
                         Dim newEx As ApplicationException
-                        If args IsNot Nothing Then
+                        If args IsNot Nothing andalso args.Length>0 Then
                             Dim argsList As New StringBuilder()
                             For Each obj As Object In args
                                 If obj Is Nothing Then

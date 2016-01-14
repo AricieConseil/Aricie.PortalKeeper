@@ -1,3 +1,4 @@
+Imports System.ComponentModel
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Services

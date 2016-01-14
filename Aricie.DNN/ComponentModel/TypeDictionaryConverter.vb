@@ -47,6 +47,14 @@ Namespace ComponentModel
         Public Property InitializeLists As Boolean
 
 
+        Public Function GetList(objContext As IContextLookup, values As IEnumerable(of Object) )As List(Of Dictionary(Of String, String))
+            dim toReturn as New List(Of Dictionary(Of String, String))
+            For Each value As Object In values
+                toReturn.Add(GetDictionary(objContext, value))
+            Next
+            Return toReturn
+        End Function
+
         Public Function GetDictionary(objContext As IContextLookup, value As Object) As Dictionary(Of String, String)
             If Not CustomObjectToDictionary.Enabled Then
                 Return ObjectExtensions.AsStringDictionary(value, ParsingCulture.GetCulture())
