@@ -38,25 +38,29 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+         <DefaultValue(False)> _
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _
         Public Property StopOnFailure() As Boolean
 
+        <DefaultValue(False)> _
         <ExtendedCategory("RuleSettings")> _
         <SortOrder(700)> _
         Public Overridable Property ExitAction() As Boolean
 
 
 
-
+        <DefaultValue(False)> _
         <SortOrder(2000)> _
         <ExtendedCategory("TechnicalSettings", "Debug")> _
         Public Property DisableLog As Boolean
 
+        <DefaultValue(LoggingLevel.Detailed)> _
         <SortOrder(2000)> _
         <ExtendedCategory("TechnicalSettings", "Debug")> _
          <ConditionalVisible("DisableLog", True, True)> _
         Public Property LoggingLevel As LoggingLevel = LoggingLevel.Detailed
+
 
         <SortOrder(2000)> _
          <ExtendedCategory("TechnicalSettings", "Debug")> _
@@ -67,20 +71,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)> _
         Public Property ExceptionActions As New EnabledFeature(Of KeeperAction(Of TEngineEvents))
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <SortOrder(1000)> _
         Public Property RethrowException() As Boolean
 
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <SortOrder(1000)> _
         Public Property DontLogExceptions() As Boolean
 
-
+        <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <ConditionalVisible("DontLogExceptions", False, True)> _
         <SortOrder(1000)> _
         Public Property CaptureException() As Boolean
 
+        <DefaultValue("ActionException")> _
         <Required(True)> _
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <ConditionalVisible("CaptureException", False, True)> _

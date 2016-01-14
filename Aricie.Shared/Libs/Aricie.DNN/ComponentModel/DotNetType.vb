@@ -11,7 +11,6 @@ Imports System.Text
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Services
-Imports Fasterflect
 
 Namespace ComponentModel
     Public Enum TypeSelector
@@ -38,7 +37,6 @@ Namespace ComponentModel
 
 
         Public Sub New()
-
         End Sub
 
 
@@ -88,7 +86,7 @@ Namespace ComponentModel
         End Sub
 
 
-
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public Overridable ReadOnly Property Name() As String
             Get
@@ -101,18 +99,41 @@ Namespace ComponentModel
 
 
 
-
+         <DefaultValue(0)> _
         Public Overridable Property PickerMode As TypePickerMode
 
 
-
         <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
-        Public Property CustomTypeIdentifier As New EnabledFeature(Of NamedIdentifierEntity)
+        Public Property CustomTypeIdentifier As  EnabledFeature(Of NamedIdentifierEntity)
+            Get
+                If PickerMode <>  TypePickerMode.CustomObject Then
+                    Return Nothing
+                End If
+                if _customTypeIdentifier Is nothing
+                    _customTypeIdentifier = new EnabledFeature(Of NamedIdentifierEntity)
+                End If
+                Return _customTypeIdentifier
+            End Get
+            Set
+                _customTypeIdentifier = value
+            End Set
+        End Property
 
-
-        <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
-        Public Property CustomObject As New Variables()
-
+        <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)>
+        Public Property CustomObject As  Variables
+            Get
+                If PickerMode <>  TypePickerMode.CustomObject Then
+                    Return Nothing
+                End If
+                if _CustomObject Is nothing
+                    _CustomObject = new Variables()
+                End If
+                Return _CustomObject
+            End Get
+            Set
+                _CustomObject = value
+            End Set
+        End Property
 
         <ConditionalVisible("PickerMode", False, True, TypePickerMode.CustomObject)> _
         <ActionButton(IconName.Refresh, IconOptions.Normal, "CustomTypeReset.Alert")> _
@@ -188,12 +209,14 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.BrowseHierarchy)> _
         <XmlIgnore> _
         Public Property MakeArray As Boolean
 
+        <DefaultValue(1)> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <AutoPostBack()> _
         <EditOnly()> _
@@ -203,6 +226,8 @@ Namespace ComponentModel
         Public Property Rank As Integer = 1
 
         Private _ArrayType As DotNetType
+        Private _customTypeIdentifier As EnabledFeature(Of NamedIdentifierEntity)
+        Private _CustomObject As Variables
 
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <EditOnly()> _
@@ -224,6 +249,7 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <DefaultValue("")> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
@@ -233,6 +259,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property AssemblyNameSelect As String = ""
 
+        <DefaultValue("")> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
@@ -245,6 +272,7 @@ Namespace ComponentModel
         <XmlIgnore()> _
         Public Property NamespaceSelect As String = ""
 
+        <DefaultValue("")> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("MakeArray", True)> _
         <EditOnly()> _
@@ -266,6 +294,7 @@ Namespace ComponentModel
             End Set
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property IsSelectedGeneric As Boolean
             Get
@@ -289,6 +318,7 @@ Namespace ComponentModel
           ItemsReadOnly:=False, MaxItemNb:=-1, NoAdd:=True, NoDeletion:=True, Ordered:=False, Paged:=False, ShowAddItem:=False)> _
         Public Property GenericTypes As New List(Of DotNetType)
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property CurrentlySelectedType As Type
             Get
@@ -336,6 +366,7 @@ Namespace ComponentModel
         '    End Get
         'End Property
 
+        <DefaultValue("")> _
         <ConditionalVisible("Mode", False, True, TypePickerMode.SelectType)> _
         <ConditionalVisible("TypeSelector", False, True, TypeSelector.NewType)> _
         <Required(True)> _
@@ -378,7 +409,7 @@ Namespace ComponentModel
             End Try
         End Sub
 
-
+        <XmlIgnore()> _
         Public Overridable ReadOnly Property FullName() As String
             Get
                 Dim objType As Type = Me.GetDotNetType()
@@ -718,65 +749,7 @@ Namespace ComponentModel
 
     End Class
 
-    Public Class SubDotNetType
-        Inherits DotNetType
-
-        Public sub  New()
-
-        End sub
-
-        Public sub New(objBaseType As type)
-            Me.BaseType = New DotNetType( objBaseType)
-        End sub
-
-        <Browsable(False)> _
-        Public Property BaseType() As New DotNetType()
-            
-          Public Overrides Function GetSelectorG(propertyName As String) As IList(Of DotNetType)
-            Return MyBase.GetSelectorG(propertyName).Where(Function(objDotNetType) objDotNetType.GetDotNetType() IsNot Nothing _
-                                                               AndAlso BaseType.GetDotNetType().IsAssignableFrom(objDotNetType.GetDotNetType())).ToList()
-        End Function
-
-        Public Overrides Function GetSelectorG1(propertyName As String) As IList(Of AssemblyName)
-            Return MyBase.GetSelectorG1(propertyName).Where(Function(objAssembly)
-                                                                Try
-                                                                    Return Assembly.Load(objAssembly).GetTypes() _
-                                                                .Any(Function(objType) BaseType.GetDotNetType().IsAssignableFrom(objType))
-                                                                Catch 
-                                                                    Return false
-                                                                End Try
-                                                            End Function
-                                                            ).ToList()
-        End Function
-
-        Public Overrides Function GetSelectorG2(propertyName As String) As IList(Of String)
-            Dim toReturn As IList(Of String) = MyBase.GetSelectorG2(propertyName)
-            Dim objAssemblyTypes As Type() = Assembly.Load(New AssemblyName(AssemblyNameSelect)).GetTypes()
-            Return toReturn.Where(Function(strNamespace) objAssemblyTypes _
-                                      .Where(Function(objType) objType.Namespace = strNamespace _
-                                     AndAlso objType.InheritsOrImplements(BaseType.GetDotNetType())).Any()).ToList()
-        End Function
-
-        <Browsable(False)> _
-        Public Overrides Property PickerMode As TypePickerMode
-            Get
-                Return TypePickerMode.SelectType
-            End Get
-            Set(value As TypePickerMode)
-            End Set
-        End Property
-
-
-    End Class
-
-     Public Class SubDotNetType(Of TBaseType)
-        Inherits SubDotNetType
-
-      Public Sub New()
-            MyBase.New(GetType(TBaseType))
-      End Sub
-
-    End Class
+   
 
 
 End Namespace

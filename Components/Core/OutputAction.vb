@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Xml.Serialization
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -21,6 +22,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Private _Simulation As Boolean
         Private _SimulationData As CData = ""
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public Overridable ReadOnly Property ShowOutput As Boolean
             Get
@@ -28,6 +30,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        <DefaultValue("")> _
         <SortOrder(420)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
@@ -40,6 +43,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <DefaultValue("")> _
         <SortOrder(421)> _
       <ConditionalVisible("ShowOutput", False, True)> _
       <ExtendedCategory("Specifics")> _
@@ -58,6 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _AddItems As Boolean
 
+        <DefaultValue(False)> _
         <SortOrder(422)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _
@@ -70,6 +75,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <SortOrder(422)> _
         <ConditionalVisible("ShowOutput", False, True)> _
        <ConditionalVisible("AddItems", False, True)> _
@@ -83,6 +89,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
        <ExtendedCategory("Specifics")> _
         Public Property CountCaptureName As New SimpleOrSimpleExpression(Of String)("ResultsCount")
 
+        <DefaultValue(False)> _
         <SortOrder(423)> _
         <ConditionalVisible("ShowOutput", False, True)> _
         <ExtendedCategory("Specifics")> _

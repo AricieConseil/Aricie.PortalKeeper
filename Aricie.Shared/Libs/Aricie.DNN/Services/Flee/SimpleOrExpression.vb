@@ -100,7 +100,7 @@ Namespace Services.Flee
     Public Class SimpleOrExpression(Of TSimple, TExpression)
         Inherits SimpleOrExpressionValue(Of TSimple, TExpression)
 
-
+        Private _expression As New FleeExpressionInfo(Of TExpression)()
 
         Public Sub New()
 
@@ -121,8 +121,29 @@ Namespace Services.Flee
             End If
         End Sub
 
+        <Browsable(False)>
+        Public Property Expression As FleeExpressionInfo(Of TExpression)
+            Get
+                if Mode = SimpleOrExpressionMode.Simple
+                    Return Nothing
+                End If
+                Return _expression
+            End Get
+            Set
+                _expression = Value
+            End Set
+        End Property
+
+        <XmlIgnore()> _
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
-        Public Property Expression As New FleeExpressionInfo(Of TExpression)
+        Public Property EditableExpression As  FleeExpressionInfo(Of TExpression)
+            Get
+                Return _expression
+            End Get
+            Set
+                _expression = value
+            End Set
+        End Property
 
         Public Overrides Function GetExpression() As SimpleExpression(Of TExpression)
             Return Expression
@@ -180,10 +201,12 @@ Namespace Services.Flee
 
         Public Property Mode As SimpleOrExpressionMode
 
+        <DefaultValue(False)> _
         <AutoPostBack()> _
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
         Public Property CreateIfNull As Boolean
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property DisplaySimple As Boolean
             Get
@@ -222,6 +245,10 @@ Namespace Services.Flee
         Public Property XmlSimple As TSimple
             Get
                 If Not IsSubType() Then
+                    Dim newSimple = GetSimple()
+                    If Mode = SimpleOrExpressionMode.Expression OrElse newSimple Is Nothing OrElse newSimple.Equals(_Simple) Then
+                        Return Nothing
+                    End If
                     Return _Simple
                 End If
                 Return Nothing

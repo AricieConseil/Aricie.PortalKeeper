@@ -37,6 +37,19 @@ namespace Aricie.PortalKeeper.DNN7
             }
         }
 
+        public override object DefaultValue
+        {
+            get
+            {
+                if (_DynamicParameter.DefaultValue.Enabled)
+                {
+                   return _DynamicParameter.DefaultValue.Entity.Evaluate(PortalKeeperContext<RequestEvent>.GlobalInstance,
+                        PortalKeeperContext<RequestEvent>.GlobalInstance);
+                }
+                return base.DefaultValue;
+            }
+        }
+
         public override Collection<T> GetCustomAttributes<T>()
         {
 

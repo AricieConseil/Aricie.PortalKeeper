@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.ComponentModel
+﻿Imports System.ComponentModel
+Imports Aricie.DNN.ComponentModel
 Imports Aricie.Collections
 Imports System.Globalization
 Imports Aricie.Services
@@ -22,6 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
+        <DefaultValue(False)> _
         Public Property ThrowAllExceptions As Boolean
 
         Public Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean

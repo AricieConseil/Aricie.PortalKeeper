@@ -67,13 +67,16 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(EncodeProcessing.None)> _
         Public Property EncodePreProcessing() As EncodeProcessing = EncodeProcessing.None
 
+        <DefaultValue(HtmlEncodeMethod.HtmlEncode)> _
         <ConditionalVisible("EncodePreProcessing", False, True, EncodeProcessing.HtmlEncode)> _
         <ExtendedCategory("GlobalFilter")> _
         Public Property PreHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
 
 
+        <DefaultValue(CaseChange.None)> _
         <ExtendedCategory("GlobalFilter")> _
         Public Property CaseChange As CaseChange
 
@@ -84,6 +87,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)>
+        <DefaultValue(False)> _
         Public Property ForceToLower() As Boolean
             Get
                 Return Nothing
@@ -102,6 +106,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(TrimType.None)> _
         Public Property Trim As TrimType
 
         ''' <summary>
@@ -112,8 +117,10 @@ Namespace Services.Filtering
         ''' <remarks></remarks>
         <ConditionalVisible("Trim", True, True, TrimType.None)> _
         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue("-")> _
         Public Property TrimChar As String = "-"
 
+        <DefaultValue(false)> _
         <ExtendedCategory("GlobalFilter")> _
         Public Property ApplyFormat As Boolean
 
@@ -146,6 +153,7 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("Transformations")> _
+        <DefaultValue(True)> _
         Public Property PreventDoubleDefaults As Boolean = True
 
         ''' <summary>
@@ -181,32 +189,39 @@ Namespace Services.Filtering
         Public Property Categorization As New EnabledFeature(Of CategorizationInfo)
 
         <ExtendedCategory("Advanced")> _
+        <DefaultValue(Base64Convert.None)> _
         Public Property Base64Convert As Base64Convert = Base64Convert.None
 
         <ExtendedCategory("Advanced")> _
         <ConditionalVisible("Base64Convert", False, True)> _
+        <DefaultValue(SimpleEncoding.UTF8)> _
         Public Property TargetEncoding As SimpleEncoding = SimpleEncoding.UTF8
 
-
+        <DefaultValue(false)> _
         <ExtendedCategory("Advanced")> _
         Public Property UseCompression As Boolean
 
+        <DefaultValue(CompressionMethod.Deflate)> _
         <ExtendedCategory("Advanced")> _
         <ConditionalVisible("UseCompression", False, True)> _
         Public Property CompressMethod() As CompressionMethod
 
+        <DefaultValue(CompressionDirection.Compress)> _
         <ExtendedCategory("Advanced")> _
         <ConditionalVisible("UseCompression", False, True)> _
-        Public Property CompressDirection() As CompressionDirection
+        Public Property CompressDirection() As CompressionDirection = CompressionDirection.Compress
 
+        <DefaultValue(False)> _
         <ExtendedCategory("Advanced")> _
         Public Property UseEncryption As Boolean
 
+        <DefaultValue(CryptoTransformDirection.Encrypt)> _
         <ExtendedCategory("Advanced")> _
        <ConditionalVisible("UseEncryption", False, True)> _
-        Public Property CryptoDirection As CryptoTransformDirection
+        Public Property CryptoDirection As CryptoTransformDirection = CryptoTransformDirection.Encrypt
 
         Private _Base64Salt As String = ""
+
         <ExtendedCategory("Advanced")> _
         <ConditionalVisible("UseEncryption", False, True)> _
         Public Property Base64Salt As String
@@ -247,10 +262,12 @@ Namespace Services.Filtering
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("GlobalFilter")> _
+         <DefaultValue(EncodeProcessing.None)> _
         Public Property EncodePostProcessing() As EncodeProcessing = EncodeProcessing.None
 
         <ConditionalVisible("EncodePostProcessing", False, True, EncodeProcessing.HtmlEncode)> _
         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(HtmlEncodeMethod.HtmlEncode)> _
         Public Property PostHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
 
         ''' <summary>
@@ -261,6 +278,7 @@ Namespace Services.Filtering
         ''' <remarks>-1 to disable</remarks>
         <Required(True)> _
         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(-1)> _
         Public Property MaxLength() As Integer = -1
 
 

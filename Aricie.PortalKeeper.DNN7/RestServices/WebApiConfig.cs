@@ -7,8 +7,11 @@ using System.Web.Http;
 using System.Web.Http.Controllers;
 using System.Web.Http.Description;
 using System.Web.Http.Dispatcher;
+using System.Web.Http.Validation;
+using Aricie.ComponentModel;
 using Aricie.DNN.Modules.PortalKeeper;
 using Aricie.Services;
+using Newtonsoft.Json;
 
 namespace Aricie.PortalKeeper.DNN7.WebAPI
 {
@@ -34,10 +37,14 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                 config.Services.Replace(typeof(IHttpControllerSelector), new DynamicControllerSelector(config, originalControllerSelector));
                 var originalActionSelector = config.Services.GetActionSelector();
                 config.Services.Replace(typeof(IHttpActionSelector), new DynamicActionSelector(config, originalActionSelector));
+                var originalModelValidator = config.Services.GetBodyModelValidator();
+                config.Services.Replace(typeof(System.Web.Http.Validation.IBodyModelValidator), new BodyModelValidator(originalModelValidator)); //Clear(typeof(IBodyModelValidator));
+                
                 config.Formatters.Add(new BrowserJsonFormatter());
-
+                config.Formatters.JsonFormatter.SerializerSettings.DefaultValueHandling = DefaultValueHandling.Ignore;
+                config.Formatters.JsonFormatter.SerializerSettings.NullValueHandling = NullValueHandling.Ignore;
+                config.Formatters.JsonFormatter.SerializerSettings.ContractResolver = new XmlAwareContractResolver(config.Formatters.JsonFormatter);
                
-
                 foreach (RestService objService in PortalKeeperConfig.Instance.RestServices.RestServices)
                 {
                     if (objService.Enabled)
@@ -124,4 +131,28 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
 
 
     }
+
+
+    public class BodyModelValidator : IBodyModelValidator
+    {
+        private IBodyModelValidator _defaultValidator;
+
+        public BodyModelValidator (IBodyModelValidator originalValidator)
+        {
+            _defaultValidator = originalValidator;
+        }
+
+        public bool Validate(object model, Type type, System.Web.Http.Metadata.ModelMetadataProvider metadataProvider, System.Web.Http.Controllers.HttpActionContext actionContext, string keyPrefix)
+        {
+            if (model.GetType().GetCustomAttributes(true).Contains(new SkipModelValidationAttribute()))
+            {
+                return true;
+            }
+            else {
+                return _defaultValidator.Validate(model, type, metadataProvider, actionContext, keyPrefix);
+            }
+        }
+    }
+
+
 }

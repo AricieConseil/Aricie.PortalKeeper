@@ -239,7 +239,7 @@ namespace Aricie.PortalKeeper.AI.Search
         [ExtendedCategory("Search")]
         public EnabledFeature<AnonymousGeneralVariableInfo<HeuristicFunction>> HeuristicFunction { get; set; }
 
-        public SearchAgentResult PerformSearch(Object owner, IContextLookup globalVars)
+        public SearchAgentResult PerformSearch(object owner, IContextLookup globalVars)
         {
             var objInitialState = InitialState.Evaluate(owner, globalVars);
             var objProblemInfo = Problem.GetValue(owner, globalVars);
@@ -264,7 +264,7 @@ namespace Aricie.PortalKeeper.AI.Search
             }
         }
 
-        public List<String> PrintActions(SearchAgent agent)
+        public List<string> PrintActions(SearchAgent agent)
         {
             var toReturn = new List<String>();
             var actions =  agent.getActions().toArray();
@@ -275,7 +275,7 @@ namespace Aricie.PortalKeeper.AI.Search
             return toReturn;
         }
 
-        public Dictionary<String, String> PrintInstrumentation(SearchAgent agent)
+        public Dictionary<string, string> PrintInstrumentation(SearchAgent agent)
         {
             var toReturn = new Dictionary<String, String>();
             var instrumentation = agent.getInstrumentation();

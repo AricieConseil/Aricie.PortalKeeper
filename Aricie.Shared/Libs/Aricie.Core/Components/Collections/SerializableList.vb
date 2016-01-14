@@ -1,13 +1,25 @@
 Imports System.Xml.Serialization
 Imports Aricie.Services
 Imports System.Linq
+Imports System.Reflection
 Imports System.Xml
+Imports Aricie.ComponentModel
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Namespace Collections
+
+
+
+
+
+
     ''' <summary>
     ''' Generic List with a self contained sub types generic serialization mechanism
     ''' </summary>
-    
+
+    <SkipModelValidation()> _
+    <JsonConverter(GetType(SerializableListJsonSerializer))> _
     Public Class SerializableList(Of T)
         Inherits List(Of T)
         Implements IXmlSerializable
@@ -117,5 +129,50 @@ Namespace Collections
             Return New SerializableList(Of T)(objCollec)
         End Function
 
+        Public Function GetList() As List(Of T)
+            Return New List(Of T)(me)
+        End Function
+
+
     End Class
+
+
+
+        Public Class SerializableListJsonSerializer
+            Inherits JsonConverter
+        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+            
+            'writer.WriteStartObject()
+            'writer.WritePropertyName("Type")
+            'Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
+            'serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName( serializableValue.GetType()))
+            'writer.WritePropertyName("Value")
+            'serializer.Serialize(writer, serializableValue)
+            'writer.WriteEndObject()
+            Dim objList As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
+
+            Dim settings As New JsonSerializerSettings() With { .TypeNameHandling = TypeNameHandling.All }
+            
+            Dim strJson As String = JsonConvert.SerializeObject(value, settings)
+            'writer.WriteRaw(strJson)
+
+        End Sub
+
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, objSerializer As JsonSerializer) As Object
+
+
+            'Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
+
+            Return objSerializer.Deserialize(reader, objectType.BaseType)
+            
+
+        End Function
+
+        Public Overrides Function CanConvert(objectType As Type) As Boolean
+            Return GetType(SerializableList(Of )).IsAssignableFrom(objectType)
+        End Function
+    End Class
+
+
+
 End Namespace

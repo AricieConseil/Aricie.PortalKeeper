@@ -100,9 +100,11 @@ Namespace Services.Flee
         Private _ConstantIsSet As Boolean = False
         Private _Constant As TResult = Nothing
 
+        <DefaultValue(False)> _
         <ExtendedCategory("Evaluation")> _
         Public Property MakeConstant As Boolean
 
+        <DefaultValue(False)> _
         <ConditionalVisible("MakeConstant", True)> _
         <ExtendedCategory("Evaluation")> _
         Public Property NoCloning As Boolean
@@ -114,6 +116,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ConditionalVisible("MakeConstant", True)> _
         <ConditionalVisible("NoCloning", True)> _
         <ExtendedCategory("Evaluation")> _
@@ -126,6 +129,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(False)> _
         <ExtendedCategory("Evaluation")> _
         <AutoPostBack()> _
         Public Property OverrideOwner As Boolean
@@ -144,6 +148,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(DefaultOwnerMemberAccess)> _
         <ExtendedCategory("Evaluation")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property OwnerMemberAccess As BindingFlags
@@ -208,7 +213,7 @@ Namespace Services.Flee
 
         
 
-
+        <DefaultValue(false)> _
         <ExtendedCategory("Debug")> _
         Public Property BreakOnException As Boolean
             Get
@@ -219,6 +224,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(false)> _
         <ExtendedCategory("Debug")> _
         Public Property BreakAtCompileTime As Boolean
             Get
@@ -229,6 +235,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(false)> _
         <ExtendedCategory("Debug")> _
         Public Property BreakAtEvaluateTime As Boolean
             Get
@@ -239,6 +246,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(true)> _
         <ExtendedCategory("Debug")> _
         Public Property LogCompileExceptions As Boolean
             Get
@@ -249,6 +257,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(true)> _
         <ExtendedCategory("Debug")> _
         Public Property ThrowCompileExceptions As Boolean
             Get
@@ -259,6 +268,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(false)> _
         <ExtendedCategory("Debug")> _
         Public Property LogEvaluateExceptions As Boolean
             Get
@@ -269,6 +279,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <DefaultValue(true)> _
         <ExtendedCategory("Debug")> _
         Public Property ThrowEvaluateExceptions As Boolean
             Get
@@ -289,6 +300,7 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("StaticImports")> _
+        <DefaultValue(true)> _
         Public Property ImportBuiltinTypes() As Boolean
             Get
                 Return InternalImportBuiltinTypes
@@ -301,121 +313,128 @@ Namespace Services.Flee
 
 
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalDateTimeFormat
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        '    <Required(True)> _
-        'Public Property DateTimeFormat() As String
-        '    Get
-        '        Return InternalDateTimeFormat
-        '    End Get
-        '    Set(ByVal value As String)
-        '        InternalDateTimeFormat = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalDateTimeFormat
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <Required(True)> _
+        <DefaultValue(DefaultDateTimeFormat)> _
+        Public Property DateTimeFormat() As String
+            Get
+                Return InternalDateTimeFormat
+            End Get
+            Set(ByVal value As String)
+                InternalDateTimeFormat = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalRequireDigitsBeforeDecimalPoint
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        'Public Property RequireDigitsBeforeDecimalPoint() As Boolean
-        '    Get
-        '        Return InternalRequireDigitsBeforeDecimalPoint
-        '    End Get
-        '    Set(ByVal value As Boolean)
-        '        InternalRequireDigitsBeforeDecimalPoint = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalRequireDigitsBeforeDecimalPoint
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <DefaultValue(DefaultRequireDigitsBeforeDecimalPoint)> _
+        Public Property RequireDigitsBeforeDecimalPoint() As Boolean
+            Get
+                Return InternalRequireDigitsBeforeDecimalPoint
+            End Get
+            Set(ByVal value As Boolean)
+                InternalRequireDigitsBeforeDecimalPoint = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalDecimalSeparator
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        '    <Required(True)> _
-        'Public Property DecimalSeparator() As Char
-        '    Get
-        '        Return InternalDecimalSeparator
-        '    End Get
-        '    Set(ByVal value As Char)
-        '        InternalDecimalSeparator = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalDecimalSeparator
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <Required(True)> _
+        <DefaultValue(DefaultDecimalSeparator)> _
+        Public Property DecimalSeparator() As Char
+            Get
+                Return InternalDecimalSeparator
+            End Get
+            Set(ByVal value As Char)
+                InternalDecimalSeparator = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalFunctionArgumentSeparator
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        '    <Required(True)> _
-        'Public Property FunctionArgumentSeparator() As Char
-        '    Get
-        '        Return InternalFunctionArgumentSeparator
-        '    End Get
-        '    Set(ByVal value As Char)
-        '        InternalFunctionArgumentSeparator = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalFunctionArgumentSeparator
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <Required(True)> _
+        <DefaultValue(DefaultFunctionArgumentSeparator)> _
+        Public Property FunctionArgumentSeparator() As Char
+            Get
+                Return InternalFunctionArgumentSeparator
+            End Get
+            Set(ByVal value As Char)
+                InternalFunctionArgumentSeparator = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalParseCultureMode
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        'Public Property ParseCultureMode() As CultureInfoMode
-        '    Get
-        '        Return InternalParseCultureMode
-        '    End Get
-        '    Set(ByVal value As CultureInfoMode)
-        '        InternalParseCultureMode = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalParseCultureMode
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <DefaultValue(DefaultParseCultureMode)> _
+        Public Property ParseCultureMode() As CultureInfoMode
+            Get
+                Return InternalParseCultureMode
+            End Get
+            Set(ByVal value As CultureInfoMode)
+                InternalParseCultureMode = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalCustomCultureLocale
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        '<ConditionalVisible("ParseCultureMode", False, True, CultureInfoMode.Custom)> _
-        'Public Property CustomCultureLocale() As String
-        '    Get
-        '        Return InternalCustomCultureLocale
-        '    End Get
-        '    Set(ByVal value As String)
-        '        InternalCustomCultureLocale = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalCustomCultureLocale
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <ConditionalVisible("ParseCultureMode", False, True, CultureInfoMode.Custom)> _
+        <DefaultValue(DefaultCustomCultureLocale)> _
+        Public Property CustomCultureLocale() As String
+            Get
+                Return InternalCustomCultureLocale
+            End Get
+            Set(ByVal value As String)
+                InternalCustomCultureLocale = value
+            End Set
+        End Property
 
-        ' ''' <summary>
-        ' ''' gets or sets SimpleExpressionInfo.InternalRealLiteralDataType
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<ExtendedCategory("TechnicalSettings")> _
-        'Public Property RealLiteralDataType() As RealLiteralDataType
-        '    Get
-        '        Return InternalRealLiteralDataType
-        '    End Get
-        '    Set(ByVal value As RealLiteralDataType)
-        '        InternalRealLiteralDataType = value
-        '    End Set
-        'End Property
+        ''' <summary>
+        ''' gets or sets SimpleExpressionInfo.InternalRealLiteralDataType
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("TechnicalSettings")> _
+        <DefaultValue(DefaultRealLiteralDataType)> _
+        Public Property RealLiteralDataType() As RealLiteralDataType
+            Get
+                Return InternalRealLiteralDataType
+            End Get
+            Set(ByVal value As RealLiteralDataType)
+                InternalRealLiteralDataType = value
+            End Set
+        End Property
 
         Public Overrides Function Evaluate(owner As Object, globalVars As IContextLookup, objType As Type) As TResult
             If Me.MakeConstant Then

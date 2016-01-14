@@ -100,6 +100,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Newtonsoft.Json.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="SmartThreadPool, Version=2.2.3.0, Culture=neutral, PublicKeyToken=1126fe8b671e8a79, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\SmartThreadPool\SmartThreadPool.dll</HintPath>
@@ -190,6 +195,7 @@
     <Compile Include="ComponentModel\RelatedEntityDescriptor.vb" />
     <Compile Include="ComponentModel\RelationCardinality.vb" />
     <Compile Include="ComponentModel\RelationNature.vb" />
+    <Compile Include="ComponentModel\SubDotNetType.vb" />
     <Compile Include="ComponentModel\TypeDictionaryConverter.vb" />
     <Compile Include="ComponentModel\TypePickerMode.vb" />
     <Compile Include="Config\AddInfo.vb" />
@@ -679,6 +685,8 @@
     <Content Include="external\AjaxControlToolKit\zh-CHS\AjaxControlToolkit.resources.dll" />
     <Content Include="external\AjaxControlToolKit\zh-CHT\AjaxControlToolkit.resources.dll" />
     <Content Include="external\DomainName.Library.dll" />
+    <Content Include="external\Newtonsoft.Json.dll" />
+    <Content Include="external\Newtonsoft.Json.pdb" />
     <Content Include="external\Telerik.Web.UI.dll" />
     <EmbeddedResource Include="UI\WebControls\AutoCompleteTextBox.js" />
     <EmbeddedResource Include="Images\dropdown.png" />

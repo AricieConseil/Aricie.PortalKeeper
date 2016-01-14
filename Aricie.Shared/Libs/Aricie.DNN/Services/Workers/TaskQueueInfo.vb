@@ -1,4 +1,5 @@
 
+Imports System.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.Threading
 
@@ -24,6 +25,7 @@ Namespace Services.Workers
             Me._TaksWaitTime = New STimeSpan(taskWaitTime)
         End Sub
 
+         <DefaultValue(False)> _
         <ExtendedCategory("MainSettings")> _
         Public Property Synchronous As Boolean
 
@@ -36,6 +38,7 @@ Namespace Services.Workers
         ''' <remarks></remarks>
         <ExtendedCategory("MainSettings")> _
         <ConditionalVisible("Synchronous", True)> _
+         <DefaultValue(1)> _
         Public Property NbThreads() As Integer = 1
 
 
@@ -81,6 +84,7 @@ Namespace Services.Workers
         ''' <remarks></remarks>
         <ExtendedCategory("AdvancedSettings")> _
         <ConditionalVisible("Synchronous", True)> _
+         <DefaultValue(True)> _
         Public Property IsBackground() As Boolean = True
 
         <ExtendedCategory("AdvancedSettings")> _
@@ -89,16 +93,20 @@ Namespace Services.Workers
 
         <ExtendedCategory("AdvancedSettings")> _
         <ConditionalVisible("Synchronous", True)> _
+         <DefaultValue(ApartmentState.Unknown)> _
         Public Property ApartmentState As ApartmentState = ApartmentState.Unknown
 
+         <DefaultValue(ThreadPriority.Lowest)> _
         <ExtendedCategory("AdvancedSettings")> _
         <ConditionalVisible("Synchronous", True)> _
         Public Property ThreadPriority() As ThreadPriority = ThreadPriority.Lowest
 
+         <DefaultValue(False)> _
         <ExtendedCategory("AdvancedSettings")> _
         <ConditionalVisible("Synchronous", True)> _
         Public Property EnablePerformanceCounters As Boolean
 
+         <DefaultValue("Aricie-STP")> _
         <ConditionalVisible("Synchronous", True)> _
         <ConditionalVisible("EnablePerformanceCounters", False, True)> _
         <ExtendedCategory("AdvancedSettings")> _

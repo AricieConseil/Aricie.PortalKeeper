@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.ComponentModel
+﻿Imports System.ComponentModel
+Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports System.Globalization
 Imports DotNetNuke.UI.WebControls
@@ -8,22 +9,26 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ConditionProviderSettings(Of TEngineEvents As IConvertible)
         Inherits AutoProvider(Of ConditionProviderConfig(Of TEngineEvents), ConditionProviderSettings(Of TEngineEvents), IConditionProvider(Of TEngineEvents))
 
+         <DefaultValue(False)> _
         <ExtendedCategory("Condition")> _
         Public Property Negate() As Boolean
 
+         <DefaultValue(False)> _
         <ExtendedCategory("Condition")> _
         Public Property IsMandatory() As Boolean
 
-
+         <DefaultValue(LoggingLevel.Detailed)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property LoggingLevel As LoggingLevel = LoggingLevel.Detailed
 
         <ExtendedCategory("TechnicalSettings")> _
         Public Property LogDumpSettings As New DumpSettings()
 
+         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property DebuggerBreak As Boolean
 
+         <DefaultValue(False)> _
         <SortOrder(200)> _
         <ExtendedCategory("PreConditionActions")> _
         Public Property AddPreConditionActions As Boolean
@@ -48,11 +53,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+         <DefaultValue(False)> _
         <SortOrder(200)> _
         <ConditionalVisible("AddPreConditionActions", False, True)> _
         <ExtendedCategory("PreConditionActions")> _
         Public Property StopActions As Boolean
 
+         <DefaultValue(False)> _
         <SortOrder(200)> _
         <ConditionalVisible("StopActions", False, True)> _
         <ConditionalVisible("AddPreConditionActions", False, True)> _

@@ -1,4 +1,5 @@
 ﻿
+Imports System.ComponentModel
 Imports Aricie.DNN.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls.EditControls
@@ -15,6 +16,8 @@ Imports System.Linq
 Imports Aricie.Services
 Imports System.Globalization
 Imports Aricie.DNN.Services.Files
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     
@@ -43,7 +46,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Me.ImportDefaultProviders()
         End Sub
 
-        <ExtendedCategory("Rules")> _
+        <JsonConverter(GetType(StringEnumConverter))>
+        <ExtendedCategory("Rules")>
         Public Overridable Property Mode As RuleEngineMode
 
         <ExtendedCategory("Variables")> _
@@ -79,6 +83,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("TechnicalSettings")> _
         Public Property SmartFileSettings As New SmartFileInfo()
 
+         <DefaultValue(LoggingLevel.None)> _
         <SortOrder(1000)> _
         <ExtendedCategory("TechnicalSettings")> _
         Public Property LoggingLevel As LoggingLevel = LoggingLevel.None

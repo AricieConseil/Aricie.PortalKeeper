@@ -44,6 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 <TrialLimited(TrialPropertyMode.NoAdd Or TrialPropertyMode.NoDelete)> _
         Public Property Condition() As KeeperCondition(Of TEngineEvents) = New KeeperCondition(Of TEngineEvents)
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property HasEvent As Boolean
             Get
@@ -67,6 +68,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
+        <DefaultValue(False)> _
         <ExtendedCategory("RuleSettings")> _
         Public Property StopRule() As Boolean
 

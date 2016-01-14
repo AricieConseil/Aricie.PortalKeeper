@@ -5961,10 +5961,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="Simple.Text" xml:space="preserve">
     <value>Simple</value>
   </data>
-  <data name="SimpleOrExpression`1_Expression.Help" xml:space="preserve">
+  <data name="SimpleOrExpression`1_EditableExpression.Help" xml:space="preserve">
     <value>Enter below a Flee expression to be evaluated at runtime given a context owner, local and global variables, and static imports. Lookup the &lt;a href="http://flee.codeplex.com/wikipage?title=LanguageReference&amp;referringTitle=Home"&gt; language reference &lt;/a&gt; for more information.</value>
   </data>
-  <data name="SimpleOrExpression`1_Expression.Text" xml:space="preserve">
+  <data name="SimpleOrExpression`1_EditableExpression.Text" xml:space="preserve">
     <value>Dynamic Expression</value>
   </data>
   <data name="SimpleOrExpressionBase`2_Simple.Required" xml:space="preserve">
@@ -8261,10 +8261,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="SimpleExpression`1_Expression.Header" xml:space="preserve">
     <value>Expression</value>
   </data>
-  <data name="SimpleOrExpression`2_Expression.Help" xml:space="preserve">
+  <data name="SimpleOrExpression`2_EditableExpression.Help" xml:space="preserve">
     <value>Enter an expression that evaluates to the desired type</value>
   </data>
-  <data name="SimpleOrExpression`2_Expression.Text" xml:space="preserve">
+  <data name="SimpleOrExpression`2_EditableExpression.Text" xml:space="preserve">
     <value>Expression</value>
   </data>
   <data name="ToBase64.Text" xml:space="preserve">
@@ -11342,8 +11342,14 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="TreeSearch.Text" xml:space="preserve">
     <value>Tree Search</value>
   </data>
+  <data name="AC3.Text" xml:space="preserve">
+    <value>AC-3</value>
+  </data>
   <data name="AlphaBeta.Text" xml:space="preserve">
     <value>AlphaBeta</value>
+  </data>
+  <data name="BacktrackingStrategy.Text" xml:space="preserve">
+    <value>Backtracking</value>
   </data>
   <data name="Bidirectional.Text" xml:space="preserve">
     <value>Bidirectional</value>
@@ -11354,17 +11360,176 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ConnectFour.Text" xml:space="preserve">
     <value>Connect Four</value>
   </data>
+  <data name="ConnectFourIDAlphaBeta.Text" xml:space="preserve">
+    <value>Connect Four Iterative Deepening Alpha Beta</value>
+  </data>
+  <data name="CSPInfo_CSP.Help" xml:space="preserve">
+    <value>Enter a variable that resolves to a csp as defined by the corresponding .Net base class</value>
+  </data>
+  <data name="CSPInfo_CSP.Text" xml:space="preserve">
+    <value>Constraint Satisfication Problem</value>
+  </data>
+  <data name="CSPInfo_Listeners.Header" xml:space="preserve">
+    <value>State Listeners</value>
+  </data>
+  <data name="CSPInfo_Problem.Header" xml:space="preserve">
+    <value>Problem</value>
+  </data>
+  <data name="CSPInfo_StateListeners.Help" xml:space="preserve">
+    <value>Optionally define a list of state listeners to collect information during the CSP solving</value>
+  </data>
+  <data name="CSPInfo_StateListeners.Text" xml:space="preserve">
+    <value>State Listeners</value>
+  </data>
+  <data name="CSPInfo_Strategy.Header" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="CSPInfo_Strategy.Help" xml:space="preserve">
+    <value>Enter a variable that resolves to a csp Solution Strategy as defined by the corresponding .Net interface</value>
+  </data>
+  <data name="CSPInfo_Strategy.Text" xml:space="preserve">
+    <value>Solution Strategy</value>
+  </data>
+  <data name="CSPStrategyInfo_EnableLCV.Help" xml:space="preserve">
+    <value>optional heuristics to  order the domain values of variables rather that taking them in the natural domain order.</value>
+  </data>
+  <data name="CSPStrategyInfo_EnableLCV.Text" xml:space="preserve">
+    <value>Least Constraining Value Heuristics </value>
+  </data>
+  <data name="CSPStrategyInfo_Inference.Help" xml:space="preserve">
+    <value>Primitive operation, which tries to prune out values from the CSP which are not possible anymore when extending the given assignment to a solution. Several algorithm are available: Forward checking, AC-3 and None (domain compactification).</value>
+  </data>
+  <data name="CSPStrategyInfo_Inference.Text" xml:space="preserve">
+    <value>Inference heuristic</value>
+  </data>
+  <data name="CSPStrategyInfo_MaxSteps.Help" xml:space="preserve">
+    <value>Specifies the maximum steps of local search.</value>
+  </data>
+  <data name="CSPStrategyInfo_MaxSteps.Text" xml:space="preserve">
+    <value>Max Steps</value>
+  </data>
+  <data name="CSPStrategyInfo_Selection.Help" xml:space="preserve">
+    <value>several algorithms are available for selecting unassigned variables: minimum-remaining-values heuristic, degree heuristic, and default order (no heuristic)</value>
+  </data>
+  <data name="CSPStrategyInfo_Selection.Text" xml:space="preserve">
+    <value>Selection heuristic</value>
+  </data>
+  <data name="CSPStrategyInfo_StrategyType.Text" xml:space="preserve">
+    <value>CSP Strategy</value>
+  </data>
+  <data name="CSPStratetgyInfo_StrategyType.Help" xml:space="preserve">
+    <value>The following  strategies for for constraint satisfaction problem are available: A simple backtracking algorithm modeled on the recursive depth-first search, an improved backpropagation strategy with several options for inference and selection and least constraint value, and a  MIN-CONFLICTS algorithm for solving CSPs by local search with a max number of steps.</value>
+  </data>
+  <data name="DefaultOrder.Text" xml:space="preserve">
+    <value>Default Order</value>
+  </data>
+  <data name="DynamicConstraint_ConstraintExpression.Help" xml:space="preserve">
+    <value>Define here an arbitrary Flee expression making use of the available variables. You must specify which variables are concerned by the contraint in the scope below.</value>
+  </data>
+  <data name="DynamicConstraint_ConstraintExpression.Text" xml:space="preserve">
+    <value>Constraint Expression</value>
+  </data>
+  <data name="DynamicConstraint_Scope.Help" xml:space="preserve">
+    <value>Explicitally enter the name of the variables within the constraint (even if the expression makes it obvious)</value>
+  </data>
+  <data name="DynamicConstraint_Scope.Text" xml:space="preserve">
+    <value>Scope Variables</value>
+  </data>
+  <data name="DynamicCSPInfo_Constraints.Header" xml:space="preserve">
+    <value>Constraints</value>
+  </data>
+  <data name="DynamicCSPInfo_Constraints.Help" xml:space="preserve">
+    <value>Constraints are a list of conditions that the variables must meet. Dynamic constraints are made from expressions to be evaluated, together with the list of variables involved.</value>
+  </data>
+  <data name="DynamicCSPInfo_Constraints.Text" xml:space="preserve">
+    <value>Constraints</value>
+  </data>
+  <data name="DynamicCSPInfo_Domains.Header" xml:space="preserve">
+    <value>Domains</value>
+  </data>
+  <data name="DynamicCSPInfo_Domains.Help" xml:space="preserve">
+    <value>Domains are sets of values that the variables can have. They are named and each variable must be assigned a domain. Any IEnumerable object can be assigned to a domain.</value>
+  </data>
+  <data name="DynamicCSPInfo_Domains.Text" xml:space="preserve">
+    <value>Domains</value>
+  </data>
+  <data name="DynamicCSPInfo_VariableDomains.Help" xml:space="preserve">
+    <value>When more than a domain is available, variable must have domains associated through a dictionary between variable names and domain names.</value>
+  </data>
+  <data name="DynamicCSPInfo_VariableDomains.Text" xml:space="preserve">
+    <value>Variable domains</value>
+  </data>
+  <data name="DynamicCSPInfo_Variables.Header" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="DynamicCSPInfo_Variables.Help" xml:space="preserve">
+    <value>Variable are a list of items that can be labelled. simple types are directly converted to string</value>
+  </data>
+  <data name="DynamicCSPInfo_Variables.Text" xml:space="preserve">
+    <value>Variables</value>
+  </data>
+  <data name="DynamicParameter_DefaultValue.Help" xml:space="preserve">
+    <value>You can define a custom default value for your optional parameter.</value>
+  </data>
+  <data name="DynamicParameter_DefaultValue.Text" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="ForwardChecking.Text" xml:space="preserve">
+    <value>Forward Checking</value>
+  </data>
+  <data name="GameAgentInfo_Game.Header" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="GameAgentInfo_Game.Text" xml:space="preserve">
+    <value>Game</value>
+  </data>
+  <data name="GameAgentInfo_State.Header" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="GameAgentInfo_State.Text" xml:space="preserve">
+    <value>State</value>
+  </data>
+  <data name="GameAgentInfo_Strategy.Header" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
+  <data name="GameAgentInfo_Strategy.Text" xml:space="preserve">
+    <value>Strategy</value>
+  </data>
   <data name="GamesDemoInfo_Selection.Text" xml:space="preserve">
     <value>Selected Game</value>
+  </data>
+  <data name="GameStrategyInfo_MaxDurationSeconds.Text" xml:space="preserve">
+    <value>Maximum Duration (s)</value>
+  </data>
+  <data name="GameStrategyInfo_MaxUtility.Text" xml:space="preserve">
+    <value>Maximum Utility</value>
+  </data>
+  <data name="GameStrategyInfo_MinUtility.Text" xml:space="preserve">
+    <value>Minimum Utility</value>
   </data>
   <data name="GameStrategyInfo_StrategyType.Text" xml:space="preserve">
     <value>Strategy Type</value>
   </data>
+  <data name="ImprovedBacktrackingStrategy.Text" xml:space="preserve">
+    <value>Improved Backtracking</value>
+  </data>
   <data name="Incremental.Text" xml:space="preserve">
     <value>Incremental</value>
   </data>
+  <data name="IterativeDeepeningAlphaBeta.Text" xml:space="preserve">
+    <value>Iterative Deepening AlphaBeta</value>
+  </data>
+  <data name="MinConflictsStrategy.Text" xml:space="preserve">
+    <value>Min Conflicts</value>
+  </data>
   <data name="MiniMax.Text" xml:space="preserve">
     <value>MiniMax</value>
+  </data>
+  <data name="MRV.Text" xml:space="preserve">
+    <value>Minimum Remaining Value</value>
+  </data>
+  <data name="MRVDeg.Text" xml:space="preserve">
+    <value>MRV Degree</value>
   </data>
   <data name="ProblemInfo_ResultFunction.Help" xml:space="preserve">
     <value>A result function returns the resulting state given a start state and an action</value>
