@@ -41,7 +41,8 @@ Namespace ComponentModel
         ' Determines whether a member is required or not and sets the appropriate JsonProperty settings
         Private Sub ConfigureProperty(member As MemberInfo, [property] As JsonProperty)
             ' Check for NonSerialized attributes
-            If Attribute.IsDefined(member, GetType(NonSerializedAttribute), True) OrElse Attribute.IsDefined(member, GetType(XmlIgnoreAttribute), True) Then
+            If Attribute.IsDefined(member, GetType(NonSerializedAttribute), True) OrElse Attribute.IsDefined(member, GetType(XmlIgnoreAttribute), True) _
+                AndAlso Not Attribute.IsDefined(member, GetType(Newtonsoft.Json.JsonPropertyAttribute), True) Then
                 [property].Ignored = True
             End If
             'if (typeof(ICollection).IsAssignableFrom(property.PropertyType)  )

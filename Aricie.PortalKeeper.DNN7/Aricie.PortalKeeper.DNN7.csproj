@@ -122,6 +122,7 @@
   <ItemGroup>
     <Compile Include="Caching\DiskOutputCacheItem.cs" />
     <Compile Include="Caching\DiskOutputCacheProvider.cs" />
+    <Compile Include="RestServices\BodyModelValidator.cs" />
     <Compile Include="RestServices\BrowserJsonFormatter.cs" />
     <Compile Include="RestServices\CreateHttpResponseAction.cs" />
     <Compile Include="Dnn7ObsoleteDotNetProvider.cs" />
