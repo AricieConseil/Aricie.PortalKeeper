@@ -198,9 +198,10 @@ Namespace Services.Flee
             End Get
         End Property
 
-        <JsonProperty(Required :=  Required.Always)> _
-        <JsonConverter(gettype(StringEnumConverter))> _
-        <ConditionalVisible("HasType", False, True)>
+        <DefaultValue(VariableMode.Expression)> _
+        <JsonProperty()> _
+        <JsonConverter(GetType(StringEnumConverter))> _
+        <ConditionalVisible("HasType", False, True)> _
         Public Property VariableMode As VariableMode = VariableMode.Expression
 
         <ConditionalVisible("VariableMode", False, True, VariableMode.SmartFile)>
@@ -518,6 +519,8 @@ Namespace Services.Flee
             Dim message As String = Localization.GetString("InstanceReset.Message", ape.LocalResourceFile)
             ape.DisplayMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
         End Sub
+        
+
 
         <ConditionalVisible("HasTargetType", False, True)>
         <ConditionalVisible("HasParameters")>
