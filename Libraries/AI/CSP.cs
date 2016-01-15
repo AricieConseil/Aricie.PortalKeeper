@@ -11,9 +11,12 @@ using Aricie.DNN.Modules.PortalKeeper;
 using Aricie.DNN.Services;
 using Aricie.DNN.Services.Flee;
 using Aricie.DNN.UI.Attributes;
+using Aricie.DNN.UI.WebControls;
 using Aricie.PortalKeeper.AI.Games;
 using Aricie.PortalKeeper.AI.Search;
 using Aricie.Services;
+using DotNetNuke.UI.Skins.Controls;
+using DotNetNuke.UI.WebControls;
 using java.lang;
 using java.util;
 using Newtonsoft.Json;
@@ -135,18 +138,20 @@ namespace Aricie.PortalKeeper.AI.CSP
             StateListeners = new Variables<CSPStateListener>();
         }
 
+       
+        [ExtendedCategory("Strategy")]
+        public AnonymousGeneralVariableInfo<aima.core.search.csp.SolutionStrategy> Strategy { get; set; }
+
         [ExtendedCategory("Problem")]
         public AnonymousGeneralVariableInfo<aima.core.search.csp.CSP> CSP { get; set; }
 
-        [ExtendedCategory("Strategy")]
-        public AnonymousGeneralVariableInfo<aima.core.search.csp.SolutionStrategy> Strategy { get; set; }
 
         [ExtendedCategory("Listeners")]
         public Variables<CSPStateListener> StateListeners { get; set; }
         
         public Assignment SolveCSP(object owner, IContextLookup globalVars)
         {
-            var objCSP = CSP.EvaluateTyped(owner, globalVars);
+           
             var objStrategy = Strategy.EvaluateTyped(owner, globalVars);
             var objListeners = StateListeners.EvaluateGeneric(owner, globalVars);
             foreach (KeyValuePair<string, CSPStateListener> keyValuePairListener in objListeners)
@@ -154,7 +159,7 @@ namespace Aricie.PortalKeeper.AI.CSP
                 objStrategy.addCSPStateListener(keyValuePairListener.Value);
                 globalVars.Items[keyValuePairListener.Key] = keyValuePairListener.Value;
             }
-            
+            var objCSP = CSP.EvaluateTyped(owner, globalVars);
             return objStrategy.solve(objCSP);
         }
 
@@ -163,10 +168,14 @@ namespace Aricie.PortalKeeper.AI.CSP
     }
 
 
+    [ActionButton(IconName.ClockO, IconOptions.Normal)]
     public class StepCounter :  CSPStateListener
     {
-        public int AssignmentCount { get; private set; }
-        public int DomainCount { get; private set; }
+        [IsReadOnly(true)]
+        public int AssignmentCount { get; set; }
+
+        [IsReadOnly(true)]
+        public int DomainCount { get; set; }
 
         public StepCounter()
         {
@@ -189,8 +198,7 @@ namespace Aricie.PortalKeeper.AI.CSP
             this.AssignmentCount = 0;
             this.DomainCount = 0;
         }
-
-      
+        
         public virtual string getResults()
         {
             StringBuffer stringBuffer = new StringBuffer();
@@ -198,6 +206,21 @@ namespace Aricie.PortalKeeper.AI.CSP
             if (this.DomainCount != 0)
                 stringBuffer.append(new StringBuilder().append(", domain changes: ").append(this.DomainCount).toString());
             return stringBuffer.toString();
+        }
+
+
+        [ActionButton(IconName.Refresh, IconOptions.Normal)]
+        public void Reset(AriciePropertyEditorControl ape)
+        {
+
+            reset();
+            ape.DisplayMessage("Counter was reset", ModuleMessage.ModuleMessageType.GreenSuccess);
+            ape.ItemChanged = true;
+        }
+
+        public override string ToString()
+        {
+            return getResults();
         }
     }
 

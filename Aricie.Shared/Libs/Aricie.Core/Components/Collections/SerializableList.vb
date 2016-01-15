@@ -157,7 +157,7 @@ Namespace Collections
 
         Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
 
-             Dim toReturn as Object = existingValue
+             Dim toReturn as Object '= existingValue
             if toReturn Is nothing
                 toReturn = ReflectionHelper.CreateObject(objectType)
             End If

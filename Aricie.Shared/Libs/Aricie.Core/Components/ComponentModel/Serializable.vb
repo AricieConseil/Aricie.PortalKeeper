@@ -129,7 +129,7 @@ Namespace ComponentModel
         End Sub
 
         Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
-            Dim toReturn as Object = existingValue
+            Dim toReturn as Object '= existingValue
             if toReturn Is nothing
                 toReturn = ReflectionHelper.CreateObject(objectType)
             End If
@@ -141,10 +141,10 @@ Namespace ComponentModel
             Dim valueproperty As JProperty = jsonobject.Property("Value")
             Dim objvalue As Object = JsonConvert.DeserializeObject(valueproperty.Value.ToString(), targettype)
             ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value").SetValue(toReturn, objvalue, Nothing)
-            Return toreturn
+            Return toReturn
 
 
-           'todo: some alternate of that kind should work for a better layout
+            'todo: some alternate of that kind should work for a better layout
             'Dim targetProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value")
             'Dim previousTypeNameHandling = serializer.TypeNameHandling
             'serializer.TypeNameHandling = TypeNameHandling.Objects
