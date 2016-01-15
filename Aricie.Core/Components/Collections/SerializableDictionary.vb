@@ -1,14 +1,20 @@
+Imports System.Reflection
 Imports System.Xml.Serialization
 Imports System.Runtime.Serialization
 Imports System.Xml.Schema
 Imports System.Xml
+Imports Aricie.ComponentModel
+Imports Aricie.Services
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Namespace Collections
     ''' <summary>
     ''' Generic Serializable Dictionary with a self contained sub types generic serialization mechanism
     ''' </summary>
     
-        <XmlRoot("dictionary")> _
+    <JsonConverter(GetType(SerializableDictionaryJsonSerializer))> _
+    <XmlRoot("dictionary")> _
     Public Class SerializableDictionary(Of TKey, TValue)
         Inherits Dictionary(Of TKey, TValue)
         Implements IXmlSerializable
@@ -91,6 +97,10 @@ Namespace Collections
             Return New List(Of TValue)(Me.Values)
         End Function
 
+        Public  Function  GetDictionary () As Dictionary(Of TKey,TValue)
+            Return new Dictionary(Of TKey,TValue)(me)
+        End Function
+
     End Class
 
 
@@ -168,6 +178,52 @@ Namespace Collections
 
         'End Class
 
+    End Class
+
+
+
+
+     Public Class SerializableDictionaryJsonSerializer
+            Inherits JsonConverter
+        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+            
+
+            Dim objDico As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetDictionary"), MethodInfo).Invoke(value, Nothing)
+            Dim previousTypeNameHandling = serializer.TypeNameHandling
+            serializer.TypeNameHandling = TypeNameHandling.Auto
+            serializer.Serialize(writer, objDico)
+            serializer.TypeNameHandling = previousTypeNameHandling
+
+        End Sub
+
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, objSerializer As JsonSerializer) As Object
+
+              Dim toReturn as Object = existingValue
+            if toReturn Is nothing
+                toReturn = ReflectionHelper.CreateObject(objectType)
+            End If
+
+           Dim jsonobject As JObject = JObject.Load(reader)
+            Dim deserialized As Object 
+            
+            Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
+            settings.SetDefaultSettings()
+           deserialized= JsonConvert.DeserializeObject(jsonobject.ToString(), objectType.BaseType, settings)
+
+            
+            Dim deserializedList As IDictionary = DirectCast( deserialized, IDictionary)
+            For Each k As Object In deserializedList.Keys
+               DirectCast( toReturn, IDictionary)(k) = deserializedList(k)
+            Next
+            
+            Return toReturn
+            
+
+        End Function
+
+        Public Overrides Function CanConvert(objectType As Type) As Boolean
+            Return GetType(SerializableDictionary(Of, )).IsAssignableFrom(objectType)
+        End Function
     End Class
 
 

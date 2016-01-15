@@ -6,18 +6,36 @@ Imports System.Security.Permissions
 Imports System.ComponentModel
 Imports System.ComponentModel.Design.Serialization
 Imports System.Globalization
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Linq
 
 Namespace ComponentModel
    
+    
+     Public Class CDataJsonSerializer
+        Inherits JsonConverter
 
+        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+            Dim cDataVal = DirectCast(value, CData)
+            writer.WriteValue(cDataVal.Value)
+        End Sub
 
+        Public Overrides Function CanConvert(objectType As Type) As Boolean
+            Return objectType is GetType(CData)
+        End Function
+
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
+            Dim objJValue As JToken = JValue.Load(reader)
+            Return new CData(objJValue.ToString())
+        End Function
+    End Class
 
 
     ''' <summary>
     ''' A class to represent a bloc of CData while being serialize.
     ''' </summary>
     ''' <remarks>Implements IConvertible for safe conversion to value types</remarks>
-    
+    <JsonConverter(GetType(CDataJsonSerializer))>
     <DefaultMember("Value")> _
     <TypeConverter(GetType(CData.CDataConverter))> _
     Public Class CData
