@@ -1,5 +1,6 @@
 ﻿Imports System.ComponentModel
 Imports System.Linq
+Imports System.Reflection
 Imports System.Xml.Serialization
 Imports System.Xml
 Imports System.Xml.Schema
@@ -9,34 +10,7 @@ Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
 Namespace ComponentModel
-    Public Class SerializableJsonSerializer
-        Inherits JsonConverter
-        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
-            
-            writer.WriteStartObject()
-            writer.WritePropertyName("Type")
-            Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
-            serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName( serializableValue.GetType()))
-            writer.WritePropertyName("Value")
-            serializer.Serialize(writer, serializableValue)
-            writer.WriteEndObject()
-        End Sub
 
-        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
-            Dim toReturn As Object = existingValue
-            Dim jsonObject As JObject = JObject.Load(reader)
-            Dim targetTypeProperty as JProperty = jsonObject.Property("Type")
-            dim targetType As Type = ReflectionHelper.CreateType(targetTypeProperty.Value.ToString())
-            Dim valueProperty as JProperty = jsonObject.Property("Value")
-            Dim objValue As Object = JsonConvert.DeserializeObject(valueProperty.Value.ToString(),targetType)
-            ReflectionHelper.GetPropertiesDictionary( toReturn.GetType())("Value").SetValue(toReturn, objValue, Nothing)
-            Return toreturn
-        End Function
-
-        Public Overrides Function CanConvert(objectType As Type) As Boolean
-            Return GetType(Serializable(Of )).IsAssignableFrom(objectType)
-        End Function
-    End Class
 
     <JsonConverter(GetType(SerializableJsonSerializer))>
     Public Class Serializable(Of T)
@@ -53,7 +27,7 @@ Namespace ComponentModel
         End Sub
 
         
-
+        <JsonProperty()> _
         <XmlIgnore()>
         Public Property Value As T
 
@@ -128,5 +102,62 @@ Namespace ComponentModel
         End Function
 
 
+       
+
+
     End Class
+
+
+       Public Class SerializableJsonSerializer
+        Inherits JsonConverter
+        Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
+
+            writer.WriteStartObject()
+            writer.WritePropertyName("TypeName")
+            Dim serializableValue As Object = ReflectionHelper.GetPropertiesDictionary(value.GetType())("Value").GetValue(value, Nothing)
+            serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName(serializableValue.GetType()))
+            writer.WritePropertyName("Value")
+            serializer.Serialize(writer, serializableValue)
+            writer.WriteEndObject()
+
+            'Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
+            ' Dim previousTypeNameHandling = serializer.TypeNameHandling
+            'serializer.TypeNameHandling = TypeNameHandling.Objects
+            'serializer.Serialize(writer, serializableValue)
+            'serializer.TypeNameHandling = previousTypeNameHandling
+
+        End Sub
+
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
+            Dim toReturn as Object = existingValue
+            if toReturn Is nothing
+                toReturn = ReflectionHelper.CreateObject(objectType)
+            End If
+
+
+            Dim jsonobject As JObject = JObject.Load(reader)
+            Dim targettypeproperty As JProperty = jsonobject.Property("TypeName")
+            Dim targettype As Type = ReflectionHelper.CreateType(targettypeproperty.Value.ToString())
+            Dim valueproperty As JProperty = jsonobject.Property("Value")
+            Dim objvalue As Object = JsonConvert.DeserializeObject(valueproperty.Value.ToString(), targettype)
+            ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value").SetValue(toReturn, objvalue, Nothing)
+            Return toreturn
+
+
+           'todo: some alternate of that kind should work for a better layout
+            'Dim targetProp As PropertyInfo = ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value")
+            'Dim previousTypeNameHandling = serializer.TypeNameHandling
+            'serializer.TypeNameHandling = TypeNameHandling.Objects
+            'Dim objValue As Object = serializer.Deserialize(reader, targetProp.PropertyType)
+            'serializer.TypeNameHandling = previousTypeNameHandling
+            'targetProp.SetValue(toReturn, objValue, Nothing)
+            'Return toReturn
+
+        End Function
+
+        Public Overrides Function CanConvert(objectType As Type) As Boolean
+            Return GetType(Serializable(Of )).IsAssignableFrom(objectType)
+        End Function
+    End Class
+
 End Namespace

@@ -5,12 +5,14 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
+Imports Newtonsoft.Json
 
 Namespace Services.Flee
     <Serializable()>
     Public Class SimpleOrExpression(Of T)
         Inherits SimpleOrExpressionBase(Of T)
 
+        Private _expression As  FleeExpressionInfo(Of T)
 
         Public Sub New()
 
@@ -44,7 +46,20 @@ Namespace Services.Flee
 
 
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
-        Public Property Expression As New FleeExpressionInfo(Of T)
+        Public Property Expression As FleeExpressionInfo(Of T)
+            Get
+                 if Mode = SimpleOrExpressionMode.Simple
+                    Return Nothing
+                End If
+                If _expression Is Nothing
+                    _expression = New FleeExpressionInfo(Of T)()
+                End If
+                Return _expression
+            End Get
+            Set
+                _expression = value
+            End Set
+        End Property
 
         Public Overrides Function GetExpression() As SimpleExpression(Of T)
             Return Expression
@@ -100,7 +115,7 @@ Namespace Services.Flee
     Public Class SimpleOrExpression(Of TSimple, TExpression)
         Inherits SimpleOrExpressionValue(Of TSimple, TExpression)
 
-        Private _expression As New FleeExpressionInfo(Of TExpression)()
+        Private _expression As  FleeExpressionInfo(Of TExpression)
 
         Public Sub New()
 
@@ -126,6 +141,9 @@ Namespace Services.Flee
             Get
                 if Mode = SimpleOrExpressionMode.Simple
                     Return Nothing
+                End If
+                If _expression Is Nothing
+                    _expression = New FleeExpressionInfo(Of TExpression)()
                 End If
                 Return _expression
             End Get
@@ -188,6 +206,7 @@ Namespace Services.Flee
     <Serializable()>
     Public MustInherit Class SimpleOrExpressionBase(Of TSimple, TExpression)
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property FriendlyName As String
             Get
@@ -199,6 +218,7 @@ Namespace Services.Flee
             End Get
         End Property
 
+        '<JsonProperty()> _
         Public Property Mode As SimpleOrExpressionMode
 
         <DefaultValue(False)> _
@@ -246,7 +266,7 @@ Namespace Services.Flee
             Get
                 If Not IsSubType() Then
                     Dim newSimple = GetSimple()
-                    If Mode = SimpleOrExpressionMode.Expression OrElse newSimple Is Nothing OrElse newSimple.Equals(_Simple) Then
+                    If Mode = SimpleOrExpressionMode.Expression OrElse (newSimple IsNot Nothing AndAlso newSimple.Equals(_Simple)) Then
                         Return Nothing
                     End If
                     Return _Simple

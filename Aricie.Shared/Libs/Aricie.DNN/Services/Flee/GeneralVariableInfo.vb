@@ -24,6 +24,7 @@ Namespace Services.Flee
      Public Class AnonymousGeneralVariableInfo
         Inherits GeneralVariableInfo
 
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides Property Name As String
@@ -35,6 +36,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides Property Decription As CData
@@ -51,6 +53,7 @@ Namespace Services.Flee
     Public Class AnonymousGeneralVariableInfo(Of T)
         Inherits GeneralVariableInfo(Of T)
 
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides Property Name As String
@@ -62,6 +65,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides Property Decription As CData
@@ -194,7 +198,7 @@ Namespace Services.Flee
             End Get
         End Property
 
-        <JsonProperty()> _
+        <JsonProperty(Required :=  Required.Always)> _
         <JsonConverter(gettype(StringEnumConverter))> _
         <ConditionalVisible("HasType", False, True)>
         Public Property VariableMode As VariableMode = VariableMode.Expression
@@ -263,7 +267,7 @@ Namespace Services.Flee
         ''' <remarks></remarks>
         <ConditionalVisible("HasType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)>
-        <XmlIgnore()>
+        <XmlIgnore()> _
         Public Property Instance As Object
             Get
                 If Me.DotNetType.GetDotNetType() IsNot Nothing AndAlso (Me._Instance Is Nothing _
@@ -320,6 +324,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <JsonProperty(TypeNameHandling :=  TypeNameHandling.Objects)> _
         <Browsable(False)>
         Public Property SerializableInstance() As Serializable(Of Object)
             Get

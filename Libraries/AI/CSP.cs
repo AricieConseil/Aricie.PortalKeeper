@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using aima.core.search.csp;
 using Aricie.Collections;
+using Aricie.ComponentModel;
 using Aricie.DNN.ComponentModel;
 using Aricie.DNN.Modules.PortalKeeper;
 using Aricie.DNN.Services;
@@ -124,7 +125,7 @@ namespace Aricie.PortalKeeper.AI.CSP
     
    
 
-
+    [SkipModelValidation()]
     public class CSPInfo
     {
         public CSPInfo()
@@ -145,6 +146,7 @@ namespace Aricie.PortalKeeper.AI.CSP
         
         public Assignment SolveCSP(object owner, IContextLookup globalVars)
         {
+            var objCSP = CSP.EvaluateTyped(owner, globalVars);
             var objStrategy = Strategy.EvaluateTyped(owner, globalVars);
             var objListeners = StateListeners.EvaluateGeneric(owner, globalVars);
             foreach (KeyValuePair<string, CSPStateListener> keyValuePairListener in objListeners)
@@ -152,7 +154,7 @@ namespace Aricie.PortalKeeper.AI.CSP
                 objStrategy.addCSPStateListener(keyValuePairListener.Value);
                 globalVars.Items[keyValuePairListener.Key] = keyValuePairListener.Value;
             }
-            var objCSP = CSP.EvaluateTyped(owner, globalVars);
+            
             return objStrategy.solve(objCSP);
         }
 

@@ -18,8 +18,8 @@ Namespace Collections
     ''' Generic List with a self contained sub types generic serialization mechanism
     ''' </summary>
 
-    
-    '<JsonConverter(GetType(SerializableListJsonSerializer))> _
+
+    <JsonConverter(GetType(SerializableListJsonSerializer))> _
     <SkipModelValidation()> _
     Public Class SerializableList(Of T)
         Inherits List(Of T)
@@ -135,38 +135,53 @@ Namespace Collections
         End Function
 
 
+
+        
+
+
     End Class
 
 
-
-        Public Class SerializableListJsonSerializer
+    Public Class SerializableListJsonSerializer
             Inherits JsonConverter
         Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
             
-            'writer.WriteStartObject()
-            'writer.WritePropertyName("Type")
-            'Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
-            'serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName( serializableValue.GetType()))
-            'writer.WritePropertyName("Value")
-            'serializer.Serialize(writer, serializableValue)
-            'writer.WriteEndObject()
-            Dim objList As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
 
-            Dim settings As New JsonSerializerSettings() With { .TypeNameHandling = TypeNameHandling.All }
-            settings.SetDefaultSettings()
-            
-            Dim strJson As String = JsonConvert.SerializeObject(objList, settings)
-            writer.WriteRaw(strJson)
+            Dim objList As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
+            Dim previousTypeNameHandling = serializer.TypeNameHandling
+            serializer.TypeNameHandling = TypeNameHandling.Auto
+            serializer.Serialize(writer, objList)
+            serializer.TypeNameHandling = previousTypeNameHandling
 
         End Sub
 
-        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, objSerializer As JsonSerializer) As Object
+        Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
 
-
-            'Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
-
-            Return objSerializer.Deserialize(reader, objectType.BaseType)
+             Dim toReturn as Object = existingValue
+            if toReturn Is nothing
+                toReturn = ReflectionHelper.CreateObject(objectType)
+            End If
             
+
+            'Dim previousTypeNameHandling = serializer.TypeNameHandling
+            'serializer.TypeNameHandling = TypeNameHandling.Auto
+
+            
+            Dim jsonobject As JArray = JArray.Load(reader)
+            Dim deserialized As Object 
+            'deserialized= serializer.Deserialize(reader, objectType.BaseType)
+            'serializer.TypeNameHandling = previousTypeNameHandling
+            Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
+            settings.SetDefaultSettings()
+           deserialized= JsonConvert.DeserializeObject(jsonobject.ToString(), objectType.BaseType, settings)
+
+            
+            Dim deserializedList As IList = DirectCast( deserialized, IList)
+            For Each o As Object In deserializedList
+               DirectCast( toReturn, IList).Add(o)
+            Next
+            
+            Return toReturn
 
         End Function
 
@@ -174,6 +189,7 @@ Namespace Collections
             Return GetType(SerializableList(Of )).IsAssignableFrom(objectType)
         End Function
     End Class
+        
 
 
 
