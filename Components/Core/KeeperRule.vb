@@ -10,6 +10,8 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.DNN.Services.Flee
+Imports Aricie.Services
+Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -68,9 +70,23 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Get
         End Property
 
-        <DefaultValue(False)> _
-        <ExtendedCategory("RuleSettings")> _
+        <DefaultValue(False)>
+        <ExtendedCategory("RuleSettings")>
         Public Property StopRule() As Boolean
+
+
+        <ActionButton(IconName.Rocket, IconOptions.Normal, "RunningRules.Alert")>
+        Public Sub Run(ByVal ape As AriciePropertyEditorControl)
+            ape.Page.Validate()
+            If ape.IsValid Then
+                Dim objContext As New PortalKeeperContext(Of TEngineEvents)
+                objContext.CurrentEventStep = Me.MatchingLifeCycleEvent
+                Me.RunActions(objContext)
+                ape.DisplayLocalizedMessage("RuleRunSuccess.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+            End If
+        End Sub
+
+
 
         Public Function RunActions(ByVal keeperContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             keeperContext.CurrentRule = Me

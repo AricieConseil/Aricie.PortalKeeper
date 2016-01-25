@@ -27,6 +27,7 @@ using Exception = System.Exception;
 using Object = System.Object;
 using String = System.String;
 
+
 namespace Aricie.PortalKeeper.AI.CSP
 {
     public enum CSPStrategy
@@ -395,4 +396,12 @@ namespace Aricie.PortalKeeper.AI.CSP
 
     }
 
+}
+
+namespace Aricie.PortalKeeper.AI.Learning.Neural
+{
+    public enum NeuralLayerType
+    {
+        BasicLayer,
+    }
 }

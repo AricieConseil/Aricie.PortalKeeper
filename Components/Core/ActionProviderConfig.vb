@@ -1,5 +1,6 @@
 ﻿
 
+Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -23,6 +24,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _IsAsyncEnabled As Nullable(Of Boolean)
 
+        <XmlIgnore()> _
         <ExtendedCategory("")> _
         Public ReadOnly Property IsAsyncEnabled() As Boolean
             Get

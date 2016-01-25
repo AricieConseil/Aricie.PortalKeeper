@@ -100,11 +100,12 @@ Namespace Collections
             Dim typeNames As List(Of String) = Nothing
             If Me.Count > 0 Then
                 For Each value As T In Me
-                    Dim tempType As Type = value.GetType
-                    If Not types.Contains(tempType) Then
+                    Dim tempType As Type = value.GetType()
+                    If tempType IsNot GetType(T) AndAlso Not types.Contains(tempType) Then
                         types.Add(tempType)
                     End If
                 Next
+
                 If ReflectionHelper.AddSubtypes(writer, GetType(T)) Then
                     types = types.Union(ReflectionHelper.GetSerializerTypes(GetType(List(Of T)), "")).ToList()
                 End If
@@ -157,20 +158,12 @@ Namespace Collections
 
         Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
 
-             Dim toReturn as Object '= existingValue
-            if toReturn Is nothing
-                toReturn = ReflectionHelper.CreateObject(objectType)
-            End If
+             Dim toReturn as Object= ReflectionHelper.CreateObject(objectType)
             
-
-            'Dim previousTypeNameHandling = serializer.TypeNameHandling
-            'serializer.TypeNameHandling = TypeNameHandling.Auto
 
             
             Dim jsonobject As JArray = JArray.Load(reader)
             Dim deserialized As Object 
-            'deserialized= serializer.Deserialize(reader, objectType.BaseType)
-            'serializer.TypeNameHandling = previousTypeNameHandling
             Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
             settings.SetDefaultSettings()
            deserialized= JsonConvert.DeserializeObject(jsonobject.ToString(), objectType.BaseType, settings)

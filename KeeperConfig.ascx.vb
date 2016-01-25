@@ -19,6 +19,7 @@ Imports Aricie.DNN.Services
 Imports Aricie.DNN.Diagnostics
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.TestSurrogates
+Imports Aricie.DNN.UI.WebControls
 Imports Aricie.Web
 
 
@@ -55,7 +56,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                         _KeeperConfig = DirectCast(Session("KeeperConfig"), PortalKeeperConfig)
                         If _KeeperConfig Is Nothing Then
                             _KeeperConfig = ReflectionHelper.CloneObject(Of PortalKeeperConfig)(PortalKeeperConfig.Instance)
-                            Session("KeeperConfig") = _KeeperConfig
+                            'Session("KeeperConfig") = _KeeperConfig (moved in prerender to support datasource changes)
                         End If
                     Else
                         Dim objConfig As PortalKeeperConfig = PortalKeeperConfig.Instance
@@ -170,6 +171,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
 
         Private Sub Page_PreRender(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.PreRender
             Try
+                If Me.IsPostBack AndAlso Me.KC.DataSource IsNot Nothing Then
+                    If TypeOf Me.KC.DataSource Is SubPathContainer Then
+                        _KeeperConfig = DirectCast(  DirectCast( KC.DataSource,  SubPathContainer).OriginalEntity, PortalKeeperConfig)
+                    Else
+                        _KeeperConfig = DirectCast( KC.DataSource,  PortalKeeperConfig)
+                    End If
+                    
+                     Session("KeeperConfig") = _KeeperConfig
+                End If
                 If Not Me.IsPostBack Then
                     ManageVisibility()
                 End If

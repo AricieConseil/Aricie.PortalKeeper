@@ -364,11 +364,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim keeperContext As PortalKeeperContext(Of ApplicationEvent) = PortalKeeperContext(Of ApplicationEvent).GlobalInstance
             If Not keeperContext.Disabled AndAlso keeperContext.GlobalConfig.ApplicationSettings.Enabled Then
                 keeperContext.GlobalConfig.ApplicationSettings.ProcessRules(keeperContext, newStep, False, True)
-                'If endSequence AndAlso keeperContext.LoggingLevel > LoggingLevel.None Then
-                '    Dim objPair As New KeyValuePair(Of String, String)("Input Uri", keeperContext.DnnContext.AbsoluteUri)
-                '    Dim objPair2 As New KeyValuePair(Of String, String)("Verb", context.Request.HttpMethod)
-                '    keeperContext.LogEndEngine(objPair, objPair2)
-                'End If
             End If
         End Sub
 

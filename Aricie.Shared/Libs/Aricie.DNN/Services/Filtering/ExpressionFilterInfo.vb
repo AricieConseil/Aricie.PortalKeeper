@@ -120,6 +120,10 @@ Namespace Services.Filtering
         <DefaultValue("-")> _
         Public Property TrimChar As String = "-"
 
+         <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(False)> _
+        Public  Property Reverse() As Boolean
+
         <DefaultValue(false)> _
         <ExtendedCategory("GlobalFilter")> _
         Public Property ApplyFormat As Boolean
@@ -435,7 +439,24 @@ Namespace Services.Filtering
 
         End Sub
 
+          Public Function ProcessList(ByVal originalStrings As IEnumerable(Of  String)) As List(Of String)
+            Return Me.ProcessList(originalStrings, Nothing)
+        End Function
 
+
+        ''' <summary>
+        ''' Escapes the string passed as the parameter according to the rules defined in the ExpressionFilterInfo
+        ''' </summary>
+        ''' <param name="originalString"></param>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        Public Function ProcessList(ByVal originalStrings As IEnumerable(Of  String), contextVars As IContextLookup) As List(Of String)
+            dim toReturn as New List(Of String)
+            For Each originalString As String In originalStrings
+                toReturn.Add(Me.Process(originalString, contextVars))
+            Next
+            Return toReturn
+        End Function
 
         Public Function Process(ByVal originalString As String) As String
             Return Me.Process(originalString, Nothing)
@@ -518,6 +539,10 @@ Namespace Services.Filtering
                 End If
             End If
 
+            if Reverse
+                toReturn = toReturn.Reverse()
+            End If
+
             If Me.ApplyFormat Then
                 toReturn = String.Format(FormatPattern, toReturn)
             End If
@@ -569,7 +594,7 @@ Namespace Services.Filtering
             End If
 
             If Me.Categorization.Enabled Then
-                toReturn = Me.Categorization.Entity.Match(toReturn)
+                toReturn = Me.Categorization.Entity.Match(toReturn, contextVars)
             End If
 
             'recursive call to process additional filters sequentially

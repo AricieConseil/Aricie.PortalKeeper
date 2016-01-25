@@ -11576,4 +11576,118 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="StepCounter_DomainCount.Text" xml:space="preserve">
     <value>Domain Count</value>
   </data>
+  <data name="CategorizationInfo_AllowPartialMatches.Help" xml:space="preserve">
+    <value>Check if partial matched strings are allowed</value>
+  </data>
+  <data name="CategorizationInfo_AllowPartialMatches.Text" xml:space="preserve">
+    <value>Allow Partial Matches</value>
+  </data>
+  <data name="CategorizationInfo_Categories.Header" xml:space="preserve">
+    <value>Categories</value>
+  </data>
+  <data name="CategorizationInfo_DynamicCategories.Help" xml:space="preserve">
+    <value>Categories can be defined as enumerated lists attached to key labels, or alternatively the lists can be obtained dynamically as expressions of string arrays</value>
+  </data>
+  <data name="CategorizationInfo_DynamicCategories.Text" xml:space="preserve">
+    <value>Dynamic Categories</value>
+  </data>
+  <data name="CategorizationInfo_DynamicSubTree.Help" xml:space="preserve">
+    <value>Dynamic categories are defined with key labels and variables resolving to string arrays</value>
+  </data>
+  <data name="CategorizationInfo_DynamicSubTree.Text" xml:space="preserve">
+    <value>Dynamic Categories</value>
+  </data>
+  <data name="CategorizationInfo_NoCache.Help" xml:space="preserve">
+    <value>Check this option If dynamic categories are to be computed each time (may be slow depending on the comparizon mode)</value>
+  </data>
+  <data name="CategorizationInfo_NoCache.Text" xml:space="preserve">
+    <value>No Cache</value>
+  </data>
+  <data name="CategorizationInfo_RegexFormat.Help" xml:space="preserve">
+    <value>Change the default untouched format to customize the individual components of the compound regex</value>
+  </data>
+  <data name="CategorizationInfo_RegexFormat.Text" xml:space="preserve">
+    <value>Regex Format</value>
+  </data>
+  <data name="CategorizationInfo_RegexOptions.Help" xml:space="preserve">
+    <value>Thos are the options used to build the compound regexes</value>
+  </data>
+  <data name="CategorizationInfo_RegexOptions.Text" xml:space="preserve">
+    <value>Regex Options</value>
+  </data>
+  <data name="CategorizationInfo_Reverse.Help" xml:space="preserve">
+    <value>Check if you want to reverse the strings composing the radix tree and the input strings to search</value>
+  </data>
+  <data name="CategorizationInfo_Reverse.Text" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="CompoundRegex.Text" xml:space="preserve">
+    <value>Compound Regex</value>
+  </data>
+  <data name="FileEntries.Text" xml:space="preserve">
+    <value>File Entries</value>
+  </data>
+  <data name="FileManagerActionProvider`1_GetFilesMode.Help" xml:space="preserve">
+    <value>When searching for files, you can either return an array of file name strings, or a list of FileInfo entries</value>
+  </data>
+  <data name="FileManagerActionProvider`1_GetFilesMode.Text" xml:space="preserve">
+    <value>Get Files Mode</value>
+  </data>
+  <data name="FileNames.Text" xml:space="preserve">
+    <value>File Names</value>
+  </data>
+  <data name="KeeperRule`1_Run.Text" xml:space="preserve">
+    <value>Run Now</value>
+  </data>
+  <data name="RadixTree.Text" xml:space="preserve">
+    <value>Radix Tree</value>
+  </data>
+  <data name="RemoveEmptyEntries.Text" xml:space="preserve">
+    <value>Remove empty entries</value>
+  </data>
+  <data name="RuleRunSuccess.Message" xml:space="preserve">
+    <value>The selected rule was run without throwing exceptions.</value>
+  </data>
+  <data name="RunningRules.Alert" xml:space="preserve">
+    <value>Warning: Running a rule on the fly with an empty execution context may fail depending on the rule's content.</value>
+  </data>
+  <data name="StringFilterProvider`1_Splitter.Help" xml:space="preserve">
+    <value>Specify here how you want the input string split</value>
+  </data>
+  <data name="StringFilterProvider`1_Splitter.Text" xml:space="preserve">
+    <value>String Splitter</value>
+  </data>
+  <data name="StringSplit.Text" xml:space="preserve">
+    <value>Split string</value>
+  </data>
+  <data name="StringSplitInfo_EmptyEntries.Help" xml:space="preserve">
+    <value>Check to remove empty entries</value>
+  </data>
+  <data name="StringSplitInfo_EmptyEntries.Text" xml:space="preserve">
+    <value>Empty Options</value>
+  </data>
+  <data name="StringSplitInfo_FilterStrings.Help" xml:space="preserve">
+    <value>Optionally apply a string filter on each string resulting from the split</value>
+  </data>
+  <data name="StringSplitInfo_FilterStrings.Text" xml:space="preserve">
+    <value>Filter Strings</value>
+  </data>
+  <data name="StringSplitInfo_LineSplit.Help" xml:space="preserve">
+    <value>If checked, the input string is split along line feeds</value>
+  </data>
+  <data name="StringSplitInfo_LineSplit.Text" xml:space="preserve">
+    <value>Split Lines</value>
+  </data>
+  <data name="StringSplitInfo_ReturnList.Help" xml:space="preserve">
+    <value>Check to return a list of string instead of the string array resulting from the original split</value>
+  </data>
+  <data name="StringSplitInfo_ReturnList.Text" xml:space="preserve">
+    <value>Return List</value>
+  </data>
+  <data name="StringSplitInfo_Separators.Help" xml:space="preserve">
+    <value>Enter one or several strings, along which to split the input string</value>
+  </data>
+  <data name="StringSplitInfo_Separators.Text" xml:space="preserve">
+    <value>Separators</value>
+  </data>
 </root>

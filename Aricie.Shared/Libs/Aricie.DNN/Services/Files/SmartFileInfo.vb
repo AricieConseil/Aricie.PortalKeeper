@@ -33,9 +33,17 @@ Namespace Services.Files
         Public Property EnforceEncryption As Boolean
 
         <ExtendedCategory("Keys")> _
-        Public Property Encryption As New EncryptionInfo
-
-
+        Public Property Encryption As EncryptionInfo
+            Get
+                If Encrypt AndAlso _Encryption Is Nothing
+                    _Encryption = new EncryptionInfo()
+                End If
+                Return _Encryption
+            End Get
+            Set
+                _Encryption = value
+            End Set
+        End Property
 
         '<XmlIgnore()> _
         '<ExtendedCategory("UserBots")> _
@@ -70,6 +78,7 @@ Namespace Services.Files
         End Function
 
         Private Shared _ProcessedFormats As New Dictionary(Of String, String)
+        Private _Encryption As EncryptionInfo
 
         Private Function GetProcessedFormt() As String
             Dim toReturn As String = Nothing

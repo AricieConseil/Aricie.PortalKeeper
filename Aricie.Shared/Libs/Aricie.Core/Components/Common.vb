@@ -99,12 +99,49 @@ Public Module Common
 
 #Region "String methods "
 
-    <Extension> _
+    <Extension>
     Public Function IsNullOrEmpty(value As String) As Boolean
         Return String.IsNullOrEmpty(value)
     End Function
 
 
+    ''' <summary>
+    ''' Reverses the specified string.
+    ''' </summary>
+    ''' <param name="input">The string to reverse.</param>
+    ''' <returns>The input string, reversed.</returns>
+    ''' <remarks>This method correctly reverses strings containing supplementary characters
+    ''' (which are encoded with two surrogate code units).</remarks>
+    <System.Runtime.CompilerServices.Extension>
+    Public Function Reverse(input As String) As String
+        If input Is Nothing Then
+            Throw New ArgumentNullException("input")
+        End If
+
+        ' allocate a buffer to hold the output
+        Dim output As Char() = New Char(input.Length - 1) {}
+        Dim outputIndex As Integer = 0, inputIndex As Integer = input.Length - 1
+        While outputIndex < input.Length
+            ' check for surrogate pair
+            If AscW( input(inputIndex)) >= &HDC00 _
+                AndAlso AscW(input(inputIndex)) <= &HDFFF _
+                AndAlso inputIndex > 0 _
+                AndAlso AscW(input(inputIndex - 1)) >= &HD800 _
+                AndAlso AscW(input(inputIndex - 1)) <= &HDBFF Then
+                ' preserve the order of the surrogate pair code units
+                output(outputIndex + 1) = input(inputIndex)
+                output(outputIndex) = input(inputIndex - 1)
+                outputIndex += 1
+                inputIndex -= 1
+            Else
+                output(outputIndex) = input(inputIndex)
+            End If
+            outputIndex += 1
+            inputIndex -= 1
+        End While
+
+        Return New String(output)
+    End Function
 
     Public Function StringToByteArray(hexInput As String) As Byte()
         Return Enumerable.Range(0, hexInput.Length).Where(Function(x) x Mod 2 = 0).[Select](Function(x) Convert.ToByte(hexInput.Substring(x, 2), 16)).ToArray()
@@ -114,6 +151,8 @@ Public Module Common
         Dim hexInput As String = hexBitConverter.Replace("-"c, "").Trim()
         Return StringToByteArray(hexInput)
     End Function
+
+
 
 
     <Extension> _

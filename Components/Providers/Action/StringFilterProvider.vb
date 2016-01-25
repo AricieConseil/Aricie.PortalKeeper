@@ -13,6 +13,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Enum StringFilterMode
         TokenReplace
         TransformsList
+        StringSplit
         Xpath
     End Enum
 
@@ -23,65 +24,34 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits OutputAction(Of TEngineEvents)
 
 
-        Private _InputExpression As New FleeExpressionInfo(Of String)
 
-        Private _FilterMode As StringFilterMode
 
-        Private _Filter As New ExpressionFilterInfo
 
         <ExtendedCategory("Filter")>
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
         <LabelMode(LabelMode.Top)>
-        Public Property InputExpression() As FleeExpressionInfo(Of String)
-            Get
-                Return _InputExpression
-            End Get
-            Set(ByVal value As FleeExpressionInfo(Of String))
-                _InputExpression = value
-            End Set
-        End Property
+        Public Property InputExpression() As New FleeExpressionInfo(Of String)
+           
 
 
         <ExtendedCategory("Filter")>
         Public Property FilterMode() As StringFilterMode
-            Get
-                Return _FilterMode
-            End Get
-            Set(ByVal value As StringFilterMode)
-                _FilterMode = value
-            End Set
-        End Property
+           
 
 
         <ExtendedCategory("Filter")>
         <ConditionalVisible("FilterMode", False, True, StringFilterMode.TransformsList)>
         Public Property FilterSource() As New SimpleOrExpression(Of ExpressionFilterInfo)
 
-        'todo: remove obsolete property
-        <Browsable(False)>
-        Public Property Filter() As ExpressionFilterInfo
-            Get
-                Return FilterSource.Simple
-            End Get
-            Set(ByVal value As ExpressionFilterInfo)
-                FilterSource.Simple = value
-            End Set
-        End Property
+         <ExtendedCategory("Filter")>
+        <ConditionalVisible("FilterMode", False, True, StringFilterMode.StringSplit)>
+        Public Property Splitter() As New SimpleOrExpression(Of StringSplitInfo)
 
         <ExtendedCategory("Filter")>
         <ConditionalVisible("FilterMode", False, True, StringFilterMode.Xpath)>
         Public Property XPathSource As New SimpleOrExpression(Of XPathInfo)
 
-        'todo: remove obsolete property
-        <Browsable(False)>
-        Public Property XPath() As XPathInfo
-            Get
-                Return XPathSource.Simple
-            End Get
-            Set(value As XPathInfo)
-                XPathSource.Simple = value
-            End Set
-        End Property
+      
 
 
         <ExtendedCategory("Filter")>
@@ -121,8 +91,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         AdditionalTokens.SetTokens(atr)
                     End If
                     Return atr.ReplaceAllTokens(input)
+                Case StringFilterMode.StringSplit
+                    Return Me.Splitter.GetValue(actionContext, actionContext).Process(input, actionContext)
                 Case Else
-                    Return Me.Filter.Process(input, actionContext)
+                    Return Me.FilterSource.GetValue(actionContext, actionContext).Process(input, actionContext)
             End Select
         End Function
 
@@ -133,6 +105,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Return GetType(String)
                 Case StringFilterMode.Xpath
                     Return Me.XPathSource.Simple.GetOutputType()
+                Case StringFilterMode.StringSplit
+                    Return Me.Splitter.Simple.GetOutputType()
                 Case StringFilterMode.TokenReplace
                     Return GetType(String)
             End Select

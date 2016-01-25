@@ -1,5 +1,6 @@
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
+Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Google.GData.Client
 Imports DotNetNuke.UI.WebControls
@@ -9,6 +10,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     
     Public Class OAuth2AccessToken
 
+        <XmlIgnore()> _
         Public ReadOnly Property Status As OAuth2TokenStatus
             Get
                 If OAuthParams Is Nothing Then
@@ -42,6 +44,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ConditionalVisible("Status", False, True, OAuth2TokenStatus.PendingAuthorization)> _
         Public Property AccessCode As String
 
+        <XmlIgnore()> _
         <ConditionalVisible("Status", False, True, OAuth2TokenStatus.Authorized)> _
         Public ReadOnly Property AccessToken As String
             Get

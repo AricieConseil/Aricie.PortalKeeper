@@ -176,7 +176,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("WebClient")> _
          Public Property MaxConcurrentConnexions As New EnabledFeature(Of Integer)
 
-        
+        <ExtendedCategory("WebClient")> _
+         Public Property CaptureResponseHeaders As New EnabledFeature(Of String)
 
         
 
@@ -423,6 +424,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 toReturn = objClient.UploadString(targetUrl, Me._Method.ToString().ToUpperInvariant(), postData)
 
                         End Select
+                        if CaptureResponseHeaders.Enabled
+                           actionContext.SetVar(CaptureResponseHeaders.Entity, objClient.ResponseHeaders)
+                        End If
                     End If
                     duration = Now.Subtract(start)
 

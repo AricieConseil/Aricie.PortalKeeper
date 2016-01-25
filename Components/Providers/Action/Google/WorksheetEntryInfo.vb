@@ -76,9 +76,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+        <XmlIgnore()> _
         Private ReadOnly Property WorkSheet As WorksheetEntry
             Get
-                If _Worksheet Is Nothing OrElse _Worksheet.Title.Text <> WorkSheetNameSelection Then
+                If (_Worksheet Is Nothing OrElse _Worksheet.Title.Text <> WorkSheetNameSelection) AndAlso _WorkSheets isnot nothing Then
                     _Worksheet = DirectCast(_WorkSheets.Entries.First(Function(objAtom) objAtom.Title.Text = WorkSheetNameSelection), WorksheetEntry)
                 End If
                 Return _Worksheet
@@ -112,6 +113,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '<ConditionalVisible("CaptureWorksheetEntry", False, True)> _
         'Public Property WorksheetEntryName As String = "WorksheetEntry"
 
+         <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property ServiceReady As Boolean
             Get
