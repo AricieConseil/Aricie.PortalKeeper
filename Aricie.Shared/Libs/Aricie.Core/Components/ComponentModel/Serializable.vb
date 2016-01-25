@@ -129,11 +129,7 @@ Namespace ComponentModel
         End Sub
 
         Public Overrides Function ReadJson(reader As JsonReader, objectType As Type, existingValue As Object, serializer As JsonSerializer) As Object
-            Dim toReturn as Object '= existingValue
-            if toReturn Is nothing
-                toReturn = ReflectionHelper.CreateObject(objectType)
-            End If
-
+            Dim toReturn as Object  = ReflectionHelper.CreateObject(objectType)
 
             Dim jsonobject As JObject = JObject.Load(reader)
             Dim targettypeproperty As JProperty = jsonobject.Property("TypeName")

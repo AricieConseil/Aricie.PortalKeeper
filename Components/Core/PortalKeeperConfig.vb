@@ -14,9 +14,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
        <ExtendedCategory("Firewall")> _
         Public Property FirewallConfig As New FirewallConfig()
 
-        <ExtendedCategory("Application")> _
-        Public Property ApplicationSettings As New ApplicationSettings()
-
+       
         <ExtendedCategory("Scheduler")> _
         Public Property SchedulerFarm As New BotFarmInfo(Of ScheduleEvent)
 
@@ -29,7 +27,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("ControlAdapters")> _
         Public Property ControlAdapters As New ControlAdaptersConfig()
 
-
+        <ExtendedCategory("Application")> _
+        Public Property ApplicationSettings As New ApplicationSettings()
 
         'todo: change that function to something dynamic
         Public Function GetRuleEnginesSettings(Of TEngineEvents As IConvertible)() As IEnumerable(Of RuleEngineSettings(Of TEngineEvents))
