@@ -970,29 +970,7 @@ Namespace UI.WebControls.EditControls
                 Dim dataItem As Object = Me.PagedCollection(commandIndex)
                 'SubPropertyEditor button
 
-                Dim enabledItem As IEnabled = TryCast(dataItem, IEnabled)
-                If enabledItem IsNot Nothing Then
-                    Dim cmdToggleEnable As New IconActionButton
-                    With cmdToggleEnable
-                        If Not enabledItem.Enabled Then
-                            .ActionItem.IconName = IconName.ToggleOn
-                            .CommandName = "Enable"
-                            .ResourceKey = "Enable.Command"
-                        Else
-                            .ActionItem.IconName = IconName.ToggleOff
-                            .CommandName = "Disable"
-                            .ResourceKey = "Disable.Command"
-                        End If
-                        .LocalResourceFile = Me.LocalResourceFile
-                        .CommandArgument = commandIndex.ToString()
-                    End With
-                    AddHandler cmdToggleEnable.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
-                    plAction.Controls.Add(cmdToggleEnable)
-
-
-
-
-                End If
+               
 
                 If headerLink IsNot Nothing Then
 
@@ -1020,9 +998,6 @@ Namespace UI.WebControls.EditControls
                         End With
                     End If
 
-
-
-
                     'Dim cmdFocus As New IconActionButton
                     'plAction.Controls.Add(cmdFocus)
                     'With cmdFocus
@@ -1038,6 +1013,31 @@ Namespace UI.WebControls.EditControls
                     'sm.RegisterPostBackControl(cmdFocus)
 
                 End If
+
+                 Dim enabledItem As IEnabled = TryCast(dataItem, IEnabled)
+                If enabledItem IsNot Nothing Then
+                    Dim cmdToggleEnable As New IconActionButton
+                    With cmdToggleEnable
+                        If Not enabledItem.Enabled Then
+                            .ActionItem.IconName = IconName.ToggleOn
+                            .CommandName = "Enable"
+                            .ResourceKey = "Enable.Command"
+                        Else
+                            .ActionItem.IconName = IconName.ToggleOff
+                            .CommandName = "Disable"
+                            .ResourceKey = "Disable.Command"
+                        End If
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .CommandArgument = commandIndex.ToString()
+                    End With
+                    AddHandler cmdToggleEnable.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    plAction.Controls.Add(cmdToggleEnable)
+
+
+
+
+                End If
+
 
                 If Me._EnableExport Then
                     Dim cmdCopy As New IconActionButton

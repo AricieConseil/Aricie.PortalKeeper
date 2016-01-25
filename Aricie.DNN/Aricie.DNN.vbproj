@@ -327,6 +327,7 @@
     <Compile Include="Services\Filtering\FilterControlInfo.vb" />
     <Compile Include="Services\Filtering\FilterKeyInfo.vb" />
     <Compile Include="Services\Filtering\FilterModuleInfo.vb" />
+    <Compile Include="Services\Filtering\StringSplitInfo.vb" />
     <Compile Include="Services\Filtering\XPathInfo.vb" />
     <Compile Include="Services\Flee\AddEventHandler.vb" />
     <Compile Include="Services\Flee\CallObjectMethod.vb" />

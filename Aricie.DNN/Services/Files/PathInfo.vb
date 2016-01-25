@@ -1,6 +1,7 @@
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports System.ComponentModel
+Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
@@ -21,7 +22,7 @@ Namespace Services.Files
 
         Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 
-
+        <XmlIgnore()> _
         Public Overridable ReadOnly Property CurrentMapPath As String
             Get
                 Return GetMapPath()

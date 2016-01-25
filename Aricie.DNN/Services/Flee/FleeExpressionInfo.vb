@@ -348,41 +348,41 @@ Namespace Services.Flee
             End Set
         End Property
 
-        ''' <summary>
-        ''' gets or sets SimpleExpressionInfo.InternalDecimalSeparator
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("TechnicalSettings")> _
-        <Required(True)> _
-        <DefaultValue(DefaultDecimalSeparator)> _
-        Public Property DecimalSeparator() As Char
-            Get
-                Return InternalDecimalSeparator
-            End Get
-            Set(ByVal value As Char)
-                InternalDecimalSeparator = value
-            End Set
-        End Property
+        '''' <summary>
+        '''' gets or sets SimpleExpressionInfo.InternalDecimalSeparator
+        '''' </summary>
+        '''' <value></value>
+        '''' <returns></returns>
+        '''' <remarks></remarks>
+        '<ExtendedCategory("TechnicalSettings")> _
+        '<Required(True)> _
+        '<DefaultValue(46)> _ 
+        'Public Property DecimalSeparator() As Char 'DefaultDecimalSeparator
+        '    Get
+        '        Return InternalDecimalSeparator
+        '    End Get
+        '    Set(ByVal value As Char)
+        '        InternalDecimalSeparator = value
+        '    End Set
+        'End Property
 
-        ''' <summary>
-        ''' gets or sets SimpleExpressionInfo.InternalFunctionArgumentSeparator
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("TechnicalSettings")> _
-        <Required(True)> _
-        <DefaultValue(DefaultFunctionArgumentSeparator)> _
-        Public Property FunctionArgumentSeparator() As Char
-            Get
-                Return InternalFunctionArgumentSeparator
-            End Get
-            Set(ByVal value As Char)
-                InternalFunctionArgumentSeparator = value
-            End Set
-        End Property
+        '''' <summary>
+        '''' gets or sets SimpleExpressionInfo.InternalFunctionArgumentSeparator
+        '''' </summary>
+        '''' <value></value>
+        '''' <returns></returns>
+        '''' <remarks></remarks>
+        '<ExtendedCategory("TechnicalSettings")> _
+        '<Required(True)> _
+        '<DefaultValue(44)> _ 
+        'Public Property FunctionArgumentSeparator() As Char 'DefaultFunctionArgumentSeparator
+        '    Get
+        '        Return InternalFunctionArgumentSeparator
+        '    End Get
+        '    Set(ByVal value As Char)
+        '        InternalFunctionArgumentSeparator = value
+        '    End Set
+        'End Property
 
         ''' <summary>
         ''' gets or sets SimpleExpressionInfo.InternalParseCultureMode

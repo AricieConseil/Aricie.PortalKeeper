@@ -248,7 +248,7 @@ Namespace Services.Flee
         <Width(500)> _
         <Required(True)> _
         <ConditionalVisible("DisplaySimple", False, True)>
-        Public Overridable Property Simple As TSimple
+        Public Property Simple As TSimple
             Get
                 If Mode = SimpleOrExpressionMode.Simple AndAlso _Simple Is Nothing Then
                     _Simple = GetSimple()

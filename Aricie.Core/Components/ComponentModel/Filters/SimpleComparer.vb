@@ -3,7 +3,6 @@ Imports System.Reflection
 Imports System.Globalization
 
 Namespace Business.Filters
-
     Public Class SimpleComparer(Of T)
         Inherits SimpleComparer
         Implements IComparer(Of T)

@@ -54,6 +54,7 @@ Namespace Services.Files
             End Set
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public Overrides ReadOnly Property CurrentMapPath As String
             Get
@@ -112,6 +113,7 @@ Namespace Services.Files
         Public Property DnnFile As New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
 
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property DNNFileInfo As DotNetNuke.Services.FileSystem.FileInfo
             Get
