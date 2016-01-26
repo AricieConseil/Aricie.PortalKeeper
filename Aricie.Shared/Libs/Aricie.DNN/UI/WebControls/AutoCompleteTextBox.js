@@ -51,8 +51,9 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
             source: function (request, response) {
 
                 var additionalParameter = '';
+
                 if (myTBAutoComplete.get_AdditionalParam() != null) {
-                    additionalParameter = ',"AdditionalParam":"' + myTBAutoComplete.get_AdditionalParam() + '"}';
+                    additionalParameter = ',"AdditionalParam":"' + myTBAutoComplete.get_AdditionalParam() + '"';
                 }
 
                 jQuery.ajax({
@@ -60,7 +61,7 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
                     contentType: "application/json; charset=utf-8",
                     url: myTBAutoComplete.get_UrlWS(),
                     dataType: "json",
-                    data: '{"searchText":"' + request.term + '"' + additionalParameter,
+                    data: '{"searchText":"' + request.term + '"' + additionalParameter + '}',
                     success: function (data) {
                         var objects = null;
                         if (typeof JSON != "undefined") {

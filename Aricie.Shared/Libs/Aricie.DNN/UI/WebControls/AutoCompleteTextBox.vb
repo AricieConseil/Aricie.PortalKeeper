@@ -129,12 +129,12 @@ Namespace UI.WebControls
                 _EmptyText = value
             End Set
         End Property
-        Private _AdditionalParam As Integer
-        Public Property AdditionalParam() As Integer
+        Private _AdditionalParam As String
+        Public Property AdditionalParam() As String
             Get
                 Return _AdditionalParam
             End Get
-            Set(ByVal value As Integer)
+            Set(ByVal value As String)
                 _AdditionalParam = value
             End Set
         End Property

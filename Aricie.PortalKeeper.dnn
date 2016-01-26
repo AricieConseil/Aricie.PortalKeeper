@@ -147,6 +147,39 @@
         <file>
           <name>BruTile.Desktop.dll</name>
         </file>
+        <file>
+          <name>Aricie.PortalKeeper.AI.dll</name>
+        </file>
+        <file>
+          <name>aima-core.dll</name>
+        </file>
+        <file>
+          <name>IKVM.Runtime.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Core.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Text.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Media.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Security.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.SwingAWT.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Util.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.XML.API.dll</name>
+        </file>
+        <file>
+          <name>IKVM.OpenJDK.Misc.dll</name>
+        </file>
       </files>
     </folder>
   </folders>

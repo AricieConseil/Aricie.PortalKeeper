@@ -222,6 +222,50 @@
               <name>BruTile.Desktop.dll</name>
               <sourceFileName>BruTile.Desktop.dll</sourceFileName>
             </assembly>
+            <assembly>
+              <name>Aricie.PortalKeeper.AI.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.AI.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>aima-core.dll</name>
+              <sourceFileName>aima-core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.Runtime.dll</name>
+              <sourceFileName>IKVM.Runtime.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Core.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Core.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Text.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Text.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Media.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Media.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Security.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Security.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.SwingAWT.dll</name>
+              <sourceFileName>IKVM.OpenJDK.SwingAWT.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Util.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Util.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.XML.API.dll</name>
+              <sourceFileName>IKVM.OpenJDK.XML.API.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>IKVM.OpenJDK.Misc.dll</name>
+              <sourceFileName>IKVM.OpenJDK.Misc.dll</sourceFileName>
+            </assembly>
           </assemblies>
         </component>
         <component type="File">

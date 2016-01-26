@@ -114,11 +114,17 @@ namespace Aricie.PortalKeeper.DNN7.WebAPI
                         routeName = "Unknown Route Name";
                     }
                     var strParams = new StringBuilder();
-                    foreach (ApiParameterDescription parameterDescription in api.ParameterDescriptions)
+                    if (api.ParameterDescriptions != null)
                     {
-                        strParams.Append(string.Format("[{2}] {0} {1}, ", ReflectionHelper.GetSimpleTypeName( parameterDescription.ParameterDescriptor.ParameterType), parameterDescription.Name, parameterDescription.Source.ToString()));
+                        foreach (ApiParameterDescription parameterDescription in api.ParameterDescriptions)
+                        {
+                            if (parameterDescription.ParameterDescriptor?.ParameterType != null)
+                                strParams.Append(string.Format("[{2}] {0} {1}, ",
+                                    ReflectionHelper.GetSimpleTypeName(
+                                        parameterDescription.ParameterDescriptor.ParameterType),
+                                    parameterDescription.Name, parameterDescription.Source));
+                        }
                     }
-
                     toReturn.Add(string.Format("{0} : {3} : {4} : {1}({2})"
                         , routeName 
                         , api.ActionDescriptor.ActionName
