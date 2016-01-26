@@ -488,6 +488,10 @@ Namespace Services.Filtering
                     toReturn = HttpUtility.UrlEncode(toReturn)
                 Case EncodeProcessing.UrlDecode
                     toReturn = HttpUtility.UrlDecode(toReturn)
+                Case EncodeProcessing.RegexEscape
+                    toReturn = Regex.Escape(toReturn)
+                Case EncodeProcessing.RegexUnescape
+                    toReturn = Regex.Unescape(toReturn)
                 Case Else
                     toReturn = originalString
             End Select
@@ -586,6 +590,10 @@ Namespace Services.Filtering
                     toReturn = HttpUtility.UrlEncode(toReturn)
                 Case EncodeProcessing.UrlDecode
                     toReturn = HttpUtility.UrlDecode(toReturn)
+                    Case EncodeProcessing.RegexEscape
+                    toReturn = Regex.Escape(toReturn)
+                Case EncodeProcessing.RegexUnescape
+                    toReturn = Regex.Unescape(toReturn)
             End Select
 
             'limited Length

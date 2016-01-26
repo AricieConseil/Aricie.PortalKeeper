@@ -214,7 +214,7 @@ Namespace Services.Flee
                             End If
 
                             
-                            Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to run with the inner exception", Me.Expression), ex)
+                            Dim objFLeeException As New HttpException(String.Format("Flee Expression ""{0}"" failed to run with the inner exception: ""{1}""", Me.Expression, ex.ToString()), ex)
                             dim exToThrow as Exception = objFLeeException
                             If Me.InternalLogEvaluateExceptions Then
                                 Try

@@ -72,6 +72,10 @@ Namespace Services.Filtering
         Public Property RegexFormat As String = "{0}"
 
          <ExtendedCategory("Comparison")> _
+        <ConditionalVisible("Mode", False, True, CategorizationMode.CompoundRegex)> _
+        Public Property RegexNoEscape As Boolean
+
+         <ExtendedCategory("Comparison")> _
         <DefaultValue(False)> _
          <ConditionalVisible("Mode", False, True, CategorizationMode.RadixTree)> _
         Public Property Reverse As Boolean 
@@ -80,8 +84,6 @@ Namespace Services.Filtering
         <DefaultValue(False)> _
          <ConditionalVisible("Mode", False, True, CategorizationMode.RadixTree)> _
         Public Property AllowPartialMatches As Boolean 
-
-       
 
 
         Public Function GetSubTree(contextVars As IContextLookup) As SerializableSortedDictionary(Of String, List(Of String))
@@ -139,7 +141,14 @@ Namespace Services.Filtering
                         Dim tempDico As New Dictionary(Of String, Regex)
                         For Each objPair As KeyValuePair(Of String, List(Of String)) In Me.GetSubTree(contextVars)
                             Dim strRegexBuilder As New StringBuilder()
-                            objPair.Value.ForEach(Sub(strValue) strRegexBuilder.Append(String.Format(Me.RegexFormat, Regex.Escape( strValue)) & "|"c))
+                            objPair.Value.ForEach(Sub(strValue) _
+                                       strRegexBuilder.Append( _
+                                              String.Format( _
+                                                      Me.RegexFormat, _
+                                                      IIf(RegexNoEscape, _
+                                                            strValue, _
+                                                            Regex.Escape( strValue)) _
+                                                       .ToString() & "|"c)))
                             Dim strRegex as String = strRegexBuilder.ToString().TrimEnd("|"c)
                             Dim objRegex as New Regex(strRegex, RegexOptions)
                             tempDico(objPair.Key) = objRegex
@@ -195,6 +204,10 @@ Namespace Services.Filtering
             Select Case Mode
                 Case CategorizationMode.InputContainsKey
                     For Each objPair As KeyValuePair(Of String, String) In ReverseDictionary(contextVars)
+                        'for performance tests
+                        'For i As Integer = 0 To 100
+                        '    Dim test as Boolean = value.IndexOf(objPair.Key, Me.Comparizon) > 1
+                        'Next
                         If value.IndexOf(objPair.Key, Me.Comparizon) > -1 Then
                             Return objPair.Value
                         End If
@@ -206,6 +219,10 @@ Namespace Services.Filtering
                     End If
                 Case CategorizationMode.CompoundRegex
                     For Each regexPair As KeyValuePair(Of String,Regex) In CompoundRegexes(contextVars)
+                        'for performance tests
+                        'For i As Integer = 0 To 100
+                        '    Dim test as Boolean = regexPair.Value.IsMatch(value)
+                        'Next
                         If regexPair.Value.IsMatch(value)
                             Return regexPair.Key
                         End If
@@ -216,7 +233,11 @@ Namespace Services.Filtering
                         strToSearch = strToSearch.Reverse()
                     End If
                     Dim partialMatch As Boolean
-                    Dim candidateCategory As string = RadixTree(contextVars).Search(strToSearch, partialMatch)
+                    'for performance tests
+                    'For i As Integer = 0 To 100
+                    '    Dim test as Boolean = RadixTree(contextVars).Search(strToSearch, partialMatch).IsNullOrEmpty()
+                    'Next
+                    Dim candidateCategory As string =  RadixTree(contextVars).Search(strToSearch, partialMatch)
                     If Not candidateCategory.IsNullOrEmpty() AndAlso (Not partialMatch OrElse AllowPartialMatches)
                         Return candidateCategory
                     End If

@@ -5,5 +5,7 @@ Namespace Services.Filtering
         UrlDecode
         HtmlEncode
         HtmlDecode
+        RegexEscape
+        RegexUnescape
     End Enum
 End NameSpace
