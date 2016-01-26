@@ -81,10 +81,7 @@
     <None Include="AI.cd" />
     <None Include="external\aima-core.dll" />
     <None Include="external\aima-gui.exe" />
-    <None Include="external\aima.dll" />
-    <None Include="external\aima.pdb" />
     <None Include="external\IKVM.AWT.WinForms.dll" />
-    <None Include="external\IKVM.OpenJDK.Beans.dll" />
     <None Include="external\IKVM.OpenJDK.Core.dll" />
     <None Include="external\IKVM.OpenJDK.Media.dll" />
     <None Include="external\IKVM.OpenJDK.SwingAWT.dll" />
@@ -106,6 +103,13 @@
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="external\IKVM.OpenJDK.Beans.dll" />
+    <None Include="external\IKVM.OpenJDK.Misc.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="external\IKVM.OpenJDK.Security.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

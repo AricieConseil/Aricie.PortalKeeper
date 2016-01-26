@@ -34,6 +34,16 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Aricie.PortalKeeper, Version=4.3.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Aricie.PortalKeeper.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="ClientDependency.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\ClientDependency.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="DotNetNuke">
       <HintPath>..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN7\external\DNN7\DotNetNuke.dll</HintPath>
       <Private>False</Private>
@@ -140,11 +150,6 @@
     <Compile Include="Services\KmzResponseCodec.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aricie.PortalKeeper.vbproj">
-      <Project>{e16cb689-af6f-4919-bc7b-1d345a2d48ce}</Project>
-      <Name>Aricie.PortalKeeper</Name>
-      <Private>False</Private>
-    </ProjectReference>
     <ProjectReference Include="..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
@@ -158,6 +163,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <None Include="external\Aricie.PortalKeeper.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

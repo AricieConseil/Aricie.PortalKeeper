@@ -447,7 +447,7 @@ Namespace Services.Filtering
         ''' <summary>
         ''' Escapes the string passed as the parameter according to the rules defined in the ExpressionFilterInfo
         ''' </summary>
-        ''' <param name="originalString"></param>
+        ''' <param name="originalStrings"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
         Public Function ProcessList(ByVal originalStrings As IEnumerable(Of  String), contextVars As IContextLookup) As List(Of String)
