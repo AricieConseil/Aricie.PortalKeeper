@@ -131,9 +131,9 @@ Namespace Collections
 
         Protected Overridable Function InternalSearch(ByVal traverser As System.Collections.Generic.IEnumerator(Of TKey), ByRef partialMatch As Boolean) As TValue
             If traverser.MoveNext Then
-                Dim current As TKey = traverser.Current
+                'Dim current As TKey = traverser.Current
                 Dim child As Trie(Of TKey, TList, TValue) = Nothing
-                If Not Me.TryGetValue(current, child) Then
+                If Not Me.TryGetValue(traverser.Current, child) Then
                     partialMatch = True
                     Return Me._Value
                 End If

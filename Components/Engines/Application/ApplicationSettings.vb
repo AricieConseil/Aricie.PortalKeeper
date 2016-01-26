@@ -22,11 +22,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property UrlCompression As UrlCompressionInfo
             Get
                 If _UrlCompression Is Nothing Then
-                    If PortalKeeperConfig.Instance.FirewallConfig.InternalUrlCompression IsNot Nothing Then
-                        _UrlCompression = PortalKeeperConfig.Instance.FirewallConfig.InternalUrlCompression
-                    Else
-                        _UrlCompression = New UrlCompressionInfo
-                    End If
+                     _UrlCompression = New UrlCompressionInfo()
                 End If
                 Return _UrlCompression
             End Get
@@ -39,11 +35,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property CustomErrorsConfig() As VirtualCustomErrorsInfo
             Get
                 If _CustomErrorsConfig Is Nothing Then
-                    If PortalKeeperConfig.Instance.FirewallConfig.InternalUrlCompression IsNot Nothing Then
-                        _CustomErrorsConfig = PortalKeeperConfig.Instance.FirewallConfig.InternalCustomErrorsConfig
-                    Else
-                        _CustomErrorsConfig = New VirtualCustomErrorsInfo()
-                    End If
+                    _CustomErrorsConfig = New VirtualCustomErrorsInfo()
                 End If
                 Return _CustomErrorsConfig
             End Get

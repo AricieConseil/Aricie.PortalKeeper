@@ -67,13 +67,16 @@ namespace Aricie.PortalKeeper.AI.Search
             DepthLimit = 5;
         }
 
+        [JsonProperty(DefaultValueHandling =  DefaultValueHandling.Include)]
         [JsonConverter(typeof(StringEnumConverter))]
         public SearchAlgorithmType AlgorithmType { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [JsonConverter(typeof(StringEnumConverter))]
         [ConditionalVisible("AlgorithmType", false, true, SearchAlgorithmType.KnownInformed)]
         public KnownInformedSearch KnownInformedAlgorithm { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [JsonConverter(typeof(StringEnumConverter))]
         [ConditionalVisible("AlgorithmType", false, true, SearchAlgorithmType.KnownUninformed)]
         public KnownUninformedSearch KnownUninformedAlgorithm { get; set; }

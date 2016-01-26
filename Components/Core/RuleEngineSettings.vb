@@ -79,9 +79,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Overridable Property Rules() As New List(Of KeeperRule(Of TEngineEvents))
 
 
-        <SortOrder(1000)> _
-        <ExtendedCategory("TechnicalSettings")> _
-        Public Property SmartFileSettings As New SmartFileInfo()
+        
 
          <DefaultValue(LoggingLevel.None)> _
         <SortOrder(1000)> _
@@ -119,7 +117,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         '   <SortOrder(1000)> _
         'Public Property ExceptionDumpVars() As String = String.Empty
 
-
+        <SortOrder(1000)> _
+        <ExtendedCategory("TechnicalSettings")> _
+        Public Property SmartFileSettings As New SmartFileInfo()
 
 
         <ExtendedCategory("Providers", "Condition")> _

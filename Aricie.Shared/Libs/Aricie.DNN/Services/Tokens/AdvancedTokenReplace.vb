@@ -54,9 +54,14 @@ Namespace Services
 
 #Region "members"
 
-        Private Const ExpressionDefault As String = "(?:\DELIM_OPEN(?:(?<object>[^\DELIM_OPEN\DELIM_CLOSE:]+):(?<property>[^\DELIM_OPEN\DELIM_CLOSE\|\/]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_OPEN\DELIM_CLOSE]+)\|(?<ifEmpty>[^\DELIM_OPEN\DELIM_CLOSE]+))|\|(?:(?<format>[^\|\DELIM_OPEN\DELIM_CLOSE]+)))?\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]*\DELIM_CLOSE)|(?<text>[^\DELIM_OPEN\DELIM_CLOSE]+)"
 
-        Private Const ExpressionObjectLess As String = "(?:\DELIM_OPEN(?:(?<object>[^\DELIM_CLOSE\DELIM_OPEN:]+):(?<property>[^\DELIM_CLOSE\DELIM_OPEN\|]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|(?:(?<object>\DELIM_OPEN)(?<property>[A-Z0-9._]+)(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]*\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]+:)|(?<text>\DELIM_CLOSE[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>[^\DELIM_OPEN\DELIM_CLOSE]+)"
+        private const TextExpression as String = "(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]*\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>\DELIM_CLOSE[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>[^\DELIM_OPEN\DELIM_CLOSE]+)"
+
+        'Private Const ExpressionDefault As String = "(?:\DELIM_OPEN(?:(?<object>[a-zA-Z]+[^\DELIM_OPEN\DELIM_CLOSE:\s]*):(?<property>[^\DELIM_OPEN\DELIM_CLOSE\|\/]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_OPEN\DELIM_CLOSE]+)\|(?<ifEmpty>[^\DELIM_OPEN\DELIM_CLOSE]+))|\|(?:(?<format>[^\|\DELIM_OPEN\DELIM_CLOSE]+)))?\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]*\DELIM_CLOSE)|(?<text>[^\DELIM_OPEN\DELIM_CLOSE]+)"
+        Private Const ExpressionDefault As String = "(?:\DELIM_OPEN(?:(?<object>"& Aricie.Constants.Content.RegularNameValidator &")\:(?<property>[^\DELIM_OPEN\DELIM_CLOSE\|\/]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_OPEN\DELIM_CLOSE]+)\|(?<ifEmpty>[^\DELIM_OPEN\DELIM_CLOSE]+))|\|(?:(?<format>[^\|\DELIM_OPEN\DELIM_CLOSE]+)))?\DELIM_CLOSE)|" &  TextExpression
+        'Private Const ExpressionObjectLess As String = "(?:\DELIM_OPEN(?:(?<object>[a-zA-Z]+[^\DELIM_CLOSE\DELIM_OPEN:\s]*):(?<property>[^\DELIM_CLOSE\DELIM_OPEN\|]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|(?:(?<object>\DELIM_OPEN)(?<property>[A-Z]+[A-Z0-9._]*)(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]*\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]+:)|(?<text>\DELIM_CLOSE[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>[^\DELIM_OPEN\DELIM_CLOSE]+)"
+        Private Const ExpressionObjectLess As String = "(?:\DELIM_OPEN(?:(?<object>"& Aricie.Constants.Content.RegularNameValidator &")\:(?<property>[^\DELIM_CLOSE\DELIM_OPEN\|]*[^\DELIM_OPEN\DELIM_CLOSE\|\/:]+))(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|(?:(?<object>\DELIM_OPEN)(?<property>[A-Z]+[A-Z0-9._]*)(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?\DELIM_CLOSE)|" & TextExpression
+
 
         Private Const glbLoopTokenReplaceCacheKey As String = "LoopToken"
 
@@ -66,7 +71,7 @@ Namespace Services
         'Private Const glbEndLoopRegExpression As String = "(?:\[\/\k<ListToken>\:\])"
         Private Const glbInnerLoopRegExpression As String = "|(?:\DELIM_OPEN\:(?<InnerToken>(?<property>[^\DELIM_CLOSE\DELIM_OPEN\|]+)(?:\|(?:(?<format>[^\DELIM_CLOSE\DELIM_OPEN]+)\|(?<ifEmpty>[^\DELIM_CLOSE\DELIM_OPEN]+))|\|(?:(?<format>[^\|\DELIM_CLOSE\DELIM_OPEN]+)))?)\DELIM_CLOSE)"
         'Private Const glbInnerTextRegExpression As String = "|(?<InnerText>\[[^\]\[]+\])|(?<InnerText>[^\]\[]+)"
-        Private Const glbInterTextRegExpression As String = "|(?<text>\DELIM_OPEN[^\DELIM_CLOSE\DELIM_OPEN]*\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]+:)|(?<text>\DELIM_CLOSE[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>[^\DELIM_CLOSE\DELIM_OPEN]+)"
+        Private Const glbInterTextRegExpression As String = "|(?<text>\DELIM_OPEN[^\DELIM_CLOSE\DELIM_OPEN]*\DELIM_CLOSE)|(?<text>\DELIM_OPEN[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>\DELIM_CLOSE[^\DELIM_OPEN\DELIM_CLOSE]+)|(?<text>[^\DELIM_CLOSE\DELIM_OPEN]+)"
 
 
         Private _ResourceFile As String = ""
@@ -516,7 +521,8 @@ Namespace Services
                     If strIfEmptyReplacment.Length > 0 AndAlso strConversion.Length = 0 Then strConversion = strIfEmptyReplacment
                     Result.Append(strConversion)
                 Else
-                    Result.Append(currentMatch.Result("${text}"))
+                    dim textResult as String =currentMatch.Result("${text}")
+                    Result.Append(textResult)
                 End If
             Next
             Return Result.ToString()

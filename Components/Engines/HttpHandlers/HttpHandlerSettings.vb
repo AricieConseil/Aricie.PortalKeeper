@@ -9,6 +9,7 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.Skins.Controls
 Imports System.Linq
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
 
@@ -25,13 +26,64 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Else
                     handlerName = Me.StaticHandlerName.Name
                 End If
-                Return String.Format("{1}{0}{2}{0}{3}{0}{4}", UIConstants.TITLE_SEPERATOR, handlerName, Me.FriendlyPathsAndVerbs, _
+                Return String.Format("{1}{0}{2}{0}{3}{0}{4}", UIConstants.TITLE_SEPERATOR, handlerName, Me.FriendlyPathsAndVerbs,
                                          IIf(Me.DynamicHandler.Enabled, "enabled", "disabled"), IIf(Me.IsInstalled, "registered", "unregistered"))
             End Get
         End Property
 
 
+        <CollectionEditor(False, False, False, False, 0, CollectionDisplayStyle.List)>
+        <XmlIgnore()>
+        Public ReadOnly Property RegisteredPaths As List(Of String)
+            Get
+                Dim toReturn As New List(Of String)
 
+                If Not Path.IsNullOrEmpty() Then
+                    Dim baseUrl As String = NukeHelper.BaseUrl()
+
+                    Dim prefixes As New List(Of String)
+                    prefixes.Add(baseUrl)
+
+                   For Each prefix As String In prefixes
+                        toReturn.Add(prefix + "/"c + Me.Path.Replace("*"c, "AnyPath").Trim("/"c))
+                        For Each alternateRegistration As HttpHandlerInfo In Me.AlternateRegistrations
+                            toReturn.Add(prefix + "/"c + alternateRegistration.Path.Replace("*"c, "AnyPath").Trim("/"c))
+                        Next
+                    Next
+                End If
+
+                Return toReturn
+            End Get
+        End Property
+
+
+         <CollectionEditor(False, False, False, False, 0, CollectionDisplayStyle.List)>
+        <XmlIgnore()>
+        Public ReadOnly Property RegisteredSubPaths As List(Of String)
+            Get
+                Dim toReturn As New List(Of String)
+
+                If Not Path.IsNullOrEmpty() Then
+                    Dim baseUrl As String = NukeHelper.BaseUrl()
+
+                    Dim prefixes As New List(Of String)
+
+                    For Each handler As HttpHandlerSettings In Me.SubHandlers.Handlers
+                        prefixes.Add(baseUrl & "/"c & handler.Path.Replace("*"c, "").Trim("/"c))
+                    Next
+                    For Each prefix As String In prefixes
+                        toReturn.Add(prefix + "/"c + Me.Path.Replace("*"c, "AnyPath").Trim("/"c))
+                        For Each alternateRegistration As HttpHandlerInfo In Me.AlternateRegistrations
+                            toReturn.Add(prefix + "/"c + alternateRegistration.Path.Replace("*"c, "AnyPath").Trim("/"c))
+                        Next
+                    Next
+                End If
+
+
+
+                Return toReturn
+            End Get
+        End Property
 
         <ExtendedCategory("MainHandler")> _
         Public Property HttpHandlerMode As HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler
@@ -76,12 +128,14 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("SubHandlers")> _
         Public Property SubHandlers As New HttpSubHandlersConfig
 
+        
+
 
         Public Sub ProcessRequest(ByVal context As HttpContext)
-            ProcessRequest(context, New List(Of SimpleRuleEngine))
+            ProcessRequest(context, New List(Of HttpHandlerSettings))
         End Sub
 
-        Public Sub ProcessRequest(ByVal context As HttpContext, parentHandlers As List(Of SimpleRuleEngine))
+        Public Sub ProcessRequest(ByVal context As HttpContext, parentHandlers As List(Of HttpHandlerSettings))
 
             Dim objSubHandler As HttpSubHandlerSettings = Nothing
             If Me.SubHandlers.Enabled Then
@@ -92,7 +146,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 RunMainHandler(context, parentHandlers)
             Else
                 If Me.HttpHandlerMode = PortalKeeper.HttpHandlerMode.DynamicHandler AndAlso objSubHandler.InitParamsToSubHandler Then
-                    parentHandlers.Add(Me.DynamicHandler)
+                    parentHandlers.Add(Me)
                     'keeperContext.Init(Me.DynamicHandler)
                     'keeperContext.SetVar("ParentHandler", Me)
                 End If
@@ -103,7 +157,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
 
-        Private Sub RunMainHandler(context As HttpContext, parentHandlers As List(Of SimpleRuleEngine))
+        Private Sub RunMainHandler(context As HttpContext, parentHandlers As List(Of HttpHandlerSettings))
             Select Case Me.HttpHandlerMode
                 Case PortalKeeper.HttpHandlerMode.Type
                     Dim targetHandler As IHttpHandler = DirectCast(ReflectionHelper.CreateObject(Me.HttpHandlerType.GetDotNetType()), IHttpHandler)
@@ -114,9 +168,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         If parentHandlers.Count > 0 Then
                             keeperContext = New PortalKeeperContext(Of SimpleEngineEvent)
                             Dim key As String = "ParentHandler"
-                            For Each objHandler As SimpleRuleEngine In Enumerable.Reverse(parentHandlers)
-                                keeperContext.Init(objHandler)
-                                keeperContext.SetVar(key, Me)
+                            For Each objHandler As HttpHandlerSettings In Enumerable.Reverse(parentHandlers)
+                                keeperContext.Init(objHandler.DynamicHandler)
+                                keeperContext.SetVar(key, objHandler)
                                 key = "Parent" & key
                             Next
                             keeperContext = Me.DynamicHandler.InitContext(keeperContext.Items)

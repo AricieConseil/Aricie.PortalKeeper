@@ -70,35 +70,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("TechnicalSettings")> _
-        <SortOrder(1000)> _
         Public Property DosSettings() As New DenialOfServiceSettings
 
-        Friend InternalUrlCompression As UrlCompressionInfo
-
-        'todo: remove obsolete properties once migrated
-        <Browsable(False)> _
-        Public Property UrlCompression As UrlCompressionInfo
-            Get
-                Return Nothing
-            End Get
-            Set(value As UrlCompressionInfo)
-                InternalUrlCompression = value
-            End Set
-        End Property
-
-        Friend InternalCustomErrorsConfig As VirtualCustomErrorsInfo
-
-        'todo: remove obsolete properties once migrated
-        <Browsable(False)> _
-        Public Property CustomErrorsConfig() As VirtualCustomErrorsInfo
-            Get
-                Return Nothing
-            End Get
-            Set(value As VirtualCustomErrorsInfo)
-                InternalCustomErrorsConfig = value
-            End Set
-        End Property
-
+       
 
 
         Public Function GetMerge(ByVal portalConfig As FirewallSettings) As FirewallConfig Implements IMergeable(Of FirewallSettings, FirewallConfig).GetMerge

@@ -35,6 +35,7 @@ namespace Aricie.PortalKeeper.AI.Games
             MaxDurationSeconds = 5;
         }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [JsonConverter(typeof(StringEnumConverter))]
         public GameStrategyType StrategyType { get; set; }
 

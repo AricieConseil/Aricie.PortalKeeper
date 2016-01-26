@@ -58,13 +58,16 @@ namespace Aricie.PortalKeeper.AI.CSP
             MaxSteps = 50;
         }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [JsonConverter(typeof(StringEnumConverter))]
         public CSPStrategy StrategyType { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [ConditionalVisible("StrategyType", false, true, CSPStrategy.ImprovedBacktrackingStrategy)]
         [JsonConverter(typeof(StringEnumConverter))]
         public CSPSelection Selection { get; set; }
 
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
         [ConditionalVisible("StrategyType", false, true, CSPStrategy.ImprovedBacktrackingStrategy)]
         [JsonConverter(typeof(StringEnumConverter))]
         public CSPInference Inference { get; set; }
