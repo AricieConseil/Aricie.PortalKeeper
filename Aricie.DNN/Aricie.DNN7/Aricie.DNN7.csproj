@@ -46,6 +46,11 @@
       <HintPath>external\Aricie.DNN.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="ClientDependency.Core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\DNN7\ClientDependency.Core.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="DotNetNuke, Version=7.2.0.607, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\DNN7\DotNetNuke.dll</HintPath>
@@ -135,13 +140,14 @@
   <ItemGroup>
     <Content Include="external\Aricie.Core.dll" />
     <Content Include="external\Aricie.DNN.dll" />
-    <Content Include="external\DNN7\DotNetNuke.dll" />
-    <Content Include="external\DNN7\DotNetNuke.HttpModules.dll" />
-    <Content Include="external\DNN7\DotNetNuke.Instrumentation.dll" />
-    <Content Include="external\DNN7\DotNetNuke.Web.Client.dll" />
-    <Content Include="external\DNN7\DotNetNuke.Web.dll" />
-    <Content Include="external\DNN7\DotNetNuke.WebControls.dll" />
-    <Content Include="external\DNN7\DotNetNuke.WebUtility.dll" />
+    <None Include="external\DNN7\ClientDependency.Core.dll" />
+    <None Include="external\DNN7\DotNetNuke.dll" />
+    <None Include="external\DNN7\DotNetNuke.HttpModules.dll" />
+    <None Include="external\DNN7\DotNetNuke.Instrumentation.dll" />
+    <None Include="external\DNN7\DotNetNuke.Web.Client.dll" />
+    <None Include="external\DNN7\DotNetNuke.Web.dll" />
+    <None Include="external\DNN7\DotNetNuke.WebControls.dll" />
+    <None Include="external\DNN7\DotNetNuke.WebUtility.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -32,8 +32,8 @@ Imports System.Web.UI
 ' You can specify all the values or you can default the Build and Revision Numbers 
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
-<Assembly: AssemblyVersion("01.09.01")> 
-<Assembly: AssemblyFileVersion("01.09.01")> 
+<Assembly: AssemblyVersion("01.09.02")> 
+<Assembly: AssemblyFileVersion("01.09.02")> 
 
 <Assembly: NeutralResourcesLanguage("")> 
 
