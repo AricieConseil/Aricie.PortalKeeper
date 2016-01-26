@@ -1,5 +1,6 @@
 Namespace Text
-    Public Enum Base64Convert
+
+     Public Enum Base64Convert
         None
         FromBase64
         ToBase64

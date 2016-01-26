@@ -11690,4 +11690,40 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="StringSplitInfo_Separators.Text" xml:space="preserve">
     <value>Separators</value>
   </data>
+  <data name="CategorizationInfo_RegexNoEscape.Help" xml:space="preserve">
+    <value>Check if the matching strings are already provided as an escaped regex pattern. By default, input strings will be escaped.</value>
+  </data>
+  <data name="CategorizationInfo_RegexNoEscape.Text" xml:space="preserve">
+    <value>No Escaping</value>
+  </data>
+  <data name="ExpressionFilterInfo_Reverse.Help" xml:space="preserve">
+    <value>Returns an inverted string</value>
+  </data>
+  <data name="ExpressionFilterInfo_Reverse.Text" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="RegexEscape.Text" xml:space="preserve">
+    <value>Regex Escape</value>
+  </data>
+  <data name="RegexUnescape.Text" xml:space="preserve">
+    <value>Regex Unescape</value>
+  </data>
+  <data name="StringSplitInfo_Distinct.Help" xml:space="preserve">
+    <value>If checked, duplicates are removed from the resulting list of strings</value>
+  </data>
+  <data name="StringSplitInfo_Distinct.Text" xml:space="preserve">
+    <value>Distinct</value>
+  </data>
+  <data name="HttpHandlerSettings_RegisteredPaths.Help" xml:space="preserve">
+    <value>Those are template urls associated to this handler</value>
+  </data>
+  <data name="HttpHandlerSettings_RegisteredPaths.Text" xml:space="preserve">
+    <value>Registered Paths</value>
+  </data>
+  <data name="HttpHandlerSettings_RegisteredSubPaths.Help" xml:space="preserve">
+    <value>Those are template urls associated to this handler's subhandlers</value>
+  </data>
+  <data name="HttpHandlerSettings_RegisteredSubPaths.Text" xml:space="preserve">
+    <value>Registered Subpaths</value>
+  </data>
 </root>

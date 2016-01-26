@@ -25,10 +25,15 @@ Namespace Services.Filtering
 
         Public Property EmptyEntries As StringSplitOptions = StringSplitOptions.RemoveEmptyEntries
 
+        
+
         Public  Property ReturnList As Boolean
 
         <ConditionalVisible("ReturnList")>
         Public  Property FilterStrings As New EnabledFeature(Of ExpressionFilterInfo)
+
+        <ConditionalVisible("ReturnList")>
+        Public Property Distinct() As Boolean
 
          Public Function Process(ByVal originalString As String) As IEnumerable(Of String)
             Return Process(originalString, Nothing)
@@ -45,6 +50,9 @@ Namespace Services.Filtering
                 toReturn = New List(Of String)(toReturn)
                 if FilterStrings.Enabled
                     toReturn = FilterStrings.Entity.ProcessList(toReturn)
+                End If
+                If Distinct
+                    toReturn = toReturn.Distinct().ToList()
                 End If
             End If
             Return toReturn
