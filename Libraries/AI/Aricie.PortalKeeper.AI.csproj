@@ -54,8 +54,7 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\bin\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -73,6 +72,7 @@
     <Compile Include="CSP.cs" />
     <Compile Include="GameDemos.cs" />
     <Compile Include="Games.cs" />
+    <Compile Include="Neural.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search.cs" />
     <Compile Include="SearchDemos.cs" />
@@ -89,19 +89,23 @@
     <None Include="external\IKVM.OpenJDK.Util.dll" />
     <None Include="external\IKVM.OpenJDK.XML.API.dll" />
     <None Include="external\IKVM.Runtime.dll" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Aricie.PortalKeeper.vbproj">
       <Project>{e16cb689-af6f-4919-bc7b-1d345a2d48ce}</Project>
       <Name>Aricie.PortalKeeper</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
+      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
+      <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
