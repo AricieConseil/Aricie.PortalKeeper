@@ -400,11 +400,3 @@ namespace Aricie.PortalKeeper.AI.CSP
     }
 
 }
-
-namespace Aricie.PortalKeeper.AI.Learning.Neural
-{
-    public enum NeuralLayerType
-    {
-        BasicLayer,
-    }
-}

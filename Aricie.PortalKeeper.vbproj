@@ -130,7 +130,7 @@
       <HintPath>external\IronPython\Microsoft.Scripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>external\Newtonsoft.Json.dll</HintPath>
+      <HintPath>packages\Newtonsoft.Json.4.5.6\lib\net35\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
@@ -363,8 +363,6 @@
     <Content Include="external\IronPython\Microsoft.Scripting.Core.dll" />
     <Content Include="external\IronPython\Microsoft.Scripting.dll" />
     <Content Include="external\IronPython\Microsoft.Scripting.Metadata.dll" />
-    <Content Include="external\JsonNet\Newtonsoft.Json.dll" />
-    <Content Include="external\JsonNet\Newtonsoft.Json.pdb" />
     <Content Include="external\Watin\Interop.SHDocVw.dll" />
     <Content Include="external\Watin\WatiN.Core.dll" />
     <Content Include="js\Payment.js" />
@@ -503,6 +501,7 @@
     </EmbeddedResource>
     <Content Include="PAs\Aricie.PortalKeeper_Install_01.01.00.zip" />
     <Content Include="Packages.dgml" />
+    <Content Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Aricie.PortalKeeper.dnn">
