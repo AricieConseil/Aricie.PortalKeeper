@@ -102,7 +102,7 @@
       <HintPath>external\HtmlAgilityPack\HtmlAgilityPack.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.4.5.6\lib\net35\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\..\packages\Newtonsoft.Json.4.5.6\lib\net35\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
@@ -331,6 +331,7 @@
     <Compile Include="Services\Filtering\StringSplitInfo.vb" />
     <Compile Include="Services\Filtering\XPathInfo.vb" />
     <Compile Include="Services\Flee\AddEventHandler.vb" />
+    <Compile Include="Services\Flee\AnonymousGeneralVariableInfo.vb" />
     <Compile Include="Services\Flee\CallObjectMethod.vb" />
     <Compile Include="Services\Flee\CtorVariableInfo.vb" />
     <Compile Include="Services\Flee\DelegateVariableInfo.vb" />

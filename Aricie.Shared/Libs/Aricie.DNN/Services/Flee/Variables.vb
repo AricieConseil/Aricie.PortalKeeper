@@ -74,6 +74,17 @@ Namespace Services.Flee
     Public Class Variables
         Inherits VariablesBase
 
+        Public Sub New()
+            MyBase.New()
+        End Sub
+
+        Public Sub New(objVariables As IEnumerable(Of VariableInfo))
+            Me.new
+            For Each variable As VariableInfo In objVariables 
+                Me.Instances.Add(variable)
+            Next
+        End Sub
+
 
         Public Shared Function GetFromParameters(objParameters As ParameterInfo()) As Variables
             Dim toReturn As New Variables()

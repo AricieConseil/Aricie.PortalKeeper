@@ -34,14 +34,30 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="AIFH-Vol3, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Encog\AIFH-Vol3.exe</HintPath>
+    </Reference>
+    <Reference Include="AIFH-Vol3-Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Encog\AIFH-Vol3-Core.dll</HintPath>
+    </Reference>
     <Reference Include="aima-core, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\aima-core.dll</HintPath>
+    </Reference>
+    <Reference Include="CsvHelper, Version=2.0.0.0, Culture=neutral, PublicKeyToken=8c4959082be5c823, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Encog\CsvHelper.dll</HintPath>
     </Reference>
     <Reference Include="DotNetNuke, Version=7.4.1.280, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\Aricie.Shared\Libs\Aricie.DNN\external\dnn481\DotNetNuke.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="encog-core-cs, Version=3.3.0.0, Culture=neutral, PublicKeyToken=3e882172b12155d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Encog\encog-core-cs.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Core, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -52,6 +68,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.Runtime.dll</HintPath>
       <Private>False</Private>
+    </Reference>
+    <Reference Include="MathNet.Numerics, Version=3.8.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\Math.Net\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\..\packages\Newtonsoft.Json.4.5.6\lib\net40\Newtonsoft.Json.dll</HintPath>
@@ -79,16 +99,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="AI.cd" />
-    <None Include="external\aima-core.dll" />
-    <None Include="external\aima-gui.exe" />
-    <None Include="external\IKVM.AWT.WinForms.dll" />
-    <None Include="external\IKVM.OpenJDK.Core.dll" />
-    <None Include="external\IKVM.OpenJDK.Media.dll" />
-    <None Include="external\IKVM.OpenJDK.SwingAWT.dll" />
-    <None Include="external\IKVM.OpenJDK.Text.dll" />
-    <None Include="external\IKVM.OpenJDK.Util.dll" />
-    <None Include="external\IKVM.OpenJDK.XML.API.dll" />
-    <None Include="external\IKVM.Runtime.dll" />
+    <None Include="external\AIMA\aima-core.dll" />
+    <None Include="external\AIMA\aima-gui.exe" />
+    <None Include="external\IKVM\IKVM.AWT.WinForms.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Core.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Media.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.SwingAWT.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Text.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Util.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.XML.API.dll" />
+    <None Include="external\IKVM\IKVM.Runtime.dll" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -109,11 +129,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="external\IKVM.OpenJDK.Beans.dll" />
-    <None Include="external\IKVM.OpenJDK.Misc.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Beans.dll" />
+    <None Include="external\IKVM\IKVM.OpenJDK.Misc.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="external\IKVM.OpenJDK.Security.dll" />
+    <Content Include="external\Encog\AIFH-Vol3-Core.dll" />
+    <Content Include="external\Encog\AIFH-Vol3.exe" />
+    <Content Include="external\Encog\CsvHelper.dll" />
+    <Content Include="external\Encog\encog-core-cs.dll" />
+    <Content Include="external\Math.Net\MathNet.Numerics.dll" />
+    <Content Include="external\IKVM\IKVM.OpenJDK.Security.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

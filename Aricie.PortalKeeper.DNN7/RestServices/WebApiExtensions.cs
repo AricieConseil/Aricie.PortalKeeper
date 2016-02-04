@@ -30,12 +30,12 @@ namespace Aricie.PortalKeeper.DNN7
             return (IHttpRouteData)context.GetVar("RouteData");
         }
 
-        public static HttpResponseMessage GetResponse(this PortalKeeperContext<SimpleEngineEvent> context)
+        public static CreateHttpResponseInfo GetResponse(this PortalKeeperContext<SimpleEngineEvent> context)
         {
-            return (HttpResponseMessage) context.GetVar("Response");
+            return (CreateHttpResponseInfo) context.GetVar("Response");
         }
 
-        public static void SetResponse(this PortalKeeperContext<SimpleEngineEvent> context, HttpResponseMessage objresponse)
+        public static void SetResponse(this PortalKeeperContext<SimpleEngineEvent> context, CreateHttpResponseInfo objresponse)
         {
             context.SetVar("Response", objresponse);
         }

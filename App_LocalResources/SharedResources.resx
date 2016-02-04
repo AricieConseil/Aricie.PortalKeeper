@@ -11726,4 +11726,64 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="HttpHandlerSettings_RegisteredSubPaths.Text" xml:space="preserve">
     <value>Registered Subpaths</value>
   </data>
+  <data name="SimpleOrExpression`1_Expression.Help" xml:space="preserve">
+    <value>Enter an expression to be evaluated at runtime, that resolves to an object of the same type as the simple instance.</value>
+  </data>
+  <data name="SimpleOrExpression`1_Expression.Text" xml:space="preserve">
+    <value>Expression</value>
+  </data>
+  <data name="WebRequestInfo`1_CaptureResponseHeaders.Help" xml:space="preserve">
+    <value>Check to enter the name of a variable to save the response headers.</value>
+  </data>
+  <data name="WebRequestInfo`1_CaptureResponseHeaders.Text" xml:space="preserve">
+    <value>Capture Headers to Variable</value>
+  </data>
+  <data name="CallServiceAction`1_Parameters.Help" xml:space="preserve">
+    <value>Optionally define a list of parameters to be passed to the action. You can use the available command button to preparer paramters according to the registered action signature.</value>
+  </data>
+  <data name="CallServiceAction`1_Parameters.Text" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedActionName.Help" xml:space="preserve">
+    <value>Select an action from the list of actions available within the selected controller</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedActionName.Text" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedControllerName.Help" xml:space="preserve">
+    <value>Select a controller from the list of controllers available within the selected service</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedControllerName.Text" xml:space="preserve">
+    <value>Controller</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedServiceName.Help" xml:space="preserve">
+    <value>Select a web service from the list of services hosted on the platform</value>
+  </data>
+  <data name="CallServiceAction`1_SelectedServiceName.Text" xml:space="preserve">
+    <value>Web Service</value>
+  </data>
+  <data name="CallServiceAction`1_SetParameters.Text" xml:space="preserve">
+    <value>Prepare paramters according to selected Action</value>
+  </data>
+  <data name="CallServiceAction`1_Verb.Help" xml:space="preserve">
+    <value>Select an http verb to emulate (note that no real http call is performed, the dynamic action being invoked directly for optimal performances)</value>
+  </data>
+  <data name="CallServiceAction`1_Verb.Text" xml:space="preserve">
+    <value>Http Verb</value>
+  </data>
+  <data name="SelectedActionName.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select an Action --&gt;</value>
+  </data>
+  <data name="SelectedControllerName.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Controller --&gt;</value>
+  </data>
+  <data name="SelectedServiceName.NullSelect" xml:space="preserve">
+    <value>&lt;-- Select a Service --&gt;</value>
+  </data>
+  <data name="RecursiveAStar.Text" xml:space="preserve">
+    <value>Recursive A Star</value>
+  </data>
+  <data name="RecursiveGreedyBestFirst.Text" xml:space="preserve">
+    <value>Recursive Greedy Best First</value>
+  </data>
 </root>

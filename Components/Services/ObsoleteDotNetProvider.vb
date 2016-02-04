@@ -1,5 +1,6 @@
 Imports Aricie.DNN.Services
 Imports Aricie.Services
+Imports Aricie.Web
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ObsoleteDotNetProvider
@@ -72,6 +73,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Return New List(Of String)
         End Function
 
+        Public Overridable Function RunAction(objAction As DynamicAction, controller As DynamicControllerInfo, objService As RestService, _
+                                              verb As WebMethod, arguments As IDictionary(Of String, Object)) As Object
+            Return Nothing
+        End Function
 
     End Class
 End NameSpace

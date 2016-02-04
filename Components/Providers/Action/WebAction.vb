@@ -8,10 +8,6 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-
-
-
     <ActionButton(IconName.Globe, IconOptions.Normal)>
     <DisplayName("Web Action")>
     <Description("Performs a web call to a web address")>
