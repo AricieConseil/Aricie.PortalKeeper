@@ -41,6 +41,8 @@ namespace Aricie.PortalKeeper.AI.Search
     {
         AStar,
         GreedyBestFirst,
+        RecursiveAStar,
+        RecursiveGreedyBestFirst,
         HillClimbing,
         SimulatedAnnealing
     }
@@ -123,6 +125,12 @@ namespace Aricie.PortalKeeper.AI.Search
                         case KnownInformedSearch.GreedyBestFirst:
                             toReturn = new GreedyBestFirstSearch(objQueueSearch, objHeuristicFunction);
                             break;
+                        case KnownInformedSearch.RecursiveGreedyBestFirst:
+                            toReturn = new RecursiveBestFirstSearch(new GreedyBestFirstEvaluationFunction(objHeuristicFunction));
+                            break;
+                        case KnownInformedSearch.RecursiveAStar:
+                            toReturn = new RecursiveBestFirstSearch(new AStarEvaluationFunction(objHeuristicFunction));
+                            break;
                         case KnownInformedSearch.HillClimbing:
                             toReturn = new HillClimbingSearch(objHeuristicFunction);
                             break;
@@ -137,7 +145,6 @@ namespace Aricie.PortalKeeper.AI.Search
                 case SearchAlgorithmType.KnownUninformed:
                     switch (KnownUninformedAlgorithm)
                     {
-
                         case KnownUninformedSearch.DepthFirst:
                             toReturn = new DepthFirstSearch(objQueueSearch);
                             break;

@@ -188,7 +188,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             For Each objType As Type In assemblyTypes
                 If Not objType.IsAbstract Then
                     If (objType.IsAssignableToGenericType(GetType(IConditionProvider(Of ))) AndAlso objType IsNot GetType(ConditionProvider(Of ))) _
-                        OrElse (objType.IsAssignableToGenericType(GetType(IActionProvider(Of ))) AndAlso objType IsNot GetType(ActionProvider(Of ))) Then
+                        OrElse (objType.IsAssignableToGenericType(GetType(IActionProvider(Of )))) Then
                         If objType.IsGenericType Then
                             objType = objType.MakeGenericType(GetType(TEngineEvents))
                         End If
@@ -217,7 +217,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                                 toReturn += 1
                             End If
                         ElseIf objInterfaces.Contains(GetType(IActionProvider(Of TEngineEvents))) Then
-                            If Me.ActionProviders.Any(Function(objProvider) objProvider.ProviderType.IsAssignableFrom(objType)) Then
+                            If Me.ActionProviders.Any(Function(objProvider) _
+                                                          (Not objProvider.ProviderType.IsGenericType _
+                                                                OrElse objProvider.ProviderType.GetGenericTypeDefinition() IsNot GetType(ActionProvider(Of )) _
+                                                                OrElse objType Is objProvider.ProviderType) _
+                                                          AndAlso objProvider.ProviderType.IsAssignableFrom(objType)) Then
                                 found = True
                             Else
                                 found = False

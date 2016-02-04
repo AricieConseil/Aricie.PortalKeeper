@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Web.Http.Filters;
 using Aricie.DNN.Modules.PortalKeeper;
 using Aricie.PortalKeeper.DNN7.WebAPI;
 using System.Linq;
+using System.Net.Http;
+using Aricie.DNN.Services;
 using DotNetNuke.Web.Api;
 
 namespace Aricie.PortalKeeper.DNN7
@@ -54,5 +57,30 @@ namespace Aricie.PortalKeeper.DNN7
             return WebApiConfig.GetSampleRoutes(basePath, controller);
         }
 
+        public override object RunAction(DynamicAction objAction, DynamicControllerInfo controller, RestService objService, WebMethod verb, 
+            IDictionary<string, object> arguments)
+        {
+            var dynController = new DynamicController
+            {
+                Service = objService,
+                ControllerInfo = controller,
+                SelectedAction = objAction
+            };
+
+            var objContext = objAction.InitContext(arguments);
+            objContext.InitParams(objService.GlobalParameters);
+            objContext.InitParams(controller.GlobalParameters);
+            objContext.SetVar("Controller", dynController);
+            foreach (DynamicParameter parameter in objAction.Parameters)
+            {
+                object val = null;
+                if (parameter.IsOptional && parameter.DefaultValue.Enabled && !arguments.TryGetValue(parameter.Name, out val))
+                {
+                    objContext.SetVar(parameter.Name, parameter.ResolvedDefaultValue);
+                }
+            }
+            var response = dynController.ProcessInternal(objContext, verb);
+            return response?.EvaluateToReturn(objContext);
+        }
     }
 }

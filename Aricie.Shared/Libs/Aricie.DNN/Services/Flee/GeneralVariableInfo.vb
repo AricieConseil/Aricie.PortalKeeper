@@ -21,111 +21,6 @@ Imports Newtonsoft.Json.Converters
 
 Namespace Services.Flee
 
-     Public Class AnonymousGeneralVariableInfo
-        Inherits GeneralVariableInfo
-
-        <JsonIgnore()> _
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public Overrides Property Name As String
-            Get
-                Return MyBase.Name
-            End Get
-            Set(value As String)
-                MyBase.Name = value
-            End Set
-        End Property
-
-        <JsonIgnore()> _
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public Overrides Property Decription As CData
-            Get
-                Return MyBase.Decription
-            End Get
-            Set(value As CData)
-                MyBase.Decription = value
-            End Set
-        End Property
-
-    End Class
-
-    Public Class AnonymousGeneralVariableInfo(Of T)
-        Inherits GeneralVariableInfo(Of T)
-
-        <JsonIgnore()> _
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public Overrides Property Name As String
-            Get
-                Return MyBase.Name
-            End Get
-            Set(value As String)
-                MyBase.Name = value
-            End Set
-        End Property
-
-        <JsonIgnore()> _
-        <XmlIgnore()> _
-        <Browsable(False)> _
-        Public Overrides Property Decription As CData
-            Get
-                Return MyBase.Decription
-            End Get
-            Set(value As CData)
-                MyBase.Decription = value
-            End Set
-        End Property
-
-    End Class
-
-    Public Class GeneralVariableInfo(Of T)
-        Inherits GeneralVariableInfo
-
-        Public Sub New()
-            MyBase.New()
-        End Sub
-
-        Public Sub New(strName As String)
-            MyBase.New(strName)
-        End Sub
-
-        Private _ConstDotNetType As New DotNetType(GetType(T))
-
-        <XmlIgnore()> _
-        <SortOrder(0)> _
-        Public Overrides ReadOnly Property VariableType As String
-            Get
-                Return MyBase.VariableType
-            End Get
-        End Property
-
-
-        <SortOrder(0)> _
-        Public Property SubType() As New EnabledFeature(Of SubDotNetType(Of T))
-
-        
-        <XmlIgnore()> _
-        <Browsable(False)>
-        Public Overrides Property DotNetType As DotNetType
-            Get
-                If SubType.Enabled andalso SubType.Entity.GetDotNetType() IsNot Nothing
-                    Return SubType.Entity
-                End If
-                Return _ConstDotNetType
-            End Get
-            Set(value As DotNetType)
-                'do nothing
-            End Set
-        End Property
-
-        Public  Function EvaluateTyped(ByVal owner As Object, ByVal globalVars As IContextLookup) As T
-            Return DirectCast(Me.Evaluate(owner, globalVars), T)
-        End Function
-
-
-    End Class
-
     Public Class GeneralVariableInfo
         Inherits VariableInfo
         Implements ISelector(Of MemberInfo)
@@ -764,4 +659,52 @@ Namespace Services.Flee
             End If
         End Sub
     End Class
+
+     Public Class GeneralVariableInfo(Of T)
+        Inherits GeneralVariableInfo
+
+        Public Sub New()
+            MyBase.New()
+        End Sub
+
+        Public Sub New(strName As String)
+            MyBase.New(strName)
+        End Sub
+
+        Private _ConstDotNetType As New DotNetType(GetType(T))
+
+        <XmlIgnore()> _
+        <SortOrder(0)> _
+        Public Overrides ReadOnly Property VariableType As String
+            Get
+                Return MyBase.VariableType
+            End Get
+        End Property
+
+
+        <SortOrder(0)> _
+        Public Property SubType() As New EnabledFeature(Of SubDotNetType(Of T))
+
+        
+        <XmlIgnore()> _
+        <Browsable(False)>
+        Public Overrides Property DotNetType As DotNetType
+            Get
+                If SubType.Enabled andalso SubType.Entity.GetDotNetType() IsNot Nothing
+                    Return SubType.Entity
+                End If
+                Return _ConstDotNetType
+            End Get
+            Set(value As DotNetType)
+                'do nothing
+            End Set
+        End Property
+
+        Public  Function EvaluateTyped(ByVal owner As Object, ByVal globalVars As IContextLookup) As T
+            Return DirectCast(Me.Evaluate(owner, globalVars), T)
+        End Function
+
+
+    End Class
+
 End Namespace

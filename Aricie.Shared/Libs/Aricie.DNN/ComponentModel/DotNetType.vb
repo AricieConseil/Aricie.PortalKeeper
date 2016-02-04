@@ -81,10 +81,15 @@ Namespace ComponentModel
 
         Public Sub New(ByVal objType As Type)
             If objType IsNot Nothing AndAlso Not objType.IsGenericParameter Then
-                Me.SetTypeName(ReflectionHelper.GetSafeTypeName(objType))
+                SetType(objType)
             End If
         End Sub
 
+        Public Sub SetType(ByVal objType As Type)
+              If objType IsNot Nothing
+                Me.SetTypeName(ReflectionHelper.GetSafeTypeName(objType))
+              End If
+        End Sub
 
         <XmlIgnore()> _
         <Browsable(False)> _

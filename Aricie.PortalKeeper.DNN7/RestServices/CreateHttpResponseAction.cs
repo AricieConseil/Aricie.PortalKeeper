@@ -20,8 +20,8 @@ namespace Aricie.PortalKeeper.DNN7.Providers.ActionProviders
         public CreateHttpResponseInfo CreateResponseInfo { get; set; }
         protected override bool Run(PortalKeeperContext<SimpleEngineEvent> actionContext, bool aSync)
         {
-            var objResponse = this.CreateResponseInfo.CreateResponse(actionContext);
-            actionContext.SetResponse(objResponse);
+            //var objResponse = this.CreateResponseInfo.CreateResponse(actionContext);
+            actionContext.SetResponse(CreateResponseInfo);
             return true;
         }
     }

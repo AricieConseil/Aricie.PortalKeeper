@@ -207,6 +207,7 @@
     <Compile Include="Components\Engines\RestServices\HttpResponseMode.vb" />
     <Compile Include="Components\Engines\RestServices\MediaTypeFormatterInfo.vb" />
     <Compile Include="Components\Engines\RestServices\MediaTypeHeaderInfo.vb" />
+    <Compile Include="Components\Providers\Action\CallServiceAction.vb" />
     <Compile Include="Components\Providers\Action\Google\FeedQueryInfo.vb" />
     <Compile Include="Components\Providers\Action\Google\ListQueryInfo.vb" />
     <Compile Include="Components\Services\ObsoleteDotNetProvider.vb" />

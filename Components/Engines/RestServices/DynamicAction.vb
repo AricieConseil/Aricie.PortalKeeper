@@ -6,6 +6,7 @@ Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls
 Imports System.Linq
+Imports Aricie.DNN.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.CodeFork, IconOptions.Normal)> _
@@ -61,6 +62,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ExtendedCategory("Rules")> _
         Public Overrides Property Mode As RuleEngineMode = RuleEngineMode.Actions
+
+
+        Public Function Run(objService As RestService, objController As DynamicControllerInfo, verb As WebMethod, arguments As IDictionary(Of String, Object)) As Object
+            Return ObsoleteDotNetProvider.Instance.RunAction(Me, objController, objService, verb, arguments)
+        End Function
+
 
     End Class
 End Namespace

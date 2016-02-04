@@ -46,18 +46,27 @@ namespace Aricie.PortalKeeper.DNN7
             return this.Process(actionContext, WebMethod.Options);
         }
 
-        protected virtual HttpResponseMessage Process(PortalKeeperContext<SimpleEngineEvent> actionContext, WebMethod verb )
+        public virtual HttpResponseMessage Process(PortalKeeperContext<SimpleEngineEvent> actionContext, WebMethod verb )
         {
+
+            var response = ProcessInternal(actionContext, verb);
+            
+            return response?.CreateResponse(actionContext);
+
+        }
+
+        public virtual CreateHttpResponseInfo ProcessInternal(PortalKeeperContext<SimpleEngineEvent> actionContext, WebMethod verb)
+        {
+            actionContext.SetVar("HttpVerb", verb);
             this.SelectedAction.ProcessRules(actionContext, SimpleEngineEvent.Run, true, true);
             var response = actionContext.GetResponse();
             if (response == null && this.SelectedAction.DefaultResponse.Enabled)
             {
-                response = this.SelectedAction.DefaultResponse.Entity.CreateResponse(actionContext);
+                response = this.SelectedAction.DefaultResponse.Entity;
             }
 
             return response;
         }
-
 
     }
 }

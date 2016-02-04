@@ -38,7 +38,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <ConditionalVisible("IsOptional")>
         Public property DefaultValue As new EnabledFeature(Of AnonymousGeneralVariableInfo)
-        
+
+        Private _ResolvedDefaultValue As Object
+
+        Public ReadOnly Property ResolvedDefaultValue() As Object
+            Get
+                If DefaultValue.Enabled Then
+                    return DefaultValue.Entity.Evaluate(PortalKeeperContext(of RequestEvent).GlobalInstance, PortalKeeperContext(Of RequestEvent).GlobalInstance)
+                End If
+                Return Nothing
+            End Get
+        End Property
+
+
         Public Overrides Function GetFriendlyDetails() As String
             Return String.Format("{1} {0} {2}", UIConstants.TITLE_SEPERATOR, MyBase.GetFriendlyDetails(), Me.ParameterType)
         End Function
