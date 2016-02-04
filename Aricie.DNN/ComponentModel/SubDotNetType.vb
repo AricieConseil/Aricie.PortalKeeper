@@ -70,6 +70,11 @@ Namespace ComponentModel
             MyBase.New(GetType(TBaseType))
       End Sub
 
+        Public Sub New(objSubType As Type)
+            Me.New()
+            Me.SetType(objSubType)
+        End sub
+
         Private  _BaseType As new DotNetType(GetType(TBaseType))
 
         <Browsable(False)> _
