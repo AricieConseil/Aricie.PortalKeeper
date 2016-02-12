@@ -57,14 +57,30 @@ namespace Aricie.PortalKeeper.AI.Search.Demo
         [ConditionalVisible("Selection", false, true, SearchDemos.NQueen)]
         public int NQueenBoardSize { get; set; }
 
+        public bool ShouldSerializeNQueenBoardSize()
+        {
+            return Selection == SearchDemos.NQueen;
+        }
+
         [ConditionalVisible("Selection", false, true, SearchDemos.NQueen)]
         [JsonConverter(typeof(StringEnumConverter))]
         public NQueensActions NQueensActions { get; set; }
+
+        public bool ShouldSerializeNQueenActions()
+        {
+            return Selection == SearchDemos.NQueen;
+        }
 
         [ConditionalVisible("Selection", false, true, SearchDemos.EightPuzzle)]
         [CollectionEditor(DisplayStyle = CollectionDisplayStyle.Accordion, EnableExport = false, ItemsReadOnly = true,
             NoAdd = true, NoDeletion = true, Ordered = true)]
         public List<int> EightPuzzleInitialState { get; set; }
+
+        public bool ShouldSerializeEightPuzleInitialState()
+        {
+            return Selection == SearchDemos.EightPuzzle;
+        }
+
 
         [ConditionalVisible("Selection", false, true, SearchDemos.EightPuzzle)]
         public int EightPuzzleShuffleMoves { get; set; }
@@ -115,10 +131,19 @@ namespace Aricie.PortalKeeper.AI.Search.Demo
         [JsonConverter(typeof(StringEnumConverter))]
         public EightPuzzleHeuristics EightPuzzleHeuristics { get; set; }
 
+        public bool ShouldSerializeEightPuzzleHeuristics()
+        {
+            return Selection == SearchDemos.EightPuzzle;
+        }
+
         [ConditionalVisible("Selection", false, true, SearchDemos.NQueen)]
         [JsonConverter(typeof(StringEnumConverter))]
         public NQueensHeuristics NQueensHeuristics { get; set; }
 
+        public bool ShouldSerializeNQueensHeuristics()
+        {
+            return Selection == SearchDemos.NQueen;
+        }
 
         public Object GetInitialState()
         {

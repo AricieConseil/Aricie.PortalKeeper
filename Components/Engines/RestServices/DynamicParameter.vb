@@ -41,6 +41,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _ResolvedDefaultValue As Object
 
+        <Browsable(False)> _
         Public ReadOnly Property ResolvedDefaultValue() As Object
             Get
                 If DefaultValue.Enabled Then

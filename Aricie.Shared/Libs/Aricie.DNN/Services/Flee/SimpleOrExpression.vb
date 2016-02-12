@@ -6,6 +6,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
 Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Services.Flee
     <Serializable()>
@@ -218,7 +219,8 @@ Namespace Services.Flee
             End Get
         End Property
 
-        '<JsonProperty()> _
+        '<DefaultValue(DirectCast(SimpleOrExpressionMode.Simple, Object))> _
+        <JsonConverter(gettype(StringEnumConverter))> _
         Public Property Mode As SimpleOrExpressionMode
 
         <DefaultValue(False)> _
@@ -260,9 +262,10 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <JsonProperty("Simple")> _
         <XmlElement("Simple")> _
         <Browsable(False)> _
-        Public Property XmlSimple As TSimple
+        Public Property SerializedSimple As TSimple
             Get
                 If Not IsSubType() Then
                     Dim newSimple = GetSimple()

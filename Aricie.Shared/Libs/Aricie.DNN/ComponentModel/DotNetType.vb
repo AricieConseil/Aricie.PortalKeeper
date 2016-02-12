@@ -11,6 +11,8 @@ Imports System.Text
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Services
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace ComponentModel
     Public Enum TypeSelector
@@ -102,9 +104,8 @@ Namespace ComponentModel
         End Property
 
 
-
-
-         <DefaultValue(0)> _
+         <DefaultValue(DirectCast(TypePickerMode.SelectType, Object))> _
+         <JsonConverter(gettype(StringEnumConverter))> _
         Public Overridable Property PickerMode As TypePickerMode
 
 
@@ -435,12 +436,17 @@ Namespace ComponentModel
                             _Type = Me.GetDotNetType(Me._TypeName, False)
                         End If
                     Case TypePickerMode.CustomObject
-                        Dim objProps = Me.CustomObject.EvaluateVariables(DnnContext.Current, DnnContext.Current)
-                        If Me.CustomTypeIdentifier.Enabled Then
-                            _Type = objProps.ToCustomObject(Me.CustomTypeIdentifier.Entity.Name).GetType()
-                        Else
-                            _Type = objProps.ToCustomObject("").GetType()
-                        End If
+                        Try
+                            Dim objProps = Me.CustomObject.EvaluateVariables(DnnContext.Current, DnnContext.Current)
+                            If Me.CustomTypeIdentifier.Enabled Then
+                                _Type = objProps.ToCustomObject(Me.CustomTypeIdentifier.Entity.Name).GetType()
+                            Else
+                                _Type = objProps.ToCustomObject("").GetType()
+                            End If
+                        Catch ex As Exception
+                            ExceptionHelper.LogException(ex)
+                        End Try
+
                         'AddCommonType(ReflectionHelper.GetSafeTypeName(_Type), Me)
                 End Select
             End If

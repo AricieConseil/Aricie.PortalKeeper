@@ -125,6 +125,7 @@ Namespace Services.Flee
             End Set
         End Property
 
+        <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property HasExpressionBuilder As Boolean
             Get
@@ -467,6 +468,11 @@ Namespace Services.Flee
                     If obj IsNot Nothing Then
                         e.VariableType = obj.GetType()
                         While Not e.VariableType.IsVisible
+                            Dim interfaces As Type() = e.VariableType.GetInterfaces()
+                            If interfaces.Length > 0 Then
+                                e.VariableType = interfaces(0)
+                                Exit While
+                            End If
                             e.VariableType = e.VariableType.BaseType
                         End While
                         'If e.VariableType.Assembly.GetName().Name = ObjectExtensions.CustomTypesAssemblyName Then

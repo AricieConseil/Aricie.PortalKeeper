@@ -85,16 +85,16 @@ Namespace Services.Flee
             End Get
         End Property
 
-         <XmlIgnore()> _
+        <XmlIgnore()>
         <Browsable(False)>
         Public Overrides ReadOnly Property VariableType As String
             Get
-                Return ReflectionHelper.GetSafeTypeName( DotNetType.TypeName)
+                Return ReflectionHelper.GetSafeTypeName(DotNetType.TypeName)
             End Get
         End Property
 
-        <DefaultValue(VariableMode.Expression)> _
-        <JsonProperty()> _
+        <DefaultValue(DirectCast(VariableMode.Expression, Object))> _
+        <JsonProperty(DefaultValueHandling := DefaultValueHandling.Include)> _
         <JsonConverter(GetType(StringEnumConverter))> _
         <ConditionalVisible("HasType", False, True)> _
         Public Property VariableMode As VariableMode = VariableMode.Expression
@@ -184,18 +184,20 @@ Namespace Services.Flee
         End Property
 
         'Instance
-
+         <DefaultValue(False)> _
         <ExtendedCategory("", "Evaluation")>
         <ConditionalVisible("HasTargetType", False, True)>
         <ConditionalVisible("VariableMode", True, True, VariableMode.Constructor, VariableMode.Delegate)>
         Public Property UseClone() As Boolean
 
+        <JsonConverter(GetType(StringEnumConverter))> _
+        <DefaultValue(DirectCast(InstanceMode.Off, Object))> _
         <ExtendedCategory("", "Evaluation")>
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
         <ConditionalVisible("HasType", False, True)>
         Public Property InstanceMode As InstanceMode = InstanceMode.Off
 
-        
+       
         <ExtendedCategory("", "Evaluation")>
         <ConditionalVisible("VariableMode", True, True, VariableMode.Instance)>
         <ConditionalVisible("HasType", False, True)>
@@ -332,6 +334,7 @@ Namespace Services.Flee
         End Property
 
         <DefaultValue(1)> _
+        <AutoPostBack()> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))>
         <ProvidersSelector("Key", "Value")>
         <ConditionalVisible("HasTargetType")>
@@ -403,7 +406,9 @@ Namespace Services.Flee
         <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.StaticMember)>
         Public Property Parameters() As New Variables
 
-
+        Public  Function ShouldSerializeParameters() As Boolean
+            Return Parameters.Instances.Count > 0
+        End Function
 
         <ConditionalVisible("HasType", False, True)>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Instance)>
@@ -704,6 +709,9 @@ Namespace Services.Flee
             Return DirectCast(Me.Evaluate(owner, globalVars), T)
         End Function
 
+        Public  Function ShouldSerializeSubType() As Boolean
+            Return SubType.Enabled
+        End Function
 
     End Class
 

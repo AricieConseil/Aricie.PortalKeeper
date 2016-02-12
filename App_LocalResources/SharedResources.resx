@@ -10496,9 +10496,6 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="ClearItems.Command.ToolTip" xml:space="preserve">
     <value>Clears all items from the collection</value>
   </data>
-  <data name="ClearItems.Warning" xml:space="preserve">
-    <value>This will remove all items from the collection. Are you sure?</value>
-  </data>
   <data name="ControlAdaptersConfig_RegisterAdapters.Text.ToolTip" xml:space="preserve">
     <value>Clears the current state of registered adapters, to account for the last changes in the saved configuration.</value>
   </data>
@@ -11785,5 +11782,143 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="RecursiveGreedyBestFirst.Text" xml:space="preserve">
     <value>Recursive Greedy Best First</value>
+  </data>
+  <data name="ClearItems.Warning" xml:space="preserve">
+    <value>This will remove all items from the collection. Are you sure?</value>
+  </data>
+  <data name="DPLLEntails.Text" xml:space="preserve">
+    <value>DPLL Entails</value>
+  </data>
+  <data name="DPLLSatisfiable.Text" xml:space="preserve">
+    <value>DPLL Satisfiable</value>
+  </data>
+  <data name="GeneralVariableInfo_ResetInstance.Text.ToolTip" xml:space="preserve">
+    <value>Click to reset the current object to a new instance</value>
+  </data>
+  <data name="PLFCEntails.Text" xml:space="preserve">
+    <value>PL Forward Chaining Entails</value>
+  </data>
+  <data name="PLKbInferInfo_KnowledgeBase.Help" xml:space="preserve">
+    <value>Define a variable that resolves into a PL Knowledge Base</value>
+  </data>
+  <data name="PLKbInferInfo_KnowledgeBase.Text" xml:space="preserve">
+    <value>Knowledge Base</value>
+  </data>
+  <data name="PLKbInferInfo_Predicate.Help" xml:space="preserve">
+    <value>Enter a predicate as a string or an expression of a string to be parsed and used for inference against the  knowldege base</value>
+  </data>
+  <data name="PLKbInferInfo_Predicate.Text" xml:space="preserve">
+    <value>Predicate</value>
+  </data>
+  <data name="PLKbInferInfo_Procedure.Help" xml:space="preserve">
+    <value>Define here the type of inference to apply to the predicate relative to the knowledge base</value>
+  </data>
+  <data name="PLKbInferInfo_Procedure.Text" xml:space="preserve">
+    <value>Inference Procedure</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_Procedure.Help" xml:space="preserve">
+    <value>Select on of the inference modes available.</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_Procedure.Text" xml:space="preserve">
+    <value>Procedure</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_WalkSatMaxFlips.Help" xml:space="preserve">
+    <value>Max number of individual steps for walksat during local search</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_WalkSatMaxFlips.Text" xml:space="preserve">
+    <value>WalkSat Max Flips</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_WalkSatProbability.Help" xml:space="preserve">
+    <value>Probability for the Walksat algorithm to move side ways to evade local extrema during local search.</value>
+  </data>
+  <data name="PLKbInferProcedureInfo_WalkSatProbability.Text" xml:space="preserve">
+    <value>WalkSat Probability</value>
+  </data>
+  <data name="PLKbInfo_Sentences.Help" xml:space="preserve">
+    <value>Those are the sentences that make up the Knowledge Base content. You can use native "tell" method of the KnowledgeBase property to add sentences to the KB</value>
+  </data>
+  <data name="PLKbInfo_Sentences.Text" xml:space="preserve">
+    <value>Sentences</value>
+  </data>
+  <data name="Resolve.Text" xml:space="preserve">
+    <value>Resolve</value>
+  </data>
+  <data name="SimpleExpression`1_DisplayAvailableVars.Text.ToolTip" xml:space="preserve">
+    <value>Click to open a local expression builder with access to local variables</value>
+  </data>
+  <data name="SimpleOrExpressionBase`2_ResetInstance.Text.ToolTip" xml:space="preserve">
+    <value>Click to reset the simple object to a new instance</value>
+  </data>
+  <data name="TTEntails.Text" xml:space="preserve">
+    <value>Truth Table Entails</value>
+  </data>
+  <data name="WalkSatKb.Text" xml:space="preserve">
+    <value>WalkSat Knowledge Base</value>
+  </data>
+  <data name="WalkSatPredicate.Text" xml:space="preserve">
+    <value>WalkSat Predicate</value>
+  </data>
+  <data name="BCAsk.Text" xml:space="preserve">
+    <value>Backward Chaining Ask</value>
+  </data>
+  <data name="FCAsk.Text" xml:space="preserve">
+    <value>Forward Chaining Ask</value>
+  </data>
+  <data name="FolDomainInfo_Constants.Help" xml:space="preserve">
+    <value>Constants represent real world objects</value>
+  </data>
+  <data name="FolDomainInfo_Constants.Text" xml:space="preserve">
+    <value>Constants</value>
+  </data>
+  <data name="FolDomainInfo_Functions.Help" xml:space="preserve">
+    <value>Functions represents object relations with a defined result</value>
+  </data>
+  <data name="FolDomainInfo_Functions.Text" xml:space="preserve">
+    <value>Functions</value>
+  </data>
+  <data name="FolDomainInfo_Predicates.Help" xml:space="preserve">
+    <value>Predicates represent relations between objects or object properties</value>
+  </data>
+  <data name="FolDomainInfo_Predicates.Text" xml:space="preserve">
+    <value>Predicates</value>
+  </data>
+  <data name="FolKbInferInfo_KnowledgeBase.Help" xml:space="preserve">
+    <value>Define a variable that resolves into a First Order Logic Knowledge Base</value>
+  </data>
+  <data name="FolKbInferInfo_KnowledgeBase.Text" xml:space="preserve">
+    <value>Knowledge Base</value>
+  </data>
+  <data name="FolKbInferInfo_Predicate.Help" xml:space="preserve">
+    <value>Enter a predicate as a string or an expression of a string to be parsed and used for inference against the  knowldege base</value>
+  </data>
+  <data name="FolKbInferInfo_Predicate.Text" xml:space="preserve">
+    <value>Predicate</value>
+  </data>
+  <data name="FolKbInfo_Domain.Help" xml:space="preserve">
+    <value>A first order logic domain is composed of constants (objects), predicates (object relations), and functions (relations that return a result)</value>
+  </data>
+  <data name="FolKbInfo_Domain.Text" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="FolKbInfo_Procedure.Help" xml:space="preserve">
+    <value>Select an inference procedure to process your knowledge base</value>
+  </data>
+  <data name="FolKbInfo_Procedure.Text" xml:space="preserve">
+    <value>Inference Procedure</value>
+  </data>
+  <data name="FolKbInfo_Sentences.Help" xml:space="preserve">
+    <value>Those are the sentences that make up the Knowledge Base content. You can use native "tell" method of the KnowledgeBase property to add sentences to the KB</value>
+  </data>
+  <data name="FolKbInfo_Sentences.Text" xml:space="preserve">
+    <value>Sentences</value>
+  </data>
+  <data name="ModelElimination.Text" xml:space="preserve">
+    <value>Model Elimination</value>
+  </data>
+  <data name="OTTERLikeTheoremProver.Text" xml:space="preserve">
+    <value>OTTER Like Theorem Prover</value>
+  </data>
+  <data name="TFMResolution.Text" xml:space="preserve">
+    <value>Two Finger Method Resolution</value>
   </data>
 </root>
