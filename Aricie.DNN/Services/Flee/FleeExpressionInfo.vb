@@ -7,6 +7,8 @@ Imports System.Reflection
 Imports Ciloci.Flee
 Imports Aricie.DNN.UI.WebControls
 Imports System.Xml.Serialization
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Services.Flee
 
@@ -148,7 +150,8 @@ Namespace Services.Flee
             End Set
         End Property
 
-        <DefaultValue(DefaultOwnerMemberAccess)> _
+        <JsonConverter(gettype(StringEnumConverter))> _
+        <DefaultValue(DirectCast(DefaultOwnerMemberAccess, Object))> _
         <ExtendedCategory("Evaluation")> _
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property OwnerMemberAccess As BindingFlags
@@ -211,7 +214,9 @@ Namespace Services.Flee
             End Set
         End Property
 
-        
+        Public  Function ShouldSerializeStaticImports() As Boolean
+            Return StaticImports.Count > 0
+        End Function
 
         <DefaultValue(false)> _
         <ExtendedCategory("Debug")> _
@@ -391,7 +396,8 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("TechnicalSettings")> _
-        <DefaultValue(DefaultParseCultureMode)> _
+        <JsonConverter(gettype(StringEnumConverter))> _
+        <DefaultValue(DirectCast(DefaultParseCultureMode, Object))> _
         Public Property ParseCultureMode() As CultureInfoMode
             Get
                 Return InternalParseCultureMode
@@ -426,7 +432,8 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <ExtendedCategory("TechnicalSettings")> _
-        <DefaultValue(DefaultRealLiteralDataType)> _
+        <DefaultValue(DirectCast(DefaultRealLiteralDataType, Object))> _
+        <JsonConverter(gettype(StringEnumConverter))> _
         Public Property RealLiteralDataType() As RealLiteralDataType
             Get
                 Return InternalRealLiteralDataType

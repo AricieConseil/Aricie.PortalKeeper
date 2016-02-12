@@ -109,7 +109,7 @@ Namespace Services.Filtering
         <ExtendedCategory("XPathSettings")> _
         Public Property EvaluateExpression As Boolean
 
-        <DefaultValue(XPathOutputMode.Selection)> _
+        <DefaultValue(DirectCast(XPathOutputMode.Selection, Object))> _
         <JsonConverter(GetType(StringEnumConverter))> _
         <ExtendedCategory("XPathSettings")> _
         <ConditionalVisible("EvaluateExpression", True, True)> _

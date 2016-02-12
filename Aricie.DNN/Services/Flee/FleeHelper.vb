@@ -55,14 +55,21 @@ Namespace Services.Flee
             Return toReturn
         End Function
 
-        Public Function Format(ByVal tempalte As String, value As String) As String
-            Return String.Format(tempalte, value)
+        Public Function Format(ByVal template As String, value As String) As String
+            Return String.Format(template, value)
         End Function
 
-        Public Function Format(ByVal tempalte As String, value1 As String, value2 As String) As String
-            Return String.Format(tempalte, value1, value2)
+        Public Function Format(ByVal template As String, value1 As String, value2 As String) As String
+            Return String.Format(template, value1, value2)
         End Function
 
+        Public Function ToListOfString(objCollec As IEnumerable) As List(Of String)
+            dim toReturn as New List(Of String)
+            For Each o As Object In objCollec
+                toReturn.Add(o.ToString())
+            Next
+            Return toReturn
+        End Function
 
 
     End Module
