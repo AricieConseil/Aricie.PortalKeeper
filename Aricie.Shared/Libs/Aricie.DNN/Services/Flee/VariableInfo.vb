@@ -6,6 +6,8 @@ Imports Aricie.DNN.UI.Attributes
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
+Imports Newtonsoft.Json
+Imports Newtonsoft.Json.Converters
 
 Namespace Services.Flee
     ''' <summary>
@@ -40,7 +42,8 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
-        <DefaultValue(VarEvaluationMode.Dynamic)> _ 
+        <DefaultValue(DirectCast(VarEvaluationMode.Dynamic, Object))> _
+         <JsonConverter(GetType(StringEnumConverter))> _
         Public Overridable Property EvaluationMode() As VarEvaluationMode = VarEvaluationMode.Dynamic
 
         ''' <summary>
@@ -50,7 +53,8 @@ Namespace Services.Flee
         ''' <returns></returns>
         ''' <remarks></remarks>
         <Browsable(False)> _
-        <DefaultValue(VariableScope.Local)> _ 
+        <DefaultValue(DirectCast(VariableScope.Local, Object))> _
+         <JsonConverter(GetType(StringEnumConverter))> _
         Public Overridable Property Scope() As VariableScope = VariableScope.Local
 
         ''' <summary>

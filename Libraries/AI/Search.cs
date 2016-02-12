@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using aima.core.search.framework;
@@ -12,6 +11,10 @@ using Aricie.DNN.UI.Attributes;
 using Aricie.DNN.Entities;
 using Aricie.DNN.ComponentModel;
 using System.Collections;
+using aima.core.logic.propositional.inference;
+using aima.core.logic.propositional.kb;
+using aima.core.logic.propositional.parsing;
+using aima.core.logic.propositional.parsing.ast;
 //using aima.core.search.eightpuzzle;
 using aima.core.search.local;
 //using aima.core.search.nqueens;
@@ -21,9 +24,10 @@ using Aricie.DNN.UI.WebControls;
 using Aricie.Security.Cryptography;
 using java.util;
 
+
+
 namespace Aricie.PortalKeeper.AI.Search
 {
-
     public enum QueueSearchType
     {
         GraphSearch,
@@ -69,17 +73,17 @@ namespace Aricie.PortalKeeper.AI.Search
             DepthLimit = 5;
         }
 
-        [JsonProperty(DefaultValueHandling =  DefaultValueHandling.Include)]
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
+        [JsonConverter(typeof (StringEnumConverter))]
         public SearchAlgorithmType AlgorithmType { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof (StringEnumConverter))]
         [ConditionalVisible("AlgorithmType", false, true, SearchAlgorithmType.KnownInformed)]
         public KnownInformedSearch KnownInformedAlgorithm { get; set; }
 
         [JsonProperty(DefaultValueHandling = DefaultValueHandling.Include)]
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof (StringEnumConverter))]
         [ConditionalVisible("AlgorithmType", false, true, SearchAlgorithmType.KnownUninformed)]
         public KnownUninformedSearch KnownUninformedAlgorithm { get; set; }
 
@@ -92,7 +96,7 @@ namespace Aricie.PortalKeeper.AI.Search
         {
             get
             {
-                if (AlgorithmType !=  SearchAlgorithmType.CustomAlgorithm)
+                if (AlgorithmType != SearchAlgorithmType.CustomAlgorithm)
                 {
                     return null;
                 }
@@ -101,7 +105,7 @@ namespace Aricie.PortalKeeper.AI.Search
             set { _customSearchAlgorithm = value; }
         }
 
-        [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof (StringEnumConverter))]
         public QueueSearchType QueueSearchType { get; set; }
 
         public aima.core.search.framework.Search GetSearch(Object owner, IContextLookup globalVars, HeuristicFunction objHeuristicFunction)
@@ -176,16 +180,12 @@ namespace Aricie.PortalKeeper.AI.Search
 
     public class ProblemInfo
     {
-
         public ProblemInfo()
         {
-
             ActionsFunction = new AnonymousGeneralVariableInfo<ActionsFunction>();
             ResultFunction = new AnonymousGeneralVariableInfo<ResultFunction>();
             GoalTest = new AnonymousGeneralVariableInfo<GoalTest>();
             StepCostFunction = new EnabledFeature<AnonymousGeneralVariableInfo<StepCostFunction>>();
-            
-
         }
 
         public AnonymousGeneralVariableInfo<ActionsFunction> ActionsFunction { get; set; }
@@ -196,7 +196,6 @@ namespace Aricie.PortalKeeper.AI.Search
 
         public EnabledFeature<AnonymousGeneralVariableInfo<StepCostFunction>> StepCostFunction { get; set; }
 
-        
 
         public Problem GetProblem(Object owner, IContextLookup globalVars, Object initialState)
         {
@@ -223,12 +222,10 @@ namespace Aricie.PortalKeeper.AI.Search
         public SearchAgent SearchAgent { get; set; }
 
         public Problem Problem { get; set; }
-        
     }
 
     public class SearchAgentInfo
     {
-
         public SearchAgentInfo()
         {
             InitialState = new AnonymousGeneralVariableInfo();
@@ -256,12 +253,12 @@ namespace Aricie.PortalKeeper.AI.Search
             var objSearchInfo = Search.GetValue(owner, globalVars);
             Problem objProblem = objProblemInfo.GetProblem(owner, globalVars, objInitialState);
             var objHeuristicFunction = HeuristicFunction.Entity.EvaluateTyped(owner, globalVars);
-            if (objHeuristicFunction==null)
+            if (objHeuristicFunction == null)
             {
                 objHeuristicFunction = DefaultHeuristics;
             }
             var objSearch = objSearchInfo.GetSearch(owner, globalVars, objHeuristicFunction);
-            return new SearchAgentResult() { Problem = objProblem, SearchAgent = new SearchAgent(objProblem, objSearch)};
+            return new SearchAgentResult() {Problem = objProblem, SearchAgent = new SearchAgent(objProblem, objSearch)};
         }
 
         private static readonly NonHeuristics DefaultHeuristics = new NonHeuristics();
@@ -277,7 +274,7 @@ namespace Aricie.PortalKeeper.AI.Search
         public List<string> PrintActions(SearchAgent agent)
         {
             var toReturn = new List<String>();
-            var actions =  agent.getActions().toArray();
+            var actions = agent.getActions().toArray();
             foreach (aima.core.agent.Action action in actions)
             {
                 toReturn.Add(action.ToString());
@@ -292,11 +289,11 @@ namespace Aricie.PortalKeeper.AI.Search
             Iterator terator = instrumentation.keySet().iterator();
             while (terator.hasNext())
             {
-                string key = (string)terator.next();
+                string key = (string) terator.next();
                 string property = instrumentation.getProperty(key);
                 toReturn[key] = property;
             }
-            
+
             return toReturn;
         }
 
@@ -304,10 +301,10 @@ namespace Aricie.PortalKeeper.AI.Search
         {
             var toReturn = new List<object>();
             var obResultFunction = result.Problem.getResultFunction();
-            
+
             var currentState = result.Problem.getInitialState();
             toReturn.Add(currentState);
-            
+
             while (!result.SearchAgent.isDone())
             {
                 var action = result.SearchAgent.execute(null);
@@ -316,7 +313,6 @@ namespace Aricie.PortalKeeper.AI.Search
             }
             return toReturn;
         }
-
     }
 }
 

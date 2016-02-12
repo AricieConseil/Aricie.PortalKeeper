@@ -46,6 +46,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Me.ImportDefaultProviders()
         End Sub
 
+        <DefaultValue(DirectCast(RuleEngineMode.Actions, Object))> _
         <JsonConverter(GetType(StringEnumConverter))>
         <ExtendedCategory("Rules")>
         Public Overridable Property Mode As RuleEngineMode

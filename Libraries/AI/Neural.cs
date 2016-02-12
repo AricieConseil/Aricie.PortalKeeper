@@ -308,12 +308,10 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
                     Expression = "BasicNetwork.GetNetwork()",
                     Variables = new Variables(new VariableInfo[]
                     {
-                        new GeneralVariableInfo<INeuralNetwork>()
+                        new GeneralVariableInfo()
                         {
                             Name = "BasicNetwork",
-                            SubType = new EnabledFeature<SubDotNetType<INeuralNetwork>>(
-                                new SubDotNetType<INeuralNetwork>(typeof (BasicNetworkInfo))
-                                ),
+                            DotNetType = new DotNetType<INeuralNetwork>(typeof (BasicNetworkInfo)),
                             VariableMode = VariableMode.Instance
                         }
                     })

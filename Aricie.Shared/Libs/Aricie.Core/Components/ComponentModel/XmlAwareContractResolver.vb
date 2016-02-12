@@ -1,6 +1,8 @@
+Imports System.ComponentModel
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Xml.Serialization
+Imports Fasterflect
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Serialization
 
@@ -12,7 +14,7 @@ Namespace ComponentModel
         <Extension()> _
         Public Sub SetDefaultSettings(objSettings As JsonSerializerSettings) 
             objSettings.Formatting = Formatting.Indented
-            objSettings.DefaultValueHandling = DefaultValueHandling.Ignore
+            'objSettings.DefaultValueHandling = DefaultValueHandling.Ignore
             objSettings.NullValueHandling = NullValueHandling.Ignore
             objSettings.ContractResolver = new XmlAwareContractResolver()
         End Sub
@@ -40,11 +42,30 @@ Namespace ComponentModel
 
         ' Determines whether a member is required or not and sets the appropriate JsonProperty settings
         Private Sub ConfigureProperty(member As MemberInfo, [property] As JsonProperty)
-            ' Check for NonSerialized attributes
-            If Attribute.IsDefined(member, GetType(NonSerializedAttribute), True) OrElse Attribute.IsDefined(member, GetType(XmlIgnoreAttribute), True) _
-                AndAlso Not Attribute.IsDefined(member, GetType(Newtonsoft.Json.JsonPropertyAttribute), True) Then
-                [property].Ignored = True
+            
+
+            If Not Attribute.IsDefined(member, GetType(Newtonsoft.Json.JsonPropertyAttribute), True) Then
+                ' Check for NonSerialized attributes
+                If Attribute.IsDefined(member, GetType(NonSerializedAttribute), True) OrElse Attribute.IsDefined(member, GetType(XmlIgnoreAttribute), True) Then
+                    [property].Ignored = True
+                End If
+                ' Check for DefaultValue attributes
+                If Attribute.IsDefined(member, GetType(DefaultValueAttribute), True) Then
+                    Dim attr As DefaultValueAttribute = DirectCast(Attribute.GetCustomAttribute(member, GetType(DefaultValueAttribute), True), DefaultValueAttribute)
+                    Dim origPredicate As Predicate(Of Object) = [property].ShouldSerialize
+                    Dim newPredicate As New Predicate(Of Object)(Function(o)
+                                                                     Dim objValue As Object = [property].ValueProvider.GetValue(o)
+                                                                     Return (attr.Value Is Nothing AndAlso objValue IsNot Nothing) OrElse Not attr.Value.Equals(objValue)
+                                                                 End Function)
+                    If origPredicate IsNot Nothing Then
+                        [property].ShouldSerialize = Function(o) newPredicate(o) And origPredicate(0)
+                    Else
+                        [property].ShouldSerialize = newPredicate
+                    End If
+                End If
             End If
+
+
             'if (typeof(ICollection).IsAssignableFrom(property.PropertyType)  )
             '{
             '    var formerExp = property.GetIsSpecified;
