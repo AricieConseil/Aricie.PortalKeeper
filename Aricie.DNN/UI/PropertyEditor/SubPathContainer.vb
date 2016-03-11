@@ -85,18 +85,18 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        <LabelMode(LabelMode.Top)> _
-        <ExtendedCategory("")> _
-       <Editor(GetType(BreadCrumbsEditControl), GetType(EditControl))> _
-       <Selector("Key", "Value", False, True, "Root", "", True, True)> _
-        Public Property BottomPath As String
-            Get
-                Return Path
-            End Get
-            Set(value As String)
-                Path = value
-            End Set
-        End Property
+       ' <LabelMode(LabelMode.Top)> _
+       ' <ExtendedCategory("")> _
+       '<Editor(GetType(BreadCrumbsEditControl), GetType(EditControl))> _
+       '<Selector("Key", "Value", False, True, "Root", "", True, True)> _
+       ' Public Property BottomPath As String
+       '     Get
+       '         Return Path
+       '     End Get
+       '     Set(value As String)
+       '         Path = value
+       '     End Set
+       ' End Property
 
         <ActionButton(IconName.Home, IconOptions.Normal)> _
         Public Sub CloseSubEditor(pe As AriciePropertyEditorControl)

@@ -1,4 +1,5 @@
-﻿Imports Aricie.DNN.UI.WebControls.EditControls
+﻿Imports System.ComponentModel
+Imports Aricie.DNN.UI.WebControls.EditControls
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
@@ -6,6 +7,7 @@ Imports Aricie.Services
 
 Namespace ComponentModel
     
+    <DefaultProperty("Instances")> _
     Public MustInherit Class ProviderHost(Of TConfig As IProviderConfig(Of TProvider), TSettings, TProvider As IProvider)
         Implements IProviderContainer
         Implements ISelector(Of TConfig)

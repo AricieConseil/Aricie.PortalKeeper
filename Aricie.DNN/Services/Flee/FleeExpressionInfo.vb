@@ -99,6 +99,10 @@ Namespace Services.Flee
             End Set
         End Property
 
+         Public  Function ShouldSerializeVariables() As Boolean
+            Return Variables.Instances.Count > 0
+        End Function
+
         Private _ConstantIsSet As Boolean = False
         Private _Constant As TResult = Nothing
 

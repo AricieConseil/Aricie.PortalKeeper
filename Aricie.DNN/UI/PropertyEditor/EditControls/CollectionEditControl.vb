@@ -858,7 +858,6 @@ Namespace UI.WebControls.EditControls
             accordionHeaderText = String.Format("{0} {2} {1}", (commandIndex + 1).ToString(CultureInfo.InvariantCulture), accordionHeaderText, UIConstants.TITLE_SEPERATOR)
             Dim accordeonSB = New StringBuilder()
             Dim lstTerms() As String = accordionHeaderText.Split(New String() {UIConstants.TITLE_SEPERATOR}, StringSplitOptions.None)
-
             For Each myAccordeonItem As String In lstTerms
                 accordeonSB.AppendFormat("<span>{0}</span>", myAccordeonItem.Trim())
             Next
@@ -891,18 +890,24 @@ Namespace UI.WebControls.EditControls
             'If currentAccordionIndex <> item.ItemIndex AndAlso item.DataItem IsNot Nothing Then
             If item.DataItem IsNot Nothing Then
                 Dim objDataItemType As Type = item.DataItem.GetType()
-                If Not ReflectionHelper.IsSimpleType(objDataItemType) Then
-                    If objDataItemType.IsGenericType AndAlso objDataItemType.GetGenericTypeDefinition Is GetType(KeyValuePair(Of ,)) Then
-                        Dim valueType As Type = objDataItemType.GetGenericArguments()(1)
-                        If valueType Is GetType(Object) Then
-                            valueType = ReflectionHelper.GetProperty(objDataItemType, "Value", item.DataItem).GetType()
-                        End If
-                        If Not ReflectionHelper.IsSimpleType(valueType) Then
-                            If Not (valueType.IsGenericType _
-                                    AndAlso valueType.GetGenericTypeDefinition Is GetType(List(Of )) _
-                                    AndAlso ReflectionHelper.IsSimpleType(valueType.GetGenericArguments()(0))) Then
-                                displaySubItem = False
+                If (Not ReflectionHelper.IsSimpleType(objDataItemType)) Then
+                    If objDataItemType.IsGenericType Then
+
+                        If objDataItemType.GetGenericTypeDefinition() Is GetType(KeyValuePair(Of ,)) Then
+                            Dim valueType As Type = objDataItemType.GetGenericArguments()(1)
+                            If valueType Is GetType(Object) Then
+                                valueType = ReflectionHelper.GetProperty(objDataItemType, "Value", item.DataItem).GetType()
                             End If
+                            If Not ReflectionHelper.IsSimpleType(valueType) Then
+                                If Not (valueType.IsGenericType _
+                                        AndAlso valueType.GetGenericTypeDefinition Is GetType(List(Of )) _
+                                        AndAlso ReflectionHelper.IsSimpleType(valueType.GetGenericArguments()(0))) Then
+                                    displaySubItem = False
+                                End If
+                            End If
+                        ElseIf (Not objDataItemType.GetGenericTypeDefinition Is GetType(List(Of ))) _
+                                        OrElse (Not ReflectionHelper.IsSimpleType(objDataItemType.GetGenericArguments()(0))) Then
+                            displaySubItem = False
                         End If
                     Else
                         displaySubItem = False
@@ -1182,7 +1187,7 @@ Namespace UI.WebControls.EditControls
                         cmdAddButton.LocalResourceFile = Me.LocalResourceFile
                         AddHandler cmdAddButton.Click, AddressOf AddClick
 
-                        If Me.CollectionValue.Count > 0 Then
+                        If Me.CollectionValue IsNot Nothing AndAlso Me.CollectionValue.Count > 0 Then
                             cmdClearButton = New IconActionButton()
                             pnAdd.Controls.Add(cmdClearButton)
                             cmdClearButton.ActionItem.IconName = IconName.TrashO
@@ -1196,7 +1201,7 @@ Namespace UI.WebControls.EditControls
 
                     End If
 
-                    If Me.CollectionValue.Count > 0 Then
+                    If Me.CollectionValue IsNot Nothing AndAlso Me.CollectionValue.Count > 0 Then
                         cmdCopyButton = New IconActionButton
                         pnAdd.Controls.Add(cmdCopyButton)
                         cmdCopyButton.ActionItem.IconName = IconName.FilesO
@@ -1215,7 +1220,7 @@ Namespace UI.WebControls.EditControls
                         'RegisterControlForPostbackManagement(cmdCopyButton)
                     End If
 
-                    If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
+                    If CopiedCollection IsNot Nothing AndAlso Me.CollectionValue IsNot Nothing AndAlso Me.CollectionValue.GetType().IsInstanceOfType(CopiedCollection) Then
 
                         cmdPasteButton = New IconActionButton
                         pnAdd.Controls.Add(cmdPasteButton)

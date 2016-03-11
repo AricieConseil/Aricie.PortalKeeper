@@ -245,6 +245,8 @@ Namespace Services.Flee
             Return False
         End Function
 
+        <JsonProperty("SimpleDisplay")> _
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <SortOrder(100)> _
         <Width(500)> _
