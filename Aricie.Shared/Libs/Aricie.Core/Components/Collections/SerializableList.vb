@@ -166,9 +166,14 @@ Namespace Collections
             Dim deserialized As Object 
             Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
             settings.SetDefaultSettings()
-           deserialized= JsonConvert.DeserializeObject(jsonobject.ToString(), objectType.BaseType, settings)
-
+            Try
+                deserialized = JsonConvert.DeserializeObject(jsonobject.ToString(Newtonsoft.Json.Formatting.None), objectType.BaseType, settings)
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+                Throw
+            End Try
             
+          
             Dim deserializedList As IList = DirectCast( deserialized, IList)
             For Each o As Object In deserializedList
                DirectCast( toReturn, IList).Add(o)

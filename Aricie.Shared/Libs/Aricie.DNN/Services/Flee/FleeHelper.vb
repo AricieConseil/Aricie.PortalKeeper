@@ -66,7 +66,18 @@ Namespace Services.Flee
         Public Function ToListOfString(objCollec As IEnumerable) As List(Of String)
             dim toReturn as New List(Of String)
             For Each o As Object In objCollec
-                toReturn.Add(o.ToString())
+                Dim toAdd As String
+                If TypeOf o Is IEnumerable Then
+                    toAdd = "[" & ToListOfString(DirectCast(o, IEnumerable)).ToArray().Aggregate(Function(current, [next]) current + ", " + [next]) & "]"
+                Else
+                    If o IsNot Nothing Then
+                        toAdd = o.ToString()
+                    Else 
+                        toAdd = ""
+                    End If
+                    
+                End If
+                toReturn.Add(toAdd)
             Next
             Return toReturn
         End Function

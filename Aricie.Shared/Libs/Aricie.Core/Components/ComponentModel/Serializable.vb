@@ -1,4 +1,5 @@
 ﻿Imports System.ComponentModel
+Imports System.Globalization
 Imports System.Linq
 Imports System.Reflection
 Imports System.Xml.Serialization
@@ -135,7 +136,13 @@ Namespace ComponentModel
             Dim targettypeproperty As JProperty = jsonobject.Property("TypeName")
             Dim targettype As Type = ReflectionHelper.CreateType(targettypeproperty.Value.ToString())
             Dim valueproperty As JProperty = jsonobject.Property("Value")
-            Dim objvalue As Object = JsonConvert.DeserializeObject(valueproperty.Value.ToString(), targettype)
+            Dim objvalue As Object 
+            if targettype Is GetType(Boolean)
+                objvalue = System.Convert.ChangeType(valueproperty.Value.ToString(Newtonsoft.Json.Formatting.None), targettype)
+            Else 
+                objvalue = JsonConvert.DeserializeObject(valueproperty.Value.ToString(Newtonsoft.Json.Formatting.None), targettype)
+            End If
+            
             ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value").SetValue(toReturn, objvalue, Nothing)
             Return toReturn
 

@@ -67,9 +67,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
          <ConditionalVisible("DisableLog", True, True)> _
         Public Property LogDumpSettings As New DumpSettings()
 
+
+         Public  Function ShouldSerializeLogDumpSettings() As Boolean
+            Return LogDumpSettings.EnableDump
+        End Function
+
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _
         <SortOrder(1000)> _
         Public Property ExceptionActions As New EnabledFeature(Of KeeperAction(Of TEngineEvents))
+
+         Public  Function ShouldSerializeExceptionActions() As Boolean
+            Return ExceptionActions.Enabled
+        End Function
 
         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Exceptions")> _

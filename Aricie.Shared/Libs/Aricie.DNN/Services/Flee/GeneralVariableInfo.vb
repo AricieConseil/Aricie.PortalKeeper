@@ -33,15 +33,22 @@ Namespace Services.Flee
             Dim nextSegment As String = ""
             Select Case Me.VariableMode
                 Case VariableMode.Constructor
-                    nextSegment = "cTor " & Me.MethodName
+                    nextSegment =  String.Format("new {0}({1})", typeName, IIf(Me.Parameters IsNot Nothing AndAlso Me.Parameters.Instances.Count > 0, ReflectionHelper.GetFriendlyName(Me.Parameters), ""))
                 Case VariableMode.Delegate
                     nextSegment = "Delegate: " & Me.TargetInstance.Expression
                 Case VariableMode.Expression
-                    nextSegment = "Expression: " & Me.SimpleExpression.Expression
+                    nextSegment =  """" & Me.SimpleExpression.Expression & """"
                 Case VariableMode.Instance
-                    nextSegment = "Instance: " & ReflectionHelper.GetFriendlyName(Me.Instance)
+                    nextSegment = ReflectionHelper.GetFriendlyName(Me.Instance)
             End Select
-            toReturn = String.Format("{0}{1}{2}{1}{3}", toReturn, UIConstants.TITLE_SEPERATOR, typeName, nextSegment)
+            If toReturn.IsNullOrEmpty() Then
+                'toReturn = String.Format("{1}{0}{2}", UIConstants.TITLE_SEPERATOR, typeName, nextSegment)
+                toReturn = nextSegment
+            Else
+                'toReturn = String.Format("{0}{1}{2}{1}{3}", toReturn, UIConstants.TITLE_SEPERATOR, typeName, nextSegment)
+                toReturn = String.Format("{1}{0}{2}", UIConstants.TITLE_SEPERATOR, toReturn, nextSegment)
+            End If
+            
             Return toReturn
         End Function
 
@@ -53,6 +60,7 @@ Namespace Services.Flee
         Private _useCustomFileSettings As EnabledFeature(Of SmartFileInfo)
         Private _staticMemberType As DotNetType
         Private _targetInstance As SimpleExpression(Of Object)
+        Private _parameters As new Variables()
 
 
         Public Sub New()
@@ -389,7 +397,8 @@ Namespace Services.Flee
                             ElseIf TypeOf SelectedMember Is PropertyInfo Then
                                 objParameters = DirectCast(SelectedMember, PropertyInfo).GetIndexParameters()
                             Else
-                                Throw New ApplicationException("Only ctors, Methods and Property parameters supported")
+                                objParameters = {}
+                                '    Throw New ApplicationException("Only ctors, Methods and Property parameters supported")
                             End If
                             Return objParameters.Length > 0
                         End If
@@ -404,10 +413,17 @@ Namespace Services.Flee
         <ConditionalVisible("HasTargetType", False, True)>
         <ConditionalVisible("HasParameters")>
         <ConditionalVisible("VariableMode", False, True, VariableMode.Constructor, VariableMode.StaticMember)>
-        Public Property Parameters() As New Variables
+        Public Property Parameters() As Variables
+            Get
+                Return _parameters
+            End Get
+            Set
+                _parameters = value
+            End Set
+        End Property
 
         Public  Function ShouldSerializeParameters() As Boolean
-            Return Parameters.Instances.Count > 0
+            Return _parameters.Instances.Count > 0
         End Function
 
         <ConditionalVisible("HasType", False, True)>
@@ -607,7 +623,7 @@ Namespace Services.Flee
 
         <XmlIgnore()>
         <Browsable(False)>
-        Public ReadOnly Property SelectedMembers As List(Of MemberInfo)
+        Private ReadOnly Property SelectedMembers As List(Of MemberInfo)
             Get
 
                 Dim toReturn As New List(Of MemberInfo)
@@ -634,7 +650,7 @@ Namespace Services.Flee
 
         <XmlIgnore()>
         <Browsable(False)>
-        Public ReadOnly Property SelectedMember As MemberInfo
+        Private ReadOnly Property SelectedMember As MemberInfo
             Get
                 Dim tmpMembers As List(Of MemberInfo) = SelectedMembers
                 If tmpMembers.Count >= MethodIndex Then

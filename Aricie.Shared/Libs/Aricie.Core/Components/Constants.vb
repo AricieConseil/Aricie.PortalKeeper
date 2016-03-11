@@ -211,9 +211,9 @@ Public Class Constants
 
         Public Const RegularNameValidator As String = "(?:\p{Lu}|\p{Ll}|\p{Lt}|\p{Lm}|\p{Lo}|\p{Nl})(?:(?:\p{Lu}|\p{Ll}|\p{Lt}|\p{Lm}|\p{Lo}|\p{Nl})|(?:\p{Mn}|\p{Mc}|\p{Nd}|\p{Pc}|\p{Cf}))*"
 
-        Public Shared ReadOnly ExpressionSplitCapture As String = String.Format("(?:(?:\.)?({0}(?:\[[\""\']?[^\]\""\']*[\""\']?\])?))+", RegularNameValidator)
+        Public Shared ReadOnly ExpressionSplitCapture As String = String.Format("(?:(?:\.)?({0}(?:\[[\""\']?[^\]\""\']*[\""\']?\])*))+", RegularNameValidator)
 
-        Public Shared ReadOnly ExpressionSegmentCapture As String = String.Format("({0})(?:\[[\""\']?([^\]\""\']*)[\""\']?\])?", RegularNameValidator)
+        Public Shared ReadOnly ExpressionSegmentCapture As String = String.Format("({0})(?:\[[\""\']?([^\]\""\']*)[\""\']?\])*", RegularNameValidator)
 
         Public Const EmailValidator As String = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$"
 

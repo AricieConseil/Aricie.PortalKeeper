@@ -14,15 +14,18 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Inherits NamedConfig
         Implements IExpressionVarsProvider
 
-
-        Public Property SpecificRoutes As New List(Of DynamicRoute)()
-
+        <ExtendedCategory("Global")> _
         Public Property DynamicAttributes As New ControllerAttributes()
+
+        <ExtendedCategory("Global")> _
+        Public Property GlobalParameters As New Variables()
 
         Public Property DynamicActions As New List(Of DynamicAction)
 
-        Public Property GlobalParameters As New Variables()
+        <ExtendedCategory("Routes")> _
+        Public Property SpecificRoutes As New List(Of DynamicRoute)()
 
+        <ExtendedCategory("Routes")> _
         <CollectionEditor(False, False, False, False, 0, CollectionDisplayStyle.List)> _
         <XmlIgnore()> _
         Public ReadOnly Property RegisteredRoutes As List(Of String)

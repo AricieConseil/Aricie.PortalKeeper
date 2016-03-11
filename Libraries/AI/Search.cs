@@ -17,6 +17,7 @@ using aima.core.logic.propositional.parsing;
 using aima.core.logic.propositional.parsing.ast;
 //using aima.core.search.eightpuzzle;
 using aima.core.search.local;
+using Aricie.DNN.Modules.PortalKeeper;
 //using aima.core.search.nqueens;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -176,6 +177,33 @@ namespace Aricie.PortalKeeper.AI.Search
             return toReturn;
         }
     }
+
+   // public class ActionsFunctionInto<TEngineEvents> where TEngineEvents : IConvertible
+   // {
+
+
+   //     public DynamicActionsFunction<TEngineEvents> GetActionsFunction(Object owner, IContextLookup globalVars)
+   //     {
+            
+
+   //     } 
+
+
+   // }
+
+   //public class DynamicActionsFunction<TEngineEvents> : ActionsFunction where TEngineEvents : IConvertible
+   // {
+
+   //     public PortalKeeperContext<TEngineEvents> EventsContext { get; set; }
+
+
+
+   //     public Set actions(object obj)
+   //     {
+   //         throw new NotImplementedException();
+   //     }
+   // }
+
 
 
     public class ProblemInfo

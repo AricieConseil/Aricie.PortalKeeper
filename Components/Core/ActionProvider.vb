@@ -37,6 +37,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(950)> _
         Public Property SleepTime() As New STimeSpan()
 
+          Public  Function ShouldSerializeSleepTime() As Boolean
+            Return AddSleepTime
+        End Function
+
         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
         <ConditionalVisible("AddSleepTime", False, True)> _
@@ -54,6 +58,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(951)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property WaitSynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)("Synchro"))
+
+          Public  Function ShouldSerializeWaitSynchronisationHandle() As Boolean
+            Return WaitSynchronisationHandle.Enabled
+        End Function
 
         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
@@ -79,6 +87,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SynchronisationTimeout() As New STimeSpan(TimeSpan.Zero)
 
+          Public  Function ShouldSerializeSynchronisationTimeout() As Boolean
+            Return SynchronisationTimeout.Value <> TimeSpan.Zero
+        End Function
+
         <DefaultValue(False)> _
         <AutoPostBack()> _
         <ExtendedCategory("ConditonalSettings")> _
@@ -103,6 +115,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
+          Public  Function ShouldSerializeCondition() As Boolean
+            Return Condition isnot Nothing andalso Condition.Instances.Count>0
+        End Function
+
         <ExtendedCategory("ConditonalSettings")> _
         <ConditionalVisible("ConditionalAction", False, True, True)> _
         <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))> _
@@ -119,6 +135,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 _AlternateAction = value
             End Set
         End Property
+
+         Public  Function ShouldSerializeAlternateAction() As Boolean
+            Return AlternateAction isnot Nothing andalso AlternateAction.Instances.Count>0
+        End Function
 
         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings")> _
