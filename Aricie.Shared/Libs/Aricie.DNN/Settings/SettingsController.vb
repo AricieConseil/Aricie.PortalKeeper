@@ -346,6 +346,7 @@ Namespace Settings
             SaveFileSettings(fileName, settings, createBinarySnapShot, 0)
         End Sub
 
+       
 
         ''' <summary>
         ''' Saves settings to a file

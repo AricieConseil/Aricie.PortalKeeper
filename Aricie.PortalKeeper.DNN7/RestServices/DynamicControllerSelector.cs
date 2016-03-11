@@ -47,8 +47,7 @@ namespace Aricie.PortalKeeper.DNN7
                     {
                         foreach (var dynController in objService.DynamicControllers)
                         {
-                            controllerDescriptors.Add(dynController.Name,
-                            new DynamicControllerDescriptor(this._configuration, dynController, objService ));    
+                            controllerDescriptors[dynController.Name] =new DynamicControllerDescriptor(this._configuration, dynController, objService );    
                         }
 
                         

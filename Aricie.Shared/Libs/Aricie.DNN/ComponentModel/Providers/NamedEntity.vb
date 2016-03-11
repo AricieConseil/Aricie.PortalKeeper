@@ -48,6 +48,9 @@ Namespace ComponentModel
                 If details.IsNullOrEmpty() Then
                     Return Me.Name
                 Else
+                    if Me.Name.IsNullOrEmpty()
+                        Return details
+                    End If
                     Return String.Format("{0} {1} {2}", Me.Name, UIConstants.TITLE_SEPERATOR, details)
                 End If
             End Get

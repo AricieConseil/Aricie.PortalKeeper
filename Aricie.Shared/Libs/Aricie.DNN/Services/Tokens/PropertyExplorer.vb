@@ -30,10 +30,10 @@ Namespace Services
                 toReturn.Append(":")
                 Dim segmentSplit As Match = ExpressionSegmentSplitter.Match(segment)
                 toReturn.Append(segmentSplit.Groups(1).Captures(0).Value)
-                If segmentSplit.Groups(2).Captures.Count > 0 Then
+                For Each objCapture As Capture In  segmentSplit.Groups(2).Captures
                     toReturn.Append(":"c)
-                    toReturn.Append(segmentSplit.Groups(2).Captures(0).Value)
-                End If
+                    toReturn.Append(objCapture.Value)
+                Next
             Next
             Return toReturn.ToString().TrimStart(":"c)
             'Return expression.Replace("."c, ":"c).Replace("['", ":").Replace("[""", ":").Replace("["c, ":").Replace("']", "").Replace("""]", "").Replace("]"c, "")

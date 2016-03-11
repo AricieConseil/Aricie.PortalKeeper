@@ -383,25 +383,41 @@ Namespace Services
         End Function
 
 
+        Private Shared _SimpleTypeNames As New DualDictionary(Of Type, String)
+
         Public Shared Function GetSimpleTypeName(objType As Type) As String
+            Dim toReturn As String
+
             If objType IsNot Nothing Then
-                If objType.IsGenericType Then
-                    Dim toReturn As String = objType.Name
-                    If toReturn.IndexOf("`"c) > 0 Then
-                        toReturn = toReturn.Substring(0, toReturn.IndexOf("`"c))
-                    End If
-                    toReturn &= "["c
-                    Dim genTypes As Type() = objType.GetGenericArguments
-                    For Each genType As Type In genTypes
-                        toReturn &= "["c & GetSimpleTypeName(genType) & "],"
-                    Next
-                    toReturn = toReturn.TrimEnd(","c) & "]"c
-                    Return toReturn
-                Else
-                    Return objType.Name
+                If Not _SimpleTypeNames.TryGetValue(objType, toReturn) Then
+                    SyncLock _SimpleTypeNames
+                        If objType.IsGenericType Then
+                            toReturn = objType.Name
+                            If toReturn.IndexOf("`"c) > 0 Then
+                                toReturn = toReturn.Substring(0, toReturn.IndexOf("`"c))
+                            End If
+                            toReturn &= "["c
+                            Dim genTypes As Type() = objType.GetGenericArguments
+                            For Each genType As Type In genTypes
+                                toReturn &= "["c & GetSimpleTypeName(genType) & "],"
+                            Next
+                            toReturn = toReturn.TrimEnd(","c) & "]"c
+                            'Return toReturn
+                        Else
+                            toReturn = objType.Name
+                        End If
+                        If _SimpleTypeNames.Reverse.ContainsKey(toReturn) Then
+                            toReturn = toReturn & ", " & objType.Assembly.GetName().Name
+                        End If
+                        _SimpleTypeNames(objType) = toReturn
+                    End SyncLock
+
                 End If
+
+            Else
+                toReturn = String.Empty
             End If
-            Return String.Empty
+            Return toReturn
         End Function
 
         Public Shared Function GetSimpleTypeFileName(objtype As Type) As String
@@ -624,16 +640,32 @@ Namespace Services
                             Dim valueValue As Object = valueProp.GetValue(value, Nothing)
                             Dim valueName As String = GetFriendlyName(valueValue)
                             If valueName.Length < 100 Then
-                                toReturn = String.Format("{0} {1} {2}", keyName, UIConstants.TITLE_SEPERATOR, valueName)
+                                toReturn = String.Format("{0} : {1}", keyName, valueName)
                             Else
                                 toReturn = keyName
                             End If
                         End If
                     End If
                     If toReturn.IsNullOrEmpty() Then
-                        toReturn = GetSimpleTypeName(valueType)
+                        Dim simpleTypeName as String = GetSimpleTypeName(valueType)
+                        Dim valueString As String = value.ToString()
+                        If valueString = valueType.ToString() OrElse valueString.Trim().IsNullOrEmpty() Then
+                            toReturn = simpleTypeName
+                        Else
+                            toReturn = valueString
+                             If toReturn.Length > 100 Then
+                                toReturn = toReturn.Substring(0, 70) & " (...)"
+                            End If
+                        End If
                         If valueType.GetInterface("ICollection") IsNot Nothing Then
-                            toReturn = String.Format("{0} {1} {2} items", toReturn, UIConstants.TITLE_SEPERATOR, DirectCast(value, ICollection).Count.ToString(CultureInfo.InvariantCulture))
+                           dim valuArray as Object() = new ArrayList( DirectCast(value, ICollection)).ToArray()
+                            toReturn = valuArray.Aggregate(of String, String)("", Function(existing as String, newItem as Object) existing & "," & GetFriendlyName(newItem),Function (strResult) strResult.TrimStart(","c) )
+                             If toReturn.Length > 100 Then
+                                toReturn = toReturn.Substring(0, 70) & " (...)"
+                                toReturn = String.Format("{0} {1} {2} items", toReturn, UIConstants.TITLE_SEPERATOR, DirectCast(value, ICollection).Count.ToString(CultureInfo.InvariantCulture))
+                            End If
+                            toReturn = String.Format("{0}[{1}]", UIConstants.TITLE_SEPERATOR, toReturn)
+                            'toReturn = String.Format("[{0}]", toReturn)
                         End If
                     End If
                 End If

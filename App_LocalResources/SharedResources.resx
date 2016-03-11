@@ -6543,7 +6543,7 @@ In order to seal your keys, click one of the corresponding button at the bottom 
     <value>Method Name</value>
   </data>
   <data name="GeneralVariableInfo_SetParameters.Text" xml:space="preserve">
-    <value>Set Parameters</value>
+    <value>Init Parameters</value>
   </data>
   <data name="KeeperAction.Text" xml:space="preserve">
     <value>Dynamic Action Sequence</value>
@@ -11920,5 +11920,349 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   </data>
   <data name="TFMResolution.Text" xml:space="preserve">
     <value>Two Finger Method Resolution</value>
+  </data>
+  <data name="ApproxAdapter.Text" xml:space="preserve">
+    <value>Approximation Inference</value>
+  </data>
+  <data name="ArbitraryToken.Text" xml:space="preserve">
+    <value>Arbitrary Token</value>
+  </data>
+  <data name="Assignment.Text" xml:space="preserve">
+    <value>Assignment</value>
+  </data>
+  <data name="BayesianAskInfo_Posteriors.Help" xml:space="preserve">
+    <value>Enter here the conditional assignments involved in the posterior computation</value>
+  </data>
+  <data name="BayesianAskInfo_Posteriors.Text" xml:space="preserve">
+    <value>Posterior Propsitions</value>
+  </data>
+  <data name="BayesianAskInfo_Prior.Help" xml:space="preserve">
+    <value>Enter here proposition(s), to calculate priors or posteriors. </value>
+  </data>
+  <data name="BayesianAskInfo_Prior.Text" xml:space="preserve">
+    <value>Prior Propositions</value>
+  </data>
+  <data name="BayesianAskInfo_QueryType.Help" xml:space="preserve">
+    <value>Choose amongst prior or joint distribution for propositions, or posterior distribution given a prior proposition and posterior propositions</value>
+  </data>
+  <data name="BayesianAskInfo_QueryType.Text" xml:space="preserve">
+    <value>Query Type</value>
+  </data>
+  <data name="BayesianNetworkInfo_Nodes.Help" xml:space="preserve">
+    <value>each node define a random variable probability distribution together with dependencies to other nodes such that a Markov blanket can be defined.</value>
+  </data>
+  <data name="BayesianNetworkInfo_Nodes.Text" xml:space="preserve">
+    <value>Nodes</value>
+  </data>
+  <data name="BayesianNetworkInfo_RandomVariables.Help" xml:space="preserve">
+    <value>Random variables are defined by their names and domains. They can be later instantiated as part of the inference ask.</value>
+  </data>
+  <data name="BayesianNetworkInfo_RandomVariables.Text" xml:space="preserve">
+    <value>Random Variables</value>
+  </data>
+  <data name="BayesianNodeInfo_ConditionalProbabilities.Help" xml:space="preserve">
+    <value>This should be a table of double with values corresponding to the probability table of the node</value>
+  </data>
+  <data name="BayesianNodeInfo_ConditionalProbabilities.Text" xml:space="preserve">
+    <value>Conditional Probabilities</value>
+  </data>
+  <data name="BayesianNodeInfo_Parents.Help" xml:space="preserve">
+    <value>Enter the names of the random variables that this node depends on</value>
+  </data>
+  <data name="BayesianNodeInfo_Parents.Text" xml:space="preserve">
+    <value>Parents</value>
+  </data>
+  <data name="BayesianNodeInfo_RandomVariable.Help" xml:space="preserve">
+    <value>Enter the name  for the random variable with probabilities defined by this node</value>
+  </data>
+  <data name="BayesianNodeInfo_RandomVariable.Text" xml:space="preserve">
+    <value>Random Variable</value>
+  </data>
+  <data name="BayesianQueryInfo_Ask.Help" xml:space="preserve">
+    <value>Define a query with priors and posterior proposition to query the network.</value>
+  </data>
+  <data name="BayesianQueryInfo_Ask.Text" xml:space="preserve">
+    <value>Ask Query</value>
+  </data>
+  <data name="BayesianQueryInfo_BayesianNetwork.Help" xml:space="preserve">
+    <value>A bayesian network holds random variables and conditional probability distributions for those variables, with partial dependencies</value>
+  </data>
+  <data name="BayesianQueryInfo_BayesianNetwork.Text" xml:space="preserve">
+    <value>Bayesian Network</value>
+  </data>
+  <data name="BayesianQueryInfo_InferenceType.Help" xml:space="preserve">
+    <value>Define here the type of inference to apply to your bayesian model.</value>
+  </data>
+  <data name="BayesianQueryInfo_InferenceType.Text" xml:space="preserve">
+    <value>Inference Type</value>
+  </data>
+  <data name="BayesInferenceInfo_ApproxAdapterMode.Help" xml:space="preserve">
+    <value>Choose a method to perform approximate bayesian inference</value>
+  </data>
+  <data name="BayesInferenceInfo_ApproxAdapterMode.Text" xml:space="preserve">
+    <value>Approximation Method</value>
+  </data>
+  <data name="BayesInferenceInfo_Procedure.Help" xml:space="preserve">
+    <value>Bayesian inference can be exact with enumeration or elimination ask, or approximate with max number of steps.</value>
+  </data>
+  <data name="BayesInferenceInfo_Procedure.Text" xml:space="preserve">
+    <value>Inference Procedure</value>
+  </data>
+  <data name="BayesInferenceInfo_SampleNb.Help" xml:space="preserve">
+    <value>This is the number of samples used to perform the approximation</value>
+  </data>
+  <data name="BayesInferenceInfo_SampleNb.Text" xml:space="preserve">
+    <value>Sample Number</value>
+  </data>
+  <data name="Boolean.Text" xml:space="preserve">
+    <value>Boolean</value>
+  </data>
+  <data name="Conjunctive.Text" xml:space="preserve">
+    <value>Conjunctive</value>
+  </data>
+  <data name="Dysjunctive.Text" xml:space="preserve">
+    <value>Dysjunctive</value>
+  </data>
+  <data name="EliminationAsk.Text" xml:space="preserve">
+    <value>Elimination Ask</value>
+  </data>
+  <data name="EnumerationAsk.Text" xml:space="preserve">
+    <value>Enumeration Ask</value>
+  </data>
+  <data name="FiniteInteger.Text" xml:space="preserve">
+    <value>Finite Integer</value>
+  </data>
+  <data name="GibbsAsk.Text" xml:space="preserve">
+    <value>Gibbs Ask</value>
+  </data>
+  <data name="Joint.Text" xml:space="preserve">
+    <value>Joint Distribution</value>
+  </data>
+  <data name="LikelihoodWeighting.Text" xml:space="preserve">
+    <value>Likelihood Weighting</value>
+  </data>
+  <data name="Posterior.Text" xml:space="preserve">
+    <value>Posterior Distribution</value>
+  </data>
+  <data name="Prior.Text" xml:space="preserve">
+    <value>Prior Distribution</value>
+  </data>
+  <data name="PropositionInfo_Children.Help" xml:space="preserve">
+    <value>Enter the sub propositions that make up the conjunction or dysjunction.</value>
+  </data>
+  <data name="PropositionInfo_Children.Text" xml:space="preserve">
+    <value>Children</value>
+  </data>
+  <data name="PropositionInfo_PropositionType.Help" xml:space="preserve">
+    <value>Proposition can be a variable assignment, a conjunction or a dysjunction of propositions.</value>
+  </data>
+  <data name="PropositionInfo_PropositionType.Text" xml:space="preserve">
+    <value>Proposition Type</value>
+  </data>
+  <data name="PropositionInfo_RandomVariable.Help" xml:space="preserve">
+    <value>Enter the name of the random variable to assign</value>
+  </data>
+  <data name="PropositionInfo_RandomVariable.Text" xml:space="preserve">
+    <value>Random Variable</value>
+  </data>
+  <data name="PropositionInfo_Value.Help" xml:space="preserve">
+    <value>Define an aribtrary object (use a sub type if needed)</value>
+  </data>
+  <data name="PropositionInfo_Value.Text" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="RandomVariable.Text" xml:space="preserve">
+    <value>Random Variable</value>
+  </data>
+  <data name="RandomVariableInfo_ArbitraryValues.Help" xml:space="preserve">
+    <value>Define a variable that resolves into a IEnumarable object.</value>
+  </data>
+  <data name="RandomVariableInfo_ArbitraryValues.Text" xml:space="preserve">
+    <value>Custom values</value>
+  </data>
+  <data name="RandomVariableInfo_DomainType.Help" xml:space="preserve">
+    <value>Only finite domains are defined for now. They can be boolean, a list of integers, or a list of custom objects.</value>
+  </data>
+  <data name="RandomVariableInfo_DomainType.Text" xml:space="preserve">
+    <value>Domain Type</value>
+  </data>
+  <data name="RandomVariableInfo_IntValues.Help" xml:space="preserve">
+    <value>Enter the list of integer that make up the domain for this random variable</value>
+  </data>
+  <data name="RandomVariableInfo_IntValues.Text" xml:space="preserve">
+    <value>Integer Values</value>
+  </data>
+  <data name="RejectionSampling.Text" xml:space="preserve">
+    <value>Rejection Sampling</value>
+  </data>
+  <data name="TemporalAskInfo_Evidences.Help" xml:space="preserve">
+    <value>This is the list of observations (list of assignment propositions) for each step observed to be smoothed. (a list of a list)</value>
+  </data>
+  <data name="TemporalAskInfo_Evidences.Text" xml:space="preserve">
+    <value>Evidences</value>
+  </data>
+  <data name="ForwardBackwardInfo_Prior.Help" xml:space="preserve">
+    <value>This is the prior distribution for the initial state when the first observation is made.</value>
+  </data>
+  <data name="ForwardBackwardInfo_Prior.Text" xml:space="preserve">
+    <value>Prior Distribution</value>
+  </data>
+  <data name="ForwardBackwardInfo_TemporalModel.Help" xml:space="preserve">
+    <value>This is a generic definition of a temporal probabilistic model from Transition and Sensor Bayesian networks and a mapping of temporal Random Variables</value>
+  </data>
+  <data name="ForwardBackwardInfo_TemporalModel.Text" xml:space="preserve">
+    <value>Temporal Model</value>
+  </data>
+  <data name="TemporalModelInfo_ReverseTemporalVariableMap.Help" xml:space="preserve">
+    <value>This is a simple indication to map variable names from the current state to variables from the previous state.</value>
+  </data>
+  <data name="TemporalModelInfo_ReverseTemporalVariableMap.Text" xml:space="preserve">
+    <value>Reverse Temporal Variable Map</value>
+  </data>
+  <data name="TemporalModelInfo_SensorModel.Help" xml:space="preserve">
+    <value>The sensor model specifies the probability distribution over the latest observed variables,
+given the state variable, that is, P(Et |X0:t−1,E0:t−1), that is P(Et |Xt) given the Markov hypothesis</value>
+  </data>
+  <data name="TemporalModelInfo_SensorModel.Text" xml:space="preserve">
+    <value>Sensor Model</value>
+  </data>
+  <data name="TemporalModelInfo_TransitionModel.Help" xml:space="preserve">
+    <value>The transition model specifies the probability distribution over the latest state variables,
+given the previous values, that is, P(Xt |X0:t−1), that is P(Xt |Xt−1) given the Markov hypothesis</value>
+  </data>
+  <data name="TemporalModelInfo_TransitionModel.Text" xml:space="preserve">
+    <value>Transition Model</value>
+  </data>
+  <data name="BayesianQueryInfo_Model.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="BayesianQueryInfo_Query.Header" xml:space="preserve">
+    <value>Query</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_PriorNodes.Help" xml:space="preserve">
+    <value>Enter the name of the Random Variable Nodes from the complete model, that make up roots for the prior model.</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_PriorNodes.Text" xml:space="preserve">
+    <value>Prior Nodes</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_SensoryNodes.Help" xml:space="preserve">
+    <value>Enter the name of the Random Variable Nodes from the complete model, that make up roots for the sensor model.</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_SensoryNodes.Text" xml:space="preserve">
+    <value>Sensory nodes</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_Temporal.Header" xml:space="preserve">
+    <value>Temporal</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_TemporalVariableMap.Help" xml:space="preserve">
+    <value>This is a simple indication to map variable names from the previous state to the current state.</value>
+  </data>
+  <data name="DynamicBayesianNetworkInfo_TemporalVariableMap.Text" xml:space="preserve">
+    <value>Temporal Variable map</value>
+  </data>
+  <data name="DynamicControllerInfo_Global.Header" xml:space="preserve">
+    <value>Global Parameters</value>
+  </data>
+  <data name="DynamicControllerInfo_Routes.Header" xml:space="preserve">
+    <value>Routes</value>
+  </data>
+  <data name="FixedLagSmoothingInfo_HiddenMarkovModel.Help" xml:space="preserve">
+    <value>A hidden markov model is a simple temporal probabilistic model in the form of a single state dynamic bayesian network, with matrices defining the transition and sensor models.</value>
+  </data>
+  <data name="FixedLagSmoothingInfo_HiddenMarkovModel.Text" xml:space="preserve">
+    <value>Hidden Markov Model</value>
+  </data>
+  <data name="FixedLagSmoothingInfo_LagLength.Help" xml:space="preserve">
+    <value>length of the lag accounted for in the smoothing algorithm</value>
+  </data>
+  <data name="FixedLagSmoothingInfo_LagLength.Text" xml:space="preserve">
+    <value>Lag Length</value>
+  </data>
+  <data name="FixedLagSmoothingInfo_Model.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ForwardBackwardInfo_Model.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_ObservationVariable.Help" xml:space="preserve">
+    <value>the single discrete random variable used to describe the  Observation evidence.</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_ObservationVariable.Text" xml:space="preserve">
+    <value>Observation Variable</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_Prior.Help" xml:space="preserve">
+    <value>the prior distribution represented as a column vector in Matrix form</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_Prior.Text" xml:space="preserve">
+    <value>Prior Distribution</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_SensorModel.Help" xml:space="preserve">
+    <value>the sensor model in matrix form: P(e&lt;sub&gt;t&lt;/sub&gt; | X&lt;sub&gt;t&lt;/sub&gt; = i) for each state i. For  mathematical convenience we place each of these values into an S * S diagonal matrix.</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_SensorModel.Text" xml:space="preserve">
+    <value>Sensor model</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_StateVariable.Help" xml:space="preserve">
+    <value>the single discrete random variable used to describe the  process states 1,...,S.</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_StateVariable.Text" xml:space="preserve">
+    <value>State Variable</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_TransitionModel.Help" xml:space="preserve">
+    <value>the transition model &lt;b&gt;P&lt;/b&gt;(X&lt;sub&gt;t&lt;/sub&gt; | X&lt;sub&gt;t-1&lt;/sub&gt;) is represented by an S * S matrix &lt;b&gt;T&lt;/b&gt; where &lt;b&gt;T&lt;/b&gt;&lt;sub&gt;ij&lt;/sub&gt; = P(X&lt;sub&gt;t&lt;/sub&gt; = j | X&lt;sub&gt;t-1&lt;/sub&gt; = i).</value>
+  </data>
+  <data name="HiddenMarkovModelInfo_TransitionModel.Text" xml:space="preserve">
+    <value>Transition Model</value>
+  </data>
+  <data name="MatrixInfo_Rows.Help" xml:space="preserve">
+    <value>A matrix is defined by Rows as same-size arrays of doubles</value>
+  </data>
+  <data name="MatrixInfo_Rows.Text" xml:space="preserve">
+    <value>Row</value>
+  </data>
+  <data name="Mock.Text" xml:space="preserve">
+    <value>Mock</value>
+  </data>
+  <data name="ParticleFilteringInfo_DynamicBayesianNetwork.Help" xml:space="preserve">
+    <value>a DBN with prior &lt;b&gt;P&lt;/b&gt;(&lt;b&gt;X&lt;/b&gt;&lt;sub&gt;0&lt;/sub&gt;), transition model &lt;b&gt;P&lt;/b&gt;(&lt;b&gt;X&lt;/b&gt;&lt;sub&gt;1&lt;/sub&gt; | &lt;b&gt;X&lt;/b&gt;&lt;sub&gt;0&lt;/sub&gt;), sensor model &lt;b&gt;P&lt;/b&gt;(&lt;b&gt;E&lt;/b&gt;&lt;sub&gt;1&lt;/sub&gt; |&lt;b&gt;X&lt;/b&gt;&lt;sub&gt;1&lt;/sub&gt;)</value>
+  </data>
+  <data name="ParticleFilteringInfo_DynamicBayesianNetwork.Text" xml:space="preserve">
+    <value>Dynamic Bayesian Network</value>
+  </data>
+  <data name="ParticleFilteringInfo_Model.Header" xml:space="preserve">
+    <value>Model</value>
+  </data>
+  <data name="ParticleFilteringInfo_RandomizerType.Help" xml:space="preserve">
+    <value>a Randomizer to be used for sampling purposes. You can use a Mock Randomizer for experimental purposes</value>
+  </data>
+  <data name="ParticleFilteringInfo_RandomizerType.Text" xml:space="preserve">
+    <value>Randomizer</value>
+  </data>
+  <data name="ParticleFilteringInfo_RandomizerValues.Help" xml:space="preserve">
+    <value>Enter probabilities double values mocking the randomizer behaviour</value>
+  </data>
+  <data name="ParticleFilteringInfo_RandomizerValues.Text" xml:space="preserve">
+    <value>Mock Randomizer Values</value>
+  </data>
+  <data name="ParticleFilteringInfo_SampleNb.Help" xml:space="preserve">
+    <value>The number of samples to be maintained for particle filtering</value>
+  </data>
+  <data name="ParticleFilteringInfo_SampleNb.Text" xml:space="preserve">
+    <value>Sample Nb</value>
+  </data>
+  <data name="SensorMapRowInfo_SensorModel.Help" xml:space="preserve">
+    <value>the sensor model in matrix form: P(e&lt;sub&gt;t&lt;/sub&gt; | X&lt;sub&gt;t&lt;/sub&gt; = i) for each state i. For mathematical convenience we place each of these values into an S * S diagonal matrix.</value>
+  </data>
+  <data name="SensorMapRowInfo_SensorModel.Text" xml:space="preserve">
+    <value>Sensor model</value>
+  </data>
+  <data name="SensorMapRowInfo_Value.Help" xml:space="preserve">
+    <value>This is the observed value to be associated with the following sensor model in matrix</value>
+  </data>
+  <data name="SensorMapRowInfo_Value.Text" xml:space="preserve">
+    <value>Sensor Value</value>
+  </data>
+  <data name="TemporalAskInfo_Query.Header" xml:space="preserve">
+    <value>Query</value>
   </data>
 </root>

@@ -1,4 +1,5 @@
 Imports System.ComponentModel
+Imports System.Globalization
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Xml.Serialization
@@ -17,6 +18,7 @@ Namespace ComponentModel
             'objSettings.DefaultValueHandling = DefaultValueHandling.Ignore
             objSettings.NullValueHandling = NullValueHandling.Ignore
             objSettings.ContractResolver = new XmlAwareContractResolver()
+            objSettings.Culture = CultureInfo.InvariantCulture
         End Sub
 
     End Module
