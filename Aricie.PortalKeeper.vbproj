@@ -95,7 +95,10 @@
       <HintPath>Aricie.Shared\Libs\Aricie.DNN\external\dnn481\DotNetNuke.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL" />
+    <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\FileHelpers.3.1.5\lib\net20\FileHelpers.dll</HintPath>
+    </Reference>
     <Reference Include="Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Client.dll</HintPath>
@@ -413,17 +416,6 @@
     <None Include="external\Bitcoin\Aricie.PortalKeeper.Bitcoin.Strategies.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="external\FileHelpers\FileHelpers.DataLink.dll" />
-    <None Include="external\FileHelpers\FileHelpers.DataLink.xml" />
-    <None Include="external\FileHelpers\FileHelpers.dll" />
-    <None Include="external\FileHelpers\FileHelpers.ExcelStorage.dll" />
-    <None Include="external\FileHelpers\FileHelpers.ExcelStorage.xml" />
-    <None Include="external\FileHelpers\FileHelpers.xml" />
-    <None Include="external\FileHelpers\Interop.Excel.dll" />
-    <None Include="external\FileHelpers\Interop.Office.dll" />
-    <None Include="external\FileHelpers\Microsoft.Vbe.Interop.dll" />
-    <None Include="external\FileHelpers\office.dll" />
-    <None Include="external\FileHelpers\office.xml" />
     <None Include="external\OpenRasta\ICSharpCode.SharpZipLib.dll" />
     <None Include="external\OpenRasta\OpenRasta.Client.dll" />
     <None Include="external\OpenRasta\OpenRasta.Codecs.SharpView.dll" />

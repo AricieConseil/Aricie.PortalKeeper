@@ -12,6 +12,7 @@ using Aricie.PortalKeeper.AI.Search;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 
+
 namespace Aricie.PortalKeeper.AI.Games
 {
     public enum GameStrategyType
@@ -21,8 +22,6 @@ namespace Aricie.PortalKeeper.AI.Games
         IterativeDeepeningAlphaBeta,
         ConnectFourIDAlphaBeta
     }
-
-    
 
 
     public class GameStrategyInfo

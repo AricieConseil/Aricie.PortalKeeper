@@ -25,7 +25,10 @@ Namespace Services.Files
         <XmlIgnore()> _
         Public Overridable ReadOnly Property CurrentMapPath As String
             Get
-                Return GetMapPath()
+                if Path.Mode = SimpleOrExpressionMode.Simple OrElse Path.Expression.Expression.StartsWith("""")
+                    Return GetMapPath()
+                End If
+                Return "N.A"
             End Get
         End Property
         Public Overloads Function GetMapPath() As String

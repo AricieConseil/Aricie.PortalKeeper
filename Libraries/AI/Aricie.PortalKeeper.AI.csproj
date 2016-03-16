@@ -59,6 +59,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\Encog\encog-core-cs.dll</HintPath>
     </Reference>
+    <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\packages\FileHelpers.3.1.5\lib\net20\FileHelpers.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.Core, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\IKVM.OpenJDK.Core.dll</HintPath>
@@ -92,6 +96,7 @@
     <Compile Include="CSP.cs" />
     <Compile Include="GameDemos.cs" />
     <Compile Include="Games.cs" />
+    <Compile Include="Go\Go.cs" />
     <Compile Include="Probability.cs" />
     <Compile Include="Logic.cs" />
     <Compile Include="Neural.cs" />
@@ -111,6 +116,11 @@
     <None Include="external\IKVM\IKVM.OpenJDK.Util.dll" />
     <None Include="external\IKVM\IKVM.OpenJDK.XML.API.dll" />
     <None Include="external\IKVM\IKVM.Runtime.dll" />
+    <None Include="Go\cntk\Config\01_OneHidden.cntk" />
+    <None Include="Go\cntk\Config\01_OneHidden.ndl" />
+    <None Include="Go\cntk\Config\02_Convolution.cntk" />
+    <None Include="Go\cntk\Config\02_Convolution.ndl" />
+    <None Include="Go\cntk\Config\Macros.ndl" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +139,10 @@
       <Name>Aricie.DNN</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="external\GoTraxx\GoTraxx.csproj">
+      <Project>{16e52e17-385d-4bda-98a5-7d3af68f821b}</Project>
+      <Name>GoTraxx</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="external\IKVM\IKVM.OpenJDK.Beans.dll" />
@@ -141,6 +155,12 @@
     <Content Include="external\Encog\encog-core-cs.dll" />
     <Content Include="external\Math.Net\MathNet.Numerics.dll" />
     <Content Include="external\IKVM\IKVM.OpenJDK.Security.dll" />
+    <Content Include="Go\cntk\Data\Test-1F.txt" />
+    <Content Include="Go\cntk\Data\Train-1F.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="external\GoTraxx\" />
+    <Folder Include="Go\cntk\AdditionalFiles\Games\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
