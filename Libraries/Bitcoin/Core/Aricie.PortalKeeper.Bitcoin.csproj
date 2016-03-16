@@ -39,14 +39,16 @@
       <HintPath>external\DotNetNuke.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="FileHelpers, Version=2.9.0.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\packages\FileHelpers.3.1.5\lib\net20\FileHelpers.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.VisualBasic" />
+    <Reference Include="System.Data" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml" />
-    <Reference Include="FileHelpers">
-      <HintPath>.\Aricie.PortalKeeper.BitcoinReferences\FileHelpers.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web">
       <HintPath>.\Aricie.PortalKeeper.BitcoinReferences\System.Web.dll</HintPath>
     </Reference>
@@ -250,8 +252,8 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="external\FileHelpers.dll" />
     <None Include="external\Jayrock.Json.dll" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <None Include="external\DotNetNuke.dll" />
