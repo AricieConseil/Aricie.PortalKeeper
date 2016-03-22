@@ -28,6 +28,11 @@ numMBsToShowResult=500
 
 prefetch=true
 
+features = [
+            dim = 361
+            start = 361
+        ]
+
 #######################################
 #  TRAINING CONFIG                    #
 #######################################
@@ -40,8 +45,8 @@ train = [
     ]
     
     SGD = [
-        epochSize = 60000
-        minibatchSize = 32
+        epochSize = 450
+        minibatchSize = 25
         learningRatesPerMB = 0.05
         momentumPerMB = 0*10:0.7
         maxEpochs = 5
@@ -54,6 +59,8 @@ train = [
         # file = "$DataDir$/Train-28x28.txt"
 		file = "$DataDir$/Train-1F.txt"
         
+		
+		
         features = [
             dim = 361
             start = 361
@@ -64,7 +71,7 @@ train = [
             start = 0
           #  labelDim = 3
 			labeltype = regression
-            labelMappingFile = "$DataDir$/labelsmap.txt"
+          #  labelMappingFile = "$DataDir$/labelsmap.txt"
         ]
     ]    
 ]
@@ -96,7 +103,7 @@ test = [
             start = 0
          #   labelDim = 3
 			labeltype = regression
-            labelMappingFile = "$DataDir$/labelsmap.txt"
+          #  labelMappingFile = "$DataDir$/labelsmap.txt"
         ]
     ]
 ]
