@@ -9,14 +9,19 @@ using AIFH_Vol3.Examples.Learning;
 using AIFH_Vol3_Core.Core.ANN;
 using AIFH_Vol3_Core.Core.ANN.Activation;
 using AIFH_Vol3_Core.Core.ANN.Train;
+using Aricie.ComponentModel;
 using Aricie.DNN.ComponentModel;
 using Aricie.DNN.Entities;
 using Aricie.DNN.Services;
+using Aricie.DNN.Services.Files;
 using Aricie.DNN.Services.Flee;
 using Aricie.DNN.UI.Attributes;
 using Aricie.PortalKeeper.AI.CSP;
+using java.lang;
+using Microsoft.MSR.CNTK.Extensibility.Managed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using Object = System.Object;
 
 namespace Aricie.PortalKeeper.AI.Learning.Neural
 {
@@ -381,4 +386,81 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
             IEnumerable theData = Data.EvaluateTyped(owner, globalVars);
         }
     }
+
+
+    public class CntkEvaluator
+    {
+
+        public CntkEvaluator()
+        {
+            ModelPath = new FilePathInfo();
+            Configuration = new CData();
+            OutputKey = "ol.z";
+            OutputSize = 10;
+        }
+
+        public FilePathInfo ModelPath { get; set; }
+
+        public CData Configuration { get; set; }
+
+        public string OutputKey { get; set; }
+
+        public int OutputSize { get; set; }
+
+
+        public List<float> Evaluate(object owner, IContextLookup globalVars, Dictionary<string, List<float>> inputs)
+        {
+            string theModelPath = ModelPath.GetMapPath(owner, globalVars);
+            string configContent = Configuration.Value;
+            return Evaluate(theModelPath, configContent, inputs, OutputKey, OutputSize);
+        }
+
+        public static  List<float> Evaluate(string modelFilePath, string configContent, Dictionary<string, List<float>> inputs, string outputKey, int outputSize)
+        {
+            Dictionary<string, List<float>> outputs;
+
+            using (var model = new IEvaluateModelManagedF())
+            {
+                // Initialize model evaluator
+                
+                model.Init(configContent);
+
+                // Load model
+              
+                model.LoadModel(modelFilePath);
+
+
+                // We can call the evaluate method and get back the results (single layer)...
+                // List<float> outputList = model.Evaluate(inputs, "ol.z", 10);
+
+                return model.Evaluate(inputs, outputKey, outputSize);
+
+                // ... or we can preallocate the structure and pass it in (multiple output layers)
+                //var toReturn = new List<float>(outputSize);
+                //for (int i = 0; i < outputSize; i++)
+                //{
+                //    toReturn.Add(1);
+                //}
+                //outputs = new Dictionary<string, List<float>>();
+
+                //outputs.Add("ol.z", toReturn);
+                //model.Evaluate(inputs, outputs);
+
+                //Console.WriteLine("--- Output results ---");
+                //foreach (var item in outputs)
+                //{
+                //    Console.WriteLine("Output layer: {0}", item.Key);
+                //    foreach (var entry in item.Value)
+                //    {
+                //        Console.WriteLine(entry);
+                //    }
+                //}
+
+            }
+        }
+
+
+    }
+
+
 }

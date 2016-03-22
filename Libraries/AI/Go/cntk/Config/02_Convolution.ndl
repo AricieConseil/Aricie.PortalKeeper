@@ -7,12 +7,12 @@ run = DNN
 ndlGoMacros = [
     imageW = 19
     imageH = 19
-    labelDim = 361
+    
 
     features = ImageInput(imageW, imageH, 1, tag = feature, imageLayout=$imageLayout$)
     featScale = Const(0.00390625)
     # featScaled = Scale(featScale, features)
-	featScaled = features
+	#featScaled = features
     labels = ImageInput(imageW, imageH, 1, tag = label, imageLayout=$imageLayout$)
 ]
 
@@ -25,7 +25,7 @@ DNN=[
     vStride1 = 1
     # weight[cMap1, kW1 * kH1 * inputChannels]
     # ConvReLULayer is defined in Macros.ndl
-    conv1_act = ConvReLULayer(featScaled, cMap1, 25, kW1, kH1, hStride1, vStride1, 10, 1)
+    conv1_act = ConvReLULayer(features, cMap1, 25, kW1, kH1, hStride1, vStride1, 10, 1)
 
     # pool1
     # pool1W = 2
@@ -54,11 +54,11 @@ DNN=[
 
     # h1Dim = 128
 	# h1Dim = 784
-	h1Dim = 361
+	h1Dim = 512
     # DNNSigmoidLayer and DNNLayer are defined in Macros.ndl
     # h1 = DNNSigmoidLayer(512, h1Dim, pool2, 1)
-	h1 = DNNSigmoidLayer(512, h1Dim, conv2_act, 1)
-    ol = DNNLayer(h1Dim, labelDim, h1, 1)
+	h1 = DNNImageSigmoidLayer(11, 11, cMap2, h1Dim, conv2_act, 1)
+    ol = DNNLayer(h1Dim, 361, h1, 1)
     
     ce = CrossEntropyWithSoftmax(labels, ol)
     err = ErrorPrediction(labels, ol)

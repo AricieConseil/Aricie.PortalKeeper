@@ -59,6 +59,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\Encog\encog-core-cs.dll</HintPath>
     </Reference>
+    <Reference Include="EvalWrapper, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>external\cntk\EvalWrapper.dll</HintPath>
+    </Reference>
     <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\packages\FileHelpers.3.1.5\lib\net20\FileHelpers.dll</HintPath>
@@ -108,6 +112,7 @@
     <None Include="AI.cd" />
     <None Include="external\AIMA\aima-core.dll" />
     <None Include="external\AIMA\aima-gui.exe" />
+    <None Include="external\cntk\CSEvalClient.exe.config" />
     <None Include="external\IKVM\IKVM.AWT.WinForms.dll" />
     <None Include="external\IKVM\IKVM.OpenJDK.Core.dll" />
     <None Include="external\IKVM\IKVM.OpenJDK.Media.dll" />
@@ -149,6 +154,27 @@
     <None Include="external\IKVM\IKVM.OpenJDK.Misc.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="external\cntk\BinaryReader.dll" />
+    <Content Include="external\cntk\CNTK.exe" />
+    <Content Include="external\cntk\CSEvalClient.exe" />
+    <Content Include="external\cntk\DSSMReader.dll" />
+    <Content Include="external\cntk\EvalDll.dll" />
+    <Content Include="external\cntk\EvalWrapper.dll" />
+    <Content Include="external\cntk\HTKMLFReader.dll" />
+    <Content Include="external\cntk\ImageReader.dll" />
+    <Content Include="external\cntk\libacml_mp_dll.dll" />
+    <Content Include="external\cntk\libifcoremd.dll" />
+    <Content Include="external\cntk\libifportmd.dll" />
+    <Content Include="external\cntk\libiomp5md.dll" />
+    <Content Include="external\cntk\libmmd.dll" />
+    <Content Include="external\cntk\LibSVMBinaryReader.dll" />
+    <Content Include="external\cntk\LMSequenceReader.dll" />
+    <Content Include="external\cntk\LUSequenceReader.dll" />
+    <Content Include="external\cntk\Math.dll" />
+    <Content Include="external\cntk\opencv_world300.dll" />
+    <Content Include="external\cntk\SparsePCReader.dll" />
+    <Content Include="external\cntk\svml_dispmd.dll" />
+    <Content Include="external\cntk\UCIFastReader.dll" />
     <Content Include="external\Encog\AIFH-Vol3-Core.dll" />
     <Content Include="external\Encog\AIFH-Vol3.exe" />
     <Content Include="external\Encog\CsvHelper.dll" />
