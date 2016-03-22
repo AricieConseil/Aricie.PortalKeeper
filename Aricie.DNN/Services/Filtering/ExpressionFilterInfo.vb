@@ -244,7 +244,7 @@ Namespace Services.Filtering
         End Property
 
         <ExtendedCategory("Advanced")> _
-          <ConditionalVisible("UseEncryption", False, True)> _
+          <ConditionalVisible("UseEncryption")> _
         Public Property Encryption As EncryptionInfo
             Get
                 If Not Me.UseEncryption Then
