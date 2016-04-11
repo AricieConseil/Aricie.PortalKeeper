@@ -386,7 +386,7 @@ Namespace Services
         Private Shared _SimpleTypeNames As New DualDictionary(Of Type, String)
 
         Public Shared Function GetSimpleTypeName(objType As Type) As String
-            Dim toReturn As String
+            Dim toReturn As String = Nothing
 
             If objType IsNot Nothing Then
                 If Not _SimpleTypeNames.TryGetValue(objType, toReturn) Then

@@ -20,9 +20,6 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
         Aricie.DNN.AutoCompleteTextBox.callBaseMethod(this, 'initialize');
         var myTextBox = this;
         myTextBox.initComponent();
-
-
-
     },
     dispose: function () {
         //Add custom dispose actions here
@@ -98,7 +95,7 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
                 if (AdditionalSelectFunction != null) {
                     var strParam = toDisplay;
                     var fn = window[AdditionalSelectFunction];
-                    toDisplay = fn(strParam);
+                    toDisplay = fn(strParam, ui.item.value);
                 }
                 jQuery("#" + myTBAutoComplete.get_TbClientId()).val(toDisplay);
                 jQuery("#" + myTBAutoComplete.get_HfClientId()).attr("value", ui.item.value);
@@ -110,10 +107,7 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
                 jQuery(this).removeClass("ui-corner-top").addClass("ui-corner-all");
             }
         });
-
-
-    }
-    ,
+    },
     get_ClientId: function () {
         return this._ClientId;
     },
@@ -173,8 +167,3 @@ Aricie.DNN.AutoCompleteTextBox.prototype = {
 Aricie.DNN.AutoCompleteTextBox.registerClass('Aricie.DNN.AutoCompleteTextBox', Sys.UI.Control);
 
 //if (typeof (Sys) !== 'undefined') Sys.Application.notifyScriptLoaded();
-
-
-
-
-

@@ -25,6 +25,7 @@ Namespace UI.WebControls
                 _urlWS = value
             End Set
         End Property
+
         Private _additionalSelectFunction As String
         Public Property AdditionalSelectFunction() As String
             Get
@@ -34,16 +35,17 @@ Namespace UI.WebControls
                 _additionalSelectFunction = value
             End Set
         End Property
-        Private _additionalFunctionForWSResponse As String
 
+        Private _additionalFunctionForWSResponse As String
         Public Property AdditionalFunctionForWSResponse() As String
             Get
-                Return _AdditionalFunctionForWSResponse
+                Return _additionalFunctionForWSResponse
             End Get
             Set(ByVal value As String)
                 _additionalFunctionForWSResponse = value
             End Set
         End Property
+
         Private _additionalOnClickFunction As String
         Public Property AdditionalOnClickFunction() As String
             Get
@@ -55,7 +57,6 @@ Namespace UI.WebControls
         End Property
 
         Public Property Value As String
-
             Get
                 Return DirectCast(Me.FindControl("Hf"), System.Web.UI.WebControls.HiddenField).Value
             End Get
@@ -63,7 +64,6 @@ Namespace UI.WebControls
                 DirectCast(Me.FindControl("Hf"), System.Web.UI.WebControls.HiddenField).Value = value
             End Set
         End Property
-
 
         Public Property Text() As String
             Get
@@ -73,7 +73,6 @@ Namespace UI.WebControls
                 DirectCast(Me.FindControl("Tb"), System.Web.UI.WebControls.TextBox).Text = value
             End Set
         End Property
-
 
         Private _UrljQueryUIJS As String = "https://code.jquery.com/ui/1.9.0/jquery-ui.js"
         Public Property UrljQueryUIJS() As String
@@ -94,6 +93,27 @@ Namespace UI.WebControls
                 _UrljQueryUICSS = value
             End Set
         End Property
+
+        Private _EmptyText As String
+        Public Property EmptyText() As String
+            Get
+                Return _EmptyText
+            End Get
+            Set(ByVal value As String)
+                _EmptyText = value
+            End Set
+        End Property
+
+        Private _AdditionalParam As String
+        Public Property AdditionalParam() As String
+            Get
+                Return _AdditionalParam
+            End Get
+            Set(ByVal value As String)
+                _AdditionalParam = value
+            End Set
+        End Property
+
         Protected Overrides Sub CreateChildControls()
             MyBase.CreateChildControls()
             Dim myTb As New System.Web.UI.WebControls.TextBox
@@ -104,6 +124,7 @@ Namespace UI.WebControls
             Me.Controls.Add(myTb)
             Me.Controls.Add(myHf)
         End Sub
+
         Public Function GetScriptDescriptors() As System.Collections.Generic.IEnumerable(Of System.Web.UI.ScriptDescriptor) Implements System.Web.UI.IScriptControl.GetScriptDescriptors
             Dim toReturn As New List(Of ScriptDescriptor)
             Dim myScriptD As New ScriptControlDescriptor("Aricie.DNN.AutoCompleteTextBox", Me.ClientID)
@@ -120,49 +141,26 @@ Namespace UI.WebControls
             Return toReturn
         End Function
 
-        Private _EmptyText As String
-        Public Property EmptyText() As String
-            Get
-                Return _EmptyText
-            End Get
-            Set(ByVal value As String)
-                _EmptyText = value
-            End Set
-        End Property
-        Private _AdditionalParam As String
-        Public Property AdditionalParam() As String
-            Get
-                Return _AdditionalParam
-            End Get
-            Set(ByVal value As String)
-                _AdditionalParam = value
-            End Set
-        End Property
-
-
         Public Function GetScriptReferences() As System.Collections.Generic.IEnumerable(Of System.Web.UI.ScriptReference) Implements System.Web.UI.IScriptControl.GetScriptReferences
             Dim toReturn As New List(Of ScriptReference)
             toReturn.Add(New ScriptReference("Aricie.DNN.AutoCompleteTextBox.js", GetType(AutoCompleteTextBox).Assembly.FullName))
-
-            '  toReturn.Add(New ScriptReference(UrljQueryUIJS))
-
             Return toReturn
         End Function
 
         Private Sub AutoCompleteTextBox_PreRender(sender As Object, e As System.EventArgs) Handles Me.PreRender
             If Not Me.DesignMode Then
                 ScriptManager.GetCurrent(Me.Page).RegisterScriptControl(Me)
-
             End If
             ResourcesUtils.registerStylesheet(Page, "jQueryUI", UrljQueryUICSS, False)
-
         End Sub
+
         Protected Overrides Sub Render(writer As System.Web.UI.HtmlTextWriter)
             If Not Me.DesignMode Then
                 ScriptManager.GetCurrent(Me.Page).RegisterScriptDescriptors(Me)
             End If
             MyBase.Render(writer)
-
         End Sub
+
     End Class
+
 End Namespace
