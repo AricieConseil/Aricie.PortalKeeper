@@ -5,6 +5,7 @@ Imports System.ComponentModel
 Imports Aricie.Collections
 Imports DotNetNuke.UI.WebControls
 Imports System.IO
+Imports System.Linq
 Imports FileHelpers
 Imports FileHelpers.Dynamic
 Imports System.Reflection
@@ -12,6 +13,13 @@ Imports Aricie.Services
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     
+    Public  Enum CSVDelimiterMode
+        SimpleChar
+        Native
+        EscapedString
+    End Enum
+
+
     Public Class FileHelpersSettings
 
         Private mRecordType As Type
@@ -21,7 +29,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property RecordsMode() As RecordsMode = RecordsMode.StaticType
 
         <ConditionalVisible("FileHelpersMode", False, True, FileHelpersMode.Delimiter)> _
+        Property DelimiterMode() As CSVDelimiterMode = CSVDelimiterMode.SimpleChar
+
+        <ConditionalVisible("DelimiterMode", False, True, CSVDelimiterMode.SimpleChar)> _
+        <ConditionalVisible("FileHelpersMode", False, True, FileHelpersMode.Delimiter)> _
         Public Property Delimiter As Char = ","c
+
+        <ConditionalVisible("DelimiterMode", False, True, CSVDelimiterMode.EscapedString)> _
+        <ConditionalVisible("FileHelpersMode", False, True, FileHelpersMode.Delimiter)> _
+        Public Property EscapedDelimiter As string = "\t"
 
         <ConditionalVisible("FileHelpersMode", False, True, FileHelpersMode.Delimiter)> _
         Public Property IncludeHeaders As Boolean = True
@@ -46,9 +62,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim objRecordType As Type
             If Me.RecordsMode = RecordsMode.StaticType Then
                 objRecordType = Me.RecordType.GetDotNetType
-                For Each item As Object In inputObjects
-                    target.Add(item)
-                Next
+                target.AddRange(inputObjects.Cast (Of Object)())
             Else
                 Dim dynamicExps As List(Of SerializableDictionary(Of String, Object)) = Me.ComputeDynamicExpressions(inputObjects)
                 Dim classId As String = ""
@@ -92,7 +106,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Select Case Me.FileHelpersMode
                 Case FileHelpersMode.Delimiter
                     Dim delimiterEngine As New DelimitedFileEngine(objRecordType)
-                    delimiterEngine.Options.Delimiter = Me.Delimiter
+                    Select Case DelimiterMode
+                        Case CSVDelimiterMode.SimpleChar
+                            delimiterEngine.Options.Delimiter = Me.Delimiter
+                        Case CSVDelimiterMode.EscapedString
+                            delimiterEngine.Options.Delimiter = Regex.Unescape(EscapedDelimiter)
+                    End Select
                     If Me.IncludeHeaders Then
                         'Dim fields As FieldInfo() = objRecordType.GetFields((BindingFlags.NonPublic Or (BindingFlags.Public Or (BindingFlags.Instance Or BindingFlags.DeclaredOnly))))
                         'Dim fieldNames As New List(Of String)
@@ -124,7 +143,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case FileHelpersMode.Delimiter
                     'todo, cf plus haut: gérer le cas dynamique
                     Dim delimiterEngine As New DelimitedFileEngine(objRecordType)
-                    delimiterEngine.Options.Delimiter = Me.Delimiter
+                     Select Case DelimiterMode
+                        Case CSVDelimiterMode.SimpleChar
+                            delimiterEngine.Options.Delimiter = Me.Delimiter
+                        Case CSVDelimiterMode.EscapedString
+                            delimiterEngine.Options.Delimiter = Regex.Unescape(EscapedDelimiter)
+                    End Select
                     If Me.IncludeHeaders Then
                         'Dim fields As FieldInfo() = objRecordType.GetFields((BindingFlags.NonPublic Or (BindingFlags.Public Or (BindingFlags.Instance Or BindingFlags.DeclaredOnly))))
                         'Dim fieldNames As New List(Of String)

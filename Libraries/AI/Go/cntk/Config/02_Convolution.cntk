@@ -9,13 +9,15 @@ DataDir   = "$RootDir$/Data"
 OutputDir = "$RootDir$/Output"
 ModelDir  = "$OutputDir$/Models"
 
-#deviceId = 0
-#imageLayout = "cudnn"
+deviceId = 0
+imageLayout = "cudnn"
 # override the above as follows when running on CPU:
-deviceId = -1
-imageLayout = "legacy"
+# deviceId = -1
+# imageLayout = "legacy"
 
 command = train:test
+#command = train:test:output
+#command = test
 
 precision = "float"
 modelPath = "$ModelDir$/02_Convolution"
@@ -24,7 +26,7 @@ ndlMacros = "$ConfigDir$/Macros.ndl"
 # uncomment the following line to write logs to a file 
 # stderr = "$OutputDir$/02_Convolution_out"
 traceLevel=1
-numMBsToShowResult=500
+numMBsToShowResult=1
 
 prefetch=true
 
@@ -45,19 +47,20 @@ train = [
     ]
     
     SGD = [
-        epochSize = 450
-        minibatchSize = 25
-        learningRatesPerMB = 0.05
+        epochSize = 1000
+        minibatchSize = 1
+		numMBsToShowResult = 100
+        learningRatesPerMB = 0.0001
         momentumPerMB = 0*10:0.7
-        maxEpochs = 5
+        maxEpochs = 10
     ]
     
     reader = [
         readerType = "UCIFastReader"
         # To get the data (Train-28x28.txt) please run `python mnist_convert.py` 
         # from the 'AdditionalFiles' folder. See REAMDE.md for details.
-        # file = "$DataDir$/Train-28x28.txt"
-		file = "$DataDir$/Train-1F.txt"
+         file = "$DataDir$/Train-GnuGo-MidGamesPredictions-1000_samples.txt"
+		#file = "$DataDir$/Train-MidGamesPredictions-20000_samples.txt"
         
 		
 		
@@ -71,7 +74,7 @@ train = [
             start = 0
           #  labelDim = 3
 			labeltype = regression
-          #  labelMappingFile = "$DataDir$/labelsmap.txt"
+            labelMappingFile = "$DataDir$/labelsmap.txt"
         ]
     ]    
 ]
@@ -91,7 +94,7 @@ test = [
     reader = [
         readerType = "UCIFastReader"
         # file = "$DataDir$/Test-28x28.txt"
-		file = "$DataDir$/Test-1F.txt"
+		file = "$DataDir$/Test-GnuGo-MidGamesPredictions-398_samples.txt"
         
         features = [
            dim = 361
@@ -103,7 +106,71 @@ test = [
             start = 0
          #   labelDim = 3
 			labeltype = regression
-          #  labelMappingFile = "$DataDir$/labelsmap.txt"
+            labelMappingFile = "$DataDir$/labelsmap.txt"
         ]
     ]
 ]
+
+
+########################################
+#  OUTPUT RESULTS                      #
+#  (Computes the labels for a test set #
+#   and writes the results to a file.) #
+########################################
+
+Output=[
+    action = "write"
+
+    # Parameter values for the reader
+    reader = [
+        readerType = "UCIFastReader"
+        # file = "$DataDir$/Test-28x28.txt"
+		file = "$DataDir$/Test-0-1.txt"
+        
+        features = [
+           dim = 361
+            start = 361
+        ]
+        
+        labels = [
+            dim = 361
+            start = 0
+         #   labelDim = 3
+			labeltype = regression
+            labelMappingFile = "$DataDir$/labelsmap.txt"
+        ]
+    ]
+
+    #outputNodeNames = output : labels    # Select the nodes to print. If this is not given, the nodes tagged as "output" are printed instead.
+
+    outputPath = "$OutputDir$/SimpleOutput.txt"     # Path to write to. ".NODENAME" will be appended.
+    #outputPath = "-"                           # As an alternative, this prints to stdout.
+
+    # extra formatting options
+    # This is configured to print the classified and ground-truth labels.
+    # To write out the actual posterior probabilities, comment out this section.
+   # format = [
+   #     type = "category"                                # This finds the highest-scoring entry and prints its index.
+   #     labelMappingFile = "$DataDir$/SimpleMapping.txt" # Specifying this as well will translate the index into a string.
+   #     sequenceEpilogue = "\t// %s\n"                   # Append this on every line, %s = node name. Useful when printing to stdout.
+
+        # How to implement simple error counting with this (cd into $OutputDir$ first):
+        #    grep PosteriorProb SimpleOutput.PosteriorProb | awk '{print $1}' > P
+        #    grep labels        SimpleOutput.labels        | awk '{print $1}' > L
+        #    diff L P | grep "<" | wc -l
+        #    wc -l P
+        # The ratio of the two numbers gives the same error rate as ErrorPrediction/Sample in the log.
+    #]
+]
+
+########################################
+#  Dump Nodes                     	   #
+#  Returns the model parameters  	   #
+########################################
+
+
+
+dumpNodeInfo=[
+        action=dumpnode
+        printValues=true
+    ]

@@ -1,3 +1,10 @@
+DNNLayer(inDim, outDim, x, parmScale) = [
+    W = LearnableParameter(outDim, inDim, init="uniform", initValueScale=parmScale)
+    b = LearnableParameter(outDim, 1,     init="uniform", initValueScale=parmScale)
+    t = Times(W, x)
+    z = Plus(t, b)
+]
+
 DNNSigmoidLayer(inDim, outDim, x, parmScale) = [
     W = LearnableParameter(outDim, inDim, init="uniform", initValueScale=parmScale) 
     b = LearnableParameter(outDim, 1,     init="uniform", initValueScale=parmScale) 
@@ -14,11 +21,17 @@ DNNImageSigmoidLayer(inW, inH, inC, outDim, x, parmScale) = [
     y = Sigmoid(z)
 ]
 
-DNNLayer(inDim, outDim, x, parmScale) = [
-    W = LearnableParameter(outDim, inDim, init="uniform", initValueScale=parmScale)
-    b = LearnableParameter(outDim, 1,     init="uniform", initValueScale=parmScale)
-    t = Times(W, x)
-    z = Plus(t, b)
+SaturatedMidUnitThreshold(sigmoidOutput) = [
+	thresholded = Minus (sigmoidOutput, Constant (0.5))
+	decisionZ = Scale (Const(1000000), thresholded)
+	decision = Sigmoid (decisionZ)
+]
+
+XorOp (a, b) = [
+	mySum = Plus(a , b)
+    myDotProduct =  ElementTimes(a , b)
+	myScaledDotProduct = Scale(Const(2), myDotProduct)
+	result = Minus(mySum , myScaledDotProduct)
 ]
 
 DnnBNReLULayer(inDim, outDim, x, wScale, bValue, scValue, bnTimeConst) = [
@@ -32,10 +45,34 @@ DnnBNReLULayer(inDim, outDim, x, wScale, bValue, scValue, bnTimeConst) = [
     y = RectifiedLinear(bn)
 ]
 
+ConvLayer(inp, outMap, inWCount, kW, kH, hStride, vStride, wScale, bValue) = [
+    convW = LearnableParameter(outMap, inWCount, init="uniform", initValueScale=wScale)
+    convB = ImageParameter(1, 1, outMap, init="fixedValue", value=bValue, imageLayout=$imageLayout$)
+    conv = Convolution(convW, inp, kW, kH, outMap, hStride, vStride, zeroPadding=true, imageLayout=$imageLayout$)
+    convPlusB = Plus(conv, convB);
+]
+
+ConvSigLayer(inp, outMap, inWCount, kW, kH, hStride, vStride, wScale, bValue) = [
+    convW = LearnableParameter(outMap, inWCount, init="uniform", initValueScale=wScale)
+    convB = ImageParameter(1, 1, outMap, init="fixedValue", value=bValue, imageLayout=$imageLayout$)
+    conv = Convolution(convW, inp, kW, kH, outMap, hStride, vStride, zeroPadding=true, imageLayout=$imageLayout$)
+    convPlusB = Plus(conv, convB);
+	act = Sigmoid(convPlusB);
+]
+
 ConvReLULayer(inp, outMap, inWCount, kW, kH, hStride, vStride, wScale, bValue) = [
     convW = LearnableParameter(outMap, inWCount, init="uniform", initValueScale=wScale)
     convB = ImageParameter(1, 1, outMap, init="fixedValue", value=bValue, imageLayout=$imageLayout$)
-    conv = Convolution(convW, inp, kW, kH, outMap, hStride, vStride, zeroPadding=false, imageLayout=$imageLayout$)
+    conv = Convolution(convW, inp, kW, kH, outMap, hStride, vStride, zeroPadding=true, imageLayout=$imageLayout$)
+    convPlusB = Plus(conv, convB);
+    act = RectifiedLinear(convPlusB);
+]
+
+MaskedConvReLULayer(mask, inp, outMap, inWCount, kW, kH, hStride, vStride, wScale, bValue) = [
+    convW = LearnableParameter(outMap, inWCount, init="uniform", initValueScale=wScale)
+	masked = ElementTimes (mask, convW)
+    convB = ImageParameter(1, 1, outMap, init="fixedValue", value=bValue, imageLayout=$imageLayout$)
+    conv = Convolution(masked, inp, kW, kH, outMap, hStride, vStride, zeroPadding=true, imageLayout=$imageLayout$)
     convPlusB = Plus(conv, convB);
     act = RectifiedLinear(convPlusB);
 ]

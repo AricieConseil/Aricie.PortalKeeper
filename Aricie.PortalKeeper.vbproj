@@ -184,6 +184,7 @@
     <Compile Include="Components\Core\MessageEventArgs.vb" />
     <Compile Include="Components\Core\RuleEngineMode.vb" />
     <Compile Include="Components\Core\SimpleRuleEngine.vb" />
+    <Compile Include="Components\Core\WaitSynchronizationInfo.vb" />
     <Compile Include="Components\Engines\ControlAdapters\DynamicControlAdapter.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdaptersConfig.vb" />
     <Compile Include="Components\Engines\ControlAdapters\ControlAdapterSettings.vb" />

@@ -4327,7 +4327,7 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
     <value>Flat Records</value>
   </data>
   <data name="FileHelpersSettings_Delimiter.Text" xml:space="preserve">
-    <value>Delimiter</value>
+    <value>Char Delimiter</value>
   </data>
   <data name="FileHelpersSettings_FieldVars.Text" xml:space="preserve">
     <value>Dynamic Fields</value>
@@ -8879,10 +8879,10 @@ In order to seal your keys, click one of the corresponding button at the bottom 
   <data name="XPathInfo_EvaluateExpression.Text" xml:space="preserve">
     <value>Evaluate Expression</value>
   </data>
-  <data name="ActionProvider`1_WaitSynchronisationHandle.Help" xml:space="preserve">
+  <data name="ActionProvider`1_WaitSynchronisationInfo.Help" xml:space="preserve">
     <value>You can optionally wait for an existing handle from previous asynchronous actions to be signaled by all threads before the action is run. The action serves as a synchronization rendez-vous for concurrent previous actions. Enter the name of the variable the handle was created to.</value>
   </data>
-  <data name="ActionProvider`1_WaitSynchronisationHandle.Text" xml:space="preserve">
+  <data name="ActionProvider`1_WaitSynchronisationInfo.Text" xml:space="preserve">
     <value>Wait Synchronisation handles</value>
   </data>
   <data name="AsyncEnabledActionProvider`1_SynchronisationHandle.Help" xml:space="preserve">
@@ -12264,5 +12264,158 @@ given the previous values, that is, P(Xt |X0:t−1), that is P(Xt |Xt−1) given
   </data>
   <data name="TemporalAskInfo_Query.Header" xml:space="preserve">
     <value>Query</value>
+  </data>
+  <data name="CntkEvaluator_Config.Help" xml:space="preserve">
+    <value>This is the path to the cntk configuration file for the model (*.cntk)</value>
+  </data>
+  <data name="CntkEvaluator_Config.Text" xml:space="preserve">
+    <value>Config Path</value>
+  </data>
+  <data name="CntkEvaluator_ModelPath.Help" xml:space="preserve">
+    <value>This is the path to the CNTK model file to load.</value>
+  </data>
+  <data name="CntkEvaluator_ModelPath.Text" xml:space="preserve">
+    <value>Model Path</value>
+  </data>
+  <data name="CntkEvaluator_OutputKey.Help" xml:space="preserve">
+    <value>This is the key for the cntk network's node to be returned</value>
+  </data>
+  <data name="CntkEvaluator_OutputKey.Text" xml:space="preserve">
+    <value>Output Key</value>
+  </data>
+  <data name="CntkEvaluator_OutputSize.Text" xml:space="preserve">
+    <value>This is the size of the output vector</value>
+  </data>
+  <data name="EscapedString.Text" xml:space="preserve">
+    <value>Escaped String</value>
+  </data>
+  <data name="FileHelpersSettings_Delimiter.Help" xml:space="preserve">
+    <value>Enter a single printable char as a target delimiter for your csv</value>
+  </data>
+  <data name="FileHelpersSettings_DelimiterMode.Help" xml:space="preserve">
+    <value>You can choose your delimiter as a simple printable char, an escaped string with for instance non printable chars), or to rely on FileHelpers native attributes</value>
+  </data>
+  <data name="FileHelpersSettings_DelimiterMode.Text" xml:space="preserve">
+    <value>Delimiter Mode</value>
+  </data>
+  <data name="FileHelpersSettings_EscapedDelimiter.Help" xml:space="preserve">
+    <value>Enter a string, that will be unescaped with Regex.Unescaped before it is setup as a delimiter for the csv engine.</value>
+  </data>
+  <data name="FileHelpersSettings_EscapedDelimiter.Text" xml:space="preserve">
+    <value>Escaped Delimiter</value>
+  </data>
+  <data name="Native.Text" xml:space="preserve">
+    <value>Native</value>
+  </data>
+  <data name="SimpleChar.Text" xml:space="preserve">
+    <value>Simple Char</value>
+  </data>
+  <data name="CurrentDirectory.Text" xml:space="preserve">
+    <value>Current Directory</value>
+  </data>
+  <data name="CustomDirectory.Text" xml:space="preserve">
+    <value>Custom Directory</value>
+  </data>
+  <data name="ProgramDirectory.Text" xml:space="preserve">
+    <value>Program Directory</value>
+  </data>
+  <data name="RunProgramAction`1_ProcessStart.Help" xml:space="preserve">
+    <value>Those are parameters to define where and how the program should be run</value>
+  </data>
+  <data name="RunProgramAction`1_ProcessStart.Text" xml:space="preserve">
+    <value>Program information</value>
+  </data>
+  <data name="RunProgramAction`1_Specifics.Header" xml:space="preserve">
+    <value>Program</value>
+  </data>
+  <data name="RunProgramAction`1_TimeOut.Help" xml:space="preserve">
+    <value>Enter a maximum duration for the program run</value>
+  </data>
+  <data name="RunProgramAction`1_TimeOut.Text" xml:space="preserve">
+    <value>Time Out</value>
+  </data>
+  <data name="RunProgramAction`1_UseTimeOut.Help" xml:space="preserve">
+    <value>Check to define a limit duration for the program exectution</value>
+  </data>
+  <data name="RunProgramAction`1_UseTimeOut.Text" xml:space="preserve">
+    <value>Use Time Out</value>
+  </data>
+  <data name="SimpleProcessStartInfo_CommandArguments.Help" xml:space="preserve">
+    <value>You can optionally pass arguments to be appended at call time. </value>
+  </data>
+  <data name="SimpleProcessStartInfo_CommandArguments.Text" xml:space="preserve">
+    <value>Arguments</value>
+  </data>
+  <data name="SimpleProcessStartInfo_Credentials.Help" xml:space="preserve">
+    <value>Those are the specific credentials to start the program process</value>
+  </data>
+  <data name="SimpleProcessStartInfo_Credentials.Text" xml:space="preserve">
+    <value>Credentials</value>
+  </data>
+  <data name="SimpleProcessStartInfo_CustomWorkingDirectory.Help" xml:space="preserve">
+    <value>Enter a path to a directory to serve as working directory for the program process</value>
+  </data>
+  <data name="SimpleProcessStartInfo_CustomWorkingDirectory.Text" xml:space="preserve">
+    <value>Custom Working Directory</value>
+  </data>
+  <data name="SimpleProcessStartInfo_Domain.Help" xml:space="preserve">
+    <value>You can optionally enter a domain to run the program process</value>
+  </data>
+  <data name="SimpleProcessStartInfo_Domain.Text" xml:space="preserve">
+    <value>Domain</value>
+  </data>
+  <data name="SimpleProcessStartInfo_ProgramFileName.Help" xml:space="preserve">
+    <value>This is the path to the program executable file to run.</value>
+  </data>
+  <data name="SimpleProcessStartInfo_ProgramFileName.Text" xml:space="preserve">
+    <value>Program File</value>
+  </data>
+  <data name="SimpleProcessStartInfo_UseCredentials.Help" xml:space="preserve">
+    <value>You can optionally run the program under a specific identity</value>
+  </data>
+  <data name="SimpleProcessStartInfo_UseCredentials.Text" xml:space="preserve">
+    <value>Use Credentials</value>
+  </data>
+  <data name="SimpleProcessStartInfo_WorkingDirectoryMode.Help" xml:space="preserve">
+    <value>You can choose to set the program's working directory to the program file directory, the current environment's directory, or a custom directory</value>
+  </data>
+  <data name="SimpleProcessStartInfo_WorkingDirectoryMode.Text" xml:space="preserve">
+    <value>Working Directory</value>
+  </data>
+  <data name="ExpressionFilterInfo_ProcessTokens.Help" xml:space="preserve">
+    <value>You can optionally apply tokens processing, with default  or custom  token sources available.</value>
+  </data>
+  <data name="ExpressionFilterInfo_ProcessTokens.Text" xml:space="preserve">
+    <value>Process Tokens</value>
+  </data>
+  <data name="ExpressionFilterInfo_SpecialParser.Help" xml:space="preserve">
+    <value>You can optionally process the input text with one of the available specific parsers</value>
+  </data>
+  <data name="ExpressionFilterInfo_SpecialParser.Text" xml:space="preserve">
+    <value>User Special Parser</value>
+  </data>
+  <data name="Markdown.Text" xml:space="preserve">
+    <value>Markdown</value>
+  </data>
+  <data name="RunProgramAction`1_Program.Header" xml:space="preserve">
+    <value>Program</value>
+  </data>
+  <data name="TokenSourceInfo_CacheTokenReplace.Help" xml:space="preserve">
+    <value>When using the current Token Source object to build your token replace instance, you can optionally choose to cache the resulting object</value>
+  </data>
+  <data name="TokenSourceInfo_CacheTokenReplace.Text" xml:space="preserve">
+    <value>Cache Token Replace</value>
+  </data>
+  <data name="WaitSynchronizationInfo_SynchronizationKey.Help" xml:space="preserve">
+    <value>This key will be associated with a synchronization counter stored in the action context, and incremented / decremented at the start / end of each asynchronous run</value>
+  </data>
+  <data name="WaitSynchronizationInfo_SynchronizationKey.Text" xml:space="preserve">
+    <value>Synchronization Key</value>
+  </data>
+  <data name="WaitSynchronizationInfo_WaitAfterRun.Help" xml:space="preserve">
+    <value>You can optionally choose to wait for the synchronization handle after run.</value>
+  </data>
+  <data name="WaitSynchronizationInfo_WaitAfterRun.Text" xml:space="preserve">
+    <value>Wait After Run</value>
   </data>
 </root>

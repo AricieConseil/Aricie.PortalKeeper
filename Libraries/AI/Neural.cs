@@ -1,6 +1,8 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Web.Security;
 using AIFH_Vol3.Core.Error;
 using AIFH_Vol3.Core.General.Data;
@@ -17,11 +19,14 @@ using Aricie.DNN.Services.Files;
 using Aricie.DNN.Services.Flee;
 using Aricie.DNN.UI.Attributes;
 using Aricie.PortalKeeper.AI.CSP;
+using FileHelpers;
+using ikvm.extensions;
 using java.lang;
 using Microsoft.MSR.CNTK.Extensibility.Managed;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using Object = System.Object;
+using System = java.lang.System;
 
 namespace Aricie.PortalKeeper.AI.Learning.Neural
 {
@@ -394,14 +399,14 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
         public CntkEvaluator()
         {
             ModelPath = new FilePathInfo();
-            Configuration = new CData();
+            Config = new FilePathInfo();
             OutputKey = "ol.z";
             OutputSize = 10;
         }
 
         public FilePathInfo ModelPath { get; set; }
 
-        public CData Configuration { get; set; }
+        public FilePathInfo Config { get; set; }
 
         public string OutputKey { get; set; }
 
@@ -411,13 +416,14 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
         public List<float> Evaluate(object owner, IContextLookup globalVars, Dictionary<string, List<float>> inputs)
         {
             string theModelPath = ModelPath.GetMapPath(owner, globalVars);
-            string configContent = Configuration.Value;
+            var configLines = File.ReadAllLines(Config.GetMapPath(owner, globalVars));
+            string configContent = string.Join("\n", configLines);
             return Evaluate(theModelPath, configContent, inputs, OutputKey, OutputSize);
         }
 
         public static  List<float> Evaluate(string modelFilePath, string configContent, Dictionary<string, List<float>> inputs, string outputKey, int outputSize)
         {
-            Dictionary<string, List<float>> outputs;
+            //Dictionary<string, List<float>> outputs;
 
             using (var model = new IEvaluateModelManagedF())
             {
@@ -428,6 +434,8 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
                 // Load model
               
                 model.LoadModel(modelFilePath);
+
+             //  model.CreateNetwork($"deviceId=-1\nmodelPath=\"{modelFilePath}\"");
 
 
                 // We can call the evaluate method and get back the results (single layer)...
@@ -462,5 +470,16 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
 
     }
 
+
+    [DelimitedRecord(" ")]
+    public class MnistInput
+    {
+
+        public int Label;
+
+        [FieldArrayLength(784, 784)]
+        public float[] Image;
+
+    }
 
 }
