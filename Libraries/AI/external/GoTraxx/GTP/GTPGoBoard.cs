@@ -37,6 +37,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Threading;
 
@@ -238,8 +239,12 @@ namespace GoTraxx
 			RegisterAnalyzeCommand("gotraxx-clear_patterns", "none", "Clear Patterns", "");
 			RegisterAnalyzeCommand("gotraxx-load_patterns", "none", "Load Test Patterns", "patterns\\test.db");
 
-			RegisterCommand("tt", GTPTest);
-		}
+            
+
+            RegisterCommand("tt", GTPTest);
+            RegisterCommand("Jesse-Influence", GTPInfluence);
+            RegisterAnalyzeCommand("Jesse-Influence", "gfx", "Jesse Influence", "");
+        }
 
 		protected void RegisterCommand(string command, GTPFunction gtpFunction)
 		{
@@ -1350,5 +1355,20 @@ namespace GoTraxx
 
 			return GTPTopMoves(gtpGoBoard, Color.Black);
 		}
-	}
+
+
+        // Jesse
+        public static GTPInternalResponse GTPInfluence(GTPGoBoard gtpGoBoard, GTPCommand gtpCommand)
+        {
+           
+            StringBuilder s = new StringBuilder(512);
+            s.Append("INFLUENCE ");
+            for (int x = 0; x < gtpGoBoard.Board.BoardSize; x++)
+                for (int y = 0; y < gtpGoBoard.Board.BoardSize; y++)
+                    s.AppendFormat("{0} {1} ",gtpGoBoard.ToString(x, y), 0.5.ToString(CultureInfo.InvariantCulture));
+
+            return new GTPInternalResponse(true, s.ToString());
+        }
+
+    }
 }

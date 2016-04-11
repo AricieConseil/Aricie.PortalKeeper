@@ -6,7 +6,7 @@
       <foldername>Aricie.PortalKeeper</foldername>
       <modulename>Aricie.PortalKeeper</modulename>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
-      <version>04.03.01</version>
+      <version>04.03.02</version>
       <businesscontrollerclass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businesscontrollerclass>
       <resourcefile>Aricie.PortalKeeper_resources.zip</resourcefile>
       <modules>
@@ -179,6 +179,12 @@
         </file>
         <file>
           <name>IKVM.OpenJDK.Misc.dll</name>
+        </file>
+        <file>
+          <name>>GoTraxx.exe</name>
+        </file>
+        <file>
+          <name>EvalWrapper.dll</name>
         </file>
       </files>
     </folder>

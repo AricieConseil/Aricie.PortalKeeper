@@ -5,18 +5,16 @@ Imports Aricie.DNN.Diagnostics
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Threading
+Imports System.Xml.Serialization
 Imports Aricie.DNN.Security.Trial
 Imports Aricie.Services
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
+Imports Newtonsoft.Json
 
 Namespace Aricie.DNN.Modules.PortalKeeper
-
-
-
-    
-     <DisplayName("Empty Action Provider")> _
+    <DisplayName("Empty Action Provider")> _
         <Description("This provider performs no particular action but can be used for adding a sleep time for instance")> _
     Public Class ActionProvider(Of TEngineEvents As IConvertible)
         Inherits ActionProviderSettings(Of TEngineEvents)
@@ -57,11 +55,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <SortOrder(951)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
-        Public Property WaitSynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)("Synchro"))
+        Public Property WaitSynchronisationInfo As New EnabledFeature(Of WaitSynchronizationInfo)()
 
-          Public  Function ShouldSerializeWaitSynchronisationHandle() As Boolean
-            Return WaitSynchronisationHandle.Enabled
+        Public  Function ShouldSerializeWaitSynchronisationInfo() As Boolean
+            Return WaitSynchronisationInfo.Enabled
         End Function
+
+        
 
         <DefaultValue(False)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
@@ -136,8 +136,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End Set
         End Property
 
-         Public  Function ShouldSerializeAlternateAction() As Boolean
-            Return AlternateAction isnot Nothing andalso AlternateAction.Instances.Count>0
+        Public Function ShouldSerializeAlternateAction() As Boolean
+            Return AlternateAction IsNot Nothing AndAlso AlternateAction.Instances.Count > 0
         End Function
 
         <DefaultValue(False)> _
@@ -174,14 +174,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Overridable Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
-            If Me.WaitSynchronisationHandle.Enabled Then
-                Dim key As String = Me.WaitSynchronisationHandle.Entity.GetValue(actionContext, actionContext)
-                Dim counter As Object = Nothing
-                If actionContext.Items.TryGetValue(key, counter) Then
-                    DirectCast(counter, Countdown).Wait()
-                Else
-                    Throw New ApplicationException("No Synchronisation handle was found in the context variables with name " & key)
-                End If
+            If Me.WaitSynchronisationInfo.Enabled AndAlso Not WaitSynchronisationInfo.Entity.WaitAfterRun Then
+              Me.Wait(actionContext)
             End If
             If Me.UseSemaphore Then
                 Dim owned As Boolean
@@ -213,10 +207,20 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Else
                 Return RunAndSleepUnlocked(actionContext)
             End If
-
-
-
+           If Me.WaitSynchronisationInfo.Enabled AndAlso WaitSynchronisationInfo.Entity.WaitAfterRun Then
+               Me.Wait(actionContext)
+            End If
         End Function
+
+        Public Sub Wait(ByVal actionContext As PortalKeeperContext(Of TEngineEvents))
+            Dim key As String = WaitSynchronisationInfo.Entity.SynchronizationKey.GetValue(actionContext, actionContext)
+            Dim counter As Object = Nothing
+            If actionContext.Items.TryGetValue(key, counter) Then
+                DirectCast(counter, Countdown).Wait()
+            Else
+                Throw New ApplicationException("No Synchronisation handle was found in the context variables with name " & key)
+            End If
+        End Sub
 
 
         Public Function RunAndSleepUnlocked(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean

@@ -33,6 +33,8 @@ Namespace Services.Filtering
 
         Public Property TokenVariables As New Aricie.DNN.Services.Flee.Variables()
 
+        Public Property CacheTokenReplace() As Boolean
+
         ''' <summary>
         ''' List of tokens providers
         ''' </summary>
@@ -203,6 +205,25 @@ Namespace Services.Filtering
                 Return toReturn
             End Function
         End Class
+
+
+        Private _cachedTokenReplace as AdvancedTokenReplace
+
+        Public Function GetTokenReplace(contextVars As IContextLookup) As AdvancedTokenReplace
+
+            If _cachedTokenReplace IsNot Nothing
+                Return _cachedTokenReplace
+            End If
+
+            Dim toReturn as New AdvancedTokenReplace()
+            Me.SetTokens(toReturn, contextVars, contextVars)
+            if Me.CacheTokenReplace
+                _cachedTokenReplace = toReturn
+            End If
+            Return toReturn
+
+        End Function
+
 
     End Class
 

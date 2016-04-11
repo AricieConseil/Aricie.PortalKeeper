@@ -16,6 +16,13 @@ Imports System.Threading
 Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Filtering
+
+    Public  Enum SpecialParser
+        None
+        Markdown
+    End Enum
+
+
     ''' <summary>
     ''' Class representing filtering and transformation applied to a string
     ''' </summary>
@@ -132,6 +139,33 @@ Namespace Services.Filtering
         <ConditionalVisible("ApplyFormat", False, True)> _
         Public Property FormatPattern As CData = "{0}"
 
+          ''' <summary>
+        ''' Encoding postprocessing
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks></remarks>
+        <ExtendedCategory("GlobalFilter")> _
+         <DefaultValue(EncodeProcessing.None)> _
+        Public Property EncodePostProcessing() As EncodeProcessing = EncodeProcessing.None
+
+        <ConditionalVisible("EncodePostProcessing", False, True, EncodeProcessing.HtmlEncode)> _
+        <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(HtmlEncodeMethod.HtmlEncode)> _
+        Public Property PostHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
+
+        ''' <summary>
+        ''' Maximum length for the output
+        ''' </summary>
+        ''' <value></value>
+        ''' <returns></returns>
+        ''' <remarks>-1 to disable</remarks>
+        <Required(True)> _
+        <ExtendedCategory("GlobalFilter")> _
+        <DefaultValue(-1)> _
+        Public Property MaxLength() As Integer = -1
+
+
         '<CollectionEditor(False, False, True, True, 5, CollectionDisplayStyle.Accordion, True)> _
         ''' <summary>
         ''' Transformation list to replace elements of the input
@@ -201,6 +235,14 @@ Namespace Services.Filtering
         <DefaultValue(SimpleEncoding.UTF8)> _
         Public Property TargetEncoding As SimpleEncoding = SimpleEncoding.UTF8
 
+        <ExtendedCategory("Advanced")> _
+        Public Property SpecialParser As SpecialParser
+
+
+        <ExtendedCategory("Advanced")> _
+        Public Property ProcessTokens As new EnabledFeature(Of TokenSourceInfo)
+
+
         <DefaultValue(false)> _
         <ExtendedCategory("Advanced")> _
         Public Property UseCompression As Boolean
@@ -259,31 +301,7 @@ Namespace Services.Filtering
             End Set
         End Property
 
-        ''' <summary>
-        ''' Encoding postprocessing
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <ExtendedCategory("GlobalFilter")> _
-         <DefaultValue(EncodeProcessing.None)> _
-        Public Property EncodePostProcessing() As EncodeProcessing = EncodeProcessing.None
-
-        <ConditionalVisible("EncodePostProcessing", False, True, EncodeProcessing.HtmlEncode)> _
-        <ExtendedCategory("GlobalFilter")> _
-        <DefaultValue(HtmlEncodeMethod.HtmlEncode)> _
-        Public Property PostHtmlEncodeMethod As HtmlEncodeMethod = HtmlEncodeMethod.HtmlEncode
-
-        ''' <summary>
-        ''' Maximum length for the output
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks>-1 to disable</remarks>
-        <Required(True)> _
-        <ExtendedCategory("GlobalFilter")> _
-        <DefaultValue(-1)> _
-        Public Property MaxLength() As Integer = -1
+      
 
 
         ''' <summary>
@@ -560,6 +578,19 @@ Namespace Services.Filtering
                 End Select
             End If
 
+            
+
+            Select case SpecialParser
+                Case  SpecialParser.Markdown
+                    toReturn = CommonMark.CommonMarkConverter.Convert(toReturn) 
+            End Select
+
+            if ProcessTokens.Enabled
+                toReturn = ProcessTokens.Entity.GetTokenReplace(contextVars).ReplaceAllTokens(toReturn)
+            End If
+
+
+
             If Me.UseCompression Then
                 Select Case CompressDirection
                     Case CompressionDirection.Compress
@@ -701,40 +732,7 @@ Namespace Services.Filtering
 
 #End Region
 
-        ''' <summary>
-        ''' Equality comparer 
-        ''' </summary>
-        ''' <param name="obj"></param>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        Public Overrides Function Equals(ByVal obj As Object) As Boolean
-            If obj Is Nothing OrElse Not TypeOf obj Is ExpressionFilterInfo Then
-                Return False
-            End If
-            Dim objToCompare As ExpressionFilterInfo = DirectCast(obj, ExpressionFilterInfo)
-            If objToCompare Is Nothing Then
-                Return False
-            End If
-            If objToCompare.MaxLength <> Me._MaxLength _
-                    OrElse objToCompare.CaseChange <> Me._CaseChange _
-                    OrElse objToCompare.EncodePreProcessing <> Me._EncodePreProcessing _
-                    OrElse objToCompare.EncodePostProcessing <> Me.EncodePostProcessing _
-                    OrElse objToCompare.Trim <> Me.Trim _
-                    OrElse objToCompare.TrimChar <> Me.TrimChar _
-                    OrElse objToCompare.ApplyFormat <> Me.ApplyFormat _
-                    OrElse objToCompare.FormatPattern.Value <> Me.FormatPattern.Value _
-                    OrElse objToCompare.PreventDoubleDefaults <> Me.PreventDoubleDefaults _
-                    OrElse objToCompare.DefaultCharReplacement <> Me.DefaultCharReplacement _
-                    OrElse objToCompare.TransformList.Count <> Me._TransformList.Count Then
-                Return False
-            End If
-            For i As Integer = 0 To Me._TransformList.Count - 1
-                If Not Me._TransformList(i).Equals(objToCompare.TransformList(i)) Then
-                    Return False
-                End If
-            Next
-            Return True
-        End Function
+       
 
     End Class
 

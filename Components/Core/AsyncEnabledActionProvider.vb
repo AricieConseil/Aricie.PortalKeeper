@@ -70,13 +70,19 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             If Not Me._UseTaskQueue Then
                 Return Me.Run(actionContext, False)
             Else
-                If Me.SynchronisationHandle.Enabled Then
+               EnqueueRun(actionContext)
+            End If
+            Return True
+        End Function
+
+        Public Sub EnqueueRun(ByVal actionContext As PortalKeeperContext(Of TEngineEvents))
+             If Me.SynchronisationHandle.Enabled Then
                     Dim key As String = Me.SynchronisationHandle.Entity.GetValue(actionContext, actionContext)
                     Dim counter As Object = Nothing
                     If Not actionContext.Items.TryGetValue(key, counter) Then
                         SyncLock actionContext
                             If Not actionContext.Items.TryGetValue(key, counter) Then
-                                counter = New Countdown
+                                counter = New Countdown()
                                 actionContext.Items(key) = counter
                             End If
                         End SyncLock
@@ -85,9 +91,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     DirectCast(counter, Countdown).AddCount(1)
                 End If
                 Me.AsynchronousRunTaskQueue.EnqueueTask(actionContext)
-            End If
-            Return True
-        End Function
+        End Sub
 
 
         Protected MustOverride Overloads Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents), ByVal aSync As Boolean) As Boolean

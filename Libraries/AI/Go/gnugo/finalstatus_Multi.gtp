@@ -1,0 +1,4 @@
+final_status_list white_territory
+final_status_list black_territory
+final_status_list alive
+final_status_list dead
