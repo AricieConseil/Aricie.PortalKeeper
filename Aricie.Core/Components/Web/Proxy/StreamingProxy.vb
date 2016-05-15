@@ -280,9 +280,9 @@ Namespace Web.Proxy
                         End If
                     End If
 
-                    Using New TimedLog("StreamingProxy" & vbTab & "Response Flush")
-                        context.Response.Flush()
-                    End Using
+                    'Using New TimedLog("StreamingProxy" & vbTab & "Response Flush")
+                    '    context.Response.Flush()
+                    'End Using
                 End Using
             Catch x As Exception
                 'Log.WriteLine(x.ToString())
