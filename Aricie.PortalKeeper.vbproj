@@ -97,19 +97,19 @@
     </Reference>
     <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>packages\FileHelpers.3.1.5\lib\net20\FileHelpers.dll</HintPath>
+      <HintPath>external\FileHelpers.dll</HintPath>
     </Reference>
-    <Reference Include="Google.GData.Client, Version=2.2.0.0, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
+    <Reference Include="Google.GData.Client, Version=2.2.0.33416, Culture=neutral, PublicKeyToken=04a59ca9b0273830, processorArchitecture=MSIL">
       <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.Extensions, Version=2.2.0.0, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Google.GData.Extensions, Version=2.2.0.33416, Culture=neutral, PublicKeyToken=0b4c5df2ebf20876, processorArchitecture=MSIL">
       <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="Google.GData.Spreadsheets, Version=2.2.0.0, Culture=neutral, PublicKeyToken=3f77feb76ff0d9a1, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
+    </Reference>
+    <Reference Include="Google.GData.Spreadsheets, Version=2.2.0.33417, Culture=neutral, PublicKeyToken=3f77feb76ff0d9a1, processorArchitecture=MSIL">
       <HintPath>Libraries\Google-gdata\Assemblies\Google.GData.Spreadsheets.dll</HintPath>
+      <SpecificVersion>False</SpecificVersion>
     </Reference>
     <Reference Include="Interop.SHDocVw, Version=1.1.0.0, Culture=neutral, PublicKeyToken=db7cfd3acb5ad44e, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -133,8 +133,8 @@
       <HintPath>external\IronPython\Microsoft.Scripting.Core.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>packages\Newtonsoft.Json.4.5.6\lib\net35\Newtonsoft.Json.dll</HintPath>
       <SpecificVersion>False</SpecificVersion>
+      <HintPath>packages\Newtonsoft.Json.4.5.6\lib\net35\Newtonsoft.Json.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="System" />
@@ -142,6 +142,8 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.DynamicData" />
+    <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -359,6 +361,8 @@
     <Content Include="Components\Engines\ControlAdapters\DefaultControlAdapters.xml" />
     <Content Include="Components\Engines\HttpHandlers\DefaultHttpHandlers.xml" />
     <Content Include="Components\Engines\Scheduler\DevBots.xml" />
+    <Content Include="external\FileHelpers.dll" />
+    <Content Include="external\FileHelpers.xml" />
     <Content Include="external\IronPython\IronPython.dll" />
     <Content Include="external\IronPython\IronPython.Modules.dll" />
     <Content Include="external\IronPython\IronPython.SQLite.dll" />
@@ -441,28 +445,16 @@
     <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.WebmasterTools.dll" />
     <Content Include="Libraries\Google-gdata\Assemblies\Google.GData.YouTube.dll" />
     <Content Include="Libraries\MonoTorrent\MonoTorrent.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\BruTile.Desktop.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\BruTile.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\BruTile.Serialization.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\Common.Logging.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\DotSpatial.Projections.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.Extensions.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\GeoAPI.Extensions.pdb" />
-    <Content Include="Libraries\SharpMap\Assemblies\Ionic.Zip.Reduced.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\NetTopologySuite.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\PowerCollections.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\ProjNet.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpKml.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpKml.Kmz.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Data.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Data.pdb" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Data.Providers.Kml.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Data.Providers.Kml.pdb" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.pdb" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Web.dll" />
-    <Content Include="Libraries\SharpMap\Assemblies\SharpMap.Web.pdb" />
+    <Content Include="Libraries\GIS\Assemblies\BruTile.dll" />
+    <Content Include="Libraries\GIS\Assemblies\BruTile.MbTiles.dll" />
+    <Content Include="Libraries\GIS\Assemblies\Common.Logging.Core.dll" />
+    <Content Include="Libraries\GIS\Assemblies\Common.Logging.dll" />
+    <Content Include="Libraries\GIS\Assemblies\PowerCollections.dll" />
+    <Content Include="Libraries\GIS\Assemblies\SharpMap.Converters.GeoJSON.dll" />
+    <Content Include="Libraries\GIS\Assemblies\SharpMap.dll" />
+    <Content Include="Libraries\GIS\Assemblies\SharpMap.Extensions.dll" />
+    <Content Include="Libraries\GIS\Assemblies\SharpMap.Layers.BruTile.dll" />
+    <Content Include="Libraries\GIS\Assemblies\SharpMap.Web.dll" />
     <Content Include="PKP-Logo.png" />
     <Content Include="ReleaseNotes.html" />
     <Content Include="Settings.ascx" />
@@ -493,7 +485,6 @@
       <CustomToolNamespace>My.Resources</CustomToolNamespace>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Content Include="PAs\Aricie.PortalKeeper_Install_01.01.00.zip" />
     <Content Include="Packages.dgml" />
     <Content Include="packages.config" />
   </ItemGroup>

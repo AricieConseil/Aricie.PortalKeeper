@@ -16,11 +16,16 @@ Namespace Web.Proxy
             End If
             Dim urlPath As String = proxifiedRequest.Url.GetComponents(UriComponents.Path, UriFormat.Unescaped)
             'urlPath = urlPath.Substring(proxifiedRequest.ApplicationPath.Length)
-            Dim fileName As String = System.IO.Path.GetFileName(urlPath)
-            If Not fileName.IsNullOrEmpty Then
-                fileName = "/" & fileName
-            End If
-            Dim toreturn As String = proxifiedRequest.Url.GetLeftPart(UriPartial.Authority) & proxifiedRequest.ApplicationPath & fileName
+
+            
+            'Dim fileName As String = System.IO.Path.GetFileName(urlPath)
+            'If Not fileName.IsNullOrEmpty Then
+            '    fileName = "/" & fileName
+            'End If
+
+            Dim fileName As String = "/proxy.ashx"
+
+            Dim toreturn As String = proxifiedRequest.Url.GetLeftPart(UriPartial.Authority) & proxifiedRequest.ApplicationPath.TrimEnd("/"c) & fileName
             Return toreturn
         End Function
 

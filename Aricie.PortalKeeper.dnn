@@ -6,7 +6,7 @@
       <foldername>Aricie.PortalKeeper</foldername>
       <modulename>Aricie.PortalKeeper</modulename>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
-      <version>04.03.02</version>
+      <version>04.03.03</version>
       <businesscontrollerclass>Aricie.DNN.Modules.PortalKeeper.BusinessController, Aricie.PortalKeeper</businesscontrollerclass>
       <resourcefile>Aricie.PortalKeeper_resources.zip</resourcefile>
       <modules>
@@ -103,16 +103,22 @@
           <name>MonoTorrent.dll</name>
         </file>
         <file>
+          <name>Aricie.PortalKeeper.GIS.dll</name>
+        </file>
+        <file>
           <name>SharpMap.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.Extensions.dll</name>
+        </file>
+        <file>
+          <name>SharpMap.Layers.Brutile.dll</name>
         </file>
         <file>
           <name>SharpMap.Web.dll</name>
         </file>
         <file>
-          <name>SharpMap.Data.dll</name>
-        </file>
-        <file>
-          <name>SharpMap.Data.Providers.Kml.dll</name>
+          <name>SharpMap.Converters.GeoJSON.dll</name>
         </file>
         <file>
           <name>SharpKml.dll</name>
@@ -121,13 +127,16 @@
           <name>SharpKml.Kmz.dll</name>
         </file>
         <file>
+          <name>Ionic.Zip.Reduced.dll</name>
+        </file>
+        <file>
           <name>GeoAPI.dll</name>
         </file>
         <file>
-          <name>GeoAPI.Extensions.dll</name>
+          <name>NetTopologySuite.dll</name>
         </file>
         <file>
-          <name>NetTopologySuite.dll</name>
+          <name>Common.Logging.Core.dll</name>
         </file>
         <file>
           <name>Common.Logging.dll</name>
@@ -142,10 +151,7 @@
           <name>BruTile.dll</name>
         </file>
         <file>
-          <name>BruTile.Serialization.dll</name>
-        </file>
-        <file>
-          <name>BruTile.Desktop.dll</name>
+          <name>BruTile.MbTiles.dll</name>
         </file>
         <file>
           <name>Aricie.PortalKeeper.AI.dll</name>
