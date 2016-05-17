@@ -107,7 +107,7 @@ Namespace UI.WebControls
             Get
                 Dim toReturn As Date = Nothing
                 'If Not Date.TryParseExact(Me.GetAttribute("dateValue"), "dd-mm-yyyy", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, toReturn) Then
-                If Not Date.TryParseExact(Me.Text, "dd/MM/yyyy", Globalization.CultureInfo.InvariantCulture, Globalization.DateTimeStyles.None, toReturn) Then
+                If Not Date.TryParseExact(Me.Text, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, toReturn) Then
                     toReturn = Nothing
                 End If
                 'If toReturn = Nothing Then
@@ -134,7 +134,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        Private _format As String = Replace(Globalization.CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower, "M", "m")
+        Private _format As String = Replace(CultureInfo.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower, "M", "m")
 
         Public Property Format() As String
             Get
@@ -164,7 +164,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-        Private _language As String = Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName
+        Private _language As String = CultureInfo.CurrentCulture.TwoLetterISOLanguageName
         ''' <summary>
         ''' define the language of the calendar (fr by default, en is available)
         ''' </summary>

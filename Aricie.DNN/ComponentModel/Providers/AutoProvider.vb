@@ -24,7 +24,7 @@ Namespace ComponentModel
             Get
                 Dim toReturn As String = MyBase._ProviderName
                 If String.IsNullOrEmpty(toReturn) Then
-                    toReturn = ReflectionHelper.GetDisplayName(Me.GetType)
+                    toReturn = ReflectionHelper.GetDisplayName(Me.GetType())
                     MyBase._ProviderName = toReturn
                 End If
                 Return toReturn
@@ -36,7 +36,7 @@ Namespace ComponentModel
 
         Public Function GetProvider() As TProvider Implements IProviderSettings(Of TProvider).GetProvider
             If _ProviderInstance Is Nothing Then
-                _ProviderInstance = Me.CreateProvider
+                _ProviderInstance = Me.CreateProvider()
                 '_ProviderInstance.Config = Me.Config
             End If
             Return _ProviderInstance
