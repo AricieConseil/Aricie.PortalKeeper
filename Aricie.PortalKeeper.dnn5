@@ -1,6 +1,6 @@
 ﻿<dotnetnuke type="Package" version="5.0">
   <packages>
-    <package name="Aricie.PortalKeeper" type="Module" version="04.03.02">
+    <package name="Aricie.PortalKeeper" type="Module" version="04.03.03">
       <friendlyName>Aricie - PortalKeeper</friendlyName>
       <description>Portal Keeper is a swiss army knife for DotNetNuke. It runs a rule engine as a firewall and a series of scheduled bots. Default configuration comes with a focus on security in dedicated firewall rules,  extended custom errors configurator, and demonstrate scheduled engines with bitcoin trading bots.</description>
       <owner>
@@ -163,20 +163,28 @@
               <sourceFileName>MonoTorrent.dll</sourceFileName>
             </assembly>
             <assembly>
+              <name>Aricie.PortalKeeper.GIS.dll</name>
+              <sourceFileName>Aricie.PortalKeeper.GIS.dll</sourceFileName>
+            </assembly>
+            <assembly>
               <name>SharpMap.dll</name>
               <sourceFileName>SharpMap.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpMap.Extensions.dll</name>
+              <sourceFileName>SharpMap.Extensions.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>SharpMap.Layers.Brutile.dll</name>
+              <sourceFileName>SharpMap.Layers.Brutile.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>SharpMap.Web.dll</name>
               <sourceFileName>SharpMap.Web.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>SharpMap.Data.dll</name>
-              <sourceFileName>SharpMap.Data.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>SharpMap.Data.Providers.Kml.dll</name>
-              <sourceFileName>SharpMap.Data.Providers.Kml.dll</sourceFileName>
+              <name>SharpMap.Converters.GeoJSON.dll</name>
+              <sourceFileName>SharpMap.Converters.GeoJSON.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>SharpKml.dll</name>
@@ -187,16 +195,20 @@
               <sourceFileName>SharpKml.Kmz.dll</sourceFileName>
             </assembly>
             <assembly>
+              <name>Ionic.Zip.Reduced.dll</name>
+              <sourceFileName>Ionic.Zip.Reduced.dll</sourceFileName>
+            </assembly>
+            <assembly>
               <name>GeoAPI.dll</name>
               <sourceFileName>GeoAPI.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>GeoAPI.Extensions.dll</name>
-              <sourceFileName>GeoAPI.Extensions.dll</sourceFileName>
-            </assembly>
-            <assembly>
               <name>NetTopologySuite.dll</name>
               <sourceFileName>NetTopologySuite.dll</sourceFileName>
+            </assembly>
+            <assembly>
+              <name>Common.Logging.Core.dll</name>
+              <sourceFileName>Common.Logging.Core.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>Common.Logging.dll</name>
@@ -215,12 +227,8 @@
               <sourceFileName>BruTile.dll</sourceFileName>
             </assembly>
             <assembly>
-              <name>BruTile.Serialization.dll</name>
-              <sourceFileName>BruTile.Serialization.dll</sourceFileName>
-            </assembly>
-            <assembly>
-              <name>BruTile.Desktop.dll</name>
-              <sourceFileName>BruTile.Desktop.dll</sourceFileName>
+              <name>BruTile.MbTiles.dll</name>
+              <sourceFileName>BruTile.MbTiles.dll</sourceFileName>
             </assembly>
             <assembly>
               <name>Aricie.PortalKeeper.AI.dll</name>
