@@ -8,6 +8,8 @@ Imports Aricie.DNN.UI.WebControls
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.Services.FileSystem
 Imports System.Globalization
+Imports System.Web
+Imports Newtonsoft.Json
 
 Namespace Services.Files
     <Serializable()>
@@ -28,7 +30,7 @@ Namespace Services.Files
                 Return True
             End Get
             Set(value As Boolean)
-                MyBase.ChooseDnnFile = value
+               'do nothing
             End Set
         End Property
 
@@ -69,53 +71,56 @@ Namespace Services.Files
     Public Class FilePathInfo
         Inherits PathInfo
 
-        Private _ChooseDnnFile As Boolean
+        Private _dnnFile As  SimpleControlUrlInfo
 
         <SortOrder(0)>
         Public Overridable Property ChooseDnnFile As Boolean
+           
+
+
+        Private Function GetAdminPathFromControlUrl(byval ctrUrlPath As String) As String
+            dim toReturn  as String = ctrUrlPath
+            toReturn = toReturn.Substring(DotNetNuke.Common.ApplicationPath.Length).TrimStart("/"c)
+            Dim portalHome As String = NukeHelper.PortalInfo(Me.PortalId).HomeDirectory
+            toReturn = toReturn.Substring(portalHome.Length).TrimStart("/"c)
+            Return toReturn
+        End Function
+
+        <ConditionalVisible("ChooseDnnFile", False, True)>
+        Public Property DnnFile As SimpleControlUrlInfo
+
             Get
-                Return _ChooseDnnFile
-            End Get
-            Set(value As Boolean)
-                If value <> _ChooseDnnFile Then
-                    If value Then
+                If _ChooseDnnFile Then
+                    If _dnnFile Is Nothing Then
+                        _dnnFile = New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
+                        Dim found as Boolean
                         If Me.PathMode = FilePathMode.AdminPath AndAlso Not Me.Path.Simple.IsNullOrEmpty() Then
                             Dim strFolder As String = System.IO.Path.GetDirectoryName(Me.Path.Simple)
                             Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, strFolder)
                             If objFolder IsNot Nothing Then
                                 Dim objFile As DotNetNuke.Services.FileSystem.FileInfo = ObsoleteDNNProvider.Instance.GetFile(objFolder, System.IO.Path.GetFileName(Me.Path.Simple))
                                 If objFile IsNot Nothing Then
-                                    Me.DnnFile.Url = "FileID=" & objFile.FileId.ToString(CultureInfo.InvariantCulture)
+                                    Me._dnnFile.Url = "FileID=" & objFile.FileId.ToString(CultureInfo.InvariantCulture)
                                     Me.Path.Simple = ""
                                     Me.PortalId = objFile.PortalId
+                                    found = True
                                 End If
                             End If
-                        Else
-                            Me.PathMode = FilePathMode.AdminPath
-                            Me.PortalId = NukeHelper.PortalId
                         End If
-                    Else
-                        If Not Me.DnnFile.UrlPath.IsNullOrEmpty() Then
+                        if not found
                             Me.PathMode = FilePathMode.AdminPath
-                            Me.Path.Simple = GetAdminPathFromControlUrl(Me.DnnFile.UrlPath)
-                            Me.DnnFile.Url = ""
                             Me.PortalId = NukeHelper.PortalId
                         End If
                     End If
-                    _ChooseDnnFile = value
                 End If
+                Return _dnnFile
+            End Get
+            Set
+                _dnnFile = value
             End Set
         End Property
 
-
-        Private Function GetAdminPathFromControlUrl(ctrUrlPath As String) As String
-            Return ctrUrlPath.Replace(DnnContext.Current.Portal.HomeDirectory, "")
-        End Function
-
-        <ConditionalVisible("ChooseDnnFile", False, True)> _
-        Public Property DnnFile As New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
-
-
+        <JsonIgnore()> _
         <XmlIgnore()> _
         <Browsable(False)> _
         Public ReadOnly Property DNNFileInfo As DotNetNuke.Services.FileSystem.FileInfo
@@ -158,6 +163,14 @@ Namespace Services.Files
         <ConditionalVisible("ChooseDnnFile", True, True)> _
         Public Overrides Property Path As SimpleOrExpression(Of String)
             Get
+                If Not ChooseDnnFile AndAlso _dnnFile IsNot Nothing Then
+                    If Not Me._dnnFile.UrlPath.IsNullOrEmpty() Then
+                        Me.PathMode = FilePathMode.AdminPath
+                        MyBase.Path.Simple = GetAdminPathFromControlUrl(Me._dnnFile.UrlPath)
+                        Me.PortalId = _dnnFile.PortalId
+                    End If
+                    _dnnFile = Nothing
+                End If
                 Return MyBase.Path
             End Get
             Set(value As SimpleOrExpression(Of String))
@@ -170,7 +183,11 @@ Namespace Services.Files
             If Not ChooseDnnFile Then
                 Return MyBase.GetMapPath(owner, lookup)
             Else
-                Return Me.GetMapPath(GetAdminPathFromControlUrl(Me.DnnFile.UrlPath))
+                Dim toReturn As String = Me.DnnFile.UrlPath
+                If Not toReturn.IsNullOrEmpty() Then
+                    toReturn = GetAdminPathFromControlUrl(toReturn)
+                End If
+                Return Me.GetMapPath(toReturn)
             End If
         End Function
 

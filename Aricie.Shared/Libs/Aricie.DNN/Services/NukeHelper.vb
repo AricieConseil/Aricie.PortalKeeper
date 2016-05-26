@@ -19,10 +19,6 @@ Imports System.Reflection
 Imports DotNetNuke.Security
 Imports System.Web
 Imports System.Threading
-
-'-------------------------------------------------------------------------------
-' 28/03/2011 - [JBB] - Modification du trim pour ne supprimer les \ qu'à la fin et non pas non plus au début (chemin réseau)
-'-------------------------------------------------------------------------------
 Imports DotNetNuke.Services.Personalization
 Imports DotNetNuke.Entities.Profile
 Imports System.Security
@@ -1072,19 +1068,25 @@ Namespace Services
         ''' <remarks></remarks>
         Public Function GetPathFromCtrUrl(ByVal portalId As Integer, ByVal controlUrl As String) As String
 
-            Return GetPathFromCtrUrl(portalId, controlUrl, False)
+            Return GetPathFromCtrUrl(controlUrl, False)
 
         End Function
+
+        <Obsolete("user portal less version")> _
+         Public Function GetPathFromCtrUrl(ByVal portalId As Integer, ByVal controlUrl As String, ByVal track As Boolean) As String
+            Return GetPathFromCtrUrl(controlUrl , track )
+         End Function
+
+
 
         ''' <summary>
         ''' Returns path from a control url
         ''' </summary>
-        ''' <param name="portalId"></param>
         ''' <param name="controlUrl"></param>
         ''' <param name="track"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function GetPathFromCtrUrl(ByVal portalId As Integer, ByVal controlUrl As String, ByVal track As Boolean) As String
+        Public Function GetPathFromCtrUrl(ByVal controlUrl As String, ByVal track As Boolean) As String
 
             Dim toreturn As String = controlUrl
             Dim uRLType As TabType = Globals.GetURLType(controlUrl)
@@ -1096,14 +1098,13 @@ Namespace Services
                     fileId = Integer.Parse(UrlUtils.GetParameterValue(controlUrl), CultureInfo.InvariantCulture)
                 End If
                 If fileId > -1 Then
-                    Return FileHelper.GetFileUrl(fileId, portalId)
+                    Return FileHelper.GetFileUrl(fileId)
                 Else
                     Return Globals.ApplicationPath & "/"c & controlUrl
                 End If
 
             End If
             Return ObsoleteDNNProvider.Instance.LinkClick(toreturn, -1, -1, track, False)
-            'Return LinkClick(toreturn, -1, -1, track)
 
         End Function
 
