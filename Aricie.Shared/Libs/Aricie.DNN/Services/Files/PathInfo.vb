@@ -8,17 +8,33 @@ Imports Aricie.DNN.Services.Flee
 
 Namespace Services.Files
 
-    <DefaultProperty("CurrentMapPath")> _
+    <DefaultProperty("CurrentMapPath")>
     <Serializable()>
     Public Class PathInfo
 
+        Private  _PathMode As FilePathMode = FilePathMode.AdminPath
 
-        Public Overridable Property PathMode As FilePathMode = FilePathMode.AdminPath
+        Public Overridable Property PathMode As FilePathMode
+            Get
+                Return _PathMode
+            End Get
+            Set(value As FilePathMode)
+                If _PathMode <> value Then
+
+                    Select Case value
+                        Case FilePathMode.HostPath, FilePathMode.RootPath, FilePathMode.AbsoluteMapPath
+                            PortalId = -1
+                        Case FilePathMode.AdminPath
+                            PortalId = NukeHelper.PortalId
+                    End Select
+                End If
+            End Set
+        End Property
 
         <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
-        Public Overridable Property PortalId As Integer
+        Public Overridable Property PortalId As Integer = NukeHelper.PortalId
 
         Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 
