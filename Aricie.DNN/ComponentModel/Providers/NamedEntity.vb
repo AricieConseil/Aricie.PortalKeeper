@@ -3,6 +3,7 @@ Imports Aricie.DNN.UI.Attributes
 Imports Aricie.ComponentModel
 Imports DotNetNuke.UI.WebControls
 Imports System.Xml.Serialization
+Imports Aricie.Services
 Imports Newtonsoft.Json
 
 Namespace ComponentModel
@@ -44,7 +45,12 @@ Namespace ComponentModel
        <XmlIgnore()> _
         Public ReadOnly Property FriendlyName As String
             Get
-                Dim details As String = GetFriendlyDetails()
+                Dim details As String = ""
+                Try
+                    details = GetFriendlyDetails()
+                Catch ex As Exception
+                    ExceptionHelper.LogException(ex)
+                End Try
                 If details.IsNullOrEmpty() Then
                     Return Me.Name
                 Else

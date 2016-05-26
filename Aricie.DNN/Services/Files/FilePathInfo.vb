@@ -87,16 +87,19 @@ Namespace Services.Files
                                 If objFile IsNot Nothing Then
                                     Me.DnnFile.Url = "FileID=" & objFile.FileId.ToString(CultureInfo.InvariantCulture)
                                     Me.Path.Simple = ""
+                                    Me.PortalId = objFile.PortalId
                                 End If
                             End If
                         Else
                             Me.PathMode = FilePathMode.AdminPath
+                            Me.PortalId = NukeHelper.PortalId
                         End If
                     Else
                         If Not Me.DnnFile.UrlPath.IsNullOrEmpty() Then
                             Me.PathMode = FilePathMode.AdminPath
                             Me.Path.Simple = GetAdminPathFromControlUrl(Me.DnnFile.UrlPath)
                             Me.DnnFile.Url = ""
+                            Me.PortalId = NukeHelper.PortalId
                         End If
                     End If
                     _ChooseDnnFile = value
@@ -119,7 +122,7 @@ Namespace Services.Files
             Get
                 Dim toReturn As DotNetNuke.Services.FileSystem.FileInfo = Nothing
                 If Me.ChooseDnnFile Then
-                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(NukeHelper.PortalId, Me.DnnFile.Url)
+                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(Me.PortalId, Me.DnnFile.Url)
                 Else
                     'todo
                     Throw New NotImplementedException()
