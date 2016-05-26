@@ -143,13 +143,6 @@ Namespace Services.Flee
                 Return InternalOverrideOwner
             End Get
             Set(value As Boolean)
-                If value <> InternalOverrideOwner Then
-                    If value Then
-                        InternalNewOwner = New FleeExpressionInfo(Of Object)
-                    Else
-                        InternalNewOwner = Nothing
-                    End If
-                End If
                 InternalOverrideOwner = value
             End Set
         End Property
@@ -173,6 +166,12 @@ Namespace Services.Flee
         <ConditionalVisible("OverrideOwner", False, True)> _
         Public Property NewOwner As FleeExpressionInfo(Of Object)
             Get
+                 If not InternalOverrideOwner Then
+                    Return Nothing
+                End If
+                if InternalNewOwner Is Nothing
+                    InternalNewOwner = New FleeExpressionInfo(Of Object)
+                End If
                 Return InternalNewOwner
             End Get
             Set(value As FleeExpressionInfo(Of Object))

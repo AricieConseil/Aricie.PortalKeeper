@@ -6,13 +6,15 @@ Imports System.Web
 Imports System.Web.Configuration
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Collections.Specialized
+Imports System.Xml.Serialization
 Imports DotNetNuke.Services.FileSystem
 Imports DotNetNuke.Entities.Tabs
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Portals
+Imports Newtonsoft.Json
 
 Namespace Entities
-    <Flags()> _
+    <Flags()>
     Public Enum UrlControlMode
         Empty = 0
         None = 1
@@ -33,7 +35,7 @@ Namespace Entities
     ''' <summary>
     ''' Entity class for a Link
     ''' </summary>
-    
+
     Public Class ControlUrlInfo
 
         Private _Url As String = ""
@@ -68,11 +70,15 @@ Namespace Entities
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Overridable Property FilterMode As UrlControlMode = UrlControlMode.Normal
 
-        <DefaultValue("")> _
-        <Editor(GetType(AricieUrlEditControl), GetType(EditControl))> _
+        <Browsable(False)> _
+        Public Property PortalId() As Integer = NukeHelper.PortalId
+
+
+        <DefaultValue("")>
+        <Editor(GetType(AricieUrlEditControl), GetType(EditControl))>
         Public Overridable Property Url() As String
             Get
                 Return _Url
@@ -85,8 +91,8 @@ Namespace Entities
             End Set
         End Property
 
-        <DefaultValue(False)> _
-        <Browsable(False)> _
+        <DefaultValue(False)>
+        <Browsable(False)>
         Public ReadOnly Property ShowTrack As Boolean
             Get
                 Return ((Me.FilterMode And UrlControlMode.Track) = UrlControlMode.Track)
@@ -95,8 +101,8 @@ Namespace Entities
 
 
 
-        <DefaultValue(False)> _
-        <ConditionalVisible("ShowTrack", False, True)> _
+        <DefaultValue(False)>
+        <ConditionalVisible("ShowTrack", False, True)>
         Public Overridable Property Track() As Boolean
             Get
                 Return _Track
@@ -109,15 +115,15 @@ Namespace Entities
             End Set
         End Property
 
-        <DefaultValue(False)> _
-        <ConditionalVisible("UrlType", False, True, TabType.Tab)> _
+        <DefaultValue(False)>
+        <ConditionalVisible("UrlType", False, True, TabType.Tab)>
         Public Property DefinePortalAlias As Boolean
 
-        <DefaultValue("")> _
-        <AutoPostBack()> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
-        <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)> _
-        <ConditionalVisible("UrlType", False, True, TabType.Tab)> _
+        <DefaultValue("")>
+        <AutoPostBack()>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
+        <Selector(GetType(PortalAliasSelector), "HTTPAlias", "HTTPAlias", False, False, "", "", False, False)>
+        <ConditionalVisible("UrlType", False, True, TabType.Tab)>
         <ConditionalVisible("DefinePortalAlias", False, True)>
         Public Property PortalAlias As String
             Get
@@ -131,12 +137,14 @@ Namespace Entities
             End Set
         End Property
 
-        <DefaultValue("")> _
-        <IsReadOnly(True)> _
+        <JsonIgnore()> _
+        <XmlIgnore()> _
+        <DefaultValue("")>
+        <IsReadOnly(True)>
         Public Overridable ReadOnly Property UrlPath() As String
             Get
                 If String.IsNullOrEmpty(_UrlPath) Then
-                    _UrlPath = Aricie.DNN.Services.NukeHelper.GetPathFromCtrUrl(NukeHelper.PortalId, Me._Url, Me._Track)
+                    _UrlPath = Aricie.DNN.Services.NukeHelper.GetPathFromCtrUrl(Me._Url, Me._Track)
                     If DefinePortalAlias AndAlso Not PortalAlias.IsNullOrEmpty() AndAlso Not _UrlPath.IsNullOrEmpty() Then
                         Dim targetPA As Uri = New Uri(DotNetNuke.Common.Globals.AddHTTP(PortalAlias))
                         _UrlPath = New Uri(targetPA, _UrlPath).ToString()
@@ -149,13 +157,15 @@ Namespace Entities
             'End Set
         End Property
 
+        <JsonIgnore()> _
+        <XmlIgnore()> _
         <DefaultValue(DirectCast(Nothing, FileInfo))> _
         <Browsable(False)> _
         Public ReadOnly Property FileInfo As DotNetNuke.Services.FileSystem.FileInfo
             Get
                 Dim toReturn As FileInfo = Nothing
                 If Me.UrlType = DotNetNuke.Entities.Tabs.TabType.File Then
-                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(NukeHelper.PortalId, Me._Url)
+                    toReturn = NukeHelper.GetFileInfoFromCtrUrl(Me.PortalId, Me._Url)
                 End If
                 Return toReturn
             End Get

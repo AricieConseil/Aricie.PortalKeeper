@@ -190,9 +190,7 @@ Namespace Services.Flee
                 Return _SelectedOperator
             End Get
             Set(value As String)
-                If value <> _SelectedOperator Then
-                    _SelectedOperator = value
-                End If
+               _SelectedOperator = value
             End Set
         End Property
 

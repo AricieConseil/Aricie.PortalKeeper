@@ -59,7 +59,7 @@ namespace Aricie.PortalKeeper.GIS.SharpMap
             if (string.IsNullOrEmpty(filename))
                 throw new ArgumentNullException("filename");
             if (!File.Exists(filename))
-                throw new FileNotFoundException("File not found", "filename");
+                throw new FileNotFoundException("File not found", filename);
 
             using (var s = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
             {

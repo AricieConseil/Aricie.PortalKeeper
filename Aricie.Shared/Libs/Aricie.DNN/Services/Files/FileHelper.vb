@@ -100,13 +100,28 @@ Namespace Services
             Dim objFile As DotNetNuke.Services.FileSystem.FileInfo = FileCtrl.GetFileById(fileId, portalId)
             If (objFile IsNot Nothing) Then
                 If objFile.StorageLocation = 0 Then
-                    toReturn = DotNetNuke.Common.ApplicationPath & "/"c & NukeHelper.PortalInfo(portalId).HomeDirectory & "/"c & objFile.Folder & objFile.FileName
+                    toReturn = DotNetNuke.Common.ApplicationPath & "/"c & GetFileRootPath(objFile) & "/"c & objFile.Folder & objFile.FileName
                 Else
                     toReturn = DotNetNuke.Common.Globals.LinkClick("fileid=" & fileId.ToString(CultureInfo.InvariantCulture), -1, -1)
                 End If
             End If
             Return toReturn
         End Function
+
+        ''' <summary>
+        ''' Retourne le répertoire racine du gestionnaire de fichier à partir d'un fichier
+        ''' </summary>
+        Public Function GetFileRootPath(objFile As DotNetNuke.Services.FileSystem.FileInfo) As String
+            Dim toreturn As String
+            If objFile.PortalId = Null.NullInteger Then
+                toreturn = DotNetNuke.Common.Globals.HostPath.Substring(DotNetNuke.Common.Globals.ApplicationPath.Length)
+            Else
+                toreturn = NukeHelper.PortalInfo(objFile.PortalId).HomeDirectory
+            End If
+            Return toreturn.Trim("/"c)
+        End Function
+
+
 
         ''' <summary>
         ''' Returns path to icon matching a file extension
