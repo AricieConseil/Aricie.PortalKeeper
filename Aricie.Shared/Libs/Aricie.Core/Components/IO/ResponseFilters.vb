@@ -44,9 +44,24 @@ Namespace IO
             Codecs = New List(Of HttpResponseCodecBase)
         End Sub
 
-        Public Sub New(codecs As IEnumerable(Of HttpResponseCodecBase))
-            codecs = New List(Of HttpResponseCodecBase)(codecs)
+        Public Sub New(objCodecs As IEnumerable(Of HttpResponseCodecBase))
+            Codecs = New List(Of HttpResponseCodecBase)(objCodecs)
         End Sub
+
+         Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext)
+            Me.New()
+            Me._stream = responseStream
+            Me._httpContext = context
+        End Sub
+
+        Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext, objFilterType As ResponseFilterType)
+            Me.New()
+            Me._stream = responseStream
+            Me._httpContext = context
+            Me._FilterType = objFilterType
+        End Sub
+
+
 
         Private Shared ReadOnly defaultCodec As New DefaultHttpResponseCodec()
 
@@ -116,18 +131,7 @@ Namespace IO
             End Get
         End Property
 
-        Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext)
-            MyBase.New()
-            Me._stream = responseStream
-            Me._httpContext = context
-        End Sub
-
-        Public Sub New(ByVal responseStream As Stream, ByVal context As HttpContext, objFilterType As ResponseFilterType)
-            MyBase.New()
-            Me._stream = responseStream
-            Me._httpContext = context
-            Me._FilterType = objFilterType
-        End Sub
+       
 
         Public Overrides Sub Close()
             Me._stream.Close()

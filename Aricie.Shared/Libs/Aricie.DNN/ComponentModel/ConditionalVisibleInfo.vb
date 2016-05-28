@@ -90,6 +90,10 @@ Namespace ComponentModel
         Private Function DefaultPredicate(ByVal value As Object) As Boolean
             Dim baseResult As Boolean
             If value IsNot Nothing Then
+                dim enabled as IEnabled = TryCast(value, IEnabled)
+                if enabled isnot nothing
+                    value = enabled.Enabled
+                End If
                 If value.ToString() = String.Empty Then
                     value = Nothing
                 End If

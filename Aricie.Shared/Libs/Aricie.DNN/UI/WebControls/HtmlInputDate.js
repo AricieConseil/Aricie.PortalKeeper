@@ -111,7 +111,7 @@ Aricie.DNN.HtmlInputDate.prototype = {
             event.srcElement = event.currentTarget;
             return false;
         });
-        if (myDateInput.get_currentDate() != null && myDateInput.get_currentDate().getFullYear() > 1) {
+        if (myDateInput.get_currentDate() != null && myDateInput.get_currentDate().getFullYear() > 1 && myDateInput.chargementParJS) {
             jQuery('#' + myDateInput.get_clientId()).data('dateinput').setValue(myDateInput.get_currentDate().getFullYear(), myDateInput.get_currentDate().getMonth(), myDateInput.get_currentDate().getDate());
         }
         //});

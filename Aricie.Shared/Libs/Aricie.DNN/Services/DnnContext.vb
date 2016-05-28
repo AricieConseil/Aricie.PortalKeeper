@@ -22,6 +22,8 @@ Imports Aricie.Collections
 Imports DotNetNuke.UI.Utilities
 Imports System.Net.NetworkInformation
 Imports System.Web.Script.Serialization
+Imports Aricie.Common
+
 
 Namespace Services
     ''' <summary>
