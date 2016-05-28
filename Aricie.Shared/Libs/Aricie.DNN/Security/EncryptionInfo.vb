@@ -462,7 +462,7 @@ Namespace Security.Cryptography
                 Dim tmpRsa As New RSACryptoServiceProvider(CInt(AsymmetricKeySize))
                 objBytes = tmpRsa.EncryptByBlocks(objBytes)
                 Dim containerName = GetCspContainerName(objBytes.ToBase64())
-                CSPImportFromXml(containerName, Me.AsymmetricKeySize, tmpRsa.ToXmlString(True), True)
+                CSPImportFromXml(CStr(containerName), Me.AsymmetricKeySize, tmpRsa.ToXmlString(True), True)
                 tmpRsa.Clear()
                 Me._EncryptedPrivateKey = objBytes
                 Me.SealType = Me.SealType Or KeyProtectionMode.KeyContainer

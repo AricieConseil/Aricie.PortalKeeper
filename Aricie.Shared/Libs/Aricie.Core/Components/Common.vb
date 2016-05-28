@@ -165,7 +165,7 @@ Public Module Common
         Return stream
     End Function
 
-    <Extension> _
+    <Extension()> _
     Public Function FromUtf8(stream As MemoryStream) As String
         Return stream.ToArray().FromUTF8()
     End Function

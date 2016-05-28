@@ -39,7 +39,7 @@ Namespace UI.WebControls
 
         Public Sub New()
             MyBase.New()
-
+            ChargementParJS = True
         End Sub
 
         'Public Property CssClass() As String
@@ -190,8 +190,7 @@ Namespace UI.WebControls
             End Set
         End Property
 
-
-
+        Public Property ChargementParJS() As Boolean
 
         Public Function GetScriptDescriptors() As System.Collections.Generic.IEnumerable(Of System.Web.UI.ScriptDescriptor) Implements System.Web.UI.IScriptControl.GetScriptDescriptors
             Dim res As New List(Of ScriptDescriptor)
@@ -214,6 +213,7 @@ Namespace UI.WebControls
             Else
                 descriptor.AddProperty("urlCDNjQueryTools", Me.UrlCDNJqueryTools)
             End If
+            descriptor.AddProperty("chargementParJS", ChargementParJS)
             Me.Text = ""
             'descriptor.AddProperty("format", "dd/mm/yyyy")
             'If Not currentDate = Nothing Then
@@ -256,6 +256,11 @@ Namespace UI.WebControls
             If Not Me.DesignMode Then
                 ScriptManager.GetCurrent(Me.Page).RegisterScriptControl(Me)
             End If
+
+            If Not ChargementParJS Then
+                Me.Text = DateValue.ToString
+            End If
+
         End Sub
 
 
