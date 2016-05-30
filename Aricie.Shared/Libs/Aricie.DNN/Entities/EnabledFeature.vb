@@ -8,7 +8,19 @@ Namespace Entities
     Public Class EnabledFeature(Of T)
         Implements IEnabled
 
-        Private _Entity As T
+        'Private _DefaultT As T
+
+        'Private Shared ReadOnly Property DefaultT() As T
+        '    Get
+        '        if _DefaultT Is Nothing
+        '            _DefaultT =  ReflectionHelper.CreateObject(Of T)()
+        '        End If
+        '        Return _DefaultT
+        '    End Get
+        'End Property
+
+
+        Private _Entity As T = Nothing
 
         Public Sub New()
         End Sub
@@ -37,5 +49,11 @@ Namespace Entities
                 _Entity = value
             End Set
         End Property
+
+        Public Function ShouldSerializeEntity() As Boolean
+            Return _Entity IsNot Nothing
+        End Function
+
+
     End Class
 End Namespace

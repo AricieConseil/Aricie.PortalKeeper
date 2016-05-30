@@ -5,6 +5,7 @@ Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
+Imports DotNetNuke.Entities.Portals
 
 Namespace Services.Files
 
@@ -20,13 +21,13 @@ Namespace Services.Files
             End Get
             Set(value As FilePathMode)
                 If _PathMode <> value Then
-
                     Select Case value
                         Case FilePathMode.HostPath, FilePathMode.RootPath, FilePathMode.AbsoluteMapPath
                             PortalId = -1
                         Case FilePathMode.AdminPath
                             PortalId = NukeHelper.PortalId
                     End Select
+                    _PathMode = value
                 End If
             End Set
         End Property
@@ -35,6 +36,10 @@ Namespace Services.Files
         <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
         Public Overridable Property PortalId As Integer = NukeHelper.PortalId
+
+         Public Overridable Function ShouldSerializePortalId() As Boolean
+            Return PathMode = FilePathMode.AdminPath
+        End Function
 
         Public Overridable Property Path As New SimpleOrExpression(Of String)("")
 

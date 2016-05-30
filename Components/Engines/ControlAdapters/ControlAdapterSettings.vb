@@ -13,6 +13,7 @@ Imports System.Linq
 Imports System.Web.Compilation
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
+Imports DotNetNuke.Entities.Portals
 Imports DotNetNuke.UI.Skins.Controls
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -67,10 +68,22 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Property VersionRange As New EnabledFeature(Of Range(Of SerializableVersion))(New Range(Of SerializableVersion)(New SerializableVersion(New Version(4, 8, 1)), New SerializableVersion(NukeHelper.DnnVersion)))
 
+        Public Function ShouldSerializeVersionRange() As Boolean
+            dim toREturn as Boolean = VersionRange.Enabled
+            toREturn = toREturn andalso  VersionRange.Entity IsNot nothing
+            toREturn = toREturn andalso Not (VersionRange.Entity.Minimum  IsNot nothing AndAlso VersionRange.Entity.Minimum.Version IsNot nothing AndAlso Not VersionRange.Entity.Minimum.Version.Equals(New Version(4, 8, 1))) 
+            toREturn = toREturn andalso (VersionRange.Entity.Maximum  IsNot nothing AndAlso VersionRange.Entity.Maximum.Version IsNot nothing AndAlso Not VersionRange.Entity.Maximum.Version.Equals(NukeHelper.DnnVersion))
+            Return toREturn
+            'Return VersionRange.Enabled AndAlso VersionRange.Entity IsNot nothing _
+            'AndAlso Not (VersionRange.Entity.Minimum  IsNot nothing AndAlso VersionRange.Entity.Minimum.Version IsNot nothing AndAlso Not VersionRange.Entity.Minimum.Version.Equals(New Version(4, 8, 1))) _
+            'OrElse Not (VersionRange.Entity.Maximum  IsNot nothing AndAlso VersionRange.Entity.Maximum.Version IsNot nothing AndAlso Not VersionRange.Entity.Maximum.Version.Equals(NukeHelper.DnnVersion))
+        End Function
+
+
         <Browsable(False)> _
         Public ReadOnly Property IsEnabled As Boolean
             Get
-                Return Me.Enabled AndAlso ((Not Me.VersionRange.Enabled) OrElse Me.VersionRange.Entity.Validate(NukeHelper.DnnVersion))
+                Return Me.Enabled AndAlso ((Not Me.VersionRange.Enabled) OrElse (Me.VersionRange.Entity IsNot Nothing AndAlso Me.VersionRange.Entity.Validate(NukeHelper.DnnVersion)))
             End Get
         End Property
 

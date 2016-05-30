@@ -23,6 +23,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property UseTaskQueue() As Boolean
 
+        Private Const _DefaultKey as String = "Synchro"
 
         <SortOrder(951)> _
        <ExtendedCategory("TechnicalSettings", "Synchronization")> _
@@ -42,7 +43,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(951)> _
         <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         <ConditionalVisible("UseTaskQueue", False, True)> _
-        Public Property SynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)("Synchro"))
+        Public Property SynchronisationHandle As New EnabledFeature(Of SimpleOrExpression(Of String))(New SimpleOrExpression(Of String)(_DefaultKey))
+
+        Public Function ShouldSerializeSynchronisationHandle() As Boolean
+            Return SynchronisationHandle.Enabled _
+                OrElse SynchronisationHandle.Entity IsNot Nothing _
+                AndAlso SynchronisationHandle.Entity.Mode = SimpleOrExpressionMode.Expression _
+                OrElse SynchronisationHandle.Entity.Simple <> _DefaultKey
+        End Function
+
 
         Private ReadOnly Property AsynchronousRunTaskQueue() As TaskQueue(Of PortalKeeperContext(Of TEngineEvents))
             Get

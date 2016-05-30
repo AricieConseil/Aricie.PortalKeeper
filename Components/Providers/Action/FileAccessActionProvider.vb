@@ -20,39 +20,39 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         <SortOrder(1000)>
         Public Property FilePath As New FilePathInfo
 
-        'todo, make obsolete after migration of old parameters
-        '<Obsolete("use FilePath subentity instead")> _
-        <Browsable(False)>
-        Public Property PathMode As FilePathMode
-            Get
-                Return Me.FilePath.PathMode
-            End Get
-            Set(value As FilePathMode)
-                Me.FilePath.PathMode = value
-            End Set
-        End Property
+        ''todo, make obsolete after migration of old parameters
+        ''<Obsolete("use FilePath subentity instead")> _
+        '<Browsable(False)>
+        'Public Property PathMode As FilePathMode
+        '    Get
+        '        Return Me.FilePath.PathMode
+        '    End Get
+        '    Set(value As FilePathMode)
+        '        Me.FilePath.PathMode = value
+        '    End Set
+        'End Property
 
-        <Browsable(False)>
-        Public Property PortalId As Integer
-            Get
-                Return Me.FilePath.PortalId
-            End Get
-            Set(value As Integer)
-                Me.FilePath.PortalId = value
-            End Set
-        End Property
+        '<Browsable(False)>
+        'Public Property PortalId As Integer
+        '    Get
+        '        Return Me.FilePath.PortalId
+        '    End Get
+        '    Set(value As Integer)
+        '        Me.FilePath.PortalId = value
+        '    End Set
+        'End Property
 
 
-        <Browsable(False)>
-        Public Property PathExpression() As FleeExpressionInfo(Of String)
-            Get
-                Return Me.FilePath.Path.Expression
-            End Get
-            Set(value As FleeExpressionInfo(Of String))
-                Me.FilePath.Path.Mode = SimpleOrExpressionMode.Expression
-                Me.FilePath.Path.Expression = value
-            End Set
-        End Property
+        '<Browsable(False)>
+        'Public Property PathExpression() As FleeExpressionInfo(Of String)
+        '    Get
+        '        Return Me.FilePath.Path.Expression
+        '    End Get
+        '    Set(value As FleeExpressionInfo(Of String))
+        '        Me.FilePath.Path.Mode = SimpleOrExpressionMode.Expression
+        '        Me.FilePath.Path.Expression = value
+        '    End Set
+        'End Property
 
 
 

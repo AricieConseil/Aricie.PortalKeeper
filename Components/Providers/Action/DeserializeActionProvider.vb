@@ -42,8 +42,6 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Property
 
         <ExtendedCategory("Serialization")>
-        <Editor(GetType(PropertyEditorEditControl), GetType(EditControl))>
-        <LabelMode(LabelMode.Top)>
         Public Property OutputType() As DotNetType
             Get
                 Return _OutputType
@@ -88,7 +86,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim additionalTypes As New List(Of Type)
             For Each addDNT As DotNetType In Me._AdditionalTypes
-                additionalTypes.Add(addDNT.GetDotNetType)
+                additionalTypes.Add(addDNT.GetDotNetType())
             Next
             'Using sw As New System.IO.StringWriter(toReturn, CultureInfo.InvariantCulture)
             Using memStream As New MemoryStream(bytes)
@@ -96,7 +94,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                     Case SerializationType.Xml
                         Using reader As New StreamReader(memStream, Encoding.UTF8)
                             Using xmlReader As New XmlTextReader(memStream)
-                                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType, additionalTypes.ToArray, True)
+                                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType(), additionalTypes.ToArray(), True)
                                 toReturn = serializer.Deserialize(xmlReader)
                             End Using
                         End Using
@@ -110,12 +108,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         Using reader As New StreamReader(memStream, Encoding.UTF8)
                             Using jsonR As New JsonTextReader(reader)
                                 Dim serializer As JsonSerializer = JsonSerializer.Create(jsonSettings)
-                                toReturn = serializer.Deserialize(jsonR, Me._OutputType.GetDotNetType)
+                                toReturn = serializer.Deserialize(jsonR, Me._OutputType.GetDotNetType())
                             End Using
                         End Using
 
                     Case SerializationType.IConvertible
-                        toReturn = TypeDescriptor.GetConverter(Me._OutputType.GetDotNetType).ConvertFromInvariantString(serializedValue)
+                        toReturn = TypeDescriptor.GetConverter(Me._OutputType.GetDotNetType()).ConvertFromInvariantString(serializedValue)
                     Case SerializationType.FileHelpers
                         Dim sR As New StreamReader(memStream)
                         Dim inputString As String = sR.ReadToEnd()

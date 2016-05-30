@@ -50,9 +50,6 @@ Namespace Services.Flee
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
         Public Property Expression As FleeExpressionInfo(Of T)
             Get
-                 if Mode = SimpleOrExpressionMode.Simple
-                    Return Nothing
-                End If
                 If _expression Is Nothing
                     _expression = New FleeExpressionInfo(Of T)()
                 End If
@@ -62,6 +59,10 @@ Namespace Services.Flee
                 _expression = value
             End Set
         End Property
+
+        Public  Function ShouldSerializeExpression() As Boolean
+            Return Mode = SimpleOrExpressionMode.Expression
+        End Function
 
         Public Overrides Function GetExpression() As SimpleExpression(Of T)
             Return Expression
@@ -141,10 +142,10 @@ Namespace Services.Flee
         <Browsable(False)>
         Public Property Expression As FleeExpressionInfo(Of TExpression)
             Get
-                if Mode = SimpleOrExpressionMode.Simple
+                If Mode = SimpleOrExpressionMode.Simple Then
                     Return Nothing
                 End If
-                If _expression Is Nothing
+                If _expression Is Nothing Then
                     _expression = New FleeExpressionInfo(Of TExpression)()
                 End If
                 Return _expression
@@ -153,6 +154,10 @@ Namespace Services.Flee
                 _expression = Value
             End Set
         End Property
+
+        Public Function ShouldSerializeExpression() As Boolean
+            Return Mode = SimpleOrExpressionMode.Expression
+        End Function
 
         <XmlIgnore()> _
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Expression)>
@@ -246,7 +251,6 @@ Namespace Services.Flee
             Return False
         End Function
 
-        <JsonProperty("SimpleDisplay")> _
         <JsonIgnore()> _
         <XmlIgnore()> _
         <SortOrder(100)> _
@@ -264,6 +268,8 @@ Namespace Services.Flee
                 _Simple = value
             End Set
         End Property
+       
+
 
         <JsonProperty("Simple")> _
         <XmlElement("Simple")> _
@@ -284,6 +290,11 @@ Namespace Services.Flee
             End Set
         End Property
 
+        Public Function ShouldSerializeSerializedSimple() As Boolean
+            Return Mode = SimpleOrExpressionMode.Simple AndAlso Not IsSubType()
+        End Function
+
+
         <Browsable(False)> _
         Public Overridable Property Instance As Serializable(Of TSimple)
             Get
@@ -296,6 +307,12 @@ Namespace Services.Flee
                 Me._Simple = value.Value
             End Set
         End Property
+
+
+          Public  Function ShouldSerializeInstance() As Boolean
+            Return Mode = SimpleOrExpressionMode.Simple AndAlso IsSubType()
+        End Function
+
 
         <ConditionalVisible("Mode", False, True, SimpleOrExpressionMode.Simple)> _
         <ActionButton(IconName.Refresh, IconOptions.Normal)> _
