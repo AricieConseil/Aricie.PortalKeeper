@@ -115,17 +115,15 @@ Namespace ComponentModel
 
             writer.WriteStartObject()
             writer.WritePropertyName("TypeName")
-            Dim serializableValue As Object = ReflectionHelper.GetPropertiesDictionary(value.GetType())("Value").GetValue(value, Nothing)
+            Dim serializableValue As Object = value.GetType().DelegateForGetPropertyValue("Value")(value)
+            'dim tempContractResolver = serializer.ContractResolver
+            'serializer.ContractResolver = WritablePropertiesOnlyResolver.InstanceWritable
             serializer.Serialize(writer, ReflectionHelper.GetSafeTypeName(serializableValue.GetType()))
             writer.WritePropertyName("Value")
             serializer.Serialize(writer, serializableValue)
             writer.WriteEndObject()
-
-            'Dim serializableValue As Object =ReflectionHelper.GetPropertiesDictionary( value.GetType())("Value").GetValue(value, Nothing)
-            ' Dim previousTypeNameHandling = serializer.TypeNameHandling
-            'serializer.TypeNameHandling = TypeNameHandling.Objects
-            'serializer.Serialize(writer, serializableValue)
-            'serializer.TypeNameHandling = previousTypeNameHandling
+            'serializer.ContractResolver = tempContractResolver
+            
 
         End Sub
 
@@ -143,7 +141,7 @@ Namespace ComponentModel
                 objvalue = JsonConvert.DeserializeObject(valueproperty.Value.ToString(Newtonsoft.Json.Formatting.None), targettype)
             End If
             
-            ReflectionHelper.GetPropertiesDictionary(toReturn.GetType())("Value").SetValue(toReturn, objvalue, Nothing)
+            toReturn.GetType().DelegateForSetPropertyValue("Value")(toReturn, objvalue)
             Return toReturn
 
 
