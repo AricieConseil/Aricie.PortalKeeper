@@ -104,9 +104,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Case StringFilterMode.TransformsList
                     Return GetType(String)
                 Case StringFilterMode.Xpath
-                    Return Me.XPathSource.Simple.GetOutputType()
+                    if Me.XPathSource.Simple IsNot nothing
+                        Return Me.XPathSource.Simple.GetOutputType()
+                    End If
+                    Return Nothing
                 Case StringFilterMode.StringSplit
-                    Return Me.Splitter.Simple.GetOutputType()
+                    if Me.Splitter.Simple IsNot nothing
+                        Return Me.Splitter.Simple.GetOutputType()
+                    End If
+                    Return Nothing
                 Case StringFilterMode.TokenReplace
                     Return GetType(String)
             End Select

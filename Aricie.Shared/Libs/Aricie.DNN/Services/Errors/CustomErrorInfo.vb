@@ -6,9 +6,11 @@ Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Entities
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Globalization
+Imports System.Xml.Serialization
 Imports Aricie.ComponentModel
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
+Imports Newtonsoft.Json
 
 Namespace Services.Errors
 
@@ -16,13 +18,15 @@ Namespace Services.Errors
     ''' Custom error holder class
     ''' </summary>
     ''' <remarks></remarks>
-    <ActionButton(IconName.ExclamationCircle, IconOptions.Normal)> _
-   <DefaultProperty("FriendlyName")> _
+    <ActionButton(IconName.ExclamationCircle, IconOptions.Normal)>
+    <DefaultProperty("FriendlyName")>
     Public Class CustomErrorInfo
         Inherits XmlConfigElementInfo
 
 
-        <Browsable(False)> _
+        <JsonIgnore()> _
+        <XmlIgnore()> _
+        <Browsable(False)>
         Public ReadOnly Property FriendlyName As String
             Get
                 Return CInt(Me.Status).ToString() & UIConstants.TITLE_SEPERATOR & Me.Redirect.UrlPath

@@ -1,8 +1,10 @@
 ﻿Imports System.Xml
+Imports System.Xml.Serialization
 Imports Aricie.DNN.Services
 Imports Aricie.DNN.UI.Attributes
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.UI.Skins.Controls
+Imports Newtonsoft.Json
 
 Namespace Configuration
 
@@ -16,7 +18,8 @@ Namespace Configuration
     Public MustInherit Class XmlConfigElementInfo
         Implements IConfigElementInfo
 
-
+        <JsonIgnore()> _
+        <XmlIgnore()> _
         Public Overridable ReadOnly Property Installed As Boolean
             Get
                 Return IsInstalled()

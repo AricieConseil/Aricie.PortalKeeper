@@ -436,6 +436,15 @@
             Write the block data to the given writer.
             </summary>
         </member>
+        <member name="T:CommonMark.Func`1">
+            <summary>An alternative to <c>System.Func</c> which is not present in .NET 2.0.</summary>
+        </member>
+        <member name="T:CommonMark.Func`2">
+            <summary>An alternative to <c>System.Func</c> which is not present in .NET 2.0.</summary>
+        </member>
+        <member name="T:CommonMark.Action`3">
+            <summary>An alternative to <c>System.Action</c> which is not present in .NET 2.0.</summary>
+        </member>
         <member name="T:CommonMark.OutputFormat">
             <summary>
             Specifies different formatters supported by the converter.
@@ -577,11 +586,6 @@
         <member name="M:CommonMark.Parser.Scanner.scan_html_tag(System.String,System.Int32,System.Int32)">
             <summary>
             Try to match an HTML tag after first &lt;, returning number of chars matched.
-            </summary>
-        </member>
-        <member name="F:CommonMark.Parser.Scanner.schemeArray">
-            <summary>
-            List of valid schemes of an URL. The array must be sorted.
             </summary>
         </member>
         <member name="M:CommonMark.Parser.Scanner.scan_autolink_uri(System.String,System.Int32,System.Int32)">
@@ -766,7 +770,7 @@
             </summary>
             <remarks>Original: clean_title(ref string)</remarks>
         </member>
-        <member name="M:CommonMark.Parser.InlineMethods.ParseInline(CommonMark.Parser.Subject,System.Func{CommonMark.Parser.Subject,CommonMark.Syntax.Inline}[],System.Char[])">
+        <member name="M:CommonMark.Parser.InlineMethods.ParseInline(CommonMark.Parser.Subject,CommonMark.Func{CommonMark.Parser.Subject,CommonMark.Syntax.Inline}[],System.Char[])">
             <summary>
             Parse an inline element from the subject. The subject position is updated to after the element.
             </summary>
