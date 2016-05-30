@@ -10,6 +10,7 @@ Imports Aricie.Services
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Services.Localization
 Imports System.Xml.Serialization
+Imports Fasterflect
 
 Namespace Services.Flee
 
@@ -194,7 +195,7 @@ Namespace Services.Flee
             Dim objSelectedMember As MemberInfo = Me.SelectedMember
             If objSelectedMember IsNot Nothing Then
                 Dim objTargetType As Type = DirectCast(objSelectedMember, PropertyInfo).PropertyType
-                If Me._Value.TargetSubType IsNot objTargetType Then
+                If Me._Value.Simple IsNot Nothing AndAlso Me._Value.TargetSubType IsNot Nothing AndAlso Not Me._Value.TargetSubType.InheritsOrImplements(objTargetType) Then
                     Me._Value.TargetSubType = objTargetType
                     Me._Value.ResetInstance()
                     Me._Value.Mode = SimpleOrExpressionMode.Simple

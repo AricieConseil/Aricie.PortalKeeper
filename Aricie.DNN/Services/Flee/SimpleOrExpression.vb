@@ -25,6 +25,7 @@ Namespace Services.Flee
 
         <Browsable(False)> _
         <XmlIgnore()> _
+        <JsonIgnore()> _
         Public Property TargetSubType As Type
 
 
@@ -305,7 +306,12 @@ Namespace Services.Flee
         End Sub
 
         Public Sub ResetInstance()
-            Me._Simple = Me.GetSimple()
+            Try
+                Me._Simple = Me.GetSimple()
+            Catch ex As Exception
+                ExceptionHelper.LogException(ex)
+            End Try
+            
         End Sub
 
         Public MustOverride Function GetExpression() As SimpleExpression(Of TExpression)

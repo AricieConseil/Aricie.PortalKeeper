@@ -9,7 +9,10 @@ Imports System.IO
 Imports System.Text
 Imports DotNetNuke.Entities.Portals
 Imports System.Reflection
+Imports Aricie.ComponentModel
+Imports Aricie.Text
 Imports DotNetNuke.Services.Log.EventLog
+Imports Newtonsoft.Json
 
 
 Namespace Settings
@@ -186,7 +189,7 @@ Namespace Settings
 
 #Region "File Settings"
 
-       
+       Private  writingJson As Boolean = False
 
 
         ''' <summary>
@@ -279,23 +282,97 @@ Namespace Settings
                                 End If
                             End If
 
+
+
+
                             If File.Exists(fileName) Then
                                 fileExists = True
-                                Using fileStream As FileStream = File.OpenRead(fileName)
-                                    Using objReader As New StreamReader(fileStream)
-                                        toReturn = ReflectionHelper.Deserialize(targetType, objReader)
+
+                                Dim jsonFileName As String = GetJsonFileName(fileName)
+                                If File.Exists(jsonFileName) Then
+
+                                    'File.Delete(jsonFileName)
+
+                                    fileName = jsonFileName
+                                    Using fileStream As FileStream = File.OpenRead(fileName)
+                                        Using objReader As New StreamReader(fileStream, Encoding.UTF8)
+                                            Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
+                                            settings.SetWriteOnlySettings()
+                                            Dim fileContent As String = objReader.ReadToEnd()
+#If DEBUG Then
+                                            Dim objStep As New StepInfo("Aricie.Config", "Loading json Config",
+                                                                WorkingPhase.InProgress, False, True, -1, DnnContext.Instance.FlowId, New KeyValuePair(Of String, String)("FileName", fileName))
+                                            PerformanceLogger.Instance.AddDebugInfo(objStep)
+#End If
+                                            toReturn = JsonConvert.DeserializeObject(fileContent, targetType, settings)
+#If DEBUG Then
+                                            Dim objStepEnd As New StepInfo("Aricie.Config", "End Loading json Config",
+                                                                    WorkingPhase.InProgress, False, True, -1, DnnContext.Instance.FlowId, New KeyValuePair(Of String, String)("FileName", fileName))
+                                            PerformanceLogger.Instance.AddDebugInfo(objStepEnd)
+#End If
+                                        End Using
                                     End Using
-                                End Using
+
+
+
+
+
+                                Else
+
+                                    Using fileStream As FileStream = File.OpenRead(fileName)
+                                        Using objReader As New StreamReader(fileStream)
+
+#If DEBUG Then
+
+                                            Dim objStep As New StepInfo("Aricie.Config", "Loading XML Config",
+                                                WorkingPhase.InProgress, False, True, -1, DnnContext.Instance.FlowId, New KeyValuePair(Of String, String)("FileName", fileName))
+                                            PerformanceLogger.Instance.AddDebugInfo(objStep)
+
+#End If
+
+
+
+
+                                            toReturn = ReflectionHelper.Deserialize(targetType, objReader)
+
+
+#If DEBUG Then
+
+                                            Dim objStepEnd As New StepInfo("Aricie.Config", "End Loading XML Config",
+                                                WorkingPhase.InProgress, False, True, -1, DnnContext.Instance.FlowId, New KeyValuePair(Of String, String)("FileName", fileName))
+                                            PerformanceLogger.Instance.AddDebugInfo(objStepEnd)
+
+#End If
+
+
+
+                                        End Using
+                                    End Using
+
+                                    If Not File.Exists(jsonFileName) Then
+                                        If WriteJson(jsonFileName, toReturn) Then
+                                            fileName = jsonFileName
+                                        End If
+                                    End If
+
+                                End If
+
                             End If
-                            'End SyncLock
+
                         Catch ex As Exception
                             AsyncLogger.Instance.AddException(ex)
                         End Try
+
+
+
+
+
 
                     End If
                 End If
 
                 If toReturn Is Nothing Then
+                    fileExists = False
                     toReturn = Activator.CreateInstance(targetType)
                 End If
                 If useCache Then
@@ -311,7 +388,35 @@ Namespace Settings
         End Function
 
 
+        Private Function WriteJson(jsonFileName As String, objToWrite As Object) As Boolean
+            If  Not writingJson Then
 
+                Try
+                    writingJson = True
+                    Dim settings As New JsonSerializerSettings() With {.TypeNameHandling = TypeNameHandling.All}
+                    settings.SetWriteOnlySettings()
+                    settings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+
+                    'Aricie.Common.CallDebuggerBreak()
+
+                    Dim fileContent As String = JsonConvert.SerializeObject(objToWrite, Formatting.Indented, settings)
+                    File.WriteAllText(jsonFileName, fileContent, Encoding.UTF8)
+
+                    Return True
+
+
+                Catch ex As Exception
+                    ExceptionHelper.LogException(ex)
+                    Return False
+                Finally
+                    writingJson = False
+                End Try
+
+
+            End If
+
+
+        End Function
 
         ''' <summary>
         ''' Saves settings to a file
@@ -394,9 +499,16 @@ Namespace Settings
                     saveFile.Delete()
                 End If
                 If settings IsNot Nothing Then
+
                     Using writer As New StreamWriter(fileName, False, New UTF8Encoding)
                         ReflectionHelper.Serialize(settings, True, DirectCast(writer, TextWriter))
                     End Using
+
+                    Dim jsonFileName As String = GetJsonFileName(fileName)
+                    If File.Exists(jsonFileName) Then
+                        File.Delete(jsonFileName)
+                    End If
+
                 End If
             End SyncLock
 
@@ -417,6 +529,10 @@ Namespace Settings
             End If
 
         End Sub
+
+        Private Function GetJsonFileName(fileName As String ) As String
+            Return fileName & ".json.resources"
+        End Function
 
         ''' <summary>
         ''' Saves settings to a file

@@ -1,5 +1,6 @@
 Imports System.ComponentModel
 Imports System.Globalization
+Imports System.Linq
 Imports System.Reflection
 Imports System.Runtime.CompilerServices
 Imports System.Xml.Serialization
@@ -12,19 +13,54 @@ Namespace ComponentModel
 
     Public Module JsonHelper
 
-        <Extension()> _
-        Public Sub SetDefaultSettings(objSettings As JsonSerializerSettings) 
+        <Extension()>
+        Public Sub SetDefaultSettings(objSettings As JsonSerializerSettings)
             objSettings.Formatting = Formatting.Indented
             'objSettings.DefaultValueHandling = DefaultValueHandling.Ignore
             objSettings.NullValueHandling = NullValueHandling.Ignore
-            objSettings.ContractResolver = new XmlAwareContractResolver()
+            objSettings.ContractResolver =  XmlAwareContractResolver.InstanceXmlAware
             objSettings.Culture = CultureInfo.InvariantCulture
         End Sub
 
+
+        <Extension()>
+        Public Sub SetWriteOnlySettings(objSettings As JsonSerializerSettings)
+            objSettings.Formatting = Formatting.Indented
+            'objSettings.DefaultValueHandling = DefaultValueHandling.Ignore
+            objSettings.NullValueHandling = NullValueHandling.Ignore
+            objSettings.ContractResolver = WritablePropertiesOnlyResolver.InstanceWritable
+            objSettings.Culture = CultureInfo.InvariantCulture
+        End Sub
+
+
     End Module
+
+
+   Public Class WritablePropertiesOnlyResolver
+        Inherits XmlAwareContractResolver
+
+        Public Shared ReadOnly InstanceWritable As New WritablePropertiesOnlyResolver()
+
+
+        Protected Sub New()
+            MyBase.New()
+        End Sub
+
+        Protected Overrides Function CreateProperties(type As Type, memberSerialization As MemberSerialization) As IList(Of JsonProperty)
+            Dim props As IList(Of JsonProperty) = MyBase.CreateProperties(type, memberSerialization)
+            Return props.Where(Function(p) p.Writable).ToList()
+        End Function
+    End Class
+
 
     Public Class XmlAwareContractResolver
         Inherits DefaultContractResolver
+
+        Public Shared ReadOnly InstanceXmlAware As New XmlAwareContractResolver()
+
+        Protected Sub New()
+            MyBase.New()
+        End Sub
 	
 	
 #Region "Overrides of DefaultContractResolver"
@@ -43,7 +79,7 @@ Namespace ComponentModel
 #Region "Private Methods"
 
         ' Determines whether a member is required or not and sets the appropriate JsonProperty settings
-        Private Sub ConfigureProperty(member As MemberInfo, [property] As JsonProperty)
+        Private Sub ConfigureProperty(member As MemberInfo, ByRef [property] As JsonProperty)
             
 
             If Not Attribute.IsDefined(member, GetType(Newtonsoft.Json.JsonPropertyAttribute), True) Then
@@ -55,8 +91,9 @@ Namespace ComponentModel
                 If Attribute.IsDefined(member, GetType(DefaultValueAttribute), True) Then
                     Dim attr As DefaultValueAttribute = DirectCast(Attribute.GetCustomAttribute(member, GetType(DefaultValueAttribute), True), DefaultValueAttribute)
                     Dim origPredicate As Predicate(Of Object) = [property].ShouldSerialize
+                    Dim objValueprovider as IValueProvider = [property].ValueProvider
                     Dim newPredicate As New Predicate(Of Object)(Function(o)
-                                                                     Dim objValue As Object = [property].ValueProvider.GetValue(o)
+                                                                     Dim objValue As Object = objValueprovider.GetValue(o)
                                                                      Return (attr.Value Is Nothing AndAlso objValue IsNot Nothing) OrElse Not attr.Value.Equals(objValue)
                                                                  End Function)
                     If origPredicate IsNot Nothing Then

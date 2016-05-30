@@ -4,6 +4,7 @@ Imports System.Linq
 Imports System.Reflection
 Imports System.Xml
 Imports Aricie.ComponentModel
+Imports Fasterflect
 Imports Newtonsoft.Json
 Imports Newtonsoft.Json.Linq
 
@@ -148,11 +149,17 @@ Namespace Collections
         Public Overrides Sub WriteJson(writer As JsonWriter, value As Object, serializer As JsonSerializer)
             
 
-            Dim objList As Object = directcast( ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
+            'Dim objList As Object = directcast(  ReflectionHelper.GetMembersDictionary(value.GetType(),True, False)("GetList"), MethodInfo).Invoke(value, Nothing)
+
+
+            Dim objList As Object = value.GetType().DelegateForCallMethod("GetList").Invoke(value, Nothing)
             Dim previousTypeNameHandling = serializer.TypeNameHandling
             serializer.TypeNameHandling = TypeNameHandling.Auto
+            'dim tempContractResolver = serializer.ContractResolver
+            'serializer.ContractResolver = WritablePropertiesOnlyResolver.InstanceWritable
             serializer.Serialize(writer, objList)
             serializer.TypeNameHandling = previousTypeNameHandling
+            'serializer.ContractResolver = tempContractResolver
 
         End Sub
 
