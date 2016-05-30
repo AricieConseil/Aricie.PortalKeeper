@@ -108,12 +108,17 @@ Namespace Collections
                 Next
 
                 If ReflectionHelper.AddSubtypes(writer, GetType(T)) Then
-                    types = types.Union(ReflectionHelper.GetSerializerTypes(GetType(List(Of T)), "")).ToList()
+                    For Each addType As Type In ReflectionHelper.GetSerializerTypes(GetType(List(Of T)), "")
+                        if Not types.contains(addType)
+                            types.Add(addType)
+                        End If
+                    Next
+                    ''types = types.Union().ToList()
                 End If
-               
+
                 typeNames = (From objtype In types _
                                 Where objtype IsNot GetType(T)
-                                    Select ReflectionHelper.GetSafeTypeName(objtype)).ToList()
+                                    Select ReflectionHelper.GetSafeTypeName(objtype)).ToList() '.OrderBy(Function (str)  str).ToList()
             Else
                 typeNames = New List(Of String)
             End If

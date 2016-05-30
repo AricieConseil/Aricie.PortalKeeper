@@ -90,10 +90,10 @@ Namespace Services.Files
         Public Property DnnFile As SimpleControlUrlInfo
 
             Get
-                If _ChooseDnnFile Then
+                If ChooseDnnFile Then
                     If _dnnFile Is Nothing Then
                         _dnnFile = New SimpleControlUrlInfo(UrlControlMode.File Or UrlControlMode.Database Or UrlControlMode.Secure)
-                        Dim found as Boolean
+                        Dim found As Boolean
                         If Me.PathMode = FilePathMode.AdminPath AndAlso Not Me.Path.Simple.IsNullOrEmpty() Then
                             Dim strFolder As String = System.IO.Path.GetDirectoryName(Me.Path.Simple)
                             Dim objFolder As FolderInfo = ObsoleteDNNProvider.Instance.GetFolderFromPath(NukeHelper.PortalId, strFolder)
@@ -107,7 +107,7 @@ Namespace Services.Files
                                 End If
                             End If
                         End If
-                        if not found
+                        If Not found Then
                             Me.PathMode = FilePathMode.AdminPath
                             Me.PortalId = NukeHelper.PortalId
                         End If
@@ -116,9 +116,15 @@ Namespace Services.Files
                 Return _dnnFile
             End Get
             Set
-                _dnnFile = value
+                _dnnFile = Value
             End Set
         End Property
+
+        Public Function ShouldSerializeDnnFile() As Boolean
+            Return ChooseDnnFile
+        End Function
+
+
 
         <JsonIgnore()> _
         <XmlIgnore()> _
@@ -147,9 +153,9 @@ Namespace Services.Files
             End Set
         End Property
 
-        <ConditionalVisible("ChooseDnnFile", True, True)> _
-        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)> _
-        <Editor(GetType(SelectorEditControl), GetType(EditControl))> _
+        <ConditionalVisible("ChooseDnnFile", True, True)>
+        <Selector(GetType(PortalSelector), "PortalName", "PortalID", False, False, "", "", False, False)>
+        <Editor(GetType(SelectorEditControl), GetType(EditControl))>
         <ConditionalVisible("PathMode", False, True, FilePathMode.AdminPath)>
         Public Overrides Property PortalId As Integer
             Get
@@ -160,11 +166,27 @@ Namespace Services.Files
             End Set
         End Property
 
+
+        Public Overrides Function ShouldSerializePortalId() As Boolean
+            If PathMode = FilePathMode.AdminPath Then
+                If ChooseDnnFile Then
+                    Return DnnFile IsNot Nothing AndAlso Not DnnFile.Url.IsNullOrEmpty()
+                Else
+                    If Path.Mode = SimpleOrExpressionMode.Expression Then
+                        Return Not Path.Expression.Expression.IsNullOrEmpty()
+                    Else
+                        Return Not Path.Simple.IsNullOrEmpty()
+                    End If
+                End If
+            End If
+            Return False
+        End Function
+
         <ConditionalVisible("ChooseDnnFile", True, True)> _
         Public Overrides Property Path As SimpleOrExpression(Of String)
             Get
                 If Not ChooseDnnFile AndAlso _dnnFile IsNot Nothing Then
-                    If Not Me._dnnFile.UrlPath.IsNullOrEmpty() Then
+                    If Not Me._dnnFile.Url.IsNullOrEmpty() Then
                         Me.PathMode = FilePathMode.AdminPath
                         MyBase.Path.Simple = GetAdminPathFromControlUrl(Me._dnnFile.UrlPath)
                         Me.PortalId = _dnnFile.PortalId
@@ -177,6 +199,11 @@ Namespace Services.Files
                 MyBase.Path = value
             End Set
         End Property
+
+
+        Public Function ShouldSerializePath() As Boolean
+            Return Not ChooseDnnFile
+        End Function
 
 
         Public Overrides Function GetMapPath(owner As Object, lookup As IContextLookup) As String

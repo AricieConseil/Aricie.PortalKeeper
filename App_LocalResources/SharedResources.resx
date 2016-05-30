@@ -12418,4 +12418,10 @@ given the previous values, that is, P(Xt |X0:t−1), that is P(Xt |Xt−1) given
   <data name="WaitSynchronizationInfo_WaitAfterRun.Text" xml:space="preserve">
     <value>Wait After Run</value>
   </data>
+  <data name="LocationSettings_MigrateToJson.Help" xml:space="preserve">
+    <value>When checked, uses a json copy of the original xml config file to speed up loading time. </value>
+  </data>
+  <data name="LocationSettings_MigrateToJson.Text" xml:space="preserve">
+    <value>Migrate to JSON</value>
+  </data>
 </root>

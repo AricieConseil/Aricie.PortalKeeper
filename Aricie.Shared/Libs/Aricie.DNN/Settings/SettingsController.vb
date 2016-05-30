@@ -234,6 +234,16 @@ Namespace Settings
             Return DirectCast(LoadFileSettings(fileName, GetType(T), useCache, useBinarySnapShot), T)
         End Function
 
+        Public Function LoadFileSettings(Of T As New)(ByVal fileName As String, ByVal useCache As Boolean, ByVal useBinarySnapShot As Boolean,ByVal  migrateToJson As Boolean) As T
+
+            Return DirectCast(LoadFileSettings(fileName, GetType(T), useCache, useBinarySnapShot, migrateToJson), T)
+        End Function
+
+        Public Function LoadFileSettings(ByVal fileName As String, ByVal targetType As Type, ByVal useCache As Boolean, ByVal useBinarySnapShot As Boolean) As Object
+            Return LoadFileSettings(fileName, targetType, useCache, useBinarySnapShot, False)
+        End Function
+
+
         ''' <summary>
         ''' Loads settings as object from a file
         ''' </summary>
@@ -243,7 +253,7 @@ Namespace Settings
         ''' <param name="useBinarySnapShot"></param>
         ''' <returns></returns>
         ''' <remarks></remarks>
-        Public Function LoadFileSettings(ByVal fileName As String, ByVal targetType As Type, ByVal useCache As Boolean, ByVal useBinarySnapShot As Boolean) As Object
+        Public Function LoadFileSettings(ByVal fileName As String, ByVal targetType As Type, ByVal useCache As Boolean, ByVal useBinarySnapShot As Boolean,ByVal  migrateToJson As Boolean) As Object
             Dim toReturn As Object = Nothing
             If useCache Then
                 toReturn = CacheHelper.GetCache(fileName)
@@ -289,7 +299,7 @@ Namespace Settings
                                 fileExists = True
 
                                 Dim jsonFileName As String = GetJsonFileName(fileName)
-                                If File.Exists(jsonFileName) Then
+                                If migrateToJson AndAlso File.Exists(jsonFileName) Then
 
                                     'File.Delete(jsonFileName)
 
@@ -349,7 +359,7 @@ Namespace Settings
                                         End Using
                                     End Using
 
-                                    If Not File.Exists(jsonFileName) Then
+                                    If migrateToJson AndAlso Not File.Exists(jsonFileName) Then
                                         If WriteJson(jsonFileName, toReturn) Then
                                             fileName = jsonFileName
                                         End If
@@ -451,7 +461,10 @@ Namespace Settings
             SaveFileSettings(fileName, settings, createBinarySnapShot, 0)
         End Sub
 
-       
+
+      
+
+
 
         ''' <summary>
         ''' Saves settings to a file
