@@ -85,7 +85,7 @@ Namespace ComponentModel
         End Function
 
         Protected Shared Function GetInstance(ByVal moduleName As String, ByVal locSettings As LocationSettings, ByVal useCache As Boolean, ByVal useBinarySnapShot As Boolean) As TConfigClass
-            Return Aricie.DNN.Settings.SettingsController.LoadFileSettings(Of TConfigClass)(GetFilePath(moduleName, locSettings, useCache), useCache, useBinarySnapShot)
+            Return Aricie.DNN.Settings.SettingsController.LoadFileSettings(Of TConfigClass)(GetFilePath(moduleName, locSettings, useCache),  useCache, useBinarySnapShot, locSettings.MigrateToJson)
         End Function
 
 

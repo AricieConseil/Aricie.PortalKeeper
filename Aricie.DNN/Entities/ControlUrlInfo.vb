@@ -76,6 +76,10 @@ Namespace Entities
         <Browsable(False)> _
         Public Property PortalId() As Integer = NukeHelper.PortalId
 
+        Public Overridable Function ShouldSerializePortalId() As Boolean
+            Return UrlType = TabType.Url OrElse UrlType = TabType.File AndAlso Not Url.ToLowerInvariant().StartsWith("file=")
+        End Function
+
 
         <DefaultValue("")>
         <Editor(GetType(AricieUrlEditControl), GetType(EditControl))>

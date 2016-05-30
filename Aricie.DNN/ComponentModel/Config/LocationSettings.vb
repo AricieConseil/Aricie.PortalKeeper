@@ -59,12 +59,14 @@ Namespace ComponentModel
         <ConditionalVisible("UseSingleton", True)> _
         Public Property UseCache As Boolean = True
 
+        Public Property MigrateToJson As Boolean
 
         Public Shared CoreFile As New LocationSettings(False, "")
 
 
         Public Overloads Function Equals(other As LocationSettings) As Boolean Implements System.IEquatable(Of LocationSettings).Equals
-            Return Me._UserFile = other._UserFile AndAlso Me._UserFileName = other._UserFileName AndAlso Me._BackupsNb = other._BackupsNb
+            Return Me._UserFile = other._UserFile AndAlso Me._UserFileName = other._UserFileName AndAlso Me._BackupsNb = other._BackupsNb AndAlso Me.UseCache = other.UseCache andalso Me.MigrateToJson = other.MigrateToJson
         End Function
+
     End Class
 End Namespace
