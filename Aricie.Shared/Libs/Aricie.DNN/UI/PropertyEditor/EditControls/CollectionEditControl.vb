@@ -399,7 +399,7 @@ Namespace UI.WebControls.EditControls
 
                 Dim toEditor As AriciePropertyEditorControl = Me.ParentAricieEditor.RootEditor
                 If toEditor IsNot Nothing Then
-                    Dim path As String = Me.GetSubPath(index, Me.PagedCollection(index))
+                    Dim path As String = Me.GetSubPath(index, Me.CollectionValue(index))
                     '.Replace("SubEntity.", "").Replace("SubEntity", "")
                     'If Not String.IsNullOrEmpty(toEditor.SubEditorPath) Then
                     '    path = toEditor.SubEditorPath & "."c & path
@@ -423,8 +423,8 @@ Namespace UI.WebControls.EditControls
                             If _headers.TryGetValue(commandIndex, header) Then
                                 header.Attributes.Remove("onClick")
                                 Dim el As Element = Me.ItemsDictionary(commandIndex)
-                                Dim dataItem As Object = Me.PagedCollection.CurrentItems(commandIndex)
-                                Me.DisplaySubItems(Me.ItemIndex(commandIndex), el.Container, dataItem)
+                                Dim dataItem As Object = Me.CollectionValue(commandIndex)
+                                Me.DisplaySubItems(commandIndex, el.Container, dataItem)
 
                             End If
                         Case "Delete"
@@ -462,7 +462,7 @@ Namespace UI.WebControls.EditControls
                             Dim singleList As ICollection = Me.ExportItem(commandIndex)
                             Me.Download(singleList)
                         Case "Enable", "Disable"
-                            Dim dataItem As IEnabled = DirectCast(Me.PagedCollection(commandIndex), IEnabled)
+                            Dim dataItem As IEnabled = DirectCast(Me.CollectionValue(commandIndex), IEnabled)
                             If e.CommandName = "Enable" Then
                                 dataItem.Enabled = True
                                 Me.ParentAricieEditor.DisplayLocalizedMessage("ItemEnabled.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
@@ -972,7 +972,7 @@ Namespace UI.WebControls.EditControls
                 actionContainer.Controls.Add(plAction)
 
                 Dim sm As ScriptManager = DirectCast(DotNetNuke.Framework.AJAX.ScriptManagerControl(Me.Page), ScriptManager)
-                Dim dataItem As Object = Me.PagedCollection(commandIndex)
+                Dim dataItem As Object = Me.CollectionValue(commandIndex)
                 'SubPropertyEditor button
 
                
