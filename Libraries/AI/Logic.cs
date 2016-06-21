@@ -149,24 +149,7 @@ namespace Aricie.PortalKeeper.AI.Logic
 
         public PLKbInferInfo()
         {
-            KnowledgeBase = new AnonymousGeneralVariableInfo<KnowledgeBase>()
-            {
-                VariableMode = VariableMode.Expression,
-                AdvancedExpression = true,
-                FleeExpression = new FleeExpressionInfo<object>()
-                {
-                    Expression = "KBinfo.KnowledgeBase",
-                    Variables = new Variables(new VariableInfo[]
-                    {
-                        new GeneralVariableInfo()
-                        {
-                            Name = "KBinfo",
-                            DotNetType = new DotNetType(typeof(PLKbInfo)),
-                            VariableMode = VariableMode.Instance
-                        }
-                    })
-                }
-            };
+            KnowledgeBase = new AnonymousGeneralVariableInfo<KnowledgeBase>();
             Predicate = new SimpleOrExpression<string>();
             Procedure = new AnonymousGeneralVariableInfo<PLKbInferProcedureInfo>()
             {

@@ -13,13 +13,14 @@ Imports Aricie.DNN.Services
 Imports System.Xml.Serialization
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports System.Text
+Imports Newtonsoft.Json
 
 Namespace Security.Cryptography
     Public Class EncryptionInfo
         Implements IEncrypter
 
         Public Sub New()
-
+            Me.New(False)
         End Sub
 
         Public Sub New(initialize As Boolean)
@@ -62,7 +63,7 @@ Namespace Security.Cryptography
 
 
 
-        <IsReadOnly(True)> _
+        <IsReadOnly(True)>
         Public Property SealType As KeyProtectionMode
             Get
                 Return _SealType
@@ -72,21 +73,21 @@ Namespace Security.Cryptography
             End Set
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property IsSealApplicationEncrypted As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.Application) = KeyProtectionMode.Application
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property IsSealInKeyContainer As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.KeyContainer) = KeyProtectionMode.KeyContainer
             End Get
         End Property
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public ReadOnly Property IsSealDataProtected As Boolean
             Get
                 Return (Me.SealType And KeyProtectionMode.ProtectData) = KeyProtectionMode.ProtectData
@@ -97,7 +98,7 @@ Namespace Security.Cryptography
 
         Public Property SymmetricKeySize As RijndelKeySizes = RijndelKeySizes.Key256
 
-        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)> _
+        <CollectionEditor(DisplayStyle:=CollectionDisplayStyle.List)>
         Public Property EncryptionTypes As List(Of EncryptionType)
             Get
                 Return _EncryptionTypes
@@ -110,7 +111,7 @@ Namespace Security.Cryptography
             End Set
         End Property
 
-        <AutoPostBack()> _
+        <AutoPostBack()>
         Public Property ProtectInMemory As Boolean
             Get
                 Return _ProtectInMemory
@@ -128,9 +129,10 @@ Namespace Security.Cryptography
         End Property
 
 
-        <Browsable(False)> _
+        <Browsable(False)>
         Public Property InitVector As Byte() = New Byte() {}
 
+        <JsonIgnore()>
         <XmlIgnore()> _
           <Width(500)> _
           <LineCount(2)> _
@@ -204,26 +206,21 @@ Namespace Security.Cryptography
             End Get
         End Property
 
-        <ExtendedCategory("PublicKeys")> _
-        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)> _
-        <LabelMode(LabelMode.Top)> _
+        <ExtendedCategory("PublicKeys")>
+        <ConditionalVisible("PublicKeyDisplay", False, True, PublicKeyDisplay.RSAParameters)>
+        <LabelMode(LabelMode.Top)>
         Public ReadOnly Property PublicKeyAsRSAParameters As RSAParametersInfo
             Get
                 Return New RSAParametersInfo(DirectCast(Me.AsymmetricAlgo, RSACryptoServiceProvider).ExportParameters(False))
             End Get
         End Property
 
-
-        <ExtendedCategory("PrivateKeys")> _
-        <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
-       <LineCount(36)> _
-      <Width(500)> _
-      <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+        <Browsable(False)> _
         Public Property EncryptionPrivateKey As CData
             Get
                 Try
-                    If Me.SealType = KeyProtectionMode.None Then
-                        Return Me.AsymmetricAlgo.ToXmlString(True)
+                    If Me.SealType = KeyProtectionMode.None AndAlso Me._AsymmetricAlgo IsNot Nothing Then
+                        Return Me._AsymmetricAlgo.ToXmlString(True)
                     End If
                 Catch ex As Exception
                     LogException(ex)
@@ -243,6 +240,41 @@ Namespace Security.Cryptography
                 End If
             End Set
         End Property
+
+
+        <XmlIgnore()> _
+        <JsonIgnore()> _
+        <ExtendedCategory("PrivateKeys")> _
+        <ConditionalVisible("SealType", False, True, KeyProtectionMode.None)> _
+       <LineCount(36)> _
+      <Width(500)> _
+      <Editor(GetType(WriteAndReadCustomTextEditControl), GetType(EditControl))> _
+        Public Property EncryptionPrivateKeyDisplay As CData
+            Get
+                Try
+                    If Me.SealType = KeyProtectionMode.None Then
+                        Return Me.AsymmetricAlgo.ToXmlString(True)
+                    End If
+                Catch ex As Exception
+                    LogException(ex)
+                End Try
+                Return Nothing
+            End Get
+            Set(value As CData)
+                If Not String.IsNullOrEmpty(value) Then
+                    Try
+                        _AsymmetricAlgo = New RSACryptoServiceProvider(CInt(Me.AsymmetricKeySize))
+                        _AsymmetricAlgo.FromXmlString(value)
+                        Me.SealType = KeyProtectionMode.None
+                    Catch ex As Exception
+                        LogException(ex)
+                    End Try
+                End If
+            End Set
+        End Property
+
+
+
 
         <ExtendedCategory("PrivateKeys")> _
         <LineCount(4)> _

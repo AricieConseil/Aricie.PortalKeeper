@@ -445,6 +445,9 @@ Namespace Services
                 Dim toReturn As PortalInfo = GetGlobal(Of PortalInfo)(portalId.ToString(CultureInfo.InvariantCulture))
                 If toReturn Is Nothing Then
                     toReturn = PortalController.GetPortal(portalId)
+                    if toReturn is Nothing
+                        Throw new ApplicationException(String.Format("Portal with Id {0} not found", portalId))
+                    End If
                     SetGlobal(Of PortalInfo)(toReturn, portalId.ToString(CultureInfo.InvariantCulture))
                 End If
                 Return toReturn
@@ -538,12 +541,19 @@ Namespace Services
         ''' <param name="context"></param>
         ''' <remarks></remarks>
         Public Sub RenewPortalSettings(ByVal targetTabId As Integer, ByVal context As HttpContext)
-            Dim domainName As String = DotNetNuke.Common.Globals.GetDomainName(context.Request, True)
-            Dim portalAlias As String = PortalSettings.GetPortalByTab(targetTabId, domainName)
-            If String.IsNullOrEmpty(portalAlias) Then
-                portalAlias = domainName
+            'Dim domainName As String = DotNetNuke.Common.Globals.GetDomainName(context.Request, True)
+            Dim initAlias As String
+            Dim objPortalAliasInfo As PortalAliasInfo = DnnContext.Current(context).PortalAlias
+            if objPortalAliasInfo IsNot nothing
+                 initAlias = objPortalAliasInfo.HTTPAlias
+            Else 
+                initAlias = ""
             End If
-            Dim objPortalAliasInfo As PortalAliasInfo = PortalSettings.GetPortalAliasInfo(portalAlias)
+            
+            Dim portalAlias As String = PortalSettings.GetPortalByTab(targetTabId, initAlias)
+            If initAlias <> portalAlias  Then
+                objPortalAliasInfo = PortalSettings.GetPortalAliasInfo(portalAlias)
+            End If
 
             Dim settings As New PortalSettings(targetTabId, objPortalAliasInfo)
             context.Items("PortalSettings") = settings

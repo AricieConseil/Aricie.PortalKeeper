@@ -3,9 +3,21 @@
         <h3>Portal Keeper release notes</h3>
         <h4>Version 4.3.3</h4>
         <ul>
-            <li>Improved: Config load speedup with json serialization</li>
+            <li>New: Sample Bot runs a stored procedure, convert results to a collection of objects, and sends a notification email with filtered objects injected with tokens</li>
+            <li>New: Actions can be run individually on the fly</li>
+            <li>Improved: Sql Action can convert datareaders into list of dictionaries or custom objects</li>
+            <li>Improved: Optional json serialization in the configuration file section can improve initial startup</li>
             <li>Improved: Introduced a dedicated GIS component with improved sharpmap Kml provider</li>
+            <li>Improved: Access control firewall rule saves the user's initial IP Address if none is found</li>
+            <li>Improved: Added an optional default value to profile load and profile save actions</li>
+            <li>Improved: Added a button to insert new item at any position in collection</li>
+            <li>Improved: Added new parameters to control output caching strategy</li>
+            <li>Improved: Added Pre Send Request Headers request event step in Firewall</li>
+            <li>Fixed: Accordion Pager issues</li>
             <li>Fixed: DNN File picker errors with non default portals</li>
+            <li>Fixed: Execute Sql Action missing localization</li>
+            <li>Fixed: Action mode bot does not switch to rule mode</li>
+            <li>Fixed: Firewall Referrer Spammers rule does not log an exception if no referrer is found</li>
             <li>Fixed: WMS Service and Sharpmap dependencies</li>
             <li>Fixed: Removed Streaming proxy forced flushing</li>
         </ul>

@@ -329,8 +329,8 @@ namespace Aricie.PortalKeeper.AI.Games.Go
                     string modelFilePath = Path.Combine(Environment.CurrentDirectory, @"..\Output\Models\02_Convolution");
 
 
-                    model.LoadModel(modelFilePath);
-                  //  model.CreateNetwork(string.Format("deviceId=0\nmodelPath=\"{0}\"", modelFilePath));
+                    //model.LoadModel(modelFilePath);
+                   model.CreateNetwork(string.Format("deviceId=0\nmodelPath=\"{0}\"", modelFilePath));
 
                     // Generate random input values in the appropriate structure and size
                     //var inputs = GetDictionary("features", 28 * 28, 255);

@@ -53,7 +53,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             Dim message As String = GetMessage(actionContext)
             Dim mailObject As String = GetMessage(actionContext, Me.EmailObject)
             Dim targetAddresses As String = GetMessage(actionContext, Me.ToAddresses)
-            Dim fromAddress As String = Me.FromAddress
+            Dim fromAddress As String =  GetMessage(actionContext, Me.FromAddress) 
             If fromAddress = "" Then
                 fromAddress = PortalSettings.Email
                 If String.IsNullOrEmpty(fromAddress) Then

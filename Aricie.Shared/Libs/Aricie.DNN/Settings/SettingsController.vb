@@ -489,7 +489,7 @@ Namespace Settings
                 End If
                 SyncLock loaderLock
                     Dim newBackupFileName As String = backupRootDir.FullName.TrimEnd("\"c) & "\"c & saveFile.LastWriteTime.ToString("yyyy-MM-dd_HH-mm-ss_") & Path.GetFileName(fileName)
-                    System.IO.File.Copy(fileName, newBackupFileName, True)
+                    File.Copy(fileName, newBackupFileName, True)
                     Dim existingBackupFiles As System.IO.FileInfo() = backupRootDir.GetFiles()
                     If existingBackupFiles.Length >= backupsNb Then
 
@@ -498,7 +498,7 @@ Namespace Settings
                             If existingBackupFiles(i - 1).IsReadOnly Then
                                 existingBackupFiles(i - 1).IsReadOnly = False
                             End If
-                            System.IO.File.Delete(existingBackupFiles(i - 1).FullName)
+                            File.Delete(existingBackupFiles(i - 1).FullName)
                         Next
                     End If
                 End SyncLock
@@ -513,14 +513,14 @@ Namespace Settings
                 End If
                 If settings IsNot Nothing Then
 
-                    Using writer As New StreamWriter(fileName, False, New UTF8Encoding)
-                        ReflectionHelper.Serialize(settings, True, DirectCast(writer, TextWriter))
-                    End Using
-
                     Dim jsonFileName As String = GetJsonFileName(fileName)
                     If File.Exists(jsonFileName) Then
                         File.Delete(jsonFileName)
                     End If
+
+                    Using writer As New StreamWriter(fileName, False, New UTF8Encoding)
+                        ReflectionHelper.Serialize(settings, True, DirectCast(writer, TextWriter))
+                    End Using
 
                 End If
             End SyncLock

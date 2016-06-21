@@ -1,5 +1,7 @@
 ﻿Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
+Imports System.Net
+Imports System.Reflection
 Imports Aricie.DNN.UI.WebControls.EditControls
 Imports DotNetNuke.UI.WebControls
 Imports System.Web
@@ -56,6 +58,9 @@ Namespace Services.Caching
         Public Property Cacheability As HttpCacheability = HttpCacheability.Public
 
         <ExtendedCategory("Policy")> _
+        Public Property  SetAllowResponseInBrowserHistory As Boolean
+
+        <ExtendedCategory("Policy")> _
         Public Property SetExpire As Boolean = True
 
         <ExtendedCategory("Policy")> _
@@ -73,17 +78,31 @@ Namespace Services.Caching
         End Property
 
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("Policy")>
         Public Property SetLastModified As Boolean = True
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("Policy")>
         Public Property SetEtag As Boolean
 
-        <ExtendedCategory("Policy")> _
-        <ConditionalVisible("SetEtag")> _
+        <ExtendedCategory("Policy")>
+        <ConditionalVisible("SetEtag")>
         Public Property EtagExpression As New SimpleExpression(Of String)()
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("Policy")>
+        Public Property ClearCookies As Boolean = True
+
+        <ExtendedCategory("Policy")>
+        Public Property AddArrOptOutHeaders As Boolean
+
+        <ExtendedCategory("Policy")>
+        Public Property ToggleDynamicCompression As New EnabledFeature(Of Boolean)
+
+        <ExtendedCategory("Policy")>
+        Public Property ToggleBandwidthThrottling As New EnabledFeature(Of ResponseThrottlerInfo)
+
+
+
+        <ExtendedCategory("VaryBy")> _
         Public Property VaryByStar As Boolean = True
 
         <XmlIgnore()> _
@@ -101,7 +120,7 @@ Namespace Services.Caching
             End Get
         End Property
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         <ConditionalVisible("VaryByStar", True)> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(3), Width(400), LabelMode(LabelMode.Top)> _
@@ -115,19 +134,19 @@ Namespace Services.Caching
             End Set
         End Property
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         Public Property VaryByBrowser As Boolean = True
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         Public Property VaryByUserLanguage As Boolean
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         Public Property VaryByUserAgent As Boolean
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         Public Property VaryByUserCharSet As Boolean
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
             <LineCount(3), Width(400)> _
         Public Property VaryByHeaders As String
@@ -155,7 +174,7 @@ Namespace Services.Caching
             End Get
         End Property
 
-        <ExtendedCategory("Policy")> _
+        <ExtendedCategory("VaryBy")> _
         <Editor(GetType(CustomTextEditControl), GetType(EditControl))> _
         <LineCount(2), Width(400)>
         Public Property VaryByContentEncodings As String
@@ -167,17 +186,7 @@ Namespace Services.Caching
             End Set
         End Property
 
-        <ExtendedCategory("Policy")> _
-        Public Property ClearCookies As Boolean = True
-
-        <ExtendedCategory("Policy")> _
-        Public Property AddArrOptOutHeaders As Boolean
-
-        <ExtendedCategory("Policy")> _
-        Public Property ToggleDynamicCompression As New EnabledFeature(Of Boolean)
-
-        <ExtendedCategory("Policy")> _
-        Public Property ToggleBandwidthThrottling As New EnabledFeature(Of ResponseThrottlerInfo)
+     
 
 
         Private _VaryByContentEncodingsList As List(Of String)
@@ -226,6 +235,9 @@ Namespace Services.Caching
         End Property
 
         <ExtendedCategory("Scope")> _
+        Public Property StatusCodes() As New OneOrMore(Of HttpStatusCode)(HttpStatusCode.OK)
+
+        <ExtendedCategory("Scope")> _
         Public Property EmptyPathInfoOnly() As Boolean
             Get
                 Return _EmptyPathInfoOnly
@@ -267,7 +279,12 @@ Namespace Services.Caching
             Dim currentVerb As String = objContext.Request.HttpMethod.ToUpperInvariant()
             If VerbsList.Any(Function(objVerb) objVerb.ToUpperInvariant = currentVerb) Then
                 If (Not EmptyQueryStringOnly) OrElse objContext.Request.Url.Query.IsNullOrEmpty() Then
-                    Return True
+                    If objContext.Response Is Nothing Then
+                        Return True
+                    End If
+                    If Me.StatusCodes.All.Any(Function(objStatusCode) CInt(objStatusCode) = objContext.Response.StatusCode) Then
+                        Return True
+                    End If
                 End If
             End If
             Return False
@@ -286,6 +303,9 @@ Namespace Services.Caching
                     objResponse.Cookies.Clear()
                 End If
                 objResponse.Cache.SetCacheability(Me.Cacheability)
+                If SetAllowResponseInBrowserHistory Then
+                    objResponse.Cache.SetAllowResponseInBrowserHistory(True)
+                End If
                 Dim timeStamp As DateTime = Now
                 Dim expiration As DateTime = DateTime.MaxValue
                 If Me.SetExpire Then

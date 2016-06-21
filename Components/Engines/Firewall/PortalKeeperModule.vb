@@ -68,6 +68,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                 AddHandler application.PostRequestHandlerExecute, AddressOf Me.PostRequestHandlerExecute
 
+                AddHandler application.PreSendRequestHeaders, AddressOf Me.PreSendRequestHeaders
+
                 AddHandler application.ReleaseRequestState, AddressOf Me.ReleaseRequestState
 
                 AddHandler application.EndRequest, AddressOf Me.OnEndRequest
@@ -76,7 +78,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         End Sub
 
-       
+      
 
 
         Private Sub OnBeginRequest(ByVal sender As Object, ByVal e As EventArgs)
@@ -282,6 +284,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'End Try
 
         End Sub
+
+         Private Sub PreSendRequestHeaders(sender As Object, e As EventArgs)
+            Dim context As HttpContext = DirectCast(sender, HttpApplication).Context
+            Me.ProcessStep(context, RequestEvent.PreSendRequestHeaders, False)
+        End Sub
+
 
         Public Const ResponseLengthMessageKey As String = "ResponseLength"
         Private Sub ReleaseRequestState(sender As Object, e As EventArgs)

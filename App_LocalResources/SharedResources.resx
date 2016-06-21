@@ -5031,10 +5031,10 @@ DnnContext.Portal.ActiveTab.TabName.contains("secure")&lt;/li&gt;
   <data name="EncryptionInfo_EncryptionKey.Text" xml:space="preserve">
     <value>Symmetric Key</value>
   </data>
-  <data name="EncryptionInfo_EncryptionPrivateKey.Help" xml:space="preserve">
+  <data name="EncryptionInfo_EncryptionPrivateKeyDisplay.Help" xml:space="preserve">
     <value>Those are the parameters used to derive an asymetrical RSA private key</value>
   </data>
-  <data name="EncryptionInfo_EncryptionPrivateKey.Text" xml:space="preserve">
+  <data name="EncryptionInfo_EncryptionPrivateKeyDisplay.Text" xml:space="preserve">
     <value>Asymmetric Private Key</value>
   </data>
   <data name="EncryptionInfo_InitVector.Help" xml:space="preserve">
@@ -12423,5 +12423,141 @@ given the previous values, that is, P(Xt |X0:t−1), that is P(Xt |Xt−1) given
   </data>
   <data name="LocationSettings_MigrateToJson.Text" xml:space="preserve">
     <value>Migrate to JSON</value>
+  </data>
+  <data name="CacheableAction`1_Synchronization.Header2" xml:space="preserve">
+    <value>Synchronization</value>
+  </data>
+  <data name="OutputCachingStrategy_VaryBy.Header" xml:space="preserve">
+    <value>Vary By</value>
+  </data>
+  <data name="ActionProvider`1_Run.Text" xml:space="preserve">
+    <value>Run Now</value>
+  </data>
+  <data name="ActionProvider`1_Run.Text.ToolTip" xml:space="preserve">
+    <value>This will attempt to run the action on the fly, with an empty context.</value>
+  </data>
+  <data name="ActionRunSuccess.Message" xml:space="preserve">
+    <value>Action Succesfully run. Context Vars:&lt;br/&gt;
+{0}</value>
+  </data>
+  <data name="CallStoredProcedure.Text" xml:space="preserve">
+    <value>Call Stored Procedure</value>
+  </data>
+  <data name="CallStoredProcedureInfo_Parameters.Help" xml:space="preserve">
+    <value>Define parameters for your stored procedure</value>
+  </data>
+  <data name="CallStoredProcedureInfo_Parameters.Text" xml:space="preserve">
+    <value>Parameters</value>
+  </data>
+  <data name="CallStoredProcedureInfo_StoredProcedureName.Help" xml:space="preserve">
+    <value>Enter a name for the stored procedure to call</value>
+  </data>
+  <data name="CallStoredProcedureInfo_StoredProcedureName.Text" xml:space="preserve">
+    <value>Stored Procedure Name</value>
+  </data>
+  <data name="CallStoredProcedureInfo_StoredProcedureType.Help" xml:space="preserve">
+    <value>Depending on the type of stored procedure defined, a different type of object is returned</value>
+  </data>
+  <data name="CallStoredProcedureInfo_StoredProcedureType.Text" xml:space="preserve">
+    <value>Stored Procedure type</value>
+  </data>
+  <data name="DataSet.Text" xml:space="preserve">
+    <value>DataSet</value>
+  </data>
+  <data name="ExecuteSqlAction`1_CallStoredProcedure.Help" xml:space="preserve">
+    <value>Define the parameters for your stored procedure call</value>
+  </data>
+  <data name="ExecuteSqlAction`1_CallStoredProcedure.Text" xml:space="preserve">
+    <value>Stored Procedure</value>
+  </data>
+  <data name="ExecuteSqlAction`1_CustomType.Help" xml:space="preserve">
+    <value>Check to convert each element of your result datareader into an object of a custom type. Conversion uses DNN CBO, which supports automatic property mapping or the IHydratable interface</value>
+  </data>
+  <data name="ExecuteSqlAction`1_CustomType.Text" xml:space="preserve">
+    <value>Custom Type</value>
+  </data>
+  <data name="ExecuteSqlAction`1_HydrateObjects.Help" xml:space="preserve">
+    <value>You can optionally convert a result datareader either into a list of dictionaries of objects, or a list of custom objects using DNN CBO, by providing the target type</value>
+  </data>
+  <data name="ExecuteSqlAction`1_HydrateObjects.Text" xml:space="preserve">
+    <value>Hydrate Object from Datareader</value>
+  </data>
+  <data name="ExecuteSqlAction`1_SqlActionMode.Help" xml:space="preserve">
+    <value>You can either execute a stored procedure or run a sql statement</value>
+  </data>
+  <data name="ExecuteSqlAction`1_SqlActionMode.Text" xml:space="preserve">
+    <value>Sql Action Mode</value>
+  </data>
+  <data name="ExecuteSqlAction`1_SqlSettings.Header" xml:space="preserve">
+    <value>Sql Settings</value>
+  </data>
+  <data name="ExecuteSqlAction`1_SqlStatement.Help" xml:space="preserve">
+    <value>Enter the sql statement to execute. Your can optionally use tokens to inject data from existing variables</value>
+  </data>
+  <data name="ExecuteSqlAction`1_SqlStatement.Text" xml:space="preserve">
+    <value>Sql Statement</value>
+  </data>
+  <data name="ExecuteSqlAction`1_UseTransaction.Help" xml:space="preserve">
+    <value>you can choose to run your sql job within a sql transaction</value>
+  </data>
+  <data name="ExecuteSqlAction`1_UseTransaction.Text" xml:space="preserve">
+    <value>Use transaction</value>
+  </data>
+  <data name="IDataReader.Text" xml:space="preserve">
+    <value>DataReader</value>
+  </data>
+  <data name="KeeperRule`1_Run.Text.ToolTip" xml:space="preserve">
+    <value>This will attempt to run the rule on the fly, with an empty context.</value>
+  </data>
+  <data name="NonQuery.Text" xml:space="preserve">
+    <value>Non Query</value>
+  </data>
+  <data name="RunningAction.Alert" xml:space="preserve">
+    <value>Warning: Running an action on the fly with an empty execution context may fail depending on the action's configuration.</value>
+  </data>
+  <data name="Scalar.Text" xml:space="preserve">
+    <value>Scalar</value>
+  </data>
+  <data name="SqlStatement.Text" xml:space="preserve">
+    <value>Sql Statement</value>
+  </data>
+  <data name="SqlStatementInfo_StatementType.Help" xml:space="preserve">
+    <value>Depending on your statement type, the execution will return a string or a datareader</value>
+  </data>
+  <data name="SqlStatementInfo_StatementType.Text" xml:space="preserve">
+    <value>Statement Type</value>
+  </data>
+  <data name="Insert.Command.ToolTip" xml:space="preserve">
+    <value>Inserts a new item at the current location</value>
+  </data>
+  <data name="ItemInserted.Message" xml:space="preserve">
+    <value>A new item was inserted into the collection</value>
+  </data>
+  <data name="OutputCachingStrategy_SetAllowResponseInBrowserHistory.Help" xml:space="preserve">
+    <value>Makes the response is available in the client browser History cache, regardless of the HttpCacheability setting made on the server</value>
+  </data>
+  <data name="OutputCachingStrategy_SetAllowResponseInBrowserHistory.Text" xml:space="preserve">
+    <value>Set Allow Response In Browser History</value>
+  </data>
+  <data name="OutputCachingStrategy_StatusCodes.Help" xml:space="preserve">
+    <value>Enter the Response Http status codes within caching scope</value>
+  </data>
+  <data name="OutputCachingStrategy_StatusCodes.Text" xml:space="preserve">
+    <value>Status Codes</value>
+  </data>
+  <data name="PreSendRequestHeaders.Text" xml:space="preserve">
+    <value>Pre Send Request Headers</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_DefaultValue.Help" xml:space="preserve">
+    <value>You can optionally define a default value for null occurrences</value>
+  </data>
+  <data name="ProfileActionProviderBase`1_DefaultValue.Text" xml:space="preserve">
+    <value>Default Value</value>
+  </data>
+  <data name="ProfileLoadActionProvider`1_SaveDefault.Help" xml:space="preserve">
+    <value>Saves the default value to the user's profile if none is found</value>
+  </data>
+  <data name="ProfileLoadActionProvider`1_SaveDefault.Text" xml:space="preserve">
+    <value>Save Default</value>
   </data>
 </root>

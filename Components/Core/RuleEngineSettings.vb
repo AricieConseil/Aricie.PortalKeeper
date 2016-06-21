@@ -46,7 +46,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             'Me.ImportDefaultProviders()
         End Sub
 
-        <DefaultValue(DirectCast(RuleEngineMode.Actions, Object))> _
+        
         <JsonConverter(GetType(StringEnumConverter))>
         <ExtendedCategory("Rules")>
         Public Overridable Property Mode As RuleEngineMode
@@ -273,9 +273,13 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
         Public Sub BatchRun(events As IEnumerable(Of TEngineEvents), ByRef existingContext As PortalKeeperContext(Of TEngineEvents))
-            For Each eventStep As TEngineEvents In events
-                Me.ProcessRules(existingContext, eventStep, False, False)
-            Next
+            If Me.Mode = RuleEngineMode.Rules Then
+                For Each eventStep As TEngineEvents In events
+                    Me.ProcessRules(existingContext, eventStep, False, False)
+                Next
+            Else
+                Me.ProcessRules(existingContext, PortalKeeperContext(Of TEngineEvents).DefaultStep, False, False)
+            End If
         End Sub
 
 

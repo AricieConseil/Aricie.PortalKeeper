@@ -47,9 +47,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function ShouldSerializeSynchronisationHandle() As Boolean
             Return SynchronisationHandle.Enabled _
-                OrElse SynchronisationHandle.Entity IsNot Nothing _
-                AndAlso SynchronisationHandle.Entity.Mode = SimpleOrExpressionMode.Expression _
-                OrElse SynchronisationHandle.Entity.Simple <> _DefaultKey
+                OrElse (SynchronisationHandle.Entity IsNot Nothing _
+                AndAlso (SynchronisationHandle.Entity.Mode = SimpleOrExpressionMode.Expression _
+                OrElse SynchronisationHandle.Entity.Simple <> _DefaultKey))
         End Function
 
 

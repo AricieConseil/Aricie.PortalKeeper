@@ -1,4 +1,6 @@
+using System;
 using Aricie.DNN.Modules.PortalKeeper;
+using DotNetNuke.Services.Exceptions;
 using DotNetNuke.Web.Api;
 
 namespace Aricie.PortalKeeper.DNN7
@@ -49,10 +51,19 @@ namespace Aricie.PortalKeeper.DNN7
             {
                 if (objRoute.DNNRoute.Enabled)
                 {
-                    mapRouteManager.MapHttpRoute(objRoute.DNNRoute.Entity.FolderName, objRoute.Name, objRoute.Template,
+                    try
+                    {
+                        mapRouteManager.MapHttpRoute(objRoute.DNNRoute.Entity.FolderName, objRoute.Name, objRoute.Template,
                         objRoute.Defaults.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance),
                         objRoute.Constraints.EvaluateVariables(PortalKeeperContext<RequestEvent>.Instance, PortalKeeperContext<RequestEvent>.Instance),
                         objRoute.DNNRoute.Entity.Namespaces.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        
+                        Exceptions.LogException(ex);
+                    }
+                    
 
                 }
 

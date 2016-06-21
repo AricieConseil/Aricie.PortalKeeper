@@ -27,17 +27,10 @@ Namespace Services.Filtering
     ''' Class representing filtering and transformation applied to a string
     ''' </summary>
     ''' <remarks></remarks>
-    
     Public Class ExpressionFilterInfo
 
         Private _DefaultCharReplacement As String = Nothing
         Private _TransformList As New List(Of StringTransformInfo)
-
-        'confort members
-        'Private _StringMap As Dictionary(Of String, String)
-        'Private _CharsMap As Dictionary(Of Char, Char)
-        'Private _RegexMap As Dictionary(Of Regex, Object)
-        'Private _BuildLock As New Object
         Private _Encryption As EncryptionInfo
 
 
@@ -54,17 +47,15 @@ Namespace Services.Filtering
         Public Sub New(ByVal maxLength As Integer, ByVal forceToLower As Boolean, ByVal encodePreProcessing As EncodeProcessing, ByVal buildDefaultTransforms As DefaultTransforms)
             Me.New()
             Me._MaxLength = maxLength
-            Me.ForceToLower = forceToLower
+            If forceToLower Then
+                Me.CaseChange = CaseChange.ToLowerInvariant
+            End If
             Me._EncodePreProcessing = encodePreProcessing
             Me.BuildDefault(buildDefaultTransforms)
 
         End Sub
 
 #End Region
-
-
-
-
 
 
         ''' <summary>
@@ -87,24 +78,7 @@ Namespace Services.Filtering
         <ExtendedCategory("GlobalFilter")> _
         Public Property CaseChange As CaseChange
 
-        ''' <summary>
-        ''' Forces input to lowercase output
-        ''' </summary>
-        ''' <value></value>
-        ''' <returns></returns>
-        ''' <remarks></remarks>
-        <Browsable(False)>
-        <DefaultValue(False)> _
-        Public Property ForceToLower() As Boolean
-            Get
-                Return Nothing
-            End Get
-            Set(value As Boolean)
-                If value Then
-                    Me.CaseChange = CaseChange.ToLower
-                End If
-            End Set
-        End Property
+
 
         ''' <summary>
         ''' Is the output Trimmed the output
@@ -366,66 +340,7 @@ Namespace Services.Filtering
 
 
 
-        ' ''' <summary>
-        ' ''' Char-based transformation map
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<XmlIgnore(), Browsable(False)> _
-        'Public ReadOnly Property CharsMap() As Dictionary(Of Char, Char)
-        '    Get
-        '        If _CharsMap Is Nothing Then
-        '            SyncLock _BuildLock
-        '                If _CharsMap Is Nothing Then
-        '                    Me.BuildMap()
-        '                End If
-        '            End SyncLock
-        '        End If
-        '        Return _CharsMap
-        '    End Get
-        'End Property
-
-        ' ''' <summary>
-        ' ''' string-based transformation map
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<XmlIgnore(), Browsable(False)> _
-        'Public ReadOnly Property StringMap() As Dictionary(Of String, String)
-        '    Get
-        '        If _StringMap Is Nothing Then
-        '            SyncLock _BuildLock
-        '                If _StringMap Is Nothing Then
-        '                    Me.BuildMap()
-        '                End If
-        '            End SyncLock
-        '        End If
-        '        Return _StringMap
-        '    End Get
-        'End Property
-
-        ' ''' <summary>
-        ' ''' Regex-based transformation map
-        ' ''' </summary>
-        ' ''' <value></value>
-        ' ''' <returns></returns>
-        ' ''' <remarks></remarks>
-        '<XmlIgnore(), Browsable(False)> _
-        'Public ReadOnly Property RegexMap() As Dictionary(Of Regex, Object)
-        '    Get
-        '        If _RegexMap Is Nothing Then
-        '            SyncLock _BuildLock
-        '                If _RegexMap Is Nothing Then
-        '                    Me.BuildMap()
-        '                End If
-        '            End SyncLock
-        '        End If
-        '        Return _RegexMap
-        '    End Get
-        'End Property
-
+     
 
 #Region "Public methods"
         ''' <summary>
@@ -438,13 +353,13 @@ Namespace Services.Filtering
             Me._TransformList.Clear()
             Select Case defaultTrans
                 Case DefaultTransforms.UrlFull
-                    Me.ForceToLower = True
+                    Me.CaseChange = CaseChange.ToLowerInvariant
                     Dim fromString As String = "יטךכ€ןלמעפץצûüשגאהדחסÿ"
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Me._TransformList.Add(New StringTransformInfo(StringFilterType.CharsReplace, fromString, totoString))
                 Case DefaultTransforms.UrlPart
                     Me.EncodePreProcessing = EncodeProcessing.HtmlDecode
-                    Me.ForceToLower = True
+                    Me.CaseChange = CaseChange.ToLowerInvariant
                     Dim fromString As String = "יטךכ€ןלמעפץצûüשגאהדחסÿ"
                     Dim totoString As String = "eeeeeiiioooouuuaaaacny"
                     Dim reservedChars As String = "$&+,/:;=?@'#."
@@ -667,67 +582,7 @@ Namespace Services.Filtering
             Return toreturn
         End Function
 
-        ' ''' <summary>
-        ' ''' Builds the transformation map from the transformations configured
-        ' ''' </summary>
-        ' ''' <remarks></remarks>
-        'Private Sub BuildMap()
-
-        '    Dim tempStringMap As New Dictionary(Of String, String)
-        '    Dim tempcharsMap As New Dictionary(Of Char, Char)
-        '    Dim tempRegexMap As New Dictionary(Of Regex, Object)
-
-
-
-        '    'If Me.TransformList.Count = 0 Then
-        '    '    Me.BuildDefault()
-        '    'Else
-        '    SyncLock _TransformList
-        '        For Each transform As StringTransformInfo In Me._TransformList
-        '            Select Case transform.FilterType
-        '                Case StringFilterType.CharsReplace
-        '                    If transform.ReplaceValue.Length = 0 Then
-        '                        AddCharsTrim(tempcharsMap, transform.SourceValue)
-        '                    ElseIf transform.ReplaceValue.Length > 1 OrElse transform.SourceValue.Length = 1 Then
-        '                        AddCharsMap(tempcharsMap, transform.SourceValue, transform.ReplaceValue)
-        '                    Else
-        '                        AddCharsDefault(tempcharsMap, transform.SourceValue, transform.ReplaceValue(0))
-        '                    End If
-        '                Case StringFilterType.StringReplace
-        '                    tempStringMap(transform.SourceValue) = transform.ReplaceValue
-        '                Case StringFilterType.RegexReplace
-        '                    Try
-        '                        Dim objRegex As New Regex(transform.SourceValue, transform.RegexOptions)
-        '                        If transform.UseCallBack Then
-        '                            tempRegexMap(objRegex) = transform.CallBack
-        '                        Else
-        '                            tempRegexMap(objRegex) = transform.ReplaceValue
-        '                        End If
-
-        '                    Catch ex As Exception
-        '                        Aricie.Services.ExceptionHelper.LogException(ex)
-        '                    End Try
-        '            End Select
-        '        Next
-        '    End SyncLock
-
-        '    Me._StringMap = tempStringMap
-        '    Me._CharsMap = tempcharsMap
-        '    Me._RegexMap = tempRegexMap
-        '    'End If
-
-        'End Sub
-
-        ' ''' <summary>
-        ' '''  Clears the transformation map
-        ' ''' </summary>
-        ' ''' <remarks></remarks>
-        'Private Sub ClearMap()
-        '    Me._StringMap = Nothing
-        '    Me._CharsMap = Nothing
-        '    Me._RegexMap = Nothing
-        'End Sub
-
+    
 
 
 #End Region
