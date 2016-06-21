@@ -1,3 +1,4 @@
+Imports System.ComponentModel
 Imports Aricie.DNN.Settings
 Imports Aricie.DNN.Services
 Imports System.Globalization
@@ -7,6 +8,7 @@ Imports Aricie.Collections
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.Services
 Imports Aricie.DNN.Services.Files
+Imports Newtonsoft.Json
 
 
 '===============================================================================
@@ -109,6 +111,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 Return _RequestScopeOutOf.Value
             End Get
         End Property
+
+
+        'Public Shared ReadOnly DefaultStep As TEngineEvents = DirectCast(DirectCast(KeeperAction(Of TEngineEvents).DefaultEventStep, IConvertible).ToType(GetType(TEngineEvents), CultureInfo.InvariantCulture), TEngineEvents)
+        Public Shared ReadOnly DefaultStep As TEngineEvents = ReflectionHelper.CreateObject(of TEngineEvents)
 
 
 #End Region
@@ -370,7 +376,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         End Sub
 
         Public Function IsDefaultStep(objStep As TEngineEvents) As Boolean
-            Return (objStep.ToString(CultureInfo.InvariantCulture) = KeeperAction(Of TEngineEvents).DefaultEventStep)
+            'Return (objStep.ToString(CultureInfo.InvariantCulture) = PortalKeeper.KeeperAction (Of TEngineEvents).DefaultEventStep)
+            Return objStep.Equals(DefaultStep)
         End Function
 
 
@@ -492,7 +499,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                 If objItem.Value IsNot Nothing Then
                     Dim serialized As String
                     Try
-                        serialized = ReflectionHelper.Serialize(objItem.Value).Beautify()
+                        'serialized = ReflectionHelper.Serialize(objItem.Value).Beautify()
+                        serialized = JsonConvert.SerializeObject(objItem.Value)
                     Catch ex As Exception
                         serialized = ex.ToString()
                     End Try
@@ -508,8 +516,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Function GetDump() As SerializableDictionary(Of String, Object)
 
+            If Me.CurrentEngine IsNot Nothing Then
+                Return Me.GetDump(Me.CurrentEngine.LogEndDumpSettings)
+            End If
+            Return GetDump(New DumpSettings() With {.EnableDump = True})
 
-            Return Me.GetDump(Me.CurrentEngine.LogEndDumpSettings)
         End Function
 
         Public Function GetDump(ByVal objDumpSettings As DumpSettings) As SerializableDictionary(Of String, Object)

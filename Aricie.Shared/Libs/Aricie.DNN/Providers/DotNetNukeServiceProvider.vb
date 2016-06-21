@@ -118,7 +118,9 @@ Namespace Providers
             Dim currentModule As PortalModuleBase = DnnContext.Current.CurrentModule
             If currentModule IsNot Nothing Then
                 If DnnContext.Current.User.IsSuperUser Then
+#If DEBUG
                     DnnContext.Current.AddModuleMessage(ex.ToString, DotNetNuke.UI.Skins.Controls.ModuleMessage.ModuleMessageType.RedError)
+#End If
                     DotNetNuke.Services.Exceptions.Exceptions.LogException(ex)
                 Else
                     'DotNetNuke.Services.Exceptions.Exceptions.ProcessModuleLoadException(currentModule, ex)

@@ -26,21 +26,10 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim objUser = Me.GetUser(actionContext)
             Dim objValue As Object = Me.Value.Evaluate(actionContext, actionContext)
-            Select Case ProfileType
-                Case PortalKeeper.ProfileType.Personalization
-                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, objUser.PortalID)
-                    Personalization.SetProfile(pInfo, Me.NamingContainer, Me.PropertyName, objValue)
-                    NukeHelper.PersonnalizationController.SaveProfile(pInfo)
-                Case PortalKeeper.ProfileType.Identity
-                    If AsString Then
-                        objUser.Profile.SetProfileProperty(PropertyName, CStr(objValue))
-                    Else
-                        Dim objDef As GeneralPropertyDefinition = GeneralPropertyDefinition.FromDNNProfileDefinition(objUser.Profile.GetProperty(PropertyName))
-                        objUser.Profile.SetProfileProperty(PropertyName, objDef.PropertyValue)
-                    End If
-
-                    UserController.UpdateUser(objUser.PortalID, objUser)
-            End Select
+            If objValue Is Nothing AndAlso Me.DefaultValue.Enabled Then
+                objValue = Me.DefaultValue.Entity.Evaluate(actionContext, actionContext)
+            End If
+            Me.SaveProfile(objValue, objUser)
             Return True
         End Function
 

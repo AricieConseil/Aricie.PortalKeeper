@@ -1,10 +1,13 @@
 Imports Aricie.DNN.UI.Attributes
 Imports System.ComponentModel
+Imports Aricie.DNN.Entities
+Imports Aricie.DNN.Services
 Imports DotNetNuke.UI.WebControls
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.UI.WebControls
 Imports DotNetNuke.Entities.Users
 Imports Aricie.DNN.UI.WebControls.EditControls
+Imports DotNetNuke.Services.Personalization
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <ActionButton(IconName.User, IconOptions.Normal)>
@@ -54,6 +57,25 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         <Required(True)>
         Public Property PropertyName As String = ""
+
+        Property DefaultValue() As New EnabledFeature(Of AnonymousGeneralVariableInfo)
+
+        Protected Sub SaveProfile(objValue As Object, objUser As UserInfo)
+             Select Case ProfileType
+                Case PortalKeeper.ProfileType.Personalization
+                    Dim pInfo As PersonalizationInfo = NukeHelper.PersonnalizationController.LoadProfile(objUser.UserID, objUser.PortalID)
+                    Personalization.SetProfile(pInfo, Me.NamingContainer, Me.PropertyName, objValue)
+                    NukeHelper.PersonnalizationController.SaveProfile(pInfo)
+                Case PortalKeeper.ProfileType.Identity
+                    If AsString Then
+                        objUser.Profile.SetProfileProperty(PropertyName, CStr(objValue))
+                    Else
+                        Dim objDef As GeneralPropertyDefinition = GeneralPropertyDefinition.FromDNNProfileDefinition(objUser.Profile.GetProperty(PropertyName))
+                        objUser.Profile.SetProfileProperty(PropertyName, objDef.PropertyValue)
+                    End If
+                    UserController.UpdateUser(objUser.PortalID, objUser)
+            End Select
+        End Sub
 
 
     End Class

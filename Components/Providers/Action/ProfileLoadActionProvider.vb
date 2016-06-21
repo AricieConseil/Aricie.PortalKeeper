@@ -1,6 +1,7 @@
 Imports System.ComponentModel
 Imports DotNetNuke.Services.Personalization
 Imports Aricie.DNN.Services
+Imports Aricie.DNN.UI.Attributes
 
 Namespace Aricie.DNN.Modules.PortalKeeper
     <DisplayName("Load Profile Property")> _
@@ -8,6 +9,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
     Public Class ProfileLoadActionProvider(Of TEngineEvents As IConvertible)
         Inherits ProfileActionProviderBase(Of TEngineEvents)
 
+
+        <ConditionalVisible("DefaultValue")> _
+        Public Property SaveDefault As Boolean
 
         Public Overrides Function BuildResult(actionContext As PortalKeeperContext(Of TEngineEvents), async As Boolean) As Object
             If Me.DebuggerBreak Then
@@ -27,6 +31,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper
                         toReturn = objDef.TypedValue
                     End If
             End Select
+            If toReturn Is Nothing AndAlso Me.DefaultValue.Enabled Then
+                toReturn = Me.DefaultValue.Entity.Evaluate(actionContext, actionContext)
+                if SaveDefault
+                    me.SaveProfile(toReturn, objUser)
+                End If
+            End If
             Return toReturn
         End Function
 

@@ -19,9 +19,9 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property EnableCache As Boolean
 
         <DefaultValue(False)> _
-        <SortOrder(950)> _
+        <SortOrder(952)> _
        <ConditionalVisible("UseSemaphore", False, True)> _
-       <ExtendedCategory("TechnicalSettings")> _
+       <ExtendedCategory("TechnicalSettings", "Synchronization")> _
         Public Property SemaphoreAppliesToCache As Boolean
 
         <DefaultValue("{0}")> _

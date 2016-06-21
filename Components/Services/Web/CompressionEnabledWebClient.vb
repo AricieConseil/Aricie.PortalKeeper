@@ -97,7 +97,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Shared Function GetWebClient(ByVal method As String, ByVal timeout As TimeSpan) As CompressionEnabledWebClient
             Dim toReturn As New CompressionEnabledWebClient(method)
-            If timeout > TimeSpan.Zero AndAlso timeout < TimeSpan.FromSeconds(60) Then
+            If timeout > TimeSpan.Zero AndAlso timeout < TimeSpan.FromHours(1) Then
                 toReturn._Timeout = timeout
             End If
 

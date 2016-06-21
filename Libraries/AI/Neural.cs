@@ -433,9 +433,9 @@ namespace Aricie.PortalKeeper.AI.Learning.Neural
 
                 // Load model
               
-                model.LoadModel(modelFilePath);
+               // model.LoadModel(modelFilePath);
 
-             //  model.CreateNetwork($"deviceId=-1\nmodelPath=\"{modelFilePath}\"");
+              model.CreateNetwork($"deviceId=0\nmodelPath=\"{modelFilePath}\"");
 
 
                 // We can call the evaluate method and get back the results (single layer)...

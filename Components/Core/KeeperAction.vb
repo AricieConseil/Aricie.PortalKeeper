@@ -21,6 +21,8 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Public Const DefaultEventStep As String = "Default"
 
+        
+
         Public Property TimeLimit As New EnabledFeature(Of SimpleOrExpression(Of STimeSpan, TimeSpan))
 
         <DefaultValue(False)> _

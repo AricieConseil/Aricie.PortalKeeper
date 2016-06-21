@@ -76,11 +76,11 @@ Namespace Configuration
         End Sub
 
         Public Sub New(ByVal objConfig As UrlCompressionInfo)
-            Me.Attributes("doStaticCompression") = objConfig.DoStaticCompression.ToString(CultureInfo.InvariantCulture)
-            Me.Attributes("doDynamicCompression") = objConfig.DoDynamicCompression.ToString(CultureInfo.InvariantCulture)
+            Me.Attributes("doStaticCompression") = objConfig.DoStaticCompression.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()
+            Me.Attributes("doDynamicCompression") = objConfig.DoDynamicCompression.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()
 
             If objConfig.DynamicCompressionBeforeCache Then
-                Me.Attributes("dynamicCompressionBeforeCache") = objConfig.DynamicCompressionBeforeCache.ToString(CultureInfo.InvariantCulture)
+                Me.Attributes("dynamicCompressionBeforeCache") = objConfig.DynamicCompressionBeforeCache.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()
             End If
         End Sub
 

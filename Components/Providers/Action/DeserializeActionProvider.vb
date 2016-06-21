@@ -7,6 +7,7 @@ Imports Aricie.DNN.UI.Attributes
 'Imports Jayrock.Json
 Imports DotNetNuke.UI.WebControls
 Imports System.IO
+Imports System.Linq
 Imports System.Xml
 Imports Aricie.Services
 Imports System.Xml.Serialization
@@ -25,7 +26,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
         Private _InputExpression As New FleeExpressionInfo(Of String)
 
-        Private _OutputType As New DotNetType(GetType(Object))
+        Private _OutputType As New DotNetType()
 
         Private _AdditionalTypes As New List(Of DotNetType)
 
@@ -82,19 +83,15 @@ Namespace Aricie.DNN.Modules.PortalKeeper
             End If
             Dim bytes As Byte() = Encoding.UTF8.GetBytes(serializedValue)
             If Me.UseCompression Then
-                bytes = Decompress(bytes, CompressionMethod.Deflate)
+                bytes = bytes.Decompress(CompressionMethod.Deflate)
             End If
-            Dim additionalTypes As New List(Of Type)
-            For Each addDNT As DotNetType In Me._AdditionalTypes
-                additionalTypes.Add(addDNT.GetDotNetType())
-            Next
             'Using sw As New System.IO.StringWriter(toReturn, CultureInfo.InvariantCulture)
             Using memStream As New MemoryStream(bytes)
                 Select Case Me.SerializationType
                     Case SerializationType.Xml
                         Using reader As New StreamReader(memStream, Encoding.UTF8)
                             Using xmlReader As New XmlTextReader(memStream)
-                                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType(), additionalTypes.ToArray(), True)
+                                Dim serializer As XmlSerializer = ReflectionHelper.GetSerializer(Me._OutputType.GetDotNetType(), (From addDNT In Me._AdditionalTypes Select addDNT.GetDotNetType()).ToArray(), True)
                                 toReturn = serializer.Deserialize(xmlReader)
                             End Using
                         End Using

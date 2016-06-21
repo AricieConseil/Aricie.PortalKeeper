@@ -45,6 +45,9 @@ namespace Aricie.PortalKeeper.GIS.SharpMap
     /// </summary>
     public class KmlProvider : IProvider
     {
+
+        private static readonly object loadLock = new object();
+
         #region Static factory methods
         
         /// <summary>
@@ -57,15 +60,20 @@ namespace Aricie.PortalKeeper.GIS.SharpMap
         public static KmlProvider FromKml(string filename)
         {
             if (string.IsNullOrEmpty(filename))
-                throw new ArgumentNullException("filename");
+                throw new ArgumentNullException(nameof(filename));
             if (!File.Exists(filename))
                 throw new FileNotFoundException("File not found", filename);
 
-            using (var s = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+            lock (loadLock)
             {
-                return FromKml(s);
+                using (var s = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    return FromKml(s);
+                }
             }
         }
+
+           
 
         /// <summary>
         /// Creates a KmlProvider from a Kml stream
@@ -76,8 +84,8 @@ namespace Aricie.PortalKeeper.GIS.SharpMap
         {
             if (stream == null)
                 throw new ArgumentNullException("stream");
-
-            return new KmlProvider(KmlFile.Load(stream));
+            var kmlFile = KmlFile.Load(stream);
+            return new KmlProvider(kmlFile);
         }
 
         /// <summary>

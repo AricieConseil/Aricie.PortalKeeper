@@ -37,7 +37,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Private _LogPath As String = "PortalKeeper/"
+        Private _LogPath As String = "Aricie.PortalKeeper/"
 
         Private _RetainHistoryNb As Integer = 5
 
@@ -61,7 +61,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 #Region "Public Properties"
 
-
+        
         Public Overrides Property Mode As RuleEngineMode = RuleEngineMode.Rules
 
             
@@ -409,6 +409,11 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
                     If botContext.EngineContext Is Nothing Then
                         botContext.EngineContext = Me.InitContext(botContext.UserParams)
+                        Dim lastrunDate As DateTime = DateTime.MinValue
+                        If botContext.History IsNot Nothing Then
+                            lastrunDate = botContext.History.LastRun
+                        End If
+                        botContext.EngineContext.SetVar("LastRun", lastrunDate)
                     End If
 
                 End If

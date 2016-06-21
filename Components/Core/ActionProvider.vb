@@ -11,6 +11,9 @@ Imports Aricie.Services
 Imports Aricie.DNN.Services.Workers
 Imports Aricie.DNN.Services.Flee
 Imports Aricie.DNN.Entities
+Imports Aricie.DNN.UI.WebControls
+Imports DotNetNuke.Services.Localization
+Imports DotNetNuke.UI.Skins.Controls
 Imports Newtonsoft.Json
 
 Namespace Aricie.DNN.Modules.PortalKeeper
@@ -170,7 +173,21 @@ Namespace Aricie.DNN.Modules.PortalKeeper
         Public Property DebuggerBreakEarly As Boolean
 
 
-
+        <ActionButton(IconName.Rocket, IconOptions.Normal, "RunningAction.Alert")>
+        Public Overloads Sub Run(ByVal ape As AriciePropertyEditorControl)
+            ape.Page.Validate()
+            If ape.IsValid Then
+                Dim objContext As New PortalKeeperContext(Of TEngineEvents)
+                objContext.CurrentEventStep = Me.LifeCycleEvent
+                If Me.RunAndSleep(objContext) Then
+                    Dim objVars = objContext.DumpToLogs(objContext.GetDump())
+                    Dim strVars as String = HttpUtility.HtmlEncode( JsonConvert.SerializeObject(objVars))
+                    Dim message As String = Localization.GetString("ActionRunSuccess.Message", ape.LocalResourceFile)
+                    message = String.Format(message, strVars)
+                    ape.DisplayLocalizedMessage(message, ModuleMessage.ModuleMessageType.GreenSuccess)
+                End If
+            End If
+        End Sub
 
 
         Public Overridable Function RunAndSleep(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean Implements IActionProvider(Of TEngineEvents).Run
@@ -287,7 +304,7 @@ Namespace Aricie.DNN.Modules.PortalKeeper
 
 
 
-        Public Overridable Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
+        Public Overridable Overloads Function Run(ByVal actionContext As PortalKeeperContext(Of TEngineEvents)) As Boolean
             Return False
         End Function
 
