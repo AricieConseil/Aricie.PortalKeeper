@@ -5,6 +5,7 @@ Imports System.Reflection
 Imports System.Text
 Imports System.Threading
 Imports System.Globalization
+Imports System.Linq.Expressions
 Imports System.Web.Script.Serialization
 
 Namespace Services
@@ -107,7 +108,7 @@ Namespace Services
 
         End Function
 
-        <System.Runtime.CompilerServices.Extension> _
+        <System.Runtime.CompilerServices.Extension>
         Public Function ToObject(someObjectType As Type, source As IDictionary(Of String, String), culture As CultureInfo, createEmptyObjects As Boolean, initializeLists As Boolean) As Object
             Dim someObject As Object = ReflectionHelper.CreateObject(someObjectType)
             For Each item As KeyValuePair(Of String, String) In source
@@ -120,7 +121,30 @@ Namespace Services
             Return someObject
         End Function
 
+        'Public Function Generate(Of T As New)() As Func(Of Dictionary(Of String, String), T)
+        '    Dim dic = Expression.Parameter(GetType(Dictionary(Of String, String)), "dic")
+        '    Dim tmpVal = Expression.Parameter(GetType(String), "tmp")
+        '    Dim args = New List(Of MemberAssignment)()
+        '    For Each objPropertyInfo As PropertyInfo In GetType(T).GetProperties()
+        '        Dim tryGet = Expression.[Call](dic, "TryGetValue", New Type(-1) {}, Expression.Constant(objPropertyInfo.Name), tmpVal)
 
+        '        Dim value As Expression = tmpVal
+        '        If objPropertyInfo.PropertyType IsNot GetType(String) Then
+        '            Dim convertCall = Expression.[Call](GetType(Convert).GetMethod("ChangeType", New Type() {GetType(Object), GetType(Type)}), tmpVal, Expression.Constant(objPropertyInfo.PropertyType))
+        '            value = Expression.Convert(convertCall, objPropertyInfo.PropertyType)
+        '        End If
+
+        '        Dim conditional = Expression.Condition(tryGet, value, Expression.[Default](objPropertyInfo.PropertyType))
+
+
+        '        args.Add(Expression.Bind(objPropertyInfo, conditional))
+        '    Next
+        '    Dim newExpression = Expression.[New](GetType(T).GetConstructor(New Type(-1) {}))
+
+        '    Dim expression__1 = Expression.Lambda(Of Func(Of Dictionary(Of String, String), T))(Expression.Block(New () {tmpVal}, Expression.MemberInit(newExpression, args)), dic)
+
+        '    Return expression__1.Compile()
+        'End Function
 
 
         <System.Runtime.CompilerServices.Extension> _

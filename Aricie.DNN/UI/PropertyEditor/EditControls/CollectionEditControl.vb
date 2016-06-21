@@ -427,6 +427,22 @@ Namespace UI.WebControls.EditControls
                                 Me.DisplaySubItems(commandIndex, el.Container, dataItem)
 
                             End If
+                        Case "Insert"
+
+                               Dim addEvent As New PropertyEditorEventArgs(Me.Name)
+                            addEvent.OldValue = New ArrayList(Me.CollectionValue)
+
+                            Me.AddNewItem(Me.AddEntry)
+                            For i As Integer = me.CollectionValue.Count -1 To commandIndex + 1 Step -1
+                                RaiseEvent MoveUp(i)
+                            Next
+                          
+                            addEvent.Value = Me.CollectionValue
+                            addEvent.Changed = True
+                            Me.OnValueChanged(addEvent)
+
+                            Me.ParentAricieEditor.DisplayLocalizedMessage("ItemInserted.Message", ModuleMessage.ModuleMessageType.GreenSuccess)
+
                         Case "Delete"
 
                             Me.ClearItems(commandIndex)
@@ -975,7 +991,7 @@ Namespace UI.WebControls.EditControls
                 Dim dataItem As Object = Me.CollectionValue(commandIndex)
                 'SubPropertyEditor button
 
-               
+
 
                 If headerLink IsNot Nothing Then
 
@@ -1019,7 +1035,22 @@ Namespace UI.WebControls.EditControls
 
                 End If
 
-                 Dim enabledItem As IEnabled = TryCast(dataItem, IEnabled)
+                If Not Me._NoAddition Then
+                    Dim cmdAdd As New IconActionButton
+                    With cmdAdd
+                        .ActionItem.IconName = IconName.Plus
+                        .LocalResourceFile = Me.LocalResourceFile
+                        .ResourceKey = "Insert.Command"
+                        .CommandName = "Insert"
+                        .CommandArgument = commandIndex.ToString()
+                    End With
+                    AddHandler cmdAdd.Command, Sub(sender, e) RepeaterItemCommand(sender, New RepeaterCommandEventArgs(Nothing, sender, e))
+                    plAction.Controls.Add(cmdAdd)
+                End If
+
+
+
+                Dim enabledItem As IEnabled = TryCast(dataItem, IEnabled)
                 If enabledItem IsNot Nothing Then
                     Dim cmdToggleEnable As New IconActionButton
                     With cmdToggleEnable
@@ -1180,7 +1211,7 @@ Namespace UI.WebControls.EditControls
 
                         cmdAddButton = New IconActionButton()
                         pnAdd.Controls.Add(cmdAddButton)
-                        cmdAddButton.ActionItem.IconName = IconName.Magic
+                        cmdAddButton.ActionItem.IconName = IconName.Plus
                         cmdAddButton.Text = "Add " & Name
                         cmdAddButton.ResourceKey = "AddNew.Command"
                         cmdAddButton.Visible = Not HideAddButton

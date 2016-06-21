@@ -355,7 +355,12 @@ Namespace ComponentModel
                                 End If
                                 passedParams.Add(genericParam)
                             Next
-                            toReturn = toReturn.MakeGenericType(passedParams.ToArray())
+                            Try
+                                toReturn = toReturn.MakeGenericType(passedParams.ToArray())
+                            Catch ex As Exception
+                                ExceptionHelper.LogException(ex)
+                                toReturn = Nothing
+                            End Try
                         End If
                     End If
                 End If

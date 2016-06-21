@@ -23,6 +23,7 @@ Imports DotNetNuke.UI.Utilities
 Imports System.Net.NetworkInformation
 Imports System.Web.Script.Serialization
 Imports Aricie.Common
+Imports Globals = DotNetNuke.Common.Globals
 
 
 Namespace Services
@@ -221,9 +222,12 @@ Namespace Services
                         End If
                         If Not String.IsNullOrEmpty(strLocale) Then
                             Try
+                                if strLocale.Contains(",")
+                                    strLocale = strLocale.Split(","c).Last()
+                                End If
                                 _Culture = New CultureInfo(strLocale)
                             Catch ex As Exception
-                                Dim message As String = String.Format("A corrupted lanaguage parameter was provided in query string or cookie value: {0} is not a valid culture code", strLocale)
+                                Dim message As String = String.Format("A corrupted lanaguage parameter was provided in query string or cookie value: {0} is not a valid culture code. Full Url: {1}", strLocale, me._HttpContext.Request.Url.ToString())
                                 Dim newEx As New ApplicationException(message)
                                 Try
                                     Throw newEx
@@ -277,6 +281,14 @@ Namespace Services
                         'Dim objDomainName As String = DotNetNuke.Common.Globals.GetDomainName(Me.Request)
                         Dim objDomainName As String = Me.Request.Url.Authority & Me.Request.ApplicationPath
                         _PortalAlias = NukeHelper.PortalAliasController.GetPortalAlias(objDomainName, Me.Portal.PortalId)
+                        If _PortalAlias Is Nothing Then
+                            Try
+                                Throw New ApplicationException(String.Format("Could not find a valid portal alias for {0} from url {1}, with referrer {2} using Host portal alias", objDomainName, Me.Request.Url.ToString(), If(Me.Request.UrlReferrer?.ToString(), "")))
+                            Catch ex As Exception
+                                ExceptionHelper.LogException(ex)
+                                _PortalAlias = Globals.GetHostPortalSettings().PortalAlias
+                            End Try
+                        End If
                     End If
                 End If
                 Return _PortalAlias
@@ -541,15 +553,24 @@ Namespace Services
         ''' <remarks></remarks>
         Public ReadOnly Property CountryName() As String
             Get
-                Dim toReturn As String = ""
+                Dim toReturn As String = "N/A"
                 Dim ip As IPAddress = Me.IPAddress
-                If ip IsNot Nothing Then
-                    toReturn = CountryLookup.LookupCountryName(ip)
-                Else
-                    If Me.Request IsNot Nothing AndAlso Not String.IsNullOrEmpty(Me.Request.UserHostAddress) Then
-                        toReturn = CountryLookup.LookupCountryName(Me.Request.UserHostAddress)
+                Try
+                    If ip IsNot Nothing Then
+                        toReturn = CountryLookup.LookupCountryName(ip)
+                    Else
+                        If Me.Request IsNot Nothing AndAlso Not String.IsNullOrEmpty(Me.Request.UserHostAddress) Then
+                            toReturn = CountryLookup.LookupCountryName(Me.Request.UserHostAddress)
+                        End If
                     End If
-                End If
+                Catch ex As Exception
+                    Try
+                        Dim newEx As New ApplicationException(String.Format("Error trying to lookup country for IP {0}", ip.ToString()), ex)
+                        Throw newEx
+                    Catch wrappedEx As Exception
+                        ExceptionHelper.LogException(wrappedEx)
+                    End Try
+                End Try
                 Return toReturn
             End Get
         End Property

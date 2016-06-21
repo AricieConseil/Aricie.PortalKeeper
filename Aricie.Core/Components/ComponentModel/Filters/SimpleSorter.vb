@@ -51,7 +51,7 @@ Namespace Business.Filters
 #Region "IComparer(T) implem"
 
         Public Function Compare(ByVal x As T, ByVal y As T) As Integer Implements IComparer(Of T).Compare
-            Dim invertCoef As Integer = CType(IIf(Me.SortDirection = ListSortDirection.Ascending, 1, -1), Integer)
+            Dim invertCoef As Integer = DirectCast(IIf(Me.SortDirection = ListSortDirection.Ascending, 1, -1), Integer)
             Return invertCoef * x.CompareTo(y)
         End Function
 

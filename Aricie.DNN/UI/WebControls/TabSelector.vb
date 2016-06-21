@@ -7,8 +7,12 @@ Namespace UI.WebControls
 
 
         Public Overrides Function GetEntitiesG() As IList(Of TabInfo)
-            Dim controller As New TabController
-            Return New List(Of TabInfo)(DirectCast(controller.GetTabs(PortalId).ToArray(GetType(TabInfo)), TabInfo()))
+
+            Dim toReturn As New List(Of TabInfo)(DirectCast(NukeHelper.TabController.GetTabs(PortalId).ToArray(GetType(TabInfo)), TabInfo()))
+            If NukeHelper.User IsNot Nothing AndAlso NukeHelper.User.IsSuperUser Then
+                toReturn.AddRange(DirectCast(NukeHelper.TabController.GetTabs(-1).ToArray(GetType(TabInfo)), TabInfo()))
+            End If
+            Return toReturn
         End Function
     End Class
 End Namespace
