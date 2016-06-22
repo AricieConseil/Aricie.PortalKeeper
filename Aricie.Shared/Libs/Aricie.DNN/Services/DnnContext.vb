@@ -227,7 +227,8 @@ Namespace Services
                                 End If
                                 _Culture = New CultureInfo(strLocale)
                             Catch ex As Exception
-                                Dim message As String = String.Format("A corrupted lanaguage parameter was provided in query string or cookie value: {0} is not a valid culture code. Full Url: {1}", strLocale, me._HttpContext.Request.Url.ToString())
+                                Dim message As String = String.Format("A corrupted lanaguage parameter was provided in query string or cookie value: {0} is not a valid culture code. Full Url: {1} , with referrer {2}", _
+                                                                      strLocale, me._HttpContext.Request.Url.ToString(), If(Me.Request.UrlReferrer?.ToString(), ""))
                                 Dim newEx As New ApplicationException(message)
                                 Try
                                     Throw newEx
