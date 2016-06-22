@@ -59,9 +59,12 @@ Namespace Aricie.DNN.Modules.PortalKeeper.UI
                             'Session("KeeperConfig") = _KeeperConfig (moved in prerender to support datasource changes)
                         End If
                     Else
+                        dim existing as PortalKeeperConfig = TryCast(Session("KeeperConfig"), PortalKeeperConfig)
+                        If existing  IsNot Nothing Then
+                            Session.Remove("KeeperConfig")
+                        End If
                         Dim objConfig As PortalKeeperConfig = PortalKeeperConfig.Instance
                         _KeeperConfig = objConfig
-                        Session.Remove("KeeperConfig")
                         If Me.UserInfo.IsSuperUser Then
                             Dim cloningJob As New SessionCloningJob(Of PortalKeeperConfig)(Me.Session, objConfig, "KeeperConfig")
                             cloningJob.Enqueue()
