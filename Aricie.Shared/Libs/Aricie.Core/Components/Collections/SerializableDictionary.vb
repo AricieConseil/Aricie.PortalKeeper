@@ -13,7 +13,8 @@ Namespace Collections
     ''' <summary>
     ''' Generic Serializable Dictionary with a self contained sub types generic serialization mechanism
     ''' </summary>
-
+    <Serializable()>
+    <JsonObject>
     <JsonConverter(GetType(SerializableDictionaryJsonSerializer))>
     <XmlRoot("dictionary")>
     Public Class SerializableDictionary(Of TKey, TValue)
