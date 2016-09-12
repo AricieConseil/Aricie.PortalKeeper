@@ -532,6 +532,7 @@ Namespace Services
 
 #If DEBUG Then
                     Catch ex As Exception
+
                         ExceptionHelper.LogException(ex)
 #Else
                     Catch
