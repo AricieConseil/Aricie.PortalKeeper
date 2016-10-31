@@ -1,0 +1,3 @@
+[submodule "SharedLibs"]
+	path = SharedLibs
+	url = https://github.com/Aricie/SharedLibs
