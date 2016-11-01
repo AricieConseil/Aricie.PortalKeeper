@@ -73,8 +73,8 @@
       <Private>False</Private>
     </Reference>
     <Reference Include="Ionic.Zip.Reduced, Version=1.9.1.8, Culture=neutral, PublicKeyToken=edbe51ad942a3f5c, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\SharpMap\Assemblies\Ionic.Zip.Reduced.dll</HintPath>
+      <HintPath>..\packages\DotNetZip.Reduced.1.9.1.8\lib\net20\Ionic.Zip.Reduced.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
@@ -86,13 +86,13 @@
       <SpecificVersion>False</SpecificVersion>
       <Private>False</Private>
     </Reference>
-    <Reference Include="SharpKml, Version=2.1.0.0, Culture=neutral, PublicKeyToken=9bb853c026a5c0ac, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\SharpMap\Assemblies\SharpKml.dll</HintPath>
+    <Reference Include="SharpKml, Version=2.1.3.0, Culture=neutral, PublicKeyToken=9bb853c026a5c0ac, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpKml.Core.2.1.3\lib\portable-net4+sl5+wp8+win8\SharpKml.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="SharpKml.Kmz, Version=2.0.2.0, Culture=neutral, PublicKeyToken=9bb853c026a5c0ac, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\Libraries\SharpMap\Assemblies\SharpKml.Kmz.dll</HintPath>
+      <HintPath>..\packages\SharpKml.Kmz.2.0.2.2\lib\net40\SharpKml.Kmz.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -150,22 +150,19 @@
     <Compile Include="Services\KmzResponseCodec.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
-      <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
-      <Name>Aricie.Core</Name>
-      <Private>False</Private>
-    </ProjectReference>
-    <ProjectReference Include="..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
-      <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
-      <Name>Aricie.DNN</Name>
-      <Private>False</Private>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <None Include="app.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SharedLibs\Aricie.Core\Aricie.Core.vbproj">
+      <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
+      <Name>Aricie.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharedLibs\Aricie.DNN\Aricie.DNN.vbproj">
+      <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
+      <Name>Aricie.DNN</Name>
+    </ProjectReference>
+  </ItemGroup>
   <ItemGroup>
     <None Include="external\Aricie.PortalKeeper.dll" />
   </ItemGroup>

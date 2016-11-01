@@ -106,7 +106,10 @@
     <Content Include="external\Newtonsoft.Json.pdb" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
+    <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\SharedLibs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
     </ProjectReference>

@@ -15,6 +15,8 @@
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -60,9 +62,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>external\Encog\encog-core-cs.dll</HintPath>
     </Reference>
-    <Reference Include="EvalWrapper, Version=0.0.0.0, Culture=neutral, processorArchitecture=AMD64">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>external\cntk\Debug\EvalWrapper.dll</HintPath>
+    <Reference Include="EvalWrapper, Version=0.0.0.0, Culture=neutral, PublicKeyToken=52681d72504348ec, processorArchitecture=AMD64">
+      <HintPath>..\..\packages\Microsoft.Research.CNTK.CpuEval-mkl.1.7.2\lib\net45\x64\EvalWrapper.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="FileHelpers, Version=3.1.5.0, Culture=neutral, PublicKeyToken=3e0c08d59cc3d657, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -138,15 +140,13 @@
       <Name>Aricie.PortalKeeper</Name>
       <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
+    <ProjectReference Include="..\..\SharedLibs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
-      <Private>False</Private>
     </ProjectReference>
-    <ProjectReference Include="..\..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
+    <ProjectReference Include="..\..\SharedLibs\Aricie.DNN\Aricie.DNN.vbproj">
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
-      <Private>False</Private>
     </ProjectReference>
     <ProjectReference Include="external\GoTraxx\GoTraxx.csproj">
       <Project>{16e52e17-385d-4bda-98a5-7d3af68f821b}</Project>
@@ -177,6 +177,13 @@
     <Folder Include="Go\cntk\AdditionalFiles\Games\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\..\packages\Microsoft.Research.CNTK.CpuEval-mkl.1.7.2\build\net45\Microsoft.Research.CNTK.CpuEval-mkl.targets" Condition="Exists('..\..\packages\Microsoft.Research.CNTK.CpuEval-mkl.1.7.2\build\net45\Microsoft.Research.CNTK.CpuEval-mkl.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\..\packages\Microsoft.Research.CNTK.CpuEval-mkl.1.7.2\build\net45\Microsoft.Research.CNTK.CpuEval-mkl.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.Research.CNTK.CpuEval-mkl.1.7.2\build\net45\Microsoft.Research.CNTK.CpuEval-mkl.targets'))" />
+  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

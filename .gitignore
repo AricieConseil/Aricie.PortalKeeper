@@ -251,3 +251,6 @@ DNN Platform/Dnn.AuthServices.Jwt/Package/
 Website/Portals/_default/Install/Dnn.CKEditorDefaultSettings.xml
 Website/Portals/_default/Install/Dnn.CKToolbarButtons.xml
 Website/Portals/_default/Install/Dnn.CKToolbarSets.xml
+/Aricie.Shared/Libs/Aricie.DNN/external/Flee/bin/Debug
+/Libraries/Reddit/bin
+/Libraries/Reddit/external/RedditSharpNet35/bin/Debug

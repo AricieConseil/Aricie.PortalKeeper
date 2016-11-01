@@ -259,11 +259,15 @@
     <None Include="external\DotNetNuke.dll" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Aricie.Shared\Libs\Aricie.Core\Aricie.Core.vbproj">
+    <ProjectReference Include="..\..\..\Aricie.PortalKeeper.vbproj">
+      <Project>{e16cb689-af6f-4919-bc7b-1d345a2d48ce}</Project>
+      <Name>Aricie.PortalKeeper</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\SharedLibs\Aricie.Core\Aricie.Core.vbproj">
       <Project>{6ada6635-4f81-4900-b392-dc0fd650fa52}</Project>
       <Name>Aricie.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\..\..\Aricie.Shared\Libs\Aricie.DNN\Aricie.DNN.vbproj">
+    <ProjectReference Include="..\..\..\SharedLibs\Aricie.DNN\Aricie.DNN.vbproj">
       <Project>{79f9c77d-3b12-4111-b3c3-f006c7026580}</Project>
       <Name>Aricie.DNN</Name>
     </ProjectReference>
