@@ -145,32 +145,32 @@ Look at the included sample providers to create your own types of conditions and
 Included are the following providers:
 
 * **Condition providers**:
-* Sub Conditions
-* Dynamic expression
-* Client Source (Firewall only)
-* DNN Page (Firewall only)
-* Portal Alias (Firewall only)
-* Membership (Firewall only)
-* Request caps (Firewall only)
+  * Sub Conditions
+  * Dynamic expression
+  * Client Source (Firewall only)
+  * DNN Page (Firewall only)
+  * Portal Alias (Firewall only)
+  * Membership (Firewall only)
+  * Request caps (Firewall only)
 * **Action providers**:
-* Log Event
-* Send Email
-* Web Action
-* Define Variables
-* Multiple Actions
-* Loop/While Actions
-* Object Actions
-* String Filter
-* File Read/ File Write Actions
-* File Manager
-* Serialize/Deserialize Actions
-* Run SQL
-* Run Program
-* Load/Save User Identity/Personnalization Profile
-* Read/Write Google spreadsheets
-* Run Python
-* Auto Login (Firewall only)
-* Log Off (Firewall only)
-* Redirect (Firewall only)
-* Customize Environment (Firewall only)
-* Display Message (Firewall only)
+  * Log Event
+  * Send Email
+  * Web Action
+  * Define Variables
+  * Multiple Actions
+  * Loop/While Actions
+  * Object Actions
+  * String Filter
+  * File Read/ File Write Actions
+  * File Manager
+  * Serialize/Deserialize Actions
+  * Run SQL
+  * Run Program
+  * Load/Save User Identity/Personnalization Profile
+  * Read/Write Google spreadsheets
+  * Run Python
+  * Auto Login (Firewall only)
+  * Log Off (Firewall only)
+  * Redirect (Firewall only)
+  * Customize Environment (Firewall only)
+  * Display Message (Firewall only)
